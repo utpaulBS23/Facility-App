@@ -1,4 +1,4 @@
-package com.example.facility_management_app
+package com.bhumijo.facilityapp
 
 import io.flutter.embedding.android.FlutterActivity
 
