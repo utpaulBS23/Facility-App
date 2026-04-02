@@ -6,9 +6,11 @@ export 'src/colors/colors.dart';
 export 'src/dimensions.dart';
 export 'src/text_style.dart';
 
+// WHY: getters instead of final fields so $LightThemeData / $DarkThemeData
+// can override textStyle with a locale-specific font family.
 mixin ThemeExtensions {
-  final LightColorExtension lightColor = const LightColorExtension();
-  final DarkColorExtension darkColor = const DarkColorExtension();
-  final TextStyleExtension textStyle = const TextStyleExtension();
-  final Dimensions dimensions = const Dimensions();
+  LightColorExtension get lightColor => const LightColorExtension();
+  DarkColorExtension get darkColor => const DarkColorExtension();
+  TextStyleExtension get textStyle => const TextStyleExtension();
+  Dimensions get dimensions => const Dimensions();
 }

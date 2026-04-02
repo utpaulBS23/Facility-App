@@ -3,6 +3,17 @@
 
 import 'package:flutter/material.dart';
 
+// WHY: Centralises font-family names so pubspec family strings are never
+// scattered across the codebase, and forLocale() is the single place that
+// decides which font to use for a given language.
+abstract final class AppFonts {
+  static const String english = 'MyriadPro';
+  static const String bengali = 'Kalpurush';
+
+  static String forLocale(String languageCode) =>
+      languageCode == 'bn' ? bengali : english;
+}
+
 // WHY: All type styles map 1-to-1 to the Figma type scale
 // (node 13021:15735, file Cd1JO8EZ9OX0XW6DB3ExPN).
 // Names are the Figma token names in camelCase.
@@ -10,15 +21,17 @@ import 'package:flutter/material.dart';
 // Uppercase variants require String.toUpperCase() at the call site —
 // Flutter TextStyle has no text-transform property.
 class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
-  const TextStyleExtension();
+  const TextStyleExtension({this.fontFamily = AppFonts.english});
 
-  static const _font = 'Urbanist';
+  // WHY: stored as a field so the theme system can swap the font family
+  // at build time when the locale changes, without rebuilding every style.
+  final String fontFamily;
 
   // ── Display ──────────────────────────────────────────────────────────────
 
   /// display/large — 57 · w600 · lh 64 · ls -0.25
-  TextStyle get displayLarge => const TextStyle(
-        fontFamily: _font,
+  TextStyle get displayLarge => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 57,
         fontWeight: FontWeight.w600,
         height: 1.123,
@@ -26,8 +39,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// display/medium — 45 · w600 · lh 52 · ls -0.81
-  TextStyle get displayMedium => const TextStyle(
-        fontFamily: _font,
+  TextStyle get displayMedium => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 45,
         fontWeight: FontWeight.w600,
         height: 1.156,
@@ -35,8 +48,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// display/small — 34 · w600 · lh 48
-  TextStyle get displaySmall => const TextStyle(
-        fontFamily: _font,
+  TextStyle get displaySmall => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 34,
         fontWeight: FontWeight.w600,
         height: 1.412,
@@ -45,16 +58,16 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
   // ── Headline ─────────────────────────────────────────────────────────────
 
   /// headline/large — 32 · w600 · lh 40
-  TextStyle get headlineLarge => const TextStyle(
-        fontFamily: _font,
+  TextStyle get headlineLarge => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 32,
         fontWeight: FontWeight.w600,
         height: 1.25,
       );
 
   /// headline/medium — 26 · w600 · lh 34 · ls -0.39
-  TextStyle get headlineMedium => const TextStyle(
-        fontFamily: _font,
+  TextStyle get headlineMedium => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 26,
         fontWeight: FontWeight.w600,
         height: 1.308,
@@ -62,32 +75,32 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// headline/small — 23 · w600 · lh 24
-  TextStyle get headlineSmall => const TextStyle(
-        fontFamily: _font,
+  TextStyle get headlineSmall => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 23,
         fontWeight: FontWeight.w600,
         height: 1.043,
       );
 
   /// headline/tiny — 21 · w600 · lh 24
-  TextStyle get headlineTiny => const TextStyle(
-        fontFamily: _font,
+  TextStyle get headlineTiny => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 21,
         fontWeight: FontWeight.w600,
         height: 1.143,
       );
 
   /// headline/1xl-tiny — 17 · w600 · lh 24
-  TextStyle get headline1xlTiny => const TextStyle(
-        fontFamily: _font,
+  TextStyle get headline1xlTiny => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 17,
         fontWeight: FontWeight.w600,
         height: 1.412,
       );
 
   /// headline/2xl-tiny — 15 · w600 · lh 24
-  TextStyle get headline2xlTiny => const TextStyle(
-        fontFamily: _font,
+  TextStyle get headline2xlTiny => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 15,
         fontWeight: FontWeight.w600,
         height: 1.60,
@@ -96,16 +109,16 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
   // ── Title ─────────────────────────────────────────────────────────────────
 
   /// title/large — 20 · w600 · lh 24
-  TextStyle get titleLarge => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleLarge => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 20,
         fontWeight: FontWeight.w600,
         height: 1.20,
       );
 
   /// title/xl uppercase — 16 · w600 · lh 24 · ls 0.32
-  TextStyle get titleXlUppercase => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleXlUppercase => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.50,
@@ -113,16 +126,16 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// title/medium — 16 · w600 · lh 16
-  TextStyle get titleMedium => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleMedium => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.00,
       );
 
   /// title/medium-uppercase — 16 · w600 · lh 16 · ls 0.192
-  TextStyle get titleMediumUppercase => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleMediumUppercase => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.00,
@@ -130,8 +143,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// title/small — 14 · w600 · lh 20 · ls 0.1
-  TextStyle get titleSmall => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleSmall => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.429,
@@ -139,8 +152,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// title/sm uppercase — 14 · w600 · lh 20 · ls 0.2
-  TextStyle get titleSmUppercase => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleSmUppercase => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.429,
@@ -148,8 +161,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// title/tiny uppercase — 12 · w600 · lh 16 · ls 0.2
-  TextStyle get titleTinyUppercase => const TextStyle(
-        fontFamily: _font,
+  TextStyle get titleTinyUppercase => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         height: 1.333,
@@ -159,24 +172,24 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
   // ── Body ──────────────────────────────────────────────────────────────────
 
   /// body/large — 16 · w400 · lh 24
-  TextStyle get bodyLarge => const TextStyle(
-        fontFamily: _font,
+  TextStyle get bodyLarge => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 16,
         fontWeight: FontWeight.w400,
         height: 1.50,
       );
 
   /// body/regular — 14 · w400 · lh 20
-  TextStyle get bodyRegular => const TextStyle(
-        fontFamily: _font,
+  TextStyle get bodyRegular => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w400,
         height: 1.429,
       );
 
   /// body/smaller_uppercase — 14 · w600 · lh 16 · ls 0.28
-  TextStyle get bodySmallerUppercase => const TextStyle(
-        fontFamily: _font,
+  TextStyle get bodySmallerUppercase => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.143,
@@ -184,8 +197,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// body/small — 12 · w400 · lh 16 · ls 0.072
-  TextStyle get bodySmall => const TextStyle(
-        fontFamily: _font,
+  TextStyle get bodySmall => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 12,
         fontWeight: FontWeight.w400,
         height: 1.333,
@@ -195,8 +208,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
   // ── Label ─────────────────────────────────────────────────────────────────
 
   /// label/xl — 16 · w600 · lh 20 · ls 0.1
-  TextStyle get labelXl => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelXl => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.25,
@@ -204,8 +217,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// label/large — 14 · w600 · lh 20 · ls 0.1
-  TextStyle get labelLarge => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelLarge => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.429,
@@ -213,8 +226,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// label/medium — 13 · w600 · lh 16 · ls 0.2
-  TextStyle get labelMedium => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelMedium => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 13,
         fontWeight: FontWeight.w600,
         height: 1.231,
@@ -222,8 +235,8 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// label/regular — 13 · w400 · lh 16 · ls 0.2
-  TextStyle get labelRegular => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelRegular => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 13,
         fontWeight: FontWeight.w400,
         height: 1.231,
@@ -231,24 +244,24 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   /// label/medium-12 — 12 · w600 · lh 11
-  TextStyle get labelMedium12 => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelMedium12 => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         height: 0.917,
       );
 
   /// label/small — 11 · w600 · ls 0.5
-  TextStyle get labelSmall => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelSmall => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 11,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.5,
       );
 
   /// label/tiny — 11 · w600 · lh 11 · ls -0.275
-  TextStyle get labelTiny => const TextStyle(
-        fontFamily: _font,
+  TextStyle get labelTiny => TextStyle(
+        fontFamily: fontFamily,
         fontSize: 11,
         fontWeight: FontWeight.w600,
         height: 1.00,
@@ -256,9 +269,10 @@ class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
       );
 
   @override
-  ThemeExtension<TextStyleExtension> copyWith() => const TextStyleExtension();
+  TextStyleExtension copyWith({String? fontFamily}) =>
+      TextStyleExtension(fontFamily: fontFamily ?? this.fontFamily);
 
   @override
   ThemeExtension<TextStyleExtension> lerp(other, t) =>
-      const TextStyleExtension();
+      t < 0.5 ? this : (other as TextStyleExtension? ?? this);
 }

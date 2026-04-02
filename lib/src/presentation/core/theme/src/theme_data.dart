@@ -10,9 +10,18 @@ part 'part/dropdown_menu_theme_data.dart';
 part 'part/input_decoration_theme.dart';
 
 class $LightThemeData with ThemeExtensions {
+  const $LightThemeData([this._fontFamily = AppFonts.english]);
+
+  final String _fontFamily;
+
+  // WHY: overrides the mixin getter so the locale-specific font is used
+  // across every extension-registered TextStyle.
+  @override
+  TextStyleExtension get textStyle => TextStyleExtension(fontFamily: _fontFamily);
+
   ThemeData call() {
     return ThemeData(
-      fontFamily: 'Urbanist',
+      fontFamily: _fontFamily,
       brightness: Brightness.light,
       extensions: <ThemeExtension<dynamic>>[lightColor, textStyle, dimensions],
       colorScheme: ColorScheme.light(primary: lightColor.primary),
@@ -35,9 +44,16 @@ class $LightThemeData with ThemeExtensions {
 }
 
 class $DarkThemeData with ThemeExtensions {
+  const $DarkThemeData([this._fontFamily = AppFonts.english]);
+
+  final String _fontFamily;
+
+  @override
+  TextStyleExtension get textStyle => TextStyleExtension(fontFamily: _fontFamily);
+
   ThemeData call() {
     return ThemeData(
-      fontFamily: 'Urbanist',
+      fontFamily: _fontFamily,
       brightness: Brightness.dark,
       extensions: <ThemeExtension<dynamic>>[darkColor, textStyle, dimensions],
       colorScheme: ColorScheme.dark(primary: darkColor.primary),

@@ -20,15 +20,6 @@ class ApplicationLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image(
-      excludeFromSemantics: semanticLabel == null,
-      image: Assets.images.pbilLogo.provider(),
-      height: height,
-      width: width,
-      fit: fit,
-      color: color,
-      semanticLabel: semanticLabel,
-      filterQuality: FilterQuality.high,
-    );
+    return Image.asset(Assets.icons.call.path);
   }
 }

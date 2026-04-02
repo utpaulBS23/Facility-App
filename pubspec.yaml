@@ -63,11 +63,25 @@ flutter:
     - assets/images/
     - assets/icons/
   fonts:
-    - family: Urbanist
+    - family: MyriadPro
       fonts:
-        - asset: assets/fonts/Urbanist-VariableFont_wght.ttf
-        - asset: assets/fonts/Urbanist-Italic-VariableFont_wght.ttf
+        - asset: assets/fonts/english/MYRIADPRO-REGULAR.OTF
+          weight: 400
+        - asset: assets/fonts/english/MyriadPro-Light.otf
+          weight: 300
+        - asset: assets/fonts/english/MYRIADPRO-SEMIBOLD.OTF
+          weight: 600
+        - asset: assets/fonts/english/MYRIADPRO-SEMIBOLDIT.OTF
+          weight: 600
           style: italic
+        - asset: assets/fonts/english/MYRIADPRO-BOLD.OTF
+          weight: 700
+        - asset: assets/fonts/english/MYRIADPRO-BOLDIT.OTF
+          weight: 700
+          style: italic
+    - family: Kalpurush
+      fonts:
+        - asset: assets/fonts/bangla/kalpurush.ttf
 
 flutter_gen:
   output: lib/src/presentation/core/gen
