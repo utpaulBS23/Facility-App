@@ -1,6 +1,11 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-03
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pinput/pinput.dart';
 
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../core/router/routes.dart';
@@ -8,93 +13,46 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/link_text.dart';
 import '../../../../core/widgets/text/typography.dart';
 
-class EmailVerificationPage extends StatelessWidget {
+part '../widgets/email_verification_body.dart';
+
+class EmailVerificationPage extends ConsumerStatefulWidget {
   const EmailVerificationPage({super.key});
+
+  @override
+  ConsumerState<EmailVerificationPage> createState() => _EmailVerificationPageState();
+}
+
+class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
+  final otpController = TextEditingController();
+
+  @override
+  void dispose() {
+    otpController.dispose();
+    super.dispose();
+  }
+
+  void _onOtpCompleted(String otp) {
+    // TODO: Call provider to verify OTP
+    context.pushReplacementNamed(Routes.createNewPassword);
+  }
+
+  void _onResendCode() {
+    // TODO: Call provider to resend OTP
+  }
+
+  void _onTryAnotherEmail() {
+    context.pushReplacementNamed(Routes.resetPassword);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: HeadlineSmallText(context.locale.checkYourMail)),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: context.padding.p16),
-            child: Column(
-              children: [
-                Gap(context.spacing.s24),
-                FlutterLogo(size: context.spacing.s200),
-                Gap(context.spacing.s24),
-                HeadlineLargeText(context.locale.checkYourMail),
-                Gap(context.spacing.s8),
-                BodyRegularText.secondary(
-                  context.locale.enterVerificationCode,
-                  textAlign: TextAlign.center,
-                ),
-                Gap(context.spacing.s32),
-                const _OTPField(),
-                LinkText(
-                  text: context.locale.didntGetCode,
-                  linkText: context.locale.clickToResend,
-                  onTap: () {
-                    //TODO: Implement this
-                  },
-                ),
-                LinkText(
-                  text: context.locale.didNotReceiveEmail,
-                  linkText: context.locale.tryAnotherEmail,
-                  onTap: () {
-                    context.pushReplacementNamed(Routes.resetPassword);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OTPField extends StatefulWidget {
-  const _OTPField();
-
-  @override
-  State<_OTPField> createState() => _OTPFieldState();
-}
-
-class _OTPFieldState extends State<_OTPField> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: context.spacing.s66,
-      width: MediaQuery.sizeOf(context).width - 26,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(
-          4,
-          (index) => Flexible(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: context.margin.m6),
-              child: TextFormField(
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: context.padding.p20,
-                  ),
-                ),
-                onChanged: (value) {
-                  if (index == 3 && value.length == 1) {
-                    FocusScope.of(context).unfocus();
-                    //TODO: Callback function
-                    context.pushReplacementNamed(Routes.createNewPassword);
-                  } else if (value.length == 1) {
-                    FocusScope.of(context).nextFocus();
-                  }
-                },
-              ),
-            ),
-          ),
-        ),
+      body: _EmailVerificationBody(
+        otpController: otpController,
+        onOtpCompleted: _onOtpCompleted,
+        onResendCode: _onResendCode,
+        onTryAnotherEmail: _onTryAnotherEmail,
       ),
     );
   }

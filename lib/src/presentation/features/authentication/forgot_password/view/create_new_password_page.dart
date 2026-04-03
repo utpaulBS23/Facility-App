@@ -1,87 +1,55 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-03
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/text/typography.dart';
 
-class CreateNewPasswordPage extends StatelessWidget {
+part '../widgets/create_new_password_body.dart';
+
+class CreateNewPasswordPage extends ConsumerStatefulWidget {
   const CreateNewPasswordPage({super.key});
+
+  @override
+  ConsumerState<CreateNewPasswordPage> createState() => _CreateNewPasswordPageState();
+}
+
+class _CreateNewPasswordPageState extends ConsumerState<CreateNewPasswordPage> {
+  final formKey = GlobalKey<FormState>();
+
+  final newPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _onResetPassword() {
+    if (!formKey.currentState!.validate()) return;
+    // TODO: Call provider to reset password
+    context.pushReplacementNamed(Routes.resetPasswordSuccess);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: HeadlineSmallText(context.locale.createNewPassword)),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: context.padding.p16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Gap(context.spacing.s16),
-              BodyRegularText.secondary(context.locale.createNewPasswordHint),
-              Gap(context.spacing.s16),
-              const _Form(),
-              Gap(context.spacing.s32),
-              FilledButton(
-                onPressed: () {
-                  context.pushReplacementNamed(Routes.resetPasswordSuccess);
-                },
-                child: Text(context.locale.resetPassword),
-              ),
-            ],
-          ),
-        ),
+      body: _CreateNewPasswordBody(
+        formKey: formKey,
+        newPasswordController: newPasswordController,
+        confirmPasswordController: confirmPasswordController,
+        onResetPassword: _onResetPassword,
       ),
-    );
-  }
-}
-
-class _Form extends StatefulWidget {
-  const _Form();
-
-  @override
-  State<_Form> createState() => _FormState();
-}
-
-class _FormState extends State<_Form> {
-  bool _isObscure = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          obscureText: _isObscure,
-          decoration: InputDecoration(
-            hintText: context.locale.newPassword,
-            suffixIcon: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _isObscure = !_isObscure;
-                });
-              },
-              child: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
-            ),
-          ),
-        ),
-        Gap(context.spacing.s16),
-        TextFormField(
-          decoration: InputDecoration(
-            hintText: context.locale.confirmPassword,
-            suffixIcon: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _isObscure = !_isObscure;
-                });
-              },
-              child: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
