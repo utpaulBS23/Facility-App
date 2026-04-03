@@ -24,6 +24,7 @@ class Dimensions extends ThemeExtension<Dimensions> {
   static const double _v40 = 40;
   static const double _v44 = 44;
   static const double _v48 = 48;
+  static const double _v56 = 56;
   static const double _v66 = 66;
   static const double _v80 = 80;
   static const double _v100 = 100;
@@ -67,6 +68,7 @@ class _Spacing {
   final double s40 = Dimensions._v40;
   final double s44 = Dimensions._v44;
   final double s48 = Dimensions._v48;
+  final double s56 = Dimensions._v56;
   final double s66 = Dimensions._v66;
   final double s80 = Dimensions._v80;
   final double s100 = Dimensions._v100;
@@ -94,4 +96,6 @@ class _Radius {
 
   final double r4 = Dimensions._v4;
   final double r6 = Dimensions._v6;
+  final double r12 = Dimensions._v12;
+  final double r20 = Dimensions._v20;
 }

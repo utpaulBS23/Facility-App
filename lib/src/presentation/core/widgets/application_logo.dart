@@ -20,6 +20,15 @@ class ApplicationLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(Assets.icons.call.path);
+    return Image(
+      excludeFromSemantics: semanticLabel == null,
+      image: Assets.images.bhumijoLogo.provider(),
+      height: height,
+      width: width,
+      fit: fit,
+      color: color,
+      semanticLabel: semanticLabel,
+      filterQuality: FilterQuality.high,
+    );
   }
 }
