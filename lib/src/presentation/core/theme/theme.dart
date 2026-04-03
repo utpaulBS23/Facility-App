@@ -6,6 +6,7 @@ import 'src/theme_data.dart';
 import 'src/theme_extensions/extensions.dart';
 
 export 'src/theme_data.dart';
+export 'src/theme_extensions/extensions.dart';
 
 /// Extension on [BuildContext] to provide convenient access to theme-related
 /// properties and utilities.

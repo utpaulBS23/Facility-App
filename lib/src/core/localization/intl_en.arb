@@ -100,5 +100,9 @@
   "or": "OR",
   "continueWithGoogle": "Continue with Google",
   "continueWithFacebook": "Continue with Facebook",
-  "continueWithApple": "Continue with Apple"
+  "continueWithApple": "Continue with Apple",
+  "appName": "Bhumijo",
+  "appSubtitle": "Toilet Facility Management System",
+  "loginSubtitle": "Enter your details below",
+  "enterYourId": "Enter your ID"
 }

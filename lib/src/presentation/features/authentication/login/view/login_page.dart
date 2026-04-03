@@ -1,15 +1,18 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-02
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/app_localization.dart';
-import '../../../../../core/extensions/validation.dart';
-import '../../../../../core/utiliity/validation/validation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/link_text.dart';
+import '../../../../core/widgets/application_logo.dart';
 import '../../../../core/widgets/loading_indicator.dart';
+import '../../../../core/widgets/text/typography.dart';
+import '../../../../core/widgets/app_text_field.dart';
 import '../../../../features/authentication/login/riverpod/login_provider.dart';
 import '../widgets/language_switcher.dart';
 
@@ -24,87 +27,97 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final shouldRemember = ValueNotifier<bool>(false);
+  // Keys
+  final _formKey = GlobalKey<FormState>();
+
+  // Controllers
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
-    ref.listenManual(loginProvider, (previous, next) {
-      switch (next) {
-        case AsyncData(:final value) when value != null:
-          context.pushReplacementNamed(Routes.home);
-        case AsyncError(:final error):
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(error.toString())));
-      }
-    });
+    ref.listenManual(loginProvider, _onLoginStateChanged);
   }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void _onLogin() {
-    if (_formKey.currentState!.validate()) {
-      ref
-          .read(loginProvider.notifier)
-          .login(
-            email: emailController.text,
-            password: passwordController.text,
-            shouldRemember: shouldRemember.value,
-          );
+  void _onLoginStateChanged(AsyncValue? previous, AsyncValue next) {
+    switch (next) {
+      case AsyncData(:final value) when value != null:
+        context.pushReplacementNamed(Routes.home);
+      case AsyncError(:final error):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.toString())),
+        );
     }
   }
+
+  void _onLogin() {
+    if (!_formKey.currentState!.validate()) return;
+    ref.read(loginProvider.notifier).login(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+  }
+
+  void _onForgotPassword() => context.pushNamed(Routes.resetPassword);
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(loginProvider);
+    final c = context.color;
+    final d = context.dimensions;
 
     return Scaffold(
+      backgroundColor: c.scaffoldBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: context.padding.p16),
+          padding: EdgeInsets.symmetric(
+            horizontal: d.padding.p16,
+            vertical: d.padding.p24,
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // WHY: Language switcher flips side based on text direction so it
+              // always appears at the trailing edge of the screen.
               Align(
                 alignment: Directionality.of(context) == TextDirection.ltr
-                    ? Alignment.topRight
-                    : Alignment.topLeft,
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
                 child: const LanguageSwitcherWidget(),
               ),
-              Gap(context.spacing.s16),
-              const FlutterLogo(size: 200),
-              Gap(context.spacing.s80),
+              Gap(d.spacing.s40),
+              ApplicationLogo(height: d.spacing.s80),
+              Gap(d.spacing.s6),
+              HeadlineLargeText(
+                context.locale.appName,
+                textAlign: TextAlign.center,
+              ),
+              Gap(d.spacing.s4),
+              BodyRegularText(
+                context.locale.appSubtitle,
+                color: c.text.secondary,
+                textAlign: TextAlign.center,
+              ),
+              Gap(d.spacing.s40),
               Form(
                 key: _formKey,
-                child: _LoginForm(
-                  emailController: emailController,
-                  passwordController: passwordController,
-                  shouldRemember: shouldRemember,
+                child: _LoginCard(
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  isLoading: state.isLoading,
+                  onLogin: _onLogin,
+                  onForgotPassword: _onForgotPassword,
                 ),
               ),
-              Gap(context.spacing.s32),
-              FilledButton(
-                onPressed: _onLogin,
-                child: state.isLoading
-                    ? const LoadingIndicator()
-                    : Text(context.locale.login),
-              ),
-              LinkText(
-                text: context.locale.dontHaveAccount,
-                linkText: context.locale.signUp,
-                onTap: () {
-                  context.pushNamed(Routes.countrySelection);
-                },
-              ),
+              Gap(d.spacing.s24),
             ],
           ),
         ),

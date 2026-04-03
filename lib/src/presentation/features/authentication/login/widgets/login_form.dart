@@ -1,58 +1,84 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-02
+
 part of '../view/login_page.dart';
 
-class _LoginForm extends StatefulWidget {
-  const _LoginForm({
+class _LoginCard extends StatelessWidget {
+  const _LoginCard({
     required this.emailController,
     required this.passwordController,
-    required this.shouldRemember,
+    required this.isLoading,
+    required this.onLogin,
+    required this.onForgotPassword,
   });
 
   final TextEditingController emailController;
   final TextEditingController passwordController;
-  final ValueNotifier<bool> shouldRemember;
-
-  @override
-  State<_LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<_LoginForm> {
-  bool _isPasswordVisible = false;
-
-  void _togglePasswordVisibility() {
-    setState(() => _isPasswordVisible = !_isPasswordVisible);
-  }
+  final bool isLoading;
+  final VoidCallback onLogin;
+  final VoidCallback onForgotPassword;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: widget.emailController,
-          decoration: InputDecoration(hintText: context.locale.email),
-          validator: context.validator.apply([RequiredValidation()]),
-        ),
-        Gap(context.spacing.s16),
-        TextFormField(
-          controller: widget.passwordController,
-          obscureText: !_isPasswordVisible,
-          decoration: InputDecoration(
-            hintText: context.locale.password,
-            suffixIcon: GestureDetector(
-              onTap: _togglePasswordVisibility,
-              child: Icon(
-                _isPasswordVisible
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-              ),
+    final c = context.color;
+    final d = context.dimensions;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(d.padding.p20),
+      decoration: BoxDecoration(
+        color: c.onPrimary,
+        borderRadius: BorderRadius.circular(d.radius.r20),
+        // WHY: Shadow color derives from overlay (same base hue) at 10% opacity
+        // to match the Figma EV-Card drop shadow token exactly.
+        boxShadow: [
+          BoxShadow(
+            color: c.overlay.withAlpha(0x1A),
+            offset: const Offset(0, 2),
+            blurRadius: 14,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          HeadlineLargeText(context.locale.login),
+          Gap(d.spacing.s6),
+          BodyRegularText(
+            context.locale.loginSubtitle,
+            color: c.text.secondary,
+          ),
+          Gap(d.spacing.s16),
+          AppTextField.email(
+            controller: emailController,
+            label: context.locale.email,
+            hint: context.locale.enterYourId,
+            textInputAction: TextInputAction.next,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+          Gap(d.spacing.s16),
+          AppTextField.password(
+            controller: passwordController,
+            label: context.locale.password,
+            hint: context.locale.password,
+            textInputAction: TextInputAction.done,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+          _ForgotPasswordButton(onForgotPassword: onForgotPassword),
+          Gap(d.spacing.s16),
+          SizedBox(
+            width: double.infinity,
+            height: d.spacing.s44,
+            child: FilledButton(
+              onPressed: isLoading ? null : onLogin,
+              child: isLoading
+                  ? const LoadingIndicator()
+                  : Text(context.locale.login),
             ),
           ),
-          validator: context.validator.apply([
-            RequiredValidation(),
-            PasswordValidation(minLength: 6),
-          ]),
-        ),
-        _FormFooter(shouldRemember: widget.shouldRemember),
-      ],
+        ],
+      ),
     );
   }
 }

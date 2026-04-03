@@ -100,5 +100,9 @@
   "or": "অথবা",
   "continueWithGoogle": "Google দিয়ে চালিয়ে যান",
   "continueWithFacebook": "Facebook দিয়ে চালিয়ে যান",
-  "continueWithApple": "Apple দিয়ে চালিয়ে যান"
+  "continueWithApple": "Apple দিয়ে চালিয়ে যান",
+  "appName": "ভূমিজো",
+  "appSubtitle": "টয়লেট সুবিধা ব্যবস্থাপনা সিস্টেম",
+  "loginSubtitle": "নিচে আপনার তথ্য দিন",
+  "enterYourId": "আপনার আইডি দিন"
 }
