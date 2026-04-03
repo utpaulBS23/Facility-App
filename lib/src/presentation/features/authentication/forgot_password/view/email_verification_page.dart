@@ -1,6 +1,7 @@
 // Author: Md. Shahin Bashar
 // Created: 2026-04-03
 
+import 'package:facility_management_app/src/presentation/core/widgets/application_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -19,7 +20,8 @@ class EmailVerificationPage extends ConsumerStatefulWidget {
   const EmailVerificationPage({super.key});
 
   @override
-  ConsumerState<EmailVerificationPage> createState() => _EmailVerificationPageState();
+  ConsumerState<EmailVerificationPage> createState() =>
+      _EmailVerificationPageState();
 }
 
 class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
@@ -41,7 +43,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
   }
 
   void _onTryAnotherEmail() {
-    context.pushReplacementNamed(Routes.resetPassword);
+    context.pushNamed(Routes.resetPassword);
   }
 
   @override

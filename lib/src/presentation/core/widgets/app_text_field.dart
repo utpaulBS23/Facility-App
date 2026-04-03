@@ -330,15 +330,15 @@ class _AppTextFieldState extends State<AppTextField> {
 
   Widget _buildInput(BuildContext context) {
     final colors = context.color;
-    final d = context.dimensions;
-    final ts = context.textStyle;
+    final dimensions = context.dimensions;
+    final textStyle = context.textStyle;
 
     final showLabel = (_currentText.isNotEmpty || _hasFocus) && widget.label != null;
     final effectiveError = _validationError ?? widget.errorText;
     final hasError = effectiveError != null;
 
-    final leading = _prefixIcon(colors, d);
-    final trailing = _suffixIcon(d);
+    final leading = _prefixIcon(colors, dimensions);
+    final trailing = _suffixIcon(dimensions);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -346,11 +346,11 @@ class _AppTextFieldState extends State<AppTextField> {
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          height: d.spacing.s56,
-          padding: EdgeInsets.symmetric(horizontal: d.spacing.s16),
+          height: dimensions.spacing.s56,
+          padding: EdgeInsets.symmetric(horizontal: dimensions.spacing.s16),
           decoration: BoxDecoration(
             color: widget.enabled ? colors.onPrimary : colors.subtle,
-            borderRadius: BorderRadius.circular(d.radius.r12),
+            borderRadius: BorderRadius.circular(dimensions.radius.r12),
             border: Border.all(
               color: _borderColor(colors, hasError: hasError),
               width: 1,
@@ -360,7 +360,7 @@ class _AppTextFieldState extends State<AppTextField> {
             children: [
               if (leading != null) ...[
                 leading,
-                SizedBox(width: d.spacing.s6),
+                SizedBox(width: dimensions.spacing.s6),
               ],
               Expanded(
                 child: Column(
@@ -370,7 +370,7 @@ class _AppTextFieldState extends State<AppTextField> {
                     if (showLabel)
                       Text(
                         widget.label!,
-                        style: ts.bodySmall.copyWith(
+                        style: textStyle.bodySmall.copyWith(
                           color: colors.text.secondary,
                         ),
                         maxLines: 1,
@@ -398,14 +398,14 @@ class _AppTextFieldState extends State<AppTextField> {
                       autocorrect: false,
                       validator: _hasValidators ? _onValidate : null,
                       autovalidateMode: widget.autovalidateMode,
-                      style: ts.labelLarge.copyWith(
+                      style: textStyle.labelLarge.copyWith(
                         color: widget.enabled
                             ? colors.text.primary
                             : colors.text.disabled,
                       ),
                       decoration: _bareDecoration.copyWith(
                         hintText: showLabel ? null : widget.hint,
-                        hintStyle: ts.labelLarge.copyWith(
+                        hintStyle: textStyle.labelLarge.copyWith(
                           color: colors.text.muted,
                         ),
                       ),
@@ -415,7 +415,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 ),
               ),
               if (trailing != null) ...[
-                SizedBox(width: d.spacing.s6),
+                SizedBox(width: dimensions.spacing.s6),
                 trailing,
               ],
             ],
@@ -424,12 +424,12 @@ class _AppTextFieldState extends State<AppTextField> {
         if (effectiveError != null)
           Padding(
             padding: EdgeInsets.only(
-              top: d.spacing.s4,
-              left: d.spacing.s4,
+              top: dimensions.spacing.s4,
+              left: dimensions.spacing.s4,
             ),
             child: Text(
               effectiveError,
-              style: ts.bodySmall.copyWith(color: colors.error),
+              style: textStyle.bodySmall.copyWith(color: colors.error),
             ),
           ),
       ],
@@ -440,8 +440,8 @@ class _AppTextFieldState extends State<AppTextField> {
 
   Widget _buildDescription(BuildContext context) {
     final colors = context.color;
-    final d = context.dimensions;
-    final ts = context.textStyle;
+    final dimensions = context.dimensions;
+    final textStyle = context.textStyle;
 
     final effectiveError = _validationError ?? widget.errorText;
     final hasError = effectiveError != null;
@@ -453,11 +453,11 @@ class _AppTextFieldState extends State<AppTextField> {
         AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           // WHY: Fixed 96px height from design spec — fits label + ~3 text lines.
-          height: d.spacing.s96,
-          padding: EdgeInsets.all(d.spacing.s16),
+          height: dimensions.spacing.s96,
+          padding: EdgeInsets.all(dimensions.spacing.s16),
           decoration: BoxDecoration(
             color: widget.enabled ? colors.onPrimary : colors.subtle,
-            borderRadius: BorderRadius.circular(d.radius.r12),
+            borderRadius: BorderRadius.circular(dimensions.radius.r12),
             border: Border.all(
               color: _borderColor(colors, hasError: hasError),
               width: 1,
@@ -472,7 +472,7 @@ class _AppTextFieldState extends State<AppTextField> {
               if (widget.label != null)
                 Text(
                   widget.label!,
-                  style: ts.bodySmall.copyWith(color: colors.text.secondary),
+                  style: textStyle.bodySmall.copyWith(color: colors.text.secondary),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -490,14 +490,14 @@ class _AppTextFieldState extends State<AppTextField> {
                   autocorrect: false,
                   validator: _hasValidators ? _onValidate : null,
                   autovalidateMode: widget.autovalidateMode,
-                  style: ts.labelLarge.copyWith(
+                  style: textStyle.labelLarge.copyWith(
                     color: widget.enabled
                         ? colors.text.primary
                         : colors.text.disabled,
                   ),
                   decoration: _bareDecoration.copyWith(
                     hintText: widget.hint,
-                    hintStyle: ts.labelLarge.copyWith(color: colors.text.muted),
+                    hintStyle: textStyle.labelLarge.copyWith(color: colors.text.muted),
                   ),
                   cursorColor: colors.primary,
                 ),
@@ -508,12 +508,12 @@ class _AppTextFieldState extends State<AppTextField> {
         if (effectiveError != null)
           Padding(
             padding: EdgeInsets.only(
-              top: d.spacing.s4,
-              left: d.spacing.s4,
+              top: dimensions.spacing.s4,
+              left: dimensions.spacing.s4,
             ),
             child: Text(
               effectiveError,
-              style: ts.bodySmall.copyWith(color: colors.error),
+              style: textStyle.bodySmall.copyWith(color: colors.error),
             ),
           ),
       ],
@@ -524,27 +524,27 @@ class _AppTextFieldState extends State<AppTextField> {
 
   Widget _buildSearch(BuildContext context) {
     final colors = context.color;
-    final d = context.dimensions;
-    final ts = context.textStyle;
+    final dimensions = context.dimensions;
+    final textStyle = context.textStyle;
 
     return Container(
-      height: d.spacing.s36,
-      padding: EdgeInsets.symmetric(horizontal: d.spacing.s8),
+      height: dimensions.spacing.s36,
+      padding: EdgeInsets.symmetric(horizontal: dimensions.spacing.s8),
       decoration: BoxDecoration(
         color: colors.subtle,
-        borderRadius: BorderRadius.circular(d.radius.r10),
+        borderRadius: BorderRadius.circular(dimensions.radius.r10),
       ),
       child: Row(
         children: [
           SizedBox(
-            width: d.spacing.s20,
-            height: d.spacing.s20,
+            width: dimensions.spacing.s20,
+            height: dimensions.spacing.s20,
             child: Assets.icons.search.svg(
               colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(width: d.spacing.s8),
+          SizedBox(width: dimensions.spacing.s8),
           Expanded(
             // WHY: Plain TextField (not TextFormField) — search is not part
             // of any Form and requires no validation.
@@ -557,12 +557,12 @@ class _AppTextFieldState extends State<AppTextField> {
               onChanged: widget.onChanged,
               onSubmitted: widget.onSubmitted,
               autocorrect: false,
-              style: ts.bodyLarge.copyWith(
+              style: textStyle.bodyLarge.copyWith(
                 color: widget.enabled ? colors.text.primary : colors.text.disabled,
               ),
               decoration: InputDecoration(
                 hintText: widget.hint,
-                hintStyle: ts.bodyLarge.copyWith(color: colors.text.muted),
+                hintStyle: textStyle.bodyLarge.copyWith(color: colors.text.muted),
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,

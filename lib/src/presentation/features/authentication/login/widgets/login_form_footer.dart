@@ -10,16 +10,16 @@ class _ForgotPasswordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.color;
-    final ts = context.textStyle;
+    final colors = context.color;
+    final textStyle = context.textStyle;
 
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: onForgotPassword,
         style: TextButton.styleFrom(
-          foregroundColor: c.primary,
-          textStyle: ts.labelXl,
+          foregroundColor: colors.primary,
+          textStyle: textStyle.labelXl,
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),

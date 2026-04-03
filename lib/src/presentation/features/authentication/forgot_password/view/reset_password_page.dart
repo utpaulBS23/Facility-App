@@ -23,7 +23,7 @@ class ResetPasswordPage extends ConsumerStatefulWidget {
 
 class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   final formKey = GlobalKey<FormState>();
-  
+
   final emailController = TextEditingController();
 
   @override
@@ -35,7 +35,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   void _onContinue() {
     if (!formKey.currentState!.validate()) return;
     // TODO: Call provider to send reset password email
-    context.pushReplacementNamed(Routes.emailVerification);
+    context.pushNamed(Routes.emailVerification);
   }
 
   @override

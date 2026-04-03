@@ -71,16 +71,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(loginProvider);
-    final c = context.color;
-    final d = context.dimensions;
+    final colors = context.color;
+    final dimensions = context.dimensions;
 
     return Scaffold(
-      backgroundColor: c.scaffoldBackground,
+      backgroundColor: colors.scaffoldBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
-            horizontal: d.padding.p16,
-            vertical: d.padding.p24,
+            horizontal: dimensions.padding.p16,
+            vertical: dimensions.padding.p24,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,20 +93,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     : Alignment.centerLeft,
                 child: const LanguageSwitcherWidget(),
               ),
-              Gap(d.spacing.s40),
-              ApplicationLogo(height: d.spacing.s80),
-              Gap(d.spacing.s6),
+              Gap(dimensions.spacing.s40),
+              ApplicationLogo(height: dimensions.spacing.s80),
+              Gap(dimensions.spacing.s6),
               HeadlineLargeText(
                 context.locale.appName,
                 textAlign: TextAlign.center,
               ),
-              Gap(d.spacing.s4),
+              Gap(dimensions.spacing.s4),
               BodyRegularText(
                 context.locale.appSubtitle,
-                color: c.text.secondary,
+                color: colors.text.secondary,
                 textAlign: TextAlign.center,
               ),
-              Gap(d.spacing.s40),
+              Gap(dimensions.spacing.s40),
               Form(
                 key: _formKey,
                 child: _LoginCard(
@@ -117,7 +117,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   onForgotPassword: _onForgotPassword,
                 ),
               ),
-              Gap(d.spacing.s24),
+              Gap(dimensions.spacing.s24),
             ],
           ),
         ),

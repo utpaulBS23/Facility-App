@@ -20,20 +20,20 @@ class _LoginCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.color;
-    final d = context.dimensions;
+    final colors = context.color;
+    final dimensions = context.dimensions;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(d.padding.p20),
+      padding: EdgeInsets.all(dimensions.padding.p20),
       decoration: BoxDecoration(
-        color: c.onPrimary,
-        borderRadius: BorderRadius.circular(d.radius.r20),
+        color: colors.onPrimary,
+        borderRadius: BorderRadius.circular(dimensions.radius.r20),
         // WHY: Shadow color derives from overlay (same base hue) at 10% opacity
         // to match the Figma EV-Card drop shadow token exactly.
         boxShadow: [
           BoxShadow(
-            color: c.overlay.withAlpha(0x1A),
+            color: colors.overlay.withAlpha(0x1A),
             offset: const Offset(0, 2),
             blurRadius: 14,
           ),
@@ -44,12 +44,12 @@ class _LoginCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HeadlineLargeText(context.locale.login),
-          Gap(d.spacing.s6),
+          Gap(dimensions.spacing.s6),
           BodyRegularText(
             context.locale.loginSubtitle,
-            color: c.text.secondary,
+            color: colors.text.secondary,
           ),
-          Gap(d.spacing.s16),
+          Gap(dimensions.spacing.s16),
           AppTextField.email(
             controller: emailController,
             label: context.locale.email,
@@ -57,7 +57,7 @@ class _LoginCard extends StatelessWidget {
             textInputAction: TextInputAction.next,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
-          Gap(d.spacing.s16),
+          Gap(dimensions.spacing.s16),
           AppTextField.password(
             controller: passwordController,
             label: context.locale.password,
@@ -66,10 +66,10 @@ class _LoginCard extends StatelessWidget {
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           _ForgotPasswordButton(onForgotPassword: onForgotPassword),
-          Gap(d.spacing.s16),
+          Gap(dimensions.spacing.s16),
           SizedBox(
             width: double.infinity,
-            height: d.spacing.s44,
+            height: dimensions.spacing.s44,
             child: FilledButton(
               onPressed: isLoading ? null : onLogin,
               child: isLoading

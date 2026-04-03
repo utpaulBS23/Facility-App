@@ -19,18 +19,18 @@ class _EmailVerificationBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.color;
-    final d = context.dimensions;
+    final dimensions = context.dimensions;
 
     // WHY: Pinput theme configuration follows app design system colors and spacing
     final defaultPinTheme = PinTheme(
-      width: d.spacing.s56,
-      height: d.spacing.s56,
+      width: dimensions.spacing.s56,
+      height: dimensions.spacing.s56,
       textStyle: context.textStyle.titleLarge.copyWith(
         color: colors.text.primary,
       ),
       decoration: BoxDecoration(
         color: colors.onPrimary,
-        borderRadius: BorderRadius.circular(d.radius.r12),
+        borderRadius: BorderRadius.circular(dimensions.radius.r12),
         border: Border.all(color: colors.border),
       ),
     );
@@ -54,7 +54,7 @@ class _EmailVerificationBody extends StatelessWidget {
           child: Column(
             children: [
               Gap(context.spacing.s24),
-              FlutterLogo(size: context.spacing.s200),
+              ApplicationLogo(),
               Gap(context.spacing.s24),
               HeadlineLargeText(context.locale.checkYourMail),
               Gap(context.spacing.s8),
