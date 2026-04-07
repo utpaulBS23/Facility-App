@@ -15,9 +15,11 @@ class _SelfieZone extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.color;
     final dimensions = context.dimensions;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       width: double.infinity,
+      height: screenHeight * 0.5,
       padding: EdgeInsets.symmetric(
         vertical: dimensions.spacing.s32,
         horizontal: dimensions.padding.p16,
@@ -31,17 +33,20 @@ class _SelfieZone extends StatelessWidget {
         ),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _FaceRing(capturedPhotoPath: capturedPhotoPath),
-          Gap(dimensions.spacing.s32),
-          Text(
-            context.locale.positionFaceWithinRing,
-            style: context.textStyle.bodySmall.copyWith(
-              color: colors.selfieZonePlaceholderIcon,
-              fontWeight: FontWeight.w500,
+          if (capturedPhotoPath == null) ...[
+            Gap(dimensions.spacing.s24),
+            Text(
+              context.locale.shiftCheckInPhotoInstructions,
+              textAlign: TextAlign.center,
+              style: context.textStyle.bodyRegular.copyWith(
+                color: colors.onPrimary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
