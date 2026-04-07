@@ -29,11 +29,9 @@ class _LoginCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.onPrimary,
         borderRadius: BorderRadius.circular(dimensions.radius.r20),
-        // WHY: Shadow color derives from overlay (same base hue) at 10% opacity
-        // to match the Figma EV-Card drop shadow token exactly.
         boxShadow: [
           BoxShadow(
-            color: colors.overlay.withAlpha(0x1A),
+            color: colors.shadow,
             offset: const Offset(0, 2),
             blurRadius: 14,
           ),

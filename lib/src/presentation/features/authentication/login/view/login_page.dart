@@ -9,10 +9,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/application_logo.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../core/widgets/text/typography.dart';
-import '../../../../core/widgets/app_text_field.dart';
 import '../../../../features/authentication/login/riverpod/login_provider.dart';
 import '../widgets/language_switcher.dart';
 
@@ -52,18 +52,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       case AsyncData(:final value) when value != null:
         context.pushReplacementNamed(Routes.home);
       case AsyncError(:final error):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
     }
   }
 
   void _onLogin() {
-    if (!_formKey.currentState!.validate()) return;
-    ref.read(loginProvider.notifier).login(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    // if (!_formKey.currentState!.validate()) return;
+    context.pushNamed(Routes.shiftCheckIn);
+    // ref.read(loginProvider.notifier).login(
+    //   email: _emailController.text,
+    //   password: _passwordController.text,
+    // );
   }
 
   void _onForgotPassword() => context.pushNamed(Routes.resetPassword);

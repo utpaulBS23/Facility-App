@@ -22,3 +22,8 @@ LocaleRepository localeRepository(Ref ref) {
 LocationRepository locationRepository(Ref ref) {
   return LocationRepositoryImpl();
 }
+
+@riverpod
+SelfieRepository selfieRepository(Ref ref) {
+  return SelfieRepositoryImpl(ref.read(imagePickerServiceProvider));
+}

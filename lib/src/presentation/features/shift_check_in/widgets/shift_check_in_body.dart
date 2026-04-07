@@ -1,0 +1,81 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-03
+
+part of '../view/shift_check_in_page.dart';
+
+class _ShiftCheckInBody extends StatelessWidget {
+  const _ShiftCheckInBody({
+    required this.capturedPhotoPath,
+    required this.isLoading,
+    required this.onTakePhoto,
+    required this.onSubmit,
+  });
+
+  final String? capturedPhotoPath;
+  final bool isLoading;
+  final VoidCallback onTakePhoto;
+  final VoidCallback onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    final dimensions = context.dimensions;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(dimensions.padding.p16),
+      child: Column(
+        children: [
+          _SelfieZone(capturedPhotoPath: capturedPhotoPath),
+          Gap(dimensions.spacing.s12),
+          _TakePhotoButton(
+            capturedPhotoPath: capturedPhotoPath,
+            isLoading: isLoading,
+            onTap: onTakePhoto,
+          ),
+          Gap(dimensions.spacing.s16),
+          const _AutoDetectedInfoCard(),
+          Gap(dimensions.spacing.s16),
+          _SubmitButton(onSubmit: onSubmit),
+        ],
+      ),
+    );
+  }
+}
+
+class _TakePhotoButton extends StatelessWidget {
+  const _TakePhotoButton({
+    required this.capturedPhotoPath,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final String? capturedPhotoPath;
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final dimensions = context.dimensions;
+    final label = capturedPhotoPath == null
+        ? context.locale.takePhoto
+        : context.locale.retake;
+
+    return SizedBox(
+      width: double.infinity,
+      height: dimensions.spacing.s44,
+      child: OutlinedButton(
+        onPressed: isLoading ? null : onTap,
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(
+                label,
+                style: context.textStyle.titleMedium
+                    .copyWith(color: context.color.primary),
+              ),
+      ),
+    );
+  }
+}

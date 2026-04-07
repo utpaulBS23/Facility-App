@@ -13,6 +13,7 @@ import '../../features/authentication/login/view/login_page.dart';
 import '../../features/home/view/home_page.dart';
 import '../../features/onboarding/view/onboarding_page.dart';
 import '../../features/profile/view/profile_page.dart';
+import '../../features/shift_check_in/view/shift_check_in_page.dart';
 import '../../features/splash/view/splash_page.dart';
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
@@ -21,6 +22,7 @@ import 'routes.dart';
 
 part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
+part 'parts/shift_check_in_routes.dart';
 part 'parts/shell_routes.dart';
 part 'router.g.dart';
 
@@ -59,6 +61,7 @@ GoRouter goRouter(Ref ref) {
       ),
       ..._onboardingRoutes(ref),
       ..._authenticationRoutes(ref),
+      ..._shiftCheckInRoutes(ref),
       _shellRoutes(ref),
     ],
   );

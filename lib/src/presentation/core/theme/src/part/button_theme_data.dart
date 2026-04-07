@@ -1,3 +1,5 @@
+// ignore_for_file: max_file_lines
+// ignore_for_file: max_method_lines
 part of '../theme_data.dart';
 
 /// Filled Button

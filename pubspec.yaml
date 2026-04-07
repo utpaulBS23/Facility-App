@@ -25,6 +25,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   # Media
   flutter_svg: ^2.0.10+1
+  image_picker: ^1.1.2
   # Logging
   logger: ^2.4.0
   pretty_dio_logger: ^1.4.0
