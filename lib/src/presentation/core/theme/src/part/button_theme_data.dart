@@ -97,9 +97,7 @@ class _OutlinedButtonLightThemeData with ThemeExtensions {
             borderRadius: BorderRadius.circular(dimensions.spacing.s12),
           ),
         ),
-        side: WidgetStateProperty.all(
-          BorderSide(color: lightColor.border),
-        ),
+        side: WidgetStateProperty.all(BorderSide(color: lightColor.primary)),
         padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(horizontal: dimensions.spacing.s24),
         ),
@@ -130,9 +128,7 @@ class _OutlinedButtonDarkThemeData with ThemeExtensions {
             borderRadius: BorderRadius.circular(dimensions.spacing.s12),
           ),
         ),
-        side: WidgetStateProperty.all(
-          BorderSide(color: darkColor.border),
-        ),
+        side: WidgetStateProperty.all(BorderSide(color: darkColor.primary)),
         padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(horizontal: dimensions.spacing.s24),
         ),

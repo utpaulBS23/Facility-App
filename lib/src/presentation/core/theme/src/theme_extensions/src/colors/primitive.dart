@@ -50,10 +50,18 @@ class _Primitive {
   static const Color transparentSuccess = Color(0x1A5B9D48); // 10%
   static const Color transparentWarning = Color(0x1AF48A19); // 10%
   static const Color transparentError = Color(0x1ADC5031); // 10%
+  static const Color transparentWhite06 = Color(0x0FFFFFFF); // 6%
   static const Color transparentWhite10 = Color(0x1AFFFFFF); // 10%
+  static const Color transparentWhite20 = Color(0x33FFFFFF); // 20%
+  static const Color transparentWhite40 = Color(0x66FFFFFF); // 40%
   static const Color transparentWhite80 = Color(0xCCFFFFFF); // 80%
   static const Color transparentBlack10 = Color(0x1A181818); // 10%
   static const Color transparentBlack20 = Color(0x33181818); // 20%
   static const Color transparentBlack80 = Color(0xCC181818); // 80%
   static const Color transparentGray = Color(0xCC030B1A); // 80%
+  static const Color transparentNeutral90 = Color(0x1A030B1A); // 10% neutral90 — shadow base
+
+  // dark surfaces (used by selfie zone — always dark regardless of theme)
+  static const Color darkSurface1 = Color(0xFF2A2A2A);
+  static const Color darkSurface2 = Color(0xFF1A1A1A);
 }
