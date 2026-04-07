@@ -1,9 +1,11 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-06
+
 part of 'rules.dart';
 
 class UseCaseNamingConvention extends DartLintRule {
-  const UseCaseNamingConvention(this.configs) : super(code: _code);
-
-  final CustomLintConfigs configs;
+  // WHY: configs accepted for API symmetry with other rules; no configurable options yet.
+  const UseCaseNamingConvention(CustomLintConfigs configs) : super(code: _code);
 
   static const _code = LintCode(
     name: 'invalid_use_case_name',

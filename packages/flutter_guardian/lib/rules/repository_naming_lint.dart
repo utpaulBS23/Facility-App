@@ -1,12 +1,15 @@
+// Author: Md. Shahin Bashar
+// Created: 2026-04-06
+
 part of 'rules.dart';
 
 class RepositoryNamingConvention extends DartLintRule {
-  const RepositoryNamingConvention(this.configs) : super(code: _code);
-
-  final CustomLintConfigs configs;
+  // WHY: configs accepted for API symmetry with other rules; no configurable options yet.
+  const RepositoryNamingConvention(CustomLintConfigs configs)
+    : super(code: _code);
 
   /// Metadata about the warning that will show-up in the IDE.
-  /// This is used for `// ignore: code` and enabling/disabling the lint
+  /// This is used for `// ignore: code` and enabling/disabling the lint.
   static const _code = LintCode(
     name: 'invalid_repository_name',
     problemMessage: 'Names in a repository file must include "Repository".',
