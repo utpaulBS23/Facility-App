@@ -7,12 +7,12 @@ CacheService cacheService(Ref ref) {
   );
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 RestClient restClientService(Ref ref) {
   return RestClient(ref.read(dioProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 ImagePickerService imagePickerService(Ref ref) {
   return ImagePickerServiceImpl(ImagePicker());
 }

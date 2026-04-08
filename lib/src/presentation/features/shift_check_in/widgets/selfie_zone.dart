@@ -87,6 +87,8 @@ class _FaceRing extends StatelessWidget {
 }
 
 class _Placeholder extends StatelessWidget {
+  const _Placeholder();
+
   @override
   Widget build(BuildContext context) {
     final colors = context.color;
