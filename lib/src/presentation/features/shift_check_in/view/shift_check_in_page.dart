@@ -10,6 +10,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/check_in_info_provider.dart';
 import '../riverpod/selfie_picker_provider.dart';
 
 part '../widgets/auto_detected_info_card.dart';

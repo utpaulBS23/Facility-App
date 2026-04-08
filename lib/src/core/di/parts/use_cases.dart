@@ -44,3 +44,8 @@ MarkOnboardingCompletedUseCase markOnboardingCompletedUseCase(Ref ref) {
 PickSelfieUseCase pickSelfieUseCase(Ref ref) {
   return PickSelfieUseCase(ref.read(selfieRepositoryProvider));
 }
+
+@riverpod
+GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
+  return GetCurrentLocationUseCase(ref.read(locationRepositoryProvider));
+}

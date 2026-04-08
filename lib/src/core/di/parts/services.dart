@@ -16,3 +16,8 @@ RestClient restClientService(Ref ref) {
 ImagePickerService imagePickerService(Ref ref) {
   return ImagePickerServiceImpl(ImagePicker());
 }
+
+@Riverpod(keepAlive: true)
+LocationService locationService(Ref ref) {
+  return LocationServiceImpl();
+}

@@ -4,58 +4,139 @@
 
 part of '../view/shift_check_in_page.dart';
 
-/// Card displaying auto-detected location and check-in time.
+/// Card displaying auto-detected location, check-in time, and supervisor name.
 ///
 /// Matches the Figma "Contract details" component (node 13045:27124).
-/// White card with drop-shadow, containing two info rows:
+/// White card with drop-shadow, containing three info rows:
 ///   1. Location (with pin icon)
 ///   2. Check-In Time (with clock icon)
-class _AutoDetectedInfoCard extends StatelessWidget {
+///   3. Supervisor Name (with person icon)
+class _AutoDetectedInfoCard extends ConsumerWidget {
   const _AutoDetectedInfoCard();
 
   @override
-  // ignore: max_method_lines
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.color;
     final dimensions = context.dimensions;
+    final checkInInfoState = ref.watch(checkInInfoProvider);
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(dimensions.padding.p16),
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: BorderRadius.circular(dimensions.radius.r12),
-        boxShadow: [
-          BoxShadow(
-            color: colors.shadow,
-            blurRadius: 14,
-            offset: const Offset(0, 2),
-          ),
-        ],
+    return checkInInfoState.when(
+      data: (info) => Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(dimensions.padding.p16),
+        decoration: BoxDecoration(
+          color: colors.onPrimary,
+          borderRadius: BorderRadius.circular(dimensions.radius.r12),
+          boxShadow: [
+            BoxShadow(
+              color: colors.shadow,
+              blurRadius: 14,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BodyRegularText.secondary(context.locale.autoDetectedInfo),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.location_on_outlined,
+              label: context.locale.location,
+              value: info?.location ?? context.locale.loading,
+            ),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.access_time_outlined,
+              label: context.locale.checkInTime,
+              value: info?.checkInTime ?? context.locale.loading,
+            ),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.person_outline,
+              label: context.locale.supervisorName,
+              value: info?.supervisorName ?? context.locale.loading,
+            ),
+          ],
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BodyRegularText.secondary(context.locale.autoDetectedInfo),
-          Gap(dimensions.spacing.s8),
-          _ContactInfoItem(
-            icon: Icons.location_on_outlined,
-            label: context.locale.location,
-            value: 'Mirpur-10, Dhaka',
-          ),
-          Gap(dimensions.spacing.s8),
-          _ContactInfoItem(
-            icon: Icons.access_time_outlined,
-            label: context.locale.checkInTime,
-            value: 'Tue, Feb 10, 2026, 1:45 PM',
-          ),
-          Gap(dimensions.spacing.s8),
-          _ContactInfoItem(
-            icon: Icons.person_outline,
-            label: context.locale.supervisorName,
-            value: 'Sultan Ahmed',
-          ),
-        ],
+      loading: () => Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(dimensions.padding.p16),
+        decoration: BoxDecoration(
+          color: colors.onPrimary,
+          borderRadius: BorderRadius.circular(dimensions.radius.r12),
+          boxShadow: [
+            BoxShadow(
+              color: colors.shadow,
+              blurRadius: 14,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BodyRegularText.secondary(context.locale.autoDetectedInfo),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.location_on_outlined,
+              label: context.locale.location,
+              value: context.locale.loading,
+            ),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.access_time_outlined,
+              label: context.locale.checkInTime,
+              value: context.locale.loading,
+            ),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.person_outline,
+              label: context.locale.supervisorName,
+              value: context.locale.loading,
+            ),
+          ],
+        ),
+      ),
+      error: (error, _) => Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(dimensions.padding.p16),
+        decoration: BoxDecoration(
+          color: colors.onPrimary,
+          borderRadius: BorderRadius.circular(dimensions.radius.r12),
+          boxShadow: [
+            BoxShadow(
+              color: colors.shadow,
+              blurRadius: 14,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BodyRegularText.secondary(context.locale.autoDetectedInfo),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.location_on_outlined,
+              label: context.locale.location,
+              value: context.locale.locationUnavailable,
+            ),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.access_time_outlined,
+              label: context.locale.checkInTime,
+              value: context.locale.loading,
+            ),
+            Gap(dimensions.spacing.s8),
+            _ContactInfoItem(
+              icon: Icons.person_outline,
+              label: context.locale.supervisorName,
+              value: context.locale.loading,
+            ),
+          ],
+        ),
       ),
     );
   }

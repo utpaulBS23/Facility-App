@@ -20,7 +20,7 @@ LocaleRepository localeRepository(Ref ref) {
 
 @Riverpod(keepAlive: true)
 LocationRepository locationRepository(Ref ref) {
-  return LocationRepositoryImpl();
+  return LocationRepositoryImpl(ref.read(locationServiceProvider));
 }
 
 @Riverpod(keepAlive: true)
