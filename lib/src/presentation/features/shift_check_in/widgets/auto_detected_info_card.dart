@@ -49,6 +49,12 @@ class _AutoDetectedInfoCard extends StatelessWidget {
             label: context.locale.checkInTime,
             value: 'Tue, Feb 10, 2026, 1:45 PM',
           ),
+          Gap(dimensions.spacing.s8),
+          _ContactInfoItem(
+            icon: Icons.person_outline,
+            label: context.locale.supervisorName,
+            value: 'Sultan Ahmed',
+          ),
         ],
       ),
     );

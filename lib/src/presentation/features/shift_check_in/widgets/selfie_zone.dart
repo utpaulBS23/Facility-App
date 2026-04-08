@@ -19,7 +19,7 @@ class _SelfieZone extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: screenHeight * 0.5,
+      height: screenHeight * 0.4,
       padding: EdgeInsets.symmetric(
         vertical: dimensions.spacing.s32,
         horizontal: dimensions.padding.p16,
@@ -29,7 +29,10 @@ class _SelfieZone extends StatelessWidget {
         gradient: LinearGradient(
           begin: const Alignment(-0.5, -0.87),
           end: const Alignment(0.5, 0.87),
-          colors: [colors.selfieZoneGradientStart, colors.selfieZoneGradientEnd],
+          colors: [
+            colors.selfieZoneGradientStart,
+            colors.selfieZoneGradientEnd,
+          ],
         ),
       ),
       child: Column(
@@ -98,10 +101,7 @@ class _Placeholder extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: colors.selfieZonePlaceholderBg,
-        border: Border.all(
-          color: colors.selfieZonePlaceholderBorder,
-          width: 2,
-        ),
+        border: Border.all(color: colors.selfieZonePlaceholderBorder, width: 2),
       ),
       child: Icon(
         Icons.person_outline,
