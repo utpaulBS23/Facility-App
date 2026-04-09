@@ -11,7 +11,6 @@ import '../../features/authentication/forgot_password/view/reset_password_page.d
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
 import '../../features/home/view/home_page.dart';
-import '../../features/onboarding/view/onboarding_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/shift_check_in/view/shift_check_in_page.dart';
 import '../../features/splash/view/splash_page.dart';
@@ -22,8 +21,8 @@ import 'routes.dart';
 
 part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
-part 'parts/shift_check_in_routes.dart';
 part 'parts/shell_routes.dart';
+part 'parts/shift_check_in_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');

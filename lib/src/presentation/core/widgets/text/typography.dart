@@ -97,6 +97,34 @@ class DisplayMediumText extends _Typography {
       );
 }
 
+class DisplayMediumSecondaryText extends _Typography {
+  const DisplayMediumSecondaryText(
+    super.text, {
+    super.key,
+    super.color,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.softWrap,
+    super.textDirection,
+    super.semanticsLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+        softWrap: softWrap,
+        textDirection: textDirection,
+        semanticsLabel: semanticsLabel,
+        style: context.textStyle.displayMedium.copyWith(
+          color: color ?? context.color.text.secondary,
+        ),
+      );
+}
+
 class DisplaySmallText extends _Typography {
   const DisplaySmallText(
     super.text, {
@@ -506,7 +534,21 @@ class BodyLargeText extends _Typography {
     super.softWrap,
     super.textDirection,
     super.semanticsLabel,
-  });
+  }) : _secondary = false;
+
+  const BodyLargeText.secondary(
+    super.text, {
+    super.key,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.softWrap,
+    super.textDirection,
+    super.semanticsLabel,
+  })  : _secondary = true,
+        super(color: null);
+
+  final bool _secondary;
 
   @override
   Widget build(BuildContext context) => Text(
@@ -518,7 +560,9 @@ class BodyLargeText extends _Typography {
         textDirection: textDirection,
         semanticsLabel: semanticsLabel,
         style: context.textStyle.bodyLarge.copyWith(
-          color: color ?? context.color.text.primary,
+          color: _secondary
+              ? context.color.text.secondary
+              : color ?? context.color.text.primary,
         ),
       );
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/di/dependency_injection.dart';
 import '../../application_state/startup_provider/app_startup_provider.dart';
 import '../routes.dart';
 
@@ -22,16 +21,9 @@ class RouterState extends _$RouterState {
   }
 
   void decideNextRoute() {
-    final isOnboarded = ref.read(getOnboardingStatusUseCaseProvider).call();
-
     if (state == Routes.initial) {
       state = Routes.splash;
       Timer(const Duration(milliseconds: 500), () => decideNextRoute());
-      return;
-    }
-
-    if (!isOnboarded) {
-      state = Routes.onboarding;
       return;
     }
 
