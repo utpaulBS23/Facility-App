@@ -129,5 +129,12 @@
   "retake": "Retake",
   "capture": "Capture",
   "loading": "Loading...",
-  "locationUnavailable": "Location unavailable"
+  "locationUnavailable": "Location unavailable",
+  "photoCaptureFailed": "Photo capture failed",
+  "tryAgain": "Try Again",
+  "retry": "Retry",
+  "cantTakeSelfie": "Can't take selfie, ",
+  "requestSupervisor": "Request supervisor",
+  "toManuallyProcessCheckIn": "\nto manually process your check-in",
+  "cameraAccessRequiredMessage": "Camera access required or face not detected"
 }

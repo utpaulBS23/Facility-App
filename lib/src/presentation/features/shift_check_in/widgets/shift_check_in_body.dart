@@ -3,7 +3,7 @@
 
 part of '../view/shift_check_in_page.dart';
 
-class _ShiftCheckInBody extends StatelessWidget {
+class _ShiftCheckInBody extends ConsumerWidget {
   const _ShiftCheckInBody({
     required this.capturedPhotoPath,
     required this.isLoading,
@@ -17,8 +17,10 @@ class _ShiftCheckInBody extends StatelessWidget {
   final VoidCallback onSubmit;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dimensions = context.dimensions;
+    final state = ref.watch(selfiePickerProvider);
+    final hasError = state.hasError;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(dimensions.padding.p16),
@@ -26,15 +28,38 @@ class _ShiftCheckInBody extends StatelessWidget {
         children: [
           _SelfieZone(capturedPhotoPath: capturedPhotoPath),
           Gap(dimensions.spacing.s12),
-          _TakePhotoButton(
-            capturedPhotoPath: capturedPhotoPath,
-            isLoading: isLoading,
-            onTap: onTakePhoto,
-          ),
+          if (hasError) ...[
+            _SelfieErrorToast(onRequestSupervisor: () {}),
+          ] else ...[
+            _TakePhotoButton(
+              capturedPhotoPath: capturedPhotoPath,
+              isLoading: isLoading,
+              onTap: onTakePhoto,
+            ),
+          ],
           Gap(dimensions.spacing.s16),
           const _AutoDetectedInfoCard(),
           Gap(dimensions.spacing.s16),
-          _SubmitButton(onSubmit: onSubmit),
+          if (hasError) ...[
+            OutlinedButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return _PhotoErrorDialog(
+                      errorMessage: state.error.toString(),
+                      onRetry: () {
+                        ref.read(selfiePickerProvider.notifier).pickSelfie();
+                      },
+                    );
+                  },
+                );
+              },
+              child: Text(context.locale.requestSupervisor),
+            ),
+          ] else ...[
+            _SubmitButton(onSubmit: onSubmit),
+          ],
         ],
       ),
     );
@@ -64,17 +89,19 @@ class _TakePhotoButton extends StatelessWidget {
       height: dimensions.spacing.s44,
       child: OutlinedButton(
         onPressed: isLoading ? null : onTap,
-        child: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Text(
-                label,
-                style: context.textStyle.titleMedium
-                    .copyWith(color: context.color.primary),
-              ),
+        child: switch (isLoading) {
+          true => const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          false => Text(
+            label,
+            style: context.textStyle.titleMedium.copyWith(
+              color: context.color.primary,
+            ),
+          ),
+        },
       ),
     );
   }

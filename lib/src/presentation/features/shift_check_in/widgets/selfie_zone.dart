@@ -6,13 +6,15 @@ part of '../view/shift_check_in_page.dart';
 /// Dark gradient selfie capture zone with a circular face ring.
 ///
 /// Matches the Figma "Selfie zone" component (node 13045:27225).
-class _SelfieZone extends StatelessWidget {
+class _SelfieZone extends ConsumerWidget {
   const _SelfieZone({required this.capturedPhotoPath});
 
   final String? capturedPhotoPath;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(selfiePickerProvider);
+    final hasError = state.hasError;
     final colors = context.color;
     final dimensions = context.dimensions;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -38,17 +40,26 @@ class _SelfieZone extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _FaceRing(capturedPhotoPath: capturedPhotoPath),
-          if (capturedPhotoPath == null) ...[
-            Gap(dimensions.spacing.s24),
-            Text(
-              context.locale.shiftCheckInPhotoInstructions,
-              textAlign: TextAlign.center,
-              style: context.textStyle.bodyRegular.copyWith(
-                color: colors.onPrimary,
-                fontWeight: FontWeight.w500,
-              ),
+          if (hasError) ...[
+            _PhotoErrorDialog(
+              errorMessage: state.error.toString(),
+              onRetry: () {
+                ref.read(selfiePickerProvider.notifier).pickSelfie();
+              },
             ),
+          ] else ...[
+            _FaceRing(capturedPhotoPath: capturedPhotoPath),
+            if (capturedPhotoPath == null) ...[
+              Gap(dimensions.spacing.s24),
+              Text(
+                context.locale.shiftCheckInPhotoInstructions,
+                textAlign: TextAlign.center,
+                style: context.textStyle.bodyRegular.copyWith(
+                  color: colors.onPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ],
         ],
       ),

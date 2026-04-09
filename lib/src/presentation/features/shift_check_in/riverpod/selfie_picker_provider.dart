@@ -20,9 +20,15 @@ class SelfiePicker extends _$SelfiePicker {
 
     final result = await ref.read(pickSelfieUseCaseProvider).call();
 
+    state = AsyncError("error", StackTrace.current);
+    return;
+
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data),
-      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
+      Error(:final error) => AsyncValue.error(
+        error.message,
+        StackTrace.current,
+      ),
       _ => AsyncValue.error('Something went wrong', StackTrace.current),
     };
   }

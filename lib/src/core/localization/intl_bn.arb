@@ -129,5 +129,12 @@
   "retake": "পুনরায় নিন",
   "capture": "ক্যাপচার করুন",
   "loading": "লোড হচ্ছে...",
-  "locationUnavailable": "অবস্থান পাওয়া যায়নি"
+  "locationUnavailable": "অবস্থান পাওয়া যায়নি",
+  "photoCaptureFailed": "ছবি ক্যাপচার ব্যর্থ",
+  "tryAgain": "আবার চেষ্টা করুন",
+  "retry": "পুনরায় চেষ্টা করুণ",
+  "cantTakeSelfie": "সেলফি নেওয়া যাচ্ছে না, ",
+  "requestSupervisor": "সুপারভাইজারকে অনুরোধ করুন",
+  "toManuallyProcessCheckIn": "\nআপনার চেক-ইন ম্যানুয়ালি প্রক্রিয়া করতে",
+  "cameraAccessRequiredMessage": "ক্যামেরা অ্যাক্সেস প্রয়োজন অথবা মুখ শনাক্ত করা যাচ্ছে না।"
 }
