@@ -29,7 +29,9 @@ class _ShiftCheckInBody extends ConsumerWidget {
           _SelfieZone(capturedPhotoPath: capturedPhotoPath),
           Gap(dimensions.spacing.s12),
           if (hasError) ...[
-            _SelfieErrorToast(onRequestSupervisor: () {}),
+            _SelfieErrorToast(
+              onRequestSupervisor: () => _showBottomSheet(context),
+            ),
           ] else ...[
             _TakePhotoButton(
               capturedPhotoPath: capturedPhotoPath,
@@ -42,19 +44,7 @@ class _ShiftCheckInBody extends ConsumerWidget {
           Gap(dimensions.spacing.s16),
           if (hasError) ...[
             OutlinedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return _PhotoErrorDialog(
-                      errorMessage: state.error.toString(),
-                      onRetry: () {
-                        ref.read(selfiePickerProvider.notifier).pickSelfie();
-                      },
-                    );
-                  },
-                );
-              },
+              onPressed: () => _showBottomSheet(context),
               child: Text(context.locale.requestSupervisor),
             ),
           ] else ...[
@@ -62,6 +52,20 @@ class _ShiftCheckInBody extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.dimensions.radius.r12),
+        ),
+      ),
+      builder: (_) => const _RequestSupervisorApprovalBottomSheet(),
     );
   }
 }

@@ -16,6 +16,7 @@ import '../riverpod/selfie_picker_provider.dart';
 
 part '../widgets/auto_detected_info_card.dart';
 part '../widgets/photo_error_dialog.dart';
+part '../widgets/request_supervisor_approval_bottomsheet.dart';
 part '../widgets/selfie_error_toast.dart';
 part '../widgets/selfie_zone.dart';
 part '../widgets/shift_check_in_body.dart';
