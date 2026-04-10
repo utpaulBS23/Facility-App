@@ -20,123 +20,55 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
     final dimensions = context.dimensions;
     final checkInInfoState = ref.watch(checkInInfoProvider);
 
-    return checkInInfoState.when(
-      data: (info) => Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(dimensions.padding.p16),
-        decoration: BoxDecoration(
-          color: colors.onPrimary,
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          boxShadow: [
-            BoxShadow(
-              color: colors.shadow,
-              blurRadius: 14,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BodyRegularText.secondary(context.locale.autoDetectedInfo),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.location_on_outlined,
-              label: context.locale.location,
-              value: info?.location ?? context.locale.loading,
-            ),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.access_time_outlined,
-              label: context.locale.checkInTime,
-              value: info?.checkInTime ?? context.locale.loading,
-            ),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.person_outline,
-              label: context.locale.supervisorName,
-              value: info?.supervisorName ?? context.locale.loading,
-            ),
-          ],
-        ),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(dimensions.padding.p16),
+      decoration: BoxDecoration(
+        color: colors.onPrimary,
+        borderRadius: BorderRadius.circular(dimensions.radius.r12),
+        boxShadow: [
+          BoxShadow(
+            color: colors.shadow,
+            blurRadius: 14,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      loading: () => Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(dimensions.padding.p16),
-        decoration: BoxDecoration(
-          color: colors.onPrimary,
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          boxShadow: [
-            BoxShadow(
-              color: colors.shadow,
-              blurRadius: 14,
-              offset: const Offset(0, 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BodyRegularText.secondary(context.locale.autoDetectedInfo),
+          Gap(dimensions.spacing.s8),
+          _ContactInfoItem(
+            icon: Icons.location_on_outlined,
+            label: context.locale.location,
+            value: checkInInfoState.when(
+              data: (info) => info?.location ?? context.locale.loading,
+              loading: () => context.locale.loading,
+              error: (_, __) => context.locale.locationUnavailable,
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BodyRegularText.secondary(context.locale.autoDetectedInfo),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.location_on_outlined,
-              label: context.locale.location,
-              value: context.locale.loading,
+          ),
+          Gap(dimensions.spacing.s8),
+          _ContactInfoItem(
+            icon: Icons.access_time_outlined,
+            label: context.locale.checkInTime,
+            value: checkInInfoState.when(
+              data: (info) => info?.checkInTime ?? context.locale.loading,
+              loading: () => context.locale.loading,
+              error: (_, __) => context.locale.loading,
             ),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.access_time_outlined,
-              label: context.locale.checkInTime,
-              value: context.locale.loading,
+          ),
+          Gap(dimensions.spacing.s8),
+          _ContactInfoItem(
+            icon: Icons.person_outline,
+            label: context.locale.supervisorName,
+            value: checkInInfoState.when(
+              data: (info) => info?.supervisorName ?? context.locale.loading,
+              loading: () => context.locale.loading,
+              error: (_, __) => context.locale.loading,
             ),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.person_outline,
-              label: context.locale.supervisorName,
-              value: context.locale.loading,
-            ),
-          ],
-        ),
-      ),
-      error: (error, _) => Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(dimensions.padding.p16),
-        decoration: BoxDecoration(
-          color: colors.onPrimary,
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          boxShadow: [
-            BoxShadow(
-              color: colors.shadow,
-              blurRadius: 14,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BodyRegularText.secondary(context.locale.autoDetectedInfo),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.location_on_outlined,
-              label: context.locale.location,
-              value: context.locale.locationUnavailable,
-            ),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.access_time_outlined,
-              label: context.locale.checkInTime,
-              value: context.locale.loading,
-            ),
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.person_outline,
-              label: context.locale.supervisorName,
-              value: context.locale.loading,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -147,5 +147,10 @@
   "approvalSuccess": "Check Out Successfully",
   "approvalSuccessfulMessage": "Your checkout was successful",
   "approvalFailed": "Check Out Failed",
-  "approvalFailedMessage": "Your checkout failed"
+  "approvalFailedMessage": "Your checkout failed",
+  "reasonLabel": "Reason*",
+  "reasonCameraNotWorking": "Camera is not working",
+  "reasonCameraUnavailable": "Camera is unavailable",
+  "reasonPhoneCameraBroken": "Phone camera broken",
+  "reasonNoCameraDevice": "Device does not have a camera"
 }

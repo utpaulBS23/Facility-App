@@ -44,6 +44,24 @@ class ShiftCheckInPage extends ConsumerWidget {
     context.pushNamed(Routes.approvalRequest);
   }
 
+  void _onTakePhoto(WidgetRef ref) {
+    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  }
+
+  void _onRequestSupervisor(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.dimensions.radius.r12),
+        ),
+      ),
+      builder: (_) => const _RequestSupervisorApprovalBottomSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(selfiePickerProvider);
@@ -59,7 +77,10 @@ class ShiftCheckInPage extends ConsumerWidget {
       body: _ShiftCheckInBody(
         capturedPhotoPath: photoPath,
         isLoading: state.isLoading,
-        onTakePhoto: () => ref.read(selfiePickerProvider.notifier).pickSelfie(),
+        hasError: state.hasError,
+        errorMessage: state.error?.toString(),
+        onTakePhoto: () => _onTakePhoto(ref),
+        onRequestSupervisor: () => _onRequestSupervisor(context),
         onSubmit: () => _onSubmit(context, photoPath),
       ),
     );

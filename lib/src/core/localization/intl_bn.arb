@@ -147,5 +147,10 @@
   "approvalSuccess": "চেক আউট সফল",
   "approvalSuccessfulMessage": "আপনার চেক-আউট সফল হয়েছে",
   "approvalFailed": "চেক আউট ব্যর্থ",
-  "approvalFailedMessage": "আপনার চেক-আউট ব্যর্থ হয়েছে"
+  "approvalFailedMessage": "আপনার চেক-আউট ব্যর্থ হয়েছে",
+  "reasonLabel": "কারণ*",
+  "reasonCameraNotWorking": "ক্যামেরা কাজ করছে না",
+  "reasonCameraUnavailable": "ক্যামেরা পাওয়া যাচ্ছে না",
+  "reasonPhoneCameraBroken": "ফোনের ক্যামেরা নষ্ট",
+  "reasonNoCameraDevice": "ডিভাইসে কোনো ক্যামেরা নেই"
 }

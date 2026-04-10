@@ -1,5 +1,4 @@
 // ignore_for_file: max_file_lines
-// ignore: max_file_lines
 part of '../view/shift_check_in_page.dart';
 
 class _RequestSupervisorApprovalBottomSheet extends StatefulWidget {
@@ -12,27 +11,26 @@ class _RequestSupervisorApprovalBottomSheet extends StatefulWidget {
 
 class _RequestSupervisorApprovalBottomSheetState
     extends State<_RequestSupervisorApprovalBottomSheet> {
-  // WHY: Dummy reasons for now — will be replaced with real data from API.
-  static const _reasons = [
-    'Camera is not working',
-    'Camera is unavailable',
-    'Phone camera broken',
-    'Device does not have a camera',
-  ];
-
   String? _selectedReason;
 
   void _onSubmit() {
     if (_selectedReason == null) return;
     // TODO: Implement supervisor approval request
-    Navigator.of(context).pop();
+    context.pop();
   }
 
-  void _onCancel() => Navigator.of(context).pop();
+  void _onCancel() => context.pop();
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    // WHY: Reasons are localized; will be replaced with real API data later.
+    final reasons = [
+      context.locale.reasonCameraNotWorking,
+      context.locale.reasonCameraUnavailable,
+      context.locale.reasonPhoneCameraBroken,
+      context.locale.reasonNoCameraDevice,
+    ];
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -51,7 +49,7 @@ class _RequestSupervisorApprovalBottomSheetState
           Gap(spacing.s16),
           _ReasonDropdown(
             selectedReason: _selectedReason,
-            reasons: _reasons,
+            reasons: reasons,
             onChanged: (value) => setState(() => _selectedReason = value),
           ),
           Gap(spacing.s16),
@@ -105,7 +103,7 @@ class _ReasonDropdown extends StatelessWidget {
       child: DropdownButtonFormField<String>(
         initialValue: selectedReason,
         decoration: InputDecoration(
-          labelText: 'Reason*',
+          labelText: context.locale.reasonLabel,
           border: OutlineInputBorder(
             borderRadius: borderRadius,
             borderSide: borderSide,

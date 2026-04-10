@@ -6,15 +6,21 @@ part of '../view/shift_check_in_page.dart';
 /// Dark gradient selfie capture zone with a circular face ring.
 ///
 /// Matches the Figma "Selfie zone" component (node 13045:27225).
-class _SelfieZone extends ConsumerWidget {
-  const _SelfieZone({required this.capturedPhotoPath});
+class _SelfieZone extends StatelessWidget {
+  const _SelfieZone({
+    required this.capturedPhotoPath,
+    required this.hasError,
+    this.errorMessage,
+    required this.onRetry,
+  });
 
   final String? capturedPhotoPath;
+  final bool hasError;
+  final String? errorMessage;
+  final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(selfiePickerProvider);
-    final hasError = state.hasError;
+  Widget build(BuildContext context) {
     final colors = context.color;
     final dimensions = context.dimensions;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -42,10 +48,8 @@ class _SelfieZone extends ConsumerWidget {
         children: [
           if (hasError) ...[
             _PhotoErrorDialog(
-              errorMessage: state.error.toString(),
-              onRetry: () {
-                ref.read(selfiePickerProvider.notifier).pickSelfie();
-              },
+              errorMessage: errorMessage ?? '',
+              onRetry: onRetry,
             ),
           ] else ...[
             _FaceRing(capturedPhotoPath: capturedPhotoPath),
@@ -84,6 +88,7 @@ class _FaceRing extends StatelessWidget {
       padding: EdgeInsets.all(dimensions.spacing.s2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
+        // TODO: Replace with dimension token if available instead of width: 2
         border: Border.all(color: brandColor, width: 2),
       ),
       child: ClipOval(
@@ -94,7 +99,7 @@ class _FaceRing extends StatelessWidget {
                 height: innerSize,
                 fit: BoxFit.cover,
               )
-            : _Placeholder(),
+            : const _Placeholder(),
       ),
     );
   }
@@ -112,6 +117,7 @@ class _Placeholder extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: colors.selfieZonePlaceholderBg,
+        // TODO: Replace with dimension token if available instead of width: 2
         border: Border.all(color: colors.selfieZonePlaceholderBorder, width: 2),
       ),
       child: Icon(

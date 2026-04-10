@@ -32,7 +32,7 @@ class _PhotoErrorDialog extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: context.color.scaffoldBackground,
-              radius: 32,
+              radius: dimensions.spacing.s32,
               child: Assets.icons.warning.svg(),
             ),
             Gap(dimensions.spacing.s12),
@@ -51,7 +51,12 @@ class _PhotoErrorDialog extends StatelessWidget {
             ElevatedButton(
               onPressed: onRetry,
               style: ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size(38, 38)),
+                minimumSize: WidgetStatePropertyAll(
+                  Size(
+                    dimensions.spacing.s36,
+                    dimensions.spacing.s36,
+                  ),
+                ),
               ),
               child: Text(context.locale.retry),
             ),

@@ -10,7 +10,7 @@ class ApprovalRequestPage extends ConsumerWidget {
 
   void _onWithdraw(BuildContext context) {
     // TODO: Implement withdrawal of supervisor approval request
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _onRefresh(WidgetRef ref) {

@@ -14,8 +14,10 @@ part 'check_in_info_provider.g.dart';
 class CheckInInfo extends _$CheckInInfo {
   @override
   AsyncValue<CheckInInfoState?> build() {
+    // WHY: Start in loading so the UI never flashes an empty data state
+    // before _loadCheckInInfo resolves.
     _loadCheckInInfo();
-    return const AsyncValue.data(null);
+    return const AsyncValue.loading();
   }
 
   Future<void> _loadCheckInInfo() async {

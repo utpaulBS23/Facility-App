@@ -3,34 +3,45 @@
 
 part of '../view/shift_check_in_page.dart';
 
-class _ShiftCheckInBody extends ConsumerWidget {
+class _ShiftCheckInBody extends StatelessWidget {
   const _ShiftCheckInBody({
     required this.capturedPhotoPath,
     required this.isLoading,
+    required this.hasError,
+    this.errorMessage,
     required this.onTakePhoto,
+    required this.onRequestSupervisor,
     required this.onSubmit,
   });
 
   final String? capturedPhotoPath;
   final bool isLoading;
+  // WHY: hasError is passed from the parent rather than re-watched here
+  // to avoid duplicating provider observation in a child widget.
+  final bool hasError;
+  final String? errorMessage;
   final VoidCallback onTakePhoto;
+  final VoidCallback onRequestSupervisor;
   final VoidCallback onSubmit;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final dimensions = context.dimensions;
-    final state = ref.watch(selfiePickerProvider);
-    final hasError = state.hasError;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(dimensions.padding.p16),
       child: Column(
         children: [
-          _SelfieZone(capturedPhotoPath: capturedPhotoPath),
+          _SelfieZone(
+            capturedPhotoPath: capturedPhotoPath,
+            hasError: hasError,
+            errorMessage: errorMessage,
+            onRetry: onTakePhoto,
+          ),
           Gap(dimensions.spacing.s12),
           if (hasError) ...[
             _SelfieErrorToast(
-              onRequestSupervisor: () => _showBottomSheet(context),
+              onRequestSupervisor: onRequestSupervisor,
             ),
           ] else ...[
             _TakePhotoButton(
@@ -44,7 +55,7 @@ class _ShiftCheckInBody extends ConsumerWidget {
           Gap(dimensions.spacing.s16),
           if (hasError) ...[
             OutlinedButton(
-              onPressed: () => _showBottomSheet(context),
+              onPressed: onRequestSupervisor,
               child: Text(context.locale.requestSupervisor),
             ),
           ] else ...[
@@ -52,20 +63,6 @@ class _ShiftCheckInBody extends ConsumerWidget {
           ],
         ],
       ),
-    );
-  }
-
-  void _showBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(context.dimensions.radius.r12),
-        ),
-      ),
-      builder: (_) => const _RequestSupervisorApprovalBottomSheet(),
     );
   }
 }
