@@ -137,5 +137,15 @@
   "requestSupervisor": "Request supervisor",
   "toManuallyProcessCheckIn": "\nto manually process your check-in",
   "cameraAccessRequiredMessage": "Camera access required or face not detected",
-  "requestSupervisorMessage":"If you're having trouble taking a selfie, please request your supervisor to assist you with the check-in process."
+  "requestSupervisorMessage": "If you're having trouble taking a selfie, please request your supervisor to assist you with the check-in process.",
+  "approvalRequest": "Approval Request",
+  "waitingForApproval": "Waiting for Approval",
+  "waitingForApprovalMessage": "Your request has been sent. Please wait until your supervisor reviews and approves your check-in.",
+  "withdraw": "Withdraw",
+  "refresh": "Refresh",
+  "supervisor": "Supervisor",
+  "approvalSuccess": "Check Out Successfully",
+  "approvalSuccessfulMessage": "Your checkout was successful",
+  "approvalFailed": "Check Out Failed",
+  "approvalFailedMessage": "Your checkout failed"
 }

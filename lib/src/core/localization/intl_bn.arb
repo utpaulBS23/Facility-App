@@ -137,5 +137,15 @@
   "requestSupervisor": "সুপারভাইজারকে অনুরোধ করুন",
   "toManuallyProcessCheckIn": "\nআপনার চেক-ইন ম্যানুয়ালি প্রক্রিয়া করতে",
   "cameraAccessRequiredMessage": "ক্যামেরা অ্যাক্সেস প্রয়োজন অথবা মুখ শনাক্ত করা যাচ্ছে না।",
-  "requestSupervisorMessage": "সেলফি তুলতে অসুবিধা হলে, চেক-ইন প্রক্রিয়ায় সাহায্যের জন্য অনুগ্রহ করে আপনার সুপারভাইজারকে অনুরোধ করুন।\n"
+  "requestSupervisorMessage": "সেলফি তুলতে অসুবিধা হলে, চেক-ইন প্রক্রিয়ায় সাহায্যের জন্য অনুগ্রহ করে আপনার সুপারভাইজারকে অনুরোধ করুন।\n",
+  "approvalRequest": "অনুমোদনের অনুরোধ",
+  "waitingForApproval": "অনুমোদনের অপেক্ষায়",
+  "waitingForApprovalMessage": "আপনার অনুরোধ পাঠানো হয়েছে। অনুগ্রহ করে আপনার সুপারভাইজার পর্যালোচনা করে আপনার চেক-ইন অনুমোদন না করা পর্যন্ত অপেক্ষা করুন।",
+  "withdraw": "প্রত্যাহার",
+  "refresh": "রিফ্রেশ",
+  "supervisor": "সুপারভাইজার",
+  "approvalSuccess": "চেক আউট সফল",
+  "approvalSuccessfulMessage": "আপনার চেক-আউট সফল হয়েছে",
+  "approvalFailed": "চেক আউট ব্যর্থ",
+  "approvalFailedMessage": "আপনার চেক-আউট ব্যর্থ হয়েছে"
 }

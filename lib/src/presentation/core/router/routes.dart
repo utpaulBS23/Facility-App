@@ -14,4 +14,5 @@ class Routes {
   static const String home = '/home';
   static const String profile = '/profile';
   static const String shiftCheckIn = '/shift-check-in';
+  static const String approvalRequest = '/approval-request';
 }

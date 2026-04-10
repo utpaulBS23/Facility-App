@@ -11,5 +11,11 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       pageBuilder: (context, state) =>
           const MaterialPage(child: ShiftCheckInPage()),
     ),
+    GoRoute(
+      path: Routes.approvalRequest,
+      name: Routes.approvalRequest,
+      pageBuilder: (context, state) =>
+          const MaterialPage(child: ApprovalRequestPage()),
+    ),
   ];
 }
