@@ -37,6 +37,18 @@ class _NavigationShellState extends State<NavigationShell> {
             icon: const Icon(Icons.person),
             label: context.locale.profile,
           ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            label: context.locale.profile,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            label: context.locale.profile,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            label: context.locale.profile,
+          ),
         ],
       ),
     );
