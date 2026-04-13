@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/app_localization.dart';
-import '../theme/theme.dart';
-import 'text/typography.dart';
+import '../gen/assets.gen.dart';
 
 class NavigationShell extends StatefulWidget {
   const NavigationShell({super.key, required this.statefulNavigationShell});
@@ -18,10 +17,6 @@ class _NavigationShellState extends State<NavigationShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const HeadlineSmallText('Flutter Template'),
-        titleSpacing: context.spacing.s16,
-      ),
       body: widget.statefulNavigationShell,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.statefulNavigationShell.currentIndex,
@@ -30,23 +25,23 @@ class _NavigationShellState extends State<NavigationShell> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
+            icon: Assets.icons.shift.svg(),
             label: context.locale.home,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
+            icon: Assets.icons.location.svg(),
+            label: context.locale.attendance,
+          ),
+          BottomNavigationBarItem(
+            icon: Assets.icons.task.svg(),
             label: context.locale.profile,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
+            icon: Assets.icons.issue.svg(),
             label: context.locale.profile,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
-            label: context.locale.profile,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
+            icon: Assets.icons.menu.svg(),
             label: context.locale.profile,
           ),
         ],

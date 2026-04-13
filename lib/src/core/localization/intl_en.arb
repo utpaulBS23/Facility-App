@@ -152,5 +152,19 @@
   "reasonCameraNotWorking": "Camera is not working",
   "reasonCameraUnavailable": "Camera is unavailable",
   "reasonPhoneCameraBroken": "Phone camera broken",
-  "reasonNoCameraDevice": "Device does not have a camera"
+  "reasonNoCameraDevice": "Device does not have a camera",
+  "attendance": "Attendance",
+  "present": "Present",
+  "late": "Late",
+  "absent": "Absent",
+  "leave": "Leave",
+  "onLeave": "On Leave",
+  "applyLeave": "Apply Leave",
+  "today": "Today",
+  "attendanceDetails": "Attendance details",
+  "back": "Back",
+  "hoursWorked": "Hours Worked",
+  "shiftType": "Shift Type",
+  "selfieVerification": "Selfie Verification",
+  "supervisorApproved": "Supervisor Approved"
 }

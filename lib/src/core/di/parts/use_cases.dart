@@ -49,3 +49,13 @@ PickSelfieUseCase pickSelfieUseCase(Ref ref) {
 GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
   return GetCurrentLocationUseCase(ref.read(locationRepositoryProvider));
 }
+
+@riverpod
+GetAttendanceSummaryUseCase getAttendanceSummaryUseCase(Ref ref) {
+  return GetAttendanceSummaryUseCase(ref.read(attendanceRepositoryProvider));
+}
+
+@riverpod
+GetAttendanceDetailUseCase getAttendanceDetailUseCase(Ref ref) {
+  return GetAttendanceDetailUseCase(ref.read(attendanceRepositoryProvider));
+}

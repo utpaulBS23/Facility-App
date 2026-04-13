@@ -27,6 +27,6 @@ class RouterState extends _$RouterState {
       return;
     }
 
-    state = Routes.home;
+    state = Routes.shift;
   }
 }

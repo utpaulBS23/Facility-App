@@ -147,7 +147,7 @@ class _ApprovalActionButtons extends StatelessWidget {
           child: FilledButton(
             onPressed: switch (attendanceStatue) {
               .pending => onRefresh,
-              .success => () => context.goNamed(Routes.home),
+              .success => () => context.goNamed(Routes.shift),
               .reject => onRefresh, // Allow refresh to check if status changed
             },
             child: Text(switch (attendanceStatue) {

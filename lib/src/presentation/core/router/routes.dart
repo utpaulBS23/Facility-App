@@ -11,8 +11,13 @@ class Routes {
   static const String registration = 'registration';
   static const String countrySelection = '/country-selection';
 
-  static const String home = '/home';
-  static const String profile = '/profile';
+  static const String shift = '/shift';
   static const String shiftCheckIn = '/shift-check-in';
   static const String approvalRequest = '/approval-request';
+
+  static const String attendance = '/attendance';
+  static const String attendanceDetails = '/attendance-details';
+  static const String task = '/task';
+  static const String issue = '/issue';
+  static const String menu = '/menu';
 }

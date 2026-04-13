@@ -152,5 +152,19 @@
   "reasonCameraNotWorking": "ক্যামেরা কাজ করছে না",
   "reasonCameraUnavailable": "ক্যামেরা পাওয়া যাচ্ছে না",
   "reasonPhoneCameraBroken": "ফোনের ক্যামেরা নষ্ট",
-  "reasonNoCameraDevice": "ডিভাইসে কোনো ক্যামেরা নেই"
+  "reasonNoCameraDevice": "ডিভাইসে কোনো ক্যামেরা নেই",
+  "attendance": "উপস্থিতি",
+  "present": "উপস্থিত",
+  "late": "দেরি",
+  "absent": "অনুপস্থিত",
+  "leave": "ছুটি",
+  "onLeave": "ছুটিতে",
+  "applyLeave": "ছুটির আবেদন",
+  "today": "আজ",
+  "attendanceDetails": "উপস্থিতির বিবরণ",
+  "back": "ফিরে যান",
+  "hoursWorked": "কাজের ঘণ্টা",
+  "shiftType": "শিফটের ধরন",
+  "selfieVerification": "সেলফি যাচাই",
+  "supervisorApproved": "সুপারভাইজার অনুমোদিত"
 }

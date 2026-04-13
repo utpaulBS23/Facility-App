@@ -27,3 +27,8 @@ LocationRepository locationRepository(Ref ref) {
 SelfieRepository selfieRepository(Ref ref) {
   return SelfieRepositoryImpl(ref.read(imagePickerServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+AttendanceRepository attendanceRepository(Ref ref) {
+  return AttendanceRepositoryImpl();
+}
