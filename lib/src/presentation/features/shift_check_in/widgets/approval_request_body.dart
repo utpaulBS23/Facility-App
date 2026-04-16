@@ -1,4 +1,3 @@
-// ignore_for_file: max_file_lines, max_method_lines
 part of '../view/shift_check_in_page.dart';
 
 /// Hero section with clock icon, title, and description for the approval
@@ -112,4 +111,3 @@ class _RejectApprovalHeroSection extends StatelessWidget {
     );
   }
 }
-

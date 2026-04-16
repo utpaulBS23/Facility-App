@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/check_in_info_entity.dart';
 
 part 'check_in_info_provider.g.dart';
 
@@ -13,7 +14,7 @@ part 'check_in_info_provider.g.dart';
 @riverpod
 class CheckInInfo extends _$CheckInInfo {
   @override
-  AsyncValue<CheckInInfoState?> build() {
+  AsyncValue<CheckInInfoEntity?> build() {
     // WHY: Start in loading so the UI never flashes an empty data state
     // before _loadCheckInInfo resolves.
     _loadCheckInInfo();
@@ -22,11 +23,13 @@ class CheckInInfo extends _$CheckInInfo {
 
   Future<void> _loadCheckInInfo() async {
     state = const AsyncValue.loading();
-    final locationResult = await ref.read(getCurrentLocationUseCaseProvider).call();
-    
+    final locationResult = await ref
+        .read(getCurrentLocationUseCaseProvider)
+        .call();
+
     state = locationResult.when(
       success: (locationData) => AsyncValue.data(
-        CheckInInfoState(
+        CheckInInfoEntity(
           location: locationData?.address ?? 'Unknown location',
           checkInTime: _formatCurrentTime(),
           supervisorName: 'Md. Shahin Bashar',
@@ -40,17 +43,4 @@ class CheckInInfo extends _$CheckInInfo {
     final now = DateTime.now();
     return DateFormat('EEE, MMM d, y, h:mm a').format(now);
   }
-}
-
-/// State containing check-in information.
-class CheckInInfoState {
-  CheckInInfoState({
-    required this.location,
-    required this.checkInTime,
-    required this.supervisorName,
-  });
-
-  final String location;
-  final String checkInTime;
-  final String supervisorName;
 }
