@@ -4,6 +4,8 @@
   "arabic": "العربية",
   "home": "Home",
   "profile": "Profile",
+  "task": "Task ",
+  "issues": "Issues",
   "login": "Login",
   "createNewPassword": "Create New password",
   "createNewPasswordHint": "Your new password must be different from previous used passwords.",
