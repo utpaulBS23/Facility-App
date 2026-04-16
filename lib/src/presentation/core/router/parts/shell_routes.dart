@@ -12,7 +12,7 @@ StatefulShellRoute _shellRoutes(Ref ref) {
             path: Routes.shift,
             name: Routes.shift,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: HomePage());
+              return const MaterialPage(child: ShiftPage());
             },
           ),
         ],
@@ -56,7 +56,7 @@ StatefulShellRoute _shellRoutes(Ref ref) {
             path: Routes.menu,
             name: Routes.menu,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: ProfilePage());
+              return const MaterialPage(child: MenuPage());
             },
           ),
         ],

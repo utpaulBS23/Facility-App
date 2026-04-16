@@ -166,5 +166,16 @@
   "hoursWorked": "Hours Worked",
   "shiftType": "Shift Type",
   "selfieVerification": "Selfie Verification",
-  "supervisorApproved": "Supervisor Approved"
+  "supervisorApproved": "Supervisor Approved",
+  "logoutConfirmMessage": "Are you sure you want to logout?",
+  "confirm": "Confirm",
+  "menu": "Menu",
+  "shift": "Shift",
+  "inProgress": "In Progress",
+  "upcoming": "Upcoming",
+  "shiftDetails": "Shift details",
+  "assignedSupervisor": "Assigned Supervisor",
+  "shiftNotes": "Shift Notes",
+  "date": "Date",
+  "time": "Time"
 }

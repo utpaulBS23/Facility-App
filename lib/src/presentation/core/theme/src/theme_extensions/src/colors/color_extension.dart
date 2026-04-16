@@ -50,6 +50,13 @@ class ColorExtension {
     required this.bottomNavBar,
     required this.pageView,
     required this.text,
+    required this.background,
+    required this.borders,
+    required this.buttonBackground,
+    required this.buttonLabel,
+    required this.buttonIcon,
+    required this.buttonBorder,
+    required this.icons,
   });
 
   // --- background tokens ---
@@ -101,6 +108,13 @@ class ColorExtension {
   final BottomNavBarColors bottomNavBar;
   final PageViewColors pageView;
   final TextColors text;
+  final BackgroundColors background;
+  final BorderColors borders;
+  final ButtonBackgroundColors buttonBackground;
+  final ButtonLabelColors buttonLabel;
+  final ButtonIconColors buttonIcon;
+  final ButtonBorderColors buttonBorder;
+  final IconColors icons;
 }
 
 class LightColorExtension extends ThemeExtension<LightColorExtension>
@@ -147,6 +161,13 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
     this.bottomNavBar = const _LightBottomNavBarColors(),
     this.pageView = const _LightPageViewColors(),
     this.text = const _LightTextColors(),
+    this.background = const _LightBackgroundColors(),
+    this.borders = const _LightBorderColors(),
+    this.buttonBackground = const _LightButtonBackgroundColors(),
+    this.buttonLabel = const _LightButtonLabelColors(),
+    this.buttonIcon = const _LightButtonIconColors(),
+    this.buttonBorder = const _LightButtonBorderColors(),
+    this.icons = const _LightIconColors(),
   });
 
   // background
@@ -230,6 +251,20 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
   final PageViewColors pageView;
   @override
   final TextColors text;
+  @override
+  final BackgroundColors background;
+  @override
+  final BorderColors borders;
+  @override
+  final ButtonBackgroundColors buttonBackground;
+  @override
+  final ButtonLabelColors buttonLabel;
+  @override
+  final ButtonIconColors buttonIcon;
+  @override
+  final ButtonBorderColors buttonBorder;
+  @override
+  final IconColors icons;
 
   @override
   LightColorExtension copyWith({
@@ -267,6 +302,13 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
     BottomNavBarColors? bottomNavBar,
     PageViewColors? pageView,
     TextColors? text,
+    BackgroundColors? background,
+    BorderColors? borders,
+    ButtonBackgroundColors? buttonBackground,
+    ButtonLabelColors? buttonLabel,
+    ButtonIconColors? buttonIcon,
+    ButtonBorderColors? buttonBorder,
+    IconColors? icons,
   }) {
     return LightColorExtension(
       primary: primary ?? this.primary,
@@ -308,6 +350,13 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
       bottomNavBar: bottomNavBar ?? this.bottomNavBar,
       pageView: pageView ?? this.pageView,
       text: text ?? this.text,
+      background: background ?? this.background,
+      borders: borders ?? this.borders,
+      buttonBackground: buttonBackground ?? this.buttonBackground,
+      buttonLabel: buttonLabel ?? this.buttonLabel,
+      buttonIcon: buttonIcon ?? this.buttonIcon,
+      buttonBorder: buttonBorder ?? this.buttonBorder,
+      icons: icons ?? this.icons,
     );
   }
 
@@ -385,6 +434,13 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
       bottomNavBar: t < 0.5 ? bottomNavBar : other.bottomNavBar,
       pageView: t < 0.5 ? pageView : other.pageView,
       text: t < 0.5 ? text : other.text,
+      background: t < 0.5 ? background : other.background,
+      borders: t < 0.5 ? borders : other.borders,
+      buttonBackground: t < 0.5 ? buttonBackground : other.buttonBackground,
+      buttonLabel: t < 0.5 ? buttonLabel : other.buttonLabel,
+      buttonIcon: t < 0.5 ? buttonIcon : other.buttonIcon,
+      buttonBorder: t < 0.5 ? buttonBorder : other.buttonBorder,
+      icons: t < 0.5 ? icons : other.icons,
     );
   }
 }
@@ -433,6 +489,13 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
     this.bottomNavBar = const _DarkBottomNavBarColors(),
     this.pageView = const _DarkPageViewColors(),
     this.text = const _DarkTextColors(),
+    this.background = const _DarkBackgroundColors(),
+    this.borders = const _DarkBorderColors(),
+    this.buttonBackground = const _DarkButtonBackgroundColors(),
+    this.buttonLabel = const _DarkButtonLabelColors(),
+    this.buttonIcon = const _DarkButtonIconColors(),
+    this.buttonBorder = const _DarkButtonBorderColors(),
+    this.icons = const _DarkIconColors(),
   });
 
   // background
@@ -516,6 +579,20 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
   final PageViewColors pageView;
   @override
   final TextColors text;
+  @override
+  final BackgroundColors background;
+  @override
+  final BorderColors borders;
+  @override
+  final ButtonBackgroundColors buttonBackground;
+  @override
+  final ButtonLabelColors buttonLabel;
+  @override
+  final ButtonIconColors buttonIcon;
+  @override
+  final ButtonBorderColors buttonBorder;
+  @override
+  final IconColors icons;
 
   @override
   DarkColorExtension copyWith({
@@ -553,6 +630,13 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
     BottomNavBarColors? bottomNavBar,
     PageViewColors? pageView,
     TextColors? text,
+    BackgroundColors? background,
+    BorderColors? borders,
+    ButtonBackgroundColors? buttonBackground,
+    ButtonLabelColors? buttonLabel,
+    ButtonIconColors? buttonIcon,
+    ButtonBorderColors? buttonBorder,
+    IconColors? icons,
   }) {
     return DarkColorExtension(
       primary: primary ?? this.primary,
@@ -594,6 +678,13 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
       bottomNavBar: bottomNavBar ?? this.bottomNavBar,
       pageView: pageView ?? this.pageView,
       text: text ?? this.text,
+      background: background ?? this.background,
+      borders: borders ?? this.borders,
+      buttonBackground: buttonBackground ?? this.buttonBackground,
+      buttonLabel: buttonLabel ?? this.buttonLabel,
+      buttonIcon: buttonIcon ?? this.buttonIcon,
+      buttonBorder: buttonBorder ?? this.buttonBorder,
+      icons: icons ?? this.icons,
     );
   }
 
@@ -671,6 +762,13 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
       bottomNavBar: t < 0.5 ? bottomNavBar : other.bottomNavBar,
       pageView: t < 0.5 ? pageView : other.pageView,
       text: t < 0.5 ? text : other.text,
+      background: t < 0.5 ? background : other.background,
+      borders: t < 0.5 ? borders : other.borders,
+      buttonBackground: t < 0.5 ? buttonBackground : other.buttonBackground,
+      buttonLabel: t < 0.5 ? buttonLabel : other.buttonLabel,
+      buttonIcon: t < 0.5 ? buttonIcon : other.buttonIcon,
+      buttonBorder: t < 0.5 ? buttonBorder : other.buttonBorder,
+      icons: t < 0.5 ? icons : other.icons,
     );
   }
 }

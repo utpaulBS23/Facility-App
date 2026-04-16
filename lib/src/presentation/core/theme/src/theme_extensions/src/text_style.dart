@@ -14,265 +14,246 @@ abstract final class AppFonts {
       languageCode == 'bn' ? bengali : english;
 }
 
-// WHY: All type styles map 1-to-1 to the Figma type scale
-// (node 13021:15735, file Cd1JO8EZ9OX0XW6DB3ExPN).
-// Names are the Figma token names in camelCase.
-// height = lineHeight_px / fontSize_px.
-// Uppercase variants require String.toUpperCase() at the call site —
-// Flutter TextStyle has no text-transform property.
-class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
-  const TextStyleExtension({this.fontFamily = AppFonts.english});
+/// Figma Font Weight → Flutter FontWeight
+/// Thin         → w100  |  Extra Light → w200  |  Light     → w300
+/// Regular      → w400  |  Medium      → w500  |  Semi Bold → w600
+/// Bold         → w700  |  Extra Bold  → w800  |  Black     → w900
+class TextWeight {
+  static const regular = FontWeight.w400;
+  static const medium = FontWeight.w500;
+  static const semibold = FontWeight.w600;
+  static const bold = FontWeight.w700;
+}
 
-  // WHY: stored as a field so the theme system can swap the font family
-  // at build time when the locale changes, without rebuilding every style.
-  final String fontFamily;
+// WHY: All type styles map 1-to-1 to the Figma type scale.
+// height  = lineHeight_px / fontSize_px
+// No fontFamily is set here — it falls through to ThemeData.fontFamily,
+// which is set per-locale in $LightThemeData / $DarkThemeData.
+class TextStyleExtension extends ThemeExtension<TextStyleExtension> {
+  const TextStyleExtension();
+
+  double _ls({required double percentage, required double fontSize}) =>
+      (percentage / 100) * fontSize;
 
   // ── Display ──────────────────────────────────────────────────────────────
 
-  /// display/large — 57 · w600 · lh 64 · ls -0.25
-  TextStyle get displayLarge => TextStyle(
-        fontFamily: fontFamily,
+  /// display/large — 57 · w500 · lh 64 · ls -0.25
+  TextStyle get displayLarge => const TextStyle(
         fontSize: 57,
-        fontWeight: FontWeight.w600,
-        height: 1.123,
+        fontWeight: TextWeight.medium,
+        height: 64 / 57,
         letterSpacing: -0.25,
       );
 
-  /// display/medium — 45 · w600 · lh 52 · ls -0.81
+  /// display/medium — 45 · w500 · lh 52
   TextStyle get displayMedium => TextStyle(
-        fontFamily: fontFamily,
         fontSize: 45,
-        fontWeight: FontWeight.w600,
-        height: 1.156,
-        letterSpacing: -0.81,
+        fontWeight: TextWeight.medium,
+        height: 52 / 45,
+        letterSpacing: _ls(percentage: -1.8, fontSize: 45),
       );
 
   /// display/small — 34 · w600 · lh 48
-  TextStyle get displaySmall => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get displaySmall => const TextStyle(
         fontSize: 34,
-        fontWeight: FontWeight.w600,
-        height: 1.412,
+        fontWeight: TextWeight.semibold,
+        height: 48 / 34,
       );
 
   // ── Headline ─────────────────────────────────────────────────────────────
 
   /// headline/large — 32 · w600 · lh 40
-  TextStyle get headlineLarge => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get headlineLarge => const TextStyle(
         fontSize: 32,
-        fontWeight: FontWeight.w600,
-        height: 1.25,
+        fontWeight: TextWeight.semibold,
+        height: 40 / 32,
       );
 
-  /// headline/medium — 26 · w600 · lh 34 · ls -0.39
+  /// headline/medium — 26 · w500 · lh 34
   TextStyle get headlineMedium => TextStyle(
-        fontFamily: fontFamily,
         fontSize: 26,
-        fontWeight: FontWeight.w600,
-        height: 1.308,
-        letterSpacing: -0.39,
+        fontWeight: TextWeight.medium,
+        height: 34 / 26,
+        letterSpacing: _ls(percentage: -1.8, fontSize: 26),
       );
 
   /// headline/small — 23 · w600 · lh 24
-  TextStyle get headlineSmall => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get headlineSmall => const TextStyle(
         fontSize: 23,
-        fontWeight: FontWeight.w600,
-        height: 1.043,
+        fontWeight: TextWeight.semibold,
+        height: 24 / 23,
       );
 
   /// headline/tiny — 21 · w600 · lh 24
-  TextStyle get headlineTiny => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get headlineTiny => const TextStyle(
         fontSize: 21,
-        fontWeight: FontWeight.w600,
-        height: 1.143,
+        fontWeight: TextWeight.semibold,
+        height: 24 / 21,
       );
 
   /// headline/1xl-tiny — 17 · w600 · lh 24
-  TextStyle get headline1xlTiny => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get headline1xlTiny => const TextStyle(
         fontSize: 17,
-        fontWeight: FontWeight.w600,
-        height: 1.412,
+        fontWeight: TextWeight.semibold,
+        height: 24 / 17,
       );
 
   /// headline/2xl-tiny — 15 · w600 · lh 24
-  TextStyle get headline2xlTiny => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get headline2xlTiny => const TextStyle(
         fontSize: 15,
-        fontWeight: FontWeight.w600,
-        height: 1.60,
+        fontWeight: TextWeight.semibold,
+        height: 24 / 15,
       );
 
   // ── Title ─────────────────────────────────────────────────────────────────
 
-  /// title/large — 20 · w600 · lh 24
-  TextStyle get titleLarge => TextStyle(
-        fontFamily: fontFamily,
+  /// title/large — 20 · w500 · lh 24
+  TextStyle get titleLarge => const TextStyle(
         fontSize: 20,
-        fontWeight: FontWeight.w600,
-        height: 1.20,
+        fontWeight: TextWeight.medium,
+        height: 24 / 20,
       );
 
-  /// title/xl uppercase — 16 · w600 · lh 24 · ls 0.32
+  /// title/xl uppercase — 16 · w500 · lh 24 · ls 2%
   TextStyle get titleXlUppercase => TextStyle(
-        fontFamily: fontFamily,
         fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.50,
-        letterSpacing: 0.32,
+        fontWeight: TextWeight.medium,
+        height: 24 / 16,
+        letterSpacing: _ls(percentage: 2, fontSize: 16),
       );
 
   /// title/medium — 16 · w600 · lh 16
-  TextStyle get titleMedium => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get titleMedium => const TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.00,
+        fontWeight: TextWeight.semibold,
+        height: 16 / 16,
       );
 
-  /// title/medium-uppercase — 16 · w600 · lh 16 · ls 0.192
+  /// title/medium-uppercase — 16 · w500 · lh 20 · ls 1.2%
   TextStyle get titleMediumUppercase => TextStyle(
-        fontFamily: fontFamily,
         fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.00,
-        letterSpacing: 0.192,
+        fontWeight: TextWeight.medium,
+        height: 20 / 16,
+        letterSpacing: _ls(percentage: 1.2, fontSize: 16),
       );
 
   /// title/small — 14 · w600 · lh 20 · ls 0.1
-  TextStyle get titleSmall => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get titleSmall => const TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.429,
+        fontWeight: TextWeight.semibold,
+        height: 20 / 14,
         letterSpacing: 0.1,
       );
 
-  /// title/sm uppercase — 14 · w600 · lh 20 · ls 0.2
-  TextStyle get titleSmUppercase => TextStyle(
-        fontFamily: fontFamily,
+  /// title/sm uppercase — 14 · w500 · lh 20 · ls 0.2
+  TextStyle get titleSmUppercase => const TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.429,
+        fontWeight: TextWeight.medium,
+        height: 20 / 14,
         letterSpacing: 0.2,
       );
 
-  /// title/tiny uppercase — 12 · w600 · lh 16 · ls 0.2
-  TextStyle get titleTinyUppercase => TextStyle(
-        fontFamily: fontFamily,
+  /// title/tiny uppercase — 12 · w500 · lh 16 · ls 0.2
+  TextStyle get titleTinyUppercase => const TextStyle(
         fontSize: 12,
-        fontWeight: FontWeight.w600,
-        height: 1.333,
+        fontWeight: TextWeight.medium,
+        height: 16 / 12,
         letterSpacing: 0.2,
       );
 
   // ── Body ──────────────────────────────────────────────────────────────────
 
   /// body/large — 16 · w400 · lh 24
-  TextStyle get bodyLarge => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get bodyLarge => const TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w400,
-        height: 1.50,
+        fontWeight: TextWeight.regular,
+        height: 24 / 16,
+      );
+
+  /// body/medium — 14 · w400 · lh 20
+  TextStyle get bodyMedium => const TextStyle(
+        fontSize: 14,
+        fontWeight: TextWeight.regular,
+        height: 20 / 14,
       );
 
   /// body/regular — 14 · w400 · lh 20
-  TextStyle get bodyRegular => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get bodyRegular => const TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w400,
-        height: 1.429,
+        fontWeight: TextWeight.regular,
+        height: 20 / 14,
       );
 
-  /// body/smaller_uppercase — 14 · w600 · lh 16 · ls 0.28
-  TextStyle get bodySmallerUppercase => TextStyle(
-        fontFamily: fontFamily,
+  /// body/small-uppercase — 14 · w500 · lh 16 · ls 2%
+  TextStyle get bodySmallUppercase => TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.143,
-        letterSpacing: 0.28,
+        fontWeight: TextWeight.medium,
+        height: 16 / 14,
+        letterSpacing: _ls(percentage: 2, fontSize: 14),
       );
 
-  /// body/small — 12 · w400 · lh 16 · ls 0.072
+  /// body/small — 12 · w400 · lh 16 · ls 0.6%
   TextStyle get bodySmall => TextStyle(
-        fontFamily: fontFamily,
         fontSize: 12,
-        fontWeight: FontWeight.w400,
-        height: 1.333,
-        letterSpacing: 0.072,
+        fontWeight: TextWeight.regular,
+        height: 16 / 12,
+        letterSpacing: _ls(percentage: 0.6, fontSize: 12),
       );
 
   // ── Label ─────────────────────────────────────────────────────────────────
 
-  /// label/xl — 16 · w600 · lh 20 · ls 0.1
-  TextStyle get labelXl => TextStyle(
-        fontFamily: fontFamily,
+  /// label/xl — 16 · w500 · lh 20 · ls 0.1
+  TextStyle get labelXl => const TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w600,
-        height: 1.25,
+        fontWeight: TextWeight.medium,
+        height: 20 / 16,
         letterSpacing: 0.1,
       );
 
-  /// label/large — 14 · w600 · lh 20 · ls 0.1
-  TextStyle get labelLarge => TextStyle(
-        fontFamily: fontFamily,
+  /// label/large — 14 · w500 · lh 20 · ls 0.1
+  TextStyle get labelLarge => const TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w600,
-        height: 1.429,
+        fontWeight: TextWeight.medium,
+        height: 20 / 14,
         letterSpacing: 0.1,
       );
 
-  /// label/medium — 13 · w600 · lh 16 · ls 0.2
-  TextStyle get labelMedium => TextStyle(
-        fontFamily: fontFamily,
+  /// label/medium — 13 · w500 · lh 16 · ls 0.2
+  TextStyle get labelMedium => const TextStyle(
         fontSize: 13,
-        fontWeight: FontWeight.w600,
-        height: 1.231,
+        fontWeight: TextWeight.medium,
+        height: 16 / 13,
         letterSpacing: 0.2,
       );
 
   /// label/regular — 13 · w400 · lh 16 · ls 0.2
-  TextStyle get labelRegular => TextStyle(
-        fontFamily: fontFamily,
+  TextStyle get labelRegular => const TextStyle(
         fontSize: 13,
-        fontWeight: FontWeight.w400,
-        height: 1.231,
+        fontWeight: TextWeight.regular,
+        height: 16 / 13,
         letterSpacing: 0.2,
       );
 
-  /// label/medium-12 — 12 · w600 · lh 11
-  TextStyle get labelMedium12 => TextStyle(
-        fontFamily: fontFamily,
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-        height: 0.917,
-      );
-
-  /// label/small — 11 · w600 · ls 0.5
-  TextStyle get labelSmall => TextStyle(
-        fontFamily: fontFamily,
+  /// label/small — 11 · w500 · lh 11 · ls 0.5
+  TextStyle get labelSmall => const TextStyle(
         fontSize: 11,
-        fontWeight: FontWeight.w600,
+        fontWeight: TextWeight.medium,
+        height: 11 / 11,
         letterSpacing: 0.5,
       );
 
-  /// label/tiny — 11 · w600 · lh 11 · ls -0.275
+  /// label/tiny — 11 · w500 · lh 11 · ls -2.5%
   TextStyle get labelTiny => TextStyle(
-        fontFamily: fontFamily,
         fontSize: 11,
-        fontWeight: FontWeight.w600,
-        height: 1.00,
-        letterSpacing: -0.275,
+        fontWeight: TextWeight.medium,
+        height: 11 / 11,
+        letterSpacing: _ls(percentage: -2.5, fontSize: 11),
       );
 
   @override
-  TextStyleExtension copyWith({String? fontFamily}) =>
-      TextStyleExtension(fontFamily: fontFamily ?? this.fontFamily);
+  TextStyleExtension copyWith() => const TextStyleExtension();
 
   @override
   ThemeExtension<TextStyleExtension> lerp(other, t) =>
-      t < 0.5 ? this : (other as TextStyleExtension? ?? this);
+      const TextStyleExtension();
 }

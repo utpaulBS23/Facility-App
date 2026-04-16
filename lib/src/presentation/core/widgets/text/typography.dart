@@ -567,6 +567,34 @@ class BodyLargeText extends _Typography {
       );
 }
 
+class BodyMediumText extends _Typography {
+  const BodyMediumText(
+    super.text, {
+    super.key,
+    super.color,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.softWrap,
+    super.textDirection,
+    super.semanticsLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+        softWrap: softWrap,
+        textDirection: textDirection,
+        semanticsLabel: semanticsLabel,
+        style: context.textStyle.bodyMedium.copyWith(
+          color: color ?? context.color.text.primary,
+        ),
+      );
+}
+
 // WHY: BodyRegularText exposes a .secondary named constructor for the common
 // case of muted descriptive text, matching the product design's usage pattern.
 class BodyRegularText extends _Typography {
@@ -613,8 +641,8 @@ class BodyRegularText extends _Typography {
       );
 }
 
-class BodySmallerUppercaseText extends _Typography {
-  const BodySmallerUppercaseText(
+class BodySmallUppercaseText extends _Typography {
+  const BodySmallUppercaseText(
     super.text, {
     super.key,
     super.color,
@@ -635,7 +663,7 @@ class BodySmallerUppercaseText extends _Typography {
         softWrap: softWrap,
         textDirection: textDirection,
         semanticsLabel: semanticsLabel,
-        style: context.textStyle.bodySmallerUppercase.copyWith(
+        style: context.textStyle.bodySmallUppercase.copyWith(
           color: color ?? context.color.text.primary,
         ),
       );
@@ -783,6 +811,8 @@ class LabelRegularText extends _Typography {
       );
 }
 
+// WHY: labelMedium12 (12px w600) was removed from the type scale.
+// Mapped to labelSmall (11px w500) — the closest remaining semibold label.
 class LabelMedium12Text extends _Typography {
   const LabelMedium12Text(
     super.text, {
@@ -805,7 +835,7 @@ class LabelMedium12Text extends _Typography {
         softWrap: softWrap,
         textDirection: textDirection,
         semanticsLabel: semanticsLabel,
-        style: context.textStyle.labelMedium12.copyWith(
+        style: context.textStyle.labelSmall.copyWith(
           color: color ?? context.color.text.primary,
         ),
       );

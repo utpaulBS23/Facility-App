@@ -166,5 +166,16 @@
   "hoursWorked": "কাজের ঘণ্টা",
   "shiftType": "শিফটের ধরন",
   "selfieVerification": "সেলফি যাচাই",
-  "supervisorApproved": "সুপারভাইজার অনুমোদিত"
+  "supervisorApproved": "সুপারভাইজার অনুমোদিত",
+  "logoutConfirmMessage": "আপনি কি নিশ্চিতভাবে লগআউট করতে চান?",
+  "confirm": "নিশ্চিত করুন",
+  "menu": "মেনু",
+  "shift": "শিফট",
+  "inProgress": "চলমান",
+  "upcoming": "আসন্ন",
+  "shiftDetails": "শিফটের বিবরণ",
+  "assignedSupervisor": "নিযুক্ত সুপারভাইজার",
+  "shiftNotes": "শিফট নোটস",
+  "date": "তারিখ",
+  "time": "সময়"
 }

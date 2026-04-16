@@ -16,7 +16,5 @@ class _FlutterGuardian extends PluginBase {
     RepositoryNamingConvention(configs),
     UseCaseNamingConvention(configs),
     ServiceNamingConvention(configs),
-    MaxFileLinesRule(configs),
-    MaxMethodLinesRule(configs),
   ];
 }

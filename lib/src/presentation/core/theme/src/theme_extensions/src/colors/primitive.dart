@@ -59,7 +59,10 @@ class _Primitive {
   static const Color transparentBlack20 = Color(0x33181818); // 20%
   static const Color transparentBlack80 = Color(0xCC181818); // 80%
   static const Color transparentGray = Color(0xCC030B1A); // 80%
-  static const Color transparentNeutral90 = Color(0x1A030B1A); // 10% neutral90 — shadow base
+  static const Color transparentNeutral90 = Color(
+    0x1A030B1A,
+  ); //// 10% neutral90 — shadow base
+  static const Color gray80 = Color(0xCC030B1A); // gray (80% opacity)
 
   // dark surfaces (used by selfie zone — always dark regardless of theme)
   static const Color darkSurface1 = Color(0xFF2A2A2A);

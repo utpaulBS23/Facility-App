@@ -73,7 +73,7 @@ class _CheckTypeChip extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           label,
-          style: context.textStyle.labelMedium12.copyWith(
+          style: context.textStyle.labelSmall.copyWith(
             color: context.color.text.primary,
           ),
         ),

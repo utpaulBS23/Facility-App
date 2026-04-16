@@ -12,6 +12,7 @@ class Routes {
   static const String countrySelection = '/country-selection';
 
   static const String shift = '/shift';
+  static const String shiftDetails = '/shift-details';
   static const String shiftCheckIn = '/shift-check-in';
   static const String approvalRequest = '/approval-request';
 

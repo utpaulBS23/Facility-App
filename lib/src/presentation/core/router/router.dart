@@ -11,7 +11,8 @@ import '../../features/authentication/forgot_password/view/reset_password_page.d
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
 import '../../features/attendance/view/attendance_page.dart';
-import '../../features/home/view/home_page.dart';
+import '../../features/menu/view/menu_page.dart';
+import '../../features/shift/view/shift_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/shift_check_in/view/shift_check_in_page.dart';
 import '../../features/splash/view/splash_page.dart';
@@ -25,6 +26,7 @@ part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
 part 'parts/shell_routes.dart';
 part 'parts/shift_check_in_routes.dart';
+part 'parts/shift_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -63,6 +65,7 @@ GoRouter goRouter(Ref ref) {
       ..._onboardingRoutes(ref),
       ..._authenticationRoutes(ref),
       ..._shiftCheckInRoutes(ref),
+      ..._shiftRoutes(ref),
       ..._attendanceRoutes(ref),
       _shellRoutes(ref),
     ],

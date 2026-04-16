@@ -14,10 +14,11 @@ class $LightThemeData with ThemeExtensions {
 
   final String _fontFamily;
 
-  // WHY: overrides the mixin getter so the locale-specific font is used
-  // across every extension-registered TextStyle.
+  // WHY: TextStyleExtension has no fontFamily param in the new design —
+  // the locale font is applied via ThemeData.fontFamily (set above) and
+  // falls through to every TextStyle that omits its own fontFamily.
   @override
-  TextStyleExtension get textStyle => TextStyleExtension(fontFamily: _fontFamily);
+  TextStyleExtension get textStyle => const TextStyleExtension();
 
   ThemeData call() {
     return ThemeData(
@@ -49,7 +50,7 @@ class $DarkThemeData with ThemeExtensions {
   final String _fontFamily;
 
   @override
-  TextStyleExtension get textStyle => TextStyleExtension(fontFamily: _fontFamily);
+  TextStyleExtension get textStyle => const TextStyleExtension();
 
   ThemeData call() {
     return ThemeData(
