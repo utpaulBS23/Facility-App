@@ -12,7 +12,7 @@ List<ShiftCardData> _buildMockShifts() {
       supervisorPhone: '+880 1911-234567',
       address: 'Mirpur-10, Dhaka',
       timeRange: '08:00 AM – 04:00 PM',
-      date: _formatDate(today),
+      date: formatShiftDate(today),
       shiftDate: today,
       status: ShiftStatus.inProgress,
       shiftType: 'Morning',
@@ -24,7 +24,7 @@ List<ShiftCardData> _buildMockShifts() {
       supervisorPhone: '+880 1922-345678',
       address: 'Bijoy Sarani, Dhaka',
       timeRange: '08:00 AM – 04:00 PM',
-      date: _formatDate(tomorrow),
+      date: formatShiftDate(tomorrow),
       shiftDate: tomorrow,
       status: ShiftStatus.upcoming,
       shiftType: 'Morning',
@@ -32,7 +32,7 @@ List<ShiftCardData> _buildMockShifts() {
   ];
 }
 
-String _formatDate(DateTime d) {
+String formatShiftDate(DateTime d) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const months = [
     'Jan',
@@ -133,9 +133,11 @@ class _ApplyLeaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return SizedBox(
       width: double.infinity,
-      height: 44,
+      height: spacing.s44,
       child: FilledButton.icon(
         onPressed: onTap,
         icon: const Icon(Icons.calendar_month_outlined),
@@ -152,8 +154,10 @@ class _CheckOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return SizedBox(
-      height: 44,
+      height: spacing.s44,
       width: 144,
       child: OutlinedButton.icon(
         onPressed: onTap,

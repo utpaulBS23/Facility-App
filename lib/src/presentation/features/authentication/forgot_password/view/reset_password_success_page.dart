@@ -9,6 +9,8 @@ import '../../../../core/widgets/text/typography.dart';
 class ResetPasswordSuccessPage extends StatelessWidget {
   const ResetPasswordSuccessPage({super.key});
 
+  void _onDismiss(BuildContext context) => context.pop();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,9 +47,7 @@ class ResetPasswordSuccessPage extends StatelessWidget {
                 ),
                 Gap(context.spacing.s32),
                 FilledButton(
-                  onPressed: () {
-                    context.pop();
-                  },
+                  onPressed: () => _onDismiss(context),
                   child: Text(context.locale.backToLogin),
                 ),
               ],

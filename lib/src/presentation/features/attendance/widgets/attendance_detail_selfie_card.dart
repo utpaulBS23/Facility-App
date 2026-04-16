@@ -66,11 +66,13 @@ class _CheckTypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 16, color: context.color.primary),
-        const SizedBox(width: 8),
+        Gap(spacing.s8),
         Text(
           label,
           style: context.textStyle.labelSmall.copyWith(

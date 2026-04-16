@@ -16,6 +16,9 @@ class Routes {
   static const String shiftCheckIn = '/shift-check-in';
   static const String approvalRequest = '/approval-request';
 
+  static const String applyLeave = '/apply-leave';
+  static const String selectShift = '/select-shift';
+
   static const String attendance = '/attendance';
   static const String attendanceDetails = '/attendance-details';
   static const String task = '/task';

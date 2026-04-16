@@ -25,7 +25,7 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s14),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
@@ -58,7 +58,7 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
                   size: 12,
                   color: context.color.text.secondary,
                 ),
-                const SizedBox(width: 4),
+                Gap(spacing.s4),
                 Text(
                   detail.checkInTime!,
                   style: context.textStyle.bodySmall.copyWith(
@@ -173,7 +173,7 @@ class _CheckTimeTile extends StatelessWidget {
           Row(
             children: [
               Icon(icon, size: 16, color: context.color.primary),
-              const SizedBox(width: 8),
+              Gap(spacing.s8),
               Text(
                 label,
                 style: context.textStyle.labelSmall.copyWith(
@@ -209,15 +209,16 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
     return Row(
       children: [
         Container(
-          width: 36,
-          height: 36,
+          width: spacing.s36,
+          height: spacing.s36,
           decoration: BoxDecoration(
             color: context.color.scaffoldBackground,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(radius.r10),
           ),
           child: Icon(icon, size: 16, color: context.color.text.secondary),
         ),
@@ -232,7 +233,7 @@ class _DetailRow extends StatelessWidget {
                   color: context.color.text.secondary,
                 ),
               ),
-              const SizedBox(height: 4),
+              Gap(spacing.s4),
               Text(
                 value,
                 style: context.textStyle.titleSmall.copyWith(

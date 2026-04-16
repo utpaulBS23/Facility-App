@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../gen/assets.gen.dart';
 
+/// App logo image widget.
+///
+/// Renders `bhumijoLogo` at the given [height] (defaults to 160 px).
+/// Pass [semanticLabel] to make the logo visible to screen readers.
 class ApplicationLogo extends StatelessWidget {
   const ApplicationLogo({
     super.key,

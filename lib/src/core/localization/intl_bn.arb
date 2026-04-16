@@ -179,5 +179,12 @@
   "assignedSupervisor": "নিযুক্ত সুপারভাইজার",
   "shiftNotes": "শিফট নোটস",
   "date": "তারিখ",
-  "time": "সময়"
+  "time": "সময়",
+  "leaveBalance": "ছুটির ব্যালেন্স",
+  "pending": "অপেক্ষমান",
+  "leaveType": "ছুটির ধরন",
+  "reasonOptional": "কারণ (ঐচ্ছিক)",
+  "submitLeaveRequest": "ছুটির আবেদন জমা দিন",
+  "reason": "কারণ",
+  "optional": "ঐচ্ছিক"
 }

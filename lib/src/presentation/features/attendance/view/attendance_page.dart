@@ -28,7 +28,7 @@ class AttendancePage extends ConsumerWidget {
   }
 
   void _onApplyLeave(BuildContext context) {
-    // TODO: navigate to apply leave screen
+    context.pushNamed(Routes.applyLeave);
   }
 
   @override

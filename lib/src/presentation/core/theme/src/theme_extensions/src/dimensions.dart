@@ -17,6 +17,7 @@ class Dimensions extends ThemeExtension<Dimensions> {
   static const double _v8 = 8;
   static const double _v10 = 10;
   static const double _v12 = 12;
+  static const double _v14 = 14;
   static const double _v16 = 16;
   static const double _v20 = 20;
   static const double _v24 = 24;
@@ -64,7 +65,9 @@ class _Spacing {
   final double s4 = Dimensions._v4;
   final double s6 = Dimensions._v6;
   final double s8 = Dimensions._v8;
+  final double s10 = Dimensions._v10;
   final double s12 = Dimensions._v12;
+  final double s14 = Dimensions._v14;
   final double s16 = Dimensions._v16;
   final double s20 = Dimensions._v20;
   final double s24 = Dimensions._v24;

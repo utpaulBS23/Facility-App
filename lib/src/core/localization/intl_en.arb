@@ -179,5 +179,12 @@
   "assignedSupervisor": "Assigned Supervisor",
   "shiftNotes": "Shift Notes",
   "date": "Date",
-  "time": "Time"
+  "time": "Time",
+  "leaveBalance": "Leave Balance",
+  "pending": "Pending",
+  "leaveType": "Leave type",
+  "reasonOptional": "Reason (Optional)",
+  "submitLeaveRequest": "Submit Leave Request",
+  "reason": "Reason",
+  "optional": "Optional"
 }

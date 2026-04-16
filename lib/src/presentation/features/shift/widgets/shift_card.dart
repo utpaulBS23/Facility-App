@@ -116,15 +116,17 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: spacing.s10,
+          height: spacing.s10,
           decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 4),
+        Gap(spacing.s4),
         Text(
           label,
           style: context.textStyle.bodySmall.copyWith(
@@ -144,10 +146,12 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Row(
       children: [
         Icon(icon, size: 16, color: context.color.text.secondary),
-        const SizedBox(width: 4),
+        Gap(spacing.s4),
         Text(
           label,
           style: context.textStyle.bodySmall.copyWith(

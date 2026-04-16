@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
+/// Circular progress indicator sized and tinted to match the app theme.
+///
+/// Drop this into any loading state — it picks up the correct color from
+/// [context.color.onPrimary] automatically.
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key});
 

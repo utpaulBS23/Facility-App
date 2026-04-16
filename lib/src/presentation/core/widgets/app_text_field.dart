@@ -1,6 +1,3 @@
-// Author: Md. Shahin Bashar
-// Created: 2026-04-03
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

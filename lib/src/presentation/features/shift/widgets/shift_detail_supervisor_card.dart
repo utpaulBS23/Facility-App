@@ -48,7 +48,7 @@ class _ShiftDetailSupervisorCard extends StatelessWidget {
                         color: context.color.text.primary,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    Gap(spacing.s4),
                     Text(
                       data.supervisorPhone,
                       style: context.textStyle.titleSmall.copyWith(

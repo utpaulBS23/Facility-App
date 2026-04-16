@@ -12,6 +12,7 @@ import '../../features/authentication/forgot_password/view/reset_password_succes
 import '../../features/authentication/login/view/login_page.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/menu/view/menu_page.dart';
+import '../../features/shift/view/apply_leave_page.dart';
 import '../../features/shift/view/shift_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/shift_check_in/view/shift_check_in_page.dart';
@@ -21,6 +22,7 @@ import '../widgets/navigation_shell.dart';
 import 'router_state/router_state_provider.dart';
 import 'routes.dart';
 
+part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
 part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
@@ -64,6 +66,7 @@ GoRouter goRouter(Ref ref) {
       ),
       ..._onboardingRoutes(ref),
       ..._authenticationRoutes(ref),
+      ..._applyLeaveRoutes(ref),
       ..._shiftCheckInRoutes(ref),
       ..._shiftRoutes(ref),
       ..._attendanceRoutes(ref),

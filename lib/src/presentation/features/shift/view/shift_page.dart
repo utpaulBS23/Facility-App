@@ -22,7 +22,7 @@ class ShiftPage extends StatelessWidget {
   const ShiftPage({super.key});
 
   void _onApplyLeave(BuildContext context) {
-    // TODO: navigate to apply leave screen
+    context.pushNamed(Routes.applyLeave);
   }
 
   void _onShiftTap(BuildContext context, ShiftCardData data) {

@@ -44,24 +44,28 @@ class _AttendanceListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s14,
+        ),
         decoration: BoxDecoration(
           color: context.color.onPrimary,
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+          borderRadius: BorderRadius.circular(radius.r12),
         ),
         child: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: spacing.s40,
+              height: spacing.s40,
               decoration: BoxDecoration(
                 color: _iconBg(context),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(radius.r10),
               ),
               child: Icon(_icon, color: _iconColor(context), size: 20),
             ),
@@ -114,15 +118,17 @@ class _StatusTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: spacing.s10,
+          height: spacing.s10,
           decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 4),
+        Gap(spacing.s4),
         Text(
           label,
           style: context.textStyle.bodySmall.copyWith(
@@ -141,6 +147,8 @@ class _TimeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Row(
       children: [
         Icon(
@@ -148,7 +156,7 @@ class _TimeRow extends StatelessWidget {
           size: 12,
           color: context.color.text.secondary,
         ),
-        const SizedBox(width: 4),
+        Gap(spacing.s4),
         Text(
           record.checkInTime!,
           style: context.textStyle.bodySmall.copyWith(
@@ -156,13 +164,13 @@ class _TimeRow extends StatelessWidget {
           ),
         ),
         if (record.checkOutTime != null) ...[
-          const SizedBox(width: 10),
+          Gap(spacing.s10),
           Icon(
             Icons.logout_rounded,
             size: 12,
             color: context.color.text.secondary,
           ),
-          const SizedBox(width: 4),
+          Gap(spacing.s4),
           Text(
             record.checkOutTime!,
             style: context.textStyle.bodySmall.copyWith(
@@ -171,7 +179,7 @@ class _TimeRow extends StatelessWidget {
           ),
         ],
         if (record.hoursWorked != null) ...[
-          const SizedBox(width: 10),
+          Gap(spacing.s10),
           Text(
             record.hoursWorked!,
             style: context.textStyle.bodySmall.copyWith(

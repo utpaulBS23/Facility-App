@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
+/// Inline text with a tappable link segment.
+///
+/// Renders [text] in secondary color followed by [linkText] in primary text
+/// color. The entire row is wrapped in a [TextButton] so [onTap] fires on
+/// any tap within the widget bounds.
 class LinkText extends StatelessWidget {
   const LinkText({
     super.key,

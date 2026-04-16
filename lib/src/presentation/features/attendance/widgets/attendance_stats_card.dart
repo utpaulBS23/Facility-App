@@ -7,8 +7,10 @@ class _AttendanceStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(spacing.s8),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
@@ -22,21 +24,21 @@ class _AttendanceStatsCard extends StatelessWidget {
             background: context.color.successAlt,
             textColor: context.color.success,
           ),
-          const SizedBox(width: 6),
+          Gap(spacing.s6),
           _StatItem(
             count: summary.lateCount,
             label: context.locale.late,
             background: context.color.warningAlt,
             textColor: context.color.warning,
           ),
-          const SizedBox(width: 6),
+          Gap(spacing.s6),
           _StatItem(
             count: summary.absentCount,
             label: context.locale.absent,
             background: context.color.errorAlt,
             textColor: context.color.error,
           ),
-          const SizedBox(width: 6),
+          Gap(spacing.s6),
           _StatItem(
             count: summary.leaveCount,
             label: context.locale.leave,
@@ -64,12 +66,15 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(spacing.s10),
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius.r10),
         ),
         child: Column(
           children: [
@@ -78,7 +83,7 @@ class _StatItem extends StatelessWidget {
               style: context.textStyle.titleMedium.copyWith(color: textColor),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
+            Gap(spacing.s4),
             Text(
               label,
               style: context.textStyle.bodySmall.copyWith(

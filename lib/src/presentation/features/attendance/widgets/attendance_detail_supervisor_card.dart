@@ -62,7 +62,7 @@ class _AttendanceDetailSupervisorCard extends StatelessWidget {
                         color: context.color.text.primary,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    Gap(spacing.s4),
                     Text(
                       approval.phone,
                       style: context.textStyle.titleSmall.copyWith(
