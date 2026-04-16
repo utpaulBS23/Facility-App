@@ -1,4 +1,3 @@
-// Author: Claude AI Assistant
 // Created: 2026-04-08
 
 /// Represents the current location information.

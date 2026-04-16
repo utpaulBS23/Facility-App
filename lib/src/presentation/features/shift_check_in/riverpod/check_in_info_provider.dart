@@ -1,6 +1,3 @@
-// Author: Claude AI Assistant
-// Created: 2026-04-08
-
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

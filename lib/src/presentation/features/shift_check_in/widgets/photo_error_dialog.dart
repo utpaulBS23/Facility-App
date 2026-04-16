@@ -1,4 +1,3 @@
-// Author: Claude AI Assistant
 // Created: 2026-04-08
 
 part of '../view/shift_check_in_page.dart';
@@ -15,7 +14,6 @@ class _PhotoErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.color;
     final dimensions = context.dimensions;
 
     return Container(
@@ -52,10 +50,7 @@ class _PhotoErrorDialog extends StatelessWidget {
               onPressed: onRetry,
               style: ButtonStyle(
                 minimumSize: WidgetStatePropertyAll(
-                  Size(
-                    dimensions.spacing.s36,
-                    dimensions.spacing.s36,
-                  ),
+                  Size(dimensions.spacing.s36, dimensions.spacing.s36),
                 ),
               ),
               child: Text(context.locale.retry),

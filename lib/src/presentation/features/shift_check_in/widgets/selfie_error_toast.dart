@@ -1,4 +1,3 @@
-// Author: Claude AI Assistant
 // Created: 2026-04-09
 
 part of '../view/shift_check_in_page.dart';

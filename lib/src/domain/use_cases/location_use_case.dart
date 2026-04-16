@@ -1,4 +1,3 @@
-// Author: Claude AI Assistant
 // Created: 2026-04-08
 
 import '../../core/base/result.dart';

@@ -1,4 +1,3 @@
-// Author: Claude AI Assistant
 // Created: 2026-04-08
 
 import 'package:geocoding/geocoding.dart';
@@ -29,9 +28,7 @@ final class LocationServiceImpl implements LocationService {
     if (!serviceEnabled) return null;
 
     return Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
   }
 
