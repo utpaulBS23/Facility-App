@@ -79,47 +79,14 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
               itemCount: _dateList.length,
               itemBuilder: (_, idx) {
                 final date = _dateList[idx];
-                final isSelected = date == _selectedDate;
-                return Builder(
-                  builder: (context) {
-                    _itemContexts[date] = context;
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() => _selectedDate = date);
-                        widget.onDateSelected(date);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(DateFormat('E').format(date)),
-                            const SizedBox(height: 5),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14.5,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: isSelected
-                                      ? context.color.primary
-                                      : context.color.onPrimary,
-                                ),
-
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(DateFormat('d').format(date)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                return _DatePickerItem(
+                  date: date,
+                  isSelected: date == _selectedDate,
+                  onTap: () {
+                    setState(() => _selectedDate = date);
+                    widget.onDateSelected(date);
                   },
+                  onContextReady: (ctx) => _itemContexts[date] = ctx,
                 );
               },
             ),

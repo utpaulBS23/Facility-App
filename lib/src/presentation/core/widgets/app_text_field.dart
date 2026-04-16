@@ -41,12 +41,12 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.extraValidations = const [],
     this.autovalidateMode,
-  })  : _type = _FieldType.email,
-        _minLength = 0,
-        _requireNumber = false,
-        _requireLowerCase = false,
-        _requireUpperCase = false,
-        _requireSpecialChar = false;
+  }) : _type = _FieldType.email,
+       _minLength = 0,
+       _requireNumber = false,
+       _requireLowerCase = false,
+       _requireUpperCase = false,
+       _requireSpecialChar = false;
 
   /// Obscured password input with visibility toggle.
   /// Built-in: [RequiredValidation] → [PasswordValidation].
@@ -69,13 +69,13 @@ class AppTextField extends StatefulWidget {
     bool requireLowerCase = false,
     bool requireUpperCase = false,
     bool requireSpecialChar = false,
-  })  : _type = _FieldType.password,
-        prefixIcon = null,
-        _minLength = minLength,
-        _requireNumber = requireNumber,
-        _requireLowerCase = requireLowerCase,
-        _requireUpperCase = requireUpperCase,
-        _requireSpecialChar = requireSpecialChar;
+  }) : _type = _FieldType.password,
+       prefixIcon = null,
+       _minLength = minLength,
+       _requireNumber = requireNumber,
+       _requireLowerCase = requireLowerCase,
+       _requireUpperCase = requireUpperCase,
+       _requireSpecialChar = requireSpecialChar;
 
   /// Plain single-line input (address, name, etc.).
   /// No built-in validators — add via [extraValidations].
@@ -93,12 +93,12 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.extraValidations = const [],
     this.autovalidateMode,
-  })  : _type = _FieldType.text,
-        _minLength = 0,
-        _requireNumber = false,
-        _requireLowerCase = false,
-        _requireUpperCase = false,
-        _requireSpecialChar = false;
+  }) : _type = _FieldType.text,
+       _minLength = 0,
+       _requireNumber = false,
+       _requireLowerCase = false,
+       _requireUpperCase = false,
+       _requireSpecialChar = false;
 
   /// Multiline text area (notes, remarks, description).
   /// No built-in validators — add via [extraValidations].
@@ -115,13 +115,13 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.extraValidations = const [],
     this.autovalidateMode,
-  })  : _type = _FieldType.description,
-        prefixIcon = null,
-        _minLength = 0,
-        _requireNumber = false,
-        _requireLowerCase = false,
-        _requireUpperCase = false,
-        _requireSpecialChar = false;
+  }) : _type = _FieldType.description,
+       prefixIcon = null,
+       _minLength = 0,
+       _requireNumber = false,
+       _requireLowerCase = false,
+       _requireUpperCase = false,
+       _requireSpecialChar = false;
 
   /// Pill-style search bar. Not wired into [Form] validation.
   const AppTextField.search({
@@ -132,18 +132,18 @@ class AppTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.focusNode,
-  })  : _type = _FieldType.search,
-        prefixIcon = null,
-        label = null,
-        errorText = null,
-        textInputAction = TextInputAction.search,
-        extraValidations = const [],
-        autovalidateMode = null,
-        _minLength = 0,
-        _requireNumber = false,
-        _requireLowerCase = false,
-        _requireUpperCase = false,
-        _requireSpecialChar = false;
+  }) : _type = _FieldType.search,
+       prefixIcon = null,
+       label = null,
+       errorText = null,
+       textInputAction = TextInputAction.search,
+       extraValidations = const [],
+       autovalidateMode = null,
+       _minLength = 0,
+       _requireNumber = false,
+       _requireLowerCase = false,
+       _requireUpperCase = false,
+       _requireSpecialChar = false;
 
   final _FieldType _type;
   final TextEditingController controller;
@@ -194,35 +194,33 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   void _onFocusChange() => setState(() => _hasFocus = _focusNode.hasFocus);
+
   void _onTextChange() => setState(() => _currentText = widget.controller.text);
+
   void _toggleVisibility() => setState(() => _obscureText = !_obscureText);
 
   // WHY: Switch expression so the compiler enforces a case for every _FieldType.
   List<Validation<String>> get _defaultValidations => switch (widget._type) {
-        _FieldType.email => [RequiredValidation(), EmailValidation()],
-        _FieldType.password => [
-            RequiredValidation(),
-            PasswordValidation(
-              minLength: widget._minLength,
-              number: widget._requireNumber,
-              lowerCase: widget._requireLowerCase,
-              upperCase: widget._requireUpperCase,
-              specialChar: widget._requireSpecialChar,
-            ),
-          ],
-        _FieldType.text ||
-        _FieldType.description ||
-        _FieldType.search =>
-          const [],
-      };
+    _FieldType.email => [RequiredValidation(), EmailValidation()],
+    _FieldType.password => [
+      RequiredValidation(),
+      PasswordValidation(
+        minLength: widget._minLength,
+        number: widget._requireNumber,
+        lowerCase: widget._requireLowerCase,
+        upperCase: widget._requireUpperCase,
+        specialChar: widget._requireSpecialChar,
+      ),
+    ],
+    _FieldType.text || _FieldType.description || _FieldType.search => const [],
+  };
 
   bool get _hasValidators => switch (widget._type) {
-        _FieldType.email || _FieldType.password => true,
-        _FieldType.text ||
-        _FieldType.description =>
-          widget.extraValidations.isNotEmpty,
-        _FieldType.search => false,
-      };
+    _FieldType.email || _FieldType.password => true,
+    _FieldType.text ||
+    _FieldType.description => widget.extraValidations.isNotEmpty,
+    _FieldType.search => false,
+  };
 
   // WHY: Validator runs inside the build/validate phase, so setState must be
   // deferred to the next frame via addPostFrameCallback.
@@ -259,13 +257,12 @@ class _AppTextFieldState extends State<AppTextField> {
   // Adding a new _FieldType without a case here is a compile error.
   @override
   Widget build(BuildContext context) => switch (widget._type) {
-        _FieldType.search => _buildSearch(context),
-        _FieldType.description => _buildDescription(context),
-        _FieldType.email ||
-        _FieldType.password ||
-        _FieldType.text =>
-          _buildInput(context),
-      };
+    _FieldType.search => _buildSearch(context),
+    _FieldType.description => _buildDescription(context),
+    _FieldType.email ||
+    _FieldType.password ||
+    _FieldType.text => _buildInput(context),
+  };
 
   // ─── Shared helpers ────────────────────────────────────────────────────────
 
@@ -273,13 +270,13 @@ class _AppTextFieldState extends State<AppTextField> {
     // WHY: SizedBox pins the SVG to exactly s20×s20 so the InputDecoration's
     // default 48-px-min slot doesn't let it expand and appear oversized.
     Widget svgIcon(SvgGenImage asset) => SizedBox(
-          width: d.spacing.s20,
-          height: d.spacing.s20,
-          child: asset.svg(
-            colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
-            fit: BoxFit.contain,
-          ),
-        );
+      width: d.spacing.s20,
+      height: d.spacing.s20,
+      child: asset.svg(
+        colorFilter: ColorFilter.mode(colors.icon, BlendMode.srcIn),
+        fit: BoxFit.contain,
+      ),
+    );
 
     return switch (widget._type) {
       _FieldType.email => widget.prefixIcon ?? svgIcon(Assets.icons.email),
@@ -290,38 +287,37 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   Widget? _suffixIcon(Dimensions d) => switch (widget._type) {
-        _FieldType.password => IconButton(
-            iconSize: d.spacing.s20,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: widget.enabled ? _toggleVisibility : null,
-            icon: Icon(
-              _obscureText
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-            ),
-          ),
-        _FieldType.email ||
-        _FieldType.text ||
-        _FieldType.description ||
-        _FieldType.search =>
-          null,
-      };
+    _FieldType.password => IconButton(
+      iconSize: d.spacing.s20,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
+      onPressed: widget.enabled ? _toggleVisibility : null,
+      icon: Icon(
+        _obscureText
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+      ),
+    ),
+    _FieldType.email ||
+    _FieldType.text ||
+    _FieldType.description ||
+    _FieldType.search => null,
+  };
 
   InputDecoration get _bareDecoration => InputDecoration(
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        focusedErrorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-        // WHY: Suppresses Material's built-in error slot; we render our own
-        // error text below the container so it aligns with the custom border.
-        errorStyle: const TextStyle(height: 0, fontSize: 0),
-        isDense: true,
-        contentPadding: EdgeInsets.zero,
-        filled: false,
-      );
+    border: InputBorder.none,
+    enabledBorder: InputBorder.none,
+    focusedBorder: InputBorder.none,
+    errorBorder: InputBorder.none,
+    focusedErrorBorder: InputBorder.none,
+    disabledBorder: InputBorder.none,
+    // WHY: Suppresses Material's built-in error slot; we render our own
+    // error text below the container so it aligns with the custom border.
+    errorStyle: const TextStyle(height: 0, fontSize: 0),
+    isDense: true,
+    contentPadding: EdgeInsets.zero,
+    filled: false,
+  );
 
   // ─── Input (email / password / text) ───────────────────────────────────────
 
@@ -330,7 +326,8 @@ class _AppTextFieldState extends State<AppTextField> {
     final dimensions = context.dimensions;
     final textStyle = context.textStyle;
 
-    final showLabel = (_currentText.isNotEmpty || _hasFocus) && widget.label != null;
+    final showLabel =
+        (_currentText.isNotEmpty || _hasFocus) && widget.label != null;
     final effectiveError = _validationError ?? widget.errorText;
     final hasError = effectiveError != null;
 
@@ -377,10 +374,12 @@ class _AppTextFieldState extends State<AppTextField> {
                       controller: widget.controller,
                       focusNode: _focusNode,
                       enabled: widget.enabled,
-                      obscureText: widget._type == _FieldType.password && _obscureText,
+                      obscureText:
+                          widget._type == _FieldType.password && _obscureText,
                       keyboardType: switch (widget._type) {
                         _FieldType.email => TextInputType.emailAddress,
-                        _FieldType.password || _FieldType.text => TextInputType.text,
+                        _FieldType.password ||
+                        _FieldType.text => TextInputType.text,
                         _ => TextInputType.text,
                       },
                       textInputAction: widget.textInputAction,
@@ -469,7 +468,9 @@ class _AppTextFieldState extends State<AppTextField> {
               if (widget.label != null)
                 Text(
                   widget.label!,
-                  style: textStyle.bodySmall.copyWith(color: colors.text.secondary),
+                  style: textStyle.bodySmall.copyWith(
+                    color: colors.text.secondary,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -494,7 +495,9 @@ class _AppTextFieldState extends State<AppTextField> {
                   ),
                   decoration: _bareDecoration.copyWith(
                     hintText: widget.hint,
-                    hintStyle: textStyle.labelLarge.copyWith(color: colors.text.muted),
+                    hintStyle: textStyle.labelLarge.copyWith(
+                      color: colors.text.muted,
+                    ),
                   ),
                   cursorColor: colors.primary,
                 ),
@@ -555,11 +558,15 @@ class _AppTextFieldState extends State<AppTextField> {
               onSubmitted: widget.onSubmitted,
               autocorrect: false,
               style: textStyle.bodyLarge.copyWith(
-                color: widget.enabled ? colors.text.primary : colors.text.disabled,
+                color: widget.enabled
+                    ? colors.text.primary
+                    : colors.text.disabled,
               ),
               decoration: InputDecoration(
                 hintText: widget.hint,
-                hintStyle: textStyle.bodyLarge.copyWith(color: colors.text.muted),
+                hintStyle: textStyle.bodyLarge.copyWith(
+                  color: colors.text.muted,
+                ),
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
