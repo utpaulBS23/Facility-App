@@ -72,15 +72,10 @@ class _ReasonInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return AppTextField.description(
       controller: controller,
-      maxLines: 5,
-      decoration: InputDecoration(
-        hintText: '${context.locale.reason} (${context.locale.optional})',
-      ),
-      style: context.textStyle.titleSmall.copyWith(
-        color: context.color.text.primary,
-      ),
+      hint: '${context.locale.reason} (${context.locale.optional})',
+      textInputAction: TextInputAction.done,
     );
   }
 }
