@@ -21,69 +21,101 @@ class _NavigationShellState extends State<NavigationShell> {
       body: widget.statefulNavigationShell,
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: context.color.primary,
-        iconSize: 28,
+        unselectedItemColor: context.color.text.muted,
+        unselectedLabelStyle: context.textStyle.labelMedium12,
+        selectedLabelStyle: context.textStyle.labelMedium12,
         currentIndex: widget.statefulNavigationShell.currentIndex,
         onTap: (index) {
           widget.statefulNavigationShell.goBranch(index);
         },
         items: [
           BottomNavigationBarItem(
-            icon: Assets.icons.shift.svg(width: 28, height: 28),
+            icon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.shift.svg(width: 28, height: 28),
+            ),
             label: context.locale.shift,
-            activeIcon: Assets.icons.shift.svg(
-              width: 28,
-              height: 28,
-              colorFilter: ColorFilter.mode(
-                context.color.primary,
-                BlendMode.srcIn,
+            activeIcon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.shift.svg(
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(
+                  context.color.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Assets.icons.attendance.svg(width: 28, height: 28),
+            icon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.attendance.svg(width: 28, height: 28),
+            ),
             label: context.locale.attendance,
-            activeIcon: Assets.icons.attendance.svg(
-              width: 28,
-              height: 28,
-              colorFilter: ColorFilter.mode(
-                context.color.primary,
-                BlendMode.srcIn,
+            activeIcon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.attendance.svg(
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(
+                  context.color.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Assets.icons.task.svg(width: 28, height: 28),
+            icon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.task.svg(width: 28, height: 28),
+            ),
             label: context.locale.task,
-            activeIcon: Assets.icons.task.svg(
-              width: 28,
-              height: 28,
-              colorFilter: ColorFilter.mode(
-                context.color.primary,
-                BlendMode.srcIn,
+            activeIcon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.task.svg(
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(
+                  context.color.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Assets.icons.issue.svg(width: 28, height: 28),
+            icon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.issue.svg(width: 28, height: 28),
+            ),
             label: context.locale.issues,
-            activeIcon: Assets.icons.issue.svg(
-              width: 28,
-              height: 28,
-              colorFilter: ColorFilter.mode(
-                context.color.primary,
-                BlendMode.srcIn,
+            activeIcon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.issue.svg(
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(
+                  context.color.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
           BottomNavigationBarItem(
-            icon: Assets.icons.menu.svg(width: 28, height: 28),
+            icon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.menu.svg(width: 28, height: 28),
+            ),
             label: context.locale.menu,
-            activeIcon: Assets.icons.menu.svg(
-              width: 28,
-              height: 28,
-              colorFilter: ColorFilter.mode(
-                context.color.primary,
-                BlendMode.srcIn,
+            activeIcon: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Assets.icons.menu.svg(
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(
+                  context.color.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),
