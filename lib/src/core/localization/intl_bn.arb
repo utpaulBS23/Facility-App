@@ -186,5 +186,8 @@
   "reasonOptional": "কারণ (ঐচ্ছিক)",
   "submitLeaveRequest": "ছুটির আবেদন জমা দিন",
   "reason": "কারণ",
-  "optional": "ঐচ্ছিক"
+  "optional": "ঐচ্ছিক",
+  "assigned": "নিযুক্ত",
+  "assignStaff": "স্টাফ নিয়োগ করুন",
+  "employeeShortest": "এমপ্লয়ি শর্টেস্ট"
 }

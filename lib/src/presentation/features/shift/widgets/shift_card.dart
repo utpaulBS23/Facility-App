@@ -15,6 +15,10 @@ class ShiftCardData {
     this.hoursWorked,
     this.shiftType,
     this.shiftNotes,
+    // WHY: Supervisor view shows a separately assigned staff member distinct
+    // from the shift's primary contact; null means no one assigned yet.
+    this.assignedStaffName,
+    this.assignedStaffPhone,
   });
 
   final String facilityName;
@@ -30,6 +34,8 @@ class ShiftCardData {
   final String? hoursWorked;
   final String? shiftType;
   final String? shiftNotes;
+  final String? assignedStaffName;
+  final String? assignedStaffPhone;
 }
 
 class _ShiftCard extends StatelessWidget {
@@ -103,6 +109,84 @@ class _ShiftCard extends StatelessWidget {
           ),
         ],
       ),
+      ),
+    );
+  }
+}
+
+class _SupervisorShiftCard extends StatelessWidget {
+  const _SupervisorShiftCard({
+    required this.data,
+    required this.onAssignStaff,
+  });
+
+  final ShiftCardData data;
+  final VoidCallback onAssignStaff;
+
+  Color _dotColor(BuildContext context) => switch (data.status) {
+        ShiftStatus.inProgress => context.color.success,
+        ShiftStatus.upcoming => context.color.warning,
+      };
+
+  String _statusLabel(BuildContext context) => switch (data.status) {
+        ShiftStatus.inProgress => context.locale.inProgress,
+        ShiftStatus.upcoming => context.locale.upcoming,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Container(
+      padding: EdgeInsets.all(spacing.s16),
+      decoration: BoxDecoration(
+        color: context.color.onPrimary,
+        border: Border.all(color: context.color.borderSubtle),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              _StatusBadge(
+                label: _statusLabel(context),
+                dotColor: _dotColor(context),
+              ),
+              Gap(spacing.s8),
+              _StatusBadge(
+                label: context.locale.employeeShortest,
+                dotColor: context.color.warning,
+              ),
+            ],
+          ),
+          Gap(spacing.s8),
+          Text(
+            data.timeRange,
+            style: context.textStyle.labelLarge.copyWith(
+              color: context.color.text.primary,
+            ),
+          ),
+          Gap(spacing.s8),
+          Text(
+            data.facilityName,
+            style: context.textStyle.labelLarge.copyWith(
+              color: context.color.text.primary,
+            ),
+          ),
+          Gap(spacing.s6),
+          _InfoRow(
+            icon: Icons.person_outline_rounded,
+            label: data.supervisorName,
+          ),
+          Gap(spacing.s6),
+          _InfoRow(
+            icon: Icons.location_on_outlined,
+            label: data.address,
+          ),
+          Gap(spacing.s20),
+          _AssignedSection(data: data, onAssignStaff: onAssignStaff),
+        ],
       ),
     );
   }

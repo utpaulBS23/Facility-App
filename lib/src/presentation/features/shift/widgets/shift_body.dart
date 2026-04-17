@@ -2,7 +2,7 @@ part of '../view/shift_page.dart';
 
 // WHY: Dates are computed relative to today so the mock data is always
 // visible when the user opens the shift tab, regardless of the actual date.
-List<ShiftCardData> _buildMockShifts() {
+List<ShiftCardData> _buildAttendantShifts() {
   final today = DateTime.now();
   final tomorrow = today.add(const Duration(days: 1));
   return [
@@ -32,6 +32,40 @@ List<ShiftCardData> _buildMockShifts() {
   ];
 }
 
+// WHY: Supervisor mock has two shifts on the same day so the list is visible
+// without switching dates. assignedStaffName is null on the upcoming shift to
+// render the "Assign Staff" button.
+List<ShiftCardData> _buildSupervisorShifts() {
+  final today = DateTime.now();
+  return [
+    ShiftCardData(
+      facilityName: 'Mirpur-10 Market Facility',
+      supervisorName: 'Farhan Ahmed',
+      supervisorPhone: '',
+      address: 'Mirpur-10, Dhaka',
+      timeRange: '08:00 AM – 04:00 PM',
+      date: formatShiftDate(today),
+      shiftDate: today,
+      status: ShiftStatus.inProgress,
+      shiftType: 'Morning',
+      shiftNotes: 'Weekend crowd management.',
+      assignedStaffName: 'Bob Johnson',
+      assignedStaffPhone: '+880 1911-234567',
+    ),
+    ShiftCardData(
+      facilityName: 'Bijoy Sarani Tower',
+      supervisorName: 'Rezaul Karim',
+      supervisorPhone: '+880 1922-345678',
+      address: 'Bijoy Sarani, Dhaka',
+      timeRange: '08:00 AM – 04:00 PM',
+      date: formatShiftDate(today),
+      shiftDate: today,
+      status: ShiftStatus.upcoming,
+      shiftType: 'Morning',
+    ),
+  ];
+}
+
 String formatShiftDate(DateTime d) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const months = [
@@ -54,8 +88,13 @@ String formatShiftDate(DateTime d) {
 // WHY: StatefulWidget so it can own the selected date and rebuild the
 // shift list whenever the user taps a different day on the calendar.
 class _ShiftBody extends StatefulWidget {
-  const _ShiftBody({required this.onApplyLeave, required this.onShiftTap});
+  const _ShiftBody({
+    required this.role,
+    required this.onApplyLeave,
+    required this.onShiftTap,
+  });
 
+  final UserRole role;
   final VoidCallback onApplyLeave;
   final void Function(ShiftCardData data) onShiftTap;
 
@@ -67,11 +106,15 @@ class _ShiftBodyState extends State<_ShiftBody> {
   late DateTime _selectedDate;
   late final List<ShiftCardData> _allShifts;
 
+  bool get _isSupervisor => widget.role == UserRole.supervisor;
+
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _allShifts = _buildMockShifts();
+    _allShifts = _isSupervisor
+        ? _buildSupervisorShifts()
+        : _buildAttendantShifts();
   }
 
   void _onDateChanged(DateTime date) {
@@ -105,15 +148,23 @@ class _ShiftBodyState extends State<_ShiftBody> {
               spacing.s16,
               spacing.s12,
               spacing.s16,
-              spacing.s16 + 44 + spacing.s16,
+              spacing.s16,
             ),
             itemCount: shifts.length + 1,
             separatorBuilder: (context, index) => Gap(spacing.s12),
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _ApplyLeaveButton(onTap: widget.onApplyLeave);
+                return _isSupervisor
+                    ? _ShiftCountLabel(count: shifts.length)
+                    : _ApplyLeaveButton(onTap: widget.onApplyLeave);
               }
               final data = shifts[index - 1];
+              if (_isSupervisor) {
+                return _SupervisorShiftCard(
+                  data: data,
+                  onAssignStaff: () {},
+                );
+              }
               return _ShiftCard(
                 data: data,
                 onTap: () => widget.onShiftTap(data),
@@ -122,6 +173,22 @@ class _ShiftBodyState extends State<_ShiftBody> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ShiftCountLabel extends StatelessWidget {
+  const _ShiftCountLabel({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '$count Shifts',
+      style: context.textStyle.labelLarge.copyWith(
+        color: context.color.text.primary,
+      ),
     );
   }
 }

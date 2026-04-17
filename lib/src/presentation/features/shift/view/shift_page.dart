@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/user_role.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -23,7 +24,11 @@ part '../widgets/shift_details_body.dart';
 part 'shift_details_page.dart';
 
 class ShiftPage extends StatelessWidget {
-  const ShiftPage({super.key});
+  const ShiftPage({super.key, this.role = UserRole.attendant});
+
+  // WHY: Hard-coded to supervisor for this sprint; will be driven by auth
+  // session once the backend role API is wired up.
+  final UserRole role;
 
   void _onApplyLeave(BuildContext context) {
     context.pushNamed(Routes.applyLeave);
@@ -35,6 +40,8 @@ class ShiftPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSupervisor = role == UserRole.supervisor;
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
@@ -43,8 +50,9 @@ class ShiftPage extends StatelessWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      floatingActionButton: _CheckOutButton(onTap: () {}),
+      floatingActionButton: isSupervisor ? null : _CheckOutButton(onTap: () {}),
       body: _ShiftBody(
+        role: role,
         onApplyLeave: () => _onApplyLeave(context),
         onShiftTap: (data) => _onShiftTap(context, data),
       ),

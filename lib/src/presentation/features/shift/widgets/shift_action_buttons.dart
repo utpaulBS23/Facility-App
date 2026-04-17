@@ -41,3 +41,107 @@ class _CheckOutButton extends StatelessWidget {
     );
   }
 }
+
+// WHY: Extracted as a named widget to keep _SupervisorShiftCard readable and
+// to isolate the assigned/unassigned branching logic.
+class _AssignedSection extends StatelessWidget {
+  const _AssignedSection({required this.data, required this.onAssignStaff});
+
+  final ShiftCardData data;
+  final VoidCallback onAssignStaff;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.locale.assigned,
+          style: context.textStyle.labelLarge.copyWith(
+            color: context.color.text.secondary,
+          ),
+        ),
+        Gap(spacing.s12),
+        if (data.assignedStaffName != null)
+          _AssignedStaffTile(
+            name: data.assignedStaffName!,
+            phone: data.assignedStaffPhone ?? '',
+          )
+        else
+          _AssignStaffButton(onTap: onAssignStaff),
+      ],
+    );
+  }
+}
+
+class _AssignedStaffTile extends StatelessWidget {
+  const _AssignedStaffTile({required this.name, required this.phone});
+
+  final String name;
+  final String phone;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: context.color.brandAccent,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.person_outline_rounded,
+            size: 24,
+            color: context.color.text.primary,
+          ),
+        ),
+        Gap(spacing.s16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              name,
+              style: context.textStyle.labelLarge.copyWith(
+                color: context.color.text.primary,
+              ),
+            ),
+            Gap(spacing.s2),
+            Text(
+              phone,
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.text.secondary,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _AssignStaffButton extends StatelessWidget {
+  const _AssignStaffButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return SizedBox(
+      width: double.infinity,
+      height: spacing.s44,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: const Icon(Icons.person_add_outlined),
+        label: Text(context.locale.assignStaff),
+      ),
+    );
+  }
+}

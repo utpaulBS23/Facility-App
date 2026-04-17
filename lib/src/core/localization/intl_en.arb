@@ -186,5 +186,8 @@
   "reasonOptional": "Reason (Optional)",
   "submitLeaveRequest": "Submit Leave Request",
   "reason": "Reason",
-  "optional": "Optional"
+  "optional": "Optional",
+  "assigned": "Assigned",
+  "assignStaff": "Assign Staff",
+  "employeeShortest": "Employee Shortest"
 }
