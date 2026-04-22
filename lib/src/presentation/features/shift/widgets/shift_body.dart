@@ -158,11 +158,13 @@ class _ShiftBodyState extends State<_ShiftBody> {
                     ? _ShiftCountLabel(count: shifts.length)
                     : _ApplyLeaveButton(onTap: widget.onApplyLeave);
               }
+
               final data = shifts[index - 1];
               if (_isSupervisor) {
                 return _SupervisorShiftCard(
                   data: data,
                   onAssignStaff: () {},
+                  onShiftTap: () => widget.onShiftTap(data),
                 );
               }
               return _ShiftCard(
@@ -192,4 +194,3 @@ class _ShiftCountLabel extends StatelessWidget {
     );
   }
 }
-

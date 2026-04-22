@@ -18,6 +18,13 @@ ImagePickerService imagePickerService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+FaceDetectionService faceDetectionService(Ref ref) {
+  final service = FaceDetectionServiceImpl();
+  ref.onDispose(service.close);
+  return service;
+}
+
+@Riverpod(keepAlive: true)
 LocationService locationService(Ref ref) {
   return LocationServiceImpl();
 }

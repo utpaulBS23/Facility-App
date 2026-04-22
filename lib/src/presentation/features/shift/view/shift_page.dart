@@ -12,14 +12,14 @@ import '../../../core/widgets/text/typography.dart';
 
 part '../widgets/horizontal_date_picker.dart';
 part '../widgets/horizontal_date_picker_item.dart';
-part '../widgets/shift_body.dart';
 part '../widgets/shift_action_buttons.dart';
+part '../widgets/shift_body.dart';
 part '../widgets/shift_card.dart';
 part '../widgets/shift_card_helpers.dart';
 part '../widgets/shift_detail_contract_card.dart';
-part '../widgets/shift_detail_tiles.dart';
 part '../widgets/shift_detail_notes_card.dart';
 part '../widgets/shift_detail_supervisor_card.dart';
+part '../widgets/shift_detail_tiles.dart';
 part '../widgets/shift_details_body.dart';
 part 'shift_details_page.dart';
 

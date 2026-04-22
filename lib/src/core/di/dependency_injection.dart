@@ -14,6 +14,7 @@ import '../../data/repositories/router_repository_impl.dart';
 import '../../data/repositories/selfie_repository_impl.dart';
 import '../../data/services/cache/cache_service.dart';
 import '../../data/services/location/location_service.dart';
+import '../../data/services/media/face_detection_service.dart';
 import '../../data/services/media/image_picker_service.dart';
 import '../../data/services/network/endpoints.dart';
 import '../../data/services/network/interceptor/token_manager.dart';

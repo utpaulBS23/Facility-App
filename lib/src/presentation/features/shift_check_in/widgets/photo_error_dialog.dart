@@ -41,7 +41,9 @@ class _PhotoErrorDialog extends StatelessWidget {
             ),
             Gap(dimensions.spacing.s4),
             BodyLargeText(
-              context.locale.cameraAccessRequiredMessage,
+              errorMessage.isNotEmpty
+                  ? errorMessage
+                  : context.locale.cameraAccessRequiredMessage,
               textAlign: TextAlign.center,
               color: context.color.text.muted,
             ),
