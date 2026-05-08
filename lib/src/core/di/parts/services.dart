@@ -12,24 +12,30 @@ SessionService sessionService(Ref ref) {
   return InMemorySessionService();
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 RestClient restClientService(Ref ref) {
   return RestClient(ref.read(dioProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 ImagePickerService imagePickerService(Ref ref) {
   return ImagePickerServiceImpl(ImagePicker());
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 FaceDetectionService faceDetectionService(Ref ref) {
   final service = FaceDetectionServiceImpl();
   ref.onDispose(service.close);
+
   return service;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 LocationService locationService(Ref ref) {
   return LocationServiceImpl();
+}
+
+@riverpod
+DeviceInfoService deviceInfoService(Ref ref) {
+  return DeviceInfoServiceImpl(DeviceInfoPlugin());
 }

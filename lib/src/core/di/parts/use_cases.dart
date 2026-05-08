@@ -16,6 +16,16 @@ GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
 }
 
 @riverpod
+ValidateFaceUseCase validateFaceUseCase(Ref ref) {
+  return ValidateFaceUseCase(ref.read(faceValidationRepositoryProvider));
+}
+
+@riverpod
+GetDeviceNameUseCase getDeviceNameUseCase(Ref ref) {
+  return GetDeviceNameUseCase(ref.read(deviceInfoRepositoryProvider));
+}
+
+@riverpod
 GetCurrentLocaleUseCase getCurrentLocaleUseCase(Ref ref) {
   return GetCurrentLocaleUseCase(ref.read(localeRepositoryProvider));
 }

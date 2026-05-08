@@ -35,3 +35,13 @@ SelfieRepository selfieRepository(Ref ref) {
 AttendanceRepository attendanceRepository(Ref ref) {
   return AttendanceRepositoryImpl();
 }
+
+@Riverpod(keepAlive: true)
+FaceValidationRepository faceValidationRepository(Ref ref) {
+  return FaceValidationRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+DeviceInfoRepository deviceInfoRepository(Ref ref) {
+  return DeviceInfoRepositoryImpl(ref.read(deviceInfoServiceProvider));
+}

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../core/base/result.dart';
@@ -10,9 +8,7 @@ part 'login_provider.g.dart';
 @riverpod
 class Login extends _$Login {
   @override
-  AsyncValue build() {
-    return const AsyncValue.data(null);
-  }
+  AsyncValue build() => const AsyncValue.data(null);
 
   Future<void> login({
     required String email,
@@ -22,10 +18,12 @@ class Login extends _$Login {
 
     state = const AsyncValue.loading();
 
+    final deviceName = await _resolveDeviceName();
+
     final result = await ref.read(loginUseCaseProvider).call(
       email: email,
       password: password,
-      deviceName: _deviceName,
+      deviceName: deviceName,
     );
 
     state = switch (result) {
@@ -35,9 +33,11 @@ class Login extends _$Login {
     };
   }
 
-  String get _deviceName {
-    if (Platform.isIOS) return 'iPhone';
-    if (Platform.isAndroid) return 'Android';
-    return 'Mobile';
+  Future<String> _resolveDeviceName() async {
+    final result = await ref.read(getDeviceNameUseCaseProvider).call();
+    return switch (result) {
+      Success(:final data) => data ?? 'Mobile',
+      _ => 'Mobile',
+    };
   }
 }
