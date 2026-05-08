@@ -25,7 +25,8 @@ final class FaceValidationRepositoryImpl extends FaceValidationRepository {
         imagePath,
         filename: File(imagePath).uri.pathSegments.last,
       );
-      final response = await remote.validateFace(partnerId, image);
+      final formData = FormData.fromMap({'image': image});
+      final response = await remote.validateFace(partnerId, formData);
       return FaceValidationResponseModel.fromJson(response.data).toEntity();
     });
   }

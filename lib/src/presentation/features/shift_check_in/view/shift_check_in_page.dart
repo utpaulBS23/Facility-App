@@ -16,8 +16,8 @@ import '../riverpod/check_in_info_provider.dart';
 import '../riverpod/face_validation_provider.dart';
 import '../riverpod/selfie_picker_provider.dart';
 
-part '../widgets/approval_request_body.dart';
 part '../widgets/approval_action_buttons.dart';
+part '../widgets/approval_request_body.dart';
 part '../widgets/auto_detected_info_card.dart';
 part '../widgets/photo_error_dialog.dart';
 part '../widgets/request_supervisor_approval_bottomsheet.dart';
@@ -47,10 +47,9 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     }
     final partnerId = ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
     if (partnerId == null) return;
-    ref.read(faceValidationProvider.notifier).validate(
-      partnerId: partnerId,
-      imagePath: photoPath,
-    );
+    ref
+        .read(faceValidationProvider.notifier)
+        .validate(partnerId: partnerId, imagePath: photoPath);
   }
 
   void _onRequestSupervisor() {
@@ -71,7 +70,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
   Widget build(BuildContext context) {
     ref.listen(faceValidationProvider, (_, next) {
       if (next.hasValue && next.value != null) {
-        context.pushNamed(Routes.approvalRequest);
+        context.pushNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
