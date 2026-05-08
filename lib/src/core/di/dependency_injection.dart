@@ -19,6 +19,7 @@ import '../../data/services/media/image_picker_service.dart';
 import '../../data/services/network/endpoints.dart';
 import '../../data/services/network/interceptor/token_manager.dart';
 import '../../data/services/network/rest_client.dart';
+import '../../data/services/session/session_service.dart';
 import '../../domain/repositories/attendance_repository.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/locale_repository.dart';

@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../presentation/core/router/routes.dart';
-import '../../cache/cache_service.dart';
+import '../../session/session_service.dart';
 
 class TokenManager extends Interceptor {
   TokenManager({
     required this.baseUrl,
     required this.refreshTokenEndpoint,
-    required this.cacheService,
+    required this.sessionService,
     required this.navigatorKey,
     required this.dio,
   });
 
   final String baseUrl;
   final String refreshTokenEndpoint;
-  final CacheService cacheService;
+  final SessionService sessionService;
   final GlobalKey<NavigatorState> navigatorKey;
   final Dio dio;
 
@@ -27,8 +27,8 @@ class TokenManager extends Interceptor {
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) async {
-    final accessToken = await getAccessToken();
+  ) {
+    final accessToken = sessionService.accessToken;
     if (accessToken != null) {
       options.headers['Authorization'] = 'Bearer $accessToken';
     }
@@ -76,7 +76,7 @@ class TokenManager extends Interceptor {
   }
 
   Future<String> _refreshAccessToken() async {
-    final refreshToken = await getRefreshToken();
+    final refreshToken = sessionService.accessToken;
     if (refreshToken == null) {
       throw DioException(
         requestOptions: RequestOptions(),
@@ -96,14 +96,13 @@ class TokenManager extends Interceptor {
     if (refreshResp.statusCode != 200) {
       throw DioException(
         requestOptions: RequestOptions(),
-        error:
-            'Refresh token request failed with status: '
+        error: 'Refresh token request failed with status: '
             '${refreshResp.statusCode}',
       );
     }
 
     final newToken = refreshResp.data['data']['accessToken'] as String;
-    await saveToken(CacheKey.accessToken, newToken);
+    sessionService.setAccessToken(newToken);
 
     return newToken;
   }
@@ -138,31 +137,15 @@ class TokenManager extends Interceptor {
     DioException originalError,
     ErrorInterceptorHandler handler,
   ) async {
-    await _removeTokens();
+    sessionService.clear();
     _navigateToLoginScreen();
     handler.reject(originalError);
-  }
-
-  Future<void> _removeTokens() async {
-    await cacheService.remove([CacheKey.accessToken, CacheKey.refreshToken]);
   }
 
   void _navigateToLoginScreen() {
     if (navigatorKey.currentState?.mounted == true) {
       navigatorKey.currentState?.context.goNamed(Routes.login, extra: true);
     }
-  }
-
-  Future<void> saveToken(CacheKey key, String value) async {
-    await cacheService.save(key, value);
-  }
-
-  Future<String?> getAccessToken() async {
-    return cacheService.get(CacheKey.accessToken);
-  }
-
-  Future<String?> getRefreshToken() async {
-    return cacheService.get(CacheKey.refreshToken);
   }
 }
 

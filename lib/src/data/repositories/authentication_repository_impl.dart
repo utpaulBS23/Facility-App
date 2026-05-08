@@ -5,14 +5,17 @@ import '../../domain/entities/sign_up_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../extension/auth_mapper.dart';
 import '../models/login_model.dart';
-import '../services/cache/cache_service.dart';
 import '../services/network/rest_client.dart';
+import '../services/session/session_service.dart';
 
 final class AuthenticationRepositoryImpl extends AuthenticationRepository {
-  AuthenticationRepositoryImpl({required this.remote, required this.local});
+  AuthenticationRepositoryImpl({
+    required this.remote,
+    required this.session,
+  });
 
   final RestClient remote;
-  final CacheService local;
+  final SessionService session;
 
   @override
   Future<SignUpResponseEntity> register(SignUpRequestEntity data) async {
@@ -29,29 +32,10 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       final response = await remote.login(model.toJson());
       final loginResponse = LoginResponseModel.fromJson(response.data);
 
-      await local.save(CacheKey.accessToken, loginResponse.token.accessToken);
-
-      if (data.shouldRemember ?? false) {
-        await local.save(CacheKey.isLoggedIn, true);
-      }
+      session.setAccessToken(loginResponse.token.accessToken);
 
       return loginResponse.toEntity();
     });
-  }
-
-  @override
-  Future<bool> rememberMe({bool? rememberMe}) async {
-    try {
-      if (rememberMe == null) {
-        return local.get<bool>(CacheKey.rememberMe) ?? false;
-      }
-
-      await local.save(CacheKey.rememberMe, rememberMe);
-
-      return rememberMe;
-    } catch (e) {
-      return false;
-    }
   }
 
   @override
@@ -80,10 +64,6 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   @override
   Future<void> logout() async {
-    await local.remove([
-      CacheKey.isLoggedIn,
-      CacheKey.rememberMe,
-      CacheKey.accessToken,
-    ]);
+    session.clear();
   }
 }

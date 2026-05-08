@@ -8,6 +8,11 @@ CacheService cacheService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+SessionService sessionService(Ref ref) {
+  return InMemorySessionService();
+}
+
+@Riverpod(keepAlive: true)
 RestClient restClientService(Ref ref) {
   return RestClient(ref.read(dioProvider));
 }

@@ -12,7 +12,7 @@ Dio dio(Ref ref) {
     TokenManager(
       baseUrl: Endpoints.base,
       refreshTokenEndpoint: Endpoints.refreshToken,
-      cacheService: ref.read(cacheServiceProvider),
+      sessionService: ref.read(sessionServiceProvider),
       navigatorKey: ref.read(goRouterProvider).routerDelegate.navigatorKey,
       dio: Dio(
         BaseOptions(
