@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/user_role.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/shift_list_provider.dart';
 
 part '../widgets/horizontal_date_picker.dart';
 part '../widgets/horizontal_date_picker_item.dart';
@@ -38,6 +42,8 @@ class ShiftPage extends StatelessWidget {
     context.pushNamed(Routes.shiftDetails, extra: data);
   }
 
+  void _onCheckOut() {}
+
   @override
   Widget build(BuildContext context) {
     final isSupervisor = role == UserRole.supervisor;
@@ -50,7 +56,7 @@ class ShiftPage extends StatelessWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      floatingActionButton: isSupervisor ? null : _CheckOutButton(onTap: () {}),
+      floatingActionButton: isSupervisor ? null : _CheckOutButton(onTap: _onCheckOut),
       body: _ShiftBody(
         role: role,
         onApplyLeave: () => _onApplyLeave(context),

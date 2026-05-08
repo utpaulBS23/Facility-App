@@ -188,5 +188,15 @@
   "optional": "ঐচ্ছিক",
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
-  "employeeShortest": "এমপ্লয়ি শর্টেস্ট"
+  "employeeShortest": "এমপ্লয়ি শর্টেস্ট",
+  "shiftsCount": "{count} টি শিফট",
+  "@shiftsCount": {
+    "description": "নির্বাচিত তারিখের শিফট সংখ্যা",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  }
 }

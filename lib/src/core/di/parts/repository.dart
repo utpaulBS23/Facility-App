@@ -45,3 +45,8 @@ FaceValidationRepository faceValidationRepository(Ref ref) {
 DeviceInfoRepository deviceInfoRepository(Ref ref) {
   return DeviceInfoRepositoryImpl(ref.read(deviceInfoServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+ShiftRepository shiftRepository(Ref ref) {
+  return ShiftRepositoryImpl(ref.read(restClientServiceProvider));
+}

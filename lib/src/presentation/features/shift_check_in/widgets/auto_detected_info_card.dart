@@ -45,7 +45,7 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
             value: checkInInfoState.when(
               data: (info) => info?.location ?? context.locale.loading,
               loading: () => context.locale.loading,
-              error: (_, __) => context.locale.locationUnavailable,
+              error: (err, stack) =>context.locale.locationUnavailable,
             ),
           ),
           Gap(dimensions.spacing.s8),
@@ -55,7 +55,7 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
             value: checkInInfoState.when(
               data: (info) => info?.checkInTime ?? context.locale.loading,
               loading: () => context.locale.loading,
-              error: (_, __) => context.locale.loading,
+              error: (err, stack) =>context.locale.loading,
             ),
           ),
           Gap(dimensions.spacing.s8),
@@ -65,7 +65,7 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
             value: checkInInfoState.when(
               data: (info) => info?.supervisorName ?? context.locale.loading,
               loading: () => context.locale.loading,
-              error: (_, __) => context.locale.loading,
+              error: (err, stack) =>context.locale.loading,
             ),
           ),
         ],

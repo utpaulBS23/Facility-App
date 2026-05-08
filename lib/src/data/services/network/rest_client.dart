@@ -18,4 +18,10 @@ abstract class RestClient {
     @Path('partnerId') int partnerId,
     @Body() FormData formData,
   );
+
+  @GET(Endpoints.myShifts)
+  Future<HttpResponse> getMyShifts({
+    @Path('partnerId') required int partnerId,
+    @Query('date') required String date,
+  });
 }

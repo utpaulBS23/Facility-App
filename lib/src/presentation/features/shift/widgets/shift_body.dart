@@ -1,71 +1,35 @@
 part of '../view/shift_page.dart';
 
-// WHY: Dates are computed relative to today so the mock data is always
-// visible when the user opens the shift tab, regardless of the actual date.
-List<ShiftCardData> _buildAttendantShifts() {
-  final today = DateTime.now();
-  final tomorrow = today.add(const Duration(days: 1));
-  return [
-    ShiftCardData(
-      facilityName: 'Mirpur-10 Market Facility',
-      supervisorName: 'Bob Johnson',
-      supervisorPhone: '+880 1911-234567',
-      address: 'Mirpur-10, Dhaka',
-      timeRange: '08:00 AM – 04:00 PM',
-      date: formatShiftDate(today),
-      shiftDate: today,
-      status: ShiftStatus.inProgress,
-      shiftType: 'Morning',
-      shiftNotes: 'Weekend crowd management.',
-    ),
-    ShiftCardData(
-      facilityName: 'Bijoy Sarani Tower',
-      supervisorName: 'Rezaul Karim',
-      supervisorPhone: '+880 1922-345678',
-      address: 'Bijoy Sarani, Dhaka',
-      timeRange: '08:00 AM – 04:00 PM',
-      date: formatShiftDate(tomorrow),
-      shiftDate: tomorrow,
-      status: ShiftStatus.upcoming,
-      shiftType: 'Morning',
-    ),
-  ];
+ShiftCardData _entityToCardData(ShiftEntity entity) {
+  final supervisor = entity.facility.primarySupervisor;
+  final shiftDate = DateTime.parse(entity.shiftDate);
+  return ShiftCardData(
+    facilityName: entity.facility.name,
+    supervisorName: supervisor?.fullName ?? '',
+    supervisorPhone: supervisor?.phone ?? '',
+    address: entity.facility.address,
+    timeRange:
+        '${_formatShiftTime(entity.startTime)} – ${_formatShiftTime(entity.endTime)}',
+    date: formatShiftDate(shiftDate),
+    shiftDate: shiftDate,
+    status: _mapShiftStatus(entity.status),
+    shiftType: entity.shiftTemplateName,
+    shiftNotes: entity.notes,
+  );
 }
 
-// WHY: Supervisor mock has two shifts on the same day so the list is visible
-// without switching dates. assignedStaffName is null on the upcoming shift to
-// render the "Assign Staff" button.
-List<ShiftCardData> _buildSupervisorShifts() {
-  final today = DateTime.now();
-  return [
-    ShiftCardData(
-      facilityName: 'Mirpur-10 Market Facility',
-      supervisorName: 'Farhan Ahmed',
-      supervisorPhone: '',
-      address: 'Mirpur-10, Dhaka',
-      timeRange: '08:00 AM – 04:00 PM',
-      date: formatShiftDate(today),
-      shiftDate: today,
-      status: ShiftStatus.inProgress,
-      shiftType: 'Morning',
-      shiftNotes: 'Weekend crowd management.',
-      assignedStaffName: 'Bob Johnson',
-      assignedStaffPhone: '+880 1911-234567',
-    ),
-    ShiftCardData(
-      facilityName: 'Bijoy Sarani Tower',
-      supervisorName: 'Rezaul Karim',
-      supervisorPhone: '+880 1922-345678',
-      address: 'Bijoy Sarani, Dhaka',
-      timeRange: '08:00 AM – 04:00 PM',
-      date: formatShiftDate(today),
-      shiftDate: today,
-      status: ShiftStatus.upcoming,
-      shiftType: 'Morning',
-    ),
-  ];
+String _formatShiftTime(String hms) {
+  final dt = DateFormat('HH:mm:ss').parse(hms);
+  return DateFormat('h:mm a').format(dt);
 }
 
+ShiftStatus _mapShiftStatus(String status) => switch (status.toLowerCase()) {
+  'in_progress' => ShiftStatus.inProgress,
+  _ => ShiftStatus.upcoming,
+};
+
+// WHY: Public so apply_leave_page.dart (which imports shift_page.dart) can
+// reuse the same date format without duplicating logic.
 String formatShiftDate(DateTime d) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const months = [
@@ -85,9 +49,9 @@ String formatShiftDate(DateTime d) {
   return '${days[d.weekday - 1]}, ${months[d.month - 1]} ${d.day}';
 }
 
-// WHY: StatefulWidget so it can own the selected date and rebuild the
-// shift list whenever the user taps a different day on the calendar.
-class _ShiftBody extends StatefulWidget {
+// WHY: ConsumerStatefulWidget so it can own the selected date, trigger API
+// fetches via the provider, and rebuild the list when the user taps a day.
+class _ShiftBody extends ConsumerStatefulWidget {
   const _ShiftBody({
     required this.role,
     required this.onApplyLeave,
@@ -99,12 +63,11 @@ class _ShiftBody extends StatefulWidget {
   final void Function(ShiftCardData data) onShiftTap;
 
   @override
-  State<_ShiftBody> createState() => _ShiftBodyState();
+  ConsumerState<_ShiftBody> createState() => _ShiftBodyState();
 }
 
-class _ShiftBodyState extends State<_ShiftBody> {
+class _ShiftBodyState extends ConsumerState<_ShiftBody> {
   late DateTime _selectedDate;
-  late final List<ShiftCardData> _allShifts;
 
   bool get _isSupervisor => widget.role == UserRole.supervisor;
 
@@ -112,26 +75,33 @@ class _ShiftBodyState extends State<_ShiftBody> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    _allShifts = _isSupervisor
-        ? _buildSupervisorShifts()
-        : _buildAttendantShifts();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _fetchShifts(_selectedDate),
+    );
+  }
+
+  void _fetchShifts(DateTime date) {
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final partnerId = user?.partnerId;
+    if (partnerId == null) return;
+    ref.read(shiftListProvider.notifier).fetch(
+      partnerId: partnerId,
+      date: DateFormat('yyyy-MM-dd').format(date),
+    );
   }
 
   void _onDateChanged(DateTime date) {
     if (!mounted) return;
     setState(() => _selectedDate = date);
+    _fetchShifts(date);
   }
 
-  bool _isSameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-
-  List<ShiftCardData> get _shiftsForDate =>
-      _allShifts.where((s) => _isSameDay(s.shiftDate, _selectedDate)).toList();
+  void _onAssignStaff() {}
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final shifts = _shiftsForDate;
+    final shiftState = ref.watch(shiftListProvider);
 
     // WHY: Calendar sits above the ListView in a Column instead of being
     // item 0 inside it. Nesting a GestureDetector inside a ListView puts
@@ -142,36 +112,47 @@ class _ShiftBodyState extends State<_ShiftBody> {
       children: [
         HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
         Expanded(
-          child: ListView.separated(
-            // WHY: top padding adds breathing room below the calendar strip.
-            padding: EdgeInsets.fromLTRB(
-              spacing.s16,
-              spacing.s12,
-              spacing.s16,
-              spacing.s16,
+          child: shiftState.when(
+            loading: () =>
+                const Center(child: CircularProgressIndicator.adaptive()),
+            error: (err, _) => Center(
+              child: Text(
+                err.toString(),
+                style: context.textStyle.bodyMedium.copyWith(
+                  color: context.color.text.secondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
-            itemCount: shifts.length + 1,
-            separatorBuilder: (context, index) => Gap(spacing.s12),
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return _isSupervisor
-                    ? _ShiftCountLabel(count: shifts.length)
-                    : _ApplyLeaveButton(onTap: widget.onApplyLeave);
-              }
-
-              final data = shifts[index - 1];
-              if (_isSupervisor) {
-                return _SupervisorShiftCard(
+            data: (shifts) => ListView.separated(
+              padding: EdgeInsets.fromLTRB(
+                spacing.s16,
+                spacing.s12,
+                spacing.s16,
+                spacing.s16,
+              ),
+              itemCount: shifts.length + 1,
+              separatorBuilder: (context, index) => Gap(spacing.s12),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _isSupervisor
+                      ? _ShiftCountLabel(count: shifts.length)
+                      : _ApplyLeaveButton(onTap: widget.onApplyLeave);
+                }
+                final data = _entityToCardData(shifts[index - 1]);
+                if (_isSupervisor) {
+                  return _SupervisorShiftCard(
+                    data: data,
+                    onAssignStaff: _onAssignStaff,
+                    onShiftTap: () => widget.onShiftTap(data),
+                  );
+                }
+                return _ShiftCard(
                   data: data,
-                  onAssignStaff: () {},
-                  onShiftTap: () => widget.onShiftTap(data),
+                  onTap: () => widget.onShiftTap(data),
                 );
-              }
-              return _ShiftCard(
-                data: data,
-                onTap: () => widget.onShiftTap(data),
-              );
-            },
+              },
+            ),
           ),
         ),
       ],
@@ -187,7 +168,7 @@ class _ShiftCountLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '$count Shifts',
+      context.locale.shiftsCount(count),
       style: context.textStyle.labelLarge.copyWith(
         color: context.color.text.primary,
       ),

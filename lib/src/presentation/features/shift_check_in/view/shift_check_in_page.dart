@@ -52,6 +52,10 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         .validate(partnerId: partnerId, imagePath: photoPath);
   }
 
+  void _onTakePhoto() {
+    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  }
+
   void _onRequestSupervisor() {
     showModalBottomSheet(
       context: context,
@@ -98,7 +102,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         isValidating: isValidating,
         hasError: selfieState.hasError,
         errorMessage: selfieState.error?.toString(),
-        onTakePhoto: () => ref.read(selfiePickerProvider.notifier).pickSelfie(),
+        onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onRequestSupervisor,
         onSubmit: () => _onSubmit(photoPath),
       ),
