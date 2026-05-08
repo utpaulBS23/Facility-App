@@ -17,6 +17,8 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   final RestClient remote;
   final SessionService session;
 
+  UserEntity? _currentUser;
+
   @override
   Future<SignUpResponseEntity> register(SignUpRequestEntity data) async {
     // TODO: implement register
@@ -33,6 +35,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       final loginResponse = LoginResponseModel.fromJson(response.data);
 
       session.setAccessToken(loginResponse.token.accessToken);
+      _currentUser = loginResponse.user.toEntity();
 
       return loginResponse.toEntity();
     });
@@ -65,5 +68,9 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   @override
   Future<void> logout() async {
     session.clear();
+    _currentUser = null;
   }
+
+  @override
+  UserEntity? getCurrentUser() => _currentUser;
 }

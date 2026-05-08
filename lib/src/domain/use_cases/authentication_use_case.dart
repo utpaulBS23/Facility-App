@@ -37,3 +37,11 @@ final class LogoutUseCase {
     return repository.logout();
   }
 }
+
+final class GetCurrentUserUseCase {
+  GetCurrentUserUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  UserEntity? call() => repository.getCurrentUser();
+}

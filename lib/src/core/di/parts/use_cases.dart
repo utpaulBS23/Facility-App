@@ -11,6 +11,11 @@ LogoutUseCase logoutUseCase(Ref ref) {
 }
 
 @riverpod
+GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
+  return GetCurrentUserUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
 GetCurrentLocaleUseCase getCurrentLocaleUseCase(Ref ref) {
   return GetCurrentLocaleUseCase(ref.read(localeRepositoryProvider));
 }
