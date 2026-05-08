@@ -25,13 +25,16 @@ class CheckInInfo extends _$CheckInInfo {
         .call();
 
     state = locationResult.when(
-      success: (locationData) => AsyncValue.data(
-        CheckInInfoEntity(
-          location: locationData?.address ?? 'Unknown location',
-          checkInTime: _formatCurrentTime(),
-          supervisorName: 'Md. Shahin Bashar',
-        ),
-      ),
+      success: (locationData) {
+        final user = ref.read(getCurrentUserUseCaseProvider).call();
+        return AsyncValue.data(
+          CheckInInfoEntity(
+            location: locationData?.address ?? 'Unknown location',
+            checkInTime: _formatCurrentTime(),
+            supervisorName: user?.supervisor ?? '—',
+          ),
+        );
+      },
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
