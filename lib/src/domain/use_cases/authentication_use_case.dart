@@ -1,6 +1,5 @@
 import '../../core/base/result.dart';
 import '../entities/login_entity.dart';
-import '../entities/sign_up_entity.dart';
 import '../repositories/authentication_repository.dart';
 
 final class LoginUseCase {
@@ -11,12 +10,14 @@ final class LoginUseCase {
   Future<Result<LoginResponseEntity, String>> call({
     required String email,
     required String password,
+    required String deviceName,
     bool? shouldRemember,
   }) async {
     final request = LoginRequestEntity(
-      username: email,
+      email: email,
       password: password,
-      shouldRemeber: shouldRemember,
+      deviceName: deviceName,
+      shouldRemember: shouldRemember,
     );
 
     final result = await repository.login(request);

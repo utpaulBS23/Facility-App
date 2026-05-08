@@ -1,5 +1,6 @@
 class Endpoints {
-  static const base = 'https://dummyjson.com';
+  static const base =
+      'https://sql-tone-bars-breath.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';

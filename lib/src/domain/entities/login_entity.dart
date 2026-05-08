@@ -1,19 +1,51 @@
 interface class LoginEntity {}
 
-class LoginRequestEntity extends LoginEntity {
-  LoginRequestEntity({
-    required this.username,
-    required this.password,
-    this.shouldRemeber = false,
+class UserEntity extends LoginEntity {
+  UserEntity({
+    required this.id,
+    required this.name,
+    required this.email,
+    this.phoneNumber,
+    required this.userType,
+    this.partnerId,
+    required this.permissionVersion,
+    required this.twoFactorEnabled,
   });
 
-  final String username;
+  final int id;
+  final String name;
+  final String email;
+  final String? phoneNumber;
+  final String userType;
+  final int? partnerId;
+  final int permissionVersion;
+  final bool twoFactorEnabled;
+}
+
+class LoginRequestEntity extends LoginEntity {
+  LoginRequestEntity({
+    required this.email,
+    required this.password,
+    required this.deviceName,
+    this.shouldRemember = false,
+  });
+
+  final String email;
   final String password;
-  final bool? shouldRemeber;
+  final String deviceName;
+  final bool? shouldRemember;
 }
 
 class LoginResponseEntity extends LoginEntity {
-  LoginResponseEntity({required this.accessToken});
+  LoginResponseEntity({
+    required this.user,
+    required this.accessToken,
+    required this.permissions,
+    required this.accessibleFacilities,
+  });
 
+  final UserEntity user;
   final String accessToken;
+  final List<String> permissions;
+  final List<String> accessibleFacilities;
 }

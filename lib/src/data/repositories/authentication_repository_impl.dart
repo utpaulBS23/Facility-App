@@ -15,7 +15,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   @override
   Future<SignUpResponseEntity> register(SignUpRequestEntity data) async {
-    // TODO: implement resetPassword
+    // TODO: implement register
     throw UnimplementedError();
   }
 
@@ -26,23 +26,18 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
     return asyncGuard(() async {
       final model = LoginRequestModel.fromEntity(data);
       final response = await remote.login(model.toJson());
+      final loginResponse = LoginResponseModel.fromJson(response.data);
 
-      // Save the session if the user has selected the "Remember Me" option
-      if (data.shouldRemeber ?? false) await _saveSession();
+      await local.save(CacheKey.accessToken, loginResponse.token.accessToken);
 
-      return LoginResponseModel.fromJson(response.data);
+      if (data.shouldRemember ?? false) {
+        await local.save(CacheKey.isLoggedIn, true);
+      }
+
+      return loginResponse.toEntity();
     });
   }
 
-  Future<void> _saveSession() async {
-    await local.save(CacheKey.isLoggedIn, true);
-  }
-
-  /// Manages the "Remember Me" functionality.
-  ///
-  /// When [rememberMe] is null, retrieves the current setting from cache.
-  /// When [rememberMe] has a value, updates the setting in cache.
-  /// Returns the current or newly saved value, defaulting to false on errors.
   @override
   Future<bool> rememberMe({bool? rememberMe}) async {
     try {
@@ -84,6 +79,10 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   @override
   Future<void> logout() async {
-    await local.remove([CacheKey.isLoggedIn, CacheKey.rememberMe]);
+    await local.remove([
+      CacheKey.isLoggedIn,
+      CacheKey.rememberMe,
+      CacheKey.accessToken,
+    ]);
   }
 }

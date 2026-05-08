@@ -37,6 +37,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _emailController.text = 'emma.garcia@yopmail.com';
+    _passwordController.text = 'password123';
     ref.listenManual(loginProvider, _onLoginStateChanged);
   }
 
@@ -59,12 +61,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void _onLogin() {
-    // if (!_formKey.currentState!.validate()) return;
-    context.pushNamed(Routes.shiftCheckIn);
-    // ref.read(loginProvider.notifier).login(
-    //   email: _emailController.text,
-    //   password: _passwordController.text,
-    // );
+    if (!_formKey.currentState!.validate()) return;
+    ref
+        .read(loginProvider.notifier)
+        .login(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
   }
 
   void _onForgotPassword() => context.pushNamed(Routes.resetPassword);

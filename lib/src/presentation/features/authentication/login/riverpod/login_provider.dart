@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../core/base/result.dart';
@@ -21,14 +23,23 @@ class Login extends _$Login {
 
     state = const AsyncValue.loading();
 
-    final result = await ref
-        .read(loginUseCaseProvider)
-        .call(email: email, password: password, shouldRemember: shouldRemember);
+    final result = await ref.read(loginUseCaseProvider).call(
+      email: email,
+      password: password,
+      deviceName: _deviceName,
+      shouldRemember: shouldRemember,
+    );
 
     state = switch (result) {
       Success() => AsyncValue.data(result),
       Error(:final error) => AsyncValue.error(error, StackTrace.current),
       _ => AsyncValue.error('Something went wrong', StackTrace.current),
     };
+  }
+
+  String get _deviceName {
+    if (Platform.isIOS) return 'iPhone';
+    if (Platform.isAndroid) return 'Android';
+    return 'Mobile';
   }
 }
