@@ -5,6 +5,10 @@ class Endpoints {
   /// Authentication
   static const String register = '/auth/register/';
   static const String login = '/auth/login';
+
+  /// Face validation
+  static const String faceValidation =
+      '/partners/{partnerId}/face-validation';
   static const String forgotPassword = '/auth/forgot_password/';
   static const String resetPassword = '/auth/reset_password/';
   static const String refreshToken = '/auth/refresh_token/';

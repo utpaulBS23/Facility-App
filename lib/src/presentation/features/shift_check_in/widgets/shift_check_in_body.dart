@@ -7,6 +7,7 @@ class _ShiftCheckInBody extends StatelessWidget {
   const _ShiftCheckInBody({
     required this.capturedPhotoPath,
     required this.isLoading,
+    required this.isValidating,
     required this.hasError,
     this.errorMessage,
     required this.onTakePhoto,
@@ -16,6 +17,7 @@ class _ShiftCheckInBody extends StatelessWidget {
 
   final String? capturedPhotoPath;
   final bool isLoading;
+  final bool isValidating;
   // WHY: hasError is passed from the parent rather than re-watched here
   // to avoid duplicating provider observation in a child widget.
   final bool hasError;
@@ -59,7 +61,7 @@ class _ShiftCheckInBody extends StatelessWidget {
               child: Text(context.locale.requestSupervisor),
             ),
           ] else ...[
-            _SubmitButton(onSubmit: onSubmit),
+            _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
           ],
         ],
       ),

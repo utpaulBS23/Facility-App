@@ -1,6 +1,3 @@
-// Author: Md. Shahin Bashar
-// Created: 2026-04-03
-
 import 'dart:io';
 
 import 'package:facility_management_app/src/domain/entities/attendance_entity.dart';
@@ -10,11 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/check_in_info_provider.dart';
+import '../riverpod/face_validation_provider.dart';
 import '../riverpod/selfie_picker_provider.dart';
 
 part '../widgets/approval_request_body.dart';
@@ -28,10 +27,15 @@ part '../widgets/shift_check_in_body.dart';
 part '../widgets/submit_button.dart';
 part 'approval_request_page.dart';
 
-class ShiftCheckInPage extends ConsumerWidget {
+class ShiftCheckInPage extends ConsumerStatefulWidget {
   const ShiftCheckInPage({super.key});
 
-  void _onSubmit(BuildContext context, String? photoPath) {
+  @override
+  ConsumerState<ShiftCheckInPage> createState() => _ShiftCheckInPageState();
+}
+
+class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
+  void _onSubmit(String? photoPath) {
     if (photoPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -39,17 +43,17 @@ class ShiftCheckInPage extends ConsumerWidget {
           backgroundColor: context.color.error,
         ),
       );
-
       return;
     }
-    context.pushNamed(Routes.approvalRequest);
+    final partnerId = ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+    if (partnerId == null) return;
+    ref.read(faceValidationProvider.notifier).validate(
+      partnerId: partnerId,
+      imagePath: photoPath,
+    );
   }
 
-  void _onTakePhoto(WidgetRef ref) {
-    ref.read(selfiePickerProvider.notifier).pickSelfie();
-  }
-
-  void _onRequestSupervisor(BuildContext context) {
+  void _onRequestSupervisor() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -64,9 +68,23 @@ class ShiftCheckInPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(selfiePickerProvider);
-    final photoPath = state.valueOrNull;
+  Widget build(BuildContext context) {
+    ref.listen(faceValidationProvider, (_, next) {
+      if (next.hasValue && next.value != null) {
+        context.pushNamed(Routes.approvalRequest);
+      } else if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error?.toString() ?? ''),
+            backgroundColor: context.color.error,
+          ),
+        );
+      }
+    });
+
+    final selfieState = ref.watch(selfiePickerProvider);
+    final photoPath = selfieState.valueOrNull;
+    final isValidating = ref.watch(faceValidationProvider).isLoading;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -77,12 +95,13 @@ class ShiftCheckInPage extends ConsumerWidget {
       ),
       body: _ShiftCheckInBody(
         capturedPhotoPath: photoPath,
-        isLoading: state.isLoading,
-        hasError: state.hasError,
-        errorMessage: state.error?.toString(),
-        onTakePhoto: () => _onTakePhoto(ref),
-        onRequestSupervisor: () => _onRequestSupervisor(context),
-        onSubmit: () => _onSubmit(context, photoPath),
+        isLoading: selfieState.isLoading,
+        isValidating: isValidating,
+        hasError: selfieState.hasError,
+        errorMessage: selfieState.error?.toString(),
+        onTakePhoto: () => ref.read(selfiePickerProvider.notifier).pickSelfie(),
+        onRequestSupervisor: _onRequestSupervisor,
+        onSubmit: () => _onSubmit(photoPath),
       ),
     );
   }

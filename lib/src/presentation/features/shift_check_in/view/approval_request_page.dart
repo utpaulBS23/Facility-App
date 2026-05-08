@@ -39,7 +39,7 @@ class ApprovalRequestPage extends ConsumerWidget {
               child: Column(
                 spacing: context.dimensions.padding.p16,
                 children: [
-                  _ApprovalHeroSection(AttendanceStatue.reject),
+                  _ApprovalHeroSection(AttendanceStatue.success),
                   const _AutoDetectedInfoCard(),
                 ],
               ),

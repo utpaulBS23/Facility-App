@@ -12,4 +12,11 @@ abstract class RestClient {
 
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
+
+  @POST(Endpoints.faceValidation)
+  @MultiPart()
+  Future<HttpResponse> validateFace(
+    @Path('partnerId') int partnerId,
+    @Part(name: 'image') MultipartFile image,
+  );
 }
