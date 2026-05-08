@@ -1,7 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-import '../../domain/entities/login_entity.dart';
-
 part 'login_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -30,17 +28,6 @@ class UserModel with UserModelMappable {
   final int permissionVersion;
   @MappableField(key: 'two_factor_enabled')
   final bool twoFactorEnabled;
-
-  UserEntity toEntity() => UserEntity(
-    id: id,
-    name: name,
-    email: email,
-    phoneNumber: phoneNumber,
-    userType: userType,
-    partnerId: partnerId,
-    permissionVersion: permissionVersion,
-    twoFactorEnabled: twoFactorEnabled,
-  );
 
   static const fromJson = UserModelMapper.fromJson;
 }
@@ -71,13 +58,6 @@ class LoginResponseModel with LoginResponseModelMappable {
   @MappableField(key: 'accessible_facilities')
   final List<String> accessibleFacilities;
 
-  LoginResponseEntity toEntity() => LoginResponseEntity(
-    user: user.toEntity(),
-    accessToken: token.accessToken,
-    permissions: permissions,
-    accessibleFacilities: accessibleFacilities,
-  );
-
   static const fromJson = LoginResponseModelMapper.fromJson;
 }
 
@@ -93,12 +73,4 @@ class LoginRequestModel with LoginRequestModelMappable {
   final String password;
   @MappableField(key: 'device_name')
   final String deviceName;
-
-  factory LoginRequestModel.fromEntity(LoginRequestEntity entity) {
-    return LoginRequestModel(
-      email: entity.email,
-      password: entity.password,
-      deviceName: entity.deviceName,
-    );
-  }
 }

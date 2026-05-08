@@ -3,6 +3,7 @@ import '../../core/base/result.dart';
 import '../../domain/entities/login_entity.dart';
 import '../../domain/entities/sign_up_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
+import '../extension/auth_mapper.dart';
 import '../models/login_model.dart';
 import '../services/cache/cache_service.dart';
 import '../services/network/rest_client.dart';
@@ -24,7 +25,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
     LoginRequestEntity data,
   ) async {
     return asyncGuard(() async {
-      final model = LoginRequestModel.fromEntity(data);
+      final model = data.toModel();
       final response = await remote.login(model.toJson());
       final loginResponse = LoginResponseModel.fromJson(response.data);
 
