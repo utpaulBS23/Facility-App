@@ -12,11 +12,6 @@ class RouterRepositoryImpl extends RouterRepository {
   }
 
   @override
-  bool isUserLoggedIn() {
-    return cacheService.get(CacheKey.isLoggedIn) ?? false;
-  }
-
-  @override
   void saveOnboardingAsCompleted() {
     cacheService.save(CacheKey.isOnBoardingCompleted, true);
   }

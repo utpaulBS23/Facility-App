@@ -17,7 +17,6 @@ class Login extends _$Login {
   Future<void> login({
     required String email,
     required String password,
-    bool? shouldRemember,
   }) async {
     if (state.isLoading) return;
 
@@ -27,7 +26,6 @@ class Login extends _$Login {
       email: email,
       password: password,
       deviceName: _deviceName,
-      shouldRemember: shouldRemember,
     );
 
     state = switch (result) {

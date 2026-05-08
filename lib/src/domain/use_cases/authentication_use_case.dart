@@ -11,13 +11,11 @@ final class LoginUseCase {
     required String email,
     required String password,
     required String deviceName,
-    bool? shouldRemember,
   }) async {
     final request = LoginRequestEntity(
       email: email,
       password: password,
       deviceName: deviceName,
-      shouldRemember: shouldRemember,
     );
 
     final result = await repository.login(request);

@@ -9,8 +9,6 @@ abstract base class AuthenticationRepository extends Repository {
 
   Future<Result<LoginResponseEntity, Failure>> login(LoginRequestEntity data);
 
-  Future<bool> rememberMe({bool? rememberMe});
-
   Future<String> forgotPassword(Map<String, dynamic> data);
 
   Future<String> resetPassword(Map<String, dynamic> data);

@@ -31,11 +31,6 @@ GetOnboardingStatusUseCase getOnboardingStatusUseCase(Ref ref) {
 }
 
 @riverpod
-GetUserLoginStatusUseCase getUserLoginStatusUseCase(Ref ref) {
-  return GetUserLoginStatusUseCase(ref.read(routerRepositoryProvider));
-}
-
-@riverpod
 MarkOnboardingCompletedUseCase markOnboardingCompletedUseCase(Ref ref) {
   return MarkOnboardingCompletedUseCase(ref.read(routerRepositoryProvider));
 }

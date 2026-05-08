@@ -27,13 +27,11 @@ class LoginRequestEntity extends LoginEntity {
     required this.email,
     required this.password,
     required this.deviceName,
-    this.shouldRemember = false,
   });
 
   final String email;
   final String password;
   final String deviceName;
-  final bool? shouldRemember;
 }
 
 class LoginResponseEntity extends LoginEntity {
