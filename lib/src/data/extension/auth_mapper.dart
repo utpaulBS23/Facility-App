@@ -8,7 +8,9 @@ extension UserModelToEntity on UserModel {
     email: email,
     phoneNumber: phoneNumber,
     userType: userType,
+    userRole: userRole,
     partnerId: partnerId,
+    supervisor: supervisor,
     permissionVersion: permissionVersion,
     twoFactorEnabled: twoFactorEnabled,
   );

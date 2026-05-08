@@ -7,7 +7,9 @@ class UserEntity extends LoginEntity {
     required this.email,
     this.phoneNumber,
     required this.userType,
+    this.userRole,
     this.partnerId,
+    this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
   });
@@ -17,7 +19,9 @@ class UserEntity extends LoginEntity {
   final String email;
   final String? phoneNumber;
   final String userType;
+  final String? userRole;
   final int? partnerId;
+  final String? supervisor;
   final int permissionVersion;
   final bool twoFactorEnabled;
 }

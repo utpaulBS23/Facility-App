@@ -10,7 +10,9 @@ class UserModel with UserModelMappable {
     required this.email,
     this.phoneNumber,
     required this.userType,
+    this.userRole,
     this.partnerId,
+    this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
   });
@@ -22,8 +24,11 @@ class UserModel with UserModelMappable {
   final String? phoneNumber;
   @MappableField(key: 'user_type')
   final String userType;
+  @MappableField(key: 'user_role')
+  final String? userRole;
   @MappableField(key: 'partner_id')
   final int? partnerId;
+  final String? supervisor;
   @MappableField(key: 'permission_version')
   final int permissionVersion;
   @MappableField(key: 'two_factor_enabled')
