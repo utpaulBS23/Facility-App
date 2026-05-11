@@ -20,6 +20,7 @@ part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_body.dart';
 part '../widgets/shift_card.dart';
 part '../widgets/shift_card_helpers.dart';
+part '../widgets/shift_detail_checkin_card.dart';
 part '../widgets/shift_detail_contract_card.dart';
 part '../widgets/shift_detail_notes_card.dart';
 part '../widgets/shift_detail_supervisor_card.dart';

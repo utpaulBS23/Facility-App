@@ -5,6 +5,8 @@ class _ShiftDetailsBody extends StatelessWidget {
 
   final ShiftCardData data;
 
+  bool get _hasCheckInData => data.checkInTime != null;
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -16,6 +18,10 @@ class _ShiftDetailsBody extends StatelessWidget {
           _ShiftDetailContractCard(data: data),
           Gap(spacing.s8),
           _ShiftDetailSupervisorCard(data: data),
+          if (_hasCheckInData) ...[
+            Gap(spacing.s8),
+            _ShiftDetailCheckInCard(data: data),
+          ],
           if (data.shiftNotes != null) ...[
             Gap(spacing.s8),
             _ShiftDetailNotesCard(notes: data.shiftNotes!),

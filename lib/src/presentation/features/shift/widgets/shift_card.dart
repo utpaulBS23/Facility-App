@@ -15,6 +15,8 @@ class ShiftCardData {
     this.hoursWorked,
     this.shiftType,
     this.shiftNotes,
+    this.checkInTime,
+    this.checkOutTime,
     // WHY: Supervisor view shows a separately assigned staff member distinct
     // from the shift's primary contact; null means no one assigned yet.
     this.assignedStaffName,
@@ -36,6 +38,8 @@ class ShiftCardData {
   final String? hoursWorked;
   final String? shiftType;
   final String? shiftNotes;
+  final String? checkInTime;
+  final String? checkOutTime;
   final String? assignedStaffName;
   final String? assignedStaffPhone;
 }

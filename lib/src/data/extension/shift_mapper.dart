@@ -28,6 +28,8 @@ extension ShiftModelToEntity on ShiftModel {
         startTime: startTime,
         endTime: endTime,
         status: status,
+        checkInTime: checkInTime,
+        checkOutTime: checkOutTime,
         notes: notes,
       );
 }

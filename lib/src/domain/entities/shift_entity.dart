@@ -39,6 +39,8 @@ class ShiftEntity {
     required this.startTime,
     required this.endTime,
     required this.status,
+    this.checkInTime,
+    this.checkOutTime,
     this.notes,
   });
 
@@ -49,5 +51,7 @@ class ShiftEntity {
   final String startTime;
   final String endTime;
   final String status;
+  final String? checkInTime;
+  final String? checkOutTime;
   final String? notes;
 }

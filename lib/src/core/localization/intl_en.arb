@@ -125,6 +125,7 @@
   "night": "Night",
   "autoDetectedInfo": "Auto-Detected Info",
   "checkInTime": "Check-In Time",
+  "checkOutTime": "Check-Out Time",
   "supervisorName": "Supervisor Name",
   "shiftCheckInPhotoInstructions": "To open the camera, tap the 'Take Photo' button below. Ensure your face is centered within the circle",
   "retake": "Retake",

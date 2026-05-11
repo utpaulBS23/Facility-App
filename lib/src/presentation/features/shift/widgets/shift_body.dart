@@ -15,12 +15,23 @@ ShiftCardData _entityToCardData(ShiftEntity entity) {
     status: _mapShiftStatus(entity.status),
     shiftType: entity.shiftTemplateName,
     shiftNotes: entity.notes,
+    checkInTime: entity.checkInTime != null
+        ? _formatIsoTimestamp(entity.checkInTime!)
+        : null,
+    checkOutTime: entity.checkOutTime != null
+        ? _formatIsoTimestamp(entity.checkOutTime!)
+        : null,
   );
 }
 
 String _formatShiftTime(String hms) {
   final dt = DateFormat('HH:mm:ss').parse(hms);
   return DateFormat('h:mm a').format(dt);
+}
+
+String _formatIsoTimestamp(String iso) {
+  final dt = DateTime.parse(iso).toLocal();
+  return DateFormat('MMM d, h:mm a').format(dt);
 }
 
 ShiftStatus _mapShiftStatus(String status) => switch (status.toLowerCase()) {

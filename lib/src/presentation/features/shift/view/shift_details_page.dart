@@ -5,8 +5,18 @@ class ShiftDetailsPage extends StatelessWidget {
 
   final ShiftCardData data;
 
+  bool get _showCheckOutButton =>
+      data.checkInTime != null && data.checkOutTime == null;
+
+  void _onCheckOut() {
+    // TODO: implement check-out API call
+  }
+
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final padding = context.dimensions.padding;
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
@@ -35,7 +45,29 @@ class ShiftDetailsPage extends StatelessWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: _ShiftDetailsBody(data: data),
+      body: Column(
+        children: [
+          Expanded(child: _ShiftDetailsBody(data: data)),
+          if (_showCheckOutButton)
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                padding.p16,
+                spacing.s16,
+                padding.p16,
+                spacing.s32,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                height: spacing.s44,
+                child: FilledButton.icon(
+                  onPressed: _onCheckOut,
+                  icon: const Icon(Icons.logout_rounded),
+                  label: Text(context.locale.checkOut),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
