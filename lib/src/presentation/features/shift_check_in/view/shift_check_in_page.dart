@@ -74,7 +74,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
   Widget build(BuildContext context) {
     ref.listen(faceValidationProvider, (_, next) {
       if (next.hasValue && next.value != null) {
-        context.pushNamed(Routes.shift);
+        context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

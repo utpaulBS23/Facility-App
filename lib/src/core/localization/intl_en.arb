@@ -189,6 +189,8 @@
   "assigned": "Assigned",
   "assignStaff": "Assign Staff",
   "employeeShortest": "Employee Shortest",
+  "noShiftToday": "No Shift Today",
+  "noShiftTodayHelp": "Please contact your supervisor if you need assistance.",
   "shiftsCount": "{count} Shifts",
   "@shiftsCount": {
     "description": "Label showing number of shifts for the selected date",

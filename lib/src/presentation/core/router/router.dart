@@ -15,6 +15,7 @@ import '../../features/menu/view/menu_page.dart';
 import '../../features/shift/view/apply_leave_page.dart';
 import '../../features/shift/view/shift_page.dart';
 import '../../features/profile/view/profile_page.dart';
+import '../../features/no_shift_today/view/no_shift_today_page.dart';
 import '../../features/shift_check_in/view/shift_check_in_page.dart';
 import '../../features/splash/view/splash_page.dart';
 import '../widgets/app_startup/startup_widget.dart';

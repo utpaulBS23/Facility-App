@@ -1,6 +1,13 @@
 import '../models/login_model.dart';
 import '../../domain/entities/login_entity.dart';
 
+extension ShiftStatusModelToEntity on ShiftStatusModel {
+  ShiftStatusEntity toEntity() => ShiftStatusEntity(
+    flag: ShiftStatusFlag.fromString(flag),
+    message: message,
+  );
+}
+
 extension UserModelToEntity on UserModel {
   UserEntity toEntity() => UserEntity(
     id: id,
@@ -22,6 +29,7 @@ extension LoginResponseModelToEntity on LoginResponseModel {
     accessToken: token.accessToken,
     permissions: permissions,
     accessibleFacilities: accessibleFacilities,
+    shiftStatus: shiftStatus?.toEntity(),
   );
 }
 

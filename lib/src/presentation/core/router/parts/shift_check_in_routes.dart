@@ -17,5 +17,13 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       pageBuilder: (context, state) =>
           const MaterialPage(child: ApprovalRequestPage()),
     ),
+    GoRoute(
+      path: Routes.noShiftToday,
+      name: Routes.noShiftToday,
+      pageBuilder: (context, state) {
+        final message = state.extra as String;
+        return MaterialPage(child: NoShiftTodayPage(message: message));
+      },
+    ),
   ];
 }

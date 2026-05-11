@@ -189,6 +189,8 @@
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
   "employeeShortest": "এমপ্লয়ি শর্টেস্ট",
+  "noShiftToday": "আজ কোন শিফট নেই",
+  "noShiftTodayHelp": "সহায়তার প্রয়োজনে আপনার সুপারভাইজারের সাথে যোগাযোগ করুন।",
   "shiftsCount": "{count} টি শিফট",
   "@shiftsCount": {
     "description": "নির্বাচিত তারিখের শিফট সংখ্যা",

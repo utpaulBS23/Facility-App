@@ -6,6 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/base/result.dart';
+import '../../../../../domain/entities/login_entity.dart';
+
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
@@ -52,7 +55,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void _onLoginStateChanged(AsyncValue? previous, AsyncValue next) {
     switch (next) {
       case AsyncData(:final value) when value != null:
-        context.pushReplacementNamed(Routes.shiftCheckIn);
+        final entity =
+            (value as Success<LoginResponseEntity, String>).data;
+        final shiftStatus = entity?.shiftStatus;
+        switch (shiftStatus?.flag) {
+          case ShiftStatusFlag.alreadyCheckedIn:
+            context.goNamed(Routes.shift);
+          case ShiftStatusFlag.noShiftToday:
+            context.goNamed(
+              Routes.noShiftToday,
+              extra: shiftStatus?.message ?? '',
+            );
+          case ShiftStatusFlag.shiftScheduledToday:
+          case null:
+            context.goNamed(Routes.shiftCheckIn);
+        }
       case AsyncError(:final error):
         ScaffoldMessenger.of(
           context,
