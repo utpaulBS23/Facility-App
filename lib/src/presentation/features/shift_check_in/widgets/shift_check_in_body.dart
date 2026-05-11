@@ -10,6 +10,7 @@ class _ShiftCheckInBody extends StatelessWidget {
     required this.isValidating,
     required this.hasError,
     this.errorMessage,
+    this.faceValidationError,
     required this.onTakePhoto,
     required this.onRequestSupervisor,
     required this.onSubmit,
@@ -22,6 +23,7 @@ class _ShiftCheckInBody extends StatelessWidget {
   // to avoid duplicating provider observation in a child widget.
   final bool hasError;
   final String? errorMessage;
+  final String? faceValidationError;
   final VoidCallback onTakePhoto;
   final VoidCallback onRequestSupervisor;
   final VoidCallback onSubmit;
@@ -38,6 +40,7 @@ class _ShiftCheckInBody extends StatelessWidget {
             capturedPhotoPath: capturedPhotoPath,
             hasError: hasError,
             errorMessage: errorMessage,
+            faceValidationError: faceValidationError,
             onRetry: onTakePhoto,
           ),
           Gap(dimensions.spacing.s12),

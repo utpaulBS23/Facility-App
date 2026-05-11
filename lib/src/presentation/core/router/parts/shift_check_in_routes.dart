@@ -18,6 +18,12 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
           const MaterialPage(child: ApprovalRequestPage()),
     ),
     GoRoute(
+      path: Routes.shiftCheckOut,
+      name: Routes.shiftCheckOut,
+      pageBuilder: (context, state) =>
+          const MaterialPage(child: ShiftCheckOutPage()),
+    ),
+    GoRoute(
       path: Routes.noShiftToday,
       name: Routes.noShiftToday,
       pageBuilder: (context, state) {

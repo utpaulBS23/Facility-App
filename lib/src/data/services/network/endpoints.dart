@@ -8,6 +8,8 @@ class Endpoints {
 
   /// Face validation
   static const String faceValidation = '/partners/{partnerId}/face-validation';
+  static const String checkOut =
+      '/partners/{partnerId}/face-validation/check-out';
 
   /// Shifts
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';

@@ -43,12 +43,8 @@ class ShiftPage extends StatelessWidget {
     context.pushNamed(Routes.shiftDetails, extra: data);
   }
 
-  void _onCheckOut() {}
-
   @override
   Widget build(BuildContext context) {
-    final isSupervisor = role == UserRole.supervisor;
-
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
@@ -57,7 +53,6 @@ class ShiftPage extends StatelessWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      floatingActionButton: isSupervisor ? null : _CheckOutButton(onTap: _onCheckOut),
       body: _ShiftBody(
         role: role,
         onApplyLeave: () => _onApplyLeave(context),

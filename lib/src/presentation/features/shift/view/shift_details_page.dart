@@ -8,8 +8,8 @@ class ShiftDetailsPage extends StatelessWidget {
   bool get _showCheckOutButton =>
       data.checkInTime != null && data.checkOutTime == null;
 
-  void _onCheckOut() {
-    // TODO: implement check-out API call
+  void _onCheckOut(BuildContext context) {
+    context.pushNamed(Routes.shiftCheckOut);
   }
 
   @override
@@ -60,7 +60,7 @@ class ShiftDetailsPage extends StatelessWidget {
                 width: double.infinity,
                 height: spacing.s44,
                 child: FilledButton.icon(
-                  onPressed: _onCheckOut,
+                  onPressed: () => _onCheckOut(context),
                   icon: const Icon(Icons.logout_rounded),
                   label: Text(context.locale.checkOut),
                 ),

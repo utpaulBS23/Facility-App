@@ -11,12 +11,14 @@ class _SelfieZone extends StatelessWidget {
     required this.capturedPhotoPath,
     required this.hasError,
     this.errorMessage,
+    this.faceValidationError,
     required this.onRetry,
   });
 
   final String? capturedPhotoPath;
   final bool hasError;
   final String? errorMessage;
+  final String? faceValidationError;
   final VoidCallback onRetry;
 
   @override
@@ -53,7 +55,29 @@ class _SelfieZone extends StatelessWidget {
             ),
           ] else ...[
             _FaceRing(capturedPhotoPath: capturedPhotoPath),
-            if (capturedPhotoPath == null) ...[
+            if (faceValidationError != null) ...[
+              Gap(dimensions.spacing.s16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 16,
+                    color: colors.error,
+                  ),
+                  Gap(dimensions.spacing.s6),
+                  Flexible(
+                    child: Text(
+                      faceValidationError!,
+                      textAlign: TextAlign.center,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: colors.error,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ] else if (capturedPhotoPath == null) ...[
               Gap(dimensions.spacing.s24),
               Text(
                 context.locale.shiftCheckInPhotoInstructions,
