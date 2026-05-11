@@ -1,18 +1,16 @@
 class Endpoints {
   static const base =
-      'https://sql-tone-bars-breath.trycloudflare.com/api/backend';
+      'https://further-odds-reasonable-accountability.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';
   static const String login = '/auth/login';
 
   /// Face validation
-  static const String faceValidation =
-      '/partners/{partnerId}/face-validation';
+  static const String faceValidation = '/partners/{partnerId}/face-validation';
 
   /// Shifts
-  static const String myShifts =
-      '/partners/{partnerId}/attendants/my-shifts';
+  static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String forgotPassword = '/auth/forgot_password/';
   static const String resetPassword = '/auth/reset_password/';
   static const String refreshToken = '/auth/refresh_token/';

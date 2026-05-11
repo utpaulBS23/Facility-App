@@ -25,7 +25,10 @@ final class FaceValidationRepositoryImpl extends FaceValidationRepository {
         imagePath,
         filename: File(imagePath).uri.pathSegments.last,
       );
-      final formData = FormData.fromMap({'image': image});
+      final date = DateTime.now();
+      final dateStr =
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final formData = FormData.fromMap({'image': image, 'date': dateStr});
       final response = await remote.validateFace(partnerId, formData);
       return FaceValidationResponseModel.fromJson(response.data).toEntity();
     });

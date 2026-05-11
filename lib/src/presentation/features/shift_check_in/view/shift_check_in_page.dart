@@ -92,7 +92,10 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        title: Headline2xlTinyText(context.locale.shiftCheckIn),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Headline2xlTinyText(context.locale.shiftCheckIn),
+        ),
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
