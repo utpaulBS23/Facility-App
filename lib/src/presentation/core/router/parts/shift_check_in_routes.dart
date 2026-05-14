@@ -30,7 +30,7 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       name: Routes.noShiftToday,
       pageBuilder: (context, state) {
         final message = state.extra as String;
-        return MaterialPage(child: NoShiftTodayPage(message: message));
+        return MaterialPage(child: NoShiftTodayWidget(message: message));
       },
     ),
   ];

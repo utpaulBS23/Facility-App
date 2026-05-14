@@ -10,8 +10,8 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 
-class NoShiftTodayPage extends ConsumerWidget {
-  const NoShiftTodayPage({super.key, required this.message});
+class NoShiftTodayWidget extends ConsumerWidget {
+  const NoShiftTodayWidget({super.key, required this.message});
 
   final String message;
 
