@@ -76,13 +76,11 @@ GetAttendanceDetailUseCase getAttendanceDetailUseCase(Ref ref) {
 }
 
 @riverpod
-GetMyShiftsUseCase getMyShiftsUseCase(Ref ref) {
-  return GetMyShiftsUseCase(ref.read(shiftRepositoryProvider));
-}
-
-@riverpod
-GetSupervisorShiftsUseCase getSupervisorShiftsUseCase(Ref ref) {
-  return GetSupervisorShiftsUseCase(ref.read(shiftRepositoryProvider));
+GetShiftsUseCase getShiftsUseCase(Ref ref) {
+  return GetShiftsUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod

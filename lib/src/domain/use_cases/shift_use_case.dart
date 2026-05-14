@@ -1,6 +1,35 @@
 import '../../core/base/result.dart';
 import '../entities/shift_entity.dart';
+import '../entities/user_role.dart';
+import '../repositories/authentication_repository.dart';
 import '../repositories/shift_repository.dart';
+
+final class GetShiftsUseCase {
+  GetShiftsUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<List<ShiftEntity>, String>> call({
+    required int partnerId,
+    required String date,
+  }) async {
+    final role =
+        _authRepository.getCurrentUser()?.userRole ?? UserRole.attendant;
+    final result = role == UserRole.supervisor
+        ? await _shiftRepository.getSupervisorShifts(
+            partnerId: partnerId,
+            date: date,
+          )
+        : await _shiftRepository.getMyShifts(partnerId: partnerId, date: date);
+
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to get shifts'),
+    };
+  }
+}
 
 final class GetMyShiftsUseCase {
   GetMyShiftsUseCase(this._repository);
