@@ -7,9 +7,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/base/result.dart';
-import '../../../../../domain/entities/login_entity.dart';
-
 import '../../../../../core/extensions/app_localization.dart';
+import '../../../../../domain/entities/login_entity.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_text_field.dart';
@@ -40,7 +39,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _emailController.text = 'emma.garcia@yopmail.com';
+    _emailController.text = 'david.martinez@bhumijo.com';
     _passwordController.text = 'password123';
     ref.listenManual(loginProvider, _onLoginStateChanged);
   }
@@ -55,8 +54,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void _onLoginStateChanged(AsyncValue? previous, AsyncValue next) {
     switch (next) {
       case AsyncData(:final value) when value != null:
-        final entity =
-            (value as Success<LoginResponseEntity, String>).data;
+        final entity = (value as Success<LoginResponseEntity, String>).data;
+        final role = entity?.user.userRole;
+        if (role != UserRole.attendant) {
+          context.goNamed(Routes.shift);
+          return;
+        }
         final shiftStatus = entity?.shiftStatus;
         switch (shiftStatus?.flag) {
           case ShiftStatusFlag.alreadyCheckedIn:
