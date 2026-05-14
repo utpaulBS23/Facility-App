@@ -1,4 +1,4 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class HorizontalDatePicker extends StatefulWidget {
   const HorizontalDatePicker({

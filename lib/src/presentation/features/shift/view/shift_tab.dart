@@ -30,8 +30,8 @@ part 'attendant_shift_page.dart';
 part 'shift_details_page.dart';
 part 'supervisor_shift_page.dart';
 
-class ShiftPage extends ConsumerWidget {
-  const ShiftPage({super.key});
+class ShiftTab extends ConsumerWidget {
+  const ShiftTab({super.key});
 
   void _onApplyLeave(BuildContext context) {
     context.pushNamed(Routes.applyLeave);
