@@ -41,6 +41,8 @@ class ShiftFacilityEntity {
 class ShiftEntity {
   const ShiftEntity({
     required this.id,
+    this.weeklyRosterId,
+    required this.shiftTemplateId,
     required this.facility,
     required this.shiftTemplateName,
     required this.shiftDate,
@@ -54,6 +56,8 @@ class ShiftEntity {
   });
 
   final int id;
+  final int? weeklyRosterId;
+  final int shiftTemplateId;
   final ShiftFacilityEntity facility;
   final String shiftTemplateName;
   final String shiftDate;

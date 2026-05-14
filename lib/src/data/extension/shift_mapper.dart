@@ -30,6 +30,8 @@ extension ShiftAttendantModelToEntity on ShiftAttendantModel {
 extension ShiftModelToEntity on ShiftModel {
   ShiftEntity toEntity() => ShiftEntity(
         id: id,
+        weeklyRosterId: weeklyRosterId,
+        shiftTemplateId: shiftTemplate.id,
         facility: facility.toEntity(),
         shiftTemplateName: shiftTemplate.name,
         shiftDate: shiftDate,
