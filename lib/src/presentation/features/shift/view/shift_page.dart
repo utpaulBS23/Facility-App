@@ -28,12 +28,8 @@ part '../widgets/shift_detail_tiles.dart';
 part '../widgets/shift_details_body.dart';
 part 'shift_details_page.dart';
 
-class ShiftPage extends StatelessWidget {
-  const ShiftPage({super.key, this.role = UserRole.attendant});
-
-  // WHY: Hard-coded to supervisor for this sprint; will be driven by auth
-  // session once the backend role API is wired up.
-  final UserRole role;
+class ShiftPage extends ConsumerWidget {
+  const ShiftPage({super.key});
 
   void _onApplyLeave(BuildContext context) {
     context.pushNamed(Routes.applyLeave);
@@ -44,7 +40,10 @@ class ShiftPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.read(getUserSessionUseCaseProvider).call();
+    final role = session?.role ?? UserRole.attendant;
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(

@@ -63,14 +63,17 @@ class _AssignedSection extends StatelessWidget {
             color: context.color.text.secondary,
           ),
         ),
+        if (data.attendants.isNotEmpty) ...[
+          Gap(spacing.s12),
+          ...data.attendants.map(
+            (a) => Padding(
+              padding: EdgeInsets.only(bottom: spacing.s8),
+              child: _AssignedStaffTile(name: a.name, phone: a.phone ?? ''),
+            ),
+          ),
+        ],
         Gap(spacing.s12),
-        if (data.assignedStaffName != null)
-          _AssignedStaffTile(
-            name: data.assignedStaffName!,
-            phone: data.assignedStaffPhone ?? '',
-          )
-        else
-          _AssignStaffButton(onTap: onAssignStaff),
+        _AssignStaffButton(onTap: onAssignStaff),
       ],
     );
   }

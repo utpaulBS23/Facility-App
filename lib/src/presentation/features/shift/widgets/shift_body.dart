@@ -1,9 +1,10 @@
 part of '../view/shift_page.dart';
 
 ShiftCardData _entityToCardData(ShiftEntity entity) {
-  final supervisor = entity.facility.primarySupervisor;
+  final supervisor = entity.facility.supervisor;
   final shiftDate = DateTime.parse(entity.shiftDate);
   return ShiftCardData(
+    id: entity.id,
     facilityName: entity.facility.name,
     supervisorName: supervisor?.fullName ?? '',
     supervisorPhone: supervisor?.phone ?? '',
@@ -21,6 +22,9 @@ ShiftCardData _entityToCardData(ShiftEntity entity) {
     checkOutTime: entity.checkOutTime != null
         ? _formatIsoTimestamp(entity.checkOutTime!)
         : null,
+    attendants: entity.attendants
+        .map((a) => ShiftCardAttendant(name: a.fullName, phone: a.phone))
+        .toList(),
   );
 }
 
@@ -98,6 +102,7 @@ class _ShiftBodyState extends ConsumerState<_ShiftBody> {
     ref.read(shiftListProvider.notifier).fetch(
       partnerId: partnerId,
       date: DateFormat('yyyy-MM-dd').format(date),
+      role: widget.role,
     );
   }
 
@@ -107,7 +112,7 @@ class _ShiftBodyState extends ConsumerState<_ShiftBody> {
     _fetchShifts(date);
   }
 
-  void _onAssignStaff() {}
+  void _onAssignStaff() => context.pushNamed(Routes.assignStaff);
 
   @override
   Widget build(BuildContext context) {

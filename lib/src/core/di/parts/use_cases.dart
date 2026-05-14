@@ -16,6 +16,11 @@ GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
 }
 
 @riverpod
+GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
+  return GetUserSessionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
 ValidateFaceUseCase validateFaceUseCase(Ref ref) {
   return ValidateFaceUseCase(ref.read(faceValidationRepositoryProvider));
 }
@@ -73,4 +78,14 @@ GetAttendanceDetailUseCase getAttendanceDetailUseCase(Ref ref) {
 @riverpod
 GetMyShiftsUseCase getMyShiftsUseCase(Ref ref) {
   return GetMyShiftsUseCase(ref.read(shiftRepositoryProvider));
+}
+
+@riverpod
+GetSupervisorShiftsUseCase getSupervisorShiftsUseCase(Ref ref) {
+  return GetSupervisorShiftsUseCase(ref.read(shiftRepositoryProvider));
+}
+
+@riverpod
+CheckOutUseCase checkOutUseCase(Ref ref) {
+  return CheckOutUseCase(ref.read(checkOutRepositoryProvider));
 }

@@ -2,8 +2,16 @@ part of '../view/shift_page.dart';
 
 enum ShiftStatus { inProgress, upcoming }
 
+class ShiftCardAttendant {
+  const ShiftCardAttendant({required this.name, this.phone});
+
+  final String name;
+  final String? phone;
+}
+
 class ShiftCardData {
   const ShiftCardData({
+    required this.id,
     required this.facilityName,
     required this.supervisorName,
     required this.supervisorPhone,
@@ -17,12 +25,10 @@ class ShiftCardData {
     this.shiftNotes,
     this.checkInTime,
     this.checkOutTime,
-    // WHY: Supervisor view shows a separately assigned staff member distinct
-    // from the shift's primary contact; null means no one assigned yet.
-    this.assignedStaffName,
-    this.assignedStaffPhone,
+    this.attendants = const [],
   });
 
+  final int id;
   final String facilityName;
   final String supervisorName;
   final String supervisorPhone;
@@ -40,8 +46,7 @@ class ShiftCardData {
   final String? shiftNotes;
   final String? checkInTime;
   final String? checkOutTime;
-  final String? assignedStaffName;
-  final String? assignedStaffPhone;
+  final List<ShiftCardAttendant> attendants;
 }
 
 class _ShiftCard extends StatelessWidget {
