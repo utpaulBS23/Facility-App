@@ -1,3 +1,19 @@
+import 'user_role.dart';
+
+export 'user_role.dart';
+
+class UserSessionEntity {
+  UserSessionEntity({
+    required this.role,
+    required this.permissions,
+    required this.accessibleFacilities,
+  });
+
+  final UserRole role;
+  final List<String> permissions;
+  final List<String> accessibleFacilities;
+}
+
 interface class LoginEntity {}
 
 enum ShiftStatusFlag {
@@ -38,7 +54,7 @@ class UserEntity extends LoginEntity {
   final String email;
   final String? phoneNumber;
   final String userType;
-  final String? userRole;
+  final UserRole? userRole;
   final int? partnerId;
   final String? supervisor;
   final int permissionVersion;

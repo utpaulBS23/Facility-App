@@ -18,6 +18,8 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   final SessionService session;
 
   UserEntity? _currentUser;
+  List<String> _permissions = [];
+  List<String> _accessibleFacilities = [];
 
   @override
   Future<SignUpResponseEntity> register(SignUpRequestEntity data) async {
@@ -36,6 +38,8 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
       session.setAccessToken(loginResponse.token.accessToken);
       _currentUser = loginResponse.user.toEntity();
+      _permissions = loginResponse.permissions;
+      _accessibleFacilities = loginResponse.accessibleFacilities;
 
       return loginResponse.toEntity();
     });
@@ -69,8 +73,16 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   Future<void> logout() async {
     session.clear();
     _currentUser = null;
+    _permissions = [];
+    _accessibleFacilities = [];
   }
 
   @override
   UserEntity? getCurrentUser() => _currentUser;
+
+  @override
+  List<String> getPermissions() => _permissions;
+
+  @override
+  List<String> getAccessibleFacilities() => _accessibleFacilities;
 }

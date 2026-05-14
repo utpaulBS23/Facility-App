@@ -45,3 +45,19 @@ final class GetCurrentUserUseCase {
 
   UserEntity? call() => repository.getCurrentUser();
 }
+
+final class GetUserSessionUseCase {
+  GetUserSessionUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  UserSessionEntity? call() {
+    final user = repository.getCurrentUser();
+    if (user == null) return null;
+    return UserSessionEntity(
+      role: user.userRole ?? UserRole.other,
+      permissions: repository.getPermissions(),
+      accessibleFacilities: repository.getAccessibleFacilities(),
+    );
+  }
+}

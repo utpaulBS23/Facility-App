@@ -20,4 +20,8 @@ abstract base class AuthenticationRepository extends Repository {
   Future<void> logout();
 
   UserEntity? getCurrentUser();
+
+  List<String> getPermissions();
+
+  List<String> getAccessibleFacilities();
 }
