@@ -15,13 +15,15 @@ class ShiftList extends _$ShiftList {
   Future<void> fetch({
     required int partnerId,
     required String date,
-    required UserRole role,
   }) async {
     if (state.isLoading) return;
 
     state = const AsyncValue.loading();
 
-    final result = role == UserRole.supervisor
+    final session = ref.read(getUserSessionUseCaseProvider).call();
+    final role = session?.role ?? UserRole.attendant;
+
+    final Result<List<ShiftEntity>, String> result = role == UserRole.supervisor
         ? await ref
               .read(getSupervisorShiftsUseCaseProvider)
               .call(partnerId: partnerId, date: date)
@@ -29,10 +31,9 @@ class ShiftList extends _$ShiftList {
               .read(getMyShiftsUseCaseProvider)
               .call(partnerId: partnerId, date: date);
 
-    state = switch (result) {
-      Success(:final data) => AsyncValue.data(data ?? []),
-      Error(:final error) => AsyncValue.error(error, StackTrace.current),
-      _ => AsyncValue.error('Something went wrong', StackTrace.current),
-    };
+    state = result.when(
+      success: (data) => AsyncValue.data(data ?? []),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
+    );
   }
 }
