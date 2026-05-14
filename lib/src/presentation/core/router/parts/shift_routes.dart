@@ -13,8 +13,10 @@ List<GoRoute> _shiftRoutes(Ref ref) {
     GoRoute(
       path: Routes.assignStaff,
       name: Routes.assignStaff,
-      pageBuilder: (context, state) =>
-          const MaterialPage(child: AssignStaffPage()),
+      pageBuilder: (context, state) {
+        final facilityId = state.extra as int;
+        return MaterialPage(child: AssignStaffPage(facilityId: facilityId));
+      },
     ),
   ];
 }

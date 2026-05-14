@@ -39,7 +39,8 @@ class _SupervisorShiftViewState extends ConsumerState<_SupervisorShiftView> {
     _fetchShifts(date);
   }
 
-  void _onAssignStaff() => context.pushNamed(Routes.assignStaff);
+  void _onAssignStaff(int facilityId) =>
+      context.pushNamed(Routes.assignStaff, extra: facilityId);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +96,7 @@ class _SupervisorShiftViewState extends ConsumerState<_SupervisorShiftView> {
                   final entity = shifts[index - 1];
                   return _SupervisorShiftCard(
                     entity: entity,
-                    onAssignStaff: _onAssignStaff,
+                    onAssignStaff: () => _onAssignStaff(entity.facility.id),
                     onShiftTap: () => widget.onShiftTap(entity),
                   );
                 },

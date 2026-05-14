@@ -197,6 +197,7 @@
   "noShiftsFound": "No shifts scheduled for this date.",
   "noShiftToday": "No Shift Today",
   "noShiftTodayHelp": "Please contact your supervisor if you need assistance.",
+  "noAttendantsFound": "No attendants found for this facility.",
   "shiftsCount": "{count} Shifts",
   "@shiftsCount": {
     "description": "Label showing number of shifts for the selected date",

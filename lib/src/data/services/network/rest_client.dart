@@ -36,4 +36,10 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Query('date') required String date,
   });
+
+  @GET(Endpoints.facilityAttendants)
+  Future<HttpResponse> getFacilityAttendants({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+  });
 }

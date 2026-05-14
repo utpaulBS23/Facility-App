@@ -11,6 +11,10 @@ class Endpoints {
   static const String checkOut =
       '/partners/{partnerId}/face-validation/check-out';
 
+  /// Attendants
+  static const String facilityAttendants =
+      '/partners/{partnerId}/facilities/{facilityId}/attendants';
+
   /// Shifts
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =

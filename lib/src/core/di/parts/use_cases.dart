@@ -76,6 +76,14 @@ GetAttendanceDetailUseCase getAttendanceDetailUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilityAttendantsUseCase getFacilityAttendantsUseCase(Ref ref) {
+  return GetFacilityAttendantsUseCase(
+    ref.read(attendantRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetShiftsUseCase getShiftsUseCase(Ref ref) {
   return GetShiftsUseCase(
     ref.read(shiftRepositoryProvider),
