@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 
@@ -17,7 +18,7 @@ class AssignStaffPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(
             horizontal: context.dimensions.spacing.s16,
           ),
-          child: const LabelLargeText('Assign Staff'),
+          child: LabelLargeText(context.locale.assignStaff),
         ),
       ),
       body: const SizedBox.shrink(),
