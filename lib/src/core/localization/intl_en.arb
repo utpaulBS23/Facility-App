@@ -198,6 +198,7 @@
   "noShiftToday": "No Shift Today",
   "noShiftTodayHelp": "Please contact your supervisor if you need assistance.",
   "noAttendantsFound": "No attendants found for this facility.",
+  "staffAssignedSuccessfully": "Staff assigned successfully.",
   "shiftsCount": "{count} Shifts",
   "@shiftsCount": {
     "description": "Label showing number of shifts for the selected date",

@@ -95,3 +95,11 @@ GetShiftsUseCase getShiftsUseCase(Ref ref) {
 CheckOutUseCase checkOutUseCase(Ref ref) {
   return CheckOutUseCase(ref.read(checkOutRepositoryProvider));
 }
+
+@riverpod
+AssignStaffUseCase assignStaffUseCase(Ref ref) {
+  return AssignStaffUseCase(
+    ref.read(assignmentRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}

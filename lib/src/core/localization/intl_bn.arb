@@ -198,6 +198,7 @@
   "noShiftToday": "আজ কোন শিফট নেই",
   "noShiftTodayHelp": "সহায়তার প্রয়োজনে আপনার সুপারভাইজারের সাথে যোগাযোগ করুন।",
   "noAttendantsFound": "এই সুবিধার জন্য কোনো অ্যাটেন্ড্যান্ট পাওয়া যায়নি।",
+  "staffAssignedSuccessfully": "স্টাফ সফলভাবে নিযুক্ত হয়েছে।",
   "shiftsCount": "{count} টি শিফট",
   "@shiftsCount": {
     "description": "নির্বাচিত তারিখের শিফট সংখ্যা",

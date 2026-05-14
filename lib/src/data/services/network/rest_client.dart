@@ -42,4 +42,12 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('facilityId') required int facilityId,
   });
+
+  @POST(Endpoints.rosterAssignments)
+  Future<HttpResponse> assignStaff({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Path('rosterId') required int rosterId,
+    @Body() required Map<String, dynamic> request,
+  });
 }

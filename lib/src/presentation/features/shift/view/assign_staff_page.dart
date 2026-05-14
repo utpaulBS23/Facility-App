@@ -5,14 +5,16 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/attendant_entity.dart';
+import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/assignment_provider.dart';
 import '../riverpod/facility_attendants_provider.dart';
 
 class AssignStaffPage extends ConsumerStatefulWidget {
-  const AssignStaffPage({super.key, required this.facilityId});
+  const AssignStaffPage({super.key, required this.shift});
 
-  final int facilityId;
+  final ShiftEntity shift;
 
   @override
   ConsumerState<AssignStaffPage> createState() => _AssignStaffPageState();
@@ -25,14 +27,35 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => ref
           .read(facilityAttendantsProvider.notifier)
-          .fetch(facilityId: widget.facilityId),
+          .fetch(facilityId: widget.shift.facility.id),
+    );
+  }
+
+  void _onAssignAttendant(int attendantId) {
+    ref.read(assignmentProvider.notifier).assign(
+      shift: widget.shift,
+      attendantId: attendantId,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(assignmentProvider, (_, next) {
+      if (next is AsyncData && next.value != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.locale.staffAssignedSuccessfully)),
+        );
+        context.pop();
+      } else if (next is AsyncError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error.toString())),
+        );
+      }
+    });
+
     final spacing = context.dimensions.spacing;
     final attendantsState = ref.watch(facilityAttendantsProvider);
+    final isAssigning = ref.watch(assignmentProvider).isLoading;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -88,8 +111,12 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
             padding: EdgeInsets.all(spacing.s16),
             itemCount: attendants.length,
             separatorBuilder: (context, index) => Gap(spacing.s12),
-            itemBuilder: (context, index) =>
-                _AttendantTile(attendant: attendants[index]),
+            itemBuilder: (context, index) => _AttendantTile(
+              attendant: attendants[index],
+              onAssign: isAssigning
+                  ? null
+                  : () => _onAssignAttendant(attendants[index].id),
+            ),
           );
         },
       ),
@@ -98,76 +125,83 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
 }
 
 class _AttendantTile extends StatelessWidget {
-  const _AttendantTile({required this.attendant});
+  const _AttendantTile({required this.attendant, required this.onAssign});
 
   final AttendantEntity attendant;
+  final VoidCallback? onAssign;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return Container(
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        border: Border.all(color: context.color.borderSubtle),
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: context.color.brandAccent,
-            child: Icon(
-              Icons.person_outline_rounded,
-              color: context.color.text.primary,
-              size: 22,
-            ),
+    return GestureDetector(
+      onTap: onAssign,
+      child: Opacity(
+        opacity: onAssign == null ? 0.5 : 1.0,
+        child: Container(
+          padding: EdgeInsets.all(spacing.s16),
+          decoration: BoxDecoration(
+            color: context.color.onPrimary,
+            border: Border.all(color: context.color.borderSubtle),
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
           ),
-          Gap(spacing.s12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  attendant.name,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: context.color.brandAccent,
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  color: context.color.text.primary,
+                  size: 22,
+                ),
+              ),
+              Gap(spacing.s12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      attendant.name,
+                      style: context.textStyle.labelLarge.copyWith(
+                        color: context.color.text.primary,
+                      ),
+                    ),
+                    Gap(spacing.s2),
+                    Text(
+                      attendant.phone,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.text.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.s8,
+                  vertical: spacing.s4,
+                ),
+                decoration: BoxDecoration(
+                  color: attendant.assignment.isActive
+                      ? context.color.successAlt
+                      : context.color.warningAlt,
+                  borderRadius: BorderRadius.circular(
+                    context.dimensions.radius.r4,
                   ),
                 ),
-                Gap(spacing.s2),
-                Text(
-                  attendant.phone,
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: context.color.text.secondary,
+                child: Text(
+                  attendant.assignment.assignmentType,
+                  style: context.textStyle.labelSmall.copyWith(
+                    color: attendant.assignment.isActive
+                        ? context.color.success
+                        : context.color.warning,
                   ),
                 ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.s8,
-              vertical: spacing.s4,
-            ),
-            decoration: BoxDecoration(
-              color: attendant.assignment.isActive
-                  ? context.color.successAlt
-                  : context.color.warningAlt,
-              borderRadius: BorderRadius.circular(
-                context.dimensions.radius.r4,
               ),
-            ),
-            child: Text(
-              attendant.assignment.assignmentType,
-              style: context.textStyle.labelSmall.copyWith(
-                color: attendant.assignment.isActive
-                    ? context.color.success
-                    : context.color.warning,
-              ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

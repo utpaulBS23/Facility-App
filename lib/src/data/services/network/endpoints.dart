@@ -15,6 +15,10 @@ class Endpoints {
   static const String facilityAttendants =
       '/partners/{partnerId}/facilities/{facilityId}/attendants';
 
+  /// Assignments
+  static const String rosterAssignments =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments';
+
   /// Shifts
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
