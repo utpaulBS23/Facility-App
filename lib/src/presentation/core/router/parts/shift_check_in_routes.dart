@@ -20,8 +20,10 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
     GoRoute(
       path: Routes.shiftCheckOut,
       name: Routes.shiftCheckOut,
-      pageBuilder: (context, state) =>
-          const MaterialPage(child: ShiftCheckOutPage()),
+      pageBuilder: (context, state) {
+        final shiftId = state.extra as int;
+        return MaterialPage(child: ShiftCheckOutPage(shiftId: shiftId));
+      },
     ),
     GoRoute(
       path: Routes.noShiftToday,

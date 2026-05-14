@@ -33,6 +33,7 @@ List<ShiftCardData> _buildApplyLeaveShifts() {
       shiftDate: today,
       status: ShiftStatus.inProgress,
       shiftType: 'Morning',
+      id: 3,
     ),
     ShiftCardData(
       facilityName: 'Bijoy Sarani Tower',
@@ -44,6 +45,7 @@ List<ShiftCardData> _buildApplyLeaveShifts() {
       shiftDate: tomorrow,
       status: ShiftStatus.upcoming,
       shiftType: 'Morning',
+      id: 4,
     ),
   ];
 }

@@ -13,6 +13,7 @@ import '../../../core/gen/assets.gen.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/check_in_info_provider.dart';
+import '../riverpod/check_out_provider.dart';
 import '../riverpod/face_validation_provider.dart';
 import '../riverpod/selfie_picker_provider.dart';
 

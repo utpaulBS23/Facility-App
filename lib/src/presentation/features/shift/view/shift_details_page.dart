@@ -9,7 +9,7 @@ class ShiftDetailsPage extends StatelessWidget {
       data.checkInTime != null && data.checkOutTime == null;
 
   void _onCheckOut(BuildContext context) {
-    context.pushNamed(Routes.shiftCheckOut);
+    context.pushNamed(Routes.shiftCheckOut, extra: data.id);
   }
 
   @override

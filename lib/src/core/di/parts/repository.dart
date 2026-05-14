@@ -50,3 +50,8 @@ DeviceInfoRepository deviceInfoRepository(Ref ref) {
 ShiftRepository shiftRepository(Ref ref) {
   return ShiftRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+CheckOutRepository checkOutRepository(Ref ref) {
+  return CheckOutRepositoryImpl(ref.read(restClientServiceProvider));
+}

@@ -24,6 +24,7 @@ ImagePickerService imagePickerService(Ref ref) {
 
 @riverpod
 FaceDetectionService faceDetectionService(Ref ref) {
+  // ignore: invalid_service_name
   final service = FaceDetectionServiceImpl();
   ref.onDispose(service.close);
 
