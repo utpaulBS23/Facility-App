@@ -1,6 +1,6 @@
 class Endpoints {
   static const base =
-      'https://further-odds-reasonable-accountability.trycloudflare.com/api/backend';
+      'https://julian-secretariat-determined-ref.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';
@@ -13,6 +13,8 @@ class Endpoints {
 
   /// Shifts
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
+  static const String supervisorShifts =
+      '/partners/{partnerId}/supervisors/manage-shifts';
   static const String forgotPassword = '/auth/forgot_password/';
   static const String resetPassword = '/auth/reset_password/';
   static const String refreshToken = '/auth/refresh_token/';

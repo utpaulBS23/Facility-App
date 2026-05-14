@@ -6,4 +6,9 @@ abstract base class ShiftRepository extends Repository {
     required int partnerId,
     required String date,
   });
+
+  Future<Result<List<ShiftEntity>, Failure>> getSupervisorShifts({
+    required int partnerId,
+    required String date,
+  });
 }

@@ -24,4 +24,19 @@ final class ShiftRepositoryImpl extends ShiftRepository {
       return model.data.map((s) => s.toEntity()).toList();
     });
   }
+
+  @override
+  Future<Result<List<ShiftEntity>, Failure>> getSupervisorShifts({
+    required int partnerId,
+    required String date,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getSupervisorShifts(
+        partnerId: partnerId,
+        date: date,
+      );
+      final model = ShiftResponseModel.fromJson(response.data);
+      return model.data.map((s) => s.toEntity()).toList();
+    });
+  }
 }

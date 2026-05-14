@@ -19,8 +19,20 @@ abstract class RestClient {
     @Body() FormData formData,
   );
 
+  @POST(Endpoints.checkOut)
+  Future<HttpResponse> checkOut(
+    @Path('partnerId') int partnerId,
+    @Body() FormData formData,
+  );
+
   @GET(Endpoints.myShifts)
   Future<HttpResponse> getMyShifts({
+    @Path('partnerId') required int partnerId,
+    @Query('date') required String date,
+  });
+
+  @GET(Endpoints.supervisorShifts)
+  Future<HttpResponse> getSupervisorShifts({
     @Path('partnerId') required int partnerId,
     @Query('date') required String date,
   });
