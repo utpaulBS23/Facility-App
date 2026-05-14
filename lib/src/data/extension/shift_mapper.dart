@@ -15,11 +15,7 @@ extension ShiftFacilityModelToEntity on ShiftFacilityModel {
         id: id,
         name: name,
         address: address,
-        supervisor: supervisors
-                .where((s) => s.isPrimary == 1)
-                .firstOrNull
-                ?.toEntity() ??
-            supervisors.firstOrNull?.toEntity(),
+        supervisor: supervisor?.toEntity(),
       );
 }
 

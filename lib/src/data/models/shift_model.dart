@@ -29,7 +29,7 @@ class ShiftFacilityModel with ShiftFacilityModelMappable {
     required this.nameBn,
     required this.address,
     required this.addressBn,
-    required this.supervisors,
+    this.supervisor,
   });
 
   final int id;
@@ -39,7 +39,7 @@ class ShiftFacilityModel with ShiftFacilityModelMappable {
   final String address;
   @MappableField(key: 'address_bn')
   final String addressBn;
-  final List<ShiftSupervisorModel> supervisors;
+  final ShiftSupervisorModel? supervisor;
 
   static const fromJson = ShiftFacilityModelMapper.fromJson;
 }
