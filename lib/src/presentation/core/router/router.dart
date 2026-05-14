@@ -13,6 +13,7 @@ import '../../features/authentication/login/view/login_page.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/shift/view/apply_leave_page.dart';
+import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/no_shift_today/view/no_shift_today_page.dart';
