@@ -1,11 +1,9 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _ShiftDetailsBody extends StatelessWidget {
-  const _ShiftDetailsBody({required this.data});
+  const _ShiftDetailsBody({required this.entity});
 
-  final ShiftCardData data;
-
-  bool get _hasCheckInData => data.checkInTime != null;
+  final ShiftEntity entity;
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +13,16 @@ class _ShiftDetailsBody extends StatelessWidget {
       padding: EdgeInsets.all(spacing.s16),
       child: Column(
         children: [
-          _ShiftDetailContractCard(data: data),
+          _ShiftDetailContractCard(entity: entity),
           Gap(spacing.s8),
-          _ShiftDetailSupervisorCard(data: data),
-          if (_hasCheckInData) ...[
+          _ShiftDetailSupervisorCard(entity: entity),
+          if (entity.checkInTime != null) ...[
             Gap(spacing.s8),
-            _ShiftDetailCheckInCard(data: data),
+            _ShiftDetailCheckInCard(entity: entity),
           ],
-          if (data.shiftNotes != null) ...[
+          if (entity.notes != null) ...[
             Gap(spacing.s8),
-            _ShiftDetailNotesCard(notes: data.shiftNotes!),
+            _ShiftDetailNotesCard(notes: entity.notes!),
           ],
         ],
       ),

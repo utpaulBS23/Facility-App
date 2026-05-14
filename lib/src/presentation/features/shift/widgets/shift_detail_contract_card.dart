@@ -1,23 +1,27 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _ShiftDetailContractCard extends StatelessWidget {
-  const _ShiftDetailContractCard({required this.data});
+  const _ShiftDetailContractCard({required this.entity});
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
 
-  Color _dotColor(BuildContext context) => switch (data.status) {
-        ShiftStatus.inProgress => context.color.success,
-        ShiftStatus.upcoming => context.color.warning,
-      };
+  bool get _isInProgress => entity.status == 'in_progress';
 
-  String _statusLabel(BuildContext context) => switch (data.status) {
-        ShiftStatus.inProgress => context.locale.inProgress,
-        ShiftStatus.upcoming => context.locale.upcoming,
-      };
+  Color _badgeBackground(BuildContext context) =>
+      _isInProgress ? context.color.successAlt : context.color.warningAlt;
+
+  Color _badgeTextColor(BuildContext context) =>
+      _isInProgress ? context.color.success : context.color.warning;
+
+  String _statusLabel(BuildContext context) =>
+      _isInProgress ? context.locale.inProgress : context.locale.upcoming;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final date = DateTime.parse(entity.shiftDate);
+    final timeRange =
+        '${DateFormatter.shiftTime(entity.startTime)} – ${DateFormatter.shiftTime(entity.endTime)}';
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -31,11 +35,12 @@ class _ShiftDetailContractCard extends StatelessWidget {
         children: [
           _StatusBadge(
             label: _statusLabel(context),
-            dotColor: _dotColor(context),
+            backgroundColor: _badgeBackground(context),
+            textColor: _badgeTextColor(context),
           ),
           Gap(spacing.s20),
           Text(
-            data.facilityName,
+            entity.facility.name,
             style: context.textStyle.headline2xlTiny.copyWith(
               color: context.color.text.primary,
             ),
@@ -43,7 +48,7 @@ class _ShiftDetailContractCard extends StatelessWidget {
           Gap(spacing.s4),
           _InfoRow(
             icon: Icons.location_on_outlined,
-            label: data.address,
+            label: entity.facility.address,
           ),
           Gap(spacing.s20),
           Row(
@@ -52,7 +57,7 @@ class _ShiftDetailContractCard extends StatelessWidget {
                 child: _DateTimeTile(
                   icon: Icons.calendar_today_outlined,
                   label: context.locale.date,
-                  value: data.date,
+                  value: DateFormatter.shiftDate(date),
                 ),
               ),
               Gap(spacing.s8),
@@ -60,7 +65,7 @@ class _ShiftDetailContractCard extends StatelessWidget {
                 child: _DateTimeTile(
                   icon: Icons.access_time_outlined,
                   label: context.locale.time,
-                  value: data.timeRange,
+                  value: timeRange,
                 ),
               ),
             ],
@@ -69,23 +74,22 @@ class _ShiftDetailContractCard extends StatelessWidget {
           _ShiftDetailRow(
             icon: Icons.location_on_outlined,
             label: context.locale.location,
-            value: data.address,
+            value: entity.facility.address,
           ),
           Gap(spacing.s16),
           _ShiftDetailRow(
             icon: Icons.access_time_outlined,
             label: context.locale.hoursWorked,
-            value: data.hoursWorked ?? '—',
+            value: '—',
           ),
           Gap(spacing.s16),
           _ShiftDetailRow(
             icon: Icons.calendar_month_outlined,
             label: context.locale.shiftType,
-            value: data.shiftType ?? '—',
+            value: entity.shiftTemplateName,
           ),
         ],
       ),
     );
   }
 }
-

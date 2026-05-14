@@ -1,4 +1,4 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _ApplyLeaveButton extends StatelessWidget {
   const _ApplyLeaveButton({required this.onTap});
@@ -45,9 +45,9 @@ class _CheckOutButton extends StatelessWidget {
 // WHY: Extracted as a named widget to keep _SupervisorShiftCard readable and
 // to isolate the assigned/unassigned branching logic.
 class _AssignedSection extends StatelessWidget {
-  const _AssignedSection({required this.data, required this.onAssignStaff});
+  const _AssignedSection({required this.entity, required this.onAssignStaff});
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
   final VoidCallback onAssignStaff;
 
   @override
@@ -63,12 +63,12 @@ class _AssignedSection extends StatelessWidget {
             color: context.color.text.secondary,
           ),
         ),
-        if (data.attendants.isNotEmpty) ...[
+        if (entity.attendants.isNotEmpty) ...[
           Gap(spacing.s12),
-          ...data.attendants.map(
+          ...entity.attendants.map(
             (a) => Padding(
               padding: EdgeInsets.only(bottom: spacing.s8),
-              child: _AssignedStaffTile(name: a.name, phone: a.phone ?? ''),
+              child: _AssignedStaffTile(name: a.fullName, phone: a.phone ?? ''),
             ),
           ),
         ],

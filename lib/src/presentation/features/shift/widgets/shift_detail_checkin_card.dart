@@ -1,15 +1,19 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _ShiftDetailCheckInCard extends StatelessWidget {
-  const _ShiftDetailCheckInCard({required this.data});
+  const _ShiftDetailCheckInCard({required this.entity});
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final checkIn = data.checkInTime;
-    final checkOut = data.checkOutTime;
+    final checkIn = entity.checkInTime != null
+        ? DateFormatter.isoTimestamp(entity.checkInTime!)
+        : null;
+    final checkOut = entity.checkOutTime != null
+        ? DateFormatter.isoTimestamp(entity.checkOutTime!)
+        : null;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),

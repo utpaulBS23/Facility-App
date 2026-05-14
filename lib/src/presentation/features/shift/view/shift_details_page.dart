@@ -1,15 +1,15 @@
-part of 'shift_page.dart';
+part of 'shift_tab.dart';
 
 class ShiftDetailsPage extends StatelessWidget {
-  const ShiftDetailsPage({super.key, required this.data});
+  const ShiftDetailsPage({super.key, required this.entity});
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
 
   bool get _showCheckOutButton =>
-      data.checkInTime != null && data.checkOutTime == null;
+      entity.checkInTime != null && entity.checkOutTime == null;
 
   void _onCheckOut(BuildContext context) {
-    context.pushNamed(Routes.shiftCheckOut, extra: data.id);
+    context.pushNamed(Routes.shiftCheckOut, extra: entity.id);
   }
 
   @override
@@ -47,7 +47,7 @@ class ShiftDetailsPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Expanded(child: _ShiftDetailsBody(data: data)),
+          Expanded(child: _ShiftDetailsBody(entity: entity)),
           if (_showCheckOutButton)
             Padding(
               padding: EdgeInsets.fromLTRB(

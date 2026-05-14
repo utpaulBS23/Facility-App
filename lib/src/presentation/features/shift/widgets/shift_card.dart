@@ -1,73 +1,27 @@
-part of '../view/shift_page.dart';
-
-enum ShiftStatus { inProgress, upcoming }
-
-class ShiftCardAttendant {
-  const ShiftCardAttendant({required this.name, this.phone});
-
-  final String name;
-  final String? phone;
-}
-
-class ShiftCardData {
-  const ShiftCardData({
-    required this.id,
-    required this.facilityName,
-    required this.supervisorName,
-    required this.supervisorPhone,
-    required this.address,
-    required this.timeRange,
-    required this.date,
-    required this.shiftDate,
-    required this.status,
-    this.hoursWorked,
-    this.shiftType,
-    this.shiftNotes,
-    this.checkInTime,
-    this.checkOutTime,
-    this.attendants = const [],
-  });
-
-  final int id;
-  final String facilityName;
-  final String supervisorName;
-  final String supervisorPhone;
-  final String address;
-  final String timeRange;
-
-  // WHY: Human-readable date label shown on the details page.
-  final String date;
-
-  // WHY: Exact date used to filter shift cards when the user picks a day.
-  final DateTime shiftDate;
-  final ShiftStatus status;
-  final String? hoursWorked;
-  final String? shiftType;
-  final String? shiftNotes;
-  final String? checkInTime;
-  final String? checkOutTime;
-  final List<ShiftCardAttendant> attendants;
-}
+part of '../view/shift_tab.dart';
 
 class _ShiftCard extends StatelessWidget {
-  const _ShiftCard({required this.data, required this.onTap});
+  const _ShiftCard({required this.entity, required this.onTap});
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
   final VoidCallback onTap;
 
-  Color _dotColor(BuildContext context) => switch (data.status) {
-    ShiftStatus.inProgress => context.color.success,
-    ShiftStatus.upcoming => context.color.warning,
-  };
+  bool get _isInProgress => entity.status == 'in_progress';
 
-  String _statusLabel(BuildContext context) => switch (data.status) {
-    ShiftStatus.inProgress => context.locale.inProgress,
-    ShiftStatus.upcoming => context.locale.upcoming,
-  };
+  Color _badgeBackground(BuildContext context) =>
+      _isInProgress ? context.color.successAlt : context.color.warningAlt;
+
+  Color _badgeTextColor(BuildContext context) =>
+      _isInProgress ? context.color.success : context.color.warning;
+
+  String _statusLabel(BuildContext context) =>
+      _isInProgress ? context.locale.inProgress : context.locale.upcoming;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final timeRange =
+        '${DateFormatter.shiftTime(entity.startTime)} – ${DateFormatter.shiftTime(entity.endTime)}';
 
     return GestureDetector(
       onTap: onTap,
@@ -82,16 +36,16 @@ class _ShiftCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status dot + label | Time range
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatusBadge(
                   label: _statusLabel(context),
-                  dotColor: _dotColor(context),
+                  backgroundColor: _badgeBackground(context),
+                  textColor: _badgeTextColor(context),
                 ),
                 Text(
-                  data.timeRange,
+                  timeRange,
                   style: context.textStyle.labelLarge.copyWith(
                     color: context.color.text.primary,
                   ),
@@ -99,22 +53,30 @@ class _ShiftCard extends StatelessWidget {
               ],
             ),
             Gap(spacing.s8),
-            // Facility name
             Text(
-              data.facilityName,
+              entity.facility.name,
               style: context.textStyle.labelLarge.copyWith(
                 color: context.color.text.primary,
               ),
             ),
-            Gap(spacing.s6),
-            // Supervisor row
-            _InfoRow(
-              icon: Icons.person_outline_rounded,
-              label: data.supervisorName,
+            Gap(spacing.s4),
+            Text(
+              entity.shiftTemplateName,
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.text.secondary,
+              ),
             ),
             Gap(spacing.s6),
-            // Address row
-            _InfoRow(icon: Icons.location_on_outlined, label: data.address),
+            if (entity.facility.supervisor != null)
+              _InfoRow(
+                icon: Icons.person_outline_rounded,
+                label: entity.facility.supervisor!.fullName,
+              ),
+            Gap(spacing.s6),
+            _InfoRow(
+              icon: Icons.location_on_outlined,
+              label: entity.facility.address,
+            ),
           ],
         ),
       ),
@@ -124,28 +86,31 @@ class _ShiftCard extends StatelessWidget {
 
 class _SupervisorShiftCard extends StatelessWidget {
   const _SupervisorShiftCard({
-    required this.data,
+    required this.entity,
     required this.onAssignStaff,
     required this.onShiftTap,
   });
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
   final VoidCallback onAssignStaff;
   final VoidCallback onShiftTap;
 
-  Color _dotColor(BuildContext context) => switch (data.status) {
-    ShiftStatus.inProgress => context.color.success,
-    ShiftStatus.upcoming => context.color.warning,
-  };
+  bool get _isInProgress => entity.status == 'in_progress';
 
-  String _statusLabel(BuildContext context) => switch (data.status) {
-    ShiftStatus.inProgress => context.locale.inProgress,
-    ShiftStatus.upcoming => context.locale.upcoming,
-  };
+  Color _badgeBackground(BuildContext context) =>
+      _isInProgress ? context.color.successAlt : context.color.warningAlt;
+
+  Color _badgeTextColor(BuildContext context) =>
+      _isInProgress ? context.color.success : context.color.warning;
+
+  String _statusLabel(BuildContext context) =>
+      _isInProgress ? context.locale.inProgress : context.locale.upcoming;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final timeRange =
+        '${DateFormatter.shiftTime(entity.startTime)} – ${DateFormatter.shiftTime(entity.endTime)}';
 
     return GestureDetector(
       onTap: onShiftTap,
@@ -160,41 +125,48 @@ class _SupervisorShiftCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatusBadge(
                   label: _statusLabel(context),
-                  dotColor: _dotColor(context),
+                  backgroundColor: _badgeBackground(context),
+                  textColor: _badgeTextColor(context),
                 ),
-                Gap(spacing.s8),
-                _StatusBadge(
-                  label: context.locale.employeeShortest,
-                  dotColor: context.color.warning,
+                Text(
+                  timeRange,
+                  style: context.textStyle.labelLarge.copyWith(
+                    color: context.color.text.primary,
+                  ),
                 ),
               ],
             ),
             Gap(spacing.s8),
             Text(
-              data.timeRange,
+              entity.facility.name,
               style: context.textStyle.labelLarge.copyWith(
                 color: context.color.text.primary,
               ),
             ),
-            Gap(spacing.s8),
+            Gap(spacing.s4),
             Text(
-              data.facilityName,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.text.primary,
+              entity.shiftTemplateName,
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.text.secondary,
               ),
             ),
+            Gap(spacing.s6),
+            if (entity.facility.supervisor != null)
+              _InfoRow(
+                icon: Icons.person_outline_rounded,
+                label: entity.facility.supervisor!.fullName,
+              ),
             Gap(spacing.s6),
             _InfoRow(
-              icon: Icons.person_outline_rounded,
-              label: data.supervisorName,
+              icon: Icons.location_on_outlined,
+              label: entity.facility.address,
             ),
-            Gap(spacing.s6),
-            _InfoRow(icon: Icons.location_on_outlined, label: data.address),
             Gap(spacing.s20),
-            _AssignedSection(data: data, onAssignStaff: onAssignStaff),
+            _AssignedSection(entity: entity, onAssignStaff: onAssignStaff),
           ],
         ),
       ),

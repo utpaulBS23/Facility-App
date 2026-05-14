@@ -1,31 +1,33 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.label, required this.dotColor});
+  const _StatusBadge({
+    required this.label,
+    required this.backgroundColor,
+    required this.textColor,
+  });
 
   final String label;
-  final Color dotColor;
+  final Color backgroundColor;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: spacing.s10,
-          height: spacing.s10,
-          decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
-        ),
-        Gap(spacing.s4),
-        Text(
-          label,
-          style: context.textStyle.bodySmall.copyWith(
-            color: context.color.text.secondary,
-          ),
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: spacing.s8,
+        vertical: spacing.s4,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
+      ),
+      child: Text(
+        label,
+        style: context.textStyle.labelSmall.copyWith(color: textColor),
+      ),
     );
   }
 }

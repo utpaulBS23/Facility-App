@@ -1,4 +1,4 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _ShiftDetailNotesCard extends StatelessWidget {
   const _ShiftDetailNotesCard({required this.notes});

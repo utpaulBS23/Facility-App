@@ -6,8 +6,8 @@ List<GoRoute> _shiftRoutes(Ref ref) {
       path: Routes.shiftDetails,
       name: Routes.shiftDetails,
       pageBuilder: (context, state) {
-        final data = state.extra as ShiftCardData;
-        return MaterialPage(child: ShiftDetailsPage(data: data));
+        final entity = state.extra as ShiftEntity;
+        return MaterialPage(child: ShiftDetailsPage(entity: entity));
       },
     ),
     GoRoute(

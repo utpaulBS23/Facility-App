@@ -1,13 +1,15 @@
-part of '../view/shift_page.dart';
+part of '../view/shift_tab.dart';
 
 class _ShiftDetailSupervisorCard extends StatelessWidget {
-  const _ShiftDetailSupervisorCard({required this.data});
+  const _ShiftDetailSupervisorCard({required this.entity});
 
-  final ShiftCardData data;
+  final ShiftEntity entity;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final supervisor = entity.facility.supervisor;
+    final na = context.locale.notAvailable;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -43,14 +45,14 @@ class _ShiftDetailSupervisorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      data.supervisorName,
+                      supervisor?.fullName ?? na,
                       style: context.textStyle.headline2xlTiny.copyWith(
                         color: context.color.text.primary,
                       ),
                     ),
                     Gap(spacing.s4),
                     Text(
-                      data.supervisorPhone,
+                      supervisor?.phone ?? na,
                       style: context.textStyle.titleSmall.copyWith(
                         color: context.color.text.secondary,
                       ),
