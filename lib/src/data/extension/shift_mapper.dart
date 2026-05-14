@@ -15,7 +15,19 @@ extension ShiftFacilityModelToEntity on ShiftFacilityModel {
         id: id,
         name: name,
         address: address,
-        supervisors: supervisors.map((s) => s.toEntity()).toList(),
+        supervisor: supervisors
+                .where((s) => s.isPrimary == 1)
+                .firstOrNull
+                ?.toEntity() ??
+            supervisors.firstOrNull?.toEntity(),
+      );
+}
+
+extension ShiftAttendantModelToEntity on ShiftAttendantModel {
+  ShiftAttendantEntity toEntity() => ShiftAttendantEntity(
+        id: id,
+        fullName: fullName,
+        phone: phone,
       );
 }
 
@@ -31,5 +43,6 @@ extension ShiftModelToEntity on ShiftModel {
         checkInTime: checkInTime,
         checkOutTime: checkOutTime,
         notes: notes,
+        attendants: attendants.map((a) => a.toEntity()).toList(),
       );
 }

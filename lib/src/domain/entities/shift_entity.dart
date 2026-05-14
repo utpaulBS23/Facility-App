@@ -1,3 +1,15 @@
+class ShiftAttendantEntity {
+  const ShiftAttendantEntity({
+    required this.id,
+    required this.fullName,
+    this.phone,
+  });
+
+  final int id;
+  final String fullName;
+  final String? phone;
+}
+
 class ShiftSupervisorEntity {
   const ShiftSupervisorEntity({
     required this.id,
@@ -17,17 +29,13 @@ class ShiftFacilityEntity {
     required this.id,
     required this.name,
     required this.address,
-    required this.supervisors,
+    this.supervisor,
   });
 
   final int id;
   final String name;
   final String address;
-  final List<ShiftSupervisorEntity> supervisors;
-
-  ShiftSupervisorEntity? get primarySupervisor =>
-      supervisors.where((s) => s.isPrimary).firstOrNull ??
-      supervisors.firstOrNull;
+  final ShiftSupervisorEntity? supervisor;
 }
 
 class ShiftEntity {
@@ -42,6 +50,7 @@ class ShiftEntity {
     this.checkInTime,
     this.checkOutTime,
     this.notes,
+    this.attendants = const [],
   });
 
   final int id;
@@ -54,4 +63,5 @@ class ShiftEntity {
   final String? checkInTime;
   final String? checkOutTime;
   final String? notes;
+  final List<ShiftAttendantEntity> attendants;
 }

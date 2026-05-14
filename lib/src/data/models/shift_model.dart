@@ -59,13 +59,13 @@ class ShiftAttendantModel with ShiftAttendantModelMappable {
   ShiftAttendantModel({
     required this.id,
     required this.fullName,
-    required this.phone,
+    this.phone,
   });
 
   final int id;
   @MappableField(key: 'full_name')
   final String fullName;
-  final String phone;
+  final String? phone;
 
   static const fromJson = ShiftAttendantModelMapper.fromJson;
 }
@@ -74,29 +74,29 @@ class ShiftAttendantModel with ShiftAttendantModelMappable {
 class ShiftModel with ShiftModelMappable {
   ShiftModel({
     required this.id,
-    required this.weeklyRosterId,
+    this.weeklyRosterId,
     required this.facility,
     required this.shiftTemplate,
-    required this.attendant,
+    this.attendants = const [],
     required this.shiftDate,
     required this.startTime,
     required this.endTime,
-    required this.durationHours,
+    this.durationHours,
     required this.status,
     this.checkInTime,
     this.checkOutTime,
     this.actualDuration,
-    required this.isOvertime,
+    this.isOvertime,
     this.notes,
   });
 
   final int id;
   @MappableField(key: 'weekly_roster_id')
-  final int weeklyRosterId;
+  final int? weeklyRosterId;
   final ShiftFacilityModel facility;
   @MappableField(key: 'shift_template')
   final ShiftTemplateModel shiftTemplate;
-  final ShiftAttendantModel attendant;
+  final List<ShiftAttendantModel> attendants;
   @MappableField(key: 'shift_date')
   final String shiftDate;
   @MappableField(key: 'start_time')
@@ -104,7 +104,7 @@ class ShiftModel with ShiftModelMappable {
   @MappableField(key: 'end_time')
   final String endTime;
   @MappableField(key: 'duration_hours')
-  final String durationHours;
+  final String? durationHours;
   final String status;
   @MappableField(key: 'check_in_time')
   final String? checkInTime;
@@ -113,7 +113,7 @@ class ShiftModel with ShiftModelMappable {
   @MappableField(key: 'actual_duration')
   final String? actualDuration;
   @MappableField(key: 'is_overtime')
-  final bool isOvertime;
+  final bool? isOvertime;
   final String? notes;
 
   static const fromJson = ShiftModelMapper.fromJson;
