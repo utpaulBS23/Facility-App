@@ -3,7 +3,7 @@ part of 'apply_leave_page.dart';
 class SelectShiftPage extends StatelessWidget {
   const SelectShiftPage({super.key, required this.shifts});
 
-  final List<ShiftCardData> shifts;
+  final List<ShiftEntity> shifts;
 
   @override
   Widget build(BuildContext context) {

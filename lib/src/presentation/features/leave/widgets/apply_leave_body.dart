@@ -8,7 +8,7 @@ class _ApplyLeaveBody extends StatelessWidget {
     required this.onSelectShiftTap,
   });
 
-  final ShiftCardData? selectedShift;
+  final ShiftEntity? selectedShift;
   final String? selectedLeaveType;
   final TextEditingController reasonController;
   final VoidCallback onSelectShiftTap;
@@ -48,12 +48,13 @@ class _LeaveTypeInput extends StatelessWidget {
     return DropdownMenuFormField(
       width: double.infinity,
       hintText: context.locale.leaveType,
-      dropdownMenuEntries:
-          ["Leave type", "Sick leave", "Casual leave", "Maternity leave"].map((
-            type,
-          ) {
-            return DropdownMenuEntry(value: type, label: type);
-          }).toList(),
+      dropdownMenuEntries: [
+            context.locale.sickLeave,
+            context.locale.casualLeave,
+            context.locale.maternityLeave,
+          ]
+              .map((type) => DropdownMenuEntry(value: type, label: type))
+              .toList(),
       onSelected: (value) {},
       initialSelection: selectedLeaveType,
       menuStyle: MenuStyle(

@@ -3,7 +3,7 @@ part of '../view/apply_leave_page.dart';
 class _SelectShiftCard extends StatelessWidget {
   const _SelectShiftCard({required this.selectedShift, required this.onTap});
 
-  final ShiftCardData? selectedShift;
+  final ShiftEntity? selectedShift;
   final VoidCallback onTap;
 
   @override
@@ -37,7 +37,7 @@ class _SelectShiftCard extends StatelessWidget {
 class _SelectedShiftRow extends StatelessWidget {
   const _SelectedShiftRow({required this.selectedShift, required this.onTap});
 
-  final ShiftCardData? selectedShift;
+  final ShiftEntity? selectedShift;
   final VoidCallback onTap;
 
   @override
@@ -68,7 +68,7 @@ class _SelectedShiftRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        shift.facilityName,
+                        shift.facility.name,
                         style: context.textStyle.titleSmall.copyWith(
                           color: context.color.text.secondary,
                         ),
@@ -83,7 +83,9 @@ class _SelectedShiftRow extends StatelessWidget {
                           ),
                           Gap(spacing.s4),
                           Text(
-                            shift.date,
+                            DateFormatter.shiftDate(
+                              DateTime.parse(shift.shiftDate),
+                            ),
                             style: context.textStyle.bodySmall.copyWith(
                               color: context.color.text.secondary,
                             ),
@@ -96,7 +98,7 @@ class _SelectedShiftRow extends StatelessWidget {
                           ),
                           Gap(spacing.s4),
                           Text(
-                            shift.timeRange,
+                            '${DateFormatter.shiftTime(shift.startTime)} – ${DateFormatter.shiftTime(shift.endTime)}',
                             style: context.textStyle.bodySmall.copyWith(
                               color: context.color.text.secondary,
                             ),

@@ -3,7 +3,7 @@ part of '../view/apply_leave_page.dart';
 class _SelectShiftBody extends StatelessWidget {
   const _SelectShiftBody({required this.shifts});
 
-  final List<ShiftCardData> shifts;
+  final List<ShiftEntity> shifts;
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +30,23 @@ class _SelectableShiftCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final ShiftCardData shift;
+  final ShiftEntity shift;
   final VoidCallback onTap;
 
-  Color _dotColor(BuildContext context) => switch (shift.status) {
-        ShiftStatus.inProgress => context.color.success,
-        ShiftStatus.upcoming => context.color.warning,
-      };
+  bool get _isInProgress => shift.status == 'in_progress';
 
-  String _statusLabel(BuildContext context) => switch (shift.status) {
-        ShiftStatus.inProgress => context.locale.inProgress,
-        ShiftStatus.upcoming => context.locale.upcoming,
-      };
+  Color _dotColor(BuildContext context) =>
+      _isInProgress ? context.color.success : context.color.warning;
+
+  String _statusLabel(BuildContext context) =>
+      _isInProgress ? context.locale.inProgress : context.locale.upcoming;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final date = DateFormatter.shiftDate(DateTime.parse(shift.shiftDate));
+    final timeRange =
+        '${DateFormatter.shiftTime(shift.startTime)} – ${DateFormatter.shiftTime(shift.endTime)}';
 
     return GestureDetector(
       onTap: onTap,
@@ -84,7 +85,7 @@ class _SelectableShiftCard extends StatelessWidget {
                   ),
                   Gap(spacing.s8),
                   Text(
-                    shift.facilityName,
+                    shift.facility.name,
                     style: context.textStyle.titleSmall.copyWith(
                       color: context.color.text.primary,
                     ),
@@ -99,7 +100,7 @@ class _SelectableShiftCard extends StatelessWidget {
                       ),
                       Gap(spacing.s4),
                       Text(
-                        shift.date,
+                        date,
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.text.secondary,
                         ),
@@ -112,7 +113,7 @@ class _SelectableShiftCard extends StatelessWidget {
                       ),
                       Gap(spacing.s4),
                       Text(
-                        shift.timeRange,
+                        timeRange,
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.text.secondary,
                         ),

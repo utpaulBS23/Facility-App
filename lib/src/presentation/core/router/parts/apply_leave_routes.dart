@@ -13,7 +13,7 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
       path: Routes.selectShift,
       name: Routes.selectShift,
       pageBuilder: (context, state) {
-        final shifts = state.extra as List<ShiftCardData>;
+        final shifts = state.extra as List<ShiftEntity>;
         return MaterialPage(child: SelectShiftPage(shifts: shifts));
       },
     ),
