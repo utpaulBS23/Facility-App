@@ -1,5 +1,8 @@
 class Endpoints {
-  static const base =
+  static const base = baseDev;
+
+  static const baseDev = 'http://3.108.132.91/api/backend';
+  static const baseLocal =
       'https://gregory-kodak-shoppers-rebel.trycloudflare.com/api/backend';
 
   /// Authentication
