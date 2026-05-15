@@ -33,21 +33,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
-  final _emailController = TextEditingController();
+  final _uidController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = 'david.martinez@bhumijo.com';
-    // _emailController.text = 'emma.garcia@yopmail.com';
+    _uidController.text = 'ATTENDENT_9226';
     _passwordController.text = 'password123';
     ref.listenManual(loginProvider, _onLoginStateChanged);
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _uidController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -86,7 +85,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref
         .read(loginProvider.notifier)
         .login(
-          email: _emailController.text,
+          uid: _uidController.text,
           password: _passwordController.text,
         );
   }
@@ -135,7 +134,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               Form(
                 key: _formKey,
                 child: _LoginCard(
-                  emailController: _emailController,
+                  uidController: _uidController,
                   passwordController: _passwordController,
                   isLoading: state.isLoading,
                   onLogin: _onLogin,

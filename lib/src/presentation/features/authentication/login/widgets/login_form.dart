@@ -5,14 +5,14 @@ part of '../view/login_page.dart';
 
 class _LoginCard extends StatelessWidget {
   const _LoginCard({
-    required this.emailController,
+    required this.uidController,
     required this.passwordController,
     required this.isLoading,
     required this.onLogin,
     required this.onForgotPassword,
   });
 
-  final TextEditingController emailController;
+  final TextEditingController uidController;
   final TextEditingController passwordController;
   final bool isLoading;
   final VoidCallback onLogin;
@@ -48,9 +48,9 @@ class _LoginCard extends StatelessWidget {
             color: colors.text.secondary,
           ),
           Gap(dimensions.spacing.s16),
-          AppTextField.email(
-            controller: emailController,
-            label: context.locale.email,
+          AppTextField.text(
+            controller: uidController,
+            label: context.locale.userId,
             hint: context.locale.enterYourId,
             textInputAction: TextInputAction.next,
             autovalidateMode: AutovalidateMode.onUserInteraction,

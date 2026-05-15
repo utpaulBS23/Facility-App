@@ -11,7 +11,7 @@ class Login extends _$Login {
   AsyncValue build() => const AsyncValue.data(null);
 
   Future<void> login({
-    required String email,
+    required String uid,
     required String password,
   }) async {
     if (state.isLoading) return;
@@ -21,7 +21,7 @@ class Login extends _$Login {
     final deviceName = await _resolveDeviceName();
 
     final result = await ref.read(loginUseCaseProvider).call(
-      email: email,
+      uid: uid,
       password: password,
       deviceName: deviceName,
     );

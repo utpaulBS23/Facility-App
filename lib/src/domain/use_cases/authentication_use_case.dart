@@ -8,12 +8,12 @@ final class LoginUseCase {
   final AuthenticationRepository repository;
 
   Future<Result<LoginResponseEntity, String>> call({
-    required String email,
+    required String uid,
     required String password,
     required String deviceName,
   }) async {
     final request = LoginRequestEntity(
-      email: email,
+      uid: uid,
       password: password,
       deviceName: deviceName,
     );

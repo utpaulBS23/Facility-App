@@ -82,12 +82,12 @@ class LoginResponseModel with LoginResponseModelMappable {
 @MappableClass(generateMethods: GenerateMethods.copy | GenerateMethods.encode)
 class LoginRequestModel with LoginRequestModelMappable {
   LoginRequestModel({
-    required this.email,
+    required this.uid,
     required this.password,
     required this.deviceName,
   });
 
-  final String email;
+  final String uid;
   final String password;
   @MappableField(key: 'device_name')
   final String deviceName;

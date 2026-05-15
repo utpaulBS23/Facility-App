@@ -63,12 +63,12 @@ class UserEntity extends LoginEntity {
 
 class LoginRequestEntity extends LoginEntity {
   LoginRequestEntity({
-    required this.email,
+    required this.uid,
     required this.password,
     required this.deviceName,
   });
 
-  final String email;
+  final String uid;
   final String password;
   final String deviceName;
 }
