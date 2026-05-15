@@ -5,6 +5,7 @@ import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
+import '../../shift/riverpod/shift_list_provider.dart';
 
 part 'manual_attendance_provider.g.dart';
 
@@ -56,6 +57,12 @@ class ManualAttendance extends _$ManualAttendance {
   }
 
   Future<int?> _resolveShiftId(int partnerId) async {
+    // WHY: Reuse already-loaded shifts to avoid an extra round-trip; only
+    // fetch when the shift list hasn't been populated yet (e.g. direct
+    // login → check-in without visiting the shift list page).
+    final cached = ref.read(shiftListProvider).valueOrNull;
+    if (cached != null && cached.isNotEmpty) return cached.first.id;
+
     final result = await ref.read(getShiftsUseCaseProvider).call(
       partnerId: partnerId,
       date: DateFormat('yyyy-MM-dd').format(DateTime.now()),

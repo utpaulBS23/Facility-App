@@ -136,6 +136,7 @@
   "photoCaptureFailed": "Photo capture failed",
   "tryAgain": "Try Again",
   "retry": "Retry",
+  "locationUnavailable": "Location unavailable, please try again",
   "manualAttendance": "Manual Attendance",
   "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
   "manualAttendanceReasonHint": "Describe the issue (e.g., camera not working)",

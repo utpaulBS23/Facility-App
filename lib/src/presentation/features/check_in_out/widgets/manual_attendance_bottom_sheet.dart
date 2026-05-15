@@ -19,6 +19,8 @@ class _ManualAttendanceBottomSheetState
   @override
   void dispose() {
     _reasonController.dispose();
+    // WHY: Reset so stale error state doesn't fire the listener on next open.
+    ref.invalidate(manualAttendanceProvider);
     super.dispose();
   }
 

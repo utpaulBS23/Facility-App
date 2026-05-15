@@ -25,7 +25,14 @@ final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
           'address': request.address,
         },
       );
-      final data = response.data['data'] as Map<String, dynamic>;
+      final body = response.data as Map<String, dynamic>;
+      final success = body['success'] as bool? ?? false;
+      if (!success) {
+        throw Exception(
+          body['message'] as String? ?? 'Failed to submit manual attendance',
+        );
+      }
+      final data = body['data'] as Map<String, dynamic>;
       return ManualAttendanceResponseEntity(
         id: data['id'] as int,
         status: data['status'] as String,

@@ -71,14 +71,14 @@ class _ShiftCheckInBody extends StatelessWidget {
               ),
               Gap(dimensions.spacing.s12),
             ],
-            // SizedBox(
-            //   width: double.infinity,
-            //   height: dimensions.spacing.s44,
-            //   child: OutlinedButton(
-            //     onPressed: onRequestSupervisor,
-            //     child: Text(context.locale.requestSupervisor),
-            //   ),
-            // ),
+            SizedBox(
+              width: double.infinity,
+              height: dimensions.spacing.s44,
+              child: OutlinedButton(
+                onPressed: onRequestSupervisor,
+                child: Text(context.locale.requestSupervisor),
+              ),
+            ),
           ] else ...[
             _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
           ],

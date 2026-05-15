@@ -136,6 +136,7 @@
   "photoCaptureFailed": "ছবি ক্যাপচার ব্যর্থ",
   "tryAgain": "আবার চেষ্টা করুন",
   "retry": "পুনরায় চেষ্টা করুণ",
+  "locationUnavailable": "অবস্থান অনুপলব্ধ, অনুগ্রহ করে আবার চেষ্টা করুন",
   "manualAttendance": "ম্যানুয়াল উপস্থিতি",
   "manualAttendanceDescription": "ক্যামেরা অনুপলব্ধ হলে ম্যানুয়ালি উপস্থিতি জমা দিন",
   "manualAttendanceReasonHint": "সমস্যাটি বর্ণনা করুন (যেমন, ক্যামেরা কাজ করছে না)",

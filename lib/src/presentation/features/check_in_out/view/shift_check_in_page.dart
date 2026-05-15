@@ -78,7 +78,12 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
   void _onManualAttendance() {
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null) return;
+    if (checkInInfo == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.locationUnavailable)),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

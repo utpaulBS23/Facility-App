@@ -84,10 +84,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
     ref
         .read(loginProvider.notifier)
-        .login(
-          uid: _uidController.text,
-          password: _passwordController.text,
-        );
+        .login(uid: _uidController.text, password: _passwordController.text);
   }
 
   void _onForgotPassword() => context.pushNamed(Routes.resetPassword);
