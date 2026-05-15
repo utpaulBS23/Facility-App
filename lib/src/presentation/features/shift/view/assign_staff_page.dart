@@ -107,16 +107,23 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
               ),
             );
           }
+          final assignedIds =
+              widget.shift.attendants.map((a) => a.id).toSet();
           return ListView.separated(
             padding: EdgeInsets.all(spacing.s16),
             itemCount: attendants.length,
             separatorBuilder: (context, index) => Gap(spacing.s12),
-            itemBuilder: (context, index) => _AttendantTile(
-              attendant: attendants[index],
-              onAssign: isAssigning
-                  ? null
-                  : () => _onAssignAttendant(attendants[index].id),
-            ),
+            itemBuilder: (context, index) {
+              final attendant = attendants[index];
+              final isSelected = assignedIds.contains(attendant.id);
+              return _AttendantTile(
+                attendant: attendant,
+                isSelected: isSelected,
+                onAssign: isAssigning || isSelected
+                    ? null
+                    : () => _onAssignAttendant(attendant.id),
+              );
+            },
           );
         },
       ),
@@ -125,82 +132,99 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
 }
 
 class _AttendantTile extends StatelessWidget {
-  const _AttendantTile({required this.attendant, required this.onAssign});
+  const _AttendantTile({
+    required this.attendant,
+    required this.isSelected,
+    required this.onAssign,
+  });
 
   final AttendantEntity attendant;
+  final bool isSelected;
   final VoidCallback? onAssign;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
     return GestureDetector(
       onTap: onAssign,
-      child: Opacity(
-        opacity: onAssign == null ? 0.5 : 1.0,
-        child: Container(
-          padding: EdgeInsets.all(spacing.s16),
-          decoration: BoxDecoration(
-            color: context.color.onPrimary,
-            border: Border.all(color: context.color.borderSubtle),
-            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+      child: Container(
+        padding: EdgeInsets.all(spacing.s16),
+        decoration: BoxDecoration(
+          color: isSelected ? context.color.brandAccent : context.color.onPrimary,
+          border: Border.all(
+            color: isSelected
+                ? context.color.primary
+                : context.color.borderSubtle,
           ),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: context.color.brandAccent,
-                child: Icon(
-                  Icons.person_outline_rounded,
-                  color: context.color.text.primary,
-                  size: 22,
-                ),
+          borderRadius: BorderRadius.circular(radius.r12),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: isSelected
+                  ? context.color.primary
+                  : context.color.brandAccent,
+              child: Icon(
+                isSelected
+                    ? Icons.check_rounded
+                    : Icons.person_outline_rounded,
+                color: isSelected
+                    ? context.color.onPrimary
+                    : context.color.text.primary,
+                size: 22,
               ),
-              Gap(spacing.s12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      attendant.name,
-                      style: context.textStyle.labelLarge.copyWith(
-                        color: context.color.text.primary,
-                      ),
+            ),
+            Gap(spacing.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    attendant.name,
+                    style: context.textStyle.labelLarge.copyWith(
+                      color: context.color.text.primary,
                     ),
-                    Gap(spacing.s2),
-                    Text(
-                      attendant.phone,
-                      style: context.textStyle.bodySmall.copyWith(
-                        color: context.color.text.secondary,
-                      ),
+                  ),
+                  Gap(spacing.s2),
+                  Text(
+                    attendant.phone,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s8,
+                vertical: spacing.s4,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? context.color.primary
+                    : attendant.assignment.isActive
+                        ? context.color.successAlt
+                        : context.color.warningAlt,
+                borderRadius: BorderRadius.circular(radius.r4),
+              ),
+              child: Text(
+                isSelected
+                    ? context.locale.assigned
+                    : attendant.assignment.assignmentType,
+                style: context.textStyle.labelSmall.copyWith(
+                  color: isSelected
+                      ? context.color.onPrimary
+                      : attendant.assignment.isActive
+                          ? context.color.success
+                          : context.color.warning,
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacing.s8,
-                  vertical: spacing.s4,
-                ),
-                decoration: BoxDecoration(
-                  color: attendant.assignment.isActive
-                      ? context.color.successAlt
-                      : context.color.warningAlt,
-                  borderRadius: BorderRadius.circular(
-                    context.dimensions.radius.r4,
-                  ),
-                ),
-                child: Text(
-                  attendant.assignment.assignmentType,
-                  style: context.textStyle.labelSmall.copyWith(
-                    color: attendant.assignment.isActive
-                        ? context.color.success
-                        : context.color.warning,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
