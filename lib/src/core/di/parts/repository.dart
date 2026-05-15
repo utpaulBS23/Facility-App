@@ -65,3 +65,8 @@ CheckOutRepository checkOutRepository(Ref ref) {
 AssignmentRepository assignmentRepository(Ref ref) {
   return AssignmentRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+ManualAttendanceRepository manualAttendanceRepository(Ref ref) {
+  return ManualAttendanceRepositoryImpl(ref.read(restClientServiceProvider));
+}

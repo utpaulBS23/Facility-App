@@ -13,6 +13,7 @@ class _ShiftCheckInBody extends StatelessWidget {
     this.faceValidationError,
     required this.onTakePhoto,
     required this.onRequestSupervisor,
+    this.onManualAttendance,
     required this.onSubmit,
   });
 
@@ -26,6 +27,8 @@ class _ShiftCheckInBody extends StatelessWidget {
   final String? faceValidationError;
   final VoidCallback onTakePhoto;
   final VoidCallback onRequestSupervisor;
+  // WHY: null on checkout page — manual attendance only applies to check-in.
+  final VoidCallback? onManualAttendance;
   final VoidCallback onSubmit;
 
   @override
@@ -45,9 +48,7 @@ class _ShiftCheckInBody extends StatelessWidget {
           ),
           Gap(dimensions.spacing.s12),
           if (hasError) ...[
-            _SelfieErrorToast(
-              onRequestSupervisor: onRequestSupervisor,
-            ),
+            _SelfieErrorToast(onRequestSupervisor: onRequestSupervisor),
           ] else ...[
             _TakePhotoButton(
               capturedPhotoPath: capturedPhotoPath,
@@ -59,10 +60,25 @@ class _ShiftCheckInBody extends StatelessWidget {
           const _AutoDetectedInfoCard(),
           Gap(dimensions.spacing.s16),
           if (hasError) ...[
-            OutlinedButton(
-              onPressed: onRequestSupervisor,
-              child: Text(context.locale.requestSupervisor),
-            ),
+            if (onManualAttendance != null) ...[
+              SizedBox(
+                width: double.infinity,
+                height: dimensions.spacing.s44,
+                child: FilledButton(
+                  onPressed: onManualAttendance,
+                  child: Text(context.locale.manualAttendance),
+                ),
+              ),
+              Gap(dimensions.spacing.s12),
+            ],
+            // SizedBox(
+            //   width: double.infinity,
+            //   height: dimensions.spacing.s44,
+            //   child: OutlinedButton(
+            //     onPressed: onRequestSupervisor,
+            //     child: Text(context.locale.requestSupervisor),
+            //   ),
+            // ),
           ] else ...[
             _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
           ],

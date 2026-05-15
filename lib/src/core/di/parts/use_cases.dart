@@ -103,3 +103,10 @@ AssignStaffUseCase assignStaffUseCase(Ref ref) {
     ref.read(authenticationRepositoryProvider),
   );
 }
+
+@riverpod
+SubmitManualAttendanceUseCase submitManualAttendanceUseCase(Ref ref) {
+  return SubmitManualAttendanceUseCase(
+    ref.read(manualAttendanceRepositoryProvider),
+  );
+}

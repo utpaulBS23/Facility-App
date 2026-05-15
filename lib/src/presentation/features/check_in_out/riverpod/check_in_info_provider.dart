@@ -27,20 +27,19 @@ class CheckInInfo extends _$CheckInInfo {
     state = locationResult.when(
       success: (locationData) {
         final user = ref.read(getCurrentUserUseCaseProvider).call();
+        final now = DateTime.now();
         return AsyncValue.data(
           CheckInInfoEntity(
             location: locationData?.address ?? 'Unknown location',
-            checkInTime: _formatCurrentTime(),
+            checkInTime: DateFormat('EEE, MMM d, y, h:mm a').format(now),
+            checkInTimeRaw: DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
             supervisorName: user?.supervisor ?? '—',
+            latitude: locationData?.latitude ?? 0.0,
+            longitude: locationData?.longitude ?? 0.0,
           ),
         );
       },
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
-  }
-
-  String _formatCurrentTime() {
-    final now = DateTime.now();
-    return DateFormat('EEE, MMM d, y, h:mm a').format(now);
   }
 }

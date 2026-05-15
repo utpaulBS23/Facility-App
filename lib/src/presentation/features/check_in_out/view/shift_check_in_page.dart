@@ -9,17 +9,21 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/check_in_info_provider.dart';
 import '../riverpod/check_out_provider.dart';
 import '../riverpod/face_validation_provider.dart';
+import '../riverpod/manual_attendance_provider.dart';
 import '../riverpod/selfie_picker_provider.dart';
 
 part '../widgets/approval_action_buttons.dart';
 part '../widgets/approval_request_body.dart';
 part '../widgets/auto_detected_info_card.dart';
+part '../widgets/manual_attendance_bottom_sheet.dart';
 part '../widgets/photo_error_dialog.dart';
 part '../widgets/request_supervisor_approval_bottomsheet.dart';
 part '../widgets/selfie_error_toast.dart';
@@ -72,6 +76,22 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     );
   }
 
+  void _onManualAttendance() {
+    final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
+    if (checkInInfo == null) return;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.dimensions.radius.r12),
+        ),
+      ),
+      builder: (_) => _ManualAttendanceBottomSheet(checkInInfo: checkInInfo),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(faceValidationProvider, (_, next) {
@@ -103,6 +123,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         faceValidationError: validationState.error?.toString(),
         onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onRequestSupervisor,
+        onManualAttendance: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),
       ),
     );

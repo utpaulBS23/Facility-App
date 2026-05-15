@@ -19,6 +19,9 @@ class Endpoints {
   static const String rosterAssignments =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments';
 
+  /// Manual Attendance
+  static const String manualAttendance = '/partners/{partnerId}/attendances';
+
   /// Shifts
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
