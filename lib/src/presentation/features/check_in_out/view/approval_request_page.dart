@@ -120,20 +120,23 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              context.dimensions.padding.p16,
-              spacing.s16,
-              context.dimensions.padding.p16,
-              spacing.s32,
-            ),
-            child: _ApprovalActionButtons(
-              attendanceStatue: statue,
-              onWithdraw: _onWithdraw,
-              onRefresh: _onRefresh,
-              onNeedFace: _onNeedFace,
-              isRefreshing: isRefreshing,
-              isWithdrawing: isWithdrawing,
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                context.dimensions.padding.p16,
+                spacing.s16,
+                context.dimensions.padding.p16,
+                spacing.s16,
+              ),
+              child: _ApprovalActionButtons(
+                attendanceStatue: statue,
+                onWithdraw: _onWithdraw,
+                onRefresh: _onRefresh,
+                onNeedFace: _onNeedFace,
+                isRefreshing: isRefreshing,
+                isWithdrawing: isWithdrawing,
+              ),
             ),
           ),
         ],

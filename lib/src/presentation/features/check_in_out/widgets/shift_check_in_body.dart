@@ -34,8 +34,10 @@ class _ShiftCheckInBody extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(dimensions.padding.p16),
-      child: Column(
-        children: [
+      child: SafeArea(
+        top: false,
+        child: Column(
+          children: [
           _SelfieZone(
             capturedPhotoPath: capturedPhotoPath,
             hasError: hasError,
@@ -69,6 +71,7 @@ class _ShiftCheckInBody extends StatelessWidget {
             _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
           ],
         ],
+        ),
       ),
     );
   }

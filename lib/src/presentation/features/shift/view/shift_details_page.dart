@@ -49,20 +49,23 @@ class ShiftDetailsPage extends StatelessWidget {
         children: [
           Expanded(child: _ShiftDetailsBody(entity: entity)),
           if (_showCheckOutButton)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                padding.p16,
-                spacing.s16,
-                padding.p16,
-                spacing.s32,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                height: spacing.s44,
-                child: FilledButton.icon(
-                  onPressed: () => _onCheckOut(context),
-                  icon: const Icon(Icons.logout_rounded),
-                  label: Text(context.locale.checkOut),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  padding.p16,
+                  spacing.s16,
+                  padding.p16,
+                  spacing.s16,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: spacing.s44,
+                  child: FilledButton.icon(
+                    onPressed: () => _onCheckOut(context),
+                    icon: const Icon(Icons.logout_rounded),
+                    label: Text(context.locale.checkOut),
+                  ),
                 ),
               ),
             ),

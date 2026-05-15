@@ -32,14 +32,16 @@ class _RequestSupervisorApprovalBottomSheetState
       context.locale.reasonNoCameraDevice,
     ];
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        context.dimensions.padding.p16,
-        spacing.s16,
-        context.dimensions.padding.p16,
-        spacing.s32,
-      ),
-      child: Column(
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          context.dimensions.padding.p16,
+          spacing.s16,
+          context.dimensions.padding.p16,
+          spacing.s16,
+        ),
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,6 +77,7 @@ class _RequestSupervisorApprovalBottomSheetState
             ),
           ),
         ],
+        ),
       ),
     );
   }

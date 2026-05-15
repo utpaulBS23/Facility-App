@@ -19,41 +19,48 @@ class _ApproveRejectBar extends StatelessWidget {
     final padding = context.dimensions.padding;
     final busy = isApproving || isRejecting;
 
+    // WHY: Container wraps SafeArea so the background color fills behind the
+    // system navigation bar; SafeArea then keeps button content above it.
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        padding.p16,
-        spacing.s12,
-        padding.p16,
-        spacing.s32,
-      ),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border(top: BorderSide(color: context.color.borderSubtle)),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: busy ? null : onReject,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: context.color.error,
-                side: BorderSide(color: context.color.error),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            padding.p16,
+            spacing.s12,
+            padding.p16,
+            spacing.s12,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: busy ? null : onReject,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: context.color.error,
+                    side: BorderSide(color: context.color.error),
+                  ),
+                  child: isRejecting
+                      ? const LoadingIndicator()
+                      : Text(context.locale.reject),
+                ),
               ),
-              child: isRejecting
-                  ? const LoadingIndicator()
-                  : Text(context.locale.reject),
-            ),
+              Gap(spacing.s12),
+              Expanded(
+                child: FilledButton(
+                  onPressed: busy ? null : onApprove,
+                  child: isApproving
+                      ? const LoadingIndicator()
+                      : Text(context.locale.approve),
+                ),
+              ),
+            ],
           ),
-          Gap(spacing.s12),
-          Expanded(
-            child: FilledButton(
-              onPressed: busy ? null : onApprove,
-              child: isApproving
-                  ? const LoadingIndicator()
-                  : Text(context.locale.approve),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
