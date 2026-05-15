@@ -4,17 +4,17 @@ import '../../domain/entities/shift_entity.dart';
 extension ShiftSupervisorModelToEntity on ShiftSupervisorModel {
   ShiftSupervisorEntity toEntity() => ShiftSupervisorEntity(
         id: id,
-        fullName: fullName,
+        fullName: fullName ?? '',
         phone: phone,
-        isPrimary: isPrimary == 1,
+        isPrimary: (isPrimary ?? 0) == 1,
       );
 }
 
 extension ShiftFacilityModelToEntity on ShiftFacilityModel {
   ShiftFacilityEntity toEntity() => ShiftFacilityEntity(
         id: id,
-        name: name,
-        address: address,
+        name: name ?? '',
+        address: address ?? '',
         supervisor: supervisor?.toEntity(),
       );
 }
@@ -22,7 +22,7 @@ extension ShiftFacilityModelToEntity on ShiftFacilityModel {
 extension ShiftAttendantModelToEntity on ShiftAttendantModel {
   ShiftAttendantEntity toEntity() => ShiftAttendantEntity(
         id: id,
-        fullName: fullName,
+        fullName: fullName ?? '',
         phone: phone,
       );
 }
@@ -33,7 +33,7 @@ extension ShiftModelToEntity on ShiftModel {
         weeklyRosterId: weeklyRosterId,
         shiftTemplateId: shiftTemplate.id,
         facility: facility.toEntity(),
-        shiftTemplateName: shiftTemplate.name,
+        shiftTemplateName: shiftTemplate.name ?? '',
         shiftDate: shiftDate,
         startTime: startTime,
         endTime: endTime,

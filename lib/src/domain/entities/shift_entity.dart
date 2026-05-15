@@ -14,13 +14,13 @@ class ShiftSupervisorEntity {
   const ShiftSupervisorEntity({
     required this.id,
     required this.fullName,
-    required this.phone,
+    this.phone,
     required this.isPrimary,
   });
 
   final int id;
   final String fullName;
-  final String phone;
+  final String? phone;
   final bool isPrimary;
 }
 

@@ -48,6 +48,8 @@ class AttendanceItemEntity {
     required this.attendanceType,
     this.location,
     this.reason,
+    this.checkInSelfie,
+    this.checkOutSelfie,
     this.shift,
     this.approver,
   });
@@ -65,6 +67,8 @@ class AttendanceItemEntity {
   final String attendanceType;
   final String? location;
   final String? reason;
+  final String? checkInSelfie;
+  final String? checkOutSelfie;
   final AttendanceShiftInfoEntity? shift;
   final AttendanceApproverEntity? approver;
 

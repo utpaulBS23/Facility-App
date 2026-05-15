@@ -16,6 +16,10 @@ class _AttendanceDetailsBody extends StatelessWidget {
           _AttendanceDetailHeaderCard(detail: detail),
           Gap(spacing.s8),
           _AttendanceDetailMainCard(detail: detail),
+          if (detail.checkInSelfie != null || detail.checkOutSelfie != null) ...[
+            Gap(spacing.s8),
+            _AttendanceSelfieSection(detail: detail),
+          ],
           if (detail.approver != null) ...[
             Gap(spacing.s8),
             _AttendanceDetailApproverCard(approver: detail.approver!),

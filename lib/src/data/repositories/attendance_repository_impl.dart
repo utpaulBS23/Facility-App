@@ -26,6 +26,8 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
       attendanceType: data['attendance_type'] as String? ?? 'app',
       location: data['location'] as String?,
       reason: data['reason'] as String?,
+      checkInSelfie: data['check_in_selfie'] as String?,
+      checkOutSelfie: data['check_out_selfie'] as String?,
       shift: shiftData == null ? null : AttendanceShiftInfoEntity(
         id: shiftData['id'] as int,
         shiftType: shiftData['shift_type'] as String? ?? '',

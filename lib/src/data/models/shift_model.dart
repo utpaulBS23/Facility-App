@@ -6,17 +6,17 @@ part 'shift_model.mapper.dart';
 class ShiftSupervisorModel with ShiftSupervisorModelMappable {
   ShiftSupervisorModel({
     required this.id,
-    required this.fullName,
-    required this.phone,
-    required this.isPrimary,
+    this.fullName,
+    this.phone,
+    this.isPrimary,
   });
 
   final int id;
   @MappableField(key: 'full_name')
-  final String fullName;
-  final String phone;
+  final String? fullName;
+  final String? phone;
   @MappableField(key: 'is_primary')
-  final int isPrimary;
+  final int? isPrimary;
 
   static const fromJson = ShiftSupervisorModelMapper.fromJson;
 }
@@ -25,20 +25,20 @@ class ShiftSupervisorModel with ShiftSupervisorModelMappable {
 class ShiftFacilityModel with ShiftFacilityModelMappable {
   ShiftFacilityModel({
     required this.id,
-    required this.name,
-    required this.nameBn,
-    required this.address,
-    required this.addressBn,
+    this.name,
+    this.nameBn,
+    this.address,
+    this.addressBn,
     this.supervisor,
   });
 
   final int id;
-  final String name;
+  final String? name;
   @MappableField(key: 'name_bn')
-  final String nameBn;
-  final String address;
+  final String? nameBn;
+  final String? address;
   @MappableField(key: 'address_bn')
-  final String addressBn;
+  final String? addressBn;
   final ShiftSupervisorModel? supervisor;
 
   static const fromJson = ShiftFacilityModelMapper.fromJson;
@@ -46,10 +46,10 @@ class ShiftFacilityModel with ShiftFacilityModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ShiftTemplateModel with ShiftTemplateModelMappable {
-  ShiftTemplateModel({required this.id, required this.name});
+  ShiftTemplateModel({required this.id, this.name});
 
   final int id;
-  final String name;
+  final String? name;
 
   static const fromJson = ShiftTemplateModelMapper.fromJson;
 }
@@ -58,13 +58,13 @@ class ShiftTemplateModel with ShiftTemplateModelMappable {
 class ShiftAttendantModel with ShiftAttendantModelMappable {
   ShiftAttendantModel({
     required this.id,
-    required this.fullName,
+    this.fullName,
     this.phone,
   });
 
   final int id;
   @MappableField(key: 'full_name')
-  final String fullName;
+  final String? fullName;
   final String? phone;
 
   static const fromJson = ShiftAttendantModelMapper.fromJson;
