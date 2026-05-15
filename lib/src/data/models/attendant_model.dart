@@ -5,21 +5,21 @@ part 'attendant_model.mapper.dart';
 @MappableClass(generateMethods: GenerateMethods.decode)
 class AttendantAssignmentModel with AttendantAssignmentModelMappable {
   AttendantAssignmentModel({
-    required this.assignmentType,
-    required this.isPrimary,
-    required this.isActive,
-    required this.assignedAt,
+    this.assignmentType,
+    this.isPrimary,
+    this.isActive,
+    this.assignedAt,
     this.assignedBy,
   });
 
   @MappableField(key: 'assignment_type')
-  final String assignmentType;
+  final String? assignmentType;
   @MappableField(key: 'is_primary')
-  final int isPrimary;
+  final int? isPrimary;
   @MappableField(key: 'is_active')
-  final int isActive;
+  final int? isActive;
   @MappableField(key: 'assigned_at')
-  final String assignedAt;
+  final String? assignedAt;
   @MappableField(key: 'assigned_by')
   final String? assignedBy;
 
@@ -30,18 +30,18 @@ class AttendantAssignmentModel with AttendantAssignmentModelMappable {
 class AttendantModel with AttendantModelMappable {
   AttendantModel({
     required this.id,
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
-    required this.assignment,
+    this.name,
+    this.email,
+    this.phoneNumber,
+    this.assignment,
   });
 
   final int id;
-  final String name;
-  final String email;
+  final String? name;
+  final String? email;
   @MappableField(key: 'phone_number')
-  final String phoneNumber;
-  final AttendantAssignmentModel assignment;
+  final String? phoneNumber;
+  final AttendantAssignmentModel? assignment;
 
   static const fromJson = AttendantModelMapper.fromJson;
 }
