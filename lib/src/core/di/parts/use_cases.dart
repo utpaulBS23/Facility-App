@@ -66,13 +66,18 @@ GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
 }
 
 @riverpod
-GetAttendanceSummaryUseCase getAttendanceSummaryUseCase(Ref ref) {
-  return GetAttendanceSummaryUseCase(ref.read(attendanceRepositoryProvider));
+GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(Ref ref) {
+  return GetMonthlyAttendanceOverviewUseCase(ref.read(attendanceRepositoryProvider));
 }
 
 @riverpod
-GetAttendanceDetailUseCase getAttendanceDetailUseCase(Ref ref) {
-  return GetAttendanceDetailUseCase(ref.read(attendanceRepositoryProvider));
+ApproveAttendanceUseCase approveAttendanceUseCase(Ref ref) {
+  return ApproveAttendanceUseCase(ref.read(attendanceRepositoryProvider));
+}
+
+@riverpod
+RejectAttendanceUseCase rejectAttendanceUseCase(Ref ref) {
+  return RejectAttendanceUseCase(ref.read(attendanceRepositoryProvider));
 }
 
 @riverpod

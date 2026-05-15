@@ -26,6 +26,14 @@ class Endpoints {
   static const String manualAttendanceWithdraw =
       '/partners/{partnerId}/attendances/{attendanceId}/withdraw';
 
+  /// Attendance Overview
+  static const String monthlyAttendanceOverview =
+      '/partners/{partnerId}/attendances/monthly-overview';
+  static const String approveAttendance =
+      '/partners/{partnerId}/attendances/{attendanceId}/approve';
+  static const String rejectAttendance =
+      '/partners/{partnerId}/attendances/{attendanceId}/reject';
+
   /// Shifts
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =

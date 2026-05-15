@@ -1,44 +1,54 @@
 part of '../view/attendance_page.dart';
 
 class _AttendanceListItem extends StatelessWidget {
-  const _AttendanceListItem({required this.record, required this.onTap});
+  const _AttendanceListItem({required this.item, required this.onTap});
 
-  final AttendanceRecordEntity record;
+  final AttendanceItemEntity item;
   final VoidCallback onTap;
 
-  Color _iconBg(BuildContext context) => switch (record.status) {
+  Color _iconBg(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.present => context.color.successAlt,
     AttendanceStatus.late => context.color.warningAlt,
     AttendanceStatus.absent => context.color.errorAlt,
     AttendanceStatus.onLeave => context.color.scaffoldBackground,
+    AttendanceStatus.pending => context.color.warningAlt,
+    AttendanceStatus.rejected => context.color.errorAlt,
   };
 
-  Color _iconColor(BuildContext context) => switch (record.status) {
+  Color _iconColor(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.present => context.color.success,
     AttendanceStatus.late => context.color.warning,
     AttendanceStatus.absent => context.color.error,
     AttendanceStatus.onLeave => context.color.text.secondary,
+    AttendanceStatus.pending => context.color.warning,
+    AttendanceStatus.rejected => context.color.error,
   };
 
-  IconData get _icon => switch (record.status) {
+  IconData get _icon => switch (item.displayStatus) {
     AttendanceStatus.present => Icons.check_circle_outline_rounded,
     AttendanceStatus.late => Icons.access_time_rounded,
     AttendanceStatus.absent => Icons.cancel_outlined,
     AttendanceStatus.onLeave => Icons.calendar_today_outlined,
+    AttendanceStatus.pending => Icons.hourglass_empty_rounded,
+    AttendanceStatus.rejected => Icons.cancel_outlined,
   };
 
-  Color _dotColor(BuildContext context) => switch (record.status) {
+  Color _dotColor(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.present => context.color.success,
     AttendanceStatus.late => context.color.warning,
     AttendanceStatus.absent => context.color.error,
     AttendanceStatus.onLeave => context.color.text.secondary,
+    AttendanceStatus.pending => context.color.warning,
+    AttendanceStatus.rejected => context.color.error,
   };
 
-  String _statusLabel(BuildContext context) => switch (record.status) {
+  String _statusLabel(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.present => context.locale.present,
     AttendanceStatus.late => context.locale.late,
     AttendanceStatus.absent => context.locale.absent,
     AttendanceStatus.onLeave => context.locale.onLeave,
+    AttendanceStatus.pending => context.locale.pending,
+    AttendanceStatus.rejected => context.locale.rejected,
   };
 
   @override
@@ -76,12 +86,13 @@ class _AttendanceListItem extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        record.isToday
-                            ? context.locale.today
-                            : record.dateLabel,
-                        style: context.textStyle.titleSmall.copyWith(
-                          color: context.color.text.primary,
+                      Flexible(
+                        child: Text(
+                          item.shift?.facilityName ?? item.checkInTime,
+                          style: context.textStyle.titleSmall.copyWith(
+                            color: context.color.text.primary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Gap(spacing.s8),
@@ -91,10 +102,13 @@ class _AttendanceListItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (record.checkInTime != null) ...[
-                    Gap(spacing.s2),
-                    _TimeRow(record: record),
-                  ],
+                  Gap(spacing.s2),
+                  Text(
+                    item.checkInTime,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -109,4 +123,3 @@ class _AttendanceListItem extends StatelessWidget {
     );
   }
 }
-

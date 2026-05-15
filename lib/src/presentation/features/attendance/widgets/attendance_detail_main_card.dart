@@ -4,7 +4,7 @@ part of '../view/attendance_page.dart';
 class _AttendanceDetailMainCard extends StatelessWidget {
   const _AttendanceDetailMainCard({required this.detail});
 
-  final AttendanceDetailEntity detail;
+  final AttendanceItemEntity detail;
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +45,42 @@ class _AttendanceDetailMainCard extends StatelessWidget {
               ),
             ],
           ),
-          Gap(spacing.s16),
-          if (detail.location != null)
+          if (detail.location != null) ...[
+            Gap(spacing.s16),
             _DetailRow(
               icon: Icons.location_on_outlined,
               label: context.locale.location,
               value: detail.location!,
             ),
+          ],
           Gap(spacing.s16),
           _DetailRow(
             icon: Icons.access_time_outlined,
             label: context.locale.hoursWorked,
-            value: detail.hoursWorked ?? '—',
+            value: detail.durationHours ?? '—',
           ),
-          Gap(spacing.s16),
-          _DetailRow(
-            icon: Icons.calendar_today_outlined,
-            label: context.locale.shiftType,
-            value: detail.shiftType ?? '—',
-          ),
+          if (detail.shift != null) ...[
+            Gap(spacing.s16),
+            _DetailRow(
+              icon: Icons.work_outline_rounded,
+              label: context.locale.shiftType,
+              value: detail.shift!.shiftType,
+            ),
+            Gap(spacing.s16),
+            _DetailRow(
+              icon: Icons.business_outlined,
+              label: context.locale.facilityName,
+              value: detail.shift!.facilityName,
+            ),
+          ],
+          if (detail.reason != null) ...[
+            Gap(spacing.s16),
+            _DetailRow(
+              icon: Icons.comment_outlined,
+              label: context.locale.reason,
+              value: detail.reason!,
+            ),
+          ],
         ],
       ),
     );

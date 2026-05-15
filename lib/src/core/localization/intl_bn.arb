@@ -209,6 +209,11 @@
   "staffAssignedSuccessfully": "স্টাফ সফলভাবে নিযুক্ত হয়েছে।",
   "status": "স্ট্যাটাস",
   "approvedBy": "অনুমোদনকারী",
+  "approve": "অনুমোদন করুন",
+  "reject": "প্রত্যাখ্যান করুন",
+  "rejected": "প্রত্যাখ্যাত",
+  "approved": "অনুমোদিত",
+  "facilityName": "সুবিধা",
   "shiftsCount": "{count} টি শিফট",
   "@shiftsCount": {
     "description": "নির্বাচিত তারিখের শিফট সংখ্যা",

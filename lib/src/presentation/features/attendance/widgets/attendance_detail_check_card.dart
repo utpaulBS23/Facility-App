@@ -4,20 +4,24 @@ part of '../view/attendance_page.dart';
 class _AttendanceDetailHeaderCard extends StatelessWidget {
   const _AttendanceDetailHeaderCard({required this.detail});
 
-  final AttendanceDetailEntity detail;
+  final AttendanceItemEntity detail;
 
-  Color _dotColor(BuildContext context) => switch (detail.status) {
+  Color _dotColor(BuildContext context) => switch (detail.displayStatus) {
     AttendanceStatus.present => context.color.success,
     AttendanceStatus.late => context.color.warning,
     AttendanceStatus.absent => context.color.error,
     AttendanceStatus.onLeave => context.color.text.secondary,
+    AttendanceStatus.pending => context.color.warning,
+    AttendanceStatus.rejected => context.color.error,
   };
 
-  String _statusLabel(BuildContext context) => switch (detail.status) {
+  String _statusLabel(BuildContext context) => switch (detail.displayStatus) {
     AttendanceStatus.present => context.locale.present,
     AttendanceStatus.late => context.locale.late,
     AttendanceStatus.absent => context.locale.absent,
     AttendanceStatus.onLeave => context.locale.onLeave,
+    AttendanceStatus.pending => context.locale.pending,
+    AttendanceStatus.rejected => context.locale.rejected,
   };
 
   @override
@@ -36,10 +40,12 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                detail.dateLabel,
-                style: context.textStyle.titleSmall.copyWith(
-                  color: context.color.text.primary,
+              Flexible(
+                child: Text(
+                  detail.date,
+                  style: context.textStyle.titleSmall.copyWith(
+                    color: context.color.text.primary,
+                  ),
                 ),
               ),
               Gap(spacing.s8),
@@ -49,28 +55,25 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
               ),
             ],
           ),
-          if (detail.checkInTime != null) ...[
-            Gap(spacing.s2),
-            Row(
-              children: [
-                Icon(
-                  Icons.login_rounded,
-                  size: 12,
+          Gap(spacing.s2),
+          Row(
+            children: [
+              Icon(
+                Icons.login_rounded,
+                size: 12,
+                color: context.color.text.secondary,
+              ),
+              Gap(spacing.s4),
+              Text(
+                detail.checkInTime,
+                style: context.textStyle.bodySmall.copyWith(
                   color: context.color.text.secondary,
                 ),
-                Gap(spacing.s4),
-                Text(
-                  detail.checkInTime!,
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: context.color.text.secondary,
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 }
-

@@ -33,7 +33,7 @@ SelfieRepository selfieRepository(Ref ref) {
 
 @Riverpod(keepAlive: true)
 AttendanceRepository attendanceRepository(Ref ref) {
-  return AttendanceRepositoryImpl();
+  return AttendanceRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

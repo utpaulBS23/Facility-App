@@ -8,9 +8,16 @@ import '../../../../domain/entities/attendance_entity.dart';
 part 'attendance_provider.g.dart';
 
 @riverpod
-Future<AttendanceSummaryEntity> attendanceSummary(Ref ref) async {
-  final result =
-      await ref.read(getAttendanceSummaryUseCaseProvider).call();
+Future<MonthlyAttendanceSummaryEntity> monthlyAttendanceOverview(
+  Ref ref,
+  String month,
+) async {
+  final result = await ref
+      .read(getMonthlyAttendanceOverviewUseCaseProvider)
+      .call(
+        partnerId: ref.read(getCurrentUserUseCaseProvider).call()!.partnerId!,
+        month: month,
+      );
   return switch (result) {
     Success(:final data) => data!,
     Error(:final error) => throw Exception(error),
@@ -19,15 +26,45 @@ Future<AttendanceSummaryEntity> attendanceSummary(Ref ref) async {
 }
 
 @riverpod
-Future<AttendanceDetailEntity> attendanceDetail(
-  Ref ref,
-  String id,
-) async {
-  final result =
-      await ref.read(getAttendanceDetailUseCaseProvider).call(id);
-  return switch (result) {
-    Success(:final data) => data!,
-    Error(:final error) => throw Exception(error),
-    _ => throw Exception('Unexpected error'),
-  };
+class ApproveAttendance extends _$ApproveAttendance {
+  @override
+  AsyncValue<AttendanceItemEntity?> build() => const AsyncValue.data(null);
+
+  Future<void> approve({
+    required int partnerId,
+    required int attendanceId,
+  }) async {
+    if (state.isLoading) return;
+    state = const AsyncValue.loading();
+    final result = await ref
+        .read(approveAttendanceUseCaseProvider)
+        .call(partnerId: partnerId, attendanceId: attendanceId);
+    state = switch (result) {
+      Success(:final data) => AsyncValue.data(data),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      _ => AsyncValue.error('Unexpected error', StackTrace.current),
+    };
+  }
+}
+
+@riverpod
+class RejectAttendance extends _$RejectAttendance {
+  @override
+  AsyncValue<AttendanceItemEntity?> build() => const AsyncValue.data(null);
+
+  Future<void> reject({
+    required int partnerId,
+    required int attendanceId,
+  }) async {
+    if (state.isLoading) return;
+    state = const AsyncValue.loading();
+    final result = await ref
+        .read(rejectAttendanceUseCaseProvider)
+        .call(partnerId: partnerId, attendanceId: attendanceId);
+    state = switch (result) {
+      Success(:final data) => AsyncValue.data(data),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      _ => AsyncValue.error('Unexpected error', StackTrace.current),
+    };
+  }
 }

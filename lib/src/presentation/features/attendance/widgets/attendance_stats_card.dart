@@ -3,7 +3,7 @@ part of '../view/attendance_page.dart';
 class _AttendanceStatsCard extends StatelessWidget {
   const _AttendanceStatsCard({required this.summary});
 
-  final AttendanceSummaryEntity summary;
+  final MonthlyAttendanceSummaryEntity summary;
 
   @override
   Widget build(BuildContext context) {

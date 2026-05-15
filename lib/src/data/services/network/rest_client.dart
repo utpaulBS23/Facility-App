@@ -68,4 +68,22 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('attendanceId') required int attendanceId,
   });
+
+  @GET(Endpoints.monthlyAttendanceOverview)
+  Future<HttpResponse> getMonthlyAttendanceOverview({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+  });
+
+  @POST(Endpoints.approveAttendance)
+  Future<HttpResponse> approveAttendance({
+    @Path('partnerId') required int partnerId,
+    @Path('attendanceId') required int attendanceId,
+  });
+
+  @POST(Endpoints.rejectAttendance)
+  Future<HttpResponse> rejectAttendance({
+    @Path('partnerId') required int partnerId,
+    @Path('attendanceId') required int attendanceId,
+  });
 }

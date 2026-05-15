@@ -209,6 +209,11 @@
   "staffAssignedSuccessfully": "Staff assigned successfully.",
   "status": "Status",
   "approvedBy": "Approved By",
+  "approve": "Approve",
+  "reject": "Reject",
+  "rejected": "Rejected",
+  "approved": "Approved",
+  "facilityName": "Facility",
   "shiftsCount": "{count} Shifts",
   "@shiftsCount": {
     "description": "Label showing number of shifts for the selected date",

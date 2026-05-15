@@ -1,127 +1,118 @@
 import '../../core/base/base.dart';
 import '../../domain/entities/attendance_entity.dart';
 import '../../domain/repositories/attendance_repository.dart';
+import '../services/network/rest_client.dart';
 
 final class AttendanceRepositoryImpl extends AttendanceRepository {
-  // WHY: Dummy data simulates what the real API would return.
-  static final List<AttendanceRecordEntity> _dummyRecords = [
-    const AttendanceRecordEntity(
-      id: '1',
-      dateLabel: 'Today',
-      isToday: true,
-      status: AttendanceStatus.present,
-      checkInTime: '8:02 AM',
-    ),
-    const AttendanceRecordEntity(
-      id: '2',
-      dateLabel: 'Sun, Feb 8',
-      isToday: false,
-      status: AttendanceStatus.present,
-      checkInTime: '3:15 PM',
-      checkOutTime: '4:05 PM',
-      hoursWorked: '8h 07m',
-    ),
-    const AttendanceRecordEntity(
-      id: '3',
-      dateLabel: 'Sat, Feb 7',
-      isToday: false,
-      status: AttendanceStatus.late,
-      checkInTime: '3:15 PM',
-      checkOutTime: '4:05 PM',
-      hoursWorked: '7h 35m',
-    ),
-    const AttendanceRecordEntity(
-      id: '4',
-      dateLabel: 'Sat, Feb 7',
-      isToday: false,
-      status: AttendanceStatus.onLeave,
-    ),
-    const AttendanceRecordEntity(
-      id: '5',
-      dateLabel: 'Sun, Feb 8',
-      isToday: false,
-      status: AttendanceStatus.present,
-      checkInTime: '3:15 PM',
-      checkOutTime: '4:05 PM',
-      hoursWorked: '8h 07m',
-    ),
-  ];
+  AttendanceRepositoryImpl(this._client);
 
-  static final Map<String, AttendanceDetailEntity> _dummyDetails = {
-    '1': const AttendanceDetailEntity(
-      id: '1',
-      dateLabel: 'Today',
-      status: AttendanceStatus.present,
-      checkInTime: '8:02 AM',
-      location: 'Mirpur-10, Dhaka',
-      shiftType: 'Morning',
-      supervisorApproval: SupervisorApprovalEntity(
-        name: 'Bob Johnson',
-        phone: '+880 1911-234567',
-        isCheckOut: true,
-        reason: 'Camera is not working',
+  final RestClient _client;
+
+  static AttendanceItemEntity _parseItem(Map<String, dynamic> data) {
+    final shiftData = data['shift'] as Map<String, dynamic>?;
+    final approverData = data['approver'] as Map<String, dynamic>?;
+
+    return AttendanceItemEntity(
+      id: data['id'] as int,
+      userId: data['user_id'] as int,
+      userName: data['user_name'] as String? ?? '',
+      userUid: data['user_uid'] as String? ?? '',
+      date: data['date'] as String? ?? '',
+      status: data['status'] as String? ?? 'pending',
+      isLate: data['is_late'] as bool? ?? false,
+      checkInTime: data['check_in_time'] as String? ?? '',
+      checkOutTime: data['check_out_time'] as String?,
+      durationHours: data['duration_hours'] as String?,
+      attendanceType: data['attendance_type'] as String? ?? 'app',
+      location: data['location'] as String?,
+      reason: data['reason'] as String?,
+      shift: shiftData == null ? null : AttendanceShiftInfoEntity(
+        id: shiftData['id'] as int,
+        shiftType: shiftData['shift_type'] as String? ?? '',
+        startTime: shiftData['start_time'] as String? ?? '',
+        endTime: shiftData['end_time'] as String? ?? '',
+        facilityName: shiftData['facility_name'] as String? ?? '',
       ),
-    ),
-    '2': const AttendanceDetailEntity(
-      id: '2',
-      dateLabel: 'Sun, Feb 8',
-      status: AttendanceStatus.present,
-      checkInTime: '3:15 PM',
-      checkOutTime: '4:05 PM',
-      location: 'Mirpur-10, Dhaka',
-      hoursWorked: '8h 07m',
-      shiftType: 'Afternoon',
-    ),
-    '3': const AttendanceDetailEntity(
-      id: '3',
-      dateLabel: 'Sat, Feb 7',
-      status: AttendanceStatus.late,
-      checkInTime: '3:15 PM',
-      checkOutTime: '4:05 PM',
-      location: 'Mirpur-10, Dhaka',
-      hoursWorked: '7h 35m',
-      shiftType: 'Afternoon',
-    ),
-    '4': const AttendanceDetailEntity(
-      id: '4',
-      dateLabel: 'Sat, Feb 7',
-      status: AttendanceStatus.onLeave,
-      location: 'Mirpur-10, Dhaka',
-      shiftType: 'Morning',
-    ),
-    '5': const AttendanceDetailEntity(
-      id: '5',
-      dateLabel: 'Sun, Feb 8',
-      status: AttendanceStatus.present,
-      checkInTime: '3:15 PM',
-      checkOutTime: '4:05 PM',
-      location: 'Mirpur-10, Dhaka',
-      hoursWorked: '8h 07m',
-      shiftType: 'Afternoon',
-    ),
-  };
+      approver: approverData == null ? null : AttendanceApproverEntity(
+        id: approverData['id'] as int,
+        name: approverData['name'] as String? ?? '',
+        uid: approverData['uid'] as String?,
+      ),
+    );
+  }
+
+  static AttendanceItemEntity _parseApproveRejectEnvelope(
+    Map<String, dynamic> body,
+    String fallbackMessage,
+  ) {
+    final success = body['success'] as bool? ?? false;
+    if (!success) {
+      throw Exception(body['message'] as String? ?? fallbackMessage);
+    }
+    return _parseItem(body['data'] as Map<String, dynamic>);
+  }
 
   @override
-  Future<Result<AttendanceSummaryEntity, Failure>> getAttendanceSummary() async {
+  Future<Result<MonthlyAttendanceSummaryEntity, Failure>> getMonthlyAttendanceOverview({
+    required int partnerId,
+    required String month,
+  }) {
     return asyncGuard(() async {
-      return AttendanceSummaryEntity(
-        presentCount: 4,
-        lateCount: 4,
-        absentCount: 4,
-        leaveCount: 4,
-        records: _dummyRecords,
+      final response = await _client.getMonthlyAttendanceOverview(
+        partnerId: partnerId,
+        month: month,
+      );
+      final body = response.data as Map<String, dynamic>;
+      final success = body['success'] as bool? ?? false;
+      if (!success) {
+        throw Exception(body['message'] as String? ?? 'Failed to load attendance');
+      }
+      final summary = body['summary'] as Map<String, dynamic>;
+      final rawList = body['attendances'] as List<dynamic>? ?? [];
+      return MonthlyAttendanceSummaryEntity(
+        presentCount: summary['present_count'] as int? ?? 0,
+        lateCount: summary['late_count'] as int? ?? 0,
+        absentCount: summary['absent_count'] as int? ?? 0,
+        leaveCount: summary['leave_count'] as int? ?? 0,
+        attendances: rawList
+            .cast<Map<String, dynamic>>()
+            .map(_parseItem)
+            .toList(),
       );
     });
   }
 
   @override
-  Future<Result<AttendanceDetailEntity, Failure>> getAttendanceDetail(
-    String id,
-  ) async {
+  Future<Result<AttendanceItemEntity, Failure>> approveAttendance({
+    required int partnerId,
+    required int attendanceId,
+  }) {
     return asyncGuard(() async {
-      final detail = _dummyDetails[id];
-      if (detail == null) throw Exception('Record not found');
-      return detail;
+      final response = await _client.approveAttendance(
+        partnerId: partnerId,
+        attendanceId: attendanceId,
+      );
+      return _parseApproveRejectEnvelope(
+        response.data as Map<String, dynamic>,
+        'Failed to approve attendance',
+      );
+    });
+  }
+
+  @override
+  Future<Result<AttendanceItemEntity, Failure>> rejectAttendance({
+    required int partnerId,
+    required int attendanceId,
+  }) {
+    return asyncGuard(() async {
+      final response = await _client.rejectAttendance(
+        partnerId: partnerId,
+        attendanceId: attendanceId,
+      );
+      return _parseApproveRejectEnvelope(
+        response.data as Map<String, dynamic>,
+        'Failed to reject attendance',
+      );
     });
   }
 }

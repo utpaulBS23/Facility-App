@@ -6,9 +6,9 @@ List<GoRoute> _attendanceRoutes(Ref ref) {
       path: Routes.attendanceDetails,
       name: Routes.attendanceDetails,
       pageBuilder: (context, state) {
-        final id = state.extra as String;
+        final item = state.extra as AttendanceItemEntity;
         return MaterialPage(
-          child: AttendanceDetailsPage(attendanceId: id),
+          child: AttendanceDetailsPage(attendance: item),
         );
       },
     ),
