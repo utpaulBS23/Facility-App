@@ -13,7 +13,6 @@ class _ShiftCheckInBody extends StatelessWidget {
     this.faceValidationError,
     required this.onTakePhoto,
     required this.onRequestSupervisor,
-    this.onManualAttendance,
     required this.onSubmit,
   });
 
@@ -27,8 +26,6 @@ class _ShiftCheckInBody extends StatelessWidget {
   final String? faceValidationError;
   final VoidCallback onTakePhoto;
   final VoidCallback onRequestSupervisor;
-  // WHY: null on checkout page — manual attendance only applies to check-in.
-  final VoidCallback? onManualAttendance;
   final VoidCallback onSubmit;
 
   @override
@@ -60,21 +57,10 @@ class _ShiftCheckInBody extends StatelessWidget {
           const _AutoDetectedInfoCard(),
           Gap(dimensions.spacing.s16),
           if (hasError) ...[
-            if (onManualAttendance != null) ...[
-              SizedBox(
-                width: double.infinity,
-                height: dimensions.spacing.s44,
-                child: FilledButton(
-                  onPressed: onManualAttendance,
-                  child: Text(context.locale.manualAttendance),
-                ),
-              ),
-              Gap(dimensions.spacing.s12),
-            ],
             SizedBox(
               width: double.infinity,
               height: dimensions.spacing.s44,
-              child: OutlinedButton(
+              child: FilledButton(
                 onPressed: onRequestSupervisor,
                 child: Text(context.locale.requestSupervisor),
               ),

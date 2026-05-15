@@ -85,11 +85,13 @@ class _ReasonDropdown extends StatelessWidget {
     required this.selectedReason,
     required this.reasons,
     required this.onChanged,
+    this.validator,
   });
 
   final String? selectedReason;
   final List<String> reasons;
   final ValueChanged<String?> onChanged;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +135,7 @@ class _ReasonDropdown extends StatelessWidget {
             )
             .toList(),
         onChanged: onChanged,
+        validator: validator,
       ),
     );
   }

@@ -13,12 +13,11 @@ class _ManualAttendanceBottomSheet extends ConsumerStatefulWidget {
 
 class _ManualAttendanceBottomSheetState
     extends ConsumerState<_ManualAttendanceBottomSheet> {
-  final _reasonController = TextEditingController();
+  String? _selectedReason;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    _reasonController.dispose();
     // WHY: Reset so stale error state doesn't fire the listener on next open.
     ref.invalidate(manualAttendanceProvider);
     super.dispose();
@@ -27,7 +26,7 @@ class _ManualAttendanceBottomSheetState
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
     ref.read(manualAttendanceProvider.notifier).submit(
-      reason: _reasonController.text.trim(),
+      reason: _selectedReason!,
       checkInInfo: widget.checkInInfo,
     );
   }
@@ -37,7 +36,7 @@ class _ManualAttendanceBottomSheetState
     ref.listen(manualAttendanceProvider, (_, next) {
       if (next is AsyncData && next.value != null) {
         Navigator.of(context).pop();
-        context.goNamed(Routes.shift);
+        context.goNamed(Routes.approvalRequest);
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -80,42 +79,17 @@ class _ManualAttendanceBottomSheetState
               value: widget.checkInInfo.location,
             ),
             Gap(spacing.s16),
-            TextFormField(
-              controller: _reasonController,
-              maxLines: 3,
-              textInputAction: TextInputAction.done,
-              style: context.textStyle.bodyRegular.copyWith(
-                color: context.color.text.primary,
-              ),
-              decoration: InputDecoration(
-                labelText: locale.reasonLabel,
-                hintText: locale.manualAttendanceReasonHint,
-                alignLabelWithHint: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    context.dimensions.radius.r12,
-                  ),
-                  borderSide: BorderSide(color: context.color.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    context.dimensions.radius.r12,
-                  ),
-                  borderSide: BorderSide(color: context.color.border),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    context.dimensions.radius.r12,
-                  ),
-                  borderSide: BorderSide(
-                    color: context.color.borderBrandFocus,
-                  ),
-                ),
-              ),
-              validator: (value) =>
-                  (value == null || value.trim().isEmpty)
-                      ? locale.reasonRequired
-                      : null,
+            _ReasonDropdown(
+              selectedReason: _selectedReason,
+              reasons: [
+                locale.reasonCameraNotWorking,
+                locale.reasonCameraUnavailable,
+                locale.reasonPhoneCameraBroken,
+                locale.reasonNoCameraDevice,
+              ],
+              onChanged: (value) => setState(() => _selectedReason = value),
+              validator: (_) =>
+                  _selectedReason == null ? locale.reasonRequired : null,
             ),
             Gap(spacing.s16),
             SizedBox(

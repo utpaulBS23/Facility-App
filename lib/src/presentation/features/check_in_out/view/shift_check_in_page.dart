@@ -62,20 +62,6 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     ref.read(selfiePickerProvider.notifier).pickSelfie();
   }
 
-  void _onRequestSupervisor() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(context.dimensions.radius.r12),
-        ),
-      ),
-      builder: (_) => const _RequestSupervisorApprovalBottomSheet(),
-    );
-  }
-
   void _onManualAttendance() {
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
     if (checkInInfo == null) {
@@ -127,8 +113,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         errorMessage: selfieState.error?.toString(),
         faceValidationError: validationState.error?.toString(),
         onTakePhoto: _onTakePhoto,
-        onRequestSupervisor: _onRequestSupervisor,
-        onManualAttendance: _onManualAttendance,
+        onRequestSupervisor: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),
       ),
     );
