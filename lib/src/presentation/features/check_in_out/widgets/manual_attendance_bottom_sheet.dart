@@ -55,14 +55,16 @@ class _ManualAttendanceBottomSheetState
     final padding = context.dimensions.padding;
     final locale = context.locale;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        padding.p16,
-        spacing.s16,
-        padding.p16,
-        spacing.s32 + MediaQuery.viewInsetsOf(context).bottom,
-      ),
-      child: Form(
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          padding.p16,
+          spacing.s16,
+          padding.p16,
+          spacing.s16 + MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -119,6 +121,7 @@ class _ManualAttendanceBottomSheetState
               ),
             ),
           ],
+          ),
         ),
       ),
     );

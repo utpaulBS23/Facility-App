@@ -6,17 +6,6 @@ class _ShiftCard extends StatelessWidget {
   final ShiftEntity entity;
   final VoidCallback onTap;
 
-  bool get _isInProgress => entity.status == 'in_progress';
-
-  Color _badgeBackground(BuildContext context) =>
-      _isInProgress ? context.color.successAlt : context.color.warningAlt;
-
-  Color _badgeTextColor(BuildContext context) =>
-      _isInProgress ? context.color.success : context.color.warning;
-
-  String _statusLabel(BuildContext context) =>
-      _isInProgress ? context.locale.inProgress : context.locale.upcoming;
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -36,21 +25,11 @@ class _ShiftCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _StatusBadge(
-                  label: _statusLabel(context),
-                  backgroundColor: _badgeBackground(context),
-                  textColor: _badgeTextColor(context),
-                ),
-                Text(
-                  timeRange,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
-                  ),
-                ),
-              ],
+            Text(
+              timeRange,
+              style: context.textStyle.labelLarge.copyWith(
+                color: context.color.text.primary,
+              ),
             ),
             Gap(spacing.s8),
             Text(
@@ -95,17 +74,6 @@ class _SupervisorShiftCard extends StatelessWidget {
   final VoidCallback onAssignStaff;
   final VoidCallback onShiftTap;
 
-  bool get _isInProgress => entity.status == 'in_progress';
-
-  Color _badgeBackground(BuildContext context) =>
-      _isInProgress ? context.color.successAlt : context.color.warningAlt;
-
-  Color _badgeTextColor(BuildContext context) =>
-      _isInProgress ? context.color.success : context.color.warning;
-
-  String _statusLabel(BuildContext context) =>
-      _isInProgress ? context.locale.inProgress : context.locale.upcoming;
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -124,21 +92,11 @@ class _SupervisorShiftCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _StatusBadge(
-                  label: _statusLabel(context),
-                  backgroundColor: _badgeBackground(context),
-                  textColor: _badgeTextColor(context),
-                ),
-                Text(
-                  timeRange,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
-                  ),
-                ),
-              ],
+            Text(
+              timeRange,
+              style: context.textStyle.labelLarge.copyWith(
+                color: context.color.text.primary,
+              ),
             ),
             Gap(spacing.s8),
             Text(

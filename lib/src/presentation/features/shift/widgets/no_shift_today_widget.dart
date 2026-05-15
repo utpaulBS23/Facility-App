@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 
-class NoShiftTodayWidget extends ConsumerWidget {
+class NoShiftTodayWidget extends StatelessWidget {
   const NoShiftTodayWidget({super.key, required this.message});
 
   final String message;
 
-  void _onLogout(BuildContext context, WidgetRef ref) async {
-    await ref.read(logoutUseCaseProvider).call();
-    if (context.mounted) context.goNamed(Routes.login);
-  }
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final padding = context.dimensions.padding;
 
@@ -79,18 +72,21 @@ class NoShiftTodayWidget extends ConsumerWidget {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              padding.p16,
-              spacing.s16,
-              padding.p16,
-              spacing.s32,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () => _onLogout(context, ref),
-                child: Text(context.locale.logout),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                padding.p16,
+                spacing.s16,
+                padding.p16,
+                spacing.s16,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => context.goNamed(Routes.shift),
+                  child: Text(context.locale.shift),
+                ),
               ),
             ),
           ),

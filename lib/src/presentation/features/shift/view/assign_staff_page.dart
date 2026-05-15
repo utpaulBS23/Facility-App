@@ -84,7 +84,9 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: attendantsState.when(
+      body: SafeArea(
+        top: false,
+        child: attendantsState.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, _) => Center(
           child: Text(
@@ -126,6 +128,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
             },
           );
         },
+        ),
       ),
     );
   }
