@@ -12,12 +12,12 @@ Future<MonthlyAttendanceSummaryEntity> monthlyAttendanceOverview(
   Ref ref,
   String month,
 ) async {
+  final user = ref.read(getCurrentUserUseCaseProvider).call();
+  final partnerId = user?.partnerId;
+  if (partnerId == null) throw Exception('User not authenticated');
   final result = await ref
       .read(getMonthlyAttendanceOverviewUseCaseProvider)
-      .call(
-        partnerId: ref.read(getCurrentUserUseCaseProvider).call()!.partnerId!,
-        month: month,
-      );
+      .call(partnerId: partnerId, month: month);
   return switch (result) {
     Success(:final data) => data!,
     Error(:final error) => throw Exception(error),

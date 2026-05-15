@@ -1,6 +1,6 @@
 class Endpoints {
   static const base =
-      'https://click-advantage-alan-greg.trycloudflare.com/api/backend';
+      'https://gregory-kodak-shoppers-rebel.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';

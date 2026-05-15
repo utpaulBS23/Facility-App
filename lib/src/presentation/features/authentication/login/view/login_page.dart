@@ -40,6 +40,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void initState() {
     super.initState();
     _uidController.text = 'ATTENDENT_9226';
+
+    /// attendant
+    // _uidController.text = 'SUPERVISOR_2214';
+
+    /// supervisor
     _passwordController.text = 'password123';
     ref.listenManual(loginProvider, _onLoginStateChanged);
   }

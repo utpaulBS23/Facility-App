@@ -1,5 +1,14 @@
 part of '../view/attendance_page.dart';
 
+String _formatDate(String raw) {
+  try {
+    final dt = DateTime.parse(raw).toLocal();
+    return DateFormat('EEE, MMM d, yyyy').format(dt);
+  } catch (_) {
+    return raw;
+  }
+}
+
 /// Top status card — shows date, status badge and check-in time.
 class _AttendanceDetailHeaderCard extends StatelessWidget {
   const _AttendanceDetailHeaderCard({required this.detail});
@@ -42,7 +51,7 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  detail.date,
+                  _formatDate(detail.date),
                   style: context.textStyle.titleSmall.copyWith(
                     color: context.color.text.primary,
                   ),

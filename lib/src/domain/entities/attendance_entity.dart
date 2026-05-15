@@ -1,6 +1,8 @@
 // WHY: AttendanceStatue kept for the shift check-in approval flow.
 enum AttendanceStatue { pending, success, reject, needFace }
 
+// WHY: Separate from AttendanceStatue — this enum drives UI display (color,
+// label) for the attendance history list and detail screens.
 enum AttendanceStatus { present, late, absent, onLeave, pending, rejected }
 
 class AttendanceShiftInfoEntity {
@@ -66,6 +68,9 @@ class AttendanceItemEntity {
   final AttendanceShiftInfoEntity? shift;
   final AttendanceApproverEntity? approver;
 
+  // WHY: API returns raw `status` string + `isLate` bool; this getter
+  // collapses them into a single enum the UI can switch on without
+  // duplicating the mapping logic across widgets.
   AttendanceStatus get displayStatus {
     if (status == 'approved') {
       return isLate ? AttendanceStatus.late : AttendanceStatus.present;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
@@ -13,18 +14,19 @@ import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/attendance_provider.dart';
 
+part '../widgets/attendance_approve_reject_bar.dart';
 part '../widgets/attendance_body.dart';
-part '../widgets/attendance_stats_card.dart';
-part '../widgets/attendance_list_item.dart';
-part '../widgets/attendance_status_tag.dart';
-part 'attendance_details_page.dart';
-part '../widgets/attendance_details_body.dart';
 part '../widgets/attendance_detail_check_card.dart';
-part '../widgets/attendance_detail_main_card.dart';
-part '../widgets/attendance_detail_tiles.dart';
 part '../widgets/attendance_detail_info_card.dart';
+part '../widgets/attendance_detail_main_card.dart';
 part '../widgets/attendance_detail_selfie_card.dart';
 part '../widgets/attendance_detail_supervisor_card.dart';
+part '../widgets/attendance_detail_tiles.dart';
+part '../widgets/attendance_details_body.dart';
+part '../widgets/attendance_list_item.dart';
+part '../widgets/attendance_stats_card.dart';
+part '../widgets/attendance_status_tag.dart';
+part 'attendance_details_page.dart';
 
 class AttendancePage extends ConsumerStatefulWidget {
   const AttendancePage({super.key});
@@ -40,8 +42,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _selectedMonth =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
   }
 
   void _onItemTap(AttendanceItemEntity item) {
@@ -128,10 +129,9 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
     _current = DateTime(widget.initialDate.year, widget.initialDate.month);
   }
 
-  static const _months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-  ];
+  String _monthLabel(BuildContext context, int month) =>
+      DateFormat('MMM', Localizations.localeOf(context).languageCode)
+          .format(DateTime(2000, month));
 
   bool _isDisabled(int year, int month) {
     final date = DateTime(year, month);
@@ -146,12 +146,10 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
         children: [
           IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed: () => setState(() => _current = DateTime(_current.year - 1)),
+            onPressed: () =>
+                setState(() => _current = DateTime(_current.year - 1)),
           ),
-          Text(
-            _current.year.toString(),
-            style: context.textStyle.titleMedium,
-          ),
+          Text(_current.year.toString(), style: context.textStyle.titleMedium),
           IconButton(
             icon: const Icon(Icons.chevron_right),
             onPressed: _current.year >= widget.lastDate.year
@@ -161,17 +159,17 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
         ],
       ),
       content: SizedBox(
-        width: 280,
+        width: double.maxFinite,
         child: GridView.builder(
           shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
+            mainAxisSpacing: context.dimensions.spacing.s8,
+            crossAxisSpacing: context.dimensions.spacing.s8,
             childAspectRatio: 2,
           ),
           itemCount: 12,
-          itemBuilder: (_, i) {
+          itemBuilder: (context, i) {
             final month = i + 1;
             final disabled = _isDisabled(_current.year, month);
             final isSelected =
@@ -188,7 +186,7 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
                 backgroundColor: isSelected ? context.color.primary : null,
                 foregroundColor: isSelected ? context.color.onPrimary : null,
               ),
-              child: Text(_months[i]),
+              child: Text(_monthLabel(context, month)),
             );
           },
         ),
