@@ -34,6 +34,13 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
   }
 
   void _onRequestSupervisor() {
+    final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
+    if (checkInInfo == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.locationUnavailable)),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -43,7 +50,10 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
           top: Radius.circular(context.dimensions.radius.r12),
         ),
       ),
-      builder: (_) => const _RequestSupervisorApprovalBottomSheet(),
+      builder: (_) => _ManualAttendanceBottomSheet(
+        checkInInfo: checkInInfo,
+        withdrawRoute: Routes.shiftCheckOut,
+      ),
     );
   }
 

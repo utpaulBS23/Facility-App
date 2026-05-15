@@ -74,3 +74,48 @@ class ManualAttendance extends _$ManualAttendance {
     };
   }
 }
+
+@riverpod
+class RefreshAttendance extends _$RefreshAttendance {
+  @override
+  AsyncValue<ManualAttendanceResponseEntity?> build() =>
+      const AsyncValue.data(null);
+
+  Future<void> refresh({
+    required int partnerId,
+    required int shiftId,
+  }) async {
+    if (state.isLoading) return;
+    state = const AsyncValue.loading();
+    final result = await ref
+        .read(refreshAttendanceUseCaseProvider)
+        .call(partnerId: partnerId, shiftId: shiftId);
+    state = switch (result) {
+      Success(:final data) => AsyncValue.data(data),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      _ => AsyncValue.error('Something went wrong', StackTrace.current),
+    };
+  }
+}
+
+@riverpod
+class WithdrawAttendance extends _$WithdrawAttendance {
+  @override
+  AsyncValue<bool?> build() => const AsyncValue.data(null);
+
+  Future<void> withdraw({
+    required int partnerId,
+    required int attendanceId,
+  }) async {
+    if (state.isLoading) return;
+    state = const AsyncValue.loading();
+    final result = await ref
+        .read(withdrawAttendanceUseCaseProvider)
+        .call(partnerId: partnerId, attendanceId: attendanceId);
+    state = switch (result) {
+      Success(:final data) => AsyncValue.data(data),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      _ => AsyncValue.error('Something went wrong', StackTrace.current),
+    };
+  }
+}

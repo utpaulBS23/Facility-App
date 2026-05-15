@@ -110,3 +110,15 @@ SubmitManualAttendanceUseCase submitManualAttendanceUseCase(Ref ref) {
     ref.read(manualAttendanceRepositoryProvider),
   );
 }
+
+@riverpod
+RefreshAttendanceUseCase refreshAttendanceUseCase(Ref ref) {
+  return RefreshAttendanceUseCase(ref.read(manualAttendanceRepositoryProvider));
+}
+
+@riverpod
+WithdrawAttendanceUseCase withdrawAttendanceUseCase(Ref ref) {
+  return WithdrawAttendanceUseCase(
+    ref.read(manualAttendanceRepositoryProvider),
+  );
+}

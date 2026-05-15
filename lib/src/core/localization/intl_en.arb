@@ -156,6 +156,8 @@
   "approvalSuccessfulMessage": "Your checkout was successful",
   "approvalFailed": "Check Out Failed",
   "approvalFailedMessage": "Your checkout failed",
+  "faceVerificationRequired": "Face Verification Required",
+  "faceVerificationRequiredMessage": "Your request requires face verification. Please proceed to verify your identity with a selfie.",
   "reasonLabel": "Reason*",
   "reasonCameraNotWorking": "Camera is not working",
   "reasonCameraUnavailable": "Camera is unavailable",

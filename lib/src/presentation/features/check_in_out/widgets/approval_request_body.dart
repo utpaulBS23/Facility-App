@@ -13,6 +13,7 @@ class _ApprovalHeroSection extends StatelessWidget {
       AttendanceStatue.pending => _PendingApprovalHeroSection(),
       AttendanceStatue.success => _SuccessApprovalHeroSection(),
       AttendanceStatue.reject => _RejectApprovalHeroSection(),
+      AttendanceStatue.needFace => _NeedFaceApprovalHeroSection(),
     };
   }
 }
@@ -106,6 +107,48 @@ class _RejectApprovalHeroSection extends StatelessWidget {
             context.locale.approvalFailedMessage,
             textAlign: TextAlign.center,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NeedFaceApprovalHeroSection extends StatelessWidget {
+  const _NeedFaceApprovalHeroSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: spacing.s24),
+      child: Column(
+        children: [
+          Gap(spacing.s40),
+          Container(
+            width: spacing.s80,
+            height: spacing.s80,
+            decoration: BoxDecoration(
+              color: context.color.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.face_retouching_natural_rounded,
+              size: spacing.s40,
+              color: context.color.primary,
+            ),
+          ),
+          Gap(spacing.s12),
+          HeadlineMediumText(
+            context.locale.faceVerificationRequired,
+            textAlign: TextAlign.center,
+          ),
+          Gap(spacing.s12),
+          BodyRegularText.secondary(
+            context.locale.faceVerificationRequiredMessage,
+            textAlign: TextAlign.center,
+          ),
+          Gap(spacing.s24),
         ],
       ),
     );

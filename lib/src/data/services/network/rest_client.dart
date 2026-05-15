@@ -56,4 +56,16 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Body() required Map<String, dynamic> request,
   });
+
+  @GET(Endpoints.manualAttendanceRefresh)
+  Future<HttpResponse> refreshAttendance({
+    @Path('partnerId') required int partnerId,
+    @Query('shift_id') required int shiftId,
+  });
+
+  @DELETE(Endpoints.manualAttendanceWithdraw)
+  Future<HttpResponse> withdrawAttendance({
+    @Path('partnerId') required int partnerId,
+    @Path('attendanceId') required int attendanceId,
+  });
 }

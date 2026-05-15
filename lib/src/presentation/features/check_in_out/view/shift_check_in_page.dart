@@ -80,7 +80,10 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
           top: Radius.circular(context.dimensions.radius.r12),
         ),
       ),
-      builder: (_) => _ManualAttendanceBottomSheet(checkInInfo: checkInInfo),
+      builder: (_) => _ManualAttendanceBottomSheet(
+        checkInInfo: checkInInfo,
+        withdrawRoute: Routes.shiftCheckIn,
+      ),
     );
   }
 

@@ -19,6 +19,7 @@ class ManualAttendanceRequestEntity {
 class ManualAttendanceResponseEntity {
   ManualAttendanceResponseEntity({
     required this.id,
+    required this.shiftId,
     required this.status,
     required this.userName,
     required this.shiftDate,
@@ -30,6 +31,7 @@ class ManualAttendanceResponseEntity {
   });
 
   final int id;
+  final int shiftId;
   final String status;
   final String userName;
   final String shiftDate;

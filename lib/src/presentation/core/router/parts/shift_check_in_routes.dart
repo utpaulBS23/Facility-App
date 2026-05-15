@@ -15,8 +15,14 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       path: Routes.approvalRequest,
       name: Routes.approvalRequest,
       pageBuilder: (context, state) {
-        final attendance = state.extra as ManualAttendanceResponseEntity;
-        return MaterialPage(child: ApprovalRequestPage(attendance: attendance));
+        final args = state.extra
+            as ({ManualAttendanceResponseEntity attendance, String withdrawRoute});
+        return MaterialPage(
+          child: ApprovalRequestPage(
+            attendance: args.attendance,
+            withdrawRoute: args.withdrawRoute,
+          ),
+        );
       },
     ),
     GoRoute(

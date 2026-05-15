@@ -1,5 +1,5 @@
 // WHY: AttendanceStatue kept for the shift check-in approval flow.
-enum AttendanceStatue { pending, success, reject }
+enum AttendanceStatue { pending, success, reject, needFace }
 
 // WHY: Separate enum for the attendance list/detail status (different semantics).
 enum AttendanceStatus { present, late, absent, onLeave }

@@ -6,42 +6,63 @@ class _ApprovalActionButtons extends StatelessWidget {
   const _ApprovalActionButtons({
     required this.onWithdraw,
     required this.onRefresh,
+    required this.onNeedFace,
     required this.attendanceStatue,
+    this.isWithdrawing = false,
+    this.isRefreshing = false,
   });
 
   final VoidCallback onWithdraw;
   final VoidCallback onRefresh;
+  final VoidCallback onNeedFace;
   final AttendanceStatue attendanceStatue;
+  final bool isWithdrawing;
+  final bool isRefreshing;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final isLoading = isWithdrawing || isRefreshing;
+    final isPending = attendanceStatue == AttendanceStatue.pending;
 
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          height: spacing.s56,
-          child: OutlinedButton(
-            onPressed: onWithdraw,
-            child: Text(context.locale.withdraw),
+        if (isPending) ...[
+          SizedBox(
+            width: double.infinity,
+            height: spacing.s56,
+            child: OutlinedButton(
+              onPressed: isLoading ? null : onWithdraw,
+              child: isWithdrawing
+                  ? const LoadingIndicator()
+                  : Text(context.locale.withdraw),
+            ),
           ),
-        ),
-        Gap(spacing.s16),
+          Gap(spacing.s16),
+        ],
         SizedBox(
           width: double.infinity,
           height: spacing.s56,
           child: FilledButton(
-            onPressed: switch (attendanceStatue) {
-              .pending => onRefresh,
-              .success => () => context.goNamed(Routes.shift),
-              .reject => onRefresh,
-            },
-            child: Text(switch (attendanceStatue) {
-              .success => context.locale.home,
-              .reject => context.locale.refresh,
-              .pending => context.locale.refresh,
-            }),
+            onPressed: isLoading
+                ? null
+                : switch (attendanceStatue) {
+                    AttendanceStatue.pending => onRefresh,
+                    AttendanceStatue.success =>
+                      () => context.goNamed(Routes.shift),
+                    AttendanceStatue.reject =>
+                      () => context.goNamed(Routes.login),
+                    AttendanceStatue.needFace => onNeedFace,
+                  },
+            child: isRefreshing
+                ? const LoadingIndicator()
+                : Text(switch (attendanceStatue) {
+                    AttendanceStatue.pending => context.locale.refresh,
+                    AttendanceStatue.success => context.locale.home,
+                    AttendanceStatue.reject => context.locale.login,
+                    AttendanceStatue.needFace =>
+                      context.locale.selfieVerification,
+                  }),
           ),
         ),
       ],

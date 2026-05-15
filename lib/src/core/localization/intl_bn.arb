@@ -156,6 +156,8 @@
   "approvalSuccessfulMessage": "আপনার চেক-আউট সফল হয়েছে",
   "approvalFailed": "চেক আউট ব্যর্থ",
   "approvalFailedMessage": "আপনার চেক-আউট ব্যর্থ হয়েছে",
+  "faceVerificationRequired": "ফেস ভেরিফিকেশন প্রয়োজন",
+  "faceVerificationRequiredMessage": "আপনার অনুরোধের জন্য ফেস ভেরিফিকেশন প্রয়োজন। সেলফি দিয়ে পরিচয় যাচাই করুন।",
   "reasonLabel": "কারণ*",
   "reasonCameraNotWorking": "ক্যামেরা কাজ করছে না",
   "reasonCameraUnavailable": "ক্যামেরা পাওয়া যাচ্ছে না",

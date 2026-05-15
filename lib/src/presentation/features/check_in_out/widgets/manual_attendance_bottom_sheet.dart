@@ -2,9 +2,13 @@
 part of '../view/shift_check_in_page.dart';
 
 class _ManualAttendanceBottomSheet extends ConsumerStatefulWidget {
-  const _ManualAttendanceBottomSheet({required this.checkInInfo});
+  const _ManualAttendanceBottomSheet({
+    required this.checkInInfo,
+    required this.withdrawRoute,
+  });
 
   final CheckInInfoEntity checkInInfo;
+  final String withdrawRoute;
 
   @override
   ConsumerState<_ManualAttendanceBottomSheet> createState() =>
@@ -15,13 +19,6 @@ class _ManualAttendanceBottomSheetState
     extends ConsumerState<_ManualAttendanceBottomSheet> {
   String? _selectedReason;
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    // WHY: Reset so stale error state doesn't fire the listener on next open.
-    ref.invalidate(manualAttendanceProvider);
-    super.dispose();
-  }
 
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
@@ -36,7 +33,13 @@ class _ManualAttendanceBottomSheetState
     ref.listen(manualAttendanceProvider, (_, next) {
       if (next is AsyncData && next.value != null) {
         Navigator.of(context).pop();
-        context.goNamed(Routes.approvalRequest, extra: next.value);
+        context.goNamed(
+          Routes.approvalRequest,
+          extra: (
+            attendance: next.value!,
+            withdrawRoute: widget.withdrawRoute,
+          ),
+        );
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

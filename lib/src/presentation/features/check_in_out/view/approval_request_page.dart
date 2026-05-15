@@ -1,20 +1,96 @@
 part of 'shift_check_in_page.dart';
 
-class ApprovalRequestPage extends StatelessWidget {
-  const ApprovalRequestPage({super.key, required this.attendance});
+class ApprovalRequestPage extends ConsumerStatefulWidget {
+  const ApprovalRequestPage({
+    super.key,
+    required this.attendance,
+    required this.withdrawRoute,
+  });
 
   final ManualAttendanceResponseEntity attendance;
+  final String withdrawRoute;
 
-  AttendanceStatue get _statue => switch (attendance.status) {
+  @override
+  ConsumerState<ApprovalRequestPage> createState() =>
+      _ApprovalRequestPageState();
+}
+
+class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
+  late ManualAttendanceResponseEntity _current;
+
+  @override
+  void initState() {
+    super.initState();
+    _current = widget.attendance;
+  }
+
+  AttendanceStatue get _statue => switch (_current.status) {
     'approved' => AttendanceStatue.success,
     'rejected' => AttendanceStatue.reject,
+    'need_face' => AttendanceStatue.needFace,
     _ => AttendanceStatue.pending,
   };
 
-  void _onWithdraw(BuildContext context) => context.pop();
+  int? get _partnerId =>
+      ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+
+  void _onRefresh() {
+    final partnerId = _partnerId;
+    if (partnerId == null) return;
+    ref.read(refreshAttendanceProvider.notifier).refresh(
+      partnerId: partnerId,
+      shiftId: _current.shiftId,
+    );
+  }
+
+  void _onWithdraw() {
+    final partnerId = _partnerId;
+    if (partnerId == null) return;
+    ref.read(withdrawAttendanceProvider.notifier).withdraw(
+      partnerId: partnerId,
+      attendanceId: _current.id,
+    );
+  }
+
+  void _navigateBack() {
+    if (widget.withdrawRoute == Routes.shiftCheckOut) {
+      context.goNamed(Routes.shiftCheckOut, extra: _current.shiftId);
+    } else {
+      context.goNamed(widget.withdrawRoute);
+    }
+  }
+
+  void _onNeedFace() => _navigateBack();
+
+  void _showError(Object error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: context.color.error,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(refreshAttendanceProvider, (_, next) {
+      if (next is AsyncData && next.value != null) {
+        setState(() => _current = next.value!);
+      } else if (next is AsyncError) {
+        _showError(next.error!);
+      }
+    });
+
+    ref.listen(withdrawAttendanceProvider, (_, next) {
+      if (next is AsyncData && next.value == true) {
+        _navigateBack();
+      } else if (next is AsyncError) {
+        _showError(next.error!);
+      }
+    });
+
+    final isRefreshing = ref.watch(refreshAttendanceProvider).isLoading;
+    final isWithdrawing = ref.watch(withdrawAttendanceProvider).isLoading;
     final spacing = context.dimensions.spacing;
     final statue = _statue;
 
@@ -39,7 +115,7 @@ class ApprovalRequestPage extends StatelessWidget {
                 spacing: context.dimensions.padding.p16,
                 children: [
                   _ApprovalHeroSection(statue),
-                  _AttendanceInfoCard(attendance: attendance),
+                  _AttendanceInfoCard(attendance: _current),
                 ],
               ),
             ),
@@ -53,8 +129,11 @@ class ApprovalRequestPage extends StatelessWidget {
             ),
             child: _ApprovalActionButtons(
               attendanceStatue: statue,
-              onWithdraw: () => _onWithdraw(context),
-              onRefresh: () {},
+              onWithdraw: _onWithdraw,
+              onRefresh: _onRefresh,
+              onNeedFace: _onNeedFace,
+              isRefreshing: isRefreshing,
+              isWithdrawing: isWithdrawing,
             ),
           ),
         ],
