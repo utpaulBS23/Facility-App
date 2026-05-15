@@ -39,8 +39,10 @@ class _SupervisorShiftViewState extends ConsumerState<_SupervisorShiftView> {
     _fetchShifts(date);
   }
 
-  void _onAssignStaff(ShiftEntity shift) =>
-      context.pushNamed(Routes.assignStaff, extra: shift);
+  Future<void> _onAssignStaff(ShiftEntity shift) async {
+    await context.pushNamed(Routes.assignStaff, extra: shift);
+    _fetchShifts(_selectedDate);
+  }
 
   @override
   Widget build(BuildContext context) {
