@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
+import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/loading_indicator.dart';

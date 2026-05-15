@@ -35,7 +35,14 @@ final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
       final data = body['data'] as Map<String, dynamic>;
       return ManualAttendanceResponseEntity(
         id: data['id'] as int,
-        status: data['status'] as String,
+        status: data['status'] as String? ?? 'pending',
+        userName: data['user_name'] as String? ?? '',
+        shiftDate: data['shift_date'] as String? ?? '',
+        checkInTime: data['check_in_time'] as String? ?? '',
+        checkOutTime: data['check_out_time'] as String?,
+        address: data['address'] as String? ?? '',
+        reason: data['reason'] as String? ?? '',
+        approverName: data['approver_name'] as String?,
       );
     });
   }

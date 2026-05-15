@@ -17,8 +17,25 @@ class ManualAttendanceRequestEntity {
 }
 
 class ManualAttendanceResponseEntity {
-  ManualAttendanceResponseEntity({required this.id, required this.status});
+  ManualAttendanceResponseEntity({
+    required this.id,
+    required this.status,
+    required this.userName,
+    required this.shiftDate,
+    required this.checkInTime,
+    this.checkOutTime,
+    required this.address,
+    required this.reason,
+    this.approverName,
+  });
 
   final int id;
   final String status;
+  final String userName;
+  final String shiftDate;
+  final String checkInTime;
+  final String? checkOutTime;
+  final String address;
+  final String reason;
+  final String? approverName;
 }

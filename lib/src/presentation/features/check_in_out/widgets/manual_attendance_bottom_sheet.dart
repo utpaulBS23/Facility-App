@@ -36,7 +36,7 @@ class _ManualAttendanceBottomSheetState
     ref.listen(manualAttendanceProvider, (_, next) {
       if (next is AsyncData && next.value != null) {
         Navigator.of(context).pop();
-        context.goNamed(Routes.approvalRequest);
+        context.goNamed(Routes.approvalRequest, extra: next.value);
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

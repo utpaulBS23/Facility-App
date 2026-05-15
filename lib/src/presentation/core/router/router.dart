@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/extensions/riverpod_extensions.dart';
 import '../../../core/logger/log.dart';
+import '../../../domain/entities/manual_attendance_entity.dart';
 import '../../../domain/entities/shift_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';

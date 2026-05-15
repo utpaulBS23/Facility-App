@@ -14,8 +14,10 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
     GoRoute(
       path: Routes.approvalRequest,
       name: Routes.approvalRequest,
-      pageBuilder: (context, state) =>
-          const MaterialPage(child: ApprovalRequestPage()),
+      pageBuilder: (context, state) {
+        final attendance = state.extra as ManualAttendanceResponseEntity;
+        return MaterialPage(child: ApprovalRequestPage(attendance: attendance));
+      },
     ),
     GoRoute(
       path: Routes.shiftCheckOut,
