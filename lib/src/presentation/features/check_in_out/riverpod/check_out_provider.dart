@@ -14,6 +14,9 @@ class CheckOut extends _$CheckOut {
     required int partnerId,
     required int shiftId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   }) async {
     if (state.isLoading) return;
 
@@ -23,6 +26,9 @@ class CheckOut extends _$CheckOut {
       partnerId: partnerId,
       shiftId: shiftId,
       imagePath: imagePath,
+      lat: lat,
+      lng: lng,
+      address: address,
     );
 
     state = switch (result) {

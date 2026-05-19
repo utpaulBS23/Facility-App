@@ -7,5 +7,8 @@ abstract base class FaceValidationRepository extends Repository {
   Future<Result<FaceValidationEntity, Failure>> validateFace({
     required int partnerId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   });
 }

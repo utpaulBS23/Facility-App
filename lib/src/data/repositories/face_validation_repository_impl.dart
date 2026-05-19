@@ -19,6 +19,9 @@ final class FaceValidationRepositoryImpl extends FaceValidationRepository {
   Future<Result<FaceValidationEntity, Failure>> validateFace({
     required int partnerId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   }) async {
     return asyncGuard(() async {
       final image = await MultipartFile.fromFile(
@@ -28,7 +31,13 @@ final class FaceValidationRepositoryImpl extends FaceValidationRepository {
       final date = DateTime.now();
       final dateStr =
           '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      final formData = FormData.fromMap({'image': image, 'date': dateStr});
+      final formData = FormData.fromMap({
+        'image': image,
+        'date': dateStr,
+        'lat': lat,
+        'lng': lng,
+        'address': address,
+      });
       final response = await remote.validateFace(partnerId, formData);
       return FaceValidationResponseModel.fromJson(response.data).toEntity();
     });

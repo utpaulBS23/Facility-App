@@ -20,6 +20,9 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
     required int partnerId,
     required int shiftId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   }) async {
     return asyncGuard(() async {
       final image = await MultipartFile.fromFile(
@@ -33,6 +36,9 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
         'image': image,
         'date': dateStr,
         'shift_id': shiftId,
+        'lat': lat,
+        'lng': lng,
+        'address': address,
       });
       final response = await remote.checkOut(partnerId, formData);
       return CheckOutResponseModel.fromJson(response.data).toEntity();

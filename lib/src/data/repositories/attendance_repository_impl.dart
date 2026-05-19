@@ -22,7 +22,7 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
       isLate: data['is_late'] as bool? ?? false,
       checkInTime: data['check_in_time'] as String? ?? '',
       checkOutTime: data['check_out_time'] as String?,
-      durationHours: data['duration_hours'] as String?,
+      durationHours: data['duration_hours']?.toString(),
       attendanceType: data['attendance_type'] as String? ?? 'app',
       location: data['location'] as String?,
       reason: data['reason'] as String?,

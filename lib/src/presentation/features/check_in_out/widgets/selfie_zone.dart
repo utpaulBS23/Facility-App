@@ -57,25 +57,25 @@ class _SelfieZone extends StatelessWidget {
             _FaceRing(capturedPhotoPath: capturedPhotoPath),
             if (faceValidationError != null) ...[
               Gap(dimensions.spacing.s16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 16,
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: dimensions.padding.p16,
+                  vertical: dimensions.spacing.s12,
+                ),
+                decoration: BoxDecoration(
+                  color: colors.error.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                  border: Border.all(color: colors.error.withOpacity(0.5)),
+                ),
+                child: Text(
+                  faceValidationError!,
+                  textAlign: TextAlign.center,
+                  style: context.textStyle.bodyRegular.copyWith(
                     color: colors.error,
+                    fontWeight: FontWeight.w600,
                   ),
-                  Gap(dimensions.spacing.s6),
-                  Flexible(
-                    child: Text(
-                      faceValidationError!,
-                      textAlign: TextAlign.center,
-                      style: context.textStyle.bodySmall.copyWith(
-                        color: colors.error,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ] else if (capturedPhotoPath == null) ...[
               Gap(dimensions.spacing.s24),

@@ -22,10 +22,20 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     }
     final partnerId = ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
     if (partnerId == null) return;
+    final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
+    if (checkInInfo == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.locationUnavailable)),
+      );
+      return;
+    }
     ref.read(checkOutProvider.notifier).checkOut(
       partnerId: partnerId,
       shiftId: widget.shiftId,
       imagePath: photoPath,
+      lat: checkInInfo.latitude,
+      lng: checkInInfo.longitude,
+      address: checkInInfo.location,
     );
   }
 
@@ -63,6 +73,13 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       if (next.hasValue && next.value != null) {
         await ref.read(logoutUseCaseProvider).call();
         if (context.mounted) context.goNamed(Routes.login);
+      } else if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error.toString()),
+            backgroundColor: context.color.error,
+          ),
+        );
       }
     });
 

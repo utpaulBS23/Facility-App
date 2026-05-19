@@ -54,9 +54,20 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     }
     final partnerId = ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
     if (partnerId == null) return;
-    ref
-        .read(faceValidationProvider.notifier)
-        .validate(partnerId: partnerId, imagePath: photoPath);
+    final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
+    if (checkInInfo == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.locationUnavailable)),
+      );
+      return;
+    }
+    ref.read(faceValidationProvider.notifier).validate(
+      partnerId: partnerId,
+      imagePath: photoPath,
+      lat: checkInInfo.latitude,
+      lng: checkInInfo.longitude,
+      address: checkInInfo.location,
+    );
   }
 
   void _onTakePhoto() {
@@ -92,6 +103,13 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     ref.listen(faceValidationProvider, (_, next) {
       if (next.hasValue && next.value != null) {
         context.goNamed(Routes.shift);
+      } else if (next.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error.toString()),
+            backgroundColor: context.color.error,
+          ),
+        );
       }
     });
 

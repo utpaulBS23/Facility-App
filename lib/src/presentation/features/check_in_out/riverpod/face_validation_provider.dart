@@ -13,6 +13,9 @@ class FaceValidation extends _$FaceValidation {
   Future<void> validate({
     required int partnerId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   }) async {
     if (state.isLoading) return;
 
@@ -21,6 +24,9 @@ class FaceValidation extends _$FaceValidation {
     final result = await ref.read(validateFaceUseCaseProvider).call(
       partnerId: partnerId,
       imagePath: imagePath,
+      lat: lat,
+      lng: lng,
+      address: address,
     );
 
     state = switch (result) {

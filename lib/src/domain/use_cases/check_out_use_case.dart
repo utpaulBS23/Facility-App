@@ -11,11 +11,17 @@ final class CheckOutUseCase {
     required int partnerId,
     required int shiftId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   }) async {
     final result = await repository.checkOut(
       partnerId: partnerId,
       shiftId: shiftId,
       imagePath: imagePath,
+      lat: lat,
+      lng: lng,
+      address: address,
     );
 
     return switch (result) {

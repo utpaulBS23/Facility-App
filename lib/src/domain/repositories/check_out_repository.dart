@@ -8,5 +8,8 @@ abstract base class CheckOutRepository extends Repository {
     required int partnerId,
     required int shiftId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   });
 }

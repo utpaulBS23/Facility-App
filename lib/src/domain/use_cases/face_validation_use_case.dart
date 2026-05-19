@@ -10,10 +10,16 @@ final class ValidateFaceUseCase {
   Future<Result<FaceValidationEntity, String>> call({
     required int partnerId,
     required String imagePath,
+    required double lat,
+    required double lng,
+    required String address,
   }) async {
     final result = await repository.validateFace(
       partnerId: partnerId,
       imagePath: imagePath,
+      lat: lat,
+      lng: lng,
+      address: address,
     );
 
     return switch (result) {
