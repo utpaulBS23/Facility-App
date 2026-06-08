@@ -9,7 +9,7 @@ class AssignmentRequestModel with AssignmentRequestModelMappable {
   AssignmentRequestModel({
     required this.attendantId,
     required this.shiftTemplateId,
-    required this.shiftDate,
+    required this.shiftDates,
     this.notes,
   });
 
@@ -17,29 +17,32 @@ class AssignmentRequestModel with AssignmentRequestModelMappable {
   final int attendantId;
   @MappableField(key: 'shift_template_id')
   final int shiftTemplateId;
-  @MappableField(key: 'shift_date')
-  final String shiftDate;
+  @MappableField(key: 'shift_dates')
+  final List<String> shiftDates;
   final String? notes;
 
   factory AssignmentRequestModel.fromEntity(AssignmentRequestEntity entity) =>
       AssignmentRequestModel(
         attendantId: entity.attendantId,
         shiftTemplateId: entity.shiftTemplateId,
-        shiftDate: entity.shiftDate,
+        shiftDates: entity.shiftDates,
         notes: entity.notes,
       );
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
-class AssignmentDataModel with AssignmentDataModelMappable {
-  AssignmentDataModel({required this.id, required this.shiftDate, required this.status});
+class AssignmentSummaryModel with AssignmentSummaryModelMappable {
+  AssignmentSummaryModel({
+    required this.total,
+    required this.assigned,
+    required this.skipped,
+  });
 
-  final int id;
-  @MappableField(key: 'shift_date')
-  final String shiftDate;
-  final String status;
+  final int total;
+  final int assigned;
+  final int skipped;
 
-  static const fromJson = AssignmentDataModelMapper.fromJson;
+  static const fromJson = AssignmentSummaryModelMapper.fromJson;
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -47,15 +50,18 @@ class AssignmentResponseModel with AssignmentResponseModelMappable {
   AssignmentResponseModel({
     required this.success,
     required this.message,
-    required this.data,
+    required this.summary,
   });
 
   final bool success;
   final String message;
-  final AssignmentDataModel data;
+  final AssignmentSummaryModel summary;
 
   static const fromJson = AssignmentResponseModelMapper.fromJson;
 
-  AssignmentResponseEntity toEntity() =>
-      AssignmentResponseEntity(id: data.id, status: data.status);
+  AssignmentResponseEntity toEntity() => AssignmentResponseEntity(
+        assigned: summary.assigned,
+        skipped: summary.skipped,
+        total: summary.total,
+      );
 }

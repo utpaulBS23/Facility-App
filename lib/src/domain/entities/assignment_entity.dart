@@ -2,19 +2,24 @@ class AssignmentRequestEntity {
   const AssignmentRequestEntity({
     required this.attendantId,
     required this.shiftTemplateId,
-    required this.shiftDate,
+    required this.shiftDates,
     this.notes,
   });
 
   final int attendantId;
   final int shiftTemplateId;
-  final String shiftDate;
+  final List<String> shiftDates;
   final String? notes;
 }
 
 class AssignmentResponseEntity {
-  const AssignmentResponseEntity({required this.id, required this.status});
+  const AssignmentResponseEntity({
+    required this.assigned,
+    required this.skipped,
+    required this.total,
+  });
 
-  final int id;
-  final String status;
+  final int assigned;
+  final int skipped;
+  final int total;
 }

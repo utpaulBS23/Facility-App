@@ -23,7 +23,7 @@ final class AssignStaffUseCase {
     final request = AssignmentRequestEntity(
       attendantId: attendantId,
       shiftTemplateId: shift.shiftTemplateId,
-      shiftDate: shift.shiftDate,
+      shiftDates: [shift.shiftDate],
     );
 
     final result = await _assignmentRepository.assignStaff(
