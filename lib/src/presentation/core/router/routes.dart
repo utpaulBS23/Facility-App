@@ -17,6 +17,8 @@ class Routes {
   static const String shiftCheckOut = '/shift-check-out';
   static const String approvalRequest = '/approval-request';
   static const String noShiftToday = '/no-shift-today';
+  static const String shiftNotYetAccessible = '/shift-not-yet-accessible';
+  static const String shiftWindowClosed = '/shift-window-closed';
 
   static const String applyLeave = '/apply-leave';
   static const String selectShift = '/select-shift';

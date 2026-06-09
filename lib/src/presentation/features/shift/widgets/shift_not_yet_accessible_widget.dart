@@ -6,8 +6,8 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import 'shift_status_page.dart';
 
-class NoShiftTodayWidget extends StatelessWidget {
-  const NoShiftTodayWidget({super.key, required this.message});
+class ShiftNotYetAccessibleWidget extends StatelessWidget {
+  const ShiftNotYetAccessibleWidget({super.key, required this.message});
 
   final String message;
 
@@ -15,10 +15,10 @@ class NoShiftTodayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShiftStatusPage(
       heroColor: context.color.warning,
-      icon: Icons.event_busy_outlined,
-      title: context.locale.noShiftToday,
+      icon: Icons.schedule_outlined,
+      title: context.locale.shiftNotYetAccessible,
       message: message,
-      helpText: context.locale.noShiftTodayHelp,
+      helpText: context.locale.shiftNotYetAccessibleHelp,
       buttonLabel: context.locale.shift,
       onButton: () => context.goNamed(Routes.shift),
     );

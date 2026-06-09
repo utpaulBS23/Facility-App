@@ -47,7 +47,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     // _uidController.text = 'ATTENDENT_4665';
 
     /// attendant
-    _uidController.text = 'SUPERVISOR_8501';
+    _uidController.text = 'ATTENDENT_9226';
 
     /// supervisor
     _passwordController.text = 'password123';
@@ -77,6 +77,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           case ShiftStatusFlag.noShiftToday:
             context.goNamed(
               Routes.noShiftToday,
+              extra: shiftStatus?.message ?? '',
+            );
+          case ShiftStatusFlag.shiftNotYetAccessible:
+            context.goNamed(
+              Routes.shiftNotYetAccessible,
+              extra: shiftStatus?.message ?? '',
+            );
+          case ShiftStatusFlag.shiftWindowClosed:
+            context.goNamed(
+              Routes.shiftWindowClosed,
               extra: shiftStatus?.message ?? '',
             );
           case ShiftStatusFlag.shiftScheduledToday:

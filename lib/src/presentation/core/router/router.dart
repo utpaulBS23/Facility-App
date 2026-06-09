@@ -21,6 +21,8 @@ import '../../features/profile/view/profile_page.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';
 import '../../features/shift/widgets/no_shift_today_widget.dart';
+import '../../features/shift/widgets/shift_not_yet_accessible_widget.dart';
+import '../../features/shift/widgets/shift_window_closed_widget.dart';
 import '../../features/splash/view/splash_page.dart';
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';

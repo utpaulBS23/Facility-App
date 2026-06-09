@@ -41,5 +41,23 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
         return MaterialPage(child: NoShiftTodayWidget(message: message));
       },
     ),
+    GoRoute(
+      path: Routes.shiftNotYetAccessible,
+      name: Routes.shiftNotYetAccessible,
+      pageBuilder: (context, state) {
+        final message = state.extra as String;
+        return MaterialPage(
+          child: ShiftNotYetAccessibleWidget(message: message),
+        );
+      },
+    ),
+    GoRoute(
+      path: Routes.shiftWindowClosed,
+      name: Routes.shiftWindowClosed,
+      pageBuilder: (context, state) {
+        final message = state.extra as String;
+        return MaterialPage(child: ShiftWindowClosedWidget(message: message));
+      },
+    ),
   ];
 }

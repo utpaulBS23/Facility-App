@@ -19,12 +19,17 @@ interface class LoginEntity {}
 enum ShiftStatusFlag {
   shiftScheduledToday,
   alreadyCheckedIn,
-  noShiftToday;
+  noShiftToday,
+  shiftNotYetAccessible,
+  shiftWindowClosed;
 
   static ShiftStatusFlag fromString(String value) => switch (value) {
-    'SHIFT_SCHEDULED_TODAY' => ShiftStatusFlag.shiftScheduledToday,
-    'ALREADY_CHECKED_IN' => ShiftStatusFlag.alreadyCheckedIn,
-    _ => ShiftStatusFlag.noShiftToday,
+    'SHIFT_SCHEDULED_TODAY' => .shiftScheduledToday,
+    'ALREADY_CHECKED_IN' => .alreadyCheckedIn,
+    'NO_SHIFT_TODAY' => .noShiftToday,
+    'SHIFT_NOT_YET_ACCESSIBLE' => .shiftNotYetAccessible,
+    'SHIFT_WINDOW_CLOSED' => .shiftWindowClosed,
+    _ => .noShiftToday,
   };
 }
 
