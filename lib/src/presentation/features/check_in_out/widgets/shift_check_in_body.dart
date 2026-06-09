@@ -32,47 +32,70 @@ class _ShiftCheckInBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final dimensions = context.dimensions;
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(dimensions.padding.p16),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-          _SelfieZone(
-            capturedPhotoPath: capturedPhotoPath,
-            hasError: hasError,
-            errorMessage: errorMessage,
-            faceValidationError: faceValidationError,
-            onRetry: onTakePhoto,
-          ),
-          Gap(dimensions.spacing.s12),
-          if (hasError) ...[
-            _SelfieErrorToast(onRequestSupervisor: onRequestSupervisor),
-          ] else ...[
-            _TakePhotoButton(
-              capturedPhotoPath: capturedPhotoPath,
-              isLoading: isLoading,
-              onTap: onTakePhoto,
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              dimensions.padding.p16,
+              dimensions.padding.p16,
+              dimensions.padding.p16,
+              0,
             ),
-          ],
-          Gap(dimensions.spacing.s16),
-          const _AutoDetectedInfoCard(),
-          Gap(dimensions.spacing.s16),
-          if (hasError) ...[
-            SizedBox(
-              width: double.infinity,
-              height: dimensions.spacing.s44,
-              child: FilledButton(
-                onPressed: onRequestSupervisor,
-                child: Text(context.locale.requestSupervisor),
+            child: SafeArea(
+              top: false,
+              bottom: false,
+              child: Column(
+                children: [
+                  _SelfieZone(
+                    capturedPhotoPath: capturedPhotoPath,
+                    hasError: hasError,
+                    errorMessage: errorMessage,
+                    faceValidationError: faceValidationError,
+                    onRetry: onTakePhoto,
+                  ),
+                  Gap(dimensions.spacing.s12),
+                  if (hasError) ...[
+                    _SelfieErrorToast(onRequestSupervisor: onRequestSupervisor),
+                  ] else ...[
+                    _TakePhotoButton(
+                      capturedPhotoPath: capturedPhotoPath,
+                      isLoading: isLoading,
+                      onTap: onTakePhoto,
+                    ),
+                  ],
+                  Gap(dimensions.spacing.s16),
+                  const _ShiftInfoCard(),
+                  Gap(dimensions.spacing.s16),
+                  const _AutoDetectedInfoCard(),
+                  Gap(dimensions.spacing.s16),
+                ],
               ),
             ),
-          ] else ...[
-            _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
-          ],
-        ],
+          ),
         ),
-      ),
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              dimensions.padding.p16,
+              dimensions.spacing.s8,
+              dimensions.padding.p16,
+              dimensions.spacing.s16,
+            ),
+            child: hasError
+                ? SizedBox(
+                    width: double.infinity,
+                    height: dimensions.spacing.s44,
+                    child: FilledButton(
+                      onPressed: onRequestSupervisor,
+                      child: Text(context.locale.requestSupervisor),
+                    ),
+                  )
+                : _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -21,6 +21,8 @@ abstract base class AuthenticationRepository extends Repository {
 
   UserEntity? getCurrentUser();
 
+  ShiftStatusEntity? getShiftStatus();
+
   List<String> getPermissions();
 
   List<String> getAccessibleFacilities();

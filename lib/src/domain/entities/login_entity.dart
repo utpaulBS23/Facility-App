@@ -24,20 +24,31 @@ enum ShiftStatusFlag {
   shiftWindowClosed;
 
   static ShiftStatusFlag fromString(String value) => switch (value) {
-    'SHIFT_SCHEDULED_TODAY' => .shiftScheduledToday,
-    'ALREADY_CHECKED_IN' => .alreadyCheckedIn,
-    'NO_SHIFT_TODAY' => .noShiftToday,
-    'SHIFT_NOT_YET_ACCESSIBLE' => .shiftNotYetAccessible,
-    'SHIFT_WINDOW_CLOSED' => .shiftWindowClosed,
-    _ => .noShiftToday,
+    'SHIFT_SCHEDULED_TODAY' => ShiftStatusFlag.shiftScheduledToday,
+    'ALREADY_CHECKED_IN' => ShiftStatusFlag.alreadyCheckedIn,
+    'NO_SHIFT_TODAY' => ShiftStatusFlag.noShiftToday,
+    'SHIFT_NOT_YET_ACCESSIBLE' => ShiftStatusFlag.shiftNotYetAccessible,
+    'SHIFT_WINDOW_CLOSED' => ShiftStatusFlag.shiftWindowClosed,
+    _ => ShiftStatusFlag.noShiftToday,
   };
 }
 
 class ShiftStatusEntity {
-  ShiftStatusEntity({required this.flag, required this.message});
+  ShiftStatusEntity({
+    required this.flag,
+    required this.message,
+    this.shiftId,
+    this.facilityName,
+    this.startTime,
+    this.endTime,
+  });
 
   final ShiftStatusFlag flag;
   final String message;
+  final int? shiftId;
+  final String? facilityName;
+  final String? startTime;
+  final String? endTime;
 }
 
 class UserEntity extends LoginEntity {

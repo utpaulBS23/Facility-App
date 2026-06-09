@@ -5,6 +5,10 @@ extension ShiftStatusModelToEntity on ShiftStatusModel {
   ShiftStatusEntity toEntity() => ShiftStatusEntity(
     flag: ShiftStatusFlag.fromString(flag),
     message: message,
+    shiftId: shiftId,
+    facilityName: facilityName,
+    startTime: startTime,
+    endTime: endTime,
   );
 }
 

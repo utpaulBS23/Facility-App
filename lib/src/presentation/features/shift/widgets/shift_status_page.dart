@@ -69,7 +69,7 @@ class ShiftStatusPage extends StatelessWidget {
                   spacing.s16,
                 ),
                 child: Column(
-                  crossAxisAlignment: .center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     HeadlineMediumText(title, textAlign: TextAlign.center),
                     Gap(spacing.s12),
@@ -127,7 +127,7 @@ class _HelpCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
       ),
       child: Row(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Assets.icons.info.svg(
             width: spacing.s20,

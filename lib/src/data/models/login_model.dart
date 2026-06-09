@@ -50,10 +50,25 @@ class LoginTokenModel with LoginTokenModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ShiftStatusModel with ShiftStatusModelMappable {
-  ShiftStatusModel({required this.flag, required this.message});
+  ShiftStatusModel({
+    required this.flag,
+    required this.message,
+    this.shiftId,
+    this.facilityName,
+    this.startTime,
+    this.endTime,
+  });
 
   final String flag;
   final String message;
+  @MappableField(key: 'shift_id')
+  final int? shiftId;
+  @MappableField(key: 'facility_name')
+  final String? facilityName;
+  @MappableField(key: 'start_time')
+  final String? startTime;
+  @MappableField(key: 'end_time')
+  final String? endTime;
 
   static const fromJson = ShiftStatusModelMapper.fromJson;
 }
