@@ -1,56 +1,17 @@
 import '../../core/base/base.dart';
 import '../../domain/entities/attendance_entity.dart';
 import '../../domain/repositories/attendance_repository.dart';
+import '../extension/attendance_mapper.dart';
+import '../models/attendance_model.dart';
 import '../services/network/rest_client.dart';
-
-DateTime? _parseUtcIso(String? raw) {
-  if (raw == null || raw.isEmpty) return null;
-  try {
-    return DateTime.parse(raw).toLocal();
-  } catch (_) {
-    return null;
-  }
-}
 
 final class AttendanceRepositoryImpl extends AttendanceRepository {
   AttendanceRepositoryImpl(this._client);
 
   final RestClient _client;
 
-  static AttendanceItemEntity _parseItem(Map<String, dynamic> data) {
-    final shiftData = data['shift'] as Map<String, dynamic>?;
-    final approverData = data['approver'] as Map<String, dynamic>?;
-
-    return AttendanceItemEntity(
-      id: data['id'] as int,
-      userId: data['user_id'] as int,
-      userName: data['user_name'] as String? ?? '',
-      userUid: data['user_uid'] as String? ?? '',
-      date: data['date'] as String? ?? '',
-      status: data['status'] as String? ?? 'pending',
-      isLate: data['is_late'] as bool? ?? false,
-      checkInTime: _parseUtcIso(data['check_in_time'] as String?),
-      checkOutTime: _parseUtcIso(data['check_out_time'] as String?),
-      durationHours: data['duration_hours']?.toString(),
-      attendanceType: data['attendance_type'] as String? ?? 'app',
-      location: data['location'] as String?,
-      reason: data['reason'] as String?,
-      checkInSelfie: data['check_in_selfie'] as String?,
-      checkOutSelfie: data['check_out_selfie'] as String?,
-      shift: shiftData == null ? null : AttendanceShiftInfoEntity(
-        id: shiftData['id'] as int,
-        shiftType: shiftData['shift_type'] as String? ?? '',
-        startTime: shiftData['start_time'] as String? ?? '',
-        endTime: shiftData['end_time'] as String? ?? '',
-        facilityName: shiftData['facility_name'] as String? ?? '',
-      ),
-      approver: approverData == null ? null : AttendanceApproverEntity(
-        id: approverData['id'] as int,
-        name: approverData['name'] as String? ?? '',
-        uid: approverData['uid'] as String?,
-      ),
-    );
-  }
+  static AttendanceItemEntity _parseItem(Map<String, dynamic> data) =>
+      AttendanceItemModel.fromJson(data).toEntity();
 
   static AttendanceItemEntity _parseApproveRejectEnvelope(
     Map<String, dynamic> body,
@@ -78,13 +39,15 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
       if (!success) {
         throw Exception(body['message'] as String? ?? 'Failed to load attendance');
       }
-      final summary = body['summary'] as Map<String, dynamic>;
+      final summary = AttendanceSummaryModel.fromJson(
+        body['summary'] as Map<String, dynamic>,
+      );
       final rawList = body['attendances'] as List<dynamic>? ?? [];
       return MonthlyAttendanceSummaryEntity(
-        presentCount: summary['present_count'] as int? ?? 0,
-        lateCount: summary['late_count'] as int? ?? 0,
-        absentCount: summary['absent_count'] as int? ?? 0,
-        leaveCount: summary['leave_count'] as int? ?? 0,
+        presentCount: summary.presentCount ?? 0,
+        lateCount: summary.lateCount ?? 0,
+        absentCount: summary.absentCount ?? 0,
+        leaveCount: summary.leaveCount ?? 0,
         attendances: rawList
             .cast<Map<String, dynamic>>()
             .map(_parseItem)
