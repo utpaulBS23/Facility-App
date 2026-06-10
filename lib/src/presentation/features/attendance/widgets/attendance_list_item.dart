@@ -25,12 +25,12 @@ class _AttendanceListItem extends StatelessWidget {
   };
 
   IconData get _icon => switch (item.displayStatus) {
-    AttendanceStatus.present => Icons.check_circle_outline_rounded,
+    AttendanceStatus.present => Icons.check_rounded,
     AttendanceStatus.late => Icons.access_time_rounded,
-    AttendanceStatus.absent => Icons.cancel_outlined,
+    AttendanceStatus.absent => Icons.close_rounded,
     AttendanceStatus.onLeave => Icons.calendar_today_outlined,
     AttendanceStatus.pending => Icons.hourglass_empty_rounded,
-    AttendanceStatus.rejected => Icons.cancel_outlined,
+    AttendanceStatus.rejected => Icons.close_rounded,
   };
 
   Color _dotColor(BuildContext context) => switch (item.displayStatus) {
@@ -55,6 +55,7 @@ class _AttendanceListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+    final date = DateFormatter.shiftDate(DateTime.parse(item.date));
 
     return GestureDetector(
       onTap: onTap,
@@ -88,8 +89,8 @@ class _AttendanceListItem extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          item.shift?.facilityName ?? item.checkInTime,
-                          style: context.textStyle.titleSmall.copyWith(
+                          date,
+                          style: context.textStyle.labelLarge.copyWith(
                             color: context.color.text.primary,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -103,15 +104,37 @@ class _AttendanceListItem extends StatelessWidget {
                     ],
                   ),
                   Gap(spacing.s2),
-                  Text(
-                    item.checkInTime,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
+                  Row(
+                    children: [
+                      if (item.checkInTime != null) ...[
+                        _TimeChip(
+                          icon: Icons.login_rounded,
+                          time: DateFormatter.timeOnly(item.checkInTime!),
+                          color: context.color.text.secondary,
+                        ),
+                        Gap(spacing.s10),
+                      ],
+                      if (item.checkOutTime != null) ...[
+                        _TimeChip(
+                          icon: Icons.logout_rounded,
+                          time: DateFormatter.timeOnly(item.checkOutTime!),
+                          color: context.color.text.secondary,
+                        ),
+                        Gap(spacing.s10),
+                      ],
+                      if (item.durationHours != null)
+                        Text(
+                          item.durationHours!,
+                          style: context.textStyle.bodySmall.copyWith(
+                            color: context.color.text.secondary,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
             ),
+            Gap(spacing.s8),
             Icon(
               Icons.chevron_right_rounded,
               color: context.color.text.secondary,
@@ -120,6 +143,33 @@ class _AttendanceListItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TimeChip extends StatelessWidget {
+  const _TimeChip({
+    required this.icon,
+    required this.time,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String time;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 12, color: color),
+        Gap(context.dimensions.spacing.s4),
+        Text(
+          time,
+          style: context.textStyle.bodySmall.copyWith(color: color),
+        ),
+      ],
     );
   }
 }

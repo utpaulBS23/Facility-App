@@ -184,7 +184,9 @@ class _AttendanceInfoCard extends StatelessWidget {
           _ContactInfoItem(
             icon: Icons.access_time_outlined,
             label: locale.checkInTime,
-            value: attendance.checkInTime,
+            value: attendance.checkInTime != null
+                ? DateFormatter.timestamp(attendance.checkInTime!)
+                : '—',
           ),
           Gap(dimensions.spacing.s8),
           _ContactInfoItem(

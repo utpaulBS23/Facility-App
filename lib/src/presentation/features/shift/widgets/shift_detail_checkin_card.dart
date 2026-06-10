@@ -9,10 +9,10 @@ class _ShiftDetailCheckInCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checkIn = entity.checkInTime != null
-        ? DateFormatter.isoTimestamp(entity.checkInTime!)
+        ? DateFormatter.timestamp(entity.checkInTime!)
         : null;
     final checkOut = entity.checkOutTime != null
-        ? DateFormatter.isoTimestamp(entity.checkOutTime!)
+        ? DateFormatter.timestamp(entity.checkOutTime!)
         : null;
 
     return Container(

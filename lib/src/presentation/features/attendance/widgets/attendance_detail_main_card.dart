@@ -31,7 +31,9 @@ class _AttendanceDetailMainCard extends StatelessWidget {
               Expanded(
                 child: _CheckTimeTile(
                   label: context.locale.checkIn,
-                  time: detail.checkInTime,
+                  time: detail.checkInTime != null
+                      ? DateFormatter.timeOnly(detail.checkInTime!)
+                      : null,
                   icon: Icons.login_rounded,
                 ),
               ),
@@ -39,7 +41,9 @@ class _AttendanceDetailMainCard extends StatelessWidget {
               Expanded(
                 child: _CheckTimeTile(
                   label: context.locale.checkOut,
-                  time: detail.checkOutTime,
+                  time: detail.checkOutTime != null
+                      ? DateFormatter.timeOnly(detail.checkOutTime!)
+                      : null,
                   icon: Icons.logout_rounded,
                 ),
               ),

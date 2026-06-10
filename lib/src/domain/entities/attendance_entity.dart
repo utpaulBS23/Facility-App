@@ -42,7 +42,7 @@ class AttendanceItemEntity {
     required this.date,
     required this.status,
     required this.isLate,
-    required this.checkInTime,
+    this.checkInTime,
     this.checkOutTime,
     this.durationHours,
     required this.attendanceType,
@@ -61,8 +61,8 @@ class AttendanceItemEntity {
   final String date;
   final String status;
   final bool isLate;
-  final String checkInTime;
-  final String? checkOutTime;
+  final DateTime? checkInTime;
+  final DateTime? checkOutTime;
   final String? durationHours;
   final String attendanceType;
   final String? location;

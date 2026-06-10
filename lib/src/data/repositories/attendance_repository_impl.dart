@@ -3,6 +3,15 @@ import '../../domain/entities/attendance_entity.dart';
 import '../../domain/repositories/attendance_repository.dart';
 import '../services/network/rest_client.dart';
 
+DateTime? _parseUtcIso(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  try {
+    return DateTime.parse(raw).toLocal();
+  } catch (_) {
+    return null;
+  }
+}
+
 final class AttendanceRepositoryImpl extends AttendanceRepository {
   AttendanceRepositoryImpl(this._client);
 
@@ -20,8 +29,8 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
       date: data['date'] as String? ?? '',
       status: data['status'] as String? ?? 'pending',
       isLate: data['is_late'] as bool? ?? false,
-      checkInTime: data['check_in_time'] as String? ?? '',
-      checkOutTime: data['check_out_time'] as String?,
+      checkInTime: _parseUtcIso(data['check_in_time'] as String?),
+      checkOutTime: _parseUtcIso(data['check_out_time'] as String?),
       durationHours: data['duration_hours']?.toString(),
       attendanceType: data['attendance_type'] as String? ?? 'app',
       location: data['location'] as String?,

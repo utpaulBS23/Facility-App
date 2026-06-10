@@ -1,6 +1,15 @@
 import '../models/shift_model.dart';
 import '../../domain/entities/shift_entity.dart';
 
+DateTime? _parseUtcIso(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  try {
+    return DateTime.parse(raw).toLocal();
+  } catch (_) {
+    return null;
+  }
+}
+
 extension ShiftSupervisorModelToEntity on ShiftSupervisorModel {
   ShiftSupervisorEntity toEntity() => ShiftSupervisorEntity(
         id: id,
@@ -38,8 +47,8 @@ extension ShiftModelToEntity on ShiftModel {
         startTime: startTime,
         endTime: endTime,
         status: status,
-        checkInTime: checkInTime,
-        checkOutTime: checkOutTime,
+        checkInTime: _parseUtcIso(checkInTime),
+        checkOutTime: _parseUtcIso(checkOutTime),
         notes: notes,
         attendants: attendants.map((a) => a.toEntity()).toList(),
       );

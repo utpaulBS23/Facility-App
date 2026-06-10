@@ -23,7 +23,7 @@ class ManualAttendanceResponseEntity {
     required this.status,
     required this.userName,
     required this.shiftDate,
-    required this.checkInTime,
+    this.checkInTime,
     this.checkOutTime,
     required this.address,
     required this.reason,
@@ -35,8 +35,8 @@ class ManualAttendanceResponseEntity {
   final String status;
   final String userName;
   final String shiftDate;
-  final String checkInTime;
-  final String? checkOutTime;
+  final DateTime? checkInTime;
+  final DateTime? checkOutTime;
   final String address;
   final String reason;
   final String? approverName;

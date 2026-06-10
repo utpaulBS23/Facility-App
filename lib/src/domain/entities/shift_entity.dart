@@ -64,8 +64,8 @@ class ShiftEntity {
   final String startTime;
   final String endTime;
   final String status;
-  final String? checkInTime;
-  final String? checkOutTime;
+  final DateTime? checkInTime;
+  final DateTime? checkOutTime;
   final String? notes;
   final List<ShiftAttendantEntity> attendants;
 }

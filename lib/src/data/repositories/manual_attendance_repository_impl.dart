@@ -1,27 +1,14 @@
 import '../../core/base/base.dart';
 import '../../domain/entities/manual_attendance_entity.dart';
 import '../../domain/repositories/manual_attendance_repository.dart';
+import '../extension/manual_attendance_mapper.dart';
+import '../models/manual_attendance_model.dart';
 import '../services/network/rest_client.dart';
 
 final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
   ManualAttendanceRepositoryImpl(this.remote);
 
   final RestClient remote;
-
-  static ManualAttendanceResponseEntity _parse(Map<String, dynamic> data) {
-    return ManualAttendanceResponseEntity(
-      id: data['id'] as int,
-      shiftId: data['shift_id'] as int,
-      status: data['status'] as String? ?? 'pending',
-      userName: data['user_name'] as String? ?? '',
-      shiftDate: data['shift_date'] as String? ?? '',
-      checkInTime: data['check_in_time'] as String? ?? '',
-      checkOutTime: data['check_out_time'] as String?,
-      address: data['address'] as String? ?? '',
-      reason: data['reason'] as String? ?? '',
-      approverName: data['approver_name'] as String?,
-    );
-  }
 
   static ManualAttendanceResponseEntity _parseEnvelope(
     Map<String, dynamic> body,
@@ -31,7 +18,9 @@ final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
     if (!success) {
       throw Exception(body['message'] as String? ?? fallbackMessage);
     }
-    return _parse(body['data'] as Map<String, dynamic>);
+    return ManualAttendanceDataModel.fromJson(
+      body['data'] as Map<String, dynamic>,
+    ).toEntity();
   }
 
   @override
@@ -88,7 +77,9 @@ final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
       final body = response.data as Map<String, dynamic>;
       final success = body['success'] as bool? ?? false;
       if (!success) {
-        throw Exception(body['message'] as String? ?? 'Failed to withdraw attendance');
+        throw Exception(
+          body['message'] as String? ?? 'Failed to withdraw attendance',
+        );
       }
       return success;
     });

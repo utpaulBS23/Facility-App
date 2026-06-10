@@ -14,6 +14,7 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../../core/gen/assets.gen.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';

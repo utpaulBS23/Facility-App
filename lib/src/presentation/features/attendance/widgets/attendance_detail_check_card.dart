@@ -74,7 +74,9 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
               ),
               Gap(spacing.s4),
               Text(
-                detail.checkInTime,
+                detail.checkInTime != null
+                    ? DateFormatter.timeOnly(detail.checkInTime!)
+                    : '—',
                 style: context.textStyle.bodySmall.copyWith(
                   color: context.color.text.secondary,
                 ),
