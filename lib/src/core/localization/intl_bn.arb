@@ -227,5 +227,12 @@
         "example": "3"
       }
     }
-  }
+  },
+  "myVisits": "আমার পরিদর্শন",
+  "thisWeek": "এই সপ্তাহ",
+  "completed": "সম্পন্ন",
+  "scheduled": "নির্ধারিত",
+  "routineInspection": "নিয়মিত পরিদর্শন",
+  "followUp": "ফলো-আপ",
+  "noVisitsFound": "এই সময়ের জন্য কোনো পরিদর্শন পাওয়া যায়নি।"
 }

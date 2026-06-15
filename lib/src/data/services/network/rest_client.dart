@@ -86,4 +86,43 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('attendanceId') required int attendanceId,
   });
+
+  // Visits — BHUM-259
+  @GET(Endpoints.myVisits)
+  Future<HttpResponse> getMyVisits({
+    @Path('partnerId') required int partnerId,
+    @Query('date') required String date,
+  });
+
+  @GET(Endpoints.visitDetail)
+  Future<HttpResponse> getVisitDetail({
+    @Path('partnerId') required int partnerId,
+    @Path('visitId') required int visitId,
+  });
+
+  @POST(Endpoints.visitCheckIn)
+  Future<HttpResponse> checkInVisit({
+    @Path('partnerId') required int partnerId,
+    @Path('visitId') required int visitId,
+    @Body() required Map<String, dynamic> request,
+  });
+
+  @GET(Endpoints.visitChecklist)
+  Future<HttpResponse> getChecklist({
+    @Path('partnerId') required int partnerId,
+    @Path('visitId') required int visitId,
+  });
+
+  @POST(Endpoints.visitChecklistSubmit)
+  Future<HttpResponse> submitChecklist({
+    @Path('partnerId') required int partnerId,
+    @Path('visitId') required int visitId,
+    @Body() required Map<String, dynamic> request,
+  });
+
+  @POST(Endpoints.reportIssue)
+  Future<HttpResponse> reportIssue({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> request,
+  });
 }

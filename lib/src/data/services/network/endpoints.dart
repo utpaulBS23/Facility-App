@@ -48,4 +48,17 @@ class Endpoints {
   /// OTP
   static const String verifyOtp = '/otp/verify_otp/';
   static const String resendOtp = '/otp/resend_otp/';
+
+  /// Visits (My Visits / Task Management) — BHUM-259
+  static const String myVisits =
+      '/partners/{partnerId}/attendants/my-visits';
+  static const String visitDetail =
+      '/partners/{partnerId}/visits/{visitId}';
+  static const String visitCheckIn =
+      '/partners/{partnerId}/visits/{visitId}/check-in';
+  static const String visitChecklist =
+      '/partners/{partnerId}/visits/{visitId}/checklist';
+  static const String visitChecklistSubmit =
+      '/partners/{partnerId}/visits/{visitId}/checklist/submit';
+  static const String reportIssue = '/partners/{partnerId}/issues';
 }

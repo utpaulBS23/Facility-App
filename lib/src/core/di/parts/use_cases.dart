@@ -132,3 +132,33 @@ WithdrawAttendanceUseCase withdrawAttendanceUseCase(Ref ref) {
     ref.read(manualAttendanceRepositoryProvider),
   );
 }
+
+@riverpod
+GetMyVisitsUseCase getMyVisitsUseCase(Ref ref) {
+  return GetMyVisitsUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+GetVisitDetailUseCase getVisitDetailUseCase(Ref ref) {
+  return GetVisitDetailUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+CheckInVisitUseCase checkInVisitUseCase(Ref ref) {
+  return CheckInVisitUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+GetChecklistUseCase getChecklistUseCase(Ref ref) {
+  return GetChecklistUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+SubmitChecklistUseCase submitChecklistUseCase(Ref ref) {
+  return SubmitChecklistUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+ReportIssueUseCase reportIssueUseCase(Ref ref) {
+  return ReportIssueUseCase(ref.read(visitRepositoryProvider));
+}

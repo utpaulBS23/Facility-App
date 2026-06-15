@@ -70,3 +70,8 @@ AssignmentRepository assignmentRepository(Ref ref) {
 ManualAttendanceRepository manualAttendanceRepository(Ref ref) {
   return ManualAttendanceRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+VisitRepository visitRepository(Ref ref) {
+  return VisitRepositoryImpl(ref.read(restClientServiceProvider));
+}

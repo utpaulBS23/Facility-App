@@ -32,6 +32,7 @@ class ColorExtension {
     required this.errorAlt,
     required this.warning,
     required this.warningAlt,
+    required this.info,
     // misc
     required this.icon,
     required this.disabled,
@@ -84,6 +85,7 @@ class ColorExtension {
   final Color errorAlt; // status.errorAlt         → error.error-10
   final Color warning; // status.warning          → warning.warning-50
   final Color warningAlt; // status.warningAlt       → warning.warning-10
+  final Color info; // status.info             → other.dark-blue
 
   // --- misc ---
   final Color icon; // icon color (light: neutral-40)
@@ -143,6 +145,7 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
     this.errorAlt = _Primitive.error10,
     this.warning = _Primitive.warning50,
     this.warningAlt = _Primitive.warning10,
+    this.info = _Primitive.darkBlue,
     // misc
     this.icon = _Primitive.neutral40,
     this.disabled = _Primitive.neutral20,
@@ -215,6 +218,8 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
   final Color warning;
   @override
   final Color warningAlt;
+  @override
+  final Color info;
 
   // misc
   @override
@@ -288,6 +293,7 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
     Color? errorAlt,
     Color? warning,
     Color? warningAlt,
+    Color? info,
     Color? icon,
     Color? disabled,
     Color? active,
@@ -331,6 +337,7 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
       errorAlt: errorAlt ?? this.errorAlt,
       warning: warning ?? this.warning,
       warningAlt: warningAlt ?? this.warningAlt,
+      info: info ?? this.info,
       icon: icon ?? this.icon,
       disabled: disabled ?? this.disabled,
       active: active ?? this.active,
@@ -399,6 +406,7 @@ class LightColorExtension extends ThemeExtension<LightColorExtension>
       errorAlt: Color.lerp(errorAlt, other.errorAlt, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       warningAlt: Color.lerp(warningAlt, other.warningAlt, t)!,
+      info: Color.lerp(info, other.info, t)!,
       icon: Color.lerp(icon, other.icon, t)!,
       disabled: Color.lerp(disabled, other.disabled, t)!,
       active: Color.lerp(active, other.active, t)!,
@@ -471,6 +479,7 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
     this.errorAlt = _Primitive.error90,
     this.warning = _Primitive.warning50,
     this.warningAlt = _Primitive.warning90,
+    this.info = _Primitive.darkBlue,
     // misc
     this.icon = _Primitive.neutral30,
     this.disabled = _Primitive.neutral60,
@@ -543,6 +552,8 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
   final Color warning;
   @override
   final Color warningAlt;
+  @override
+  final Color info;
 
   // misc
   @override
@@ -616,6 +627,7 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
     Color? errorAlt,
     Color? warning,
     Color? warningAlt,
+    Color? info,
     Color? icon,
     Color? disabled,
     Color? active,
@@ -659,6 +671,7 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
       errorAlt: errorAlt ?? this.errorAlt,
       warning: warning ?? this.warning,
       warningAlt: warningAlt ?? this.warningAlt,
+      info: info ?? this.info,
       icon: icon ?? this.icon,
       disabled: disabled ?? this.disabled,
       active: active ?? this.active,
@@ -727,6 +740,7 @@ class DarkColorExtension extends ThemeExtension<DarkColorExtension>
       errorAlt: Color.lerp(errorAlt, other.errorAlt, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       warningAlt: Color.lerp(warningAlt, other.warningAlt, t)!,
+      info: Color.lerp(info, other.info, t)!,
       icon: Color.lerp(icon, other.icon, t)!,
       disabled: Color.lerp(disabled, other.disabled, t)!,
       active: Color.lerp(active, other.active, t)!,

@@ -34,7 +34,7 @@ StatefulShellRoute _shellRoutes(Ref ref) {
             path: Routes.task,
             name: Routes.task,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: ProfilePage());
+              return const MaterialPage(child: MyVisitsPage());
             },
           ),
         ],

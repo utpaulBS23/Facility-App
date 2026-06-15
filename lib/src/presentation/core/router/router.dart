@@ -17,6 +17,7 @@ import '../../features/authentication/login/view/login_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
 import '../../features/menu/view/menu_page.dart';
+import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';
@@ -33,6 +34,7 @@ part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
 part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
+part 'parts/my_visits_routes.dart';
 part 'parts/shell_routes.dart';
 part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
@@ -77,6 +79,7 @@ GoRouter goRouter(Ref ref) {
       ..._shiftCheckInRoutes(ref),
       ..._shiftRoutes(ref),
       ..._attendanceRoutes(ref),
+      ..._myVisitsRoutes(ref),
       _shellRoutes(ref),
     ],
   );

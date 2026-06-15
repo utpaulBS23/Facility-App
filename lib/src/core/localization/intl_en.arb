@@ -227,5 +227,12 @@
         "example": "3"
       }
     }
-  }
+  },
+  "myVisits": "My Visits",
+  "thisWeek": "This Week",
+  "completed": "Completed",
+  "scheduled": "Scheduled",
+  "routineInspection": "Routine Inspection",
+  "followUp": "Follow-up",
+  "noVisitsFound": "No visits found for this period."
 }

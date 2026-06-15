@@ -27,6 +27,10 @@ class Routes {
   static const String attendance = '/attendance';
   static const String attendanceDetails = '/attendance-details';
   static const String task = '/task';
+  static const String visitDetail = '/visit-detail';
+  static const String visitCheckIn = '/visit-check-in';
+  static const String inspectionChecklist = '/inspection-checklist';
+  static const String problemReport = '/problem-report';
   static const String issue = '/issue';
   static const String menu = '/menu';
 }
