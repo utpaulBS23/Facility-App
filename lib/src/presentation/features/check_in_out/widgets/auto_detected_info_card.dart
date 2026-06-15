@@ -79,14 +79,6 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
 class _ShiftInfoCard extends ConsumerWidget {
   const _ShiftInfoCard();
 
-  String _formatTime(String time24) {
-    try {
-      return DateFormat('h:mm a').format(DateFormat('HH:mm:ss').parse(time24));
-    } catch (_) {
-      return time24;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shiftStatus = ref.read(getShiftStatusUseCaseProvider).call();
@@ -130,7 +122,7 @@ class _ShiftInfoCard extends ConsumerWidget {
               icon: Icons.schedule_outlined,
               label: locale.shiftTime,
               value:
-                  '${_formatTime(shiftStatus!.startTime!)} – ${_formatTime(shiftStatus.endTime!)}',
+                  '${DateFormatter.shiftTime(shiftStatus!.startTime!)} – ${DateFormatter.shiftTime(shiftStatus.endTime!)}',
             ),
           ],
         ],
