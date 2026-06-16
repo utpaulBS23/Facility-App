@@ -4,7 +4,11 @@ import '../../domain/entities/shift_entity.dart';
 DateTime? _parseUtcIso(String? raw) {
   if (raw == null || raw.isEmpty) return null;
   try {
-    return DateTime.parse(raw).toLocal();
+    // WHY: API returns UTC strings without 'Z' suffix; Dart parses bare
+    // ISO strings as local time, so we force UTC before converting.
+    final s =
+        (raw.contains('Z') || raw.contains('+')) ? raw : '${raw}Z';
+    return DateTime.parse(s).toLocal();
   } catch (_) {
     return null;
   }
