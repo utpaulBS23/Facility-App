@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/visit_detail_provider.dart';
@@ -32,7 +34,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
   }
 
   void _onCheckIn(VisitDetailEntity detail) {
-    // TODO: navigate to check-in flow
+    context.pushNamed(Routes.visitCheckIn, extra: detail);
   }
 
   @override

@@ -237,5 +237,14 @@
   "noVisitsFound": "No visits found for this period.",
   "visitDetails": "Visit Details",
   "checkInToVisit": "Check In to Visit",
-  "purposeOfVisit": "Purpose of the visit"
+  "purposeOfVisit": "Purpose of the visit",
+  "visitCheckIn": "Visit Check-in",
+  "confirmCheckIn": "Confirm Check-in",
+  "gpsLocationVerification": "GPS Location Verification",
+  "locationVerified": "Location Verified",
+  "withinRange": "You are within range of the facility",
+  "yourPosition": "Your Position",
+  "distance": "Distance",
+  "gettingLocation": "Getting your location...",
+  "locationPermissionDenied": "Location permission denied. Please enable in settings."
 }

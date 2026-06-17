@@ -237,5 +237,14 @@
   "noVisitsFound": "এই সময়ের জন্য কোনো পরিদর্শন পাওয়া যায়নি।",
   "visitDetails": "পরিদর্শনের বিবরণ",
   "checkInToVisit": "পরিদর্শনে চেক ইন করুন",
-  "purposeOfVisit": "পরিদর্শনের উদ্দেশ্য"
+  "purposeOfVisit": "পরিদর্শনের উদ্দেশ্য",
+  "visitCheckIn": "পরিদর্শন চেক-ইন",
+  "confirmCheckIn": "চেক-ইন নিশ্চিত করুন",
+  "gpsLocationVerification": "জিপিএস অবস্থান যাচাই",
+  "locationVerified": "অবস্থান যাচাই হয়েছে",
+  "withinRange": "আপনি সুবিধার কাছাকাছি আছেন",
+  "yourPosition": "আপনার অবস্থান",
+  "distance": "দূরত্ব",
+  "gettingLocation": "অবস্থান পাওয়া হচ্ছে...",
+  "locationPermissionDenied": "অবস্থান অনুমতি প্রত্যাখ্যাত। সেটিংসে সক্রিয় করুন।"
 }

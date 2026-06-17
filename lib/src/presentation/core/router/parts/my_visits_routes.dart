@@ -10,5 +10,13 @@ List<GoRoute> _myVisitsRoutes(Ref ref) {
         return MaterialPage(child: VisitDetailPage(visitId: visitId));
       },
     ),
+    GoRoute(
+      path: Routes.visitCheckIn,
+      name: Routes.visitCheckIn,
+      pageBuilder: (context, state) {
+        final detail = state.extra as VisitDetailEntity;
+        return MaterialPage(child: VisitCheckInPage(detail: detail));
+      },
+    ),
   ];
 }
