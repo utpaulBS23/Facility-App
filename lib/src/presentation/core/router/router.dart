@@ -18,6 +18,7 @@ import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/my_visits/view/my_visits_page.dart';
+import '../../features/my_visits/view/visit_detail_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';

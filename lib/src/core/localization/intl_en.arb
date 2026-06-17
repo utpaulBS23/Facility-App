@@ -234,5 +234,8 @@
   "scheduled": "Scheduled",
   "routineInspection": "Routine Inspection",
   "followUp": "Follow-up",
-  "noVisitsFound": "No visits found for this period."
+  "noVisitsFound": "No visits found for this period.",
+  "visitDetails": "Visit Details",
+  "checkInToVisit": "Check In to Visit",
+  "purposeOfVisit": "Purpose of the visit"
 }

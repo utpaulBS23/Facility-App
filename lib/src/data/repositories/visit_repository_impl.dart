@@ -3,56 +3,98 @@ import '../../domain/entities/checklist_entity.dart';
 import '../../domain/entities/report_issue_entity.dart';
 import '../../domain/entities/visit_entity.dart';
 import '../../domain/repositories/visit_repository.dart';
-import '../extension/checklist_mapper.dart';
-import '../extension/report_issue_mapper.dart';
-import '../extension/visit_mapper.dart';
-import '../models/checklist_model.dart';
-import '../models/report_issue_model.dart';
-import '../models/visit_model.dart';
 import '../services/network/rest_client.dart';
 
 final class VisitRepositoryImpl extends VisitRepository {
   VisitRepositoryImpl(this._client);
 
+  // ignore: unused_field
   final RestClient _client;
+
+  // WHY: API not ready — returning hardcoded dummy data until backend delivers endpoints.
 
   @override
   Future<Result<VisitListEntity, Failure>> getMyVisits({
     required int partnerId,
     required String date,
-  }) {
-    return asyncGuard(() async {
-      final response = await _client.getMyVisits(
-        partnerId: partnerId,
-        date: date,
-      );
-      final body = response.data as Map<String, dynamic>;
-      final statsRaw = body['stats'] as Map<String, dynamic>? ?? {};
-      final visitsRaw = body['visits'] as List<dynamic>? ?? [];
-      return VisitListEntity(
-        stats: VisitStatsSummaryModel.fromJson(statsRaw).toEntity(),
-        visits: visitsRaw
-            .cast<Map<String, dynamic>>()
-            .map((v) => VisitSummaryModel.fromJson(v).toEntity())
-            .toList(),
-      );
-    });
+  }) async {
+    return const Success(
+      data: VisitListEntity(
+        stats: VisitStatsSummaryEntity(
+          todayCount: 4,
+          weekCount: 18,
+          completedCount: 3,
+        ),
+        visits: [
+          VisitSummaryEntity(
+            id: 1,
+            facilityName: 'Dhaka Central Hospital',
+            facilityAddress: '12 Motijheel C/A, Dhaka 1000',
+            status: VisitStatus.scheduled,
+            type: VisitType.routineInspection,
+            date: '2026-06-18',
+            startTime: '09:00',
+            endTime: '11:00',
+          ),
+          VisitSummaryEntity(
+            id: 2,
+            facilityName: 'Gulshan Community Center',
+            facilityAddress: '45 Gulshan Ave, Dhaka 1212',
+            status: VisitStatus.completed,
+            type: VisitType.followUp,
+            date: '2026-06-18',
+            startTime: '13:00',
+            endTime: '14:30',
+          ),
+          VisitSummaryEntity(
+            id: 3,
+            facilityName: 'Mirpur Sports Complex',
+            facilityAddress: '2 Mirpur Rd, Dhaka 1216',
+            status: VisitStatus.pending,
+            type: VisitType.routineInspection,
+            date: '2026-06-18',
+            startTime: '15:00',
+            endTime: '16:30',
+          ),
+          VisitSummaryEntity(
+            id: 4,
+            facilityName: 'Uttara Administrative Office',
+            facilityAddress: '8 Uttara Sector 7, Dhaka 1230',
+            status: VisitStatus.scheduled,
+            type: VisitType.followUp,
+            date: '2026-06-18',
+            startTime: '17:00',
+            endTime: '18:00',
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Future<Result<VisitDetailEntity, Failure>> getVisitDetail({
     required int partnerId,
     required int visitId,
-  }) {
-    return asyncGuard(() async {
-      final response = await _client.getVisitDetail(
-        partnerId: partnerId,
-        visitId: visitId,
-      );
-      final body = response.data as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>? ?? body;
-      return VisitDetailModel.fromJson(data).toEntity();
-    });
+  }) async {
+    return const Success(
+      data: VisitDetailEntity(
+        id: 1,
+        facilityName: 'Dhaka Central Hospital',
+        facilityAddress: '12 Motijheel C/A, Dhaka 1000',
+        facilityLatitude: 23.7340,
+        facilityLongitude: 90.4182,
+        inRangeThresholdMeters: 100.0,
+        status: VisitStatus.scheduled,
+        type: VisitType.routineInspection,
+        date: '2026-06-18',
+        startTime: '09:00',
+        endTime: '11:00',
+        assignedBy: VisitAssignedByEntity(
+          name: 'Rahim Uddin',
+          role: 'Supervisor',
+        ),
+      ),
+    );
   }
 
   @override
@@ -60,30 +102,68 @@ final class VisitRepositoryImpl extends VisitRepository {
     required int partnerId,
     required int visitId,
     required VisitCheckInRequestEntity request,
-  }) {
-    return asyncGuard(() async {
-      await _client.checkInVisit(
-        partnerId: partnerId,
-        visitId: visitId,
-        request: request.toJson(),
-      );
-    });
+  }) async {
+    return const Success();
   }
 
   @override
   Future<Result<ChecklistEntity, Failure>> getChecklist({
     required int partnerId,
     required int visitId,
-  }) {
-    return asyncGuard(() async {
-      final response = await _client.getChecklist(
-        partnerId: partnerId,
-        visitId: visitId,
-      );
-      final body = response.data as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>? ?? body;
-      return ChecklistModel.fromJson(data).toEntity();
-    });
+  }) async {
+    return const Success(
+      data: ChecklistEntity(
+        maxScore: 25,
+        items: [
+          ChecklistItemEntity(
+            id: 1,
+            question: 'Is the facility entrance clean and accessible?',
+            answerType: ChecklistAnswerType.yesNo,
+            order: 1,
+          ),
+          ChecklistItemEntity(
+            id: 2,
+            question: 'Rate the overall cleanliness of common areas.',
+            answerType: ChecklistAnswerType.star,
+            order: 2,
+          ),
+          ChecklistItemEntity(
+            id: 3,
+            question: 'Are fire extinguishers in place and not expired?',
+            answerType: ChecklistAnswerType.yesNo,
+            order: 3,
+          ),
+          ChecklistItemEntity(
+            id: 4,
+            question: 'Rate the condition of electrical installations.',
+            answerType: ChecklistAnswerType.star,
+            order: 4,
+          ),
+          ChecklistItemEntity(
+            id: 5,
+            question: 'Is the restroom sanitation satisfactory?',
+            answerType: ChecklistAnswerType.yesNo,
+            order: 5,
+          ),
+        ],
+        issues: [
+          ChecklistIssueEntity(
+            id: 101,
+            title: 'Broken ceiling tile in corridor B',
+            category: 'Structural',
+            location: 'Corridor B',
+            priority: 'High',
+          ),
+          ChecklistIssueEntity(
+            id: 102,
+            title: 'Leaking pipe near storage room',
+            category: 'Plumbing',
+            location: 'Storage Room 3',
+            priority: 'Medium',
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -91,29 +171,20 @@ final class VisitRepositoryImpl extends VisitRepository {
     required int partnerId,
     required int visitId,
     required ChecklistSubmitRequestEntity request,
-  }) {
-    return asyncGuard(() async {
-      await _client.submitChecklist(
-        partnerId: partnerId,
-        visitId: visitId,
-        request: request.toJson(),
-      );
-    });
+  }) async {
+    return const Success();
   }
 
   @override
   Future<Result<ReportIssueResponseEntity, Failure>> reportIssue({
     required int partnerId,
     required ReportIssueRequestEntity request,
-  }) {
-    return asyncGuard(() async {
-      final response = await _client.reportIssue(
-        partnerId: partnerId,
-        request: request.toJson(),
-      );
-      final body = response.data as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>? ?? body;
-      return ReportIssueResponseModel.fromJson(data).toEntity();
-    });
+  }) async {
+    return const Success(
+      data: ReportIssueResponseEntity(
+        id: 999,
+        message: 'Issue reported successfully.',
+      ),
+    );
   }
 }

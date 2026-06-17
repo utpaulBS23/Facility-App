@@ -234,5 +234,8 @@
   "scheduled": "নির্ধারিত",
   "routineInspection": "নিয়মিত পরিদর্শন",
   "followUp": "ফলো-আপ",
-  "noVisitsFound": "এই সময়ের জন্য কোনো পরিদর্শন পাওয়া যায়নি।"
+  "noVisitsFound": "এই সময়ের জন্য কোনো পরিদর্শন পাওয়া যায়নি।",
+  "visitDetails": "পরিদর্শনের বিবরণ",
+  "checkInToVisit": "পরিদর্শনে চেক ইন করুন",
+  "purposeOfVisit": "পরিদর্শনের উদ্দেশ্য"
 }
