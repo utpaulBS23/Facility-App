@@ -45,7 +45,7 @@ StatefulShellRoute _shellRoutes(Ref ref) {
             path: Routes.issue,
             name: Routes.issue,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: ProfilePage());
+              return const MaterialPage(child: IssuesPage());
             },
           ),
         ],

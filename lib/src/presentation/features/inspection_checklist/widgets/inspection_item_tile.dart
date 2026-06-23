@@ -51,7 +51,7 @@ class _ItemOrderBadge extends StatelessWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: context.color.background.surface,
+        color: context.color.subtle,
         borderRadius: .circular(8),
       ),
       alignment: .center,
@@ -87,7 +87,7 @@ class _StarRatingRow extends ConsumerWidget {
                 size: 24,
                 color: isFilled
                     ? const Color(0xFFF59E0B)
-                    : context.color.borderSubtle,
+                    : context.color.border,
               ),
             ),
           );
@@ -162,7 +162,6 @@ class _YesNoChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        height: 32,
         padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s8),
         decoration: BoxDecoration(
           color: isSelected
