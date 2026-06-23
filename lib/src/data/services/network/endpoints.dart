@@ -1,9 +1,9 @@
 class Endpoints {
-  static const base = baseDev;
+  static const base = baseLocal;
 
   static const baseDev = 'http://3.108.132.91/api/backend';
   static const baseLocal =
-      'https://taste-stage-elsewhere-fitted.trycloudflare.com/api/backend';
+      'https://stats-robert-plastics-storm.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';
@@ -50,10 +50,8 @@ class Endpoints {
   static const String resendOtp = '/otp/resend_otp/';
 
   /// Visits (My Visits / Task Management) — BHUM-259
-  static const String myVisits =
-      '/partners/{partnerId}/attendants/my-visits';
-  static const String visitDetail =
-      '/partners/{partnerId}/visits/{visitId}';
+  static const String myVisits = '/partners/{partnerId}/visits';
+  static const String visitDetail = '/partners/{partnerId}/visits/{visitId}';
   static const String visitCheckIn =
       '/partners/{partnerId}/visits/{visitId}/check-in';
   static const String visitChecklist =

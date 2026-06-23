@@ -7,13 +7,17 @@ class _VisitDetailInfoCard extends StatelessWidget {
 
   Color _statusColor(BuildContext context) => switch (detail.status) {
         VisitStatus.scheduled => context.color.info,
+        VisitStatus.inProgress => context.color.warning,
         VisitStatus.completed => context.color.success,
+        VisitStatus.resolved => context.color.success,
         VisitStatus.pending => context.color.warning,
       };
 
   String _statusLabel(BuildContext context) => switch (detail.status) {
         VisitStatus.scheduled => context.locale.scheduled,
+        VisitStatus.inProgress => context.locale.inProgress,
         VisitStatus.completed => context.locale.completed,
+        VisitStatus.resolved => context.locale.resolved,
         VisitStatus.pending => context.locale.pending,
       };
 
@@ -41,7 +45,7 @@ class _VisitDetailInfoCard extends StatelessWidget {
           Gap(spacing.s8),
           _InfoRow(
             icon: Icons.location_on_outlined,
-            label: detail.facilityAddress,
+            label: detail.facilityAddress ?? '',
           ),
           Gap(spacing.s12),
           Row(
@@ -51,7 +55,7 @@ class _VisitDetailInfoCard extends StatelessWidget {
               Expanded(
                 child: _DateTimeBox(
                   label: context.locale.time,
-                  value: '${detail.startTime} – ${detail.endTime}',
+                  value: '${detail.scheduledStartTime} – ${detail.scheduledEndTime}',
                 ),
               ),
             ],

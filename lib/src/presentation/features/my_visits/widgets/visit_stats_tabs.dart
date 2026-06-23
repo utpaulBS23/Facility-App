@@ -36,7 +36,7 @@ class _VisitStatsTabs extends StatelessWidget {
             ),
             _Divider(),
             _StatTab(
-              count: stats.weekCount,
+              count: stats.thisWeekCount,
               label: context.locale.thisWeek,
               isSelected: selectedTab == _VisitTab.week,
               onTap: () => onTabChanged(_VisitTab.week),

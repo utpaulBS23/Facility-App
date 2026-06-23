@@ -8,13 +8,17 @@ class _VisitCard extends StatelessWidget {
 
   Color _statusColor(BuildContext context) => switch (visit.status) {
     VisitStatus.scheduled => context.color.info,
+    VisitStatus.inProgress => context.color.warning,
     VisitStatus.completed => context.color.success,
+    VisitStatus.resolved => context.color.success,
     VisitStatus.pending => context.color.warning,
   };
 
   String _statusLabel(BuildContext context) => switch (visit.status) {
     VisitStatus.scheduled => context.locale.scheduled,
+    VisitStatus.inProgress => context.locale.inProgress,
     VisitStatus.completed => context.locale.completed,
+    VisitStatus.resolved => context.locale.resolved,
     VisitStatus.pending => context.locale.pending,
   };
 
@@ -26,7 +30,7 @@ class _VisitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final timeRange = '${visit.startTime} – ${visit.endTime}';
+    final timeRange = '${visit.scheduledStartTime} – ${visit.scheduledEndTime}';
 
     return GestureDetector(
       onTap: onTap,
@@ -64,7 +68,7 @@ class _VisitCard extends StatelessWidget {
             Gap(spacing.s6),
             _InfoRow(
               icon: Icons.location_on_outlined,
-              label: visit.facilityAddress,
+              label: visit.facilityAddress ?? '',
             ),
             Gap(spacing.s6),
             _InfoRow(icon: Icons.access_time_outlined, label: timeRange),

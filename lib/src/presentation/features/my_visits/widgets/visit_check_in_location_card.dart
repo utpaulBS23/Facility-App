@@ -96,8 +96,10 @@ class _LocationContent extends StatelessWidget {
     final pos = state.position!;
     final userLatLng =
         '${pos.latitude.toStringAsFixed(6)}, ${pos.longitude.toStringAsFixed(6)}';
-    final facilityLatLng =
-        '${detail.facilityLatitude.toStringAsFixed(6)}, ${detail.facilityLongitude.toStringAsFixed(6)}';
+    final facilityLatLng = detail.facilityLatitude != null &&
+            detail.facilityLongitude != null
+        ? '${detail.facilityLatitude!.toStringAsFixed(6)}, ${detail.facilityLongitude!.toStringAsFixed(6)}'
+        : '—';
 
     return Column(
       crossAxisAlignment: .stretch,

@@ -7,13 +7,17 @@ class _VisitCheckInFacilityCard extends StatelessWidget {
 
   Color _statusColor(BuildContext context) => switch (detail.status) {
         VisitStatus.scheduled => context.color.info,
+        VisitStatus.inProgress => context.color.warning,
         VisitStatus.completed => context.color.success,
+        VisitStatus.resolved => context.color.success,
         VisitStatus.pending => context.color.warning,
       };
 
   String _statusLabel(BuildContext context) => switch (detail.status) {
         VisitStatus.scheduled => context.locale.scheduled,
+        VisitStatus.inProgress => context.locale.inProgress,
         VisitStatus.completed => context.locale.completed,
+        VisitStatus.resolved => context.locale.resolved,
         VisitStatus.pending => context.locale.pending,
       };
 
@@ -63,7 +67,7 @@ class _VisitCheckInFacilityCard extends StatelessWidget {
               const Gap(4),
               Expanded(
                 child: BodySmallText(
-                  '${detail.startTime} – ${detail.endTime}',
+                  '${detail.scheduledStartTime} – ${detail.scheduledEndTime}',
                   color: context.color.text.secondary,
                 ),
               ),

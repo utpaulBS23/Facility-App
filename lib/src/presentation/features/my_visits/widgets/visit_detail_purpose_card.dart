@@ -10,6 +10,7 @@ class _VisitDetailPurposeCard extends StatelessWidget {
         VisitType.followUp => context.locale.followUp,
       };
 
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;

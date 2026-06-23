@@ -56,8 +56,11 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
     return switch (_selectedTab) {
       _VisitTab.today => all.where((v) => v.date == todayStr).toList(),
       _VisitTab.week => all,
-      _VisitTab.completed =>
-        all.where((v) => v.status == VisitStatus.completed).toList(),
+      _VisitTab.completed => all
+            .where((v) =>
+                v.status == VisitStatus.completed ||
+                v.status == VisitStatus.resolved)
+            .toList(),
     };
   }
 

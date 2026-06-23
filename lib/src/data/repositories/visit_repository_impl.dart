@@ -3,98 +3,53 @@ import '../../domain/entities/checklist_entity.dart';
 import '../../domain/entities/report_issue_entity.dart';
 import '../../domain/entities/visit_entity.dart';
 import '../../domain/repositories/visit_repository.dart';
+import '../models/visit_model.dart';
 import '../services/network/rest_client.dart';
 
 final class VisitRepositoryImpl extends VisitRepository {
   VisitRepositoryImpl(this._client);
 
-  // ignore: unused_field
   final RestClient _client;
-
-  // WHY: API not ready — returning hardcoded dummy data until backend delivers endpoints.
 
   @override
   Future<Result<VisitListEntity, Failure>> getMyVisits({
     required int partnerId,
     required String date,
-  }) => asyncGuard(() async => const VisitListEntity(
-        stats: VisitStatsSummaryEntity(
-          todayCount: 4,
-          weekCount: 18,
-          completedCount: 3,
-        ),
-        visits: [
-          VisitSummaryEntity(
-            id: 1,
-            facilityName: 'Dhaka Central Hospital',
-            facilityAddress: '12 Motijheel C/A, Dhaka 1000',
-            status: VisitStatus.scheduled,
-            type: VisitType.routineInspection,
-            date: '2026-06-18',
-            startTime: '09:00',
-            endTime: '11:00',
-          ),
-          VisitSummaryEntity(
-            id: 2,
-            facilityName: 'Gulshan Community Center',
-            facilityAddress: '45 Gulshan Ave, Dhaka 1212',
-            status: VisitStatus.completed,
-            type: VisitType.followUp,
-            date: '2026-06-18',
-            startTime: '13:00',
-            endTime: '14:30',
-          ),
-          VisitSummaryEntity(
-            id: 3,
-            facilityName: 'Mirpur Sports Complex',
-            facilityAddress: '2 Mirpur Rd, Dhaka 1216',
-            status: VisitStatus.pending,
-            type: VisitType.routineInspection,
-            date: '2026-06-18',
-            startTime: '15:00',
-            endTime: '16:30',
-          ),
-          VisitSummaryEntity(
-            id: 4,
-            facilityName: 'Uttara Administrative Office',
-            facilityAddress: '8 Uttara Sector 7, Dhaka 1230',
-            status: VisitStatus.scheduled,
-            type: VisitType.followUp,
-            date: '2026-06-18',
-            startTime: '17:00',
-            endTime: '18:00',
-          ),
-        ],
-      ));
+  }) => asyncGuard(() async {
+        final response = await _client.getMyVisits(
+          partnerId: partnerId,
+          date: date,
+        );
+        return VisitListResponseModel.fromJson(response.data).toEntity();
+      });
 
   @override
   Future<Result<VisitDetailEntity, Failure>> getVisitDetail({
     required int partnerId,
     required int visitId,
-  }) => asyncGuard(() async => const VisitDetailEntity(
-        id: 1,
-        facilityName: 'Dhaka Central Hospital',
-        facilityAddress: '12 Motijheel C/A, Dhaka 1000',
-        facilityLatitude: 23.7340,
-        facilityLongitude: 90.4182,
-        inRangeThresholdMeters: 100.0,
-        status: VisitStatus.scheduled,
-        type: VisitType.routineInspection,
-        date: '2026-06-18',
-        startTime: '09:00',
-        endTime: '11:00',
-        assignedBy: VisitAssignedByEntity(
-          name: 'Rahim Uddin',
-          role: 'Supervisor',
-        ),
-      ));
+  }) => asyncGuard(() async {
+        final response = await _client.getVisitDetail(
+          partnerId: partnerId,
+          visitId: visitId,
+        );
+        return VisitDetailResponseModel.fromJson(response.data).toEntity();
+      });
 
   @override
   Future<Result<void, Failure>> checkInVisit({
     required int partnerId,
     required int visitId,
     required VisitCheckInRequestEntity request,
-  }) => asyncGuard(() async {});
+  }) => asyncGuard(() async {
+        await _client.checkInVisit(
+          partnerId: partnerId,
+          visitId: visitId,
+          request: {
+            'latitude': request.latitude,
+            'longitude': request.longitude,
+          },
+        );
+      });
 
   @override
   Future<Result<ChecklistEntity, Failure>> getChecklist({

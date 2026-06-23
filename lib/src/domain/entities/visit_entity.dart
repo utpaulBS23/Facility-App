@@ -1,16 +1,16 @@
-enum VisitStatus { scheduled, completed, pending }
+enum VisitStatus { scheduled, inProgress, completed, resolved, pending }
 
 enum VisitType { routineInspection, followUp }
 
 class VisitStatsSummaryEntity {
   const VisitStatsSummaryEntity({
     required this.todayCount,
-    required this.weekCount,
+    required this.thisWeekCount,
     required this.completedCount,
   });
 
   final int todayCount;
-  final int weekCount;
+  final int thisWeekCount;
   final int completedCount;
 }
 
@@ -18,22 +18,22 @@ class VisitSummaryEntity {
   const VisitSummaryEntity({
     required this.id,
     required this.facilityName,
-    required this.facilityAddress,
     required this.status,
     required this.type,
     required this.date,
-    required this.startTime,
-    required this.endTime,
+    required this.scheduledStartTime,
+    required this.scheduledEndTime,
+    this.facilityAddress,
   });
 
   final int id;
   final String facilityName;
-  final String facilityAddress;
+  final String? facilityAddress;
   final VisitStatus status;
   final VisitType type;
   final String date;
-  final String startTime;
-  final String endTime;
+  final String scheduledStartTime;
+  final String scheduledEndTime;
 }
 
 class VisitListEntity {
@@ -60,29 +60,29 @@ class VisitDetailEntity {
   const VisitDetailEntity({
     required this.id,
     required this.facilityName,
-    required this.facilityAddress,
-    required this.facilityLatitude,
-    required this.facilityLongitude,
-    required this.inRangeThresholdMeters,
     required this.status,
     required this.type,
     required this.date,
-    required this.startTime,
-    required this.endTime,
+    required this.scheduledStartTime,
+    required this.scheduledEndTime,
+    this.facilityAddress,
+    this.facilityLatitude,
+    this.facilityLongitude,
+    this.inRangeThresholdMeters,
     this.assignedBy,
   });
 
   final int id;
   final String facilityName;
-  final String facilityAddress;
-  final double facilityLatitude;
-  final double facilityLongitude;
-  final double inRangeThresholdMeters;
+  final String? facilityAddress;
+  final double? facilityLatitude;
+  final double? facilityLongitude;
+  final double? inRangeThresholdMeters;
   final VisitStatus status;
   final VisitType type;
   final String date;
-  final String startTime;
-  final String endTime;
+  final String scheduledStartTime;
+  final String scheduledEndTime;
   final VisitAssignedByEntity? assignedBy;
 }
 

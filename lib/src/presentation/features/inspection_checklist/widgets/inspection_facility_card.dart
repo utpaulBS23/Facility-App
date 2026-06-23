@@ -52,7 +52,7 @@ class _InspectionFacilityCard extends StatelessWidget {
                     SizedBox(width: spacing.s4),
                     Expanded(
                       child: BodySmallText(
-                        detail.facilityAddress,
+                        detail.facilityAddress ?? '',
                         color: context.color.text.secondary,
                       ),
                     ),

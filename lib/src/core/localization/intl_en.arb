@@ -183,6 +183,7 @@
   "menu": "Menu",
   "shift": "Shift",
   "inProgress": "In Progress",
+  "resolved": "Resolved",
   "upcoming": "Upcoming",
   "shiftDetails": "Shift details",
   "assignedSupervisor": "Assigned Supervisor",
