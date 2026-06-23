@@ -15,6 +15,35 @@ class NavigationShell extends StatefulWidget {
 }
 
 class _NavigationShellState extends State<NavigationShell> {
+  BottomNavigationBarItem _navItem(
+    BuildContext context, {
+    required SvgGenImage asset,
+    required String label,
+  }) {
+    final muted = context.color.text.muted;
+    final primary = context.color.primary;
+
+    return BottomNavigationBarItem(
+      label: label,
+      icon: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: asset.svg(
+          width: 28,
+          height: 28,
+          colorFilter: ColorFilter.mode(muted, BlendMode.srcIn),
+        ),
+      ),
+      activeIcon: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: asset.svg(
+          width: 28,
+          height: 28,
+          colorFilter: ColorFilter.mode(primary, BlendMode.srcIn),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,95 +58,30 @@ class _NavigationShellState extends State<NavigationShell> {
           widget.statefulNavigationShell.goBranch(index);
         },
         items: [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.shift.svg(width: 28, height: 28),
-            ),
+          _navItem(
+            context,
+            asset: Assets.icons.shift,
             label: context.locale.shift,
-            activeIcon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.shift.svg(
-                width: 28,
-                height: 28,
-                colorFilter: ColorFilter.mode(
-                  context.color.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
           ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.attendance.svg(width: 28, height: 28),
-            ),
+          _navItem(
+            context,
+            asset: Assets.icons.attendance,
             label: context.locale.attendance,
-            activeIcon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.attendance.svg(
-                width: 28,
-                height: 28,
-                colorFilter: ColorFilter.mode(
-                  context.color.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
           ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.task.svg(width: 28, height: 28),
-            ),
+          _navItem(
+            context,
+            asset: Assets.icons.visit,
+            label: context.locale.visit,
+          ),
+          _navItem(
+            context,
+            asset: Assets.icons.task,
             label: context.locale.task,
-            activeIcon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.task.svg(
-                width: 28,
-                height: 28,
-                colorFilter: ColorFilter.mode(
-                  context.color.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
           ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.issue.svg(width: 28, height: 28),
-            ),
-            label: context.locale.issues,
-            activeIcon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.issue.svg(
-                width: 28,
-                height: 28,
-                colorFilter: ColorFilter.mode(
-                  context.color.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.menu.svg(width: 28, height: 28),
-            ),
+          _navItem(
+            context,
+            asset: Assets.icons.menu,
             label: context.locale.menu,
-            activeIcon: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Assets.icons.menu.svg(
-                width: 28,
-                height: 28,
-                colorFilter: ColorFilter.mode(
-                  context.color.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
           ),
         ],
       ),
