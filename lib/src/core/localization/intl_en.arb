@@ -246,5 +246,20 @@
   "yourPosition": "Your Position",
   "distance": "Distance",
   "gettingLocation": "Getting your location...",
-  "locationPermissionDenied": "Location permission denied. Please enable in settings."
+  "locationPermissionDenied": "Location permission denied. Please enable in settings.",
+  "inspectionChecklist": "Inspection Checklist",
+  "inspectionProgress": "Inspection Progress",
+  "repairWork": "Repair Work",
+  "newIssue": "New Issue",
+  "totalScore": "Total Score",
+  "outOf": "Out of {max}",
+  "@outOf": {
+    "placeholders": { "max": { "type": "int" } }
+  },
+  "completeAllItemsWarning": "Please complete all items before submission",
+  "yes": "Yes",
+  "no": "No",
+  "reported": "Reported",
+  "photoAttached": "Photo attached",
+  "attachPhoto": "Attach photo"
 }

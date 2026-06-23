@@ -3,21 +3,56 @@ import 'package:dart_mappable/dart_mappable.dart';
 part 'checklist_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
-class ChecklistItemModel with ChecklistItemModelMappable {
-  ChecklistItemModel({
+class ChecklistItemResponseModel with ChecklistItemResponseModelMappable {
+  ChecklistItemResponseModel({
     required this.id,
-    this.question,
-    this.answerType,
-    this.order,
+    this.ratingValue,
+    this.booleanValue,
+    this.hasProof,
   });
 
   final int id;
-  final String? question;
 
-  @MappableField(key: 'answer_type')
-  final String? answerType;
+  @MappableField(key: 'rating_value')
+  final int? ratingValue;
 
-  final int? order;
+  @MappableField(key: 'boolean_value')
+  final bool? booleanValue;
+
+  @MappableField(key: 'has_proof')
+  final bool? hasProof;
+
+  static const fromJson = ChecklistItemResponseModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class ChecklistItemModel with ChecklistItemModelMappable {
+  ChecklistItemModel({
+    required this.id,
+    this.label,
+    this.responseType,
+    this.maxPoints,
+    this.proofPolicy,
+    this.sortOrder,
+    this.response,
+  });
+
+  final int id;
+  final String? label;
+
+  @MappableField(key: 'response_type')
+  final String? responseType;
+
+  @MappableField(key: 'max_points')
+  final int? maxPoints;
+
+  @MappableField(key: 'proof_policy')
+  final String? proofPolicy;
+
+  @MappableField(key: 'sort_order')
+  final int? sortOrder;
+
+  final ChecklistItemResponseModel? response;
 
   static const fromJson = ChecklistItemModelMapper.fromJson;
 }
@@ -30,6 +65,7 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
     this.category,
     this.location,
     this.priority,
+    this.status,
   });
 
   final int id;
@@ -37,23 +73,47 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
   final String? category;
   final String? location;
   final String? priority;
+  final String? status;
 
   static const fromJson = ChecklistIssueModelMapper.fromJson;
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
-class ChecklistModel with ChecklistModelMappable {
-  ChecklistModel({
+class ChecklistMetaModel with ChecklistMetaModelMappable {
+  ChecklistMetaModel({
     this.maxScore,
-    this.items,
-    this.issues,
+    this.itemsTotal,
+    this.itemsCompleted,
+    this.totalScore,
   });
 
   @MappableField(key: 'max_score')
   final int? maxScore;
 
-  final List<ChecklistItemModel>? items;
+  @MappableField(key: 'items_total')
+  final int? itemsTotal;
+
+  @MappableField(key: 'items_completed')
+  final int? itemsCompleted;
+
+  @MappableField(key: 'total_score')
+  final int? totalScore;
+
+  static const fromJson = ChecklistMetaModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class ChecklistModel with ChecklistModelMappable {
+  ChecklistModel({
+    this.data,
+    this.issues,
+    this.meta,
+  });
+
+  // API returns items in "data" key
+  final List<ChecklistItemModel>? data;
   final List<ChecklistIssueModel>? issues;
+  final ChecklistMetaModel? meta;
 
   static const fromJson = ChecklistModelMapper.fromJson;
 }

@@ -246,5 +246,20 @@
   "yourPosition": "আপনার অবস্থান",
   "distance": "দূরত্ব",
   "gettingLocation": "অবস্থান পাওয়া হচ্ছে...",
-  "locationPermissionDenied": "অবস্থান অনুমতি প্রত্যাখ্যাত। সেটিংসে সক্রিয় করুন।"
+  "locationPermissionDenied": "অবস্থান অনুমতি প্রত্যাখ্যাত। সেটিংসে সক্রিয় করুন।",
+  "inspectionChecklist": "পরিদর্শন তালিকা",
+  "inspectionProgress": "পরিদর্শন অগ্রগতি",
+  "repairWork": "মেরামত কাজ",
+  "newIssue": "নতুন সমস্যা",
+  "totalScore": "মোট স্কোর",
+  "outOf": "{max} এর মধ্যে",
+  "@outOf": {
+    "placeholders": { "max": { "type": "int" } }
+  },
+  "completeAllItemsWarning": "জমা দেওয়ার আগে সব আইটেম সম্পন্ন করুন",
+  "yes": "হ্যাঁ",
+  "no": "না",
+  "reported": "রিপোর্টেড",
+  "photoAttached": "ছবি সংযুক্ত",
+  "attachPhoto": "ছবি যোগ করুন"
 }

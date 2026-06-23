@@ -1,4 +1,6 @@
-enum ChecklistAnswerType { star, yesNo }
+enum ChecklistAnswerType { star, yesNo, repairWork }
+
+enum ChecklistProofPolicy { always, optional, none }
 
 class ChecklistItemEntity {
   const ChecklistItemEntity({
@@ -6,21 +8,28 @@ class ChecklistItemEntity {
     required this.question,
     required this.answerType,
     required this.order,
-    this.starRating,
-    this.yesNoAnswer,
+    this.maxPoints = 5,
+    this.proofPolicy = ChecklistProofPolicy.none,
+    this.existingRating,
+    this.existingBoolAnswer,
+    this.hasProof = false,
   });
 
   final int id;
   final String question;
   final ChecklistAnswerType answerType;
   final int order;
-  final int? starRating;
-  final bool? yesNoAnswer;
+  final int maxPoints;
+  final ChecklistProofPolicy proofPolicy;
+  final int? existingRating;
+  final bool? existingBoolAnswer;
+  final bool hasProof;
 
   bool get isAnswered => switch (answerType) {
-        ChecklistAnswerType.star => starRating != null,
-        ChecklistAnswerType.yesNo => yesNoAnswer != null,
-      };
+    ChecklistAnswerType.star => existingRating != null,
+    ChecklistAnswerType.yesNo => existingBoolAnswer != null,
+    ChecklistAnswerType.repairWork => true,
+  };
 }
 
 class ChecklistEntity {
@@ -34,13 +43,18 @@ class ChecklistEntity {
   final List<ChecklistItemEntity> items;
   final List<ChecklistIssueEntity> issues;
 
-  int get answeredCount => items.where((i) => i.isAnswered).length;
+  int get totalAnswerableCount =>
+      items.where((i) => i.answerType != ChecklistAnswerType.repairWork).length;
+
+  int get answeredCount => items
+      .where((i) => i.answerType != ChecklistAnswerType.repairWork && i.isAnswered)
+      .length;
 
   int get currentScore => items
       .where((i) => i.answerType == ChecklistAnswerType.star && i.isAnswered)
-      .fold(0, (sum, i) => sum + (i.starRating ?? 0));
+      .fold(0, (sum, i) => sum + (i.existingRating ?? 0));
 
-  bool get isComplete => answeredCount == items.length;
+  bool get isComplete => answeredCount == totalAnswerableCount;
 }
 
 class ChecklistIssueEntity {
@@ -50,6 +64,7 @@ class ChecklistIssueEntity {
     required this.category,
     required this.location,
     required this.priority,
+    this.status = '',
   });
 
   final int id;
@@ -57,6 +72,7 @@ class ChecklistIssueEntity {
   final String category;
   final String location;
   final String priority;
+  final String status;
 }
 
 class ChecklistAnswerRequestEntity {
@@ -74,9 +90,10 @@ class ChecklistAnswerRequestEntity {
 class ChecklistSubmitRequestEntity {
   const ChecklistSubmitRequestEntity({
     required this.answers,
-    this.proofImagePath,
+    this.proofImagePaths = const {},
   });
 
   final List<ChecklistAnswerRequestEntity> answers;
-  final String? proofImagePath;
+  // itemId → list of local file paths for proof images
+  final Map<int, List<String>> proofImagePaths;
 }
