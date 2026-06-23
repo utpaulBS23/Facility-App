@@ -1,17 +1,35 @@
 part of '../view/inspection_checklist_page.dart';
 
-class _InspectionItemTile extends StatelessWidget {
+// WHY: intentionally ConsumerWidget — single provider-access point for all tile interactions;
+// child widgets are pure StatelessWidgets that receive data and callbacks only.
+class _InspectionItemTile extends ConsumerWidget {
   const _InspectionItemTile({required this.item, required this.state});
 
   final ChecklistItemEntity item;
   final InspectionChecklistState state;
 
+  void _onStarTap(WidgetRef ref, int rating) {
+    ref.read(inspectionChecklistProvider.notifier).setStarRating(itemId: item.id, rating: rating);
+  }
+
+  void _onYesNo(WidgetRef ref, bool value) {
+    ref.read(inspectionChecklistProvider.notifier).setYesNo(itemId: item.id, value: value);
+  }
+
+  void _onPickProof(WidgetRef ref) {
+    ref.read(inspectionChecklistProvider.notifier).pickProofImage(itemId: item.id);
+  }
+
+  void _onRemoveProof(WidgetRef ref) {
+    ref.read(inspectionChecklistProvider.notifier).removeProofImage(itemId: item.id);
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: spacing.s12),
+      padding: .symmetric(vertical: spacing.s12),
       child: Row(
         crossAxisAlignment: .start,
         children: [
@@ -24,12 +42,24 @@ class _InspectionItemTile extends StatelessWidget {
                 LabelLargeText(item.question, color: context.color.text.primary),
                 SizedBox(height: spacing.s8),
                 if (item.answerType == ChecklistAnswerType.star)
-                  _StarRatingRow(item: item, state: state)
+                  _StarRatingRow(
+                    currentRating: state.starAnswers[item.id] ?? 0,
+                    maxPoints: item.maxPoints,
+                    onStarTap: (r) => _onStarTap(ref, r),
+                  )
                 else
-                  _YesNoRow(item: item, state: state),
+                  _YesNoRow(
+                    answer: state.yesNoAnswers[item.id],
+                    onAnswer: (v) => _onYesNo(ref, v),
+                  ),
                 if (item.proofPolicy != ChecklistProofPolicy.none) ...[
                   SizedBox(height: spacing.s8),
-                  _ProofAttachmentRow(item: item),
+                  _ProofAttachmentRow(
+                    proofImages: state.proofImages[item.id] ?? [],
+                    hasExistingProof: item.hasProof,
+                    onAttach: () => _onPickProof(ref),
+                    onRemove: () => _onRemoveProof(ref),
+                  ),
                 ],
               ],
             ),
@@ -47,12 +77,14 @@ class _ItemOrderBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = context.dimensions.radius;
+
     return Container(
       width: 32,
       height: 32,
       decoration: BoxDecoration(
         color: context.color.subtle,
-        borderRadius: .circular(8),
+        borderRadius: .circular(radius.r6),
       ),
       alignment: .center,
       child: LabelLargeText('$order', color: context.color.text.primary),
@@ -60,34 +92,34 @@ class _ItemOrderBadge extends StatelessWidget {
   }
 }
 
-class _StarRatingRow extends ConsumerWidget {
-  const _StarRatingRow({required this.item, required this.state});
+class _StarRatingRow extends StatelessWidget {
+  const _StarRatingRow({
+    required this.currentRating,
+    required this.maxPoints,
+    required this.onStarTap,
+  });
 
-  final ChecklistItemEntity item;
-  final InspectionChecklistState state;
+  final int currentRating;
+  final int maxPoints;
+  final ValueChanged<int> onStarTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final currentRating = state.starAnswers[item.id] ?? 0;
 
     return Row(
       children: [
-        ...List.generate(item.maxPoints, (index) {
+        ...List.generate(maxPoints, (index) {
           final starValue = index + 1;
           final isFilled = starValue <= currentRating;
           return GestureDetector(
-            onTap: () => ref
-                .read(inspectionChecklistProvider.notifier)
-                .setStarRating(itemId: item.id, rating: starValue),
+            onTap: () => onStarTap(starValue),
             child: Padding(
-              padding: EdgeInsets.only(right: spacing.s4),
+              padding: .only(right: spacing.s4),
               child: Icon(
                 isFilled ? Icons.star_rounded : Icons.star_outline_rounded,
                 size: 24,
-                color: isFilled
-                    ? const Color(0xFFF59E0B)
-                    : context.color.border,
+                color: isFilled ? context.color.warning : context.color.border,
               ),
             ),
           );
@@ -101,16 +133,18 @@ class _StarRatingRow extends ConsumerWidget {
   }
 }
 
-class _YesNoRow extends ConsumerWidget {
-  const _YesNoRow({required this.item, required this.state});
+class _YesNoRow extends StatelessWidget {
+  const _YesNoRow({
+    required this.answer,
+    required this.onAnswer,
+  });
 
-  final ChecklistItemEntity item;
-  final InspectionChecklistState state;
+  final bool? answer;
+  final ValueChanged<bool> onAnswer;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final answer = state.yesNoAnswers[item.id];
 
     return Row(
       children: [
@@ -119,9 +153,7 @@ class _YesNoRow extends ConsumerWidget {
           icon: Icons.check_rounded,
           isSelected: answer == true,
           selectedColor: context.color.success,
-          onTap: () => ref
-              .read(inspectionChecklistProvider.notifier)
-              .setYesNo(itemId: item.id, value: true),
+          onTap: () => onAnswer(true),
         ),
         SizedBox(width: spacing.s8),
         _YesNoChip(
@@ -129,9 +161,7 @@ class _YesNoRow extends ConsumerWidget {
           icon: Icons.close_rounded,
           isSelected: answer == false,
           selectedColor: context.color.error,
-          onTap: () => ref
-              .read(inspectionChecklistProvider.notifier)
-              .setYesNo(itemId: item.id, value: false),
+          onTap: () => onAnswer(false),
         ),
       ],
     );
@@ -162,7 +192,7 @@ class _YesNoChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s8),
         decoration: BoxDecoration(
           color: isSelected
               ? selectedColor.withValues(alpha: 0.08)
@@ -189,18 +219,24 @@ class _YesNoChip extends StatelessWidget {
   }
 }
 
-class _ProofAttachmentRow extends ConsumerWidget {
-  const _ProofAttachmentRow({required this.item});
+class _ProofAttachmentRow extends StatelessWidget {
+  const _ProofAttachmentRow({
+    required this.proofImages,
+    required this.hasExistingProof,
+    required this.onAttach,
+    required this.onRemove,
+  });
 
-  final ChecklistItemEntity item;
+  final List<XFile> proofImages;
+  final bool hasExistingProof;
+  final VoidCallback onAttach;
+  final VoidCallback onRemove;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(inspectionChecklistProvider);
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final localImages = state.proofImages[item.id] ?? [];
-    final hasAnyProof = item.hasProof || localImages.isNotEmpty;
-    final totalCount = (item.hasProof ? 1 : 0) + localImages.length;
+    final hasAnyProof = hasExistingProof || proofImages.isNotEmpty;
+    final totalCount = (hasExistingProof ? 1 : 0) + proofImages.length;
 
     return Row(
       children: [
@@ -209,21 +245,11 @@ class _ProofAttachmentRow extends ConsumerWidget {
           SizedBox(width: spacing.s8),
         ],
         if (!hasAnyProof)
-          _AttachPhotoButton(
-            onTap: () => ref
-                .read(inspectionChecklistProvider.notifier)
-                .pickProofImage(itemId: item.id),
-          ),
+          _AttachPhotoButton(onTap: onAttach),
         if (hasAnyProof) ...[
           const Spacer(),
           _RemoveProofButton(
-            onTap: localImages.isNotEmpty
-                ? () => ref
-                    .read(inspectionChecklistProvider.notifier)
-                    .removeProofImage(itemId: item.id)
-                : () => ref
-                    .read(inspectionChecklistProvider.notifier)
-                    .pickProofImage(itemId: item.id),
+            onTap: proofImages.isNotEmpty ? onRemove : onAttach,
           ),
         ],
       ],
@@ -239,15 +265,16 @@ class _PhotoAttachedChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: .symmetric(
         horizontal: spacing.s12,
         vertical: spacing.s8,
       ),
       decoration: BoxDecoration(
         color: context.color.successAlt,
-        borderRadius: .circular(10),
+        borderRadius: .circular(radius.r10),
         border: Border.all(color: context.color.success),
       ),
       child: Row(
@@ -272,8 +299,6 @@ class _PhotoAttachedChip extends StatelessWidget {
               '$count',
               style: context.textStyle.bodySmall.copyWith(
                 color: context.color.onPrimary,
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -290,16 +315,19 @@ class _AttachPhotoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: context.dimensions.spacing.s12,
-          vertical: context.dimensions.spacing.s8,
+        padding: .symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s8,
         ),
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(10),
+          borderRadius: .circular(radius.r10),
         ),
         child: Row(
           mainAxisSize: .min,
@@ -309,7 +337,7 @@ class _AttachPhotoButton extends StatelessWidget {
               size: 14,
               color: context.color.text.secondary,
             ),
-            SizedBox(width: context.dimensions.spacing.s8),
+            SizedBox(width: spacing.s8),
             BodySmallText(
               context.locale.attachPhoto,
               color: context.color.text.secondary,

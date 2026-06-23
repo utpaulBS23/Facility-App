@@ -14,7 +14,7 @@ class _InspectionProgressHeader extends StatelessWidget {
     final progress = total == 0 ? 0.0 : answered / total;
 
     return Container(
-      padding: EdgeInsets.all(spacing.s16),
+      padding: .all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         borderRadius: .circular(radius.r6),
@@ -43,7 +43,7 @@ class _InspectionProgressHeader extends StatelessWidget {
               value: progress,
               backgroundColor: context.color.borderSubtle,
               color: context.color.primary,
-              minHeight: 8,
+              minHeight: spacing.s8,
             ),
           ),
         ],

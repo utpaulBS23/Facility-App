@@ -14,7 +14,7 @@ class _OrderBadge extends StatelessWidget {
       height: 32,
       decoration: BoxDecoration(
         color: context.color.subtle,
-        borderRadius: .circular(8),
+        borderRadius: .circular(context.dimensions.radius.r6),
       ),
       alignment: .center,
       child: LabelLargeText('$order', color: context.color.text.primary),
@@ -60,22 +60,14 @@ class _RatingPickerTileState extends State<_RatingPickerTile> {
     if (!widget.requiresProof) _autoSave();
   }
 
-  void _autoSave() {
-    // WHY: non-proof items fire immediately on every change — no user action needed
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Item ${widget.order} auto-saved (rating: $_rating)'),
-        duration: const Duration(seconds: 1),
-      ),
-    );
-  }
+  // WHY: non-proof items auto-save silently — feedback comes from real network response
+  void _autoSave() {}
 
   void _submit() {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Item ${widget.order} submitted (rating: $_rating, photos: ${_proofImages.length})'),
+        content: Text(context.locale.submit),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -109,7 +101,7 @@ class _RatingPickerTileState extends State<_RatingPickerTile> {
                         child: Icon(
                           filled ? Icons.star_rounded : Icons.star_outline_rounded,
                           size: 24,
-                          color: filled ? const Color(0xFFF59E0B) : context.color.border,
+                          color: filled ? context.color.warning : context.color.border,
                         ),
                       ),
                     );
@@ -170,21 +162,14 @@ class _BoolPickerTileState extends State<_BoolPickerTile> {
     if (!widget.requiresProof) _autoSave(value);
   }
 
-  void _autoSave(bool value) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Item ${widget.order} auto-saved (${value ? 'Yes' : 'No'})'),
-        duration: const Duration(seconds: 1),
-      ),
-    );
-  }
+  // WHY: non-proof items auto-save silently — feedback comes from real network response
+  void _autoSave(bool value) {}
 
   void _submit() {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Item ${widget.order} submitted (${_answer! ? 'Yes' : 'No'}, photos: ${_proofImages.length})'),
+        content: Text(context.locale.submit),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -277,7 +262,7 @@ class _AttachmentOnlyPickerTileState extends State<_AttachmentOnlyPickerTile> {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Item ${widget.order} photo saved (${_proofImages.length} photo(s))'),
+        content: Text(context.locale.save),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -426,7 +411,7 @@ class _SubmitIconButton extends StatelessWidget {
             children: [
               Icon(Icons.send_rounded, size: 14, color: context.color.onPrimary),
               SizedBox(width: context.dimensions.spacing.s6),
-              BodySmallText('Submit', color: context.color.onPrimary),
+              BodySmallText(context.locale.submit, color: context.color.onPrimary),
             ],
           ),
         ),
@@ -461,7 +446,7 @@ class _SaveIconButton extends StatelessWidget {
             children: [
               Icon(Icons.cloud_upload_outlined, size: 14, color: context.color.onPrimary),
               SizedBox(width: context.dimensions.spacing.s6),
-              BodySmallText('Save', color: context.color.onPrimary),
+              BodySmallText(context.locale.save, color: context.color.onPrimary),
             ],
           ),
         ),
@@ -482,10 +467,10 @@ class _PhotoAttachedChip extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+      padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s8),
       decoration: BoxDecoration(
         color: context.color.successAlt,
-        borderRadius: .circular(10),
+        borderRadius: .circular(context.dimensions.radius.r10),
         border: Border.all(color: context.color.success),
       ),
       child: Row(
@@ -504,8 +489,6 @@ class _PhotoAttachedChip extends StatelessWidget {
               '$count',
               style: context.textStyle.bodySmall.copyWith(
                 color: context.color.onPrimary,
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -523,14 +506,15 @@ class _AttachPhotoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s8),
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(10),
+          borderRadius: .circular(radius.r10),
         ),
         child: Row(
           mainAxisSize: .min,

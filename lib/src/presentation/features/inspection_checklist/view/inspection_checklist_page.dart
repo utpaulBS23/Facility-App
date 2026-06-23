@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/checklist_entity.dart';
@@ -33,11 +33,11 @@ class _InspectionChecklistPageState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref
-          .read(inspectionChecklistProvider.notifier)
-          .loadChecklist(visitId: widget.detail.id),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onLoadChecklist());
+  }
+
+  void _onLoadChecklist() {
+    ref.read(inspectionChecklistProvider.notifier).loadChecklist(visitId: widget.detail.id);
   }
 
   Future<void> _onSubmit() async {
@@ -75,13 +75,11 @@ class _InspectionChecklistPageState
                       BodyRegularText(
                         checklistState.checklistError!,
                         color: context.color.text.secondary,
-                        textAlign: TextAlign.center,
+                        textAlign: .center,
                       ),
                       Gap(spacing.s16),
                       TextButton(
-                        onPressed: () => ref
-                            .read(inspectionChecklistProvider.notifier)
-                            .loadChecklist(visitId: widget.detail.id),
+                        onPressed: _onLoadChecklist,
                         child: Text(context.locale.retry),
                       ),
                     ],
@@ -97,7 +95,7 @@ class _InspectionChecklistPageState
   }
 }
 
-class _ChecklistBody extends ConsumerWidget {
+class _ChecklistBody extends StatelessWidget {
   const _ChecklistBody({
     required this.detail,
     required this.checklistState,
@@ -110,8 +108,10 @@ class _ChecklistBody extends ConsumerWidget {
   final VoidCallback onSubmit;
   final VoidCallback onNewIssue;
 
+  void _onCancel(BuildContext context) => context.pop();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checklist = checklistState.checklist!;
 
@@ -120,7 +120,7 @@ class _ChecklistBody extends ConsumerWidget {
       children: [
         Expanded(
           child: ListView(
-            padding: EdgeInsets.all(spacing.s16),
+            padding: .all(spacing.s16),
             children: [
               _InspectionFacilityCard(detail: detail),
               Gap(spacing.s16),
@@ -149,7 +149,7 @@ class _ChecklistBody extends ConsumerWidget {
         _InspectionBottomBar(
           state: checklistState,
           onSubmit: onSubmit,
-          onCancel: () => context.pop(),
+          onCancel: () => _onCancel(context),
         ),
       ],
     );

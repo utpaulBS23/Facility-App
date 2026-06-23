@@ -118,6 +118,7 @@
   "uploadFromGallery": "গ্যালারি থেকে আপলোড করুন",
   "cancel": "বাতিল",
   "submit": "জমা দিন",
+  "save": "সংরক্ষণ",
   "photoRequired": "অনুগ্রহ করে একটি ছবি যোগ করুন",
   "selectShift": "শিফট নির্বাচন করুন",
   "morning": "সকাল",
@@ -261,5 +262,6 @@
   "no": "না",
   "reported": "রিপোর্টেড",
   "photoAttached": "ছবি সংযুক্ত",
-  "attachPhoto": "ছবি যোগ করুন"
+  "attachPhoto": "ছবি যোগ করুন",
+  "visit": "ভিজিট"
 }

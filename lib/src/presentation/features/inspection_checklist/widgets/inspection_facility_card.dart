@@ -11,7 +11,7 @@ class _InspectionFacilityCard extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      padding: EdgeInsets.all(spacing.s16),
+      padding: .all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         borderRadius: .circular(radius.r6),

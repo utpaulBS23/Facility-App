@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/extensions/app_localization.dart';
 import '../theme/theme.dart';
 
 class HorizontalDatePicker extends StatefulWidget {
@@ -21,10 +22,10 @@ class HorizontalDatePicker extends StatefulWidget {
   final void Function(DateTime) onDateSelected;
 
   @override
-  HorizontalDatePickerState createState() => HorizontalDatePickerState();
+  _HorizontalDatePickerState createState() => _HorizontalDatePickerState();
 }
 
-class HorizontalDatePickerState extends State<HorizontalDatePicker> {
+class _HorizontalDatePickerState extends State<HorizontalDatePicker> {
   late final ScrollController _scrollController;
   late List<DateTime> _dateList;
   DateTime _selectedDate = DateTime.now();
@@ -72,12 +73,19 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
     super.dispose();
   }
 
+  void _onDateTap(DateTime date) {
+    setState(() => _selectedDate = date);
+    widget.onDateSelected(date);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
     return Container(
       color: context.color.background.white,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      height: 125,
+      padding: .symmetric(vertical: spacing.s10),
+      height: spacing.s120,
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -91,23 +99,20 @@ class HorizontalDatePickerState extends State<HorizontalDatePicker> {
                 return _HorizontalDatePickerItem(
                   date: date,
                   isSelected: date == _selectedDate,
-                  onTap: () {
-                    setState(() => _selectedDate = date);
-                    widget.onDateSelected(date);
-                  },
+                  onTap: () => _onDateTap(date),
                   onContextReady: (ctx) => _itemContexts[date] = ctx,
                 );
               },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 16),
+            padding: .only(left: spacing.s16),
             child: RichText(
               text: TextSpan(
                 children: [
                   if (DateUtils.isSameDay(_selectedDate, DateTime.now()))
                     TextSpan(
-                      text: 'Today, ',
+                      text: '${context.locale.today}, ',
                       style: context.textStyle.labelLarge.copyWith(
                         color: context.color.text.secondary,
                       ),
@@ -146,26 +151,41 @@ class _HorizontalDatePickerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     onContextReady(context);
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: .symmetric(horizontal: spacing.s10, vertical: spacing.s4),
         child: Column(
           mainAxisAlignment: .center,
           children: [
-            Text(DateFormat('E').format(date)),
-            const SizedBox(height: 5),
+            Text(
+              DateFormat('E').format(date),
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.text.secondary,
+              ),
+            ),
+            SizedBox(height: spacing.s4),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14.5, vertical: 10),
+              padding: .symmetric(horizontal: spacing.s14, vertical: spacing.s10),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: isSelected
                       ? context.color.primary
                       : context.color.onPrimary,
                 ),
-                borderRadius: .circular(10),
+                borderRadius: .circular(radius.r10),
               ),
-              child: Text(DateFormat('d').format(date)),
+              child: Text(
+                DateFormat('d').format(date),
+                style: context.textStyle.labelLarge.copyWith(
+                  color: isSelected
+                      ? context.color.primary
+                      : context.color.text.primary,
+                ),
+              ),
             ),
           ],
         ),

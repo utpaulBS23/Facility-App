@@ -28,7 +28,7 @@ class _IssueCard extends StatelessWidget {
                 height: 32,
                 decoration: BoxDecoration(
                   color: context.color.brandAccent,
-                  borderRadius: .circular(8),
+                  borderRadius: .circular(radius.r6),
                 ),
                 alignment: .center,
                 child: Icon(
@@ -74,7 +74,7 @@ class _IssueCard extends StatelessWidget {
                 height: 32,
                 decoration: BoxDecoration(
                   color: context.color.warningAlt,
-                  borderRadius: .circular(10),
+                  borderRadius: .circular(radius.r10),
                 ),
                 alignment: .center,
                 child: Icon(
@@ -124,7 +124,7 @@ class _CategoryChip extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: spacing.s8, vertical: 3),
+      padding: .symmetric(horizontal: spacing.s8, vertical: spacing.s4),
       decoration: BoxDecoration(
         color: context.color.background.surface,
         borderRadius: .circular(context.dimensions.radius.r4),

@@ -17,9 +17,7 @@ final class VisitRepositoryImpl extends VisitRepository {
   Future<Result<VisitListEntity, Failure>> getMyVisits({
     required int partnerId,
     required String date,
-  }) async {
-    return const Success(
-      data: VisitListEntity(
+  }) => asyncGuard(() async => const VisitListEntity(
         stats: VisitStatsSummaryEntity(
           todayCount: 4,
           weekCount: 18,
@@ -67,17 +65,13 @@ final class VisitRepositoryImpl extends VisitRepository {
             endTime: '18:00',
           ),
         ],
-      ),
-    );
-  }
+      ));
 
   @override
   Future<Result<VisitDetailEntity, Failure>> getVisitDetail({
     required int partnerId,
     required int visitId,
-  }) async {
-    return const Success(
-      data: VisitDetailEntity(
+  }) => asyncGuard(() async => const VisitDetailEntity(
         id: 1,
         facilityName: 'Dhaka Central Hospital',
         facilityAddress: '12 Motijheel C/A, Dhaka 1000',
@@ -93,26 +87,20 @@ final class VisitRepositoryImpl extends VisitRepository {
           name: 'Rahim Uddin',
           role: 'Supervisor',
         ),
-      ),
-    );
-  }
+      ));
 
   @override
   Future<Result<void, Failure>> checkInVisit({
     required int partnerId,
     required int visitId,
     required VisitCheckInRequestEntity request,
-  }) async {
-    return const Success();
-  }
+  }) => asyncGuard(() async {});
 
   @override
   Future<Result<ChecklistEntity, Failure>> getChecklist({
     required int partnerId,
     required int visitId,
-  }) async {
-    return const Success(
-      data: ChecklistEntity(
+  }) => asyncGuard(() async => const ChecklistEntity(
         maxScore: 80,
         items: [
           ChecklistItemEntity(
@@ -159,29 +147,21 @@ final class VisitRepositoryImpl extends VisitRepository {
             priority: 'medium',
           ),
         ],
-      ),
-    );
-  }
+      ));
 
   @override
   Future<Result<void, Failure>> submitChecklist({
     required int partnerId,
     required int visitId,
     required ChecklistSubmitRequestEntity request,
-  }) async {
-    return const Success();
-  }
+  }) => asyncGuard(() async {});
 
   @override
   Future<Result<ReportIssueResponseEntity, Failure>> reportIssue({
     required int partnerId,
     required ReportIssueRequestEntity request,
-  }) async {
-    return const Success(
-      data: ReportIssueResponseEntity(
+  }) => asyncGuard(() async => const ReportIssueResponseEntity(
         id: 999,
         message: 'Issue reported successfully.',
-      ),
-    );
-  }
+      ));
 }

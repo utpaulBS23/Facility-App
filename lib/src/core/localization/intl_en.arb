@@ -118,6 +118,7 @@
   "uploadFromGallery": "Upload from Gallery",
   "cancel": "Cancel",
   "submit": "Submit",
+  "save": "Save",
   "photoRequired": "Please add a photo",
   "selectShift": "Select Shift",
   "morning": "Morning",
@@ -261,5 +262,6 @@
   "no": "No",
   "reported": "Reported",
   "photoAttached": "Photo attached",
-  "attachPhoto": "Attach photo"
+  "attachPhoto": "Attach photo",
+  "visit": "Visit"
 }

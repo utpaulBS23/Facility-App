@@ -32,6 +32,7 @@ class Dimensions extends ThemeExtension<Dimensions> {
   static const double _v80 = 80;
   static const double _v96 = 96;
   static const double _v100 = 100;
+  static const double _v120 = 120;
   static const double _v180 = 180;
   static const double _v200 = 200;
   static const double _v210 = 210;
@@ -82,6 +83,7 @@ class _Spacing {
   final double s80 = Dimensions._v80;
   final double s96 = Dimensions._v96;
   final double s100 = Dimensions._v100;
+  final double s120 = Dimensions._v120;
   final double s180 = Dimensions._v180;
   final double s200 = Dimensions._v200;
   final double s210 = Dimensions._v210;

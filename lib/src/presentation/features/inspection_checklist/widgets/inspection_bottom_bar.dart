@@ -26,7 +26,7 @@ class _InspectionBottomBar extends StatelessWidget {
           _ScoreRow(state: state),
           if (!state.isComplete) _WarningBanner(),
           Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: .fromLTRB(
               spacing.s16,
               spacing.s12,
               spacing.s16,
@@ -84,7 +84,7 @@ class _ScoreRow extends StatelessWidget {
     final score = state.currentScore;
 
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: .symmetric(
         horizontal: spacing.s16,
         vertical: spacing.s12,
       ),
@@ -125,7 +125,7 @@ class _WarningBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: context.color.warning.withValues(alpha: 0.1),
-      padding: EdgeInsets.symmetric(
+      padding: .symmetric(
         horizontal: spacing.s16,
         vertical: spacing.s8,
       ),
