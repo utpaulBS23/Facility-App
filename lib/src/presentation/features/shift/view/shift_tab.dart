@@ -11,12 +11,11 @@ import '../../../../domain/entities/user_role.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_list_provider.dart';
 import '../../../core/utils/date_formatter.dart';
 
-part '../widgets/horizontal_date_picker.dart';
-part '../widgets/horizontal_date_picker_item.dart';
 part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_card.dart';
 part '../widgets/shift_card_helpers.dart';

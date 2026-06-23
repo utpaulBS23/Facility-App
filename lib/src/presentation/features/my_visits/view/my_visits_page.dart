@@ -8,10 +8,10 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/my_visits_provider.dart';
 
-part '../widgets/visit_calendar_strip.dart';
 part '../widgets/visit_card.dart';
 part '../widgets/visit_empty_state.dart';
 part '../widgets/visit_stats_tabs.dart';
@@ -81,10 +81,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
       body: Column(
         crossAxisAlignment: .stretch,
         children: [
-          _VisitCalendarStrip(
-            selectedDate: _selectedDate,
-            onDateSelected: _onDateChanged,
-          ),
+          HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
           visitState.when(
             loading: () => const SizedBox.shrink(),
             error: (e, s) => const SizedBox.shrink(),
