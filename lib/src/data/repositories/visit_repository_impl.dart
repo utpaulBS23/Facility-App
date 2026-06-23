@@ -45,8 +45,8 @@ final class VisitRepositoryImpl extends VisitRepository {
           partnerId: partnerId,
           visitId: visitId,
           request: {
-            'latitude': request.latitude,
-            'longitude': request.longitude,
+            'lat': request.latitude,
+            'lng': request.longitude,
           },
         );
       });
