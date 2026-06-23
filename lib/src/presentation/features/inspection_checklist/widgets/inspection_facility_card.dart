@@ -41,23 +41,25 @@ class _InspectionFacilityCard extends StatelessWidget {
                   detail.facilityName,
                   color: context.color.text.primary,
                 ),
-                SizedBox(height: spacing.s4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      size: 14,
-                      color: context.color.text.secondary,
-                    ),
-                    SizedBox(width: spacing.s4),
-                    Expanded(
-                      child: BodySmallText(
-                        detail.facilityAddress ?? '',
+                if (detail.facilityAddress?.isNotEmpty == true) ...[
+                  SizedBox(height: spacing.s4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_outlined,
+                        size: 14,
                         color: context.color.text.secondary,
                       ),
-                    ),
-                  ],
-                ),
+                      SizedBox(width: spacing.s4),
+                      Expanded(
+                        child: BodySmallText(
+                          detail.facilityAddress!,
+                          color: context.color.text.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

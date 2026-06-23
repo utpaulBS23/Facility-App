@@ -42,11 +42,13 @@ class _VisitDetailInfoCard extends StatelessWidget {
           ),
           Gap(spacing.s12),
           Headline2xlTinyText(detail.facilityName),
-          Gap(spacing.s8),
-          _InfoRow(
-            icon: Icons.location_on_outlined,
-            label: detail.facilityAddress ?? '',
-          ),
+          if (detail.facilityAddress?.isNotEmpty == true) ...[
+            Gap(spacing.s8),
+            _InfoRow(
+              icon: Icons.location_on_outlined,
+              label: detail.facilityAddress!,
+            ),
+          ],
           Gap(spacing.s12),
           Row(
             children: [

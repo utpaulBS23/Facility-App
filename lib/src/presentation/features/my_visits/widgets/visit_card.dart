@@ -65,11 +65,13 @@ class _VisitCard extends StatelessWidget {
                 color: context.color.text.primary,
               ),
             ),
-            Gap(spacing.s6),
-            _InfoRow(
-              icon: Icons.location_on_outlined,
-              label: visit.facilityAddress ?? '',
-            ),
+            if (visit.facilityAddress?.isNotEmpty == true) ...[
+              Gap(spacing.s6),
+              _InfoRow(
+                icon: Icons.location_on_outlined,
+                label: visit.facilityAddress!,
+              ),
+            ],
             Gap(spacing.s6),
             _InfoRow(icon: Icons.access_time_outlined, label: timeRange),
           ],

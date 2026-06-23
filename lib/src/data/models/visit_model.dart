@@ -115,8 +115,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         status: _parseStatus(status),
         type: _parseVisitType(visitType),
         date: scheduledDate,
-        scheduledStartTime: scheduledStartTime,
-        scheduledEndTime: scheduledEndTime,
+        scheduledStartTime: _trimTime(scheduledStartTime),
+        scheduledEndTime: _trimTime(scheduledEndTime),
       );
 }
 
@@ -213,8 +213,8 @@ class VisitDetailModel with VisitDetailModelMappable {
         status: _parseStatus(status),
         type: _parseVisitType(visitType),
         date: scheduledDate,
-        scheduledStartTime: scheduledStartTime,
-        scheduledEndTime: scheduledEndTime,
+        scheduledStartTime: _trimTime(scheduledStartTime),
+        scheduledEndTime: _trimTime(scheduledEndTime),
         assignedBy: createdByName != null
             ? VisitAssignedByEntity(
                 name: createdByName!,
@@ -223,6 +223,9 @@ class VisitDetailModel with VisitDetailModelMappable {
             : null,
       );
 }
+
+// WHY: API returns "HH:mm:ss"; drop seconds for display.
+String _trimTime(String t) => t.length >= 5 ? t.substring(0, 5) : t;
 
 VisitStatus _parseStatus(String raw) => switch (raw) {
       'in_progress' => VisitStatus.inProgress,
