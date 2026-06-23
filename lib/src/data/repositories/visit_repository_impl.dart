@@ -52,6 +52,20 @@ final class VisitRepositoryImpl extends VisitRepository {
       });
 
   @override
+  Future<Result<VisitCheckInCaptureEntity, Failure>> captureCheckIn({
+    required int partnerId,
+    required int visitId,
+    required VisitCheckInRequestEntity request,
+  }) => asyncGuard(() async {
+        final response = await _client.captureCheckIn(
+          partnerId: partnerId,
+          visitId: visitId,
+          request: {'lat': request.latitude, 'lng': request.longitude},
+        );
+        return VisitCheckInCaptureResponseModel.fromJson(response.data).toEntity();
+      });
+
+  @override
   Future<Result<ChecklistEntity, Failure>> getChecklist({
     required int partnerId,
     required int visitId,

@@ -113,3 +113,21 @@ class VisitCheckInRequestEntity {
   final double latitude;
   final double longitude;
 }
+
+class VisitCheckInCaptureEntity {
+  const VisitCheckInCaptureEntity({
+    required this.distanceMeters,
+    required this.locationVerified,
+    required this.facilityLat,
+    required this.facilityLng,
+    required this.yourLat,
+    required this.yourLng,
+  });
+
+  final int distanceMeters;
+  final bool locationVerified;
+  final double facilityLat;
+  final double facilityLng;
+  final double yourLat;
+  final double yourLng;
+}

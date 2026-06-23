@@ -1,14 +1,14 @@
-part of '../view/visit_check_in_page.dart';
+part of '../view/visit_detail_page.dart';
 
 class _VisitCheckInLocationCard extends StatelessWidget {
   const _VisitCheckInLocationCard({
-    required this.detail,
     required this.state,
+    required this.captureResult,
     required this.onRetry,
   });
 
-  final VisitDetailEntity detail;
   final VisitCheckInState state;
+  final VisitCheckInCaptureEntity captureResult;
   final VoidCallback onRetry;
 
   @override
@@ -41,116 +41,57 @@ class _VisitCheckInLocationCard extends StatelessWidget {
             ],
           ),
           Gap(spacing.s16),
-          _LocationContent(detail: detail, state: state, onRetry: onRetry),
+          Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: context.color.successAlt,
+                      shape: .circle,
+                    ),
+                    child: Icon(
+                      Icons.check,
+                      size: 28,
+                      color: context.color.success,
+                    ),
+                  ),
+                  Gap(spacing.s20),
+                  LabelLargeText(context.locale.locationVerified),
+                  Gap(spacing.s6),
+                  BodyRegularText(
+                    context.locale.withinRange,
+                    color: context.color.text.secondary,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              Gap(spacing.s20),
+              _CoordinatesBox(captureResult: captureResult),
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
-class _LocationContent extends StatelessWidget {
-  const _LocationContent({
-    required this.detail,
-    required this.state,
-    required this.onRetry,
-  });
-
-  final VisitDetailEntity detail;
-  final VisitCheckInState state;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    if (state.isLoadingLocation) {
-      return Column(
-        children: [
-          const CircularProgressIndicator.adaptive(),
-          Gap(context.dimensions.spacing.s12),
-          BodyRegularText(
-            context.locale.gettingLocation,
-            color: context.color.text.secondary,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-    }
-
-    if (state.locationError != null) {
-      return Column(
-        children: [
-          Icon(Icons.location_off_outlined, size: 40, color: context.color.error),
-          Gap(context.dimensions.spacing.s8),
-          BodyRegularText(
-            state.locationError == 'permission_denied'
-                ? context.locale.locationPermissionDenied
-                : context.locale.locationUnavailable,
-            color: context.color.text.secondary,
-            textAlign: TextAlign.center,
-          ),
-          Gap(context.dimensions.spacing.s12),
-          TextButton(onPressed: onRetry, child: Text(context.locale.retry)),
-        ],
-      );
-    }
-
-    final pos = state.position!;
-    final userLatLng =
-        '${pos.latitude.toStringAsFixed(6)}, ${pos.longitude.toStringAsFixed(6)}';
-    final facilityLatLng = detail.facilityLatitude != null &&
-            detail.facilityLongitude != null
-        ? '${detail.facilityLatitude!.toStringAsFixed(6)}, ${detail.facilityLongitude!.toStringAsFixed(6)}'
-        : '—';
-
-    return Column(
-      crossAxisAlignment: .stretch,
-      children: [
-        Column(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: context.color.successAlt,
-                shape: .circle,
-              ),
-              child: Icon(
-                Icons.check,
-                size: 28,
-                color: context.color.success,
-              ),
-            ),
-            Gap(context.dimensions.spacing.s20),
-            LabelLargeText(context.locale.locationVerified),
-            Gap(context.dimensions.spacing.s6),
-            BodyRegularText(
-              context.locale.withinRange,
-              color: context.color.text.secondary,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        Gap(context.dimensions.spacing.s20),
-        _CoordinatesBox(
-          userLatLng: userLatLng,
-          facilityLatLng: facilityLatLng,
-        ),
-      ],
-    );
-  }
-}
-
 class _CoordinatesBox extends StatelessWidget {
-  const _CoordinatesBox({
-    required this.userLatLng,
-    required this.facilityLatLng,
-  });
+  const _CoordinatesBox({required this.captureResult});
 
-  final String userLatLng;
-  final String facilityLatLng;
+  final VisitCheckInCaptureEntity captureResult;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+
+    final yourLatLng =
+        '${captureResult.yourLat.toStringAsFixed(6)}, ${captureResult.yourLng.toStringAsFixed(6)}';
+    final facilityLatLng =
+        '${captureResult.facilityLat.toStringAsFixed(6)}, ${captureResult.facilityLng.toStringAsFixed(6)}';
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -162,7 +103,7 @@ class _CoordinatesBox extends StatelessWidget {
         children: [
           _CoordRow(
             label: context.locale.yourPosition,
-            value: userLatLng,
+            value: yourLatLng,
           ),
           Gap(spacing.s8),
           _CoordRow(
@@ -184,7 +125,7 @@ class _CoordinatesBox extends StatelessWidget {
                 ),
               ),
               Text(
-                '—',
+                '${captureResult.distanceMeters}m away',
                 style: context.textStyle.labelLarge.copyWith(
                   color: context.color.success,
                 ),

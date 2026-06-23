@@ -11,11 +11,11 @@ List<GoRoute> _myVisitsRoutes(Ref ref) {
       },
     ),
     GoRoute(
-      path: Routes.visitCheckIn,
-      name: Routes.visitCheckIn,
+      path: Routes.inspectionChecklist,
+      name: Routes.inspectionChecklist,
       pageBuilder: (context, state) {
         final detail = state.extra as VisitDetailEntity;
-        return MaterialPage(child: VisitCheckInPage(detail: detail));
+        return MaterialPage(child: InspectionChecklistPage(detail: detail));
       },
     ),
   ];

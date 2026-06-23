@@ -54,6 +54,8 @@ class Endpoints {
   static const String visitDetail = '/partners/{partnerId}/visits/{visitId}';
   static const String visitCheckIn =
       '/partners/{partnerId}/visits/{visitId}/check-in';
+  static const String visitCheckInCapture =
+      '/partners/{partnerId}/visits/{visitId}/check-in/capture';
   static const String visitChecklist =
       '/partners/{partnerId}/visits/{visitId}/checklist';
   static const String visitChecklistSubmit =

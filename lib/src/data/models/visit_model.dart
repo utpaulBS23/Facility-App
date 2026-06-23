@@ -224,6 +224,58 @@ class VisitDetailModel with VisitDetailModelMappable {
       );
 }
 
+@MappableClass(generateMethods: GenerateMethods.decode)
+class VisitCheckInCaptureResponseModel with VisitCheckInCaptureResponseModelMappable {
+  VisitCheckInCaptureResponseModel({required this.data});
+
+  final VisitCheckInCaptureDataModel data;
+
+  static const fromJson = VisitCheckInCaptureResponseModelMapper.fromJson;
+
+  VisitCheckInCaptureEntity toEntity() => data.toEntity();
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class VisitCheckInCaptureDataModel with VisitCheckInCaptureDataModelMappable {
+  VisitCheckInCaptureDataModel({
+    required this.distanceMeters,
+    required this.locationVerified,
+    required this.facilityLat,
+    required this.facilityLng,
+    required this.yourLat,
+    required this.yourLng,
+  });
+
+  @MappableField(key: 'distance_meters')
+  final int distanceMeters;
+
+  @MappableField(key: 'location_verified')
+  final bool locationVerified;
+
+  @MappableField(key: 'facility_lat')
+  final double facilityLat;
+
+  @MappableField(key: 'facility_lng')
+  final double facilityLng;
+
+  @MappableField(key: 'your_lat')
+  final double yourLat;
+
+  @MappableField(key: 'your_lng')
+  final double yourLng;
+
+  static const fromJson = VisitCheckInCaptureDataModelMapper.fromJson;
+
+  VisitCheckInCaptureEntity toEntity() => VisitCheckInCaptureEntity(
+        distanceMeters: distanceMeters,
+        locationVerified: locationVerified,
+        facilityLat: facilityLat,
+        facilityLng: facilityLng,
+        yourLat: yourLat,
+        yourLng: yourLng,
+      );
+}
+
 // WHY: API returns "HH:mm:ss"; drop seconds for display.
 String _trimTime(String t) => t.length >= 5 ? t.substring(0, 5) : t;
 

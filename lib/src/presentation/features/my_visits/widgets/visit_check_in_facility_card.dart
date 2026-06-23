@@ -1,4 +1,4 @@
-part of '../view/visit_check_in_page.dart';
+part of '../view/visit_detail_page.dart';
 
 class _VisitCheckInFacilityCard extends StatelessWidget {
   const _VisitCheckInFacilityCard({required this.detail});

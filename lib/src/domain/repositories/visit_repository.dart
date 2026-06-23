@@ -20,6 +20,12 @@ abstract base class VisitRepository extends Repository {
     required VisitCheckInRequestEntity request,
   });
 
+  Future<Result<VisitCheckInCaptureEntity, Failure>> captureCheckIn({
+    required int partnerId,
+    required int visitId,
+    required VisitCheckInRequestEntity request,
+  });
+
   Future<Result<ChecklistEntity, Failure>> getChecklist({
     required int partnerId,
     required int visitId,

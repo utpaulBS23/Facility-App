@@ -12,6 +12,9 @@ class VisitCheckInState {
     this.position,
     this.locationError,
     this.isLoadingLocation = false,
+    this.captureResult,
+    this.isCapturing = false,
+    this.captureError,
     this.isCheckingIn = false,
     this.checkInError,
     this.checkInSuccess = false,
@@ -20,20 +23,29 @@ class VisitCheckInState {
   final Position? position;
   final String? locationError;
   final bool isLoadingLocation;
+  final VisitCheckInCaptureEntity? captureResult;
+  final bool isCapturing;
+  final String? captureError;
   final bool isCheckingIn;
   final String? checkInError;
   final bool checkInSuccess;
 
   bool get hasLocation => position != null;
+  bool get hasCaptureResult => captureResult != null;
+  bool get isBusy => isLoadingLocation || isCapturing || isCheckingIn;
 
   VisitCheckInState copyWith({
     Position? position,
     String? locationError,
     bool? isLoadingLocation,
+    VisitCheckInCaptureEntity? captureResult,
+    bool? isCapturing,
+    String? captureError,
     bool? isCheckingIn,
     String? checkInError,
     bool? checkInSuccess,
     bool clearLocationError = false,
+    bool clearCaptureError = false,
     bool clearCheckInError = false,
   }) {
     return VisitCheckInState(
@@ -41,6 +53,10 @@ class VisitCheckInState {
       locationError:
           clearLocationError ? null : (locationError ?? this.locationError),
       isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
+      captureResult: captureResult ?? this.captureResult,
+      isCapturing: isCapturing ?? this.isCapturing,
+      captureError:
+          clearCaptureError ? null : (captureError ?? this.captureError),
       isCheckingIn: isCheckingIn ?? this.isCheckingIn,
       checkInError:
           clearCheckInError ? null : (checkInError ?? this.checkInError),
@@ -52,10 +68,9 @@ class VisitCheckInState {
 @riverpod
 class VisitCheckIn extends _$VisitCheckIn {
   @override
-  VisitCheckInState build() =>
-      const VisitCheckInState(isLoadingLocation: true);
+  VisitCheckInState build() => const VisitCheckInState();
 
-  Future<void> getLocation() async {
+  Future<void> _fetchLocation() async {
     state = state.copyWith(isLoadingLocation: true, clearLocationError: true);
 
     var permission = await Geolocator.checkPermission();
@@ -85,6 +100,39 @@ class VisitCheckIn extends _$VisitCheckIn {
         locationError: e.toString(),
       );
     }
+  }
+
+  Future<void> captureCheckIn({required int visitId}) async {
+    await _fetchLocation();
+
+    final pos = state.position;
+    if (pos == null) return;
+
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final partnerId = user?.partnerId;
+    if (partnerId == null) return;
+
+    state = state.copyWith(isCapturing: true, clearCaptureError: true);
+
+    final result = await ref.read(captureCheckInUseCaseProvider).call(
+          partnerId: partnerId,
+          visitId: visitId,
+          request: VisitCheckInRequestEntity(
+            latitude: pos.latitude,
+            longitude: pos.longitude,
+          ),
+        );
+
+    state = result.when(
+      success: (data) =>
+          state.copyWith(isCapturing: false, captureResult: data),
+      error: (err) => state.copyWith(isCapturing: false, captureError: err),
+    );
+  }
+
+  Future<void> retryCapture({required int visitId}) async {
+    state = const VisitCheckInState();
+    await captureCheckIn(visitId: visitId);
   }
 
   Future<void> confirmCheckIn({required int visitId}) async {
