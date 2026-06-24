@@ -26,6 +26,7 @@ Dio dio(Ref ref) {
   ]);
 
   dio.options.headers['Content-Type'] = 'application/json';
+  dio.options.headers['Accept'] = 'application/json';
 
   return dio;
 }

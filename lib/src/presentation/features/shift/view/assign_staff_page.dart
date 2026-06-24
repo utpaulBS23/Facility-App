@@ -32,10 +32,9 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
   }
 
   void _onAssignAttendant(int attendantId) {
-    ref.read(assignmentProvider.notifier).assign(
-      shift: widget.shift,
-      attendantId: attendantId,
-    );
+    ref
+        .read(assignmentProvider.notifier)
+        .assign(shift: widget.shift, attendantId: attendantId);
   }
 
   @override
@@ -47,9 +46,9 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
         );
         context.pop();
       } else if (next is AsyncError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.error.toString())));
       }
     });
 
@@ -87,47 +86,49 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
       body: SafeArea(
         top: false,
         child: attendantsState.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-        error: (err, _) => Center(
-          child: Text(
-            err.toString(),
-            style: context.textStyle.bodyMedium.copyWith(
-              color: context.color.text.secondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        data: (attendants) {
-          if (attendants.isEmpty) {
-            return Center(
-              child: Text(
-                context.locale.noAttendantsFound,
-                style: context.textStyle.bodyMedium.copyWith(
-                  color: context.color.text.secondary,
-                ),
-                textAlign: TextAlign.center,
+          loading: () =>
+              const Center(child: CircularProgressIndicator.adaptive()),
+          error: (err, _) => Center(
+            child: Text(
+              err.toString(),
+              style: context.textStyle.bodyMedium.copyWith(
+                color: context.color.text.secondary,
               ),
-            );
-          }
-          final assignedIds =
-              widget.shift.attendants.map((a) => a.id).toSet();
-          return ListView.separated(
-            padding: EdgeInsets.all(spacing.s16),
-            itemCount: attendants.length,
-            separatorBuilder: (context, index) => Gap(spacing.s12),
-            itemBuilder: (context, index) {
-              final attendant = attendants[index];
-              final isSelected = assignedIds.contains(attendant.id);
-              return _AttendantTile(
-                attendant: attendant,
-                isSelected: isSelected,
-                onAssign: isAssigning || isSelected
-                    ? null
-                    : () => _onAssignAttendant(attendant.id),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          data: (attendants) {
+            if (attendants.isEmpty) {
+              return Center(
+                child: Text(
+                  context.locale.noAttendantsFound,
+                  style: context.textStyle.bodyMedium.copyWith(
+                    color: context.color.text.secondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               );
-            },
-          );
-        },
+            }
+            final assignedIds = widget.shift.attendants
+                .map((a) => a.id)
+                .toSet();
+            return ListView.separated(
+              padding: EdgeInsets.all(spacing.s16),
+              itemCount: attendants.length,
+              separatorBuilder: (context, index) => Gap(spacing.s12),
+              itemBuilder: (context, index) {
+                final attendant = attendants[index];
+                final isSelected = assignedIds.contains(attendant.id);
+                return _AttendantTile(
+                  attendant: attendant,
+                  isSelected: isSelected,
+                  onAssign: isAssigning || isSelected
+                      ? null
+                      : () => _onAssignAttendant(attendant.id),
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -155,7 +156,9 @@ class _AttendantTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(spacing.s16),
         decoration: BoxDecoration(
-          color: isSelected ? context.color.brandAccent : context.color.onPrimary,
+          color: isSelected
+              ? context.color.brandAccent
+              : context.color.onPrimary,
           border: Border.all(
             color: isSelected
                 ? context.color.primary
@@ -171,9 +174,7 @@ class _AttendantTile extends StatelessWidget {
                   ? context.color.primary
                   : context.color.brandAccent,
               child: Icon(
-                isSelected
-                    ? Icons.check_rounded
-                    : Icons.person_outline_rounded,
+                isSelected ? Icons.check_rounded : Icons.person_outline_rounded,
                 color: isSelected
                     ? context.color.onPrimary
                     : context.color.text.primary,
@@ -210,8 +211,8 @@ class _AttendantTile extends StatelessWidget {
                 color: isSelected
                     ? context.color.primary
                     : attendant.assignment.isActive
-                        ? context.color.successAlt
-                        : context.color.warningAlt,
+                    ? context.color.successAlt
+                    : context.color.warningAlt,
                 borderRadius: BorderRadius.circular(radius.r4),
               ),
               child: Text(
@@ -222,8 +223,8 @@ class _AttendantTile extends StatelessWidget {
                   color: isSelected
                       ? context.color.onPrimary
                       : attendant.assignment.isActive
-                          ? context.color.success
-                          : context.color.warning,
+                      ? context.color.success
+                      : context.color.warning,
                 ),
               ),
             ),

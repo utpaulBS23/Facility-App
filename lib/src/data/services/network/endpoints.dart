@@ -3,7 +3,7 @@ class Endpoints {
 
   static const baseDev = 'http://3.108.132.91/api/backend';
   static const baseLocal =
-      'https://stats-robert-plastics-storm.trycloudflare.com/api/backend';
+      'https://outputs-democrats-bag-cats.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';
