@@ -136,8 +136,10 @@ class VisitCheckIn extends _$VisitCheckIn {
   }
 
   Future<void> confirmCheckIn({required int visitId}) async {
-    final pos = state.position;
-    if (pos == null) return;
+    // WHY: use coords already validated by server during capture, not raw GPS
+    // which may return (0.0, 0.0) on emulators without mock location set.
+    final capture = state.captureResult;
+    if (capture == null) return;
 
     final user = ref.read(getCurrentUserUseCaseProvider).call();
     final partnerId = user?.partnerId;
@@ -151,8 +153,8 @@ class VisitCheckIn extends _$VisitCheckIn {
           partnerId: partnerId,
           visitId: visitId,
           request: VisitCheckInRequestEntity(
-            latitude: pos.latitude,
-            longitude: pos.longitude,
+            latitude: capture.yourLat,
+            longitude: capture.yourLng,
           ),
         );
 
