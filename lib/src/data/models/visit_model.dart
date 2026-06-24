@@ -139,8 +139,8 @@ class VisitDetailModel with VisitDetailModelMappable {
     required this.status,
     this.visitType,
     required this.scheduledDate,
-    required this.scheduledStartTime,
-    required this.scheduledEndTime,
+    this.scheduledStartTime,
+    this.scheduledEndTime,
     this.createdByName,
     this.createdByRole,
     this.locationVerified,
@@ -168,10 +168,10 @@ class VisitDetailModel with VisitDetailModelMappable {
   final String scheduledDate;
 
   @MappableField(key: 'scheduled_start_time')
-  final String scheduledStartTime;
+  final String? scheduledStartTime;
 
   @MappableField(key: 'scheduled_end_time')
-  final String scheduledEndTime;
+  final String? scheduledEndTime;
 
   @MappableField(key: 'created_by_name')
   final String? createdByName;
@@ -213,8 +213,8 @@ class VisitDetailModel with VisitDetailModelMappable {
         status: _parseStatus(status),
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
-        scheduledStartTime: _trimTime(scheduledStartTime),
-        scheduledEndTime: _trimTime(scheduledEndTime),
+        scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
+        scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
         assignedBy: createdByName != null
             ? VisitAssignedByEntity(
                 name: createdByName!,
