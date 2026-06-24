@@ -53,8 +53,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     required this.status,
     this.visitType,
     required this.scheduledDate,
-    required this.scheduledStartTime,
-    required this.scheduledEndTime,
+    this.scheduledStartTime,
+    this.scheduledEndTime,
     this.locationVerified,
     this.checkInAt,
     this.totalScore,
@@ -79,10 +79,10 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   final String scheduledDate;
 
   @MappableField(key: 'scheduled_start_time')
-  final String scheduledStartTime;
+  final String? scheduledStartTime;
 
   @MappableField(key: 'scheduled_end_time')
-  final String scheduledEndTime;
+  final String? scheduledEndTime;
 
   @MappableField(key: 'location_verified')
   final bool? locationVerified;
@@ -115,8 +115,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         status: _parseStatus(status),
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
-        scheduledStartTime: _trimTime(scheduledStartTime),
-        scheduledEndTime: _trimTime(scheduledEndTime),
+        scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
+        scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
       );
 }
 
