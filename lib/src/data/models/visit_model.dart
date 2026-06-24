@@ -51,7 +51,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     required this.id,
     required this.facilityName,
     required this.status,
-    required this.visitType,
+    this.visitType,
     required this.scheduledDate,
     required this.scheduledStartTime,
     required this.scheduledEndTime,
@@ -73,7 +73,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   final String status;
 
   @MappableField(key: 'visit_type')
-  final String visitType;
+  final String? visitType;
 
   @MappableField(key: 'scheduled_date')
   final String scheduledDate;
@@ -113,7 +113,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         id: id,
         facilityName: facilityName,
         status: _parseStatus(status),
-        type: _parseVisitType(visitType),
+        type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime),
         scheduledEndTime: _trimTime(scheduledEndTime),
@@ -137,7 +137,7 @@ class VisitDetailModel with VisitDetailModelMappable {
     required this.id,
     required this.facilityName,
     required this.status,
-    required this.visitType,
+    this.visitType,
     required this.scheduledDate,
     required this.scheduledStartTime,
     required this.scheduledEndTime,
@@ -162,7 +162,7 @@ class VisitDetailModel with VisitDetailModelMappable {
   final String status;
 
   @MappableField(key: 'visit_type')
-  final String visitType;
+  final String? visitType;
 
   @MappableField(key: 'scheduled_date')
   final String scheduledDate;
@@ -211,7 +211,7 @@ class VisitDetailModel with VisitDetailModelMappable {
         id: id,
         facilityName: facilityName,
         status: _parseStatus(status),
-        type: _parseVisitType(visitType),
+        type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime),
         scheduledEndTime: _trimTime(scheduledEndTime),
