@@ -264,5 +264,17 @@
   "reported": "রিপোর্টেড",
   "photoAttached": "ছবি সংযুক্ত",
   "attachPhoto": "ছবি যোগ করুন",
-  "visit": "ভিজিট"
+  "visit": "ভিজিট",
+  "view": "দেখুন",
+  "start": "শুরু করুন",
+  "taskDetails": "কাজের বিবরণ",
+  "startTask": "কাজ শুরু করুন",
+  "noTasksFound": "কোনো কাজ পাওয়া যায়নি।",
+  "high": "উচ্চ",
+  "medium": "মাঝারি",
+  "low": "কম",
+  "due": "সময়সীমা",
+  "gallery": "গ্যালারি",
+  "proofRequired": "প্রমাণ প্রয়োজন",
+  "proofRequiredSubtitle": "কাজ সম্পন্নের প্রমাণ হিসেবে একটি ছবি তুলুন বা আপলোড করুন।"
 }

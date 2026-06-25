@@ -31,8 +31,8 @@ StatefulShellRoute _shellRoutes(Ref ref) {
       StatefulShellBranch(
         routes: [
           GoRoute(
-            path: Routes.task,
-            name: Routes.task,
+            path: Routes.myVisits,
+            name: Routes.myVisits,
             pageBuilder: (context, state) {
               return const MaterialPage(child: MyVisitsPage());
             },
@@ -42,11 +42,12 @@ StatefulShellRoute _shellRoutes(Ref ref) {
       StatefulShellBranch(
         routes: [
           GoRoute(
-            path: Routes.issue,
-            name: Routes.issue,
+            path: Routes.task,
+            name: Routes.task,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: IssuesPage());
+              return const MaterialPage(child: TaskPage());
             },
+            routes: _taskRoutes(ref),
           ),
         ],
       ),

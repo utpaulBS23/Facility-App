@@ -1,0 +1,69 @@
+schema_version: "1.0"
+project: facility-management-app
+stack: flutter
+
+memory_bank:
+  standards:
+    path: memory-bank/standards/
+    files:
+      - coding-standards.md     # Code style, patterns, Dart conventions
+      - architecture.md         # Clean Architecture layer rules
+      - naming-conventions.md   # File, class, method naming rules
+      - feature-checklist.md    # Pre-ship checklist for every feature
+
+  decisions:
+    path: memory-bank/decisions/
+    format: "ADR-NNNN-<title>.md"
+    fields: [date, status, context, decision, consequences]
+
+  context:
+    path: memory-bank/context/
+    files:
+      - project-overview.md     # App purpose, target users, tech stack
+      - features-map.md         # Existing features and their status
+
+  specs:
+    path: specs/
+    format: "<ticket>-<feature-slug>.md"
+    sections:
+      - user_story
+      - acceptance_criteria
+      - bolts                   # Ordered implementation units
+      - status                  # draft | in_progress | done
+
+phases:
+  inception:
+    agent: inception-agent
+    outputs: [specs/*.md]
+    entry_skill: create-story
+
+  construction:
+    agent: construction-agent
+    inputs: [specs/*.md]
+    bolt_stages: [model, test, implement]
+    entry_skill: execute-bolt
+
+  operations:
+    agent: operations-agent
+    entry_skill: build-verify
+
+bolt_stages:
+  model:
+    description: "Domain entities + data models + mappers"
+    layers: [domain/entities, domain/repositories, domain/use_cases, data/models, data/mapper]
+    commands:
+      - flutter pub run build_runner build --delete-conflicting-outputs
+
+  test:
+    description: "Unit tests for use cases and repository"
+    layers: [test/]
+    commands:
+      - flutter test
+
+  implement:
+    description: "Presentation layer + DI + routing"
+    layers: [data/repositories, presentation/features, core/di, core/router]
+    commands:
+      - flutter pub run build_runner build --delete-conflicting-outputs
+      - flutter gen-l10n
+      - flutter analyze

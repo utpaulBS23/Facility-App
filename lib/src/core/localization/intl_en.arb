@@ -264,5 +264,17 @@
   "reported": "Reported",
   "photoAttached": "Photo attached",
   "attachPhoto": "Attach photo",
-  "visit": "Visit"
+  "visit": "Visit",
+  "view": "View",
+  "start": "Start",
+  "taskDetails": "Task Details",
+  "startTask": "Start Task",
+  "noTasksFound": "No tasks found.",
+  "high": "High",
+  "medium": "Medium",
+  "low": "Low",
+  "due": "Due",
+  "gallery": "Gallery",
+  "proofRequired": "Proof Required",
+  "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion."
 }

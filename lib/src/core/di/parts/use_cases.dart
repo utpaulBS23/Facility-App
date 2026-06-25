@@ -134,6 +134,16 @@ WithdrawAttendanceUseCase withdrawAttendanceUseCase(Ref ref) {
 }
 
 @riverpod
+GetTasksUseCase getTasksUseCase(Ref ref) {
+  return GetTasksUseCase(ref.read(taskRepositoryProvider));
+}
+
+@riverpod
+GetTaskDetailUseCase getTaskDetailUseCase(Ref ref) {
+  return GetTaskDetailUseCase(ref.read(taskRepositoryProvider));
+}
+
+@riverpod
 GetMyVisitsUseCase getMyVisitsUseCase(Ref ref) {
   return GetMyVisitsUseCase(ref.read(visitRepositoryProvider));
 }

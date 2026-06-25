@@ -26,7 +26,9 @@ class Routes {
 
   static const String attendance = '/attendance';
   static const String attendanceDetails = '/attendance-details';
+  static const String myVisits = '/my-visits';
   static const String task = '/task';
+  static const String taskDetail = 'task-detail';
   static const String visitDetail = '/visit-detail';
   static const String visitCheckIn = '/visit-check-in';
   static const String inspectionChecklist = '/inspection-checklist';
