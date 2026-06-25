@@ -29,22 +29,17 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(tasksProvider.notifier).fetch(),
+      (_) => ref.read(tasksProvider.notifier).fetch(bucket: 'today'),
     );
   }
 
-  void _onTabChanged(_TaskTab tab) => setState(() => _selectedTab = tab);
+  void _onTabChanged(_TaskTab tab) {
+    setState(() => _selectedTab = tab);
+    ref.read(tasksProvider.notifier).fetch(bucket: tab.name);
+  }
 
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
-
-  List<TaskEntity> _filtered(List<TaskEntity> all) => switch (_selectedTab) {
-    _TaskTab.today => all.where((t) => t.status == TaskStatus.today).toList(),
-    _TaskTab.pending =>
-      all.where((t) => t.status == TaskStatus.pending).toList(),
-    _TaskTab.completed =>
-      all.where((t) => t.status == TaskStatus.completed).toList(),
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -84,15 +79,16 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     Gap(spacing.s16),
                     TextButton(
                       onPressed: () =>
-                          ref.read(tasksProvider.notifier).fetch(),
+                          ref
+                              .read(tasksProvider.notifier)
+                              .fetch(bucket: _selectedTab.name),
                       child: Text(context.locale.retry),
                     ),
                   ],
                 ),
               ),
               data: (tasks) {
-                final filtered = _filtered(tasks);
-                if (filtered.isEmpty) {
+                if (tasks.isEmpty) {
                   return Center(
                     child: Padding(
                       padding: EdgeInsets.all(spacing.s24),
@@ -119,11 +115,11 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                 }
                 return ListView.separated(
                   padding: EdgeInsets.all(spacing.s16),
-                  itemCount: filtered.length,
+                  itemCount: tasks.length,
                   separatorBuilder: (_, _) => Gap(spacing.s12),
                   itemBuilder: (_, i) => _TaskCard(
-                    task: filtered[i],
-                    onTap: () => _onViewTap(filtered[i]),
+                    task: tasks[i],
+                    onTap: () => _onViewTap(tasks[i]),
                     onStartTap: () => _showProofBottomSheet(context),
                   ),
                 );

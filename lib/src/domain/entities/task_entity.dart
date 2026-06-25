@@ -11,6 +11,7 @@ class TaskEntity {
     required this.dueTime,
     required this.priority,
     required this.status,
+    this.proofRequiredOnComplete = false,
   });
 
   final int id;
@@ -20,4 +21,5 @@ class TaskEntity {
   final String dueTime;
   final TaskPriority priority;
   final TaskStatus status;
+  final bool proofRequiredOnComplete;
 }

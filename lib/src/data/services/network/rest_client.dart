@@ -132,4 +132,11 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Body() required Map<String, dynamic> request,
   });
+
+  @GET(Endpoints.tasks)
+  Future<HttpResponse> getTasks({
+    @Path('partnerId') required int partnerId,
+    @Query('bucket') required String bucket,
+    @Query('task_type') required String taskType,
+  });
 }

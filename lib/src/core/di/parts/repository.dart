@@ -73,7 +73,7 @@ ManualAttendanceRepository manualAttendanceRepository(Ref ref) {
 
 @Riverpod(keepAlive: true)
 TaskRepository taskRepository(Ref ref) {
-  return TaskRepositoryImpl();
+  return TaskRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

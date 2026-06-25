@@ -11,11 +11,21 @@ class Tasks extends _$Tasks {
   @override
   AsyncValue<List<TaskEntity>> build() => const AsyncValue.loading();
 
-  Future<void> fetch() async {
+  Future<void> fetch({required String bucket}) async {
     state = const AsyncValue.loading();
 
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final partnerId = user?.partnerId;
+    if (partnerId == null) {
+      state = AsyncValue.error('User not found', StackTrace.current);
+      return;
+    }
+
     final Result<List<TaskEntity>, String> result =
-        await ref.read(getTasksUseCaseProvider).call();
+        await ref.read(getTasksUseCaseProvider).call(
+          partnerId: partnerId,
+          bucket: bucket,
+        );
 
     state = result.when(
       success: (data) => data != null

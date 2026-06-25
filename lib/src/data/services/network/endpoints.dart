@@ -3,7 +3,7 @@ class Endpoints {
 
   static const baseDev = 'http://3.108.132.91/api/backend';
   static const baseLocal =
-      'https://outputs-democrats-bag-cats.trycloudflare.com/api/backend';
+      'https://tuning-realized-representing-cooked.trycloudflare.com/api/backend';
 
   /// Authentication
   static const String register = '/auth/register/';
@@ -61,4 +61,7 @@ class Endpoints {
   static const String visitChecklistSubmit =
       '/partners/{partnerId}/visits/{visitId}/checklist/submit';
   static const String reportIssue = '/partners/{partnerId}/issues';
+
+  /// Tasks
+  static const String tasks = '/partners/{partnerId}/tasks';
 }
