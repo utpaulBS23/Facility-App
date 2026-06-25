@@ -156,6 +156,12 @@ class TaskDetailModel with TaskDetailModelMappable {
         priority: _mapPriority(priority),
         status: _mapStatus(status),
         proofRequiredOnComplete: proofRequiredOnComplete,
+        media: media
+                ?.map(
+                  (m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt),
+                )
+                .toList() ??
+            [],
       );
 }
 

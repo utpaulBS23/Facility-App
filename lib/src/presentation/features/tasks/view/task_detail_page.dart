@@ -148,6 +148,40 @@ class _TaskDetailBody extends StatelessWidget {
                 color: context.color.text.secondary,
               ),
             ),
+            if (task.media.isNotEmpty) ...[
+              Gap(spacing.s16),
+              SizedBox(
+                height: 120,
+                child: ListView.separated(
+                  scrollDirection: .horizontal,
+                  itemCount: task.media.length,
+                  separatorBuilder: (_, _) =>
+                      Gap(context.dimensions.spacing.s8),
+                  itemBuilder: (_, i) {
+                    final m = task.media[i];
+                    return ClipRRect(
+                      borderRadius:
+                          .circular(context.dimensions.radius.r6),
+                      child: Image.network(
+                        m.url,
+                        width: 120,
+                        height: 120,
+                        fit: .cover,
+                        errorBuilder: (_, _, _) => Container(
+                          width: 120,
+                          height: 120,
+                          color: context.color.borderSubtle,
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: context.color.icon,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
             if (task.status != TaskStatus.completed) ...[
               Gap(spacing.s24),
               FilledButton(
