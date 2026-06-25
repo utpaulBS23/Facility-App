@@ -228,3 +228,131 @@ class TaskMediaModelMapper extends ClassMapperBase<TaskMediaModel> {
 }
 
 mixin TaskMediaModelMappable {}
+
+class TaskDetailResponseModelMapper
+    extends ClassMapperBase<TaskDetailResponseModel> {
+  TaskDetailResponseModelMapper._();
+
+  static TaskDetailResponseModelMapper? _instance;
+  static TaskDetailResponseModelMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals
+          .use(_instance = TaskDetailResponseModelMapper._());
+      TaskDetailModelMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'TaskDetailResponseModel';
+
+  static TaskDetailModel _$data(TaskDetailResponseModel v) => v.data;
+  static const Field<TaskDetailResponseModel, TaskDetailModel> _f$data =
+      Field('data', _$data);
+
+  @override
+  final MappableFields<TaskDetailResponseModel> fields = const {
+    #data: _f$data,
+  };
+
+  static TaskDetailResponseModel _instantiate(DecodingData data) {
+    return TaskDetailResponseModel(data: data.dec(_f$data));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static TaskDetailResponseModel fromJson(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<TaskDetailResponseModel>(map);
+  }
+
+  static TaskDetailResponseModel fromJsonString(String json) {
+    return ensureInitialized().decodeJson<TaskDetailResponseModel>(json);
+  }
+}
+
+mixin TaskDetailResponseModelMappable {}
+
+class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
+  TaskDetailModelMapper._();
+
+  static TaskDetailModelMapper? _instance;
+  static TaskDetailModelMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = TaskDetailModelMapper._());
+      TaskMediaModelMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'TaskDetailModel';
+
+  static int _$id(TaskDetailModel v) => v.id;
+  static const Field<TaskDetailModel, int> _f$id = Field('id', _$id);
+  static String _$title(TaskDetailModel v) => v.title;
+  static const Field<TaskDetailModel, String> _f$title =
+      Field('title', _$title);
+  static String? _$description(TaskDetailModel v) => v.description;
+  static const Field<TaskDetailModel, String> _f$description =
+      Field('description', _$description, opt: true);
+  static String? _$facilityName(TaskDetailModel v) => v.facilityName;
+  static const Field<TaskDetailModel, String> _f$facilityName =
+      Field('facilityName', _$facilityName, key: r'facility_name', opt: true);
+  static String? _$dueAt(TaskDetailModel v) => v.dueAt;
+  static const Field<TaskDetailModel, String> _f$dueAt =
+      Field('dueAt', _$dueAt, key: r'due_at', opt: true);
+  static String _$status(TaskDetailModel v) => v.status;
+  static const Field<TaskDetailModel, String> _f$status =
+      Field('status', _$status);
+  static String _$priority(TaskDetailModel v) => v.priority;
+  static const Field<TaskDetailModel, String> _f$priority =
+      Field('priority', _$priority);
+  static bool _$proofRequiredOnComplete(TaskDetailModel v) =>
+      v.proofRequiredOnComplete;
+  static const Field<TaskDetailModel, bool> _f$proofRequiredOnComplete = Field(
+      'proofRequiredOnComplete', _$proofRequiredOnComplete,
+      key: r'proof_required_on_complete', opt: true, def: false);
+  static List<TaskMediaModel>? _$media(TaskDetailModel v) => v.media;
+  static const Field<TaskDetailModel, List<TaskMediaModel>> _f$media =
+      Field('media', _$media, opt: true);
+
+  @override
+  final MappableFields<TaskDetailModel> fields = const {
+    #id: _f$id,
+    #title: _f$title,
+    #description: _f$description,
+    #facilityName: _f$facilityName,
+    #dueAt: _f$dueAt,
+    #status: _f$status,
+    #priority: _f$priority,
+    #proofRequiredOnComplete: _f$proofRequiredOnComplete,
+    #media: _f$media,
+  };
+
+  static TaskDetailModel _instantiate(DecodingData data) {
+    return TaskDetailModel(
+        id: data.dec(_f$id),
+        title: data.dec(_f$title),
+        description: data.dec(_f$description),
+        facilityName: data.dec(_f$facilityName),
+        dueAt: data.dec(_f$dueAt),
+        status: data.dec(_f$status),
+        priority: data.dec(_f$priority),
+        proofRequiredOnComplete: data.dec(_f$proofRequiredOnComplete),
+        media: data.dec(_f$media));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static TaskDetailModel fromJson(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<TaskDetailModel>(map);
+  }
+
+  static TaskDetailModel fromJsonString(String json) {
+    return ensureInitialized().decodeJson<TaskDetailModel>(json);
+  }
+}
+
+mixin TaskDetailModelMappable {}

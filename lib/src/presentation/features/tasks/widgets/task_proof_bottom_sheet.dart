@@ -1,6 +1,10 @@
-part of '../view/task_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-void _showProofBottomSheet(BuildContext context) {
+import '../../../../core/extensions/app_localization.dart';
+import '../../../core/theme/theme.dart';
+
+void showTaskProofBottomSheet(BuildContext context) {
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -30,7 +34,6 @@ class _ProofRequiredBottomSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          // drag handle
           Container(
             width: 40,
             height: 4,
@@ -40,7 +43,6 @@ class _ProofRequiredBottomSheet extends StatelessWidget {
             ),
           ),
           Gap(spacing.s24),
-          // camera icon in circle
           Container(
             width: 72,
             height: 72,

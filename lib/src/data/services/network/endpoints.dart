@@ -64,4 +64,5 @@ class Endpoints {
 
   /// Tasks
   static const String tasks = '/partners/{partnerId}/tasks';
+  static const String taskDetail = '/partners/{partnerId}/tasks/{taskId}';
 }

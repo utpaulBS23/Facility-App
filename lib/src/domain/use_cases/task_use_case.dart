@@ -30,8 +30,14 @@ final class GetTaskDetailUseCase {
 
   final TaskRepository _repository;
 
-  Future<Result<TaskEntity, String>> call({required int id}) async {
-    final result = await _repository.getTaskDetail(id);
+  Future<Result<TaskEntity, String>> call({
+    required int partnerId,
+    required int id,
+  }) async {
+    final result = await _repository.getTaskDetail(
+      partnerId: partnerId,
+      id: id,
+    );
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error.message),

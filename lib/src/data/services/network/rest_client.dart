@@ -139,4 +139,10 @@ abstract class RestClient {
     @Query('bucket') required String bucket,
     @Query('task_type') required String taskType,
   });
+
+  @GET(Endpoints.taskDetail)
+  Future<HttpResponse> getTaskDetail({
+    @Path('partnerId') required int partnerId,
+    @Path('taskId') required int taskId,
+  });
 }

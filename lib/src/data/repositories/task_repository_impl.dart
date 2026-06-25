@@ -25,8 +25,16 @@ final class TaskRepositoryImpl extends TaskRepository {
   });
 
   @override
-  Future<Result<TaskEntity, Failure>> getTaskDetail(int id) async =>
-      const Error(Failure(type: FailureType.notFound, message: 'Not implemented'));
+  Future<Result<TaskEntity, Failure>> getTaskDetail({
+    required int partnerId,
+    required int id,
+  }) => asyncGuard(() async {
+    final response = await _client.getTaskDetail(
+      partnerId: partnerId,
+      taskId: id,
+    );
+    return TaskDetailResponseModel.fromJson(response.data).toEntity();
+  });
 
   static TaskStatus _bucketToStatus(String bucket) => switch (bucket) {
     'completed' => TaskStatus.completed,

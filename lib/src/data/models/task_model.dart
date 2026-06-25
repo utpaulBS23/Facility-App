@@ -5,6 +5,30 @@ import '../../domain/entities/task_entity.dart';
 
 part 'task_model.mapper.dart';
 
+String _formatDueTime(String? raw) {
+  if (raw == null) return '';
+  try {
+    final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
+    return DateFormat('hh:mm a').format(dt);
+  } catch (_) {
+    return raw;
+  }
+}
+
+TaskPriority _mapPriority(String raw) => switch (raw.toLowerCase()) {
+  'high' => TaskPriority.high,
+  'medium' => TaskPriority.medium,
+  _ => TaskPriority.low,
+};
+
+TaskStatus _mapStatus(String raw) => switch (raw.toLowerCase()) {
+  'completed' => TaskStatus.completed,
+  'pending' => TaskStatus.pending,
+  _ => TaskStatus.today,
+};
+
+// ─── List response ─────────────────────────────────────────────────────────
+
 @MappableClass(generateMethods: GenerateMethods.decode)
 class TaskListResponseModel with TaskListResponseModelMappable {
   TaskListResponseModel({required this.data});
@@ -56,25 +80,8 @@ class TaskModel with TaskModelMappable {
         dueTime: _formatDueTime(dueAt),
         priority: _mapPriority(priority),
         status: bucketStatus,
-        proofRequiredOnComplete:
-            issue?.proofRequiredOnComplete ?? false,
+        proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
       );
-
-  static String _formatDueTime(String? raw) {
-    if (raw == null) return '';
-    try {
-      final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
-      return DateFormat('hh:mm a').format(dt);
-    } catch (_) {
-      return raw;
-    }
-  }
-
-  static TaskPriority _mapPriority(String raw) => switch (raw.toLowerCase()) {
-    'high' => TaskPriority.high,
-    'medium' => TaskPriority.medium,
-    _ => TaskPriority.low,
-  };
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -92,6 +99,67 @@ class TaskIssueModel with TaskIssueModelMappable {
 
   static const fromJson = TaskIssueModelMapper.fromJson;
 }
+
+// ─── Detail response ────────────────────────────────────────────────────────
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class TaskDetailResponseModel with TaskDetailResponseModelMappable {
+  TaskDetailResponseModel({required this.data});
+
+  final TaskDetailModel data;
+
+  static const fromJson = TaskDetailResponseModelMapper.fromJson;
+
+  TaskEntity toEntity() => data.toEntity();
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class TaskDetailModel with TaskDetailModelMappable {
+  TaskDetailModel({
+    required this.id,
+    required this.title,
+    this.description,
+    this.facilityName,
+    this.dueAt,
+    required this.status,
+    required this.priority,
+    this.proofRequiredOnComplete = false,
+    this.media,
+  });
+
+  final int id;
+  final String title;
+  final String? description;
+
+  @MappableField(key: 'facility_name')
+  final String? facilityName;
+
+  @MappableField(key: 'due_at')
+  final String? dueAt;
+
+  final String status;
+  final String priority;
+
+  @MappableField(key: 'proof_required_on_complete')
+  final bool proofRequiredOnComplete;
+
+  final List<TaskMediaModel>? media;
+
+  static const fromJson = TaskDetailModelMapper.fromJson;
+
+  TaskEntity toEntity() => TaskEntity(
+        id: id,
+        title: title,
+        description: description ?? '',
+        location: facilityName ?? '',
+        dueTime: _formatDueTime(dueAt),
+        priority: _mapPriority(priority),
+        status: _mapStatus(status),
+        proofRequiredOnComplete: proofRequiredOnComplete,
+      );
+}
+
+// ─── Shared ─────────────────────────────────────────────────────────────────
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class TaskMediaModel with TaskMediaModelMappable {

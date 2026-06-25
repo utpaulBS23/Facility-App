@@ -9,9 +9,9 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
+import '../widgets/task_proof_bottom_sheet.dart';
 
 part '../widgets/task_card.dart';
-part '../widgets/task_proof_bottom_sheet.dart';
 
 enum _TaskTab { today, pending, completed }
 
@@ -120,7 +120,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                   itemBuilder: (_, i) => _TaskCard(
                     task: tasks[i],
                     onTap: () => _onViewTap(tasks[i]),
-                    onStartTap: () => _showProofBottomSheet(context),
+                    onStartTap: () => showTaskProofBottomSheet(context),
                   ),
                 );
               },

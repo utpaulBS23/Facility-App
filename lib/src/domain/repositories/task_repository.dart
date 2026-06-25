@@ -8,5 +8,8 @@ abstract base class TaskRepository extends Repository {
     required String taskType,
   });
 
-  Future<Result<TaskEntity, Failure>> getTaskDetail(int id);
+  Future<Result<TaskEntity, Failure>> getTaskDetail({
+    required int partnerId,
+    required int id,
+  });
 }
