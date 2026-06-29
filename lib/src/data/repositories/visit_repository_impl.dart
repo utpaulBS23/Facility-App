@@ -115,7 +115,8 @@ final class VisitRepositoryImpl extends VisitRepository {
       itemId: itemId,
       formData: formData,
     );
-    final data = response.data['data'] as Map<String, dynamic>;
+    final raw = response.data['data'];
+    final data = raw as Map<String, dynamic>? ?? (throw Exception('Missing data in save-item-response'));
     return ChecklistItemSaveResponseEntity(
       id: data['id'] as int,
       ratingValue: data['rating_value'] as int?,
@@ -130,16 +131,37 @@ final class VisitRepositoryImpl extends VisitRepository {
     required int partnerId,
     required int visitId,
     required ChecklistSubmitRequestEntity request,
-  }) => asyncGuard(() async {});
+  }) => asyncGuard(() async {
+    await _client.submitChecklist(
+      partnerId: partnerId,
+      visitId: visitId,
+      request: request.toJson(),
+    );
+  });
 
   @override
   Future<Result<ReportIssueResponseEntity, Failure>> reportIssue({
     required int partnerId,
     required ReportIssueRequestEntity request,
-  }) => asyncGuard(
-    () async => const ReportIssueResponseEntity(
-      id: 999,
-      message: 'Issue reported successfully.',
-    ),
-  );
+  }) => asyncGuard(() async {
+    final body = <String, dynamic>{
+      'visit_id': request.visitId,
+      'department': request.department,
+      'specific_problem': request.specificProblem,
+      'location': request.location,
+      'priority': request.priority.name,
+      if (request.notes != null) 'notes': request.notes,
+      if (request.assignedTo != null) 'assigned_to': request.assignedTo,
+    };
+    final response = await _client.reportIssue(
+      partnerId: partnerId,
+      request: body,
+    );
+    final raw = response.data['data'] ?? response.data;
+    final data = raw as Map<String, dynamic>;
+    return ReportIssueResponseEntity(
+      id: data['id'] as int,
+      message: data['message'] as String? ?? 'Issue reported successfully.',
+    );
+  });
 }

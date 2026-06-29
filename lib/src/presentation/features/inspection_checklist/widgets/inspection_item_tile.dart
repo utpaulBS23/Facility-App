@@ -376,11 +376,9 @@ class _ProofAttachmentRow extends StatelessWidget {
         ],
         if (!hasAnyProof && !isLocked)
           _AttachPhotoButton(onTap: onAttach ?? () {}),
-        if (hasAnyProof && !isLocked) ...[
+        if (hasAnyProof && !isLocked && proofImages.isNotEmpty) ...[
           const Spacer(),
-          _RemoveProofButton(
-            onTap: proofImages.isNotEmpty ? onRemove ?? () {} : onAttach ?? () {},
-          ),
+          _RemoveProofButton(onTap: onRemove ?? () {}),
         ],
       ],
     );

@@ -104,7 +104,10 @@ class InspectionChecklist extends _$InspectionChecklist {
   Future<void> loadChecklist({required int visitId}) async {
     final user = ref.read(getCurrentUserUseCaseProvider).call();
     final partnerId = user?.partnerId;
-    if (partnerId == null) return;
+    if (partnerId == null) {
+      state = state.copyWith(isLoadingChecklist: false, checklistError: 'User not found');
+      return;
+    }
 
     state = state.copyWith(isLoadingChecklist: true, clearChecklistError: true);
 
@@ -168,7 +171,8 @@ class InspectionChecklist extends _$InspectionChecklist {
     final partnerId = user?.partnerId;
     if (partnerId == null) return;
 
-    final isSameRating = state.starAnswers[itemId] == rating;
+    final previousRating = state.starAnswers[itemId];
+    final isSameRating = previousRating == rating;
     final updatedStarAnswers = Map<int, int>.from(state.starAnswers);
     if (isSameRating) {
       updatedStarAnswers.remove(itemId);
@@ -208,14 +212,22 @@ class InspectionChecklist extends _$InspectionChecklist {
           checklist: _withUpdatedItemProof(itemId: itemId, hasProof: data.hasProof),
         );
       },
-      error: (err) => state.copyWith(
-        // Revert optimistic update on failure.
-        starAnswers: isSameRating
-            ? (Map<int, int>.from(state.starAnswers)..[itemId] = rating)
-            : (Map<int, int>.from(state.starAnswers)..remove(itemId)),
-        savingItemIds: doneSaving,
-        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
-      ),
+      error: (err) {
+        // WHY: restore the pre-tap value, not just remove — the user may have
+        // changed from one rating to another, in which case remove would lose
+        // the prior confirmed answer instead of reverting to it.
+        final revertedAnswers = Map<int, int>.from(state.starAnswers);
+        if (previousRating == null) {
+          revertedAnswers.remove(itemId);
+        } else {
+          revertedAnswers[itemId] = previousRating;
+        }
+        return state.copyWith(
+          starAnswers: revertedAnswers,
+          savingItemIds: doneSaving,
+          itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
+        );
+      },
     );
   }
 
@@ -227,6 +239,8 @@ class InspectionChecklist extends _$InspectionChecklist {
     final user = ref.read(getCurrentUserUseCaseProvider).call();
     final partnerId = user?.partnerId;
     if (partnerId == null) return;
+
+    final previousYesNo = state.yesNoAnswers[itemId];
 
     state = state.copyWith(
       yesNoAnswers: Map<int, bool>.from(state.yesNoAnswers)..[itemId] = value,
@@ -257,11 +271,19 @@ class InspectionChecklist extends _$InspectionChecklist {
           confirmedPoints: newPoints,
         );
       },
-      error: (err) => state.copyWith(
-        yesNoAnswers: Map<int, bool>.from(state.yesNoAnswers)..remove(itemId),
-        savingItemIds: doneSaving,
-        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
-      ),
+      error: (err) {
+        final revertedYesNo = Map<int, bool>.from(state.yesNoAnswers);
+        if (previousYesNo == null) {
+          revertedYesNo.remove(itemId);
+        } else {
+          revertedYesNo[itemId] = previousYesNo;
+        }
+        return state.copyWith(
+          yesNoAnswers: revertedYesNo,
+          savingItemIds: doneSaving,
+          itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
+        );
+      },
     );
   }
 
@@ -322,8 +344,10 @@ class InspectionChecklist extends _$InspectionChecklist {
     final picker = ImagePicker();
     final image = await picker.pickImage(source: .gallery);
     if (image == null) return;
+    // WHY: replace, not append — only lastOrNull is ever uploaded; accumulating
+    // stale XFile handles wastes memory and silently discards all but the last.
     final updated = Map<int, List<XFile>>.from(state.proofImages);
-    updated[itemId] = [...(updated[itemId] ?? []), image];
+    updated[itemId] = [image];
     state = state.copyWith(proofImages: updated);
   }
 
@@ -356,6 +380,8 @@ class InspectionChecklist extends _$InspectionChecklist {
         proofPolicy: item.proofPolicy,
         existingRating: item.existingRating,
         existingBoolAnswer: item.existingBoolAnswer,
+        existingPointsAwarded: item.existingPointsAwarded,
+        existingMediaUrls: item.existingMediaUrls,
         hasProof: hasProof,
       );
     }).toList();
@@ -375,9 +401,20 @@ class InspectionChecklist extends _$InspectionChecklist {
 
     state = state.copyWith(isSubmitting: true, clearSubmitError: true);
 
+    final answers = [
+      for (final e in state.starAnswers.entries)
+        ChecklistAnswerRequestEntity(itemId: e.key, starRating: e.value),
+      for (final e in state.yesNoAnswers.entries)
+        ChecklistAnswerRequestEntity(itemId: e.key, yesNoAnswer: e.value),
+    ];
+
     final Result<void, String> result = await ref
-        .read(submitVisitUseCaseProvider)
-        .call(partnerId: partnerId, visitId: visitId);
+        .read(submitChecklistUseCaseProvider)
+        .call(
+          partnerId: partnerId,
+          visitId: visitId,
+          request: ChecklistSubmitRequestEntity(answers: answers),
+        );
 
     state = result.when(
       success: (_) => state.copyWith(isSubmitting: false, submitSuccess: true),
