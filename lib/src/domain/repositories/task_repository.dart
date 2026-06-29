@@ -12,4 +12,21 @@ abstract base class TaskRepository extends Repository {
     required int partnerId,
     required int id,
   });
+
+  Future<Result<TaskEntity, Failure>> startIssue({
+    required int partnerId,
+    required int issueId,
+  });
+
+  Future<Result<TaskEntity, Failure>> completeIssue({
+    required int partnerId,
+    required int issueId,
+  });
+
+  Future<Result<TaskMediaEntity, Failure>> uploadTaskMedia({
+    required int partnerId,
+    required int taskId,
+    required String photoPath,
+    required String alt,
+  });
 }

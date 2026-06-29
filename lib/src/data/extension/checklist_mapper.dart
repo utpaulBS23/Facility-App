@@ -23,6 +23,12 @@ extension ChecklistItemModelToEntity on ChecklistItemModel {
     proofPolicy: _parseProofPolicy(proofPolicy),
     existingRating: response?.ratingValue,
     existingBoolAnswer: response?.booleanValue,
+    existingPointsAwarded: response?.pointsAwarded,
+    existingMediaUrls: response?.media
+            ?.map((m) => m.url)
+            .whereType<String>()
+            .toList() ??
+        const [],
     hasProof: response?.hasProof ?? false,
   );
 }

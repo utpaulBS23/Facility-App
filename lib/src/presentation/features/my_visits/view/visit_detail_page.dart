@@ -29,11 +29,16 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref
           .read(visitDetailProvider.notifier)
-          .fetch(visitId: widget.visitId),
-    );
+          .fetch(visitId: widget.visitId);
+      if (!mounted) return;
+      final detail = ref.read(visitDetailProvider).valueOrNull;
+      if (detail != null && detail.locationVerified) {
+        context.pushReplacementNamed(Routes.inspectionChecklist, extra: detail);
+      }
+    });
   }
 
   Future<void> _onCheckIn() async {

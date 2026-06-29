@@ -71,8 +71,12 @@ GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
 }
 
 @riverpod
-GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(Ref ref) {
-  return GetMonthlyAttendanceOverviewUseCase(ref.read(attendanceRepositoryProvider));
+GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
+  Ref ref,
+) {
+  return GetMonthlyAttendanceOverviewUseCase(
+    ref.read(attendanceRepositoryProvider),
+  );
 }
 
 @riverpod
@@ -144,6 +148,21 @@ GetTaskDetailUseCase getTaskDetailUseCase(Ref ref) {
 }
 
 @riverpod
+StartIssueUseCase startIssueUseCase(Ref ref) {
+  return StartIssueUseCase(ref.read(taskRepositoryProvider));
+}
+
+@riverpod
+UploadTaskMediaUseCase uploadTaskMediaUseCase(Ref ref) {
+  return UploadTaskMediaUseCase(ref.read(taskRepositoryProvider));
+}
+
+@riverpod
+CompleteIssueUseCase completeIssueUseCase(Ref ref) {
+  return CompleteIssueUseCase(ref.read(taskRepositoryProvider));
+}
+
+@riverpod
 GetMyVisitsUseCase getMyVisitsUseCase(Ref ref) {
   return GetMyVisitsUseCase(ref.read(visitRepositoryProvider));
 }
@@ -171,6 +190,16 @@ GetChecklistUseCase getChecklistUseCase(Ref ref) {
 @riverpod
 SubmitChecklistUseCase submitChecklistUseCase(Ref ref) {
   return SubmitChecklistUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+SubmitVisitUseCase submitVisitUseCase(Ref ref) {
+  return SubmitVisitUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
+  return SaveChecklistItemResponseUseCase(ref.read(visitRepositoryProvider));
 }
 
 @riverpod

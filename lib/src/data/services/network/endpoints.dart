@@ -1,5 +1,5 @@
 class Endpoints {
-  static const base = baseLocal;
+  static const base = baseDev;
 
   static const baseDev = 'http://3.108.132.91/api/backend';
   static const baseLocal =
@@ -60,9 +60,18 @@ class Endpoints {
       '/partners/{partnerId}/visits/{visitId}/checklist';
   static const String visitChecklistSubmit =
       '/partners/{partnerId}/visits/{visitId}/checklist/submit';
+  static const String visitSubmit =
+      '/partners/{partnerId}/visits/{visitId}/submit';
+  static const String visitChecklistItemResponse =
+      '/partners/{partnerId}/visits/{visitId}/checklist-items/{itemId}/response';
   static const String reportIssue = '/partners/{partnerId}/issues';
 
   /// Tasks
   static const String tasks = '/partners/{partnerId}/tasks';
   static const String taskDetail = '/partners/{partnerId}/tasks/{taskId}';
+  static const String startIssue =
+      '/partners/{partnerId}/issues/{issueId}/start';
+  static const String completeIssue =
+      '/partners/{partnerId}/issues/{issueId}/complete';
+  static const String taskMedia = '/partners/{partnerId}/tasks/{taskId}/media';
 }

@@ -282,5 +282,6 @@
   "proofRequired": "প্রমাণ প্রয়োজন",
   "proofRequiredSubtitle": "কাজ সম্পন্নের প্রমাণ হিসেবে একটি ছবি তুলুন বা আপলোড করুন।",
   "changePhoto": "ছবি পরিবর্তন করুন",
-  "submitProof": "প্রমাণ জমা দিন"
+  "submitProof": "প্রমাণ জমা দিন",
+  "visitSubmittedSuccessfully": "ভিজিট সফলভাবে জমা দেওয়া হয়েছে।"
 }

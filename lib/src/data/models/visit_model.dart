@@ -215,6 +215,7 @@ class VisitDetailModel with VisitDetailModelMappable {
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
         scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
+        locationVerified: locationVerified ?? false,
         assignedBy: createdByName != null
             ? VisitAssignedByEntity(
                 name: createdByName!,

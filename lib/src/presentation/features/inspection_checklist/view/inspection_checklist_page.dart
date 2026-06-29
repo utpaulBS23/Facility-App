@@ -45,7 +45,23 @@ class _InspectionChecklistPageState
         .read(inspectionChecklistProvider.notifier)
         .submit(visitId: widget.detail.id);
     if (!mounted) return;
-    if (ref.read(inspectionChecklistProvider).submitSuccess) context.pop();
+    final state = ref.read(inspectionChecklistProvider);
+    if (state.submitSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.locale.visitSubmittedSuccessfully),
+          backgroundColor: context.color.success,
+        ),
+      );
+      context.goNamed(Routes.myVisits);
+    } else if (state.submitError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.submitError!),
+          backgroundColor: context.color.error,
+        ),
+      );
+    }
   }
 
   void _onNewIssue() {
@@ -114,6 +130,7 @@ class _ChecklistBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checklist = checklistState.checklist!;
+    final isResolved = detail.status == VisitStatus.resolved;
 
     return Column(
       crossAxisAlignment: .stretch,
@@ -138,7 +155,12 @@ class _ChecklistBody extends StatelessWidget {
                   ];
                 }
                 return [
-                  _InspectionItemTile(item: item, state: checklistState),
+                  _InspectionItemTile(
+                    item: item,
+                    state: checklistState,
+                    visitId: detail.id,
+                    isResolved: isResolved,
+                  ),
                   Divider(color: context.color.borderSubtle, height: 1),
                 ];
               }),
@@ -148,6 +170,7 @@ class _ChecklistBody extends StatelessWidget {
         ),
         _InspectionBottomBar(
           state: checklistState,
+          isResolved: isResolved,
           onSubmit: onSubmit,
           onCancel: () => _onCancel(context),
         ),

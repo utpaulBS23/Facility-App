@@ -282,5 +282,6 @@
   "proofRequired": "Proof Required",
   "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion.",
   "changePhoto": "Change Photo",
-  "submitProof": "Submit Proof"
+  "submitProof": "Submit Proof",
+  "visitSubmittedSuccessfully": "Visit submitted successfully."
 }

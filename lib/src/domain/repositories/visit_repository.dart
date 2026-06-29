@@ -31,6 +31,20 @@ abstract base class VisitRepository extends Repository {
     required int visitId,
   });
 
+  Future<Result<void, Failure>> submitVisit({
+    required int partnerId,
+    required int visitId,
+  });
+
+  Future<Result<ChecklistItemSaveResponseEntity, Failure>> saveChecklistItemResponse({
+    required int partnerId,
+    required int visitId,
+    required int itemId,
+    int? ratingValue,
+    bool? booleanValue,
+    String? photoPath,
+  });
+
   Future<Result<void, Failure>> submitChecklist({
     required int partnerId,
     required int visitId,

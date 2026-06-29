@@ -136,6 +136,56 @@ final class SubmitChecklistUseCase {
   }
 }
 
+final class SubmitVisitUseCase {
+  SubmitVisitUseCase(this._repository);
+
+  final VisitRepository _repository;
+
+  Future<Result<void, String>> call({
+    required int partnerId,
+    required int visitId,
+  }) async {
+    final result = await _repository.submitVisit(
+      partnerId: partnerId,
+      visitId: visitId,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to submit visit'),
+    };
+  }
+}
+
+final class SaveChecklistItemResponseUseCase {
+  SaveChecklistItemResponseUseCase(this._repository);
+
+  final VisitRepository _repository;
+
+  Future<Result<ChecklistItemSaveResponseEntity, String>> call({
+    required int partnerId,
+    required int visitId,
+    required int itemId,
+    int? ratingValue,
+    bool? booleanValue,
+    String? photoPath,
+  }) async {
+    final result = await _repository.saveChecklistItemResponse(
+      partnerId: partnerId,
+      visitId: visitId,
+      itemId: itemId,
+      ratingValue: ratingValue,
+      booleanValue: booleanValue,
+      photoPath: photoPath,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to save answer'),
+    };
+  }
+}
+
 final class ReportIssueUseCase {
   ReportIssueUseCase(this._repository);
 

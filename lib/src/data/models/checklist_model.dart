@@ -3,12 +3,24 @@ import 'package:dart_mappable/dart_mappable.dart';
 part 'checklist_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class ChecklistItemMediaModel with ChecklistItemMediaModelMappable {
+  ChecklistItemMediaModel({required this.id, this.url});
+
+  final int id;
+  final String? url;
+
+  static const fromJson = ChecklistItemMediaModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class ChecklistItemResponseModel with ChecklistItemResponseModelMappable {
   ChecklistItemResponseModel({
     required this.id,
     this.ratingValue,
     this.booleanValue,
     this.hasProof,
+    this.pointsAwarded,
+    this.media,
   });
 
   final int id;
@@ -21,6 +33,11 @@ class ChecklistItemResponseModel with ChecklistItemResponseModelMappable {
 
   @MappableField(key: 'has_proof')
   final bool? hasProof;
+
+  @MappableField(key: 'points_awarded')
+  final int? pointsAwarded;
+
+  final List<ChecklistItemMediaModel>? media;
 
   static const fromJson = ChecklistItemResponseModelMapper.fromJson;
 }

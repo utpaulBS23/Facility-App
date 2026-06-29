@@ -12,6 +12,8 @@ class ChecklistItemEntity {
     this.proofPolicy = ChecklistProofPolicy.none,
     this.existingRating,
     this.existingBoolAnswer,
+    this.existingPointsAwarded,
+    this.existingMediaUrls = const [],
     this.hasProof = false,
   });
 
@@ -23,6 +25,8 @@ class ChecklistItemEntity {
   final ChecklistProofPolicy proofPolicy;
   final int? existingRating;
   final bool? existingBoolAnswer;
+  final int? existingPointsAwarded;
+  final List<String> existingMediaUrls;
   final bool hasProof;
 
   bool get isAnswered => switch (answerType) {
@@ -73,6 +77,22 @@ class ChecklistIssueEntity {
   final String location;
   final String priority;
   final String status;
+}
+
+class ChecklistItemSaveResponseEntity {
+  const ChecklistItemSaveResponseEntity({
+    required this.id,
+    required this.pointsAwarded,
+    required this.hasProof,
+    this.ratingValue,
+    this.booleanValue,
+  });
+
+  final int id;
+  final int pointsAwarded;
+  final bool hasProof;
+  final int? ratingValue;
+  final bool? booleanValue;
 }
 
 class ChecklistAnswerRequestEntity {

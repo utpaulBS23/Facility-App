@@ -23,6 +23,8 @@ TaskPriority _mapPriority(String raw) => switch (raw.toLowerCase()) {
 
 TaskStatus _mapStatus(String raw) => switch (raw.toLowerCase()) {
   'completed' => TaskStatus.completed,
+  'resolved' => TaskStatus.completed,
+  'in_progress' => TaskStatus.inProgress,
   'pending' => TaskStatus.pending,
   _ => TaskStatus.today,
 };
@@ -73,15 +75,20 @@ class TaskModel with TaskModelMappable {
   static const fromJson = TaskModelMapper.fromJson;
 
   TaskEntity toEntity(TaskStatus bucketStatus) => TaskEntity(
-        id: id,
-        title: title,
-        description: description ?? '',
-        location: facilityName ?? '',
-        dueTime: _formatDueTime(dueAt),
-        priority: _mapPriority(priority),
-        status: bucketStatus,
-        proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
-      );
+    id: id,
+    title: title,
+    description: description ?? '',
+    location: facilityName ?? '',
+    dueTime: _formatDueTime(dueAt),
+    priority: _mapPriority(priority),
+    status: status.isEmpty ? bucketStatus : _mapStatus(status),
+    proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
+    media:
+        media
+            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
+            .toList() ??
+        [],
+  );
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -124,6 +131,7 @@ class TaskDetailModel with TaskDetailModelMappable {
     required this.status,
     required this.priority,
     this.proofRequiredOnComplete = false,
+    this.issue,
     this.media,
   });
 
@@ -143,26 +151,27 @@ class TaskDetailModel with TaskDetailModelMappable {
   @MappableField(key: 'proof_required_on_complete')
   final bool proofRequiredOnComplete;
 
+  final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
   static const fromJson = TaskDetailModelMapper.fromJson;
 
   TaskEntity toEntity() => TaskEntity(
-        id: id,
-        title: title,
-        description: description ?? '',
-        location: facilityName ?? '',
-        dueTime: _formatDueTime(dueAt),
-        priority: _mapPriority(priority),
-        status: _mapStatus(status),
-        proofRequiredOnComplete: proofRequiredOnComplete,
-        media: media
-                ?.map(
-                  (m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt),
-                )
-                .toList() ??
-            [],
-      );
+    id: id,
+    title: title,
+    description: description ?? '',
+    location: facilityName ?? '',
+    dueTime: _formatDueTime(dueAt),
+    priority: _mapPriority(priority),
+    status: _mapStatus(status),
+    proofRequiredOnComplete:
+        proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
+    media:
+        media
+            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
+            .toList() ??
+        [],
+  );
 }
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
@@ -176,4 +185,17 @@ class TaskMediaModel with TaskMediaModelMappable {
   final String? alt;
 
   static const fromJson = TaskMediaModelMapper.fromJson;
+
+  TaskMediaEntity toEntity() => TaskMediaEntity(id: id, url: url, alt: alt);
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class TaskMediaResponseModel with TaskMediaResponseModelMappable {
+  TaskMediaResponseModel({required this.data});
+
+  final TaskMediaModel data;
+
+  static const fromJson = TaskMediaResponseModelMapper.fromJson;
+
+  TaskMediaEntity toEntity() => data.toEntity();
 }

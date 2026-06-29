@@ -13,6 +13,9 @@ class InspectionChecklistState {
     this.starAnswers = const {},
     this.yesNoAnswers = const {},
     this.proofImages = const {},
+    this.confirmedPoints = const {},
+    this.savingItemIds = const {},
+    this.itemSaveErrors = const {},
     this.isLoadingChecklist = false,
     this.checklistError,
     this.isSubmitting = false,
@@ -24,6 +27,10 @@ class InspectionChecklistState {
   final Map<int, int> starAnswers;
   final Map<int, bool> yesNoAnswers;
   final Map<int, List<XFile>> proofImages;
+  // Server-confirmed points per item; drives total score display.
+  final Map<int, int> confirmedPoints;
+  final Set<int> savingItemIds;
+  final Map<int, String> itemSaveErrors;
   final bool isLoadingChecklist;
   final String? checklistError;
   final bool isSubmitting;
@@ -42,26 +49,25 @@ class InspectionChecklistState {
     for (final item in checklist!.items) {
       if (item.answerType == ChecklistAnswerType.repairWork) continue;
       if (item.answerType == ChecklistAnswerType.star &&
-          starAnswers.containsKey(item.id)) {
-        count++;
-      }
+          starAnswers.containsKey(item.id)) count++;
       if (item.answerType == ChecklistAnswerType.yesNo &&
-          yesNoAnswers.containsKey(item.id)) {
-        count++;
-      }
+          yesNoAnswers.containsKey(item.id)) count++;
     }
     return count;
   }
 
   bool get isComplete => answeredCount == totalAnswerableCount;
 
-  int get currentScore => starAnswers.values.fold(0, (sum, r) => sum + r);
+  int get currentScore => confirmedPoints.values.fold(0, (sum, p) => sum + p);
 
   InspectionChecklistState copyWith({
     ChecklistEntity? checklist,
     Map<int, int>? starAnswers,
     Map<int, bool>? yesNoAnswers,
     Map<int, List<XFile>>? proofImages,
+    Map<int, int>? confirmedPoints,
+    Set<int>? savingItemIds,
+    Map<int, String>? itemSaveErrors,
     bool? isLoadingChecklist,
     String? checklistError,
     bool? isSubmitting,
@@ -75,6 +81,9 @@ class InspectionChecklistState {
       starAnswers: starAnswers ?? this.starAnswers,
       yesNoAnswers: yesNoAnswers ?? this.yesNoAnswers,
       proofImages: proofImages ?? this.proofImages,
+      confirmedPoints: confirmedPoints ?? this.confirmedPoints,
+      savingItemIds: savingItemIds ?? this.savingItemIds,
+      itemSaveErrors: itemSaveErrors ?? this.itemSaveErrors,
       isLoadingChecklist: isLoadingChecklist ?? this.isLoadingChecklist,
       checklistError: clearChecklistError
           ? null
@@ -105,9 +114,9 @@ class InspectionChecklist extends _$InspectionChecklist {
 
     state = result.when(
       success: (data) {
-        // Pre-populate answers from server response
         final existingStarAnswers = <int, int>{};
         final existingYesNoAnswers = <int, bool>{};
+        final existingPoints = <int, int>{};
         for (final item in data?.items ?? []) {
           if (item.existingRating != null) {
             existingStarAnswers[item.id] = item.existingRating!;
@@ -115,12 +124,16 @@ class InspectionChecklist extends _$InspectionChecklist {
           if (item.existingBoolAnswer != null) {
             existingYesNoAnswers[item.id] = item.existingBoolAnswer!;
           }
+          if (item.existingPointsAwarded != null) {
+            existingPoints[item.id] = item.existingPointsAwarded!;
+          }
         }
         return state.copyWith(
           isLoadingChecklist: false,
           checklist: data,
           starAnswers: existingStarAnswers,
           yesNoAnswers: existingYesNoAnswers,
+          confirmedPoints: existingPoints,
         );
       },
       error: (err) => state.copyWith(
@@ -130,7 +143,7 @@ class InspectionChecklist extends _$InspectionChecklist {
     );
   }
 
-  void setStarRating({required int itemId, required int rating}) {
+  void setStarRatingLocal({required int itemId, required int rating}) {
     final updated = Map<int, int>.from(state.starAnswers);
     if (updated[itemId] == rating) {
       updated.remove(itemId);
@@ -140,15 +153,174 @@ class InspectionChecklist extends _$InspectionChecklist {
     state = state.copyWith(starAnswers: updated);
   }
 
-  void setYesNo({required int itemId, required bool value}) {
-    final updated = Map<int, bool>.from(state.yesNoAnswers);
-    updated[itemId] = value;
-    state = state.copyWith(yesNoAnswers: updated);
+  void setYesNoLocal({required int itemId, required bool value}) {
+    state = state.copyWith(
+      yesNoAnswers: Map<int, bool>.from(state.yesNoAnswers)..[itemId] = value,
+    );
+  }
+
+  Future<void> saveStarRating({
+    required int visitId,
+    required int itemId,
+    required int rating,
+  }) async {
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final partnerId = user?.partnerId;
+    if (partnerId == null) return;
+
+    final isSameRating = state.starAnswers[itemId] == rating;
+    final updatedStarAnswers = Map<int, int>.from(state.starAnswers);
+    if (isSameRating) {
+      updatedStarAnswers.remove(itemId);
+    } else {
+      updatedStarAnswers[itemId] = rating;
+    }
+
+    state = state.copyWith(
+      starAnswers: updatedStarAnswers,
+      savingItemIds: Set<int>.from(state.savingItemIds)..add(itemId),
+      itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..remove(itemId),
+    );
+
+    final result = await ref.read(saveChecklistItemResponseUseCaseProvider).call(
+      partnerId: partnerId,
+      visitId: visitId,
+      itemId: itemId,
+      ratingValue: isSameRating ? 0 : rating,
+      photoPath: state.proofImages[itemId]?.lastOrNull?.path,
+    );
+
+    final doneSaving = Set<int>.from(state.savingItemIds)..remove(itemId);
+
+    state = result.when(
+      success: (data) {
+        if (data == null) return state.copyWith(savingItemIds: doneSaving);
+        final newPoints = Map<int, int>.from(state.confirmedPoints);
+        if (data.pointsAwarded > 0) {
+          newPoints[itemId] = data.pointsAwarded;
+        } else {
+          newPoints.remove(itemId);
+        }
+        return state.copyWith(
+          savingItemIds: doneSaving,
+          confirmedPoints: newPoints,
+          proofImages: Map<int, List<XFile>>.from(state.proofImages)..remove(itemId),
+          checklist: _withUpdatedItemProof(itemId: itemId, hasProof: data.hasProof),
+        );
+      },
+      error: (err) => state.copyWith(
+        // Revert optimistic update on failure.
+        starAnswers: isSameRating
+            ? (Map<int, int>.from(state.starAnswers)..[itemId] = rating)
+            : (Map<int, int>.from(state.starAnswers)..remove(itemId)),
+        savingItemIds: doneSaving,
+        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
+      ),
+    );
+  }
+
+  Future<void> saveYesNo({
+    required int visitId,
+    required int itemId,
+    required bool value,
+  }) async {
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final partnerId = user?.partnerId;
+    if (partnerId == null) return;
+
+    state = state.copyWith(
+      yesNoAnswers: Map<int, bool>.from(state.yesNoAnswers)..[itemId] = value,
+      savingItemIds: Set<int>.from(state.savingItemIds)..add(itemId),
+      itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..remove(itemId),
+    );
+
+    final result = await ref.read(saveChecklistItemResponseUseCaseProvider).call(
+      partnerId: partnerId,
+      visitId: visitId,
+      itemId: itemId,
+      booleanValue: value,
+    );
+
+    final doneSaving = Set<int>.from(state.savingItemIds)..remove(itemId);
+
+    state = result.when(
+      success: (data) {
+        if (data == null) return state.copyWith(savingItemIds: doneSaving);
+        final newPoints = Map<int, int>.from(state.confirmedPoints);
+        if (data.pointsAwarded > 0) {
+          newPoints[itemId] = data.pointsAwarded;
+        } else {
+          newPoints.remove(itemId);
+        }
+        return state.copyWith(
+          savingItemIds: doneSaving,
+          confirmedPoints: newPoints,
+        );
+      },
+      error: (err) => state.copyWith(
+        yesNoAnswers: Map<int, bool>.from(state.yesNoAnswers)..remove(itemId),
+        savingItemIds: doneSaving,
+        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
+      ),
+    );
+  }
+
+  // WHY: separate from saveStarRating/saveYesNo to avoid toggle logic when
+  // submitting via the explicit submit button (always-proof items).
+  Future<void> submitItemAnswer({
+    required int visitId,
+    required int itemId,
+  }) async {
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final partnerId = user?.partnerId;
+    if (partnerId == null) return;
+
+    final ratingValue = state.starAnswers[itemId];
+    final booleanValue = state.yesNoAnswers[itemId];
+    if (ratingValue == null && booleanValue == null) return;
+
+    state = state.copyWith(
+      savingItemIds: Set<int>.from(state.savingItemIds)..add(itemId),
+      itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..remove(itemId),
+    );
+
+    final result = await ref.read(saveChecklistItemResponseUseCaseProvider).call(
+      partnerId: partnerId,
+      visitId: visitId,
+      itemId: itemId,
+      ratingValue: ratingValue,
+      booleanValue: booleanValue,
+      photoPath: state.proofImages[itemId]?.lastOrNull?.path,
+    );
+
+    final doneSaving = Set<int>.from(state.savingItemIds)..remove(itemId);
+
+    state = result.when(
+      success: (data) {
+        if (data == null) return state.copyWith(savingItemIds: doneSaving);
+        final newPoints = Map<int, int>.from(state.confirmedPoints);
+        if (data.pointsAwarded > 0) {
+          newPoints[itemId] = data.pointsAwarded;
+        } else {
+          newPoints.remove(itemId);
+        }
+        return state.copyWith(
+          savingItemIds: doneSaving,
+          confirmedPoints: newPoints,
+          proofImages: Map<int, List<XFile>>.from(state.proofImages)..remove(itemId),
+          checklist: _withUpdatedItemProof(itemId: itemId, hasProof: data.hasProof),
+        );
+      },
+      error: (err) => state.copyWith(
+        savingItemIds: doneSaving,
+        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)..[itemId] = err,
+      ),
+    );
   }
 
   Future<void> pickProofImage({required int itemId}) async {
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await picker.pickImage(source: .gallery);
     if (image == null) return;
     final updated = Map<int, List<XFile>>.from(state.proofImages);
     updated[itemId] = [...(updated[itemId] ?? []), image];
@@ -167,6 +339,33 @@ class InspectionChecklist extends _$InspectionChecklist {
     state = state.copyWith(proofImages: updated);
   }
 
+  ChecklistEntity? _withUpdatedItemProof({
+    required int itemId,
+    required bool hasProof,
+  }) {
+    final checklist = state.checklist;
+    if (checklist == null) return null;
+    final updatedItems = checklist.items.map((item) {
+      if (item.id != itemId) return item;
+      return ChecklistItemEntity(
+        id: item.id,
+        question: item.question,
+        answerType: item.answerType,
+        order: item.order,
+        maxPoints: item.maxPoints,
+        proofPolicy: item.proofPolicy,
+        existingRating: item.existingRating,
+        existingBoolAnswer: item.existingBoolAnswer,
+        hasProof: hasProof,
+      );
+    }).toList();
+    return ChecklistEntity(
+      maxScore: checklist.maxScore,
+      items: updatedItems,
+      issues: checklist.issues,
+    );
+  }
+
   Future<void> submit({required int visitId}) async {
     if (!state.isComplete) return;
 
@@ -176,41 +375,9 @@ class InspectionChecklist extends _$InspectionChecklist {
 
     state = state.copyWith(isSubmitting: true, clearSubmitError: true);
 
-    final answers = <ChecklistAnswerRequestEntity>[];
-
-    for (final item in state.checklist?.items ?? []) {
-      if (item.answerType == ChecklistAnswerType.repairWork) continue;
-      if (item.answerType == ChecklistAnswerType.star &&
-          state.starAnswers.containsKey(item.id)) {
-        answers.add(ChecklistAnswerRequestEntity(
-          itemId: item.id,
-          starRating: state.starAnswers[item.id],
-        ));
-      }
-      if (item.answerType == ChecklistAnswerType.yesNo &&
-          state.yesNoAnswers.containsKey(item.id)) {
-        answers.add(ChecklistAnswerRequestEntity(
-          itemId: item.id,
-          yesNoAnswer: state.yesNoAnswers[item.id],
-        ));
-      }
-    }
-
-    final proofPaths = <int, List<String>>{};
-    for (final entry in state.proofImages.entries) {
-      proofPaths[entry.key] = entry.value.map((f) => f.path).toList();
-    }
-
     final Result<void, String> result = await ref
-        .read(submitChecklistUseCaseProvider)
-        .call(
-          partnerId: partnerId,
-          visitId: visitId,
-          request: ChecklistSubmitRequestEntity(
-            answers: answers,
-            proofImagePaths: proofPaths,
-          ),
-        );
+        .read(submitVisitUseCaseProvider)
+        .call(partnerId: partnerId, visitId: visitId);
 
     state = result.when(
       success: (_) => state.copyWith(isSubmitting: false, submitSuccess: true),

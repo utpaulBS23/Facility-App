@@ -280,6 +280,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static TaskDetailModelMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TaskDetailModelMapper._());
+      TaskIssueModelMapper.ensureInitialized();
       TaskMediaModelMapper.ensureInitialized();
     }
     return _instance!;
@@ -313,6 +314,9 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static const Field<TaskDetailModel, bool> _f$proofRequiredOnComplete = Field(
       'proofRequiredOnComplete', _$proofRequiredOnComplete,
       key: r'proof_required_on_complete', opt: true, def: false);
+  static TaskIssueModel? _$issue(TaskDetailModel v) => v.issue;
+  static const Field<TaskDetailModel, TaskIssueModel> _f$issue =
+      Field('issue', _$issue, opt: true);
   static List<TaskMediaModel>? _$media(TaskDetailModel v) => v.media;
   static const Field<TaskDetailModel, List<TaskMediaModel>> _f$media =
       Field('media', _$media, opt: true);
@@ -327,6 +331,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
     #status: _f$status,
     #priority: _f$priority,
     #proofRequiredOnComplete: _f$proofRequiredOnComplete,
+    #issue: _f$issue,
     #media: _f$media,
   };
 
@@ -340,6 +345,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
         status: data.dec(_f$status),
         priority: data.dec(_f$priority),
         proofRequiredOnComplete: data.dec(_f$proofRequiredOnComplete),
+        issue: data.dec(_f$issue),
         media: data.dec(_f$media));
   }
 
@@ -356,3 +362,46 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
 }
 
 mixin TaskDetailModelMappable {}
+
+class TaskMediaResponseModelMapper
+    extends ClassMapperBase<TaskMediaResponseModel> {
+  TaskMediaResponseModelMapper._();
+
+  static TaskMediaResponseModelMapper? _instance;
+  static TaskMediaResponseModelMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = TaskMediaResponseModelMapper._());
+      TaskMediaModelMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'TaskMediaResponseModel';
+
+  static TaskMediaModel _$data(TaskMediaResponseModel v) => v.data;
+  static const Field<TaskMediaResponseModel, TaskMediaModel> _f$data =
+      Field('data', _$data);
+
+  @override
+  final MappableFields<TaskMediaResponseModel> fields = const {
+    #data: _f$data,
+  };
+
+  static TaskMediaResponseModel _instantiate(DecodingData data) {
+    return TaskMediaResponseModel(data: data.dec(_f$data));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static TaskMediaResponseModel fromJson(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<TaskMediaResponseModel>(map);
+  }
+
+  static TaskMediaResponseModel fromJsonString(String json) {
+    return ensureInitialized().decodeJson<TaskMediaResponseModel>(json);
+  }
+}
+
+mixin TaskMediaResponseModelMappable {}

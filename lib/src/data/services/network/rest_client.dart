@@ -127,6 +127,20 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
+  @POST(Endpoints.visitSubmit)
+  Future<HttpResponse> submitVisit({
+    @Path('partnerId') required int partnerId,
+    @Path('visitId') required int visitId,
+  });
+
+  @POST(Endpoints.visitChecklistItemResponse)
+  Future<HttpResponse> saveChecklistItemResponse({
+    @Path('partnerId') required int partnerId,
+    @Path('visitId') required int visitId,
+    @Path('itemId') required int itemId,
+    @Body() required FormData formData,
+  });
+
   @POST(Endpoints.reportIssue)
   Future<HttpResponse> reportIssue({
     @Path('partnerId') required int partnerId,
@@ -144,5 +158,24 @@ abstract class RestClient {
   Future<HttpResponse> getTaskDetail({
     @Path('partnerId') required int partnerId,
     @Path('taskId') required int taskId,
+  });
+
+  @POST(Endpoints.startIssue)
+  Future<HttpResponse> startIssue({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+  });
+
+  @POST(Endpoints.completeIssue)
+  Future<HttpResponse> completeIssue({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+  });
+
+  @POST(Endpoints.taskMedia)
+  Future<HttpResponse> uploadTaskMedia({
+    @Path('partnerId') required int partnerId,
+    @Path('taskId') required int taskId,
+    @Body() required FormData formData,
   });
 }

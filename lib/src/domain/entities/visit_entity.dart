@@ -70,6 +70,7 @@ class VisitDetailEntity {
     this.facilityLongitude,
     this.inRangeThresholdMeters,
     this.assignedBy,
+    this.locationVerified = false,
   });
 
   final int id;
@@ -84,6 +85,7 @@ class VisitDetailEntity {
   final String scheduledStartTime;
   final String scheduledEndTime;
   final VisitAssignedByEntity? assignedBy;
+  final bool locationVerified;
 }
 
 class GpsVerificationEntity {

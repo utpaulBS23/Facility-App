@@ -3,11 +3,13 @@ part of '../view/inspection_checklist_page.dart';
 class _InspectionBottomBar extends StatelessWidget {
   const _InspectionBottomBar({
     required this.state,
+    required this.isResolved,
     required this.onSubmit,
     required this.onCancel,
   });
 
   final InspectionChecklistState state;
+  final bool isResolved;
   final VoidCallback onSubmit;
   final VoidCallback onCancel;
 
@@ -24,48 +26,51 @@ class _InspectionBottomBar extends StatelessWidget {
         mainAxisSize: .min,
         children: [
           _ScoreRow(state: state),
-          if (!state.isComplete) _WarningBanner(),
-          Padding(
-            padding: .fromLTRB(
-              spacing.s16,
-              spacing.s12,
-              spacing.s16,
-              spacing.s16 + MediaQuery.of(context).padding.bottom,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onCancel,
-                    child: Text(context.locale.cancel),
-                  ),
-                ),
-                SizedBox(width: spacing.s12),
-                Expanded(
-                  flex: 2,
-                  child: FilledButton(
-                    onPressed: state.isComplete && !state.isSubmitting
-                        ? onSubmit
-                        : null,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: context.color.primary,
-                      disabledBackgroundColor:
-                          context.color.primary.withValues(alpha: 0.4),
+          if (!isResolved) ...[
+            if (!state.isComplete) _WarningBanner(),
+            Padding(
+              padding: .fromLTRB(
+                spacing.s16,
+                spacing.s12,
+                spacing.s16,
+                spacing.s16 + MediaQuery.of(context).padding.bottom,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      child: Text(context.locale.cancel),
                     ),
-                    child: state.isSubmitting
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator.adaptive(
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Text(context.locale.submit),
                   ),
-                ),
-              ],
+                  SizedBox(width: spacing.s12),
+                  Expanded(
+                    flex: 2,
+                    child: FilledButton(
+                      onPressed: state.isComplete && !state.isSubmitting
+                          ? onSubmit
+                          : null,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: context.color.primary,
+                        disabledBackgroundColor:
+                            context.color.primary.withValues(alpha: 0.4),
+                      ),
+                      child: state.isSubmitting
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator.adaptive(
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(context.locale.submit),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ] else
+            SizedBox(height: spacing.s16 + MediaQuery.of(context).padding.bottom),
         ],
       ),
     );

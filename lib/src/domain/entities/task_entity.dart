@@ -1,6 +1,6 @@
 enum TaskPriority { high, medium, low }
 
-enum TaskStatus { today, pending, completed }
+enum TaskStatus { today, pending, inProgress, completed }
 
 class TaskMediaEntity {
   const TaskMediaEntity({required this.id, required this.url, this.alt});
@@ -32,4 +32,29 @@ class TaskEntity {
   final TaskStatus status;
   final bool proofRequiredOnComplete;
   final List<TaskMediaEntity> media;
+
+  TaskEntity copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? location,
+    String? dueTime,
+    TaskPriority? priority,
+    TaskStatus? status,
+    bool? proofRequiredOnComplete,
+    List<TaskMediaEntity>? media,
+  }) {
+    return TaskEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      location: location ?? this.location,
+      dueTime: dueTime ?? this.dueTime,
+      priority: priority ?? this.priority,
+      status: status ?? this.status,
+      proofRequiredOnComplete:
+          proofRequiredOnComplete ?? this.proofRequiredOnComplete,
+      media: media ?? this.media,
+    );
+  }
 }
