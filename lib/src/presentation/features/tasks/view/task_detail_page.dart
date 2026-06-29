@@ -7,6 +7,7 @@ import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_detail_provider.dart';
+import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
 
 class TaskDetailPage extends ConsumerStatefulWidget {
@@ -23,7 +24,53 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(taskDetailProvider.notifier).fetch(taskId: widget.task.id),
+      (_) =>
+          ref.read(taskDetailProvider.notifier).fetch(taskId: widget.task.id),
+    );
+  }
+
+  void _onStartTap(TaskEntity task) {
+    ref.read(taskDetailProvider.notifier).startIssue(issueId: task.id);
+  }
+
+  Future<void> _onCompleteTap(TaskEntity task) async {
+    if (task.media.isNotEmpty) {
+      final completedTask = await ref
+          .read(taskDetailProvider.notifier)
+          .completeIssue(issueId: task.id);
+      if (completedTask == null) {
+        return;
+      }
+      ref.read(tasksProvider.notifier).replaceTask(completedTask);
+      await ref
+          .read(taskDetailProvider.notifier)
+          .fetch(taskId: task.id);
+      return;
+    }
+
+    showTaskProofBottomSheet(
+      context,
+      onSubmit: (photoPath, alt) async {
+        final media = await ref
+            .read(taskDetailProvider.notifier)
+            .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
+        if (media == null) {
+          return;
+        }
+        ref
+            .read(tasksProvider.notifier)
+            .appendMedia(taskId: task.id, media: media);
+        final completedTask = await ref
+            .read(taskDetailProvider.notifier)
+            .completeIssue(issueId: task.id);
+        if (completedTask == null) {
+          return;
+        }
+        ref.read(tasksProvider.notifier).replaceTask(completedTask);
+        await ref
+            .read(taskDetailProvider.notifier)
+            .fetch(taskId: task.id);
+      },
     );
   }
 
@@ -43,7 +90,8 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
         ),
       ),
       body: detailState.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, _) => Center(
           child: Column(
             mainAxisSize: .min,
@@ -65,16 +113,30 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
             ],
           ),
         ),
-        data: (task) => _TaskDetailBody(task: task),
+        data: (task) => _TaskDetailBody(
+          task: task,
+          onStartTap: _onStartTap,
+          onCompleteTap: _onCompleteTap,
+        ),
       ),
     );
   }
 }
 
 class _TaskDetailBody extends StatelessWidget {
-  const _TaskDetailBody({required this.task});
+  const _TaskDetailBody({
+    required this.task,
+    required this.onStartTap,
+    required this.onCompleteTap,
+  });
 
   final TaskEntity task;
+  final ValueChanged<TaskEntity> onStartTap;
+  final Future<void> Function(TaskEntity task) onCompleteTap;
+
+  bool get _canStart =>
+      task.status == TaskStatus.today || task.status == TaskStatus.pending;
+  bool get _canComplete => task.status == TaskStatus.inProgress;
 
   Color _priorityColor(BuildContext context) => switch (task.priority) {
     TaskPriority.high => context.color.primary,
@@ -132,10 +194,7 @@ class _TaskDetailBody extends StatelessWidget {
               ),
             ),
             Gap(spacing.s8),
-            _InfoRow(
-              icon: Icons.location_on_outlined,
-              label: task.location,
-            ),
+            _InfoRow(icon: Icons.location_on_outlined, label: task.location),
             Gap(spacing.s4),
             _InfoRow(
               icon: Icons.access_time_outlined,
@@ -160,8 +219,7 @@ class _TaskDetailBody extends StatelessWidget {
                   itemBuilder: (_, i) {
                     final m = task.media[i];
                     return ClipRRect(
-                      borderRadius:
-                          .circular(context.dimensions.radius.r6),
+                      borderRadius: .circular(context.dimensions.radius.r6),
                       child: Image.network(
                         m.url,
                         width: 120,
@@ -182,11 +240,21 @@ class _TaskDetailBody extends StatelessWidget {
                 ),
               ),
             ],
-            if (task.status != TaskStatus.completed) ...[
+            if (_canStart) ...[
               Gap(spacing.s24),
               FilledButton(
-                onPressed: () => showTaskProofBottomSheet(context),
+                onPressed: () => onStartTap(task),
                 child: Text(context.locale.startTask),
+              ),
+            ],
+            if (_canComplete) ...[
+              Gap(spacing.s24),
+              FilledButton(
+                onPressed: () => onCompleteTap(task),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.color.success,
+                ),
+                child: Text(context.locale.completeTask),
               ),
             ],
           ],

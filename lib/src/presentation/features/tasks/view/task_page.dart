@@ -41,6 +41,35 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
 
+  void _onStartTap(TaskEntity task) {
+    ref.read(tasksProvider.notifier).startIssue(issueId: task.id);
+  }
+
+  void _onCompleteTap(TaskEntity task) {
+    if (task.media.isNotEmpty) {
+      ref
+          .read(tasksProvider.notifier)
+          .completeIssue(issueId: task.id)
+          .then((_) => ref
+              .read(tasksProvider.notifier)
+              .fetch(bucket: _selectedTab.name));
+      return;
+    }
+
+    showTaskProofBottomSheet(
+      context,
+      onSubmit: (photoPath, alt) async {
+        await ref
+            .read(tasksProvider.notifier)
+            .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
+        await ref.read(tasksProvider.notifier).completeIssue(issueId: task.id);
+        await ref
+            .read(tasksProvider.notifier)
+            .fetch(bucket: _selectedTab.name);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -57,10 +86,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       body: Column(
         crossAxisAlignment: .stretch,
         children: [
-          _TaskTabBar(
-            selectedTab: _selectedTab,
-            onTabChanged: _onTabChanged,
-          ),
+          _TaskTabBar(selectedTab: _selectedTab, onTabChanged: _onTabChanged),
           Expanded(
             child: taskState.when(
               loading: () =>
@@ -78,10 +104,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     ),
                     Gap(spacing.s16),
                     TextButton(
-                      onPressed: () =>
-                          ref
-                              .read(tasksProvider.notifier)
-                              .fetch(bucket: _selectedTab.name),
+                      onPressed: () => ref
+                          .read(tasksProvider.notifier)
+                          .fetch(bucket: _selectedTab.name),
                       child: Text(context.locale.retry),
                     ),
                   ],
@@ -120,7 +145,8 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                   itemBuilder: (_, i) => _TaskCard(
                     task: tasks[i],
                     onTap: () => _onViewTap(tasks[i]),
-                    onStartTap: () => showTaskProofBottomSheet(context),
+                    onStartTap: () => _onStartTap(tasks[i]),
+                    onCompleteTap: () => _onCompleteTap(tasks[i]),
                   ),
                 );
               },
@@ -133,10 +159,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
 }
 
 class _TaskTabBar extends StatelessWidget {
-  const _TaskTabBar({
-    required this.selectedTab,
-    required this.onTabChanged,
-  });
+  const _TaskTabBar({required this.selectedTab, required this.onTabChanged});
 
   final _TaskTab selectedTab;
   final void Function(_TaskTab) onTabChanged;
@@ -173,7 +196,6 @@ class _TaskTabBar extends StatelessWidget {
             _Tab(
               label: context.locale.completed,
               isSelected: selectedTab == _TaskTab.completed,
-              isCompleted: true,
               onTap: () => onTabChanged(_TaskTab.completed),
             ),
           ],
@@ -188,29 +210,22 @@ class _Tab extends StatelessWidget {
     required this.label,
     required this.isSelected,
     required this.onTap,
-    this.isCompleted = false,
   });
 
   final String label;
   final bool isSelected;
-  final bool isCompleted;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final isActive = isSelected && isCompleted;
 
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: isActive
-                ? context.color.successAlt
-                : isSelected
-                ? context.color.brandSubtle
-                : Colors.transparent,
+            color: isSelected ? context.color.brandSubtle : Colors.transparent,
             borderRadius: .circular(context.dimensions.radius.r12),
           ),
           padding: EdgeInsets.symmetric(vertical: spacing.s12),
@@ -218,9 +233,7 @@ class _Tab extends StatelessWidget {
           child: Text(
             label,
             style: context.textStyle.bodySmall.copyWith(
-              color: isActive
-                  ? context.color.success
-                  : isSelected
+              color: isSelected
                   ? context.color.primary
                   : context.color.text.secondary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,

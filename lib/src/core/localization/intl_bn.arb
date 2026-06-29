@@ -269,12 +269,18 @@
   "start": "শুরু করুন",
   "taskDetails": "কাজের বিবরণ",
   "startTask": "কাজ শুরু করুন",
+  "completeTask": "কাজ সম্পন্ন করুন",
   "noTasksFound": "কোনো কাজ পাওয়া যায়নি।",
+  "proofAltLabel": "ছবির বিবরণ",
+  "proofAltHint": "যেমন: বাল্ব পরিবর্তন করা হয়েছে",
+  "uploadTaskMediaFailed": "প্রমাণের ছবি আপলোড ব্যর্থ হয়েছে",
   "high": "উচ্চ",
   "medium": "মাঝারি",
   "low": "কম",
   "due": "সময়সীমা",
   "gallery": "গ্যালারি",
   "proofRequired": "প্রমাণ প্রয়োজন",
-  "proofRequiredSubtitle": "কাজ সম্পন্নের প্রমাণ হিসেবে একটি ছবি তুলুন বা আপলোড করুন।"
+  "proofRequiredSubtitle": "কাজ সম্পন্নের প্রমাণ হিসেবে একটি ছবি তুলুন বা আপলোড করুন।",
+  "changePhoto": "ছবি পরিবর্তন করুন",
+  "submitProof": "প্রমাণ জমা দিন"
 }

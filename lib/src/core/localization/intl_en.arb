@@ -269,12 +269,18 @@
   "start": "Start",
   "taskDetails": "Task Details",
   "startTask": "Start Task",
+  "completeTask": "Complete Task",
   "noTasksFound": "No tasks found.",
+  "proofAltLabel": "Photo description",
+  "proofAltHint": "Example: Bulb replaced",
+  "uploadTaskMediaFailed": "Failed to upload proof photo",
   "high": "High",
   "medium": "Medium",
   "low": "Low",
   "due": "Due",
   "gallery": "Gallery",
   "proofRequired": "Proof Required",
-  "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion."
+  "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion.",
+  "changePhoto": "Change Photo",
+  "submitProof": "Submit Proof"
 }
