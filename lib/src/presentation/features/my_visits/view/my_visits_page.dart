@@ -52,9 +52,9 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   }
 
   List<VisitSummaryEntity> _filteredVisits(List<VisitSummaryEntity> all) {
-    final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final selectedDateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
     return switch (_selectedTab) {
-      _VisitTab.today => all.where((v) => v.date == todayStr).toList(),
+      _VisitTab.today => all.where((v) => v.date == selectedDateStr).toList(),
       _VisitTab.week => all,
       _VisitTab.completed => all
             .where((v) =>
