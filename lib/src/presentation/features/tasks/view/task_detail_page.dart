@@ -33,18 +33,22 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
     ref.read(taskDetailProvider.notifier).startIssue(issueId: task.id);
   }
 
+  void _onRetry() {
+    ref.read(taskDetailProvider.notifier).fetch(taskId: widget.task.id);
+  }
+
   Future<void> _onCompleteTap(TaskEntity task) async {
     if (task.media.isNotEmpty) {
-      final completedTask = await ref
-          .read(taskDetailProvider.notifier)
-          .completeIssue(issueId: task.id);
-      if (completedTask == null) {
-        return;
+      try {
+        final completedTask = await ref
+            .read(taskDetailProvider.notifier)
+            .completeIssue(issueId: task.id);
+        if (completedTask == null) return;
+        ref.read(tasksProvider.notifier).replaceTask(completedTask);
+        await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
+      } catch (_) {
+        // Error already surfaced via AsyncValue.error on taskDetailProvider
       }
-      ref.read(tasksProvider.notifier).replaceTask(completedTask);
-      await ref
-          .read(taskDetailProvider.notifier)
-          .fetch(taskId: task.id);
       return;
     }
 
@@ -54,22 +58,15 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
         final media = await ref
             .read(taskDetailProvider.notifier)
             .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
-        if (media == null) {
-          return;
-        }
-        ref
-            .read(tasksProvider.notifier)
-            .appendMedia(taskId: task.id, media: media);
+        if (media == null) return;
+        // WHY: replaceTask syncs list using completedTask which carries media from detail state;
+        // appendMedia is skipped to avoid partial-failure desync if complete subsequently fails.
         final completedTask = await ref
             .read(taskDetailProvider.notifier)
             .completeIssue(issueId: task.id);
-        if (completedTask == null) {
-          return;
-        }
+        if (completedTask == null) return;
         ref.read(tasksProvider.notifier).replaceTask(completedTask);
-        await ref
-            .read(taskDetailProvider.notifier)
-            .fetch(taskId: task.id);
+        await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
       },
     );
   }
@@ -105,9 +102,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
               ),
               Gap(context.dimensions.spacing.s16),
               TextButton(
-                onPressed: () => ref
-                    .read(taskDetailProvider.notifier)
-                    .fetch(taskId: widget.task.id),
+                onPressed: _onRetry,
                 child: Text(context.locale.retry),
               ),
             ],

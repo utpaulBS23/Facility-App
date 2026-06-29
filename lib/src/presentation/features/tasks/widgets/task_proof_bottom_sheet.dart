@@ -175,11 +175,11 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
                 onTap: _isSubmitting ? null : _deleteImage,
                 child: Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.black54,
-                    shape: BoxShape.circle,
+                  decoration: BoxDecoration(
+                    color: context.color.overlay,
+                    shape: .circle,
                   ),
-                  child: const Icon(Icons.close, color: Colors.white, size: 18),
+                  child: Icon(Icons.close, color: context.color.onPrimary, size: 18),
                 ),
               ),
             ),
@@ -209,12 +209,12 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
         FilledButton(
           onPressed: _isSubmitting ? null : _submit,
           child: _isSubmitting
-              ? const SizedBox(
+              ? SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: context.color.onPrimary,
                   ),
                 )
               : Text(context.locale.submitProof),

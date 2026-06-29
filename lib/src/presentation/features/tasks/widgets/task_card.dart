@@ -5,13 +5,18 @@ class _TaskCard extends StatelessWidget {
     required this.task,
     required this.onTap,
     required this.onStartTap,
+    required this.onCompleteTap,
   });
 
   final TaskEntity task;
   final VoidCallback onTap;
   final VoidCallback onStartTap;
+  final VoidCallback onCompleteTap;
 
   bool get _isCompleted => task.status == TaskStatus.completed;
+  bool get _canStart =>
+      task.status == TaskStatus.today || task.status == TaskStatus.pending;
+  bool get _canComplete => task.status == TaskStatus.inProgress;
 
   Color _priorityColor(BuildContext context) => switch (task.priority) {
     TaskPriority.high => context.color.primary,
@@ -28,24 +33,28 @@ class _TaskCard extends StatelessWidget {
   Color _statusBorderColor(BuildContext context) => switch (task.status) {
     TaskStatus.today => context.color.primary,
     TaskStatus.pending => context.color.warning,
+    TaskStatus.inProgress => context.color.primary,
     TaskStatus.completed => context.color.success,
   };
 
   Color _statusChipBg(BuildContext context) => switch (task.status) {
     TaskStatus.today => context.color.brandSubtle,
     TaskStatus.pending => context.color.warningAlt,
+    TaskStatus.inProgress => context.color.brandSubtle,
     TaskStatus.completed => context.color.successAlt,
   };
 
   Color _statusChipText(BuildContext context) => switch (task.status) {
     TaskStatus.today => context.color.primary,
     TaskStatus.pending => context.color.warning,
+    TaskStatus.inProgress => context.color.primary,
     TaskStatus.completed => context.color.success,
   };
 
   String _statusLabel(BuildContext context) => switch (task.status) {
     TaskStatus.today => context.locale.today,
     TaskStatus.pending => context.locale.pending,
+    TaskStatus.inProgress => context.locale.inProgress,
     TaskStatus.completed => context.locale.completed,
   };
 
@@ -78,9 +87,9 @@ class _TaskCard extends StatelessWidget {
               height: 4,
               decoration: BoxDecoration(
                 color: _statusBorderColor(context),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(context.dimensions.radius.r12),
+                  topRight: Radius.circular(context.dimensions.radius.r12),
                 ),
               ),
             ),
@@ -114,8 +123,7 @@ class _TaskCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: _statusChipBg(context),
-                          borderRadius:
-                              .circular(context.dimensions.radius.r6),
+                          borderRadius: .circular(context.dimensions.radius.r6),
                         ),
                         child: Row(
                           mainAxisSize: .min,
@@ -163,7 +171,7 @@ class _TaskCard extends StatelessWidget {
                     label: '${context.locale.due}: ${task.dueTime}',
                     muted: _isCompleted,
                   ),
-                  if (!_isCompleted) ...[
+                  if (_canStart) ...[
                     Gap(spacing.s12),
                     FilledButton(
                       onPressed: onStartTap,
@@ -171,6 +179,16 @@ class _TaskCard extends StatelessWidget {
                         backgroundColor: _startButtonColor(context),
                       ),
                       child: Text(context.locale.start),
+                    ),
+                  ],
+                  if (_canComplete) ...[
+                    Gap(spacing.s12),
+                    FilledButton(
+                      onPressed: onCompleteTap,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: context.color.success,
+                      ),
+                      child: Text(context.locale.completeTask),
                     ),
                   ],
                 ],
@@ -184,11 +202,7 @@ class _TaskCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.icon,
-    required this.label,
-    this.muted = false,
-  });
+  const _InfoRow({required this.icon, required this.label, this.muted = false});
 
   final IconData icon;
   final String label;
@@ -196,12 +210,17 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        muted ? context.color.text.muted : context.color.text.secondary;
+    final color = muted
+        ? context.color.text.muted
+        : context.color.text.secondary;
 
     return Row(
       children: [
-        Icon(icon, size: 16, color: muted ? context.color.inactive : context.color.icon),
+        Icon(
+          icon,
+          size: 16,
+          color: muted ? context.color.inactive : context.color.icon,
+        ),
         const Gap(4),
         Expanded(
           child: Text(

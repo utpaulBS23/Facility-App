@@ -38,6 +38,10 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     ref.read(tasksProvider.notifier).fetch(bucket: tab.name);
   }
 
+  void _onRetry() {
+    ref.read(tasksProvider.notifier).fetch(bucket: _selectedTab.name);
+  }
+
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
 
@@ -50,9 +54,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       ref
           .read(tasksProvider.notifier)
           .completeIssue(issueId: task.id)
-          .then((_) => ref
-              .read(tasksProvider.notifier)
-              .fetch(bucket: _selectedTab.name));
+          .then((_) => ref.read(tasksProvider.notifier).fetch(bucket: _selectedTab.name))
+          // WHY: error already surfaced via AsyncValue.error on tasksProvider; suppress unhandled Future
+          .catchError((_) {});
       return;
     }
 
@@ -63,9 +67,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
             .read(tasksProvider.notifier)
             .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
         await ref.read(tasksProvider.notifier).completeIssue(issueId: task.id);
-        await ref
-            .read(tasksProvider.notifier)
-            .fetch(bucket: _selectedTab.name);
+        await ref.read(tasksProvider.notifier).fetch(bucket: _selectedTab.name);
       },
     );
   }
@@ -104,9 +106,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     ),
                     Gap(spacing.s16),
                     TextButton(
-                      onPressed: () => ref
-                          .read(tasksProvider.notifier)
-                          .fetch(bucket: _selectedTab.name),
+                      onPressed: _onRetry,
                       child: Text(context.locale.retry),
                     ),
                   ],
