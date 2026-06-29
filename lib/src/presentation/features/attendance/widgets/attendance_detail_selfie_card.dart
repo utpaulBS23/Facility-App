@@ -95,11 +95,11 @@ class _SelfieImage extends StatelessWidget {
                       child: CircularProgressIndicator(
                         value: progress.expectedTotalBytes != null
                             ? progress.cumulativeBytesLoaded /
-                                progress.expectedTotalBytes!
+                                  progress.expectedTotalBytes!
                             : null,
                       ),
                     ),
-              errorBuilder: (_, __, ___) => Container(
+              errorBuilder: (_, _, _) => Container(
                 color: context.color.subtle,
                 child: Icon(
                   Icons.broken_image_outlined,

@@ -23,13 +23,13 @@ class _InspectionBottomBar extends StatelessWidget {
         border: Border(top: BorderSide(color: context.color.borderSubtle)),
       ),
       child: Column(
-        mainAxisSize: .min,
+        mainAxisSize: MainAxisSize.min,
         children: [
           _ScoreRow(state: state),
           if (!isResolved) ...[
             if (!state.isComplete) _WarningBanner(),
             Padding(
-              padding: .fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 spacing.s16,
                 spacing.s12,
                 spacing.s16,
@@ -52,8 +52,8 @@ class _InspectionBottomBar extends StatelessWidget {
                           : null,
                       style: FilledButton.styleFrom(
                         backgroundColor: context.color.primary,
-                        disabledBackgroundColor:
-                            context.color.primary.withValues(alpha: 0.4),
+                        disabledBackgroundColor: context.color.primary
+                            .withValues(alpha: 0.4),
                       ),
                       child: state.isSubmitting
                           ? const SizedBox(
@@ -70,7 +70,9 @@ class _InspectionBottomBar extends StatelessWidget {
               ),
             ),
           ] else
-            SizedBox(height: spacing.s16 + MediaQuery.of(context).padding.bottom),
+            SizedBox(
+              height: spacing.s16 + MediaQuery.of(context).padding.bottom,
+            ),
         ],
       ),
     );
@@ -89,29 +91,26 @@ class _ScoreRow extends StatelessWidget {
     final score = state.currentScore;
 
     return Padding(
-      padding: .symmetric(
+      padding: EdgeInsets.symmetric(
         horizontal: spacing.s16,
         vertical: spacing.s12,
       ),
       child: Row(
-        mainAxisAlignment: .spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           LabelLargeText(
             context.locale.totalScore,
             color: context.color.text.primary,
           ),
           Row(
-            crossAxisAlignment: .baseline,
-            textBaseline: .alphabetic,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               BodySmallText(
                 '${context.locale.outOf(maxScore)}  ',
                 color: context.color.text.secondary,
               ),
-              Headline2xlTinyText(
-                '$score',
-                color: context.color.text.primary,
-              ),
+              Headline2xlTinyText('$score', color: context.color.text.primary),
             ],
           ),
         ],
@@ -130,7 +129,7 @@ class _WarningBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: context.color.warning.withValues(alpha: 0.1),
-      padding: .symmetric(
+      padding: EdgeInsets.symmetric(
         horizontal: spacing.s16,
         vertical: spacing.s8,
       ),

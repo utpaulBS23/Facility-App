@@ -64,9 +64,11 @@ class _SelfieZone extends StatelessWidget {
                   vertical: dimensions.spacing.s12,
                 ),
                 decoration: BoxDecoration(
-                  color: colors.error.withOpacity(0.15),
+                  color: colors.error.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(dimensions.radius.r12),
-                  border: Border.all(color: colors.error.withOpacity(0.5)),
+                  border: Border.all(
+                    color: colors.error.withValues(alpha: 0.5),
+                  ),
                 ),
                 child: Text(
                   faceValidationError!,

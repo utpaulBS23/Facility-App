@@ -90,7 +90,8 @@ final class VisitRepositoryImpl extends VisitRepository {
   });
 
   @override
-  Future<Result<ChecklistItemSaveResponseEntity, Failure>> saveChecklistItemResponse({
+  Future<Result<ChecklistItemSaveResponseEntity, Failure>>
+  saveChecklistItemResponse({
     required int partnerId,
     required int visitId,
     required int itemId,
@@ -101,29 +102,31 @@ final class VisitRepositoryImpl extends VisitRepository {
     final fields = <MapEntry<String, MultipartFile>>[];
     final formFields = <String, dynamic>{'_method': 'PUT'};
     if (ratingValue != null) formFields['rating_value'] = ratingValue;
-    if (booleanValue != null) formFields['boolean_value'] = booleanValue ? '1' : '0';
-    if (photoPath != null) {
-      fields.add(MapEntry(
-        'photo',
-        await MultipartFile.fromFile(photoPath, filename: File(photoPath).uri.pathSegments.last),
-      ));
+    if (booleanValue != null) {
+      formFields['boolean_value'] = booleanValue ? '1' : '0';
     }
-    final formData = FormData.fromMap({...formFields, ...Map.fromEntries(fields)});
+    if (photoPath != null) {
+      fields.add(
+        MapEntry(
+          'photo',
+          await MultipartFile.fromFile(
+            photoPath,
+            filename: File(photoPath).uri.pathSegments.last,
+          ),
+        ),
+      );
+    }
+    final formData = FormData.fromMap({
+      ...formFields,
+      ...Map.fromEntries(fields),
+    });
     final response = await _client.saveChecklistItemResponse(
       partnerId: partnerId,
       visitId: visitId,
       itemId: itemId,
       formData: formData,
     );
-    final raw = response.data['data'];
-    final data = raw as Map<String, dynamic>? ?? (throw Exception('Missing data in save-item-response'));
-    return ChecklistItemSaveResponseEntity(
-      id: data['id'] as int,
-      ratingValue: data['rating_value'] as int?,
-      booleanValue: data['boolean_value'] as bool?,
-      pointsAwarded: (data['points_awarded'] as int?) ?? 0,
-      hasProof: (data['has_proof'] as bool?) ?? false,
-    );
+    return ChecklistItemSaveResponseModel.fromJson(response.data).toEntity();
   });
 
   @override

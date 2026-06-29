@@ -13,7 +13,7 @@ class _VisitEmptyState extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(spacing.s24),
         child: Column(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.event_available_outlined,

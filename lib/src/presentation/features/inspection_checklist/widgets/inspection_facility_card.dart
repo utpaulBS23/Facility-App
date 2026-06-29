@@ -11,10 +11,10 @@ class _InspectionFacilityCard extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      padding: .all(spacing.s16),
+      padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: .circular(radius.r6),
+        borderRadius: BorderRadius.circular(radius.r6),
         border: Border.all(color: context.color.borderSubtle),
       ),
       child: Row(
@@ -24,7 +24,7 @@ class _InspectionFacilityCard extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               color: context.color.brandAccent.withValues(alpha: 0.12),
-              borderRadius: .circular(radius.r6),
+              borderRadius: BorderRadius.circular(radius.r6),
             ),
             child: Icon(
               Icons.business_rounded,
@@ -35,7 +35,7 @@ class _InspectionFacilityCard extends StatelessWidget {
           SizedBox(width: spacing.s12),
           Expanded(
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LabelLargeText(
                   detail.facilityName,

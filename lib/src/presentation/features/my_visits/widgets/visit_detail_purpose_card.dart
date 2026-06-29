@@ -6,10 +6,9 @@ class _VisitDetailPurposeCard extends StatelessWidget {
   final VisitDetailEntity detail;
 
   String _typeLabel(BuildContext context) => switch (detail.type) {
-        VisitType.routineInspection => context.locale.routineInspection,
-        VisitType.followUp => context.locale.followUp,
-      };
-
+    VisitType.routineInspection => context.locale.routineInspection,
+    VisitType.followUp => context.locale.followUp,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +20,13 @@ class _VisitDetailPurposeCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LabelMediumText(
                 context.locale.purposeOfVisit,
@@ -40,7 +39,8 @@ class _VisitDetailPurposeCard extends StatelessWidget {
             ],
           ),
           Gap(spacing.s16),
-          if (detail.assignedBy != null) _AssignedByRow(entity: detail.assignedBy!),
+          if (detail.assignedBy != null)
+            _AssignedByRow(entity: detail.assignedBy!),
         ],
       ),
     );
@@ -63,7 +63,7 @@ class _AssignedByRow extends StatelessWidget {
           height: 52,
           decoration: BoxDecoration(
             color: context.color.brandAccent,
-            shape: .circle,
+            shape: BoxShape.circle,
           ),
           child: Icon(
             Icons.person_outline,
@@ -73,14 +73,11 @@ class _AssignedByRow extends StatelessWidget {
         ),
         Gap(spacing.s16),
         Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Headline2xlTinyText(entity.name),
             Gap(spacing.s4),
-            LabelMediumText(
-              entity.role,
-              color: context.color.text.secondary,
-            ),
+            LabelMediumText(entity.role, color: context.color.text.secondary),
           ],
         ),
       ],

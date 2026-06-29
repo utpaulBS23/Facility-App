@@ -6,8 +6,6 @@ import 'src/core/logger/riverpod_log.dart';
 import 'src/presentation/core/application_state/localization_provider/localization_provider.dart';
 import 'src/presentation/core/router/router.dart';
 import 'src/presentation/core/theme/theme.dart';
-import 'src/presentation/core/theme/src/theme_data.dart';
-import 'src/presentation/core/theme/src/theme_extensions/src/text_style.dart';
 
 void main() {
   runApp(ProviderScope(observers: [RiverpodObserver()], child: const MyApp()));

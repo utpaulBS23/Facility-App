@@ -91,7 +91,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
             const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, _) => Center(
           child: Column(
-            mainAxisSize: .min,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 err.toString(),
@@ -157,10 +157,10 @@ class _TaskDetailBody extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.color.onPrimary,
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(context.dimensions.radius.r12),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
         ),
         child: Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -169,7 +169,7 @@ class _TaskDetailBody extends StatelessWidget {
                   height: 10,
                   decoration: BoxDecoration(
                     color: _priorityColor(context),
-                    shape: .circle,
+                    shape: BoxShape.circle,
                   ),
                 ),
                 const Gap(6),
@@ -207,19 +207,21 @@ class _TaskDetailBody extends StatelessWidget {
               SizedBox(
                 height: 120,
                 child: ListView.separated(
-                  scrollDirection: .horizontal,
+                  scrollDirection: Axis.horizontal,
                   itemCount: task.media.length,
                   separatorBuilder: (_, _) =>
                       Gap(context.dimensions.spacing.s8),
                   itemBuilder: (_, i) {
                     final m = task.media[i];
                     return ClipRRect(
-                      borderRadius: .circular(context.dimensions.radius.r6),
+                      borderRadius: BorderRadius.circular(
+                        context.dimensions.radius.r6,
+                      ),
                       child: Image.network(
                         m.url,
                         width: 120,
                         height: 120,
-                        fit: .cover,
+                        fit: BoxFit.cover,
                         errorBuilder: (_, _, _) => Container(
                           width: 120,
                           height: 120,
@@ -278,7 +280,7 @@ class _InfoRow extends StatelessWidget {
               color: context.color.text.secondary,
             ),
             maxLines: 1,
-            overflow: .ellipsis,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

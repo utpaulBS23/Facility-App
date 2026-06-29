@@ -14,9 +14,9 @@ class _OrderBadge extends StatelessWidget {
       height: 32,
       decoration: BoxDecoration(
         color: context.color.subtle,
-        borderRadius: .circular(context.dimensions.radius.r6),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
       ),
-      alignment: .center,
+      alignment: Alignment.center,
       child: LabelLargeText('$order', color: context.color.text.primary),
     );
   }
@@ -80,15 +80,18 @@ class _RatingPickerTileState extends State<_RatingPickerTile> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),
       child: Row(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _OrderBadge(order: widget.order),
           SizedBox(width: spacing.s12),
           Expanded(
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LabelLargeText(widget.question, color: context.color.text.primary),
+                LabelLargeText(
+                  widget.question,
+                  color: context.color.text.primary,
+                ),
                 SizedBox(height: spacing.s8),
                 Row(
                   children: List.generate(widget.maxPoints, (index) {
@@ -99,9 +102,13 @@ class _RatingPickerTileState extends State<_RatingPickerTile> {
                       child: Padding(
                         padding: EdgeInsets.only(right: spacing.s4),
                         child: Icon(
-                          filled ? Icons.star_rounded : Icons.star_outline_rounded,
+                          filled
+                              ? Icons.star_rounded
+                              : Icons.star_outline_rounded,
                           size: 24,
-                          color: filled ? context.color.warning : context.color.border,
+                          color: filled
+                              ? context.color.warning
+                              : context.color.border,
                         ),
                       ),
                     );
@@ -115,7 +122,10 @@ class _RatingPickerTileState extends State<_RatingPickerTile> {
                     onRemove: _removeProof,
                   ),
                   SizedBox(height: spacing.s8),
-                  _SubmitIconButton(enabled: _rating > 0 && _proofImages.isNotEmpty, onTap: _submit),
+                  _SubmitIconButton(
+                    enabled: _rating > 0 && _proofImages.isNotEmpty,
+                    onTap: _submit,
+                  ),
                 ],
               ],
             ),
@@ -182,15 +192,18 @@ class _BoolPickerTileState extends State<_BoolPickerTile> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),
       child: Row(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _OrderBadge(order: widget.order),
           SizedBox(width: spacing.s12),
           Expanded(
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LabelLargeText(widget.question, color: context.color.text.primary),
+                LabelLargeText(
+                  widget.question,
+                  color: context.color.text.primary,
+                ),
                 SizedBox(height: spacing.s8),
                 Row(
                   children: [
@@ -219,7 +232,10 @@ class _BoolPickerTileState extends State<_BoolPickerTile> {
                     onRemove: _removeProof,
                   ),
                   SizedBox(height: spacing.s8),
-                  _SubmitIconButton(enabled: _answer != null && _proofImages.isNotEmpty, onTap: _submit),
+                  _SubmitIconButton(
+                    enabled: _answer != null && _proofImages.isNotEmpty,
+                    onTap: _submit,
+                  ),
                 ],
               ],
             ),
@@ -242,7 +258,8 @@ class _AttachmentOnlyPickerTile extends StatefulWidget {
   final String instruction;
 
   @override
-  State<_AttachmentOnlyPickerTile> createState() => _AttachmentOnlyPickerTileState();
+  State<_AttachmentOnlyPickerTile> createState() =>
+      _AttachmentOnlyPickerTileState();
 }
 
 class _AttachmentOnlyPickerTileState extends State<_AttachmentOnlyPickerTile> {
@@ -275,15 +292,18 @@ class _AttachmentOnlyPickerTileState extends State<_AttachmentOnlyPickerTile> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),
       child: Row(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _OrderBadge(order: widget.order),
           SizedBox(width: spacing.s12),
           Expanded(
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LabelLargeText(widget.instruction, color: context.color.text.primary),
+                LabelLargeText(
+                  widget.instruction,
+                  color: context.color.text.primary,
+                ),
                 SizedBox(height: spacing.s8),
                 _ProofRow(
                   images: _proofImages,
@@ -327,19 +347,22 @@ class _YesNoChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s8,
+        ),
         decoration: BoxDecoration(
           color: isSelected
               ? selectedColor.withValues(alpha: 0.08)
               : context.color.onPrimary,
-          borderRadius: .circular(radius.r12),
+          borderRadius: BorderRadius.circular(radius.r12),
           border: Border.all(
             color: isSelected ? selectedColor : context.color.borderSubtle,
             width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Row(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 12, color: selectedColor),
             SizedBox(width: spacing.s8),
@@ -394,7 +417,7 @@ class _SubmitIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: .centerRight,
+      alignment: Alignment.centerRight,
       child: GestureDetector(
         onTap: enabled ? onTap : null,
         child: Container(
@@ -404,14 +427,21 @@ class _SubmitIconButton extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: enabled ? context.color.primary : context.color.disabled,
-            borderRadius: .circular(context.dimensions.radius.r6),
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
           ),
           child: Row(
-            mainAxisSize: .min,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.send_rounded, size: 14, color: context.color.onPrimary),
+              Icon(
+                Icons.send_rounded,
+                size: 14,
+                color: context.color.onPrimary,
+              ),
               SizedBox(width: context.dimensions.spacing.s6),
-              BodySmallText(context.locale.submit, color: context.color.onPrimary),
+              BodySmallText(
+                context.locale.submit,
+                color: context.color.onPrimary,
+              ),
             ],
           ),
         ),
@@ -429,7 +459,7 @@ class _SaveIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: .centerRight,
+      alignment: Alignment.centerRight,
       child: GestureDetector(
         onTap: enabled ? onTap : null,
         child: Container(
@@ -439,14 +469,21 @@ class _SaveIconButton extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: enabled ? context.color.primary : context.color.disabled,
-            borderRadius: .circular(context.dimensions.radius.r6),
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
           ),
           child: Row(
-            mainAxisSize: .min,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.cloud_upload_outlined, size: 14, color: context.color.onPrimary),
+              Icon(
+                Icons.cloud_upload_outlined,
+                size: 14,
+                color: context.color.onPrimary,
+              ),
               SizedBox(width: context.dimensions.spacing.s6),
-              BodySmallText(context.locale.save, color: context.color.onPrimary),
+              BodySmallText(
+                context.locale.save,
+                color: context.color.onPrimary,
+              ),
             ],
           ),
         ),
@@ -467,24 +504,37 @@ class _PhotoAttachedChip extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Container(
-      padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+      padding: EdgeInsets.symmetric(
+        horizontal: spacing.s12,
+        vertical: spacing.s8,
+      ),
       decoration: BoxDecoration(
         color: context.color.successAlt,
-        borderRadius: .circular(context.dimensions.radius.r10),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
         border: Border.all(color: context.color.success),
       ),
       child: Row(
-        mainAxisSize: .min,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.camera_alt_outlined, size: 14, color: context.color.success),
+          Icon(
+            Icons.camera_alt_outlined,
+            size: 14,
+            color: context.color.success,
+          ),
           SizedBox(width: spacing.s8),
-          BodySmallText(context.locale.photoAttached, color: context.color.text.primary),
+          BodySmallText(
+            context.locale.photoAttached,
+            color: context.color.text.primary,
+          ),
           SizedBox(width: spacing.s8),
           Container(
             width: 18,
             height: 18,
-            decoration: BoxDecoration(color: context.color.success, shape: BoxShape.circle),
-            alignment: .center,
+            decoration: BoxDecoration(
+              color: context.color.success,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
             child: Text(
               '$count',
               style: context.textStyle.bodySmall.copyWith(
@@ -511,17 +561,27 @@ class _AttachPhotoButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s8,
+        ),
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(radius.r10),
+          borderRadius: BorderRadius.circular(radius.r10),
         ),
         child: Row(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.camera_alt_outlined, size: 14, color: context.color.text.secondary),
+            Icon(
+              Icons.camera_alt_outlined,
+              size: 14,
+              color: context.color.text.secondary,
+            ),
             SizedBox(width: spacing.s8),
-            BodySmallText(context.locale.attachPhoto, color: context.color.text.secondary),
+            BodySmallText(
+              context.locale.attachPhoto,
+              color: context.color.text.secondary,
+            ),
           ],
         ),
       ),
@@ -545,8 +605,12 @@ class _RemoveProofButton extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: context.color.primary, width: 1.5),
         ),
-        alignment: .center,
-        child: Icon(Icons.delete_outline_rounded, size: 16, color: context.color.primary),
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.delete_outline_rounded,
+          size: 16,
+          color: context.color.primary,
+        ),
       ),
     );
   }

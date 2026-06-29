@@ -21,27 +21,6 @@ class _ApplyLeaveButton extends StatelessWidget {
   }
 }
 
-class _CheckOutButton extends StatelessWidget {
-  const _CheckOutButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return SizedBox(
-      height: spacing.s44,
-      width: 144,
-      child: OutlinedButton.icon(
-        onPressed: onTap,
-        icon: Assets.icons.leftArrow.svg(),
-        label: Text(context.locale.checkOut),
-      ),
-    );
-  }
-}
-
 // WHY: Extracted as a named widget to keep _SupervisorShiftCard readable and
 // to isolate the assigned/unassigned branching logic.
 class _AssignedSection extends StatelessWidget {

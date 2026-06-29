@@ -24,7 +24,7 @@ class _VisitStatsTabs extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(context.dimensions.radius.r12),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
         ),
         child: Row(
           children: [
@@ -83,8 +83,12 @@ class _StatTab extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final isActive = isSelected && isCompleted;
 
-    final bgColor = isActive ? context.color.successAlt : context.color.subtle.withValues(alpha: 0);
-    final countColor = isActive ? context.color.success : context.color.text.primary;
+    final bgColor = isActive
+        ? context.color.successAlt
+        : context.color.subtle.withValues(alpha: 0);
+    final countColor = isActive
+        ? context.color.success
+        : context.color.text.primary;
 
     return Expanded(
       child: GestureDetector(
@@ -92,12 +96,12 @@ class _StatTab extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: .circular(context.dimensions.radius.r12),
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
           ),
           padding: EdgeInsets.symmetric(vertical: spacing.s8),
-          alignment: .center,
+          alignment: Alignment.center,
           child: Column(
-            mainAxisSize: .min,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 '$count',

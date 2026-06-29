@@ -8,7 +8,6 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/user_role.dart';
-import '../../../core/gen/assets.gen.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';

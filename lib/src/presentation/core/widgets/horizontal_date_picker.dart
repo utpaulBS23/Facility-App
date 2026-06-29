@@ -22,7 +22,7 @@ class HorizontalDatePicker extends StatefulWidget {
   final void Function(DateTime) onDateSelected;
 
   @override
-  _HorizontalDatePickerState createState() => _HorizontalDatePickerState();
+  State<HorizontalDatePicker> createState() => _HorizontalDatePickerState();
 }
 
 class _HorizontalDatePickerState extends State<HorizontalDatePicker> {
@@ -84,10 +84,10 @@ class _HorizontalDatePickerState extends State<HorizontalDatePicker> {
 
     return Container(
       color: context.color.background.white,
-      padding: .symmetric(vertical: spacing.s10),
+      padding: EdgeInsets.symmetric(vertical: spacing.s10),
       height: spacing.s120,
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             child: ListView.builder(
@@ -106,7 +106,7 @@ class _HorizontalDatePickerState extends State<HorizontalDatePicker> {
             ),
           ),
           Padding(
-            padding: .only(left: spacing.s16),
+            padding: EdgeInsets.only(left: spacing.s16),
             child: RichText(
               text: TextSpan(
                 children: [
@@ -157,9 +157,12 @@ class _HorizontalDatePickerItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: .symmetric(horizontal: spacing.s10, vertical: spacing.s4),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s10,
+          vertical: spacing.s4,
+        ),
         child: Column(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               DateFormat('E').format(date),
@@ -169,14 +172,17 @@ class _HorizontalDatePickerItem extends StatelessWidget {
             ),
             SizedBox(height: spacing.s4),
             Container(
-              padding: .symmetric(horizontal: spacing.s14, vertical: spacing.s10),
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s14,
+                vertical: spacing.s10,
+              ),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: isSelected
                       ? context.color.primary
                       : context.color.onPrimary,
                 ),
-                borderRadius: .circular(radius.r10),
+                borderRadius: BorderRadius.circular(radius.r10),
               ),
               child: Text(
                 DateFormat('d').format(date),

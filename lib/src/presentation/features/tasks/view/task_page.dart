@@ -54,7 +54,11 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       ref
           .read(tasksProvider.notifier)
           .completeIssue(issueId: task.id)
-          .then((_) => ref.read(tasksProvider.notifier).fetch(bucket: _selectedTab.name))
+          .then(
+            (_) => ref
+                .read(tasksProvider.notifier)
+                .fetch(bucket: _selectedTab.name),
+          )
           // WHY: error already surfaced via AsyncValue.error on tasksProvider; suppress unhandled Future
           .catchError((_) {});
       return;
@@ -86,7 +90,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: Column(
-        crossAxisAlignment: .stretch,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _TaskTabBar(selectedTab: _selectedTab, onTabChanged: _onTabChanged),
           Expanded(
@@ -95,7 +99,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                   const Center(child: CircularProgressIndicator.adaptive()),
               error: (err, _) => Center(
                 child: Column(
-                  mainAxisSize: .min,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       err.toString(),
@@ -118,7 +122,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     child: Padding(
                       padding: EdgeInsets.all(spacing.s24),
                       child: Column(
-                        mainAxisSize: .min,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.task_alt_outlined,
@@ -177,7 +181,7 @@ class _TaskTabBar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(context.dimensions.radius.r12),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
         ),
         child: Row(
           children: [
@@ -226,10 +230,10 @@ class _Tab extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: isSelected ? context.color.brandSubtle : Colors.transparent,
-            borderRadius: .circular(context.dimensions.radius.r12),
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
           ),
           padding: EdgeInsets.symmetric(vertical: spacing.s12),
-          alignment: .center,
+          alignment: Alignment.center,
           child: Text(
             label,
             style: context.textStyle.bodySmall.copyWith(

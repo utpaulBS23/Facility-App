@@ -77,10 +77,10 @@ class _TaskCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.color.onPrimary,
           border: Border.all(color: _statusBorderColor(context)),
-          borderRadius: .circular(context.dimensions.radius.r12),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
         ),
         child: Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // status accent strip
             Container(
@@ -96,7 +96,7 @@ class _TaskCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(spacing.s16),
               child: Column(
-                crossAxisAlignment: .start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -105,7 +105,7 @@ class _TaskCard extends StatelessWidget {
                         height: 10,
                         decoration: BoxDecoration(
                           color: _priorityColor(context),
-                          shape: .circle,
+                          shape: BoxShape.circle,
                         ),
                       ),
                       const Gap(6),
@@ -123,10 +123,12 @@ class _TaskCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: _statusChipBg(context),
-                          borderRadius: .circular(context.dimensions.radius.r6),
+                          borderRadius: BorderRadius.circular(
+                            context.dimensions.radius.r6,
+                          ),
                         ),
                         child: Row(
-                          mainAxisSize: .min,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             if (_isCompleted) ...[
                               Icon(
@@ -227,7 +229,7 @@ class _InfoRow extends StatelessWidget {
             label,
             style: context.textStyle.bodySmall.copyWith(color: color),
             maxLines: 1,
-            overflow: .ellipsis,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

@@ -92,132 +92,138 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
         spacing.s24 + MediaQuery.of(context).padding.bottom,
       ),
       child: Column(
-        mainAxisSize: .min,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 40,
             height: 4,
             decoration: BoxDecoration(
               color: context.color.border,
-              borderRadius: .circular(2),
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
           Gap(spacing.s24),
-          if (_image == null) ..._pickerView(context, spacing)
-          else ..._previewView(context, spacing),
+          if (_image == null)
+            ..._pickerView(context, spacing)
+          else
+            ..._previewView(context, spacing),
         ],
       ),
     );
   }
 
   List<Widget> _pickerView(BuildContext context, dynamic spacing) => [
-        Container(
-          width: 72,
-          height: 72,
-          decoration: BoxDecoration(
-            color: context.color.brandSubtle,
-            shape: .circle,
-          ),
-          child: Icon(
-            Icons.camera_alt_outlined,
-            size: 32,
-            color: context.color.primary,
-          ),
-        ),
-        Gap(spacing.s16),
-        Text(
-          context.locale.proofRequired,
-          style: context.textStyle.titleMedium.copyWith(
-            color: context.color.text.primary,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        Gap(spacing.s8),
-        Text(
-          context.locale.proofRequiredSubtitle,
-          style: context.textStyle.bodyMedium.copyWith(
-            color: context.color.text.secondary,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        Gap(spacing.s24),
-        FilledButton(
-          onPressed: () => _pickImage(ImageSource.camera),
-          child: Text(context.locale.takePhoto),
-        ),
-        Gap(spacing.s12),
-        OutlinedButton(
-          onPressed: () => _pickImage(ImageSource.gallery),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: context.color.primary,
-            side: BorderSide(color: context.color.primary),
-          ),
-          child: Text(context.locale.gallery),
-        ),
-      ];
+    Container(
+      width: 72,
+      height: 72,
+      decoration: BoxDecoration(
+        color: context.color.brandSubtle,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        Icons.camera_alt_outlined,
+        size: 32,
+        color: context.color.primary,
+      ),
+    ),
+    Gap(spacing.s16),
+    Text(
+      context.locale.proofRequired,
+      style: context.textStyle.titleMedium.copyWith(
+        color: context.color.text.primary,
+      ),
+      textAlign: TextAlign.center,
+    ),
+    Gap(spacing.s8),
+    Text(
+      context.locale.proofRequiredSubtitle,
+      style: context.textStyle.bodyMedium.copyWith(
+        color: context.color.text.secondary,
+      ),
+      textAlign: TextAlign.center,
+    ),
+    Gap(spacing.s24),
+    FilledButton(
+      onPressed: () => _pickImage(ImageSource.camera),
+      child: Text(context.locale.takePhoto),
+    ),
+    Gap(spacing.s12),
+    OutlinedButton(
+      onPressed: () => _pickImage(ImageSource.gallery),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: context.color.primary,
+        side: BorderSide(color: context.color.primary),
+      ),
+      child: Text(context.locale.gallery),
+    ),
+  ];
 
   List<Widget> _previewView(BuildContext context, dynamic spacing) => [
-        Stack(
-          children: [
-            ClipRRect(
-              borderRadius: .circular(context.dimensions.radius.r12),
-              child: Image.file(
-                File(_image!.path),
-                height: 200,
-                width: double.infinity,
-                fit: .cover,
-              ),
-            ),
-            Positioned(
-              top: spacing.s8,
-              right: spacing.s8,
-              child: GestureDetector(
-                onTap: _isSubmitting ? null : _deleteImage,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: context.color.overlay,
-                    shape: .circle,
-                  ),
-                  child: Icon(Icons.close, color: context.color.onPrimary, size: 18),
-                ),
-              ),
-            ),
-          ],
-        ),
-        Gap(spacing.s12),
-        OutlinedButton.icon(
-          onPressed: _isSubmitting ? null : () => _pickImage(ImageSource.camera),
-          icon: const Icon(Icons.refresh, size: 18),
-          label: Text(context.locale.changePhoto),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: context.color.primary,
-            side: BorderSide(color: context.color.primary),
+    Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+          child: Image.file(
+            File(_image!.path),
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
         ),
-        Gap(spacing.s16),
-        TextField(
-          controller: _altController,
-          enabled: !_isSubmitting,
-          decoration: InputDecoration(
-            labelText: context.locale.proofAltLabel,
-            hintText: context.locale.proofAltHint,
-            errorText: _showAltError ? context.locale.isRequired : null,
+        Positioned(
+          top: spacing.s8,
+          right: spacing.s8,
+          child: GestureDetector(
+            onTap: _isSubmitting ? null : _deleteImage,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: context.color.overlay,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.close,
+                color: context.color.onPrimary,
+                size: 18,
+              ),
+            ),
           ),
         ),
-        Gap(spacing.s24),
-        FilledButton(
-          onPressed: _isSubmitting ? null : _submit,
-          child: _isSubmitting
-              ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: context.color.onPrimary,
-                  ),
-                )
-              : Text(context.locale.submitProof),
-        ),
-      ];
+      ],
+    ),
+    Gap(spacing.s12),
+    OutlinedButton.icon(
+      onPressed: _isSubmitting ? null : () => _pickImage(ImageSource.camera),
+      icon: const Icon(Icons.refresh, size: 18),
+      label: Text(context.locale.changePhoto),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: context.color.primary,
+        side: BorderSide(color: context.color.primary),
+      ),
+    ),
+    Gap(spacing.s16),
+    TextField(
+      controller: _altController,
+      enabled: !_isSubmitting,
+      decoration: InputDecoration(
+        labelText: context.locale.proofAltLabel,
+        hintText: context.locale.proofAltHint,
+        errorText: _showAltError ? context.locale.isRequired : null,
+      ),
+    ),
+    Gap(spacing.s24),
+    FilledButton(
+      onPressed: _isSubmitting ? null : _submit,
+      child: _isSubmitting
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: context.color.onPrimary,
+              ),
+            )
+          : Text(context.locale.submitProof),
+    ),
+  ];
 }

@@ -6,20 +6,20 @@ class _VisitDetailInfoCard extends StatelessWidget {
   final VisitDetailEntity detail;
 
   Color _statusColor(BuildContext context) => switch (detail.status) {
-        VisitStatus.scheduled => context.color.info,
-        VisitStatus.inProgress => context.color.warning,
-        VisitStatus.completed => context.color.success,
-        VisitStatus.resolved => context.color.success,
-        VisitStatus.pending => context.color.warning,
-      };
+    VisitStatus.scheduled => context.color.info,
+    VisitStatus.inProgress => context.color.warning,
+    VisitStatus.completed => context.color.success,
+    VisitStatus.resolved => context.color.success,
+    VisitStatus.pending => context.color.warning,
+  };
 
   String _statusLabel(BuildContext context) => switch (detail.status) {
-        VisitStatus.scheduled => context.locale.scheduled,
-        VisitStatus.inProgress => context.locale.inProgress,
-        VisitStatus.completed => context.locale.completed,
-        VisitStatus.resolved => context.locale.resolved,
-        VisitStatus.pending => context.locale.pending,
-      };
+    VisitStatus.scheduled => context.locale.scheduled,
+    VisitStatus.inProgress => context.locale.inProgress,
+    VisitStatus.completed => context.locale.completed,
+    VisitStatus.resolved => context.locale.resolved,
+    VisitStatus.pending => context.locale.pending,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,10 @@ class _VisitDetailInfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _StatusChip(
             color: _statusColor(context),
@@ -52,12 +52,18 @@ class _VisitDetailInfoCard extends StatelessWidget {
           Gap(spacing.s12),
           Row(
             children: [
-              Expanded(child: _DateTimeBox(label: context.locale.date, value: detail.date)),
+              Expanded(
+                child: _DateTimeBox(
+                  label: context.locale.date,
+                  value: detail.date,
+                ),
+              ),
               Gap(spacing.s8),
               Expanded(
                 child: _DateTimeBox(
                   label: context.locale.time,
-                  value: '${detail.scheduledStartTime} – ${detail.scheduledEndTime}',
+                  value:
+                      '${detail.scheduledStartTime} – ${detail.scheduledEndTime}',
                 ),
               ),
             ],
@@ -77,12 +83,12 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 10,
           height: 10,
-          decoration: BoxDecoration(color: color, shape: .circle),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const Gap(4),
         BodySmallText(label, color: context.color.text.secondary),
@@ -132,14 +138,18 @@ class _DateTimeBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.color.scaffoldBackground,
         border: Border.all(color: context.color.borderSubtle),
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.access_time_outlined, size: 16, color: context.color.icon),
+              Icon(
+                Icons.access_time_outlined,
+                size: 16,
+                color: context.color.icon,
+              ),
               const Gap(4),
               LabelMedium12Text(label),
             ],

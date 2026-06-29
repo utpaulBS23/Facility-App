@@ -283,5 +283,8 @@
   "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion.",
   "changePhoto": "Change Photo",
   "submitProof": "Submit Proof",
-  "visitSubmittedSuccessfully": "Visit submitted successfully."
+  "visitSubmittedSuccessfully": "Visit submitted successfully.",
+  "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
+  "submitChecklistFailed": "Failed to submit inspection checklist.",
+  "saveChecklistAnswerFailed": "Failed to save answer."
 }

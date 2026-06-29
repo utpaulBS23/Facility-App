@@ -40,10 +40,10 @@ class _VisitCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.color.onPrimary,
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(context.dimensions.radius.r12),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
         ),
         child: Column(
-          crossAxisAlignment: .start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
@@ -90,12 +90,12 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 10,
           height: 10,
-          decoration: BoxDecoration(color: color, shape: .circle),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const Gap(4),
         Text(

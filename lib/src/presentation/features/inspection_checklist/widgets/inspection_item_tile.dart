@@ -19,47 +19,44 @@ class _InspectionItemTile extends ConsumerWidget {
 
   void _onStarTap(WidgetRef ref, int rating) {
     if (_isAlwaysProof) {
-      ref.read(inspectionChecklistProvider.notifier).setStarRatingLocal(
-        itemId: item.id,
-        rating: rating,
-      );
+      ref
+          .read(inspectionChecklistProvider.notifier)
+          .setStarRatingLocal(itemId: item.id, rating: rating);
     } else {
-      ref.read(inspectionChecklistProvider.notifier).saveStarRating(
-        visitId: visitId,
-        itemId: item.id,
-        rating: rating,
-      );
+      ref
+          .read(inspectionChecklistProvider.notifier)
+          .saveStarRating(visitId: visitId, itemId: item.id, rating: rating);
     }
   }
 
   void _onYesNo(WidgetRef ref, bool value) {
     if (_isAlwaysProof) {
-      ref.read(inspectionChecklistProvider.notifier).setYesNoLocal(
-        itemId: item.id,
-        value: value,
-      );
+      ref
+          .read(inspectionChecklistProvider.notifier)
+          .setYesNoLocal(itemId: item.id, value: value);
     } else {
-      ref.read(inspectionChecklistProvider.notifier).saveYesNo(
-        visitId: visitId,
-        itemId: item.id,
-        value: value,
-      );
+      ref
+          .read(inspectionChecklistProvider.notifier)
+          .saveYesNo(visitId: visitId, itemId: item.id, value: value);
     }
   }
 
   void _onSubmitAnswer(WidgetRef ref) {
-    ref.read(inspectionChecklistProvider.notifier).submitItemAnswer(
-      visitId: visitId,
-      itemId: item.id,
-    );
+    ref
+        .read(inspectionChecklistProvider.notifier)
+        .submitItemAnswer(visitId: visitId, itemId: item.id);
   }
 
   void _onPickProof(WidgetRef ref) {
-    ref.read(inspectionChecklistProvider.notifier).pickProofImage(itemId: item.id);
+    ref
+        .read(inspectionChecklistProvider.notifier)
+        .pickProofImage(itemId: item.id);
   }
 
   void _onRemoveProof(WidgetRef ref) {
-    ref.read(inspectionChecklistProvider.notifier).removeProofImage(itemId: item.id);
+    ref
+        .read(inspectionChecklistProvider.notifier)
+        .removeProofImage(itemId: item.id);
   }
 
   @override
@@ -74,18 +71,19 @@ class _InspectionItemTile extends ConsumerWidget {
         : state.yesNoAnswers.containsKey(item.id);
     final hasProofSelected = state.proofImages[item.id]?.isNotEmpty == true;
     final showSubmitButton = _isAlwaysProof && !isConfirmed;
-    final canSubmit = hasAnswer && (hasProofSelected || item.hasProof) && !isSaving;
+    final canSubmit =
+        hasAnswer && (hasProofSelected || item.hasProof) && !isSaving;
 
     return Padding(
-      padding: .symmetric(vertical: spacing.s12),
+      padding: EdgeInsets.symmetric(vertical: spacing.s12),
       child: Row(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _ItemOrderBadge(order: item.order),
           SizedBox(width: spacing.s12),
           Expanded(
             child: Column(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -98,9 +96,11 @@ class _InspectionItemTile extends ConsumerWidget {
                     if (isSaving) ...[
                       SizedBox(width: spacing.s8),
                       SizedBox(
-                        width: 14,
-                        height: 14,
-                        child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                        width: spacing.s14,
+                        height: spacing.s14,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                        ),
                       ),
                     ],
                   ],
@@ -110,17 +110,22 @@ class _InspectionItemTile extends ConsumerWidget {
                   _StarRatingRow(
                     currentRating: state.starAnswers[item.id] ?? 0,
                     maxPoints: item.maxPoints,
-                    onStarTap: (isSaving || isConfirmed) ? (_) {} : (r) => _onStarTap(ref, r),
+                    onStarTap: (isSaving || isConfirmed)
+                        ? (_) {}
+                        : (r) => _onStarTap(ref, r),
                   )
                 else
                   _YesNoRow(
                     answer: state.yesNoAnswers[item.id],
-                    onAnswer: (isSaving || isConfirmed) ? (_) {} : (v) => _onYesNo(ref, v),
+                    onAnswer: (isSaving || isConfirmed)
+                        ? (_) {}
+                        : (v) => _onYesNo(ref, v),
                   ),
                 if (item.existingMediaUrls.isNotEmpty) ...[
                   SizedBox(height: spacing.s8),
                   _MediaThumbnailRow(urls: item.existingMediaUrls),
-                ] else if (!isResolved && item.proofPolicy != ChecklistProofPolicy.none) ...[
+                ] else if (!isResolved &&
+                    item.proofPolicy != ChecklistProofPolicy.none) ...[
                   SizedBox(height: spacing.s8),
                   _ProofAttachmentRow(
                     proofImages: state.proofImages[item.id] ?? [],
@@ -139,7 +144,10 @@ class _InspectionItemTile extends ConsumerWidget {
                 ],
                 if (saveError != null) ...[
                   SizedBox(height: spacing.s4),
-                  BodySmallText(saveError, color: context.color.error),
+                  BodySmallText(
+                    context.locale.saveChecklistAnswerFailed,
+                    color: context.color.error,
+                  ),
                 ],
               ],
             ),
@@ -172,21 +180,26 @@ class _AnswerSubmitButton extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: .symmetric(horizontal: spacing.s16, vertical: spacing.s10),
+          padding: EdgeInsets.symmetric(
+            horizontal: spacing.s16,
+            vertical: spacing.s10,
+          ),
           decoration: BoxDecoration(
             color: canSubmit
                 ? context.color.primary
                 : context.color.primary.withValues(alpha: 0.4),
-            borderRadius: .circular(radius.r6),
+            borderRadius: BorderRadius.circular(radius.r6),
           ),
-          alignment: .center,
+          alignment: Alignment.center,
           child: isSaving
               ? SizedBox(
-                  width: 16,
-                  height: 16,
+                  width: spacing.s16,
+                  height: spacing.s16,
                   child: CircularProgressIndicator.adaptive(
                     strokeWidth: 2,
-                    backgroundColor: context.color.onPrimary.withValues(alpha: 0.4),
+                    backgroundColor: context.color.onPrimary.withValues(
+                      alpha: 0.4,
+                    ),
                   ),
                 )
               : BodySmallText(
@@ -213,9 +226,9 @@ class _ItemOrderBadge extends StatelessWidget {
       height: 32,
       decoration: BoxDecoration(
         color: context.color.subtle,
-        borderRadius: .circular(radius.r6),
+        borderRadius: BorderRadius.circular(radius.r6),
       ),
-      alignment: .center,
+      alignment: Alignment.center,
       child: LabelLargeText('$order', color: context.color.text.primary),
     );
   }
@@ -244,7 +257,7 @@ class _StarRatingRow extends StatelessWidget {
           return GestureDetector(
             onTap: () => onStarTap(starValue),
             child: Padding(
-              padding: .only(right: spacing.s4),
+              padding: EdgeInsets.only(right: spacing.s4),
               child: Icon(
                 isFilled ? Icons.star_rounded : Icons.star_outline_rounded,
                 size: 24,
@@ -263,10 +276,7 @@ class _StarRatingRow extends StatelessWidget {
 }
 
 class _YesNoRow extends StatelessWidget {
-  const _YesNoRow({
-    required this.answer,
-    required this.onAnswer,
-  });
+  const _YesNoRow({required this.answer, required this.onAnswer});
 
   final bool? answer;
   final ValueChanged<bool> onAnswer;
@@ -321,26 +331,26 @@ class _YesNoChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s8),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s8,
+        ),
         decoration: BoxDecoration(
           color: isSelected
               ? selectedColor.withValues(alpha: 0.08)
               : context.color.onPrimary,
-          borderRadius: .circular(radius.r12),
+          borderRadius: BorderRadius.circular(radius.r12),
           border: Border.all(
             color: isSelected ? selectedColor : context.color.borderSubtle,
             width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Row(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 12, color: selectedColor),
             SizedBox(width: spacing.s8),
-            LabelLargeText(
-              label,
-              color: context.color.text.primary,
-            ),
+            LabelLargeText(label, color: context.color.text.primary),
           ],
         ),
       ),
@@ -396,19 +406,23 @@ class _PhotoAttachedChip extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      padding: .symmetric(
+      padding: EdgeInsets.symmetric(
         horizontal: spacing.s12,
         vertical: spacing.s8,
       ),
       decoration: BoxDecoration(
         color: context.color.successAlt,
-        borderRadius: .circular(radius.r10),
+        borderRadius: BorderRadius.circular(radius.r10),
         border: Border.all(color: context.color.success),
       ),
       child: Row(
-        mainAxisSize: .min,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.camera_alt_outlined, size: 14, color: context.color.success),
+          Icon(
+            Icons.camera_alt_outlined,
+            size: 14,
+            color: context.color.success,
+          ),
           SizedBox(width: spacing.s8),
           BodySmallText(
             context.locale.photoAttached,
@@ -422,7 +436,7 @@ class _PhotoAttachedChip extends StatelessWidget {
               color: context.color.success,
               shape: BoxShape.circle,
             ),
-            alignment: .center,
+            alignment: Alignment.center,
             child: Text(
               '$count',
               style: context.textStyle.bodySmall.copyWith(
@@ -449,16 +463,16 @@ class _AttachPhotoButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: .symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: spacing.s12,
           vertical: spacing.s8,
         ),
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(radius.r10),
+          borderRadius: BorderRadius.circular(radius.r10),
         ),
         child: Row(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               Icons.camera_alt_outlined,
@@ -491,12 +505,9 @@ class _RemoveProofButton extends StatelessWidget {
         height: 32,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: context.color.primary,
-            width: 1.5,
-          ),
+          border: Border.all(color: context.color.primary, width: 1.5),
         ),
-        alignment: .center,
+        alignment: Alignment.center,
         child: Icon(
           Icons.delete_outline_rounded,
           size: 16,
@@ -518,26 +529,26 @@ class _MediaThumbnailRow extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return SizedBox(
-      height: 56,
+      height: spacing.s56,
       child: ListView.separated(
-        scrollDirection: .horizontal,
+        scrollDirection: Axis.horizontal,
         itemCount: urls.length,
-        separatorBuilder: (_, __) => SizedBox(width: spacing.s8),
+        separatorBuilder: (_, _) => SizedBox(width: spacing.s8),
         itemBuilder: (_, index) => ClipRRect(
-          borderRadius: .circular(radius.r6),
+          borderRadius: BorderRadius.circular(radius.r6),
           child: Image.network(
             urls[index],
-            width: 56,
-            height: 56,
-            fit: .cover,
-            errorBuilder: (_, __, ___) => Container(
-              width: 56,
-              height: 56,
+            width: spacing.s56,
+            height: spacing.s56,
+            fit: BoxFit.cover,
+            errorBuilder: (_, _, _) => Container(
+              width: spacing.s56,
+              height: spacing.s56,
               color: context.color.subtle,
-              alignment: .center,
+              alignment: Alignment.center,
               child: Icon(
                 Icons.broken_image_outlined,
-                size: 20,
+                size: spacing.s20,
                 color: context.color.text.secondary,
               ),
             ),

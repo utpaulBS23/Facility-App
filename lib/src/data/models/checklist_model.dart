@@ -43,6 +43,16 @@ class ChecklistItemResponseModel with ChecklistItemResponseModelMappable {
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class ChecklistItemSaveResponseModel
+    with ChecklistItemSaveResponseModelMappable {
+  ChecklistItemSaveResponseModel({required this.data});
+
+  final ChecklistItemResponseModel data;
+
+  static const fromJson = ChecklistItemSaveResponseModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class ChecklistItemModel with ChecklistItemModelMappable {
   ChecklistItemModel({
     required this.id,
@@ -121,11 +131,7 @@ class ChecklistMetaModel with ChecklistMetaModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ChecklistModel with ChecklistModelMappable {
-  ChecklistModel({
-    this.data,
-    this.issues,
-    this.meta,
-  });
+  ChecklistModel({this.data, this.issues, this.meta});
 
   // API returns items in "data" key
   final List<ChecklistItemModel>? data;

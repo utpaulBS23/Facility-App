@@ -21,10 +21,10 @@ class _VisitCheckInLocationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -42,7 +42,7 @@ class _VisitCheckInLocationCard extends StatelessWidget {
           ),
           Gap(spacing.s16),
           Column(
-            crossAxisAlignment: .stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Column(
                 children: [
@@ -51,7 +51,7 @@ class _VisitCheckInLocationCard extends StatelessWidget {
                     height: 52,
                     decoration: BoxDecoration(
                       color: context.color.successAlt,
-                      shape: .circle,
+                      shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.check,
@@ -97,24 +97,18 @@ class _CoordinatesBox extends StatelessWidget {
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.scaffoldBackground,
-        borderRadius: .circular(10),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
-          _CoordRow(
-            label: context.locale.yourPosition,
-            value: yourLatLng,
-          ),
+          _CoordRow(label: context.locale.yourPosition, value: yourLatLng),
           Gap(spacing.s8),
-          _CoordRow(
-            label: context.locale.facilityName,
-            value: facilityLatLng,
-          ),
+          _CoordRow(label: context.locale.facilityName, value: facilityLatLng),
           Gap(spacing.s8),
           Divider(color: context.color.borderSubtle, height: 1),
           Gap(spacing.s8),
           Row(
-            mainAxisAlignment: .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 context.locale.distance.toUpperCase(),
@@ -147,7 +141,7 @@ class _CoordRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: .spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         BodyRegularText(label, color: context.color.text.secondary),
         BodySmallText(value, color: context.color.text.secondary),

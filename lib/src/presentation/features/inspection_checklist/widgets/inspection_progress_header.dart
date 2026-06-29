@@ -14,31 +14,28 @@ class _InspectionProgressHeader extends StatelessWidget {
     final progress = total == 0 ? 0.0 : answered / total;
 
     return Container(
-      padding: .all(spacing.s16),
+      padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: .circular(radius.r6),
+        borderRadius: BorderRadius.circular(radius.r6),
         border: Border.all(color: context.color.borderSubtle),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               LabelMediumText(
                 context.locale.inspectionProgress,
                 color: context.color.text.primary,
               ),
-              LabelMediumText(
-                '$answered/$total',
-                color: context.color.primary,
-              ),
+              LabelMediumText('$answered/$total', color: context.color.primary),
             ],
           ),
           SizedBox(height: spacing.s12),
           ClipRRect(
-            borderRadius: .circular(radius.r4),
+            borderRadius: BorderRadius.circular(radius.r4),
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: context.color.borderSubtle,

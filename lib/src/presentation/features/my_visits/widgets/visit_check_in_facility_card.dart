@@ -6,20 +6,20 @@ class _VisitCheckInFacilityCard extends StatelessWidget {
   final VisitDetailEntity detail;
 
   Color _statusColor(BuildContext context) => switch (detail.status) {
-        VisitStatus.scheduled => context.color.info,
-        VisitStatus.inProgress => context.color.warning,
-        VisitStatus.completed => context.color.success,
-        VisitStatus.resolved => context.color.success,
-        VisitStatus.pending => context.color.warning,
-      };
+    VisitStatus.scheduled => context.color.info,
+    VisitStatus.inProgress => context.color.warning,
+    VisitStatus.completed => context.color.success,
+    VisitStatus.resolved => context.color.success,
+    VisitStatus.pending => context.color.warning,
+  };
 
   String _statusLabel(BuildContext context) => switch (detail.status) {
-        VisitStatus.scheduled => context.locale.scheduled,
-        VisitStatus.inProgress => context.locale.inProgress,
-        VisitStatus.completed => context.locale.completed,
-        VisitStatus.resolved => context.locale.resolved,
-        VisitStatus.pending => context.locale.pending,
-      };
+    VisitStatus.scheduled => context.locale.scheduled,
+    VisitStatus.inProgress => context.locale.inProgress,
+    VisitStatus.completed => context.locale.completed,
+    VisitStatus.resolved => context.locale.resolved,
+    VisitStatus.pending => context.locale.pending,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -31,20 +31,20 @@ class _VisitCheckInFacilityCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisSize: .min,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: 10,
                 height: 10,
                 decoration: BoxDecoration(
                   color: _statusColor(context),
-                  shape: .circle,
+                  shape: BoxShape.circle,
                 ),
               ),
               const Gap(4),

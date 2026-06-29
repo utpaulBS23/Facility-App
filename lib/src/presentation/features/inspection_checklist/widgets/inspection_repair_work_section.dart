@@ -18,7 +18,7 @@ class _InspectionRepairWorkSection extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -62,21 +62,25 @@ class _NewIssueButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 32,
-        padding: .only(
-          left: spacing.s4,
-          right: spacing.s12,
-        ),
+        padding: EdgeInsets.only(left: spacing.s4, right: spacing.s12),
         decoration: BoxDecoration(
           color: context.color.onPrimary,
-          borderRadius: .circular(radius.r20),
+          borderRadius: BorderRadius.circular(radius.r20),
           border: Border.all(color: context.color.primary, width: 1.5),
         ),
         child: Row(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.add_circle_outline_rounded, size: 20, color: context.color.primary),
+            Icon(
+              Icons.add_circle_outline_rounded,
+              size: 20,
+              color: context.color.primary,
+            ),
             SizedBox(width: spacing.s4),
-            LabelLargeText(context.locale.newIssue, color: context.color.primary),
+            LabelLargeText(
+              context.locale.newIssue,
+              color: context.color.primary,
+            ),
           ],
         ),
       ),
@@ -95,26 +99,26 @@ class _InspectionIssueCard extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      padding: .all(spacing.s12),
+      padding: EdgeInsets.all(spacing.s12),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
         border: Border.all(color: context.color.warning),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: .start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
                   color: context.color.brandAccent,
-                  borderRadius: .circular(radius.r6),
+                  borderRadius: BorderRadius.circular(radius.r6),
                 ),
-                alignment: .center,
+                alignment: Alignment.center,
                 child: Icon(
                   Icons.handyman_outlined,
                   size: 16,
@@ -124,7 +128,7 @@ class _InspectionIssueCard extends StatelessWidget {
               SizedBox(width: spacing.s8),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     LabelLargeText(
                       issue.title,
@@ -161,9 +165,9 @@ class _InspectionIssueCard extends StatelessWidget {
                 height: 32,
                 decoration: BoxDecoration(
                   color: context.color.warningAlt,
-                  borderRadius: .circular(radius.r10),
+                  borderRadius: BorderRadius.circular(radius.r10),
                 ),
-                alignment: .center,
+                alignment: Alignment.center,
                 child: Icon(
                   Icons.warning_amber_rounded,
                   size: 14,
@@ -211,10 +215,13 @@ class _CategoryChip extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Container(
-      padding: .symmetric(horizontal: spacing.s8, vertical: spacing.s4),
+      padding: EdgeInsets.symmetric(
+        horizontal: spacing.s8,
+        vertical: spacing.s4,
+      ),
       decoration: BoxDecoration(
         color: context.color.background.surface,
-        borderRadius: .circular(context.dimensions.radius.r4),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
       ),
       child: BodySmallText(label, color: context.color.text.primary),
     );
@@ -229,7 +236,7 @@ class _IssueStatusTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 8,

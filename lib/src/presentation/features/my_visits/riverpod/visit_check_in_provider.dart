@@ -50,16 +50,19 @@ class VisitCheckInState {
   }) {
     return VisitCheckInState(
       position: position ?? this.position,
-      locationError:
-          clearLocationError ? null : (locationError ?? this.locationError),
+      locationError: clearLocationError
+          ? null
+          : (locationError ?? this.locationError),
       isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
       captureResult: captureResult ?? this.captureResult,
       isCapturing: isCapturing ?? this.isCapturing,
-      captureError:
-          clearCaptureError ? null : (captureError ?? this.captureError),
+      captureError: clearCaptureError
+          ? null
+          : (captureError ?? this.captureError),
       isCheckingIn: isCheckingIn ?? this.isCheckingIn,
-      checkInError:
-          clearCheckInError ? null : (checkInError ?? this.checkInError),
+      checkInError: clearCheckInError
+          ? null
+          : (checkInError ?? this.checkInError),
       checkInSuccess: checkInSuccess ?? this.checkInSuccess,
     );
   }
@@ -114,7 +117,9 @@ class VisitCheckIn extends _$VisitCheckIn {
 
     state = state.copyWith(isCapturing: true, clearCaptureError: true);
 
-    final result = await ref.read(captureCheckInUseCaseProvider).call(
+    final result = await ref
+        .read(captureCheckInUseCaseProvider)
+        .call(
           partnerId: partnerId,
           visitId: visitId,
           request: VisitCheckInRequestEntity(
@@ -159,14 +164,8 @@ class VisitCheckIn extends _$VisitCheckIn {
         );
 
     state = result.when(
-      success: (_) => state.copyWith(
-        isCheckingIn: false,
-        checkInSuccess: true,
-      ),
-      error: (err) => state.copyWith(
-        isCheckingIn: false,
-        checkInError: err,
-      ),
+      success: (_) => state.copyWith(isCheckingIn: false, checkInSuccess: true),
+      error: (err) => state.copyWith(isCheckingIn: false, checkInError: err),
     );
   }
 }

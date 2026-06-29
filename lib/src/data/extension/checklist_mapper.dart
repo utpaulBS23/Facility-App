@@ -24,12 +24,21 @@ extension ChecklistItemModelToEntity on ChecklistItemModel {
     existingRating: response?.ratingValue,
     existingBoolAnswer: response?.booleanValue,
     existingPointsAwarded: response?.pointsAwarded,
-    existingMediaUrls: response?.media
-            ?.map((m) => m.url)
-            .whereType<String>()
-            .toList() ??
+    existingMediaUrls:
+        response?.media?.map((m) => m.url).whereType<String>().toList() ??
         const [],
     hasProof: response?.hasProof ?? false,
+  );
+}
+
+extension ChecklistItemSaveResponseModelToEntity
+    on ChecklistItemSaveResponseModel {
+  ChecklistItemSaveResponseEntity toEntity() => ChecklistItemSaveResponseEntity(
+    id: data.id,
+    ratingValue: data.ratingValue,
+    booleanValue: data.booleanValue,
+    pointsAwarded: data.pointsAwarded ?? 0,
+    hasProof: data.hasProof ?? false,
   );
 }
 

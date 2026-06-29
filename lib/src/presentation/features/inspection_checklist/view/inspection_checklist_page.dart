@@ -37,7 +37,9 @@ class _InspectionChecklistPageState
   }
 
   void _onLoadChecklist() {
-    ref.read(inspectionChecklistProvider.notifier).loadChecklist(visitId: widget.detail.id);
+    ref
+        .read(inspectionChecklistProvider.notifier)
+        .loadChecklist(visitId: widget.detail.id);
   }
 
   Future<void> _onSubmit() async {
@@ -57,7 +59,7 @@ class _InspectionChecklistPageState
     } else if (state.submitError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.submitError!),
+          content: Text(context.locale.submitChecklistFailed),
           backgroundColor: context.color.error,
         ),
       );
@@ -84,29 +86,29 @@ class _InspectionChecklistPageState
       body: checklistState.isLoadingChecklist
           ? const Center(child: CircularProgressIndicator.adaptive())
           : checklistState.checklistError != null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: .min,
-                    children: [
-                      BodyRegularText(
-                        checklistState.checklistError!,
-                        color: context.color.text.secondary,
-                        textAlign: .center,
-                      ),
-                      Gap(spacing.s16),
-                      TextButton(
-                        onPressed: _onLoadChecklist,
-                        child: Text(context.locale.retry),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BodyRegularText(
+                    context.locale.inspectionChecklistLoadFailed,
+                    color: context.color.text.secondary,
+                    textAlign: TextAlign.center,
                   ),
-                )
-              : _ChecklistBody(
-                  detail: widget.detail,
-                  checklistState: checklistState,
-                  onSubmit: _onSubmit,
-                  onNewIssue: _onNewIssue,
-                ),
+                  Gap(spacing.s16),
+                  TextButton(
+                    onPressed: _onLoadChecklist,
+                    child: Text(context.locale.retry),
+                  ),
+                ],
+              ),
+            )
+          : _ChecklistBody(
+              detail: widget.detail,
+              checklistState: checklistState,
+              onSubmit: _onSubmit,
+              onNewIssue: _onNewIssue,
+            ),
     );
   }
 }
@@ -133,11 +135,11 @@ class _ChecklistBody extends StatelessWidget {
     final isResolved = detail.status == VisitStatus.resolved;
 
     return Column(
-      crossAxisAlignment: .stretch,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
           child: ListView(
-            padding: .all(spacing.s16),
+            padding: EdgeInsets.all(spacing.s16),
             children: [
               _InspectionFacilityCard(detail: detail),
               Gap(spacing.s16),

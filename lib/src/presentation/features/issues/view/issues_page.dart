@@ -48,7 +48,12 @@ final class _IssueDemo extends _DemoItem {
 }
 
 final _demoItems = <_DemoItem>[
-  _RatingDemo(order: 1, question: 'Cleanliness of floor', maxPoints: 5, requiresProof: true),
+  _RatingDemo(
+    order: 1,
+    question: 'Cleanliness of floor',
+    maxPoints: 5,
+    requiresProof: true,
+  ),
   _BoolDemo(order: 2, question: 'Are all lights working?', requiresProof: true),
   _IssueDemo(
     issue: const ChecklistIssueEntity(
@@ -60,9 +65,16 @@ final _demoItems = <_DemoItem>[
       status: 'reported',
     ),
   ),
-  _RatingDemo(order: 3, question: 'Condition of washroom fixtures', maxPoints: 5),
+  _RatingDemo(
+    order: 3,
+    question: 'Condition of washroom fixtures',
+    maxPoints: 5,
+  ),
   _BoolDemo(order: 4, question: 'Is the area hazard-free?'),
-  _AttachmentOnlyDemo(order: 5, instruction: 'Take a photo of the main entrance'),
+  _AttachmentOnlyDemo(
+    order: 5,
+    instruction: 'Take a photo of the main entrance',
+  ),
   _IssueDemo(
     issue: const ChecklistIssueEntity(
       id: 2,
@@ -113,7 +125,12 @@ class IssuesPage extends StatelessWidget {
         },
         itemBuilder: (context, index) {
           return switch (_demoItems[index]) {
-            _RatingDemo(:final order, :final question, :final maxPoints, :final requiresProof) =>
+            _RatingDemo(
+              :final order,
+              :final question,
+              :final maxPoints,
+              :final requiresProof,
+            ) =>
               _RatingPickerTile(
                 order: order,
                 question: question,

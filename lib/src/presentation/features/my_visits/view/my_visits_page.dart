@@ -33,13 +33,15 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchVisits(_selectedDate));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _fetchVisits(_selectedDate),
+    );
   }
 
   void _fetchVisits(DateTime date) {
-    ref.read(myVisitsProvider.notifier).fetch(
-      date: DateFormat('yyyy-MM-dd').format(date),
-    );
+    ref
+        .read(myVisitsProvider.notifier)
+        .fetch(date: DateFormat('yyyy-MM-dd').format(date));
   }
 
   void _onDateChanged(DateTime date) {
@@ -56,10 +58,13 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
     return switch (_selectedTab) {
       _VisitTab.today => all.where((v) => v.date == selectedDateStr).toList(),
       _VisitTab.week => all,
-      _VisitTab.completed => all
-            .where((v) =>
-                v.status == VisitStatus.completed ||
-                v.status == VisitStatus.resolved)
+      _VisitTab.completed =>
+        all
+            .where(
+              (v) =>
+                  v.status == VisitStatus.completed ||
+                  v.status == VisitStatus.resolved,
+            )
             .toList(),
     };
   }
@@ -82,7 +87,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: Column(
-        crossAxisAlignment: .stretch,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
           visitState.when(
@@ -100,7 +105,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
                   const Center(child: CircularProgressIndicator.adaptive()),
               error: (err, _) => Center(
                 child: Column(
-                  mainAxisSize: .min,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       err.toString(),

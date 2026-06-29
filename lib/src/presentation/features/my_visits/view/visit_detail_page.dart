@@ -55,10 +55,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
     if (!mounted) return;
     final checkInState = ref.read(visitCheckInProvider);
     if (checkInState.checkInSuccess) {
-      context.pushReplacementNamed(
-        Routes.inspectionChecklist,
-        extra: detail,
-      );
+      context.pushReplacementNamed(Routes.inspectionChecklist, extra: detail);
     }
   }
 
@@ -82,10 +79,11 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
         centerTitle: true,
       ),
       body: detailState.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, _) => Center(
           child: Column(
-            mainAxisSize: .min,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 err.toString(),
@@ -145,7 +143,7 @@ class _DetailBody extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Column(
-      crossAxisAlignment: .stretch,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _VisitDetailInfoCard(detail: detail),
         Gap(spacing.s12),
@@ -156,7 +154,9 @@ class _DetailBody extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               color: context.color.success,
-              borderRadius: .circular(context.dimensions.radius.r12),
+              borderRadius: BorderRadius.circular(
+                context.dimensions.radius.r12,
+              ),
             ),
             child: const Center(
               child: SizedBox(
@@ -174,8 +174,9 @@ class _DetailBody extends StatelessWidget {
               checkInState.locationError != null) ...[
             Text(
               checkInState.captureError ?? checkInState.locationError!,
-              style: context.textStyle.bodySmall
-                  .copyWith(color: context.color.error),
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.error,
+              ),
               textAlign: TextAlign.center,
             ),
             Gap(spacing.s8),
@@ -186,7 +187,9 @@ class _DetailBody extends StatelessWidget {
               backgroundColor: context.color.success,
               minimumSize: const Size.fromHeight(44),
               shape: RoundedRectangleBorder(
-                borderRadius: .circular(context.dimensions.radius.r12),
+                borderRadius: BorderRadius.circular(
+                  context.dimensions.radius.r12,
+                ),
               ),
             ),
             child: LabelLargeText(
@@ -220,7 +223,7 @@ class _CheckInBody extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Column(
-      crossAxisAlignment: .stretch,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _VisitCheckInFacilityCard(detail: detail),
         Gap(spacing.s12),
@@ -233,8 +236,9 @@ class _CheckInBody extends StatelessWidget {
         if (checkInState.checkInError != null) ...[
           Text(
             checkInState.checkInError!,
-            style: context.textStyle.bodySmall
-                .copyWith(color: context.color.error),
+            style: context.textStyle.bodySmall.copyWith(
+              color: context.color.error,
+            ),
             textAlign: TextAlign.center,
           ),
           Gap(spacing.s8),
@@ -246,7 +250,9 @@ class _CheckInBody extends StatelessWidget {
             disabledBackgroundColor: context.color.disabled,
             minimumSize: const Size.fromHeight(44),
             shape: RoundedRectangleBorder(
-              borderRadius: .circular(context.dimensions.radius.r12),
+              borderRadius: BorderRadius.circular(
+                context.dimensions.radius.r12,
+              ),
             ),
           ),
           child: checkInState.isCheckingIn

@@ -14,23 +14,23 @@ class _IssueCard extends StatelessWidget {
       padding: EdgeInsets.all(spacing.s12),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r12),
         border: Border.all(color: context.color.warning),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: .start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
                   color: context.color.brandAccent,
-                  borderRadius: .circular(radius.r6),
+                  borderRadius: BorderRadius.circular(radius.r6),
                 ),
-                alignment: .center,
+                alignment: Alignment.center,
                 child: Icon(
                   Icons.handyman_outlined,
                   size: 16,
@@ -40,9 +40,12 @@ class _IssueCard extends StatelessWidget {
               SizedBox(width: spacing.s8),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: .start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LabelLargeText(issue.title, color: context.color.text.primary),
+                    LabelLargeText(
+                      issue.title,
+                      color: context.color.text.primary,
+                    ),
                     SizedBox(height: spacing.s6),
                     if (issue.category.isNotEmpty) ...[
                       _CategoryChip(label: issue.category),
@@ -74,9 +77,9 @@ class _IssueCard extends StatelessWidget {
                 height: 32,
                 decoration: BoxDecoration(
                   color: context.color.warningAlt,
-                  borderRadius: .circular(radius.r10),
+                  borderRadius: BorderRadius.circular(radius.r10),
                 ),
-                alignment: .center,
+                alignment: Alignment.center,
                 child: Icon(
                   Icons.warning_amber_rounded,
                   size: 14,
@@ -124,10 +127,13 @@ class _CategoryChip extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Container(
-      padding: .symmetric(horizontal: spacing.s8, vertical: spacing.s4),
+      padding: EdgeInsets.symmetric(
+        horizontal: spacing.s8,
+        vertical: spacing.s4,
+      ),
       decoration: BoxDecoration(
         color: context.color.background.surface,
-        borderRadius: .circular(context.dimensions.radius.r4),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
       ),
       child: BodySmallText(label, color: context.color.text.primary),
     );
@@ -142,7 +148,7 @@ class _IssueStatusTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 8,
