@@ -4,9 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';

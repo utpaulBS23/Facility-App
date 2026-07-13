@@ -88,7 +88,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             );
           case ShiftStatusFlag.shiftScheduledToday:
           case null:
-            context.goNamed(Routes.shiftCheckIn);
+            // WHY: check-in page is an attendance action — users without
+            // attendance.check_in land on the shift tab instead.
+            context.goNamed(
+              permissions.contains(AppPermission.attendanceCheckIn)
+                  ? Routes.shiftCheckIn
+                  : Routes.shift,
+            );
         }
       case AsyncError(:final error):
         ScaffoldMessenger.of(

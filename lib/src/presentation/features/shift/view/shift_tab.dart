@@ -6,11 +6,14 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/user_role.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_list_provider.dart';
 import '../../../core/utils/date_formatter.dart';

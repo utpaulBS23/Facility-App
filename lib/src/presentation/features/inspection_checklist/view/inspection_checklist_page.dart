@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/inspection_checklist_provider.dart';
 
@@ -108,6 +111,13 @@ class _InspectionChecklistPageState
               checklistState: checklistState,
               onSubmit: _onSubmit,
               onNewIssue: _onNewIssue,
+              canSubmit: ref.watch(
+                userSessionProvider.select(
+                  (session) =>
+                      session?.can(AppPermission.checklistResponseSubmit) ??
+                      false,
+                ),
+              ),
             ),
     );
   }
@@ -119,12 +129,14 @@ class _ChecklistBody extends StatelessWidget {
     required this.checklistState,
     required this.onSubmit,
     required this.onNewIssue,
+    required this.canSubmit,
   });
 
   final VisitDetailEntity detail;
   final InspectionChecklistState checklistState;
   final VoidCallback onSubmit;
   final VoidCallback onNewIssue;
+  final bool canSubmit;
 
   void _onCancel(BuildContext context) => context.pop();
 
@@ -173,6 +185,7 @@ class _ChecklistBody extends StatelessWidget {
         _InspectionBottomBar(
           state: checklistState,
           isResolved: isResolved,
+          canSubmit: canSubmit,
           onSubmit: onSubmit,
           onCancel: () => _onCancel(context),
         ),

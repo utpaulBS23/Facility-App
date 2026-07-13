@@ -47,6 +47,11 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final shiftState = ref.watch(shiftListProvider);
+    final canApplyLeave = ref.watch(
+      userSessionProvider.select(
+        (session) => session?.can(AppPermission.leaveRequest) ?? false,
+      ),
+    );
 
     // WHY: Calendar sits above the ListView in a Column instead of being
     // item 0 inside it. Nesting a GestureDetector inside a ListView puts
@@ -88,13 +93,15 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
                   spacing.s16,
                   spacing.s16,
                 ),
-                itemCount: shifts.length + 1,
+                // WHY: apply-leave slot only exists when the user holds
+                // leave.request — index math shifts accordingly.
+                itemCount: shifts.length + (canApplyLeave ? 1 : 0),
                 separatorBuilder: (context, index) => Gap(spacing.s12),
                 itemBuilder: (context, index) {
-                  if (index == 0) {
+                  if (canApplyLeave && index == 0) {
                     return _ApplyLeaveButton(onTap: widget.onApplyLeave);
                   }
-                  final entity = shifts[index - 1];
+                  final entity = shifts[index - (canApplyLeave ? 1 : 0)];
                   return _ShiftCard(
                     entity: entity,
                     onTap: () => widget.onShiftTap(entity),
