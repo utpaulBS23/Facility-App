@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../shift/riverpod/shift_list_provider.dart';
@@ -20,6 +22,11 @@ class ManualAttendance extends _$ManualAttendance {
     required CheckInInfoEntity checkInInfo,
   }) async {
     if (state.isLoading) return;
+
+    if (!ref.hasPermission(AppPermission.attendanceCheckIn)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return;
+    }
 
     state = const AsyncValue.loading();
 

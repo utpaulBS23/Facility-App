@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 
 part 'task_detail_provider.g.dart';
@@ -92,6 +94,11 @@ class TaskDetail extends _$TaskDetail {
   }
 
   Future<TaskEntity?> completeIssue({required int issueId}) async {
+    if (!ref.hasPermission(AppPermission.taskComplete)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return null;
+    }
+
     final user = ref.read(getCurrentUserUseCaseProvider).call();
     final partnerId = user?.partnerId;
     if (partnerId == null) {

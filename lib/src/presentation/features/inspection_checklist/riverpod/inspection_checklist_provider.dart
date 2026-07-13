@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
 
 part 'inspection_checklist_provider.g.dart';
@@ -310,6 +312,14 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int visitId,
     required int itemId,
   }) async {
+    if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
+      state = state.copyWith(
+        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+          ..[itemId] = permissionDeniedMessage,
+      );
+      return;
+    }
+
     final user = ref.read(getCurrentUserUseCaseProvider).call();
     final partnerId = user?.partnerId;
     if (partnerId == null) return;
@@ -419,6 +429,11 @@ class InspectionChecklist extends _$InspectionChecklist {
 
   Future<void> submit({required int visitId}) async {
     if (!state.isComplete) return;
+
+    if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
+      state = state.copyWith(submitError: permissionDeniedMessage);
+      return;
+    }
 
     final user = ref.read(getCurrentUserUseCaseProvider).call();
     final partnerId = user?.partnerId;

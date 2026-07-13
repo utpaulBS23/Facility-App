@@ -16,6 +16,7 @@ enum FailureType {
   illegalOperation,
   notFound,
   unauthorized,
+  forbidden,
   typeError,
   unknown,
 }
@@ -55,6 +56,18 @@ abstract class Failure with _$Failure {
           code: error?.code,
           stackTrace: e.stackTrace,
         ),
+        // WHY: 403 = server rejected the action on authorization grounds.
+        // Client gating is cosmetic; this typed failure gives every feature
+        // a uniform "no permission" message when the server says no.
+        DioExceptionType.badResponse when e.response?.statusCode == 403 =>
+          Failure(
+            type: FailureType.forbidden,
+            message:
+                error?.message ??
+                'You do not have permission to perform this action.',
+            code: error?.code,
+            stackTrace: e.stackTrace,
+          ),
         DioExceptionType.badResponse => Failure(
           type: FailureType.badResponse,
           message: error?.message ?? e.toString(),
