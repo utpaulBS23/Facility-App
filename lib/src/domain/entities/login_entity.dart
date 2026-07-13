@@ -1,5 +1,9 @@
+import 'app_permission.dart';
+import 'partner_entity.dart';
 import 'user_role.dart';
 
+export 'app_permission.dart';
+export 'partner_entity.dart';
 export 'user_role.dart';
 
 class UserSessionEntity {
@@ -7,11 +11,18 @@ class UserSessionEntity {
     required this.role,
     required this.permissions,
     required this.accessibleFacilities,
+    this.partner,
   });
 
   final UserRole role;
-  final List<String> permissions;
+  final Set<AppPermission> permissions;
   final List<String> accessibleFacilities;
+  final PartnerEntity? partner;
+
+  bool can(AppPermission permission) => permissions.contains(permission);
+
+  bool canAny(Iterable<AppPermission> candidates) =>
+      candidates.any(permissions.contains);
 }
 
 interface class LoginEntity {}
@@ -95,12 +106,14 @@ class LoginResponseEntity extends LoginEntity {
     required this.accessToken,
     required this.permissions,
     required this.accessibleFacilities,
+    this.partner,
     this.shiftStatus,
   });
 
   final UserEntity user;
   final String accessToken;
-  final List<String> permissions;
+  final Set<AppPermission> permissions;
   final List<String> accessibleFacilities;
+  final PartnerEntity? partner;
   final ShiftStatusEntity? shiftStatus;
 }

@@ -23,7 +23,15 @@ abstract base class AuthenticationRepository extends Repository {
 
   ShiftStatusEntity? getShiftStatus();
 
-  List<String> getPermissions();
+  /// Synchronous snapshot of the logged-in session; null when logged out.
+  UserSessionEntity? get currentSession;
+
+  /// Emits after every login/logout so listeners rebuild from [currentSession].
+  Stream<UserSessionEntity?> watchSession();
+
+  Set<AppPermission> getPermissions();
+
+  bool hasPermission(AppPermission permission);
 
   List<String> getAccessibleFacilities();
 }

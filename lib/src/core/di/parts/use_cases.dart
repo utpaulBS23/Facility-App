@@ -26,6 +26,16 @@ GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
 }
 
 @riverpod
+WatchUserSessionUseCase watchUserSessionUseCase(Ref ref) {
+  return WatchUserSessionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
+HasPermissionUseCase hasPermissionUseCase(Ref ref) {
+  return HasPermissionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
 ValidateFaceUseCase validateFaceUseCase(Ref ref) {
   return ValidateFaceUseCase(ref.read(faceValidationRepositoryProvider));
 }

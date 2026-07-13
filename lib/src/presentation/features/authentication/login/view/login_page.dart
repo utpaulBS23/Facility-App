@@ -10,6 +10,7 @@ import '../../../../../core/base/base.dart';
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../domain/entities/login_entity.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/router/shell_tab_config.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/application_logo.dart';
@@ -53,6 +54,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     switch (next) {
       case AsyncData(:final value) when value != null:
         final entity = (value as Success<LoginResponseEntity, String>).data;
+        final permissions = entity?.permissions ?? const <AppPermission>{};
+        // WHY: landing tab is permission-driven — a user without shift.view
+        // goes straight to their first permitted tab; the shift-status flow
+        // below only applies to shift-capable attendants.
+        if (!permissions.contains(AppPermission.shiftView)) {
+          context.goNamed(firstPermittedShellRoute(permissions));
+          return;
+        }
         final role = entity?.user.userRole;
         if (role != UserRole.attendant) {
           context.goNamed(Routes.shift);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/login_entity.dart';
@@ -19,8 +21,13 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   UserEntity? _currentUser;
   ShiftStatusEntity? _shiftStatus;
-  List<String> _permissions = [];
-  List<String> _accessibleFacilities = [];
+
+  // WHY: repository is the single source of truth for the session. It is a
+  // keepAlive DI singleton; presentation providers stay autoDispose and
+  // re-derive from [currentSession] + [watchSession] on every remount.
+  UserSessionEntity? _session;
+  final StreamController<UserSessionEntity?> _sessionController =
+      StreamController<UserSessionEntity?>.broadcast();
 
   @override
   Future<SignUpResponseEntity> register(SignUpRequestEntity data) async {
@@ -36,14 +43,20 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       final model = data.toModel();
       final response = await remote.login(model.toJson());
       final loginResponse = LoginResponseModel.fromJson(response.data);
+      final entity = loginResponse.toEntity();
 
-      session.setAccessToken(loginResponse.token.accessToken);
-      _currentUser = loginResponse.user.toEntity();
-      _shiftStatus = loginResponse.shiftStatus?.toEntity();
-      _permissions = loginResponse.permissions;
-      _accessibleFacilities = loginResponse.accessibleFacilities;
+      session.setAccessToken(entity.accessToken);
+      _currentUser = entity.user;
+      _shiftStatus = entity.shiftStatus;
+      _session = UserSessionEntity(
+        role: entity.user.userRole ?? UserRole.other,
+        permissions: entity.permissions,
+        accessibleFacilities: entity.accessibleFacilities,
+        partner: entity.partner,
+      );
+      _sessionController.add(_session);
 
-      return loginResponse.toEntity();
+      return entity;
     });
   }
 
@@ -76,8 +89,8 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
     session.clear();
     _currentUser = null;
     _shiftStatus = null;
-    _permissions = [];
-    _accessibleFacilities = [];
+    _session = null;
+    _sessionController.add(null);
   }
 
   @override
@@ -87,8 +100,20 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   ShiftStatusEntity? getShiftStatus() => _shiftStatus;
 
   @override
-  List<String> getPermissions() => _permissions;
+  UserSessionEntity? get currentSession => _session;
 
   @override
-  List<String> getAccessibleFacilities() => _accessibleFacilities;
+  Stream<UserSessionEntity?> watchSession() => _sessionController.stream;
+
+  @override
+  Set<AppPermission> getPermissions() =>
+      _session?.permissions ?? const <AppPermission>{};
+
+  @override
+  bool hasPermission(AppPermission permission) =>
+      _session?.can(permission) ?? false;
+
+  @override
+  List<String> getAccessibleFacilities() =>
+      _session?.accessibleFacilities ?? const [];
 }

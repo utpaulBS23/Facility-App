@@ -27,12 +27,19 @@ extension UserModelToEntity on UserModel {
   );
 }
 
+extension PartnerModelToEntity on PartnerModel {
+  PartnerEntity toEntity() => PartnerEntity(id: id, name: name);
+}
+
 extension LoginResponseModelToEntity on LoginResponseModel {
   LoginResponseEntity toEntity() => LoginResponseEntity(
     user: user.toEntity(),
     accessToken: token.accessToken,
-    permissions: permissions,
+    // WHY: raw wire strings become a typed set here — unknown keys from a
+    // newer backend are dropped so login never breaks on new permissions.
+    permissions: AppPermission.setFromKeys(permissions),
     accessibleFacilities: accessibleFacilities,
+    partner: partner?.toEntity(),
     shiftStatus: shiftStatus?.toEntity(),
   );
 }

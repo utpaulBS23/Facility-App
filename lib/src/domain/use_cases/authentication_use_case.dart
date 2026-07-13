@@ -59,13 +59,21 @@ final class GetUserSessionUseCase {
 
   final AuthenticationRepository repository;
 
-  UserSessionEntity? call() {
-    final user = repository.getCurrentUser();
-    if (user == null) return null;
-    return UserSessionEntity(
-      role: user.userRole ?? UserRole.other,
-      permissions: repository.getPermissions(),
-      accessibleFacilities: repository.getAccessibleFacilities(),
-    );
-  }
+  UserSessionEntity? call() => repository.currentSession;
+}
+
+final class WatchUserSessionUseCase {
+  WatchUserSessionUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  Stream<UserSessionEntity?> call() => repository.watchSession();
+}
+
+final class HasPermissionUseCase {
+  HasPermissionUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  bool call(AppPermission permission) => repository.hasPermission(permission);
 }
