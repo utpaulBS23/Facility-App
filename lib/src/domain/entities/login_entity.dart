@@ -1,20 +1,16 @@
 import 'app_permission.dart';
 import 'partner_entity.dart';
-import 'user_role.dart';
 
 export 'app_permission.dart';
 export 'partner_entity.dart';
-export 'user_role.dart';
 
 class UserSessionEntity {
   UserSessionEntity({
-    required this.role,
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
   });
 
-  final UserRole role;
   final Set<AppPermission> permissions;
   final List<String> accessibleFacilities;
   final PartnerEntity? partner;
@@ -23,6 +19,13 @@ class UserSessionEntity {
 
   bool canAny(Iterable<AppPermission> candidates) =>
       candidates.any(permissions.contains);
+
+  // WHY: backend dropped user_role entirely — the attendant experience is
+  // now defined by capability: whoever can check in to a shift gets the
+  // attendant UI variant; everyone else gets the supervisor/manager variant.
+  // Single derivation point — swap this expression if the backend later
+  // ships an explicit capability or role key.
+  bool get isShiftAttendant => can(AppPermission.attendanceCheckIn);
 }
 
 interface class LoginEntity {}
@@ -69,7 +72,6 @@ class UserEntity extends LoginEntity {
     required this.email,
     this.phoneNumber,
     required this.userType,
-    this.userRole,
     this.partnerId,
     this.supervisor,
     required this.permissionVersion,
@@ -81,7 +83,6 @@ class UserEntity extends LoginEntity {
   final String email;
   final String? phoneNumber;
   final String userType;
-  final UserRole? userRole;
   final int? partnerId;
   final String? supervisor;
   final int permissionVersion;

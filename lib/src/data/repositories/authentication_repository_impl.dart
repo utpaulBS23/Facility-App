@@ -49,7 +49,6 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       _currentUser = entity.user;
       _shiftStatus = entity.shiftStatus;
       _session = UserSessionEntity(
-        role: entity.user.userRole ?? UserRole.other,
         permissions: entity.permissions,
         accessibleFacilities: entity.accessibleFacilities,
         partner: entity.partner,

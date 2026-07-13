@@ -19,11 +19,14 @@ class _AttendanceDetailsPageState
   void initState() {
     super.initState();
     _current = widget.attendance;
-    // WHY: read once in initState — role never changes mid-session, avoids
-    // repeated ref.read inside build().
-    _isSupervisor =
-        ref.read(getCurrentUserUseCaseProvider).call()?.userRole ==
-            UserRole.supervisor;
+    // WHY: read once in initState — permissions never change mid-session,
+    // avoids repeated ref.read inside build(). Supervisor variant = not a
+    // shift attendant, since user_role no longer exists.
+    _isSupervisor = !(ref
+            .read(getUserSessionUseCaseProvider)
+            .call()
+            ?.isShiftAttendant ??
+        true);
   }
 
   int? get _partnerId =>

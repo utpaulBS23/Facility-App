@@ -8,7 +8,6 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
-import '../../../../domain/entities/user_role.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -44,8 +43,11 @@ class ShiftTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.read(getUserSessionUseCaseProvider).call();
-    final role = session?.role ?? UserRole.attendant;
+    final isShiftAttendant = ref.watch(
+      userSessionProvider.select(
+        (session) => session?.isShiftAttendant ?? true,
+      ),
+    );
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -55,12 +57,12 @@ class ShiftTab extends ConsumerWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: role == UserRole.supervisor
-          ? _SupervisorShiftView(
+      body: isShiftAttendant
+          ? _AttendantShiftView(
+              onApplyLeave: () => _onApplyLeave(context),
               onShiftTap: (entity) => _onShiftTap(context, entity),
             )
-          : _AttendantShiftView(
-              onApplyLeave: () => _onApplyLeave(context),
+          : _SupervisorShiftView(
               onShiftTap: (entity) => _onShiftTap(context, entity),
             ),
     );

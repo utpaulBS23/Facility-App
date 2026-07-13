@@ -19,7 +19,6 @@ extension UserModelToEntity on UserModel {
     email: email,
     phoneNumber: phoneNumber,
     userType: userType,
-    userRole: UserRole.fromString(userRole),
     partnerId: partnerId,
     supervisor: supervisor,
     permissionVersion: permissionVersion,

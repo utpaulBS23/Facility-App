@@ -62,8 +62,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           context.goNamed(firstPermittedShellRoute(permissions));
           return;
         }
-        final role = entity?.user.userRole;
-        if (role != UserRole.attendant) {
+        // WHY: user_role is gone — the shift-status check-in flow only
+        // applies to users who can check in; everyone else lands on the
+        // shift tab directly.
+        if (!permissions.contains(AppPermission.attendanceCheckIn)) {
           context.goNamed(Routes.shift);
           return;
         }
@@ -88,13 +90,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             );
           case ShiftStatusFlag.shiftScheduledToday:
           case null:
-            // WHY: check-in page is an attendance action — users without
-            // attendance.check_in land on the shift tab instead.
-            context.goNamed(
-              permissions.contains(AppPermission.attendanceCheckIn)
-                  ? Routes.shiftCheckIn
-                  : Routes.shift,
-            );
+            context.goNamed(Routes.shiftCheckIn);
         }
       case AsyncError(:final error):
         ScaffoldMessenger.of(

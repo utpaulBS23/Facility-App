@@ -1,6 +1,5 @@
 import '../../core/base/result.dart';
 import '../entities/shift_entity.dart';
-import '../entities/user_role.dart';
 import '../repositories/authentication_repository.dart';
 import '../repositories/shift_repository.dart';
 
@@ -14,14 +13,16 @@ final class GetShiftsUseCase {
     required int partnerId,
     required String date,
   }) async {
-    final role =
-        _authRepository.getCurrentUser()?.userRole ?? UserRole.attendant;
-    final result = role == UserRole.supervisor
-        ? await _shiftRepository.getSupervisorShifts(
+    // WHY: user_role no longer exists — shift-attendant capability decides
+    // whether we fetch own shifts or facility-wide supervisor shifts.
+    final isAttendant =
+        _authRepository.currentSession?.isShiftAttendant ?? true;
+    final result = isAttendant
+        ? await _shiftRepository.getMyShifts(partnerId: partnerId, date: date)
+        : await _shiftRepository.getSupervisorShifts(
             partnerId: partnerId,
             date: date,
-          )
-        : await _shiftRepository.getMyShifts(partnerId: partnerId, date: date);
+          );
 
     return switch (result) {
       Success(:final data) => Success(data: data),
