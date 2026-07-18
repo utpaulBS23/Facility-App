@@ -13,24 +13,26 @@ class AttendanceDetailsPage extends ConsumerStatefulWidget {
 class _AttendanceDetailsPageState
     extends ConsumerState<AttendanceDetailsPage> {
   late AttendanceItemEntity _current;
-  late bool _isSupervisor;
+  late bool _canReview;
 
   @override
   void initState() {
     super.initState();
     _current = widget.attendance;
-    // WHY: read once in initState — permissions never change mid-session,
-    // avoids repeated ref.read inside build(). Supervisor variant = not a
-    // shift attendant, since user_role no longer exists.
-    _isSupervisor = !(ref
-            .read(getUserSessionUseCaseProvider)
-            .call()
-            ?.isShiftAttendant ??
-        true);
+    // WHY: gate on the real backend permissions rather than inferring
+    // "supervisor" from the absence of attendance.check_in — the backend now
+    // ships attendance.approve/.reject explicitly, so the proxy is obsolete.
+    // Read once in initState: permissions never change mid-session.
+    final session = ref.read(getUserSessionUseCaseProvider).call();
+    _canReview =
+        session?.canAny(const [
+          AppPermission.attendanceApprove,
+          AppPermission.attendanceReject,
+        ]) ??
+        false;
   }
 
-  int? get _partnerId =>
-      ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+  int? get _partnerId => ref.activePartnerId;
 
   void _onApprove() {
     final partnerId = _partnerId;
@@ -116,7 +118,7 @@ class _AttendanceDetailsPageState
           Expanded(
             child: _AttendanceDetailsBody(detail: _current),
           ),
-          if (_isSupervisor && isPending)
+          if (_canReview && isPending)
             _ApproveRejectBar(
               onApprove: _onApprove,
               onReject: _onReject,
