@@ -37,7 +37,28 @@ class UserSessionEntity {
   // Single derivation point — swap this expression if the backend later
   // ships an explicit capability or role key.
   bool get isShiftAttendant => can(AppPermission.attendanceCheckIn);
+
+  /// Which shift experience this session gets.
+  ///
+  /// WHY: each mode is chosen by the permission that is its *purpose* —
+  /// managing a roster needs `shift.assign_attendant`, working a shift needs
+  /// `attendance.check_in`. Deriving "supervisor" from the *absence* of
+  /// check-in (the old `!isShiftAttendant`) defined authority as a gap, so a
+  /// user with neither permission silently fell into the supervisor branch and
+  /// fired a request they could not be authorised for.
+  ///
+  /// Manage wins when a session holds both (e.g. a slot lead). Revisit if
+  /// leads need their own check-in flow — that becomes a UI affordance, not a
+  /// change to this rule.
+  ShiftViewMode get shiftViewMode {
+    if (can(AppPermission.shiftAssignAttendant)) return ShiftViewMode.supervisor;
+    if (can(AppPermission.attendanceCheckIn)) return ShiftViewMode.attendant;
+    return ShiftViewMode.unavailable;
+  }
 }
+
+/// The shift experience a session is entitled to.
+enum ShiftViewMode { attendant, supervisor, unavailable }
 
 interface class LoginEntity {}
 

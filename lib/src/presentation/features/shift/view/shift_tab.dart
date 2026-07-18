@@ -8,6 +8,7 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
@@ -44,9 +45,12 @@ class ShiftTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isShiftAttendant = ref.watch(
+    // WHY: mode is derived from the permission that defines each experience,
+    // so a session entitled to neither gets an explicit empty state instead of
+    // falling through to the supervisor view and firing a doomed request.
+    final mode = ref.watch(
       userSessionProvider.select(
-        (session) => session?.isShiftAttendant ?? true,
+        (session) => session?.shiftViewMode ?? ShiftViewMode.unavailable,
       ),
     );
 
@@ -58,14 +62,27 @@ class ShiftTab extends ConsumerWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: isShiftAttendant
-          ? _AttendantShiftView(
-              onApplyLeave: () => _onApplyLeave(context),
-              onShiftTap: (entity) => _onShiftTap(context, entity),
-            )
-          : _SupervisorShiftView(
-              onShiftTap: (entity) => _onShiftTap(context, entity),
+      body: switch (mode) {
+        ShiftViewMode.attendant => _AttendantShiftView(
+          onApplyLeave: () => _onApplyLeave(context),
+          onShiftTap: (entity) => _onShiftTap(context, entity),
+        ),
+        ShiftViewMode.supervisor => _SupervisorShiftView(
+          onShiftTap: (entity) => _onShiftTap(context, entity),
+        ),
+        ShiftViewMode.unavailable => Center(
+          child: Padding(
+            padding: EdgeInsets.all(context.dimensions.spacing.s24),
+            child: Text(
+              context.locale.shiftsUnavailable,
+              style: context.textStyle.bodyMedium.copyWith(
+                color: context.color.text.secondary,
+              ),
+              textAlign: TextAlign.center,
             ),
+          ),
+        ),
+      },
     );
   }
 }

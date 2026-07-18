@@ -200,6 +200,7 @@
   "submitLeaveRequest": "ছুটির আবেদন জমা দিন",
   "reason": "কারণ",
   "optional": "ঐচ্ছিক",
+  "shiftsUnavailable": "আপনার অ্যাকাউন্টের জন্য শিফট উপলব্ধ নয়।",
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
   "slotCapacity": "{assigned}/{max}",

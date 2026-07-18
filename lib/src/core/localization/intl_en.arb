@@ -200,6 +200,7 @@
   "submitLeaveRequest": "Submit Leave Request",
   "reason": "Reason",
   "optional": "Optional",
+  "shiftsUnavailable": "Shifts are not available for your account.",
   "assigned": "Assigned",
   "assignStaff": "Assign Staff",
   "slotCapacity": "{assigned}/{max}",
