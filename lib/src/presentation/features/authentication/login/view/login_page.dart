@@ -40,6 +40,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _uidController.text = 'bs_2109';
+    _passwordController.text = 'password123';
     ref.listenManual(loginProvider, _onLoginStateChanged);
   }
 
@@ -58,39 +60,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         // WHY: landing tab is permission-driven — a user without shift.view
         // goes straight to their first permitted tab; the shift-status flow
         // below only applies to shift-capable attendants.
-        if (!permissions.contains(AppPermission.shiftView)) {
+        if (permissions.contains(AppPermission.shiftView)) {
           context.goNamed(firstPermittedShellRoute(permissions));
           return;
-        }
-        // WHY: user_role is gone — the shift-status check-in flow only
-        // applies to users who can check in; everyone else lands on the
-        // shift tab directly.
-        if (!permissions.contains(AppPermission.attendanceCheckIn)) {
-          context.goNamed(Routes.shift);
-          return;
-        }
-        final shiftStatus = entity?.shiftStatus;
-        switch (shiftStatus?.flag) {
-          case ShiftStatusFlag.alreadyCheckedIn:
-            context.goNamed(Routes.shift);
-          case ShiftStatusFlag.noShiftToday:
-            context.goNamed(
-              Routes.noShiftToday,
-              extra: shiftStatus?.message ?? '',
-            );
-          case ShiftStatusFlag.shiftNotYetAccessible:
-            context.goNamed(
-              Routes.shiftNotYetAccessible,
-              extra: shiftStatus?.message ?? '',
-            );
-          case ShiftStatusFlag.shiftWindowClosed:
-            context.goNamed(
-              Routes.shiftWindowClosed,
-              extra: shiftStatus?.message ?? '',
-            );
-          case ShiftStatusFlag.shiftScheduledToday:
-          case null:
-            context.goNamed(Routes.shiftCheckIn);
         }
       case AsyncError(:final error):
         ScaffoldMessenger.of(
