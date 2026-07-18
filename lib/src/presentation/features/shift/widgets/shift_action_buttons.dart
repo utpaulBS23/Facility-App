@@ -117,11 +117,13 @@ class _SlotStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final dimensions = context.dimensions;
 
-    // WHY: only `open` is a documented backend value, so known states get a
-    // localised label and anything else falls back to the raw server string
-    // rather than being hidden or mistranslated.
+    // WHY: known states get a localised label; anything else falls back to the
+    // raw server string rather than being hidden or mistranslated, since the
+    // full value set is not documented.
     final label = switch (status) {
       'open' => context.locale.slotStatusOpen,
+      'completed' => context.locale.slotStatusCompleted,
+      'partial_miss' => context.locale.slotStatusPartialMiss,
       _ => status,
     };
 

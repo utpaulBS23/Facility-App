@@ -9,6 +9,7 @@ import '../../../core/logger/log.dart';
 import '../../../domain/entities/attendance_entity.dart';
 import '../../../domain/entities/manual_attendance_entity.dart';
 import '../../../domain/entities/shift_entity.dart';
+import '../../../domain/entities/shift_slot_entity.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../../domain/entities/visit_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';

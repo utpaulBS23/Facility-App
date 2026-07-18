@@ -225,6 +225,9 @@
       }
     }
   },
+  "slotLead": "স্লট লিড",
+  "slotStatusCompleted": "সম্পন্ন",
+  "slotStatusPartialMiss": "আংশিক অনুপস্থিত",
   "slotFull": "স্লট পূর্ণ",
   "slotStatusOpen": "খোলা",
   "checkedInCount": "{count} জন চেক-ইন করেছেন",

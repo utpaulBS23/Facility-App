@@ -225,6 +225,9 @@
       }
     }
   },
+  "slotLead": "Slot lead",
+  "slotStatusCompleted": "Completed",
+  "slotStatusPartialMiss": "Partial miss",
   "slotFull": "Slot full",
   "slotStatusOpen": "Open",
   "checkedInCount": "{count} checked in",
