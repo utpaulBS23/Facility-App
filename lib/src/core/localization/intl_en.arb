@@ -202,6 +202,48 @@
   "optional": "Optional",
   "assigned": "Assigned",
   "assignStaff": "Assign Staff",
+  "slotCapacity": "{assigned}/{max}",
+  "@slotCapacity": {
+    "placeholders": {
+      "assigned": {
+        "type": "int",
+        "example": "2"
+      },
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "belowMinimumStaff": "Needs {min}",
+  "@belowMinimumStaff": {
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "slotFull": "Slot full",
+  "slotStatusOpen": "Open",
+  "checkedInCount": "{count} checked in",
+  "@checkedInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "checkedOutCount": "{count} checked out",
+  "@checkedOutCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "employeeShortest": "Employee Shortest",
   "notAvailable": "N/A",
   "noShiftsFound": "No shifts scheduled for this date.",

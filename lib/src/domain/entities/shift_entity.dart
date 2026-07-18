@@ -24,6 +24,30 @@ class ShiftSupervisorEntity {
   final bool isPrimary;
 }
 
+/// One attendant's assignment to a shift slot.
+class ShiftAssignmentEntity {
+  const ShiftAssignmentEntity({
+    required this.id,
+    required this.attendant,
+    required this.isSlotLead,
+    this.assignedAt,
+    this.unassignedAt,
+    this.unassignedReason,
+  });
+
+  final int id;
+  final ShiftAttendantEntity attendant;
+  final bool isSlotLead;
+  final String? assignedAt;
+  final String? unassignedAt;
+  final String? unassignedReason;
+
+  /// WHY: the backend keeps unassigned rows with `unassigned_at` set, so a
+  /// non-null value means this person is no longer on the slot and must not
+  /// be counted as assigned.
+  bool get isActive => unassignedAt == null;
+}
+
 class ShiftFacilityEntity {
   const ShiftFacilityEntity({
     required this.id,
@@ -52,7 +76,15 @@ class ShiftEntity {
     this.checkInTime,
     this.checkOutTime,
     this.notes,
-    this.attendants = const [],
+    this.assignments = const [],
+    this.attendant,
+    this.isSlotLead = false,
+    this.minAttendants = 0,
+    this.maxAttendants = 0,
+    this.assignedCount = 0,
+    this.checkedInCount = 0,
+    this.checkedOutCount = 0,
+    this.slotStatus = '',
   });
 
   final int id;
@@ -67,5 +99,41 @@ class ShiftEntity {
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
   final String? notes;
-  final List<ShiftAttendantEntity> attendants;
+
+  /// Staffing as reported by the supervisor endpoint.
+  final List<ShiftAssignmentEntity> assignments;
+
+  /// The logged-in attendant on their own shift (attendant endpoint only).
+  final ShiftAttendantEntity? attendant;
+
+  /// Whether the logged-in attendant leads this slot (attendant endpoint only).
+  final bool isSlotLead;
+
+  /// Slot capacity, reported by the supervisor endpoint only. Defaults to 0
+  /// on the attendant endpoint, which does not send these.
+  final int minAttendants;
+  final int maxAttendants;
+
+  /// WHY: the backend's own count, kept rather than derived from
+  /// [assignments] — the two can disagree (e.g. if the list is paginated or
+  /// filtered server-side), and the backend's figure is authoritative.
+  final int assignedCount;
+  final int checkedInCount;
+  final int checkedOutCount;
+
+  /// Raw slot state (e.g. `open`). Kept as a string because the full value set
+  /// is not yet known — promote to an enum once the backend documents it.
+  final String slotStatus;
+
+  /// Attendants currently on the slot — excludes unassigned rows.
+  List<ShiftAttendantEntity> get assignedAttendants => [
+    for (final assignment in assignments)
+      if (assignment.isActive) assignment.attendant,
+  ];
+
+  /// Whether the slot has room for another attendant.
+  bool get hasFreeCapacity => maxAttendants > 0 && assignedCount < maxAttendants;
+
+  /// Whether the slot has met its minimum staffing requirement.
+  bool get isMinimumStaffed => assignedCount >= minAttendants;
 }

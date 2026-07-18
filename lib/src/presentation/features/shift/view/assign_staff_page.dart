@@ -109,7 +109,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
                 ),
               );
             }
-            final assignedIds = widget.shift.attendants
+            final assignedIds = widget.shift.assignedAttendants
                 .map((a) => a.id)
                 .toSet();
             return ListView.separated(

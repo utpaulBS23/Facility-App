@@ -19,7 +19,7 @@ extension ShiftSupervisorModelToEntity on ShiftSupervisorModel {
         id: id,
         fullName: fullName ?? '',
         phone: phone,
-        isPrimary: (isPrimary ?? 0) == 1,
+        isPrimary: isPrimary ?? false,
       );
 }
 
@@ -40,6 +40,20 @@ extension ShiftAttendantModelToEntity on ShiftAttendantModel {
       );
 }
 
+extension ShiftAssignmentModelToEntity on ShiftAssignmentModel {
+  /// WHY: callers must filter out assignments with a null [attendant] first —
+  /// an assignment without one is meaningless, and fabricating a placeholder
+  /// attendant would put a phantom person in the assigned list.
+  ShiftAssignmentEntity toEntity() => ShiftAssignmentEntity(
+        id: id,
+        attendant: attendant!.toEntity(),
+        isSlotLead: isSlotLead ?? false,
+        assignedAt: assignedAt,
+        unassignedAt: unassignedAt,
+        unassignedReason: unassignedReason,
+      );
+}
+
 extension ShiftModelToEntity on ShiftModel {
   ShiftEntity toEntity() => ShiftEntity(
         id: id,
@@ -50,10 +64,21 @@ extension ShiftModelToEntity on ShiftModel {
         shiftDate: shiftDate,
         startTime: startTime,
         endTime: endTime,
-        status: status,
+        status: status ?? '',
         checkInTime: _parseUtcIso(checkInTime),
         checkOutTime: _parseUtcIso(checkOutTime),
         notes: notes,
-        attendants: attendants.map((a) => a.toEntity()).toList(),
+        assignments: assignments
+            .where((a) => a.attendant != null)
+            .map((a) => a.toEntity())
+            .toList(),
+        attendant: attendant?.toEntity(),
+        isSlotLead: isSlotLead ?? false,
+        minAttendants: minAttendants ?? 0,
+        maxAttendants: maxAttendants ?? 0,
+        assignedCount: assignedCount ?? 0,
+        checkedInCount: checkedInCount ?? 0,
+        checkedOutCount: checkedOutCount ?? 0,
+        slotStatus: slotStatus ?? '',
       );
 }

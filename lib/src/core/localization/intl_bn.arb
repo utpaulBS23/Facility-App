@@ -202,6 +202,48 @@
   "optional": "ঐচ্ছিক",
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
+  "slotCapacity": "{assigned}/{max}",
+  "@slotCapacity": {
+    "placeholders": {
+      "assigned": {
+        "type": "int",
+        "example": "2"
+      },
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "belowMinimumStaff": "প্রয়োজন {min} জন",
+  "@belowMinimumStaff": {
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "slotFull": "স্লট পূর্ণ",
+  "slotStatusOpen": "খোলা",
+  "checkedInCount": "{count} জন চেক-ইন করেছেন",
+  "@checkedInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "checkedOutCount": "{count} জন চেক-আউট করেছেন",
+  "@checkedOutCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "employeeShortest": "এমপ্লয়ি শর্টেস্ট",
   "notAvailable": "প্রযোজ্য নয়",
   "noShiftsFound": "এই তারিখে কোনো শিফট নির্ধারিত নেই।",
