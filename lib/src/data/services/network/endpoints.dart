@@ -38,6 +38,12 @@ class Endpoints {
       '/partners/{partnerId}/attendances/{attendanceId}/reject';
 
   /// Shifts
+  ///
+  /// [shiftSlots] is facility-and-date scoped and serves both experiences:
+  /// every slot carries its attendants with an `is_me` marker, and
+  /// `active_slot` reports the caller's own actionable slot. It supersedes
+  /// [myShifts] and [supervisorShifts].
+  static const String shiftSlots = '/partners/{partnerId}/shift-slots';
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';
