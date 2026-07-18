@@ -15,9 +15,9 @@ class AttendantAssignmentModel with AttendantAssignmentModelMappable {
   @MappableField(key: 'assignment_type')
   final String? assignmentType;
   @MappableField(key: 'is_primary')
-  final int? isPrimary;
+  final bool? isPrimary;
   @MappableField(key: 'is_active')
-  final int? isActive;
+  final bool? isActive;
   @MappableField(key: 'assigned_at')
   final String? assignedAt;
   @MappableField(key: 'assigned_by')
