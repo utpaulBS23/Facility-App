@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
+import '../../../../core/extensions/permission_guard.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/visit_entity.dart';
 
@@ -111,8 +112,7 @@ class VisitCheckIn extends _$VisitCheckIn {
     final pos = state.position;
     if (pos == null) return;
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     state = state.copyWith(isCapturing: true, clearCaptureError: true);
@@ -146,8 +146,7 @@ class VisitCheckIn extends _$VisitCheckIn {
     final capture = state.captureResult;
     if (capture == null) return;
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     state = state.copyWith(isCheckingIn: true, clearCheckInError: true);

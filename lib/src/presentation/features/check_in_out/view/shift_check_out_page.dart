@@ -20,7 +20,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       );
       return;
     }
-    final partnerId = ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
     if (checkInInfo == null) {

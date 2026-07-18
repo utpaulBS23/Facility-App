@@ -108,12 +108,11 @@ class InspectionChecklist extends _$InspectionChecklist {
       const InspectionChecklistState(isLoadingChecklist: true);
 
   Future<void> loadChecklist({required int visitId}) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
       state = state.copyWith(
         isLoadingChecklist: false,
-        checklistError: 'user-not-found',
+        checklistError: partnerUnavailableMessage,
       );
       return;
     }
@@ -174,8 +173,7 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int itemId,
     required int rating,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     final previousRating = state.starAnswers[itemId];
@@ -251,8 +249,7 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int itemId,
     required bool value,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     final previousYesNo = state.yesNoAnswers[itemId];
@@ -320,8 +317,7 @@ class InspectionChecklist extends _$InspectionChecklist {
       return;
     }
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     final ratingValue = state.starAnswers[itemId];
@@ -435,8 +431,7 @@ class InspectionChecklist extends _$InspectionChecklist {
       return;
     }
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     state = state.copyWith(isSubmitting: true, clearSubmitError: true);

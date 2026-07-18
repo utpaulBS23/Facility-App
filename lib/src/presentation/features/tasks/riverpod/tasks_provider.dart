@@ -16,10 +16,9 @@ class Tasks extends _$Tasks {
   Future<void> fetch({required String bucket}) async {
     state = const AsyncValue.loading();
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return;
     }
 
@@ -36,10 +35,9 @@ class Tasks extends _$Tasks {
   }
 
   Future<void> startIssue({required int issueId}) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return;
     }
 
@@ -68,10 +66,9 @@ class Tasks extends _$Tasks {
     required String photoPath,
     required String alt,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return null;
     }
 
@@ -110,10 +107,9 @@ class Tasks extends _$Tasks {
       return null;
     }
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return null;
     }
 

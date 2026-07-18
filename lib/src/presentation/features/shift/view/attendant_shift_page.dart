@@ -27,8 +27,7 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
   }
 
   void _fetchShifts(DateTime date) {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
     ref
         .read(shiftListProvider.notifier)

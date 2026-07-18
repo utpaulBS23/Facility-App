@@ -30,10 +30,9 @@ class ManualAttendance extends _$ManualAttendance {
 
     state = const AsyncValue.loading();
 
-    final partnerId =
-        ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return;
     }
 

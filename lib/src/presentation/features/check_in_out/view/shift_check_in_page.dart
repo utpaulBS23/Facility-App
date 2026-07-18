@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../../core/gen/assets.gen.dart';
@@ -53,7 +54,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       );
       return;
     }
-    final partnerId = ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
     if (checkInInfo == null) {

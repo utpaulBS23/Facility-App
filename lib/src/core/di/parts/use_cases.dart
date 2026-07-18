@@ -26,6 +26,11 @@ GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
 }
 
 @riverpod
+GetActivePartnerUseCase getActivePartnerUseCase(Ref ref) {
+  return GetActivePartnerUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
 WatchUserSessionUseCase watchUserSessionUseCase(Ref ref) {
   return WatchUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }

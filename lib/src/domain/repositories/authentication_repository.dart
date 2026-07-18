@@ -33,5 +33,5 @@ abstract base class AuthenticationRepository extends Repository {
 
   bool hasPermission(AppPermission permission);
 
-  List<String> getAccessibleFacilities();
+  List<AccessibleFacilityEntity> getAccessibleFacilities();
 }

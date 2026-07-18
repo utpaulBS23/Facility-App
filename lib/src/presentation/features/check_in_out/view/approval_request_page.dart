@@ -31,8 +31,7 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
     _ => AttendanceStatue.pending,
   };
 
-  int? get _partnerId =>
-      ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+  int? get _partnerId => ref.activePartnerId;
 
   void _onRefresh() {
     final partnerId = _partnerId;

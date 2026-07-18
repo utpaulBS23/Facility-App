@@ -62,6 +62,14 @@ final class GetUserSessionUseCase {
   UserSessionEntity? call() => repository.currentSession;
 }
 
+final class GetActivePartnerUseCase {
+  GetActivePartnerUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  int? call() => repository.currentSession?.activePartnerId;
+}
+
 final class WatchUserSessionUseCase {
   WatchUserSessionUseCase(this.repository);
 

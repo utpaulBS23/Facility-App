@@ -1,6 +1,8 @@
+import 'accessible_facility_entity.dart';
 import 'app_permission.dart';
 import 'partner_entity.dart';
 
+export 'accessible_facility_entity.dart';
 export 'app_permission.dart';
 export 'partner_entity.dart';
 
@@ -9,11 +11,20 @@ class UserSessionEntity {
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
+    this.activePartnerId,
   });
 
   final Set<AppPermission> permissions;
-  final List<String> accessibleFacilities;
+  final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
+
+  // WHY: active partner is the single tenant scope every partner-scoped feature
+  // reads. Today it is derived from the sole login-bound partner (one partner
+  // per login); a future in-app partner switcher rebinds only this source — the
+  // ~15 consumers stay untouched. Single derivation point, like [isShiftAttendant].
+  final int? activePartnerId;
+
+  bool get hasActivePartner => activePartnerId != null;
 
   bool can(AppPermission permission) => permissions.contains(permission);
 
@@ -114,7 +125,7 @@ class LoginResponseEntity extends LoginEntity {
   final UserEntity user;
   final String accessToken;
   final Set<AppPermission> permissions;
-  final List<String> accessibleFacilities;
+  final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
   final ShiftStatusEntity? shiftStatus;
 }

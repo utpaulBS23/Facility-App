@@ -52,6 +52,10 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
         permissions: entity.permissions,
         accessibleFacilities: entity.accessibleFacilities,
         partner: entity.partner,
+        // WHY: one partner per login → active partner = the user's bound
+        // partner. A future switcher swaps this seed for a mutable selection
+        // without touching any consumer.
+        activePartnerId: entity.user.partnerId,
       );
       _sessionController.add(_session);
 
@@ -113,6 +117,6 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       _session?.can(permission) ?? false;
 
   @override
-  List<String> getAccessibleFacilities() =>
+  List<AccessibleFacilityEntity> getAccessibleFacilities() =>
       _session?.accessibleFacilities ?? const [];
 }
