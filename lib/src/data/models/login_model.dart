@@ -72,12 +72,34 @@ class ShiftStatusModel with ShiftStatusModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class PartnerModel with PartnerModelMappable {
-  PartnerModel({required this.id, this.name});
+  PartnerModel({
+    required this.id,
+    this.brandName,
+    this.primaryColor,
+    this.logoUrl,
+  });
+
+  final int id;
+  @MappableField(key: 'brand_name')
+  final String? brandName;
+  @MappableField(key: 'primary_color')
+  final String? primaryColor;
+  @MappableField(key: 'logo_url')
+  final String? logoUrl;
+
+  static const fromJson = PartnerModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class AccessibleFacilityModel with AccessibleFacilityModelMappable {
+  AccessibleFacilityModel({required this.id, this.name, this.isPrimary});
 
   final int id;
   final String? name;
+  @MappableField(key: 'is_primary')
+  final bool? isPrimary;
 
-  static const fromJson = PartnerModelMapper.fromJson;
+  static const fromJson = AccessibleFacilityModelMapper.fromJson;
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -94,8 +116,11 @@ class LoginResponseModel with LoginResponseModelMappable {
   final UserModel user;
   final LoginTokenModel token;
   final List<String> permissions;
+  // WHY: objects, not strings — the backend sends
+  // `[{id, name, is_primary}]`. Typing this as List<String> silently coerced
+  // each map through toString(), storing garbage instead of failing.
   @MappableField(key: 'accessible_facilities')
-  final List<String> accessibleFacilities;
+  final List<AccessibleFacilityModel> accessibleFacilities;
   final PartnerModel? partner;
   @MappableField(key: 'shift_status')
   final ShiftStatusModel? shiftStatus;

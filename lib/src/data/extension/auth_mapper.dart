@@ -27,7 +27,20 @@ extension UserModelToEntity on UserModel {
 }
 
 extension PartnerModelToEntity on PartnerModel {
-  PartnerEntity toEntity() => PartnerEntity(id: id, name: name);
+  PartnerEntity toEntity() => PartnerEntity(
+    id: id,
+    brandName: brandName ?? '',
+    primaryColor: primaryColor,
+    logoUrl: logoUrl,
+  );
+}
+
+extension AccessibleFacilityModelToEntity on AccessibleFacilityModel {
+  AccessibleFacilityEntity toEntity() => AccessibleFacilityEntity(
+    id: id,
+    name: name ?? '',
+    isPrimary: isPrimary ?? false,
+  );
 }
 
 extension LoginResponseModelToEntity on LoginResponseModel {
@@ -37,7 +50,9 @@ extension LoginResponseModelToEntity on LoginResponseModel {
     // WHY: raw wire strings become a typed set here — unknown keys from a
     // newer backend are dropped so login never breaks on new permissions.
     permissions: AppPermission.setFromKeys(permissions),
-    accessibleFacilities: accessibleFacilities,
+    accessibleFacilities: accessibleFacilities
+        .map((facility) => facility.toEntity())
+        .toList(),
     partner: partner?.toEntity(),
     shiftStatus: shiftStatus?.toEntity(),
   );

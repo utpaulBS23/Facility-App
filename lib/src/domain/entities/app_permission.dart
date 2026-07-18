@@ -3,26 +3,117 @@
 /// The backend sends permissions as raw strings (e.g. `issue.create`).
 /// Mapping them to an enum keeps every gate compile-checked — a typo in a
 /// permission name becomes a build error instead of a silently hidden feature.
+///
+/// Grouped by backend resource. Keep this catalog in sync with the backend's
+/// permission list: an unlisted key is silently dropped at login, so its
+/// feature can never be gated on (see [setFromKeys]).
 enum AppPermission {
+  // Facility
   facilityView('facility.view'),
+  facilityUpdate('facility.update'),
+  facilityAssignStaff('facility.assign_staff'),
+
+  // Shift + template
+  shiftTemplateView('shift_template.view'),
   shiftView('shift.view'),
+  shiftCreate('shift.create'),
+  shiftUpdate('shift.update'),
+  shiftAssignAttendant('shift.assign_attendant'),
+  shiftUnassignAttendant('shift.unassign_attendant'),
+
+  // Roster
+  rosterView('roster.view'),
+  rosterCreate('roster.create'),
+  rosterUpdate('roster.update'),
+  rosterPublish('roster.publish'),
+
+  // Attendance
+  attendanceView('attendance.view'),
   attendanceCheckIn('attendance.check_in'),
   attendanceCheckOut('attendance.check_out'),
-  attendanceView('attendance.view'),
+  attendanceApprove('attendance.approve'),
+  attendanceReject('attendance.reject'),
+  attendanceManualEntry('attendance.manual_entry'),
+
+  // Leave
+  leavePolicyView('leave_policy.view'),
+  leaveBalanceView('leave_balance.view'),
   leaveView('leave.view'),
   leaveRequest('leave.request'),
   leaveCancel('leave.cancel'),
+  leaveReject('leave.reject'),
+  leaveApproveSupervisor('leave.approve_supervisor'),
+  leaveFileOnBehalf('leave.file_on_behalf'),
+  publicHolidayView('public_holiday.view'),
+
+  // Task
   taskView('task.view'),
+  taskCreate('task.create'),
+  taskUpdate('task.update'),
+  taskAssign('task.assign'),
   taskComplete('task.complete'),
-  issueCreate('issue.create'),
-  issueView('issue.view'),
-  checklistResponseSubmit('checklist_response.submit'),
-  checklistResponseView('checklist_response.view'),
+  taskReopen('task.reopen'),
+
+  // Task schedule + occurrence
+  taskScheduleView('task_schedule.view'),
+  taskScheduleCreate('task_schedule.create'),
+  taskScheduleUpdate('task_schedule.update'),
   taskOccurrenceView('task_occurrence.view'),
   taskOccurrenceSubmit('task_occurrence.submit'),
-  trainingSessionView('training_session.view'),
+  taskOccurrenceAssign('task_occurrence.assign'),
+
+  // Issue
+  issueCreate('issue.create'),
+  issueView('issue.view'),
+  issueUpdate('issue.update'),
+  issueResolve('issue.resolve'),
+  problemCategoryView('problem_category.view'),
+
+  // Checklist
+  checklistTemplateView('checklist_template.view'),
+  checklistTemplatePublish('checklist_template.publish'),
+  checklistResponseSubmit('checklist_response.submit'),
+  checklistResponseView('checklist_response.view'),
+  complianceView('compliance.view'),
+
+  // Consumable
   consumableView('consumable.view'),
   consumableRequest('consumable.request'),
+  consumableApprove('consumable.approve'),
+
+  // Training
+  trainingSessionView('training_session.view'),
+  trainingSessionCreate('training_session.create'),
+  trainingSessionMarkAttendance('training_session.mark_attendance'),
+  trainingParticipantEnroll('training_participant.enroll'),
+  trainingParticipantSelfEnroll('training_participant.self_enroll'),
+  trainingParticipantViewHistory('training_participant.view_history'),
+
+  // Attendant lead
+  attendantLeadAssign('attendant_lead.assign'),
+  attendantLeadRevoke('attendant_lead.revoke'),
+  attendantLeadView('attendant_lead.view'),
+
+  // Stock
+  stockItemView('stock_item.view'),
+  facilityStockTargetView('facility_stock_target.view'),
+  stockAllocationView('stock_allocation.view'),
+  shiftStockCountView('shift_stock_count.view'),
+
+  // Supply request
+  supplyRequestView('supply_request.view'),
+  supplyRequestCreate('supply_request.create'),
+  supplyRequestApprove('supply_request.approve'),
+
+  // Delivery
+  deliveryView('delivery.view'),
+  deliveryConfirm('delivery.confirm'),
+  deliveryComplaintView('delivery_complaint.view'),
+  deliveryComplaintCreate('delivery_complaint.create'),
+  deliveryComplaintApprove('delivery_complaint.approve'),
+
+  // User
+  userView('user.view'),
   userViewProfile('user.view_profile');
 
   const AppPermission(this.key);
@@ -38,7 +129,9 @@ enum AppPermission {
   static AppPermission? fromKey(String key) => _byKey[key];
 
   /// WHY: unknown keys are dropped (not errors) so a newer backend can ship
-  /// permissions ahead of the app without breaking login.
+  /// permissions ahead of the app without breaking login. The trade-off is
+  /// silence — a key missing from this enum can never gate a feature, so the
+  /// catalog above must track the backend's list.
   static Set<AppPermission> setFromKeys(Iterable<String> keys) =>
       keys.map(fromKey).whereType<AppPermission>().toSet();
 }
