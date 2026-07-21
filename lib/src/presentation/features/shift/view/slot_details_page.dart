@@ -1,20 +1,31 @@
 part of 'shift_tab.dart';
 
-/// Slot-based details, used by the migrated attendant list.
+/// Slot-based details, shown to every role.
 ///
 /// WHY a second details page: the slots payload has no shift-template name,
 /// facility address, per-slot supervisor or notes, so [ShiftDetailsPage] (fed
-/// by the older endpoints, still used by the supervisor list) cannot be reused
-/// without rendering empty rows.
+/// by the older, now-unreachable endpoints) cannot be reused without
+/// rendering empty rows. Card styling matches [ShiftDetailsPage] — same
+/// [_ShiftDetailContractCard]/[_ShiftDetailCheckInCard] look, rebuilt from
+/// only the fields a slot actually carries.
 class SlotDetailsPage extends ConsumerWidget {
   const SlotDetailsPage({super.key, required this.slot});
 
   final ShiftSlotEntity slot;
 
   void _onCheckOut(BuildContext context) {
-    // WHY: the check-out endpoint accepts the slot id as `shift_id`; the
-    // assignment id the old list used is not present in the slots payload.
-    context.pushNamed(Routes.shiftCheckOut, extra: slot.shiftSlotId);
+    // WHY: the check-out endpoint takes the attendance id (the check-in
+    // record), not the slot id. Only shown when `me.action == checkOut`,
+    // which implies `me.attendance` (set by check-in) is present.
+    final attendanceId = slot.me?.attendance?.id;
+    if (attendanceId == null) return;
+    context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
+  }
+
+  void _onAssignStaff(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.locale.assignStaffUnavailable)),
+    );
   }
 
   @override
@@ -61,41 +72,25 @@ class SlotDetailsPage extends ConsumerWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
+            child: SingleChildScrollView(
               padding: EdgeInsets.all(spacing.s16),
-              children: [
-                _SlotDetailTile(
-                  label: context.locale.shiftTime,
-                  value:
-                      '${DateFormatter.shiftTime(slot.startTime)} – ${DateFormatter.shiftTime(slot.endTime)}',
-                ),
-                if (facilityName.isNotEmpty)
-                  _SlotDetailTile(
-                    label: context.locale.toiletName,
-                    value: facilityName,
+              child: Column(
+                children: [
+                  _SlotDetailContractCard(
+                    slot: slot,
+                    facilityName: facilityName,
                   ),
-                _SlotDetailTile(
-                  label: context.locale.assigned,
-                  value: context.locale.slotCapacity(
-                    slot.assignedCount,
-                    slot.maxAttendants,
+                  if (me?.attendance != null) ...[
+                    Gap(spacing.s8),
+                    _SlotDetailCheckInCard(attendance: me!.attendance!),
+                  ],
+                  Gap(spacing.s8),
+                  _SlotDetailStaffingCard(
+                    slot: slot,
+                    onAssignStaff: () => _onAssignStaff(context),
                   ),
-                ),
-                if (me?.attendance?.checkInTime != null)
-                  _SlotDetailTile(
-                    label: context.locale.checkInTime,
-                    value: DateFormat(
-                      'hh:mm a',
-                    ).format(me!.attendance!.checkInTime!),
-                  ),
-                if (me?.attendance?.checkOutTime != null)
-                  _SlotDetailTile(
-                    label: context.locale.checkOutTime,
-                    value: DateFormat(
-                      'hh:mm a',
-                    ).format(me!.attendance!.checkOutTime!),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
           if (showCheckOut)
@@ -122,39 +117,6 @@ class SlotDetailsPage extends ConsumerWidget {
                 ),
               ),
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SlotDetailTile extends StatelessWidget {
-  const _SlotDetailTile({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: spacing.s12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: context.textStyle.bodyMedium.copyWith(
-              color: context.color.text.secondary,
-            ),
-          ),
-          Text(
-            value,
-            style: context.textStyle.labelLarge.copyWith(
-              color: context.color.text.primary,
-            ),
-          ),
         ],
       ),
     );

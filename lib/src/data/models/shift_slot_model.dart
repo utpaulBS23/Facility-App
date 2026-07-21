@@ -21,6 +21,8 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
     this.approvalStatus,
     this.lateByMinutes,
     this.checkInDistanceMeters,
+    this.checkInSelfieUrl,
+    this.checkOutSelfieUrl,
   });
 
   final int id;
@@ -34,6 +36,10 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
   final int? lateByMinutes;
   @MappableField(key: 'check_in_distance_meters')
   final int? checkInDistanceMeters;
+  @MappableField(key: 'check_in_selfie_url')
+  final String? checkInSelfieUrl;
+  @MappableField(key: 'check_out_selfie_url')
+  final String? checkOutSelfieUrl;
 
   static const fromJson = SlotAttendanceModelMapper.fromJson;
 }

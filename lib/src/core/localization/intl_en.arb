@@ -190,6 +190,7 @@
   "shiftNotes": "Shift Notes",
   "date": "Date",
   "time": "Time",
+  "duration": "Duration",
   "leaveBalance": "Leave Balance",
   "pending": "Pending",
   "leaveType": "Leave type",
@@ -203,6 +204,7 @@
   "shiftsUnavailable": "Shifts are not available for your account.",
   "assigned": "Assigned",
   "assignStaff": "Assign Staff",
+  "assignStaffUnavailable": "Assigning staff for this shift isn't available yet.",
   "slotCapacity": "{assigned}/{max}",
   "@slotCapacity": {
     "placeholders": {
@@ -230,6 +232,9 @@
   "slotStatusPartialMiss": "Partial miss",
   "slotFull": "Slot full",
   "slotStatusOpen": "Open",
+  "slotStatusFull": "Full",
+  "slotStatusMissed": "Missed",
+  "slotStatusCancelled": "Cancelled",
   "checkedInCount": "{count} checked in",
   "@checkedInCount": {
     "placeholders": {

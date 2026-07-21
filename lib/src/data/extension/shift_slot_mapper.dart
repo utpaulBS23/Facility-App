@@ -26,6 +26,8 @@ extension SlotAttendanceModelToEntity on SlotAttendanceModel {
     approvalStatus: approvalStatus ?? '',
     lateByMinutes: lateByMinutes ?? 0,
     checkInDistanceMeters: checkInDistanceMeters,
+    checkInSelfieUrl: checkInSelfieUrl,
+    checkOutSelfieUrl: checkOutSelfieUrl,
   );
 }
 

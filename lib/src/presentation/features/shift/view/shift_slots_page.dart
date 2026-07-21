@@ -1,20 +1,19 @@
 part of 'shift_tab.dart';
 
-class _AttendantShiftView extends ConsumerStatefulWidget {
-  const _AttendantShiftView({
-    required this.onApplyLeave,
-    required this.onSlotTap,
-  });
+/// Shift list for every role — supervisors and attendants read the same
+/// facility-scoped slots payload; only the assign-staff button (inside
+/// [_SlotCard]) differs by permission.
+class _ShiftSlotsView extends ConsumerStatefulWidget {
+  const _ShiftSlotsView({required this.onApplyLeave, required this.onSlotTap});
 
   final VoidCallback onApplyLeave;
   final void Function(ShiftSlotEntity slot) onSlotTap;
 
   @override
-  ConsumerState<_AttendantShiftView> createState() =>
-      _AttendantShiftViewState();
+  ConsumerState<_ShiftSlotsView> createState() => _ShiftSlotsViewState();
 }
 
-class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
+class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   late DateTime _selectedDate;
 
   @override
@@ -46,10 +45,27 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
     final activeSlot = data.activeSlot;
     if (activeSlot == null) return;
     if (activeSlot.action == SlotAction.checkOut) {
-      context.pushNamed(Routes.shiftCheckOut, extra: activeSlot.shiftSlotId);
+      // WHY: the check-out endpoint needs the attendance id (the check-in
+      // record), not the slot id — active_slot doesn't carry it directly, so
+      // it's read off the matching slot's own attendance row.
+      int? attendanceId;
+      for (final slot in data.slots) {
+        if (slot.shiftSlotId == activeSlot.shiftSlotId) {
+          attendanceId = slot.me?.attendance?.id;
+          break;
+        }
+      }
+      if (attendanceId == null) return;
+      context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
       return;
     }
-    context.pushNamed(Routes.shiftCheckIn);
+    context.pushNamed(Routes.shiftCheckIn, extra: activeSlot.shiftSlotId);
+  }
+
+  void _onAssignStaff(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.locale.assignStaffUnavailable)),
+    );
   }
 
   @override
@@ -59,6 +75,11 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
     final canApplyLeave = ref.watch(
       userSessionProvider.select(
         (session) => session?.can(AppPermission.leaveRequest) ?? false,
+      ),
+    );
+    final facilityName = ref.watch(
+      shiftSlotsProvider.select(
+        (state) => state.valueOrNull?.facility?.name ?? '',
       ),
     );
 
@@ -84,10 +105,7 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
               ),
             ),
             data: (data) {
-              // WHY: only the caller's own slots — the payload lists every
-              // attendant on the facility's slots, which is the supervisor's
-              // view of the day, not the attendant's.
-              final slots = data?.mySlots ?? const <ShiftSlotEntity>[];
+              final slots = data?.slots ?? const <ShiftSlotEntity>[];
               final activeSlot = data?.activeSlot;
 
               if (slots.isEmpty && activeSlot == null) {
@@ -103,7 +121,9 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
               }
 
               final leadingCount =
-                  (canApplyLeave ? 1 : 0) + (activeSlot != null ? 1 : 0);
+                  (facilityName.isNotEmpty ? 1 : 0) +
+                  (canApplyLeave ? 1 : 0) +
+                  (activeSlot != null ? 1 : 0);
 
               return ListView.separated(
                 padding: EdgeInsets.fromLTRB(
@@ -116,6 +136,12 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
                 separatorBuilder: (context, index) => Gap(spacing.s12),
                 itemBuilder: (context, index) {
                   var cursor = index;
+                  if (facilityName.isNotEmpty) {
+                    if (cursor == 0) {
+                      return _FacilityHeader(name: facilityName);
+                    }
+                    cursor -= 1;
+                  }
                   if (canApplyLeave) {
                     if (cursor == 0) {
                       return _ApplyLeaveButton(onTap: widget.onApplyLeave);
@@ -135,6 +161,7 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
                   return _SlotCard(
                     slot: slot,
                     onTap: () => widget.onSlotTap(slot),
+                    onAssignStaff: () => _onAssignStaff(context),
                   );
                 },
               );
@@ -142,6 +169,22 @@ class _AttendantShiftViewState extends ConsumerState<_AttendantShiftView> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _FacilityHeader extends StatelessWidget {
+  const _FacilityHeader({required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      name,
+      style: context.textStyle.labelLarge.copyWith(
+        color: context.color.text.primary,
+      ),
     );
   }
 }

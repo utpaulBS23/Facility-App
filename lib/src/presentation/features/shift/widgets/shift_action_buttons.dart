@@ -21,111 +21,45 @@ class _ApplyLeaveButton extends StatelessWidget {
   }
 }
 
-// WHY: Extracted as a named widget to keep _SupervisorShiftCard readable and
-// to isolate the assigned/unassigned branching logic.
-class _AssignedSection extends StatelessWidget {
-  const _AssignedSection({required this.entity, required this.onAssignStaff});
-
-  final ShiftEntity entity;
-  final VoidCallback onAssignStaff;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    // WHY: capacity is only reported by the supervisor endpoint, which sends
-    // max_attendants > 0. Guard on it so attendant-endpoint shifts (all zeros)
-    // don't render an empty "0/0" counter.
-    final hasCapacityInfo = entity.maxAttendants > 0;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              context.locale.assigned,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.text.secondary,
-              ),
-            ),
-            if (hasCapacityInfo) ...[
-              Gap(spacing.s8),
-              Text(
-                context.locale.slotCapacity(
-                  entity.assignedCount,
-                  entity.maxAttendants,
-                ),
-                style: context.textStyle.labelLarge.copyWith(
-                  color: entity.isMinimumStaffed
-                      ? context.color.text.primary
-                      : context.color.error,
-                ),
-              ),
-              if (!entity.isMinimumStaffed) ...[
-                Gap(spacing.s6),
-                Text(
-                  context.locale.belowMinimumStaff(entity.minAttendants),
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: context.color.error,
-                  ),
-                ),
-              ],
-            ],
-            const Spacer(),
-            if (entity.slotStatus.isNotEmpty)
-              _SlotStatusChip(status: entity.slotStatus),
-          ],
-        ),
-        if (hasCapacityInfo) ...[
-          Gap(spacing.s6),
-          Text(
-            '${context.locale.checkedInCount(entity.checkedInCount)}'
-            ' · '
-            '${context.locale.checkedOutCount(entity.checkedOutCount)}',
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.text.secondary,
-            ),
-          ),
-        ],
-        if (entity.assignedAttendants.isNotEmpty) ...[
-          Gap(spacing.s12),
-          ...entity.assignedAttendants.map(
-            (a) => Padding(
-              padding: EdgeInsets.only(bottom: spacing.s8),
-              child: _AssignedStaffTile(name: a.fullName, phone: a.phone ?? ''),
-            ),
-          ),
-        ],
-        Gap(spacing.s12),
-        // WHY: a full slot cannot take another attendant — disable rather than
-        // let the user open the picker and get a server rejection.
-        _AssignStaffButton(
-          onTap: onAssignStaff,
-          isSlotFull: hasCapacityInfo && !entity.hasFreeCapacity,
-        ),
-      ],
-    );
-  }
-}
-
 class _SlotStatusChip extends StatelessWidget {
   const _SlotStatusChip({required this.status});
 
+  // WHY: backend enum is 'open'|'in_progress'|'completed'|'missed'
+  // |'partial_miss'|'cancelled'|'full', default 'open'. Unknown values fall
+  // back to the raw server string with the neutral (open) styling rather
+  // than being hidden or mistranslated.
   final String status;
+
+  String _label(BuildContext context) => switch (status) {
+    'open' => context.locale.slotStatusOpen,
+    'full' => context.locale.slotStatusFull,
+    'in_progress' => context.locale.inProgress,
+    'completed' => context.locale.slotStatusCompleted,
+    'partial_miss' => context.locale.slotStatusPartialMiss,
+    'missed' => context.locale.slotStatusMissed,
+    'cancelled' => context.locale.slotStatusCancelled,
+    _ => status,
+  };
+
+  Color _background(BuildContext context) => switch (status) {
+    'in_progress' || 'partial_miss' => context.color.warningAlt,
+    'completed' => context.color.successAlt,
+    'missed' => context.color.errorAlt,
+    'cancelled' => context.color.scaffoldBackground,
+    _ => context.color.brandAccent,
+  };
+
+  Color _textColor(BuildContext context) => switch (status) {
+    'in_progress' || 'partial_miss' => context.color.warning,
+    'completed' => context.color.success,
+    'missed' => context.color.error,
+    'cancelled' => context.color.text.secondary,
+    _ => context.color.text.primary,
+  };
 
   @override
   Widget build(BuildContext context) {
     final dimensions = context.dimensions;
-
-    // WHY: known states get a localised label; anything else falls back to the
-    // raw server string rather than being hidden or mistranslated, since the
-    // full value set is not documented.
-    final label = switch (status) {
-      'open' => context.locale.slotStatusOpen,
-      'completed' => context.locale.slotStatusCompleted,
-      'partial_miss' => context.locale.slotStatusPartialMiss,
-      _ => status,
-    };
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -133,13 +67,13 @@ class _SlotStatusChip extends StatelessWidget {
         vertical: dimensions.spacing.s2,
       ),
       decoration: BoxDecoration(
-        color: context.color.brandAccent,
+        color: _background(context),
         borderRadius: BorderRadius.circular(dimensions.radius.r6),
       ),
       child: Text(
-        label,
+        _label(context),
         style: context.textStyle.bodySmall.copyWith(
-          color: context.color.text.primary,
+          color: _textColor(context),
         ),
       ),
     );

@@ -1,15 +1,21 @@
 part of '../view/shift_tab.dart';
 
-/// Attendant-facing card for one shift slot.
+/// Card for one shift slot, shown to every role.
 ///
-/// WHY separate from [_ShiftCard]: the slots payload carries no shift-template
-/// name, facility address or per-slot supervisor, so this renders what a slot
-/// actually has — time, status, staffing and the caller's own attendance.
+/// WHY no shift-template name, facility address or per-slot supervisor: the
+/// slots payload carries none of those — this renders only what a slot
+/// actually has — time, status, staffing, the caller's own attendance, and
+/// (permission-gated) the roster + assign-staff action.
 class _SlotCard extends StatelessWidget {
-  const _SlotCard({required this.slot, required this.onTap});
+  const _SlotCard({
+    required this.slot,
+    required this.onTap,
+    required this.onAssignStaff,
+  });
 
   final ShiftSlotEntity slot;
   final VoidCallback onTap;
+  final VoidCallback onAssignStaff;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +76,8 @@ class _SlotCard extends StatelessWidget {
                 ),
               ),
             ],
+            Gap(spacing.s12),
+            _SlotRosterSection(slot: slot, onAssignStaff: onAssignStaff),
           ],
         ),
       ),

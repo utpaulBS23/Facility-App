@@ -190,6 +190,7 @@
   "shiftNotes": "শিফট নোটস",
   "date": "তারিখ",
   "time": "সময়",
+  "duration": "স্থিতিকাল",
   "leaveBalance": "ছুটির ব্যালেন্স",
   "pending": "অপেক্ষমান",
   "leaveType": "ছুটির ধরন",
@@ -203,6 +204,7 @@
   "shiftsUnavailable": "আপনার অ্যাকাউন্টের জন্য শিফট উপলব্ধ নয়।",
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
+  "assignStaffUnavailable": "এই শিফটের জন্য স্টাফ নিয়োগ এখনও উপলব্ধ নয়।",
   "slotCapacity": "{assigned}/{max}",
   "@slotCapacity": {
     "placeholders": {
@@ -230,6 +232,9 @@
   "slotStatusPartialMiss": "আংশিক অনুপস্থিত",
   "slotFull": "স্লট পূর্ণ",
   "slotStatusOpen": "খোলা",
+  "slotStatusFull": "পূর্ণ",
+  "slotStatusMissed": "মিস হয়েছে",
+  "slotStatusCancelled": "বাতিল",
   "checkedInCount": "{count} জন চেক-ইন করেছেন",
   "@checkedInCount": {
     "placeholders": {

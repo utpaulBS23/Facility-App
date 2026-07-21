@@ -36,6 +36,8 @@ class SlotAttendanceEntity {
     required this.approvalStatus,
     required this.lateByMinutes,
     this.checkInDistanceMeters,
+    this.checkInSelfieUrl,
+    this.checkOutSelfieUrl,
   });
 
   final int id;
@@ -44,6 +46,8 @@ class SlotAttendanceEntity {
   final String approvalStatus;
   final int lateByMinutes;
   final int? checkInDistanceMeters;
+  final String? checkInSelfieUrl;
+  final String? checkOutSelfieUrl;
 
   bool get isLate => lateByMinutes > 0;
 }
