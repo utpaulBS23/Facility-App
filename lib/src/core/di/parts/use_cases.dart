@@ -36,8 +36,8 @@ HasPermissionUseCase hasPermissionUseCase(Ref ref) {
 }
 
 @riverpod
-ValidateFaceUseCase validateFaceUseCase(Ref ref) {
-  return ValidateFaceUseCase(ref.read(faceValidationRepositoryProvider));
+CheckInUseCase checkInUseCase(Ref ref) {
+  return CheckInUseCase(ref.read(checkInRepositoryProvider));
 }
 
 @riverpod

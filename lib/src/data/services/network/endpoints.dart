@@ -9,10 +9,11 @@ class Endpoints {
   static const String register = '/auth/register/';
   static const String login = '/auth/login';
 
-  /// Face validation
-  static const String faceValidation = '/partners/{partnerId}/face-validation';
-  static const String checkOut =
-      '/partners/{partnerId}/face-validation/check-out';
+  /// Attendance
+  static const String checkIn = '/partners/{partnerId}/attendances/check-in';
+
+  /// Check-out is location-only — no selfie, unlike [checkIn].
+  static const String checkOut = '/partners/{partnerId}/attendances/check-out';
 
   /// Attendants
   static const String facilityAttendants =

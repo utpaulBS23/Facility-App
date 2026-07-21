@@ -14,11 +14,11 @@ class CheckOut extends _$CheckOut {
 
   Future<void> checkOut({
     required int partnerId,
-    required int shiftId,
-    required String imagePath,
+    required int attendanceId,
     required double lat,
     required double lng,
-    required String address,
+    required String selfieUrl,
+    String? reason,
   }) async {
     if (state.isLoading) return;
 
@@ -31,11 +31,11 @@ class CheckOut extends _$CheckOut {
 
     final result = await ref.read(checkOutUseCaseProvider).call(
       partnerId: partnerId,
-      shiftId: shiftId,
-      imagePath: imagePath,
+      attendanceId: attendanceId,
       lat: lat,
       lng: lng,
-      address: address,
+      selfieUrl: selfieUrl,
+      reason: reason,
     );
 
     state = switch (result) {

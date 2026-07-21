@@ -6,20 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
-import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/base/result.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/check_in_entity.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
+import '../../../../domain/entities/check_out_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../shift/riverpod/shift_slots_provider.dart';
 import '../riverpod/check_in_info_provider.dart';
+import '../riverpod/check_in_provider.dart';
 import '../riverpod/check_out_provider.dart';
-import '../riverpod/face_validation_provider.dart';
 import '../riverpod/manual_attendance_provider.dart';
 import '../riverpod/selfie_picker_provider.dart';
 
@@ -37,7 +41,9 @@ part 'approval_request_page.dart';
 part 'shift_check_out_page.dart';
 
 class ShiftCheckInPage extends ConsumerStatefulWidget {
-  const ShiftCheckInPage({super.key});
+  const ShiftCheckInPage({super.key, this.shiftSlotId});
+
+  final int? shiftSlotId;
 
   @override
   ConsumerState<ShiftCheckInPage> createState() => _ShiftCheckInPageState();
@@ -54,6 +60,13 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       );
       return;
     }
+    final shiftSlotId = widget.shiftSlotId;
+    if (shiftSlotId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.noActiveShift)),
+      );
+      return;
+    }
     final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
@@ -63,17 +76,45 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       );
       return;
     }
-    ref.read(faceValidationProvider.notifier).validate(
+    // WHY: no upload-to-storage step exists yet — the captured photo's local
+    // path is sent as-is in place of a hosted selfie_url, same value the
+    // old face-validation endpoint sent as its multipart `image` field.
+    ref.read(checkInProvider.notifier).checkIn(
       partnerId: partnerId,
-      imagePath: photoPath,
+      shiftSlotId: shiftSlotId,
       lat: checkInInfo.latitude,
       lng: checkInInfo.longitude,
-      address: checkInInfo.location,
+      selfieUrl: photoPath,
     );
   }
 
   void _onTakePhoto() {
     ref.read(selfiePickerProvider.notifier).pickSelfie();
+  }
+
+  // WHY: the shift tab's slots list is fetched once on mount, so a check-in
+  // made from here would otherwise leave it showing pre-check-in state until
+  // the user manually changes the date.
+  void _refreshShiftSlots() {
+    final partnerId = ref.activePartnerId;
+    if (partnerId == null) return;
+    ref
+        .read(shiftSlotsProvider.notifier)
+        .fetch(
+          partnerId: partnerId,
+          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        );
+  }
+
+  void _showWarnings(List<CheckInWarningEntity> warnings) {
+    final messages = warnings
+        .map((warning) => warning.message)
+        .where((message) => message.isNotEmpty)
+        .toList();
+    if (messages.isEmpty) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(messages.join('\n'))));
   }
 
   void _onManualAttendance() {
@@ -102,8 +143,11 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(faceValidationProvider, (_, next) {
+    ref.listen(checkInProvider, (_, next) {
       if (next.hasValue && next.value != null) {
+        final entity = (next.value as Success<CheckInEntity, String>).data;
+        if (entity != null) _showWarnings(entity.warnings);
+        _refreshShiftSlots();
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -117,7 +161,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
     final selfieState = ref.watch(selfiePickerProvider);
     final photoPath = selfieState.valueOrNull;
-    final validationState = ref.watch(faceValidationProvider);
+    final validationState = ref.watch(checkInProvider);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,

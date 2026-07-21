@@ -37,8 +37,8 @@ AttendanceRepository attendanceRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-FaceValidationRepository faceValidationRepository(Ref ref) {
-  return FaceValidationRepositoryImpl(ref.read(restClientServiceProvider));
+CheckInRepository checkInRepository(Ref ref) {
+  return CheckInRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

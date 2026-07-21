@@ -8,8 +8,15 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
     GoRoute(
       path: Routes.shiftCheckIn,
       name: Routes.shiftCheckIn,
-      pageBuilder: (context, state) =>
-          const MaterialPage(child: ShiftCheckInPage()),
+      pageBuilder: (context, state) {
+        // WHY: nullable — the manual-attendance "need face" back-navigation
+        // re-enters this route with no extra; the active-slot banner (the
+        // only other entry point) always supplies the slot id.
+        final shiftSlotId = state.extra as int?;
+        return MaterialPage(
+          child: ShiftCheckInPage(shiftSlotId: shiftSlotId),
+        );
+      },
     ),
     GoRoute(
       path: Routes.approvalRequest,
@@ -29,8 +36,10 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       path: Routes.shiftCheckOut,
       name: Routes.shiftCheckOut,
       pageBuilder: (context, state) {
-        final shiftId = state.extra as int;
-        return MaterialPage(child: ShiftCheckOutPage(shiftId: shiftId));
+        final attendanceId = state.extra as int;
+        return MaterialPage(
+          child: ShiftCheckOutPage(attendanceId: attendanceId),
+        );
       },
     ),
     GoRoute(

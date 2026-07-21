@@ -13,16 +13,16 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
-  @POST(Endpoints.faceValidation)
-  Future<HttpResponse> validateFace(
+  @POST(Endpoints.checkIn)
+  Future<HttpResponse> checkIn(
     @Path('partnerId') int partnerId,
-    @Body() FormData formData,
+    @Body() Map<String, dynamic> request,
   );
 
   @POST(Endpoints.checkOut)
   Future<HttpResponse> checkOut(
     @Path('partnerId') int partnerId,
-    @Body() FormData formData,
+    @Body() Map<String, dynamic> request,
   );
 
   @GET(Endpoints.shiftSlots)

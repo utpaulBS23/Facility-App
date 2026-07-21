@@ -1,27 +1,25 @@
 import '../../core/base/result.dart';
-import '../entities/check_out_entity.dart';
-import '../repositories/check_out_repository.dart';
+import '../entities/check_in_entity.dart';
+import '../repositories/check_in_repository.dart';
 
-final class CheckOutUseCase {
-  CheckOutUseCase(this.repository);
+final class CheckInUseCase {
+  CheckInUseCase(this.repository);
 
-  final CheckOutRepository repository;
+  final CheckInRepository repository;
 
-  Future<Result<CheckOutEntity, String>> call({
+  Future<Result<CheckInEntity, String>> call({
     required int partnerId,
-    required int attendanceId,
+    required int shiftSlotId,
     required double lat,
     required double lng,
     required String selfieUrl,
-    String? reason,
   }) async {
-    final result = await repository.checkOut(
+    final result = await repository.checkIn(
       partnerId: partnerId,
-      attendanceId: attendanceId,
+      shiftSlotId: shiftSlotId,
       lat: lat,
       lng: lng,
       selfieUrl: selfieUrl,
-      reason: reason,
     );
 
     return switch (result) {

@@ -1,5 +1,5 @@
-class CheckOutWarningEntity {
-  const CheckOutWarningEntity({
+class CheckInWarningEntity {
+  const CheckInWarningEntity({
     required this.code,
     required this.message,
     required this.reasonRequired,
@@ -10,20 +10,24 @@ class CheckOutWarningEntity {
   final bool reasonRequired;
 }
 
-class CheckOutEntity {
-  const CheckOutEntity({
+class CheckInEntity {
+  const CheckInEntity({
     required this.attendanceId,
+    this.shiftSlotId,
     this.checkInTime,
-    this.checkOutTime,
-    required this.totalHours,
     required this.approvalStatus,
+    this.checkInDistanceMeters,
+    required this.lateByMinutes,
     this.warnings = const [],
   });
 
   final int attendanceId;
+  final int? shiftSlotId;
   final DateTime? checkInTime;
-  final DateTime? checkOutTime;
-  final num totalHours;
   final String approvalStatus;
-  final List<CheckOutWarningEntity> warnings;
+  final int? checkInDistanceMeters;
+  final int lateByMinutes;
+  final List<CheckInWarningEntity> warnings;
+
+  bool get isLate => lateByMinutes > 0;
 }

@@ -43,19 +43,20 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> validateFace(
+  Future<HttpResponse<dynamic>> checkIn(
     int partnerId,
-    FormData formData,
+    Map<String, dynamic> request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = formData;
+    final _data = <String, dynamic>{};
+    _data.addAll(request);
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/face-validation',
+            '/partners/${partnerId}/attendances/check-in',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -70,17 +71,18 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> checkOut(
     int partnerId,
-    FormData formData,
+    Map<String, dynamic> request,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = formData;
+    final _data = <String, dynamic>{};
+    _data.addAll(request);
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/face-validation/check-out',
+            '/partners/${partnerId}/attendances/check-out',
             queryParameters: queryParameters,
             data: _data,
           )

@@ -1,15 +1,22 @@
 part of 'shift_check_in_page.dart';
 
+/// Check-out requires a selfie, same capture flow as [ShiftCheckInPage] —
+/// just no manual-supervisor fallback, since there is no manual check-out
+/// path on the backend.
 class ShiftCheckOutPage extends ConsumerStatefulWidget {
-  const ShiftCheckOutPage({super.key, required this.shiftId});
+  const ShiftCheckOutPage({super.key, required this.attendanceId});
 
-  final int shiftId;
+  final int attendanceId;
 
   @override
   ConsumerState<ShiftCheckOutPage> createState() => _ShiftCheckOutPageState();
 }
 
 class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
+  void _onTakePhoto() {
+    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  }
+
   void _onSubmit(String? photoPath) {
     if (photoPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -29,50 +36,57 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       );
       return;
     }
-    ref.read(checkOutProvider.notifier).checkOut(
-      partnerId: partnerId,
-      shiftId: widget.shiftId,
-      imagePath: photoPath,
-      lat: checkInInfo.latitude,
-      lng: checkInInfo.longitude,
-      address: checkInInfo.location,
-    );
+    // WHY: no upload-to-storage step exists yet — see the matching comment
+    // in ShiftCheckInPage._onSubmit.
+    ref
+        .read(checkOutProvider.notifier)
+        .checkOut(
+          partnerId: partnerId,
+          attendanceId: widget.attendanceId,
+          lat: checkInInfo.latitude,
+          lng: checkInInfo.longitude,
+          selfieUrl: photoPath,
+        );
   }
 
-  void _onTakePhoto() {
-    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  // WHY: the shift tab's slots list is fetched once on mount, so a check-out
+  // made from here would otherwise leave it showing pre-check-out state until
+  // the user manually changes the date.
+  void _refreshShiftSlots() {
+    final partnerId = ref.activePartnerId;
+    if (partnerId == null) return;
+    ref
+        .read(shiftSlotsProvider.notifier)
+        .fetch(
+          partnerId: partnerId,
+          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        );
   }
 
-  void _onRequestSupervisor() {
-    final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.locationUnavailable)),
-      );
-      return;
-    }
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(context.dimensions.radius.r12),
+  void _showResult(CheckOutEntity? entity) {
+    final messages = (entity?.warnings ?? const [])
+        .map((warning) => warning.message)
+        .where((message) => message.isNotEmpty)
+        .toList();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          messages.isNotEmpty
+              ? messages.join('\n')
+              : context.locale.approvalSuccessfulMessage,
         ),
-      ),
-      builder: (_) => _ManualAttendanceBottomSheet(
-        checkInInfo: checkInInfo,
-        withdrawRoute: Routes.shiftCheckOut,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(checkOutProvider, (_, next) async {
+    ref.listen(checkOutProvider, (_, next) {
       if (next.hasValue && next.value != null) {
-        await ref.read(logoutUseCaseProvider).call();
-        if (context.mounted) context.goNamed(Routes.login);
+        final entity = (next.value as Success<CheckOutEntity, String>).data;
+        _showResult(entity);
+        _refreshShiftSlots();
+        context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -97,17 +111,90 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: _ShiftCheckInBody(
+      body: _ShiftCheckOutBody(
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
-        isValidating: checkOutState.isLoading,
+        isSubmitting: checkOutState.isLoading,
         hasError: selfieState.hasError,
         errorMessage: selfieState.error?.toString(),
-        faceValidationError: checkOutState.error?.toString(),
         onTakePhoto: _onTakePhoto,
-        onRequestSupervisor: _onRequestSupervisor,
         onSubmit: () => _onSubmit(photoPath),
       ),
+    );
+  }
+}
+
+class _ShiftCheckOutBody extends StatelessWidget {
+  const _ShiftCheckOutBody({
+    required this.capturedPhotoPath,
+    required this.isLoading,
+    required this.isSubmitting,
+    required this.hasError,
+    this.errorMessage,
+    required this.onTakePhoto,
+    required this.onSubmit,
+  });
+
+  final String? capturedPhotoPath;
+  final bool isLoading;
+  final bool isSubmitting;
+  final bool hasError;
+  final String? errorMessage;
+  final VoidCallback onTakePhoto;
+  final VoidCallback onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    final dimensions = context.dimensions;
+
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              dimensions.padding.p16,
+              dimensions.padding.p16,
+              dimensions.padding.p16,
+              0,
+            ),
+            child: SafeArea(
+              top: false,
+              bottom: false,
+              child: Column(
+                children: [
+                  _SelfieZone(
+                    capturedPhotoPath: capturedPhotoPath,
+                    hasError: hasError,
+                    errorMessage: errorMessage,
+                    onRetry: onTakePhoto,
+                  ),
+                  Gap(dimensions.spacing.s12),
+                  _TakePhotoButton(
+                    capturedPhotoPath: capturedPhotoPath,
+                    isLoading: isLoading,
+                    onTap: onTakePhoto,
+                  ),
+                  Gap(dimensions.spacing.s16),
+                  const _AutoDetectedInfoCard(),
+                  Gap(dimensions.spacing.s16),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              dimensions.padding.p16,
+              dimensions.spacing.s8,
+              dimensions.padding.p16,
+              dimensions.spacing.s16,
+            ),
+            child: _SubmitButton(onSubmit: onSubmit, isLoading: isSubmitting),
+          ),
+        ),
+      ],
     );
   }
 }
