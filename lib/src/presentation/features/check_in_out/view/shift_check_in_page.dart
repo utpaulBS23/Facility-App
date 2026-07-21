@@ -136,6 +136,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       ),
       builder: (_) => _ManualAttendanceBottomSheet(
         checkInInfo: checkInInfo,
+        shiftSlotId: widget.shiftSlotId,
         withdrawRoute: Routes.shiftCheckIn,
       ),
     );

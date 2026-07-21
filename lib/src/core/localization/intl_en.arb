@@ -120,6 +120,7 @@
   "submit": "Submit",
   "save": "Save",
   "photoRequired": "Please add a photo",
+  "noActiveShift": "No active shift found",
   "selectShift": "Select Shift",
   "morning": "Morning",
   "afternoon": "Afternoon",
