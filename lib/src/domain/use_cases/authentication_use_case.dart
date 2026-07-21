@@ -46,14 +46,6 @@ final class GetCurrentUserUseCase {
   UserEntity? call() => repository.getCurrentUser();
 }
 
-final class GetShiftStatusUseCase {
-  GetShiftStatusUseCase(this.repository);
-
-  final AuthenticationRepository repository;
-
-  ShiftStatusEntity? call() => repository.getShiftStatus();
-}
-
 final class GetUserSessionUseCase {
   GetUserSessionUseCase(this.repository);
 

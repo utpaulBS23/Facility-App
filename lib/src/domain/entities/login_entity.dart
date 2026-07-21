@@ -51,7 +51,8 @@ class UserSessionEntity {
   /// leads need their own check-in flow — that becomes a UI affordance, not a
   /// change to this rule.
   ShiftViewMode get shiftViewMode {
-    if (can(AppPermission.shiftAssignAttendant)) return ShiftViewMode.supervisor;
+    if (can(AppPermission.shiftAssignAttendant))
+      return ShiftViewMode.supervisor;
     if (can(AppPermission.attendanceCheckIn)) return ShiftViewMode.attendant;
     return ShiftViewMode.unavailable;
   }
@@ -61,41 +62,6 @@ class UserSessionEntity {
 enum ShiftViewMode { attendant, supervisor, unavailable }
 
 interface class LoginEntity {}
-
-enum ShiftStatusFlag {
-  shiftScheduledToday,
-  alreadyCheckedIn,
-  noShiftToday,
-  shiftNotYetAccessible,
-  shiftWindowClosed;
-
-  static ShiftStatusFlag fromString(String value) => switch (value) {
-    'SHIFT_SCHEDULED_TODAY' => ShiftStatusFlag.shiftScheduledToday,
-    'ALREADY_CHECKED_IN' => ShiftStatusFlag.alreadyCheckedIn,
-    'NO_SHIFT_TODAY' => ShiftStatusFlag.noShiftToday,
-    'SHIFT_NOT_YET_ACCESSIBLE' => ShiftStatusFlag.shiftNotYetAccessible,
-    'SHIFT_WINDOW_CLOSED' => ShiftStatusFlag.shiftWindowClosed,
-    _ => ShiftStatusFlag.noShiftToday,
-  };
-}
-
-class ShiftStatusEntity {
-  ShiftStatusEntity({
-    required this.flag,
-    required this.message,
-    this.shiftId,
-    this.facilityName,
-    this.startTime,
-    this.endTime,
-  });
-
-  final ShiftStatusFlag flag;
-  final String message;
-  final int? shiftId;
-  final String? facilityName;
-  final String? startTime;
-  final String? endTime;
-}
 
 class UserEntity extends LoginEntity {
   UserEntity({
@@ -140,7 +106,6 @@ class LoginResponseEntity extends LoginEntity {
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
-    this.shiftStatus,
   });
 
   final UserEntity user;
@@ -148,5 +113,4 @@ class LoginResponseEntity extends LoginEntity {
   final Set<AppPermission> permissions;
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
-  final ShiftStatusEntity? shiftStatus;
 }

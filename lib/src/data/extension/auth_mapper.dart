@@ -1,17 +1,6 @@
 import '../models/login_model.dart';
 import '../../domain/entities/login_entity.dart';
 
-extension ShiftStatusModelToEntity on ShiftStatusModel {
-  ShiftStatusEntity toEntity() => ShiftStatusEntity(
-    flag: ShiftStatusFlag.fromString(flag),
-    message: message,
-    shiftId: shiftId,
-    facilityName: facilityName,
-    startTime: startTime,
-    endTime: endTime,
-  );
-}
-
 extension UserModelToEntity on UserModel {
   UserEntity toEntity() => UserEntity(
     id: id,
@@ -54,7 +43,6 @@ extension LoginResponseModelToEntity on LoginResponseModel {
         .map((facility) => facility.toEntity())
         .toList(),
     partner: partner?.toEntity(),
-    shiftStatus: shiftStatus?.toEntity(),
   );
 }
 

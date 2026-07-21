@@ -74,63 +74,6 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
   }
 }
 
-/// Card showing facility name and scheduled shift start/end time from the
-/// login response. Hidden when shift status carries no shift data.
-class _ShiftInfoCard extends ConsumerWidget {
-  const _ShiftInfoCard();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final shiftStatus = ref.read(getShiftStatusUseCaseProvider).call();
-
-    if (shiftStatus?.facilityName == null && shiftStatus?.startTime == null) {
-      return const SizedBox.shrink();
-    }
-
-    final colors = context.color;
-    final dimensions = context.dimensions;
-    final locale = context.locale;
-
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(dimensions.padding.p16),
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: BorderRadius.circular(dimensions.radius.r12),
-        boxShadow: [
-          BoxShadow(
-            color: colors.shadow,
-            blurRadius: 14,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BodyRegularText.secondary(locale.shiftDetails),
-          Gap(dimensions.spacing.s8),
-          if (shiftStatus?.facilityName != null)
-            _ContactInfoItem(
-              icon: Icons.business_outlined,
-              label: locale.facilityName,
-              value: shiftStatus!.facilityName!,
-            ),
-          if (shiftStatus?.startTime != null && shiftStatus?.endTime != null) ...[
-            Gap(dimensions.spacing.s8),
-            _ContactInfoItem(
-              icon: Icons.schedule_outlined,
-              label: locale.shiftTime,
-              value:
-                  '${DateFormatter.shiftTime(shiftStatus!.startTime!)} – ${DateFormatter.shiftTime(shiftStatus.endTime!)}',
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
 /// A single row inside [_AutoDetectedInfoCard].
 ///
 /// Layout: icon-container | label + value column

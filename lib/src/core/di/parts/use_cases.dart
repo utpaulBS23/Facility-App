@@ -16,11 +16,6 @@ GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
 }
 
 @riverpod
-GetShiftStatusUseCase getShiftStatusUseCase(Ref ref) {
-  return GetShiftStatusUseCase(ref.read(authenticationRepositoryProvider));
-}
-
-@riverpod
 GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
   return GetUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }

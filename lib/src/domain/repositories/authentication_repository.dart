@@ -21,8 +21,6 @@ abstract base class AuthenticationRepository extends Repository {
 
   UserEntity? getCurrentUser();
 
-  ShiftStatusEntity? getShiftStatus();
-
   /// Synchronous snapshot of the logged-in session; null when logged out.
   UserSessionEntity? get currentSession;
 

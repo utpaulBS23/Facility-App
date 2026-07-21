@@ -46,31 +46,6 @@ class LoginTokenModel with LoginTokenModelMappable {
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
-class ShiftStatusModel with ShiftStatusModelMappable {
-  ShiftStatusModel({
-    required this.flag,
-    required this.message,
-    this.shiftId,
-    this.facilityName,
-    this.startTime,
-    this.endTime,
-  });
-
-  final String flag;
-  final String message;
-  @MappableField(key: 'shift_id')
-  final int? shiftId;
-  @MappableField(key: 'facility_name')
-  final String? facilityName;
-  @MappableField(key: 'start_time')
-  final String? startTime;
-  @MappableField(key: 'end_time')
-  final String? endTime;
-
-  static const fromJson = ShiftStatusModelMapper.fromJson;
-}
-
-@MappableClass(generateMethods: GenerateMethods.decode)
 class PartnerModel with PartnerModelMappable {
   PartnerModel({
     required this.id,
@@ -110,7 +85,6 @@ class LoginResponseModel with LoginResponseModelMappable {
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
-    this.shiftStatus,
   });
 
   final UserModel user;
@@ -122,8 +96,6 @@ class LoginResponseModel with LoginResponseModelMappable {
   @MappableField(key: 'accessible_facilities')
   final List<AccessibleFacilityModel> accessibleFacilities;
   final PartnerModel? partner;
-  @MappableField(key: 'shift_status')
-  final ShiftStatusModel? shiftStatus;
 
   static const fromJson = LoginResponseModelMapper.fromJson;
 }

@@ -20,7 +20,6 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   final SessionService session;
 
   UserEntity? _currentUser;
-  ShiftStatusEntity? _shiftStatus;
 
   // WHY: repository is the single source of truth for the session. It is a
   // keepAlive DI singleton; presentation providers stay autoDispose and
@@ -47,7 +46,6 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
       session.setAccessToken(entity.accessToken);
       _currentUser = entity.user;
-      _shiftStatus = entity.shiftStatus;
       _session = UserSessionEntity(
         permissions: entity.permissions,
         accessibleFacilities: entity.accessibleFacilities,
@@ -91,16 +89,12 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   Future<void> logout() async {
     session.clear();
     _currentUser = null;
-    _shiftStatus = null;
     _session = null;
     _sessionController.add(null);
   }
 
   @override
   UserEntity? getCurrentUser() => _currentUser;
-
-  @override
-  ShiftStatusEntity? getShiftStatus() => _shiftStatus;
 
   @override
   UserSessionEntity? get currentSession => _session;
