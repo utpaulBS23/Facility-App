@@ -45,13 +45,12 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> checkIn(
     int partnerId,
-    Map<String, dynamic> request,
+    FormData formData,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(request);
+    final _data = formData;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
@@ -71,13 +70,12 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> checkOut(
     int partnerId,
-    Map<String, dynamic> request,
+    FormData formData,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(request);
+    final _data = formData;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

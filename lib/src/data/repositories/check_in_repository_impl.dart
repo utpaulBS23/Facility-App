@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/check_in_entity.dart';
@@ -20,13 +24,17 @@ final class CheckInRepositoryImpl extends CheckInRepository {
     required String selfieUrl,
   }) async {
     return asyncGuard(() async {
-      final request = CheckInRequestModel(
-        shiftSlotId: shiftSlotId,
-        lat: lat,
-        lng: lng,
-        selfieUrl: selfieUrl,
+      final selfie = await MultipartFile.fromFile(
+        selfieUrl,
+        filename: File(selfieUrl).uri.pathSegments.last,
       );
-      final response = await remote.checkIn(partnerId, request.toJson());
+      final formData = FormData.fromMap({
+        'shift_slot_id': shiftSlotId,
+        'lat': lat,
+        'lng': lng,
+        'selfie_url': selfie,
+      });
+      final response = await remote.checkIn(partnerId, formData);
       return CheckInResponseModel.fromJson(response.data).toEntity();
     });
   }

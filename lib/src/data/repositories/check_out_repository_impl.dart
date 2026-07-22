@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/check_out_entity.dart';
@@ -21,14 +25,18 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
     String? reason,
   }) async {
     return asyncGuard(() async {
-      final request = CheckOutRequestModel(
-        attendanceId: attendanceId,
-        lat: lat,
-        lng: lng,
-        selfieUrl: selfieUrl,
-        reason: reason,
+      final selfie = await MultipartFile.fromFile(
+        selfieUrl,
+        filename: File(selfieUrl).uri.pathSegments.last,
       );
-      final response = await remote.checkOut(partnerId, request.toJson());
+      final formData = FormData.fromMap({
+        'attendance_id': attendanceId,
+        'lat': lat,
+        'lng': lng,
+        'selfie_url': selfie,
+        'reason': ?reason,
+      });
+      final response = await remote.checkOut(partnerId, formData);
       return CheckOutResponseModel.fromJson(response.data).toEntity();
     });
   }
