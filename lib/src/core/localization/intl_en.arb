@@ -205,7 +205,6 @@
   "shiftsUnavailable": "Shifts are not available for your account.",
   "assigned": "Assigned",
   "assignStaff": "Assign Staff",
-  "assignStaffUnavailable": "Assigning staff for this shift isn't available yet.",
   "slotCapacity": "{assigned}/{max}",
   "@slotCapacity": {
     "placeholders": {
@@ -263,8 +262,19 @@
   "shiftNotYetAccessibleHelp": "Check-in opens 15 minutes before your shift starts.",
   "shiftWindowClosed": "Check-In Window Closed",
   "shiftWindowClosedHelp": "Please contact your supervisor for assistance.",
-  "noAttendantsFound": "No attendants found for this facility.",
+  "noAttendantsFound": "No staff found for this partner.",
   "staffAssignedSuccessfully": "Staff assigned successfully.",
+  "assignAsSlotLead": "Assign as Slot Lead",
+  "assignAsSlotLeadMessage": "Assign {name} as the slot lead for this shift?",
+  "@assignAsSlotLeadMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Frank Rodriguez"
+      }
+    }
+  },
+  "assignmentUnavailable": "Assignment isn't available right now. Please try again later.",
   "status": "Status",
   "approvedBy": "Approved By",
   "approve": "Approve",

@@ -61,6 +61,7 @@ extension ShiftSlotModelToEntity on ShiftSlotModel {
     checkedInCount: checkedInCount ?? 0,
     checkedOutCount: checkedOutCount ?? 0,
     attendants: attendants.map((a) => a.toEntity()).toList(),
+    weeklyRosterId: weeklyRosterId,
   );
 }
 

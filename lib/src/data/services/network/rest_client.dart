@@ -44,14 +44,13 @@ abstract class RestClient {
     @Query('date') required String date,
   });
 
-  @GET(Endpoints.facilityAttendants)
-  Future<HttpResponse> getFacilityAttendants({
+  @GET(Endpoints.partnerUsers)
+  Future<HttpResponse> getPartnerUsers({
     @Path('partnerId') required int partnerId,
-    @Path('facilityId') required int facilityId,
   });
 
-  @POST(Endpoints.rosterAssignments)
-  Future<HttpResponse> assignStaff({
+  @POST(Endpoints.assignShiftSlot)
+  Future<HttpResponse> assignShiftSlot({
     @Path('partnerId') required int partnerId,
     @Path('facilityId') required int facilityId,
     @Path('rosterId') required int rosterId,

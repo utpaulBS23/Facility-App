@@ -100,9 +100,9 @@ RejectAttendanceUseCase rejectAttendanceUseCase(Ref ref) {
 }
 
 @riverpod
-GetFacilityAttendantsUseCase getFacilityAttendantsUseCase(Ref ref) {
-  return GetFacilityAttendantsUseCase(
-    ref.read(attendantRepositoryProvider),
+GetPartnerStaffUseCase getPartnerStaffUseCase(Ref ref) {
+  return GetPartnerStaffUseCase(
+    ref.read(partnerStaffRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );
 }
@@ -129,9 +129,9 @@ CheckOutUseCase checkOutUseCase(Ref ref) {
 }
 
 @riverpod
-AssignStaffUseCase assignStaffUseCase(Ref ref) {
-  return AssignStaffUseCase(
-    ref.read(assignmentRepositoryProvider),
+AssignShiftSlotUseCase assignShiftSlotUseCase(Ref ref) {
+  return AssignShiftSlotUseCase(
+    ref.read(shiftRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );
 }
