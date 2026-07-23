@@ -192,3 +192,14 @@ class ShiftResponseModel with ShiftResponseModelMappable {
 
   static const fromJson = ShiftResponseModelMapper.fromJson;
 }
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class CreateShiftResponseModel with CreateShiftResponseModelMappable {
+  CreateShiftResponseModel({required this.success, this.message, this.data});
+
+  final bool success;
+  final String? message;
+  final ShiftModel? data;
+
+  static const fromJson = CreateShiftResponseModelMapper.fromJson;
+}

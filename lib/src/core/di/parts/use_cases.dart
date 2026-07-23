@@ -152,6 +152,14 @@ CreateRosterUseCase createRosterUseCase(Ref ref) {
 }
 
 @riverpod
+CreateShiftUseCase createShiftUseCase(Ref ref) {
+  return CreateShiftUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 RefreshAttendanceUseCase refreshAttendanceUseCase(Ref ref) {
   return RefreshAttendanceUseCase(ref.read(manualAttendanceRepositoryProvider));
 }
