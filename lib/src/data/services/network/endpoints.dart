@@ -50,6 +50,10 @@ class Endpoints {
   /// [assignShiftSlot] attaches to.
   static const String createRoster =
       '/partners/{partnerId}/facilities/{facilityId}/rosters';
+
+  /// Creates a shift slot within an existing roster.
+  static const String createShift =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/shifts';
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';

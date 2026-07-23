@@ -165,3 +165,40 @@ final class CreateRosterUseCase {
     };
   }
 }
+
+final class CreateShiftUseCase {
+  CreateShiftUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<ShiftEntity, String>> call({
+    required int facilityId,
+    required int rosterId,
+    required int shiftTemplateId,
+    required String shiftDate,
+    String? notes,
+    required int minAttendants,
+    required int maxAttendants,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.createShift(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+      shiftTemplateId: shiftTemplateId,
+      shiftDate: shiftDate,
+      notes: notes,
+      minAttendants: minAttendants,
+      maxAttendants: maxAttendants,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to create shift'),
+    };
+  }
+}

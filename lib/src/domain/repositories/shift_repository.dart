@@ -37,4 +37,15 @@ abstract base class ShiftRepository extends Repository {
     required String weekEndDate,
     required List<int> offDays,
   });
+
+  Future<Result<ShiftEntity, Failure>> createShift({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int shiftTemplateId,
+    required String shiftDate,
+    String? notes,
+    required int minAttendants,
+    required int maxAttendants,
+  });
 }

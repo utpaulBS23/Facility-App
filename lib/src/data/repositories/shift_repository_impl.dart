@@ -115,4 +115,37 @@ final class ShiftRepositoryImpl extends ShiftRepository {
       return data.toEntity();
     });
   }
+
+  @override
+  Future<Result<ShiftEntity, Failure>> createShift({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int shiftTemplateId,
+    required String shiftDate,
+    String? notes,
+    required int minAttendants,
+    required int maxAttendants,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.createShift(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        rosterId: rosterId,
+        request: {
+          'shift_template_id': shiftTemplateId,
+          'shift_date': shiftDate,
+          'notes': notes,
+          'min_attendants': minAttendants,
+          'max_attendants': maxAttendants,
+        },
+      );
+      final model = CreateShiftResponseModel.fromJson(response.data);
+      final data = model.data;
+      if (data == null) {
+        throw const FormatException('Create shift response had no data');
+      }
+      return data.toEntity();
+    });
+  }
 }
