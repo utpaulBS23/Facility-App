@@ -12,7 +12,7 @@ final class GetFacilityAttendantsUseCase {
   Future<Result<List<AttendantEntity>, String>> call({
     required int facilityId,
   }) async {
-    final partnerId = _authRepository.getCurrentUser()?.partnerId;
+    final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error('Partner ID not found');
     final result = await _attendantRepository.getFacilityAttendants(
       partnerId: partnerId,

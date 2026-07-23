@@ -12,11 +12,14 @@ class ShiftSupervisorModel with ShiftSupervisorModelMappable {
   });
 
   final int id;
-  @MappableField(key: 'full_name')
+  // WHY: supervisor objects use `name`/`phone_number`, unlike the attendant
+  // objects in the same payload which use `full_name`/`phone`.
+  @MappableField(key: 'name')
   final String? fullName;
+  @MappableField(key: 'phone_number')
   final String? phone;
   @MappableField(key: 'is_primary')
-  final int? isPrimary;
+  final bool? isPrimary;
 
   static const fromJson = ShiftSupervisorModelMapper.fromJson;
 }
@@ -71,18 +74,51 @@ class ShiftAttendantModel with ShiftAttendantModelMappable {
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class ShiftAssignmentModel with ShiftAssignmentModelMappable {
+  ShiftAssignmentModel({
+    required this.id,
+    this.attendant,
+    this.isSlotLead,
+    this.assignedAt,
+    this.unassignedAt,
+    this.unassignedReason,
+  });
+
+  final int id;
+  final ShiftAttendantModel? attendant;
+  @MappableField(key: 'is_slot_lead')
+  final bool? isSlotLead;
+  @MappableField(key: 'assigned_at')
+  final String? assignedAt;
+  @MappableField(key: 'unassigned_at')
+  final String? unassignedAt;
+  @MappableField(key: 'unassigned_reason')
+  final String? unassignedReason;
+
+  static const fromJson = ShiftAssignmentModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class ShiftModel with ShiftModelMappable {
   ShiftModel({
     required this.id,
     this.weeklyRosterId,
     required this.facility,
     required this.shiftTemplate,
-    this.attendants = const [],
+    this.assignments = const [],
+    this.attendant,
+    this.isSlotLead,
+    this.minAttendants,
+    this.maxAttendants,
+    this.assignedCount,
+    this.checkedInCount,
+    this.checkedOutCount,
+    this.slotStatus,
     required this.shiftDate,
     required this.startTime,
     required this.endTime,
     this.durationHours,
-    required this.status,
+    this.status,
     this.checkInTime,
     this.checkOutTime,
     this.actualDuration,
@@ -96,7 +132,30 @@ class ShiftModel with ShiftModelMappable {
   final ShiftFacilityModel facility;
   @MappableField(key: 'shift_template')
   final ShiftTemplateModel shiftTemplate;
-  final List<ShiftAttendantModel> attendants;
+
+  // WHY: the two shift endpoints report staffing differently. The supervisor
+  // endpoint (`manage-shifts`) sends `assignments: [...]`; the attendant
+  // endpoint (`my-shifts`) sends a singular `attendant` plus a top-level
+  // `is_slot_lead`. Neither ever sends `attendants`, which is what this model
+  // used to read — so the assigned list was always empty.
+  final List<ShiftAssignmentModel> assignments;
+  final ShiftAttendantModel? attendant;
+  @MappableField(key: 'is_slot_lead')
+  final bool? isSlotLead;
+
+  // Slot capacity — supervisor endpoint only.
+  @MappableField(key: 'min_attendants')
+  final int? minAttendants;
+  @MappableField(key: 'max_attendants')
+  final int? maxAttendants;
+  @MappableField(key: 'assigned_count')
+  final int? assignedCount;
+  @MappableField(key: 'checked_in_count')
+  final int? checkedInCount;
+  @MappableField(key: 'checked_out_count')
+  final int? checkedOutCount;
+  @MappableField(key: 'slot_status')
+  final String? slotStatus;
   @MappableField(key: 'shift_date')
   final String shiftDate;
   @MappableField(key: 'start_time')
@@ -105,7 +164,7 @@ class ShiftModel with ShiftModelMappable {
   final String endTime;
   @MappableField(key: 'duration_hours')
   final String? durationHours;
-  final String status;
+  final String? status;
   @MappableField(key: 'check_in_time')
   final String? checkInTime;
   @MappableField(key: 'check_out_time')

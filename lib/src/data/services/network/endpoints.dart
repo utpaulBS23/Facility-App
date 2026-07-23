@@ -9,10 +9,11 @@ class Endpoints {
   static const String register = '/auth/register/';
   static const String login = '/auth/login';
 
-  /// Face validation
-  static const String faceValidation = '/partners/{partnerId}/face-validation';
-  static const String checkOut =
-      '/partners/{partnerId}/face-validation/check-out';
+  /// Attendance
+  static const String checkIn = '/partners/{partnerId}/attendances/check-in';
+
+  /// Check-out is location-only — no selfie, unlike [checkIn].
+  static const String checkOut = '/partners/{partnerId}/attendances/check-out';
 
   /// Attendants
   static const String facilityAttendants =
@@ -38,6 +39,12 @@ class Endpoints {
       '/partners/{partnerId}/attendances/{attendanceId}/reject';
 
   /// Shifts
+  ///
+  /// [shiftSlots] is facility-and-date scoped and serves both experiences:
+  /// every slot carries its attendants with an `is_me` marker, and
+  /// `active_slot` reports the caller's own actionable slot. It supersedes
+  /// [myShifts] and [supervisorShifts].
+  static const String shiftSlots = '/partners/{partnerId}/shift-slots';
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';

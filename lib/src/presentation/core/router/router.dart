@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/di/dependency_injection.dart';
 import '../../../core/extensions/riverpod_extensions.dart';
 import '../../../core/logger/log.dart';
 import '../../../domain/entities/attendance_entity.dart';
 import '../../../domain/entities/manual_attendance_entity.dart';
 import '../../../domain/entities/shift_entity.dart';
+import '../../../domain/entities/shift_slot_entity.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../../domain/entities/visit_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
@@ -34,6 +36,7 @@ import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
 import 'router_state/router_state_provider.dart';
 import 'routes.dart';
+import 'shell_tab_config.dart';
 
 part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
@@ -63,6 +66,21 @@ GoRouter goRouter(Ref ref) {
         Routes.splash,
       ].contains(state.uri.path)) {
         return ref.asListenable(routerStateProvider).value;
+      }
+
+      // WHY: hiding a navbar item is cosmetic — deep links and programmatic
+      // navigation can still target a shell branch the user lacks permission
+      // for. Redirect those to the first permitted tab.
+      final session = ref.read(getUserSessionUseCaseProvider).call();
+      if (session != null) {
+        for (final tab in shellTabConfigs) {
+          final required = tab.permission;
+          if (tab.route == state.uri.path &&
+              required != null &&
+              !session.can(required)) {
+            return firstPermittedShellRoute(session.permissions);
+          }
+        }
       }
       return null;
     },

@@ -30,7 +30,10 @@ class _InspectionRepairWorkSection extends StatelessWidget {
                   color: context.color.text.primary,
                 ),
               ),
-              _NewIssueButton(onTap: onNewIssue),
+              PermissionGate(
+                permission: AppPermission.issueCreate,
+                child: _NewIssueButton(onTap: onNewIssue),
+              ),
             ],
           ),
           if (issues.isNotEmpty) ...[

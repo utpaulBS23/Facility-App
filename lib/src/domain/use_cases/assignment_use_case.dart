@@ -14,7 +14,7 @@ final class AssignStaffUseCase {
     required ShiftEntity shift,
     required int attendantId,
   }) async {
-    final partnerId = _authRepository.getCurrentUser()?.partnerId;
+    final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error('Partner ID not found');
 
     final rosterId = shift.weeklyRosterId;

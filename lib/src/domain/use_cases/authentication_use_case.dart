@@ -46,26 +46,34 @@ final class GetCurrentUserUseCase {
   UserEntity? call() => repository.getCurrentUser();
 }
 
-final class GetShiftStatusUseCase {
-  GetShiftStatusUseCase(this.repository);
-
-  final AuthenticationRepository repository;
-
-  ShiftStatusEntity? call() => repository.getShiftStatus();
-}
-
 final class GetUserSessionUseCase {
   GetUserSessionUseCase(this.repository);
 
   final AuthenticationRepository repository;
 
-  UserSessionEntity? call() {
-    final user = repository.getCurrentUser();
-    if (user == null) return null;
-    return UserSessionEntity(
-      role: user.userRole ?? UserRole.other,
-      permissions: repository.getPermissions(),
-      accessibleFacilities: repository.getAccessibleFacilities(),
-    );
-  }
+  UserSessionEntity? call() => repository.currentSession;
+}
+
+final class GetActivePartnerUseCase {
+  GetActivePartnerUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  int? call() => repository.currentSession?.activePartnerId;
+}
+
+final class WatchUserSessionUseCase {
+  WatchUserSessionUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  Stream<UserSessionEntity?> call() => repository.watchSession();
+}
+
+final class HasPermissionUseCase {
+  HasPermissionUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  bool call(AppPermission permission) => repository.hasPermission(permission);
 }

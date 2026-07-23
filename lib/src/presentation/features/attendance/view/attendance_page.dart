@@ -6,8 +6,10 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/loading_indicator.dart';
@@ -98,6 +100,11 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
           summary: summary,
           onItemTap: _onItemTap,
           onApplyLeave: _onApplyLeave,
+          showApplyLeave: ref.watch(
+            userSessionProvider.select(
+              (session) => session?.can(AppPermission.leaveRequest) ?? false,
+            ),
+          ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text(err.toString())),

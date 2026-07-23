@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 
 part 'tasks_provider.g.dart';
@@ -14,10 +16,9 @@ class Tasks extends _$Tasks {
   Future<void> fetch({required String bucket}) async {
     state = const AsyncValue.loading();
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return;
     }
 
@@ -34,10 +35,9 @@ class Tasks extends _$Tasks {
   }
 
   Future<void> startIssue({required int issueId}) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return;
     }
 
@@ -66,10 +66,9 @@ class Tasks extends _$Tasks {
     required String photoPath,
     required String alt,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return null;
     }
 
@@ -103,10 +102,14 @@ class Tasks extends _$Tasks {
   }
 
   Future<TaskEntity?> completeIssue({required int issueId}) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    if (!ref.hasPermission(AppPermission.taskComplete)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return null;
+    }
+
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
-      state = AsyncValue.error('User not found', StackTrace.current);
+      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
       return null;
     }
 

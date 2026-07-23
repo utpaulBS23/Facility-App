@@ -120,6 +120,7 @@
   "submit": "Submit",
   "save": "Save",
   "photoRequired": "Please add a photo",
+  "noActiveShift": "No active shift found",
   "selectShift": "Select Shift",
   "morning": "Morning",
   "afternoon": "Afternoon",
@@ -190,6 +191,7 @@
   "shiftNotes": "Shift Notes",
   "date": "Date",
   "time": "Time",
+  "duration": "Duration",
   "leaveBalance": "Leave Balance",
   "pending": "Pending",
   "leaveType": "Leave type",
@@ -200,8 +202,58 @@
   "submitLeaveRequest": "Submit Leave Request",
   "reason": "Reason",
   "optional": "Optional",
+  "shiftsUnavailable": "Shifts are not available for your account.",
   "assigned": "Assigned",
   "assignStaff": "Assign Staff",
+  "assignStaffUnavailable": "Assigning staff for this shift isn't available yet.",
+  "slotCapacity": "{assigned}/{max}",
+  "@slotCapacity": {
+    "placeholders": {
+      "assigned": {
+        "type": "int",
+        "example": "2"
+      },
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "belowMinimumStaff": "Needs {min}",
+  "@belowMinimumStaff": {
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "slotLead": "Slot lead",
+  "slotStatusCompleted": "Completed",
+  "slotStatusPartialMiss": "Partial miss",
+  "slotFull": "Slot full",
+  "slotStatusOpen": "Open",
+  "slotStatusFull": "Full",
+  "slotStatusMissed": "Missed",
+  "slotStatusCancelled": "Cancelled",
+  "checkedInCount": "{count} checked in",
+  "@checkedInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "checkedOutCount": "{count} checked out",
+  "@checkedOutCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "employeeShortest": "Employee Shortest",
   "notAvailable": "N/A",
   "noShiftsFound": "No shifts scheduled for this date.",

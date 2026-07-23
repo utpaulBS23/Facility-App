@@ -32,7 +32,7 @@ final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
       final response = await remote.submitManualAttendance(
         partnerId: partnerId,
         request: {
-          'shift_id': request.shiftId,
+          'shift_slot_id': request.shiftId,
           'reason': request.reason,
           'check_in_time': request.checkInTime,
           'lat': request.lat,

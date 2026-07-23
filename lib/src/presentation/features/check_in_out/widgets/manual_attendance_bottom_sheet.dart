@@ -4,10 +4,12 @@ part of '../view/shift_check_in_page.dart';
 class _ManualAttendanceBottomSheet extends ConsumerStatefulWidget {
   const _ManualAttendanceBottomSheet({
     required this.checkInInfo,
+    required this.shiftSlotId,
     required this.withdrawRoute,
   });
 
   final CheckInInfoEntity checkInInfo;
+  final int? shiftSlotId;
   final String withdrawRoute;
 
   @override
@@ -22,7 +24,15 @@ class _ManualAttendanceBottomSheetState
 
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
+    final shiftSlotId = widget.shiftSlotId;
+    if (shiftSlotId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.noActiveShift)),
+      );
+      return;
+    }
     ref.read(manualAttendanceProvider.notifier).submit(
+      shiftSlotId: shiftSlotId,
       reason: _selectedReason!,
       checkInInfo: widget.checkInInfo,
     );

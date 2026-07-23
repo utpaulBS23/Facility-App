@@ -16,8 +16,8 @@ extension AttendantModelToEntity on AttendantModel {
           )
         : AttendantAssignmentEntity(
             assignmentType: assignment!.assignmentType ?? '',
-            isPrimary: (assignment!.isPrimary ?? 0) == 1,
-            isActive: (assignment!.isActive ?? 0) == 1,
+            isPrimary: assignment!.isPrimary ?? false,
+            isActive: assignment!.isActive ?? false,
             assignedAt: assignment!.assignedAt ?? '',
             assignedBy: assignment!.assignedBy,
           ),

@@ -16,18 +16,28 @@ GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
 }
 
 @riverpod
-GetShiftStatusUseCase getShiftStatusUseCase(Ref ref) {
-  return GetShiftStatusUseCase(ref.read(authenticationRepositoryProvider));
-}
-
-@riverpod
 GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
   return GetUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }
 
 @riverpod
-ValidateFaceUseCase validateFaceUseCase(Ref ref) {
-  return ValidateFaceUseCase(ref.read(faceValidationRepositoryProvider));
+GetActivePartnerUseCase getActivePartnerUseCase(Ref ref) {
+  return GetActivePartnerUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
+WatchUserSessionUseCase watchUserSessionUseCase(Ref ref) {
+  return WatchUserSessionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
+HasPermissionUseCase hasPermissionUseCase(Ref ref) {
+  return HasPermissionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
+CheckInUseCase checkInUseCase(Ref ref) {
+  return CheckInUseCase(ref.read(checkInRepositoryProvider));
 }
 
 @riverpod
@@ -100,6 +110,14 @@ GetFacilityAttendantsUseCase getFacilityAttendantsUseCase(Ref ref) {
 @riverpod
 GetShiftsUseCase getShiftsUseCase(Ref ref) {
   return GetShiftsUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetShiftSlotsUseCase getShiftSlotsUseCase(Ref ref) {
+  return GetShiftSlotsUseCase(
     ref.read(shiftRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );

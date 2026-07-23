@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 
 part 'check_out_provider.g.dart';
 
@@ -12,23 +14,28 @@ class CheckOut extends _$CheckOut {
 
   Future<void> checkOut({
     required int partnerId,
-    required int shiftId,
-    required String imagePath,
+    required int attendanceId,
     required double lat,
     required double lng,
-    required String address,
+    required String selfieUrl,
+    String? reason,
   }) async {
     if (state.isLoading) return;
+
+    if (!ref.hasPermission(AppPermission.attendanceCheckOut)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return;
+    }
 
     state = const AsyncValue.loading();
 
     final result = await ref.read(checkOutUseCaseProvider).call(
       partnerId: partnerId,
-      shiftId: shiftId,
-      imagePath: imagePath,
+      attendanceId: attendanceId,
       lat: lat,
       lng: lng,
-      address: address,
+      selfieUrl: selfieUrl,
+      reason: reason,
     );
 
     state = switch (result) {

@@ -13,8 +13,8 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
-  @POST(Endpoints.faceValidation)
-  Future<HttpResponse> validateFace(
+  @POST(Endpoints.checkIn)
+  Future<HttpResponse> checkIn(
     @Path('partnerId') int partnerId,
     @Body() FormData formData,
   );
@@ -24,6 +24,13 @@ abstract class RestClient {
     @Path('partnerId') int partnerId,
     @Body() FormData formData,
   );
+
+  @GET(Endpoints.shiftSlots)
+  Future<HttpResponse> getShiftSlots({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('date') required String date,
+  });
 
   @GET(Endpoints.myShifts)
   Future<HttpResponse> getMyShifts({

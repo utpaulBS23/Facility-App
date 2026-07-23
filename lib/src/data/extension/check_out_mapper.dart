@@ -1,15 +1,33 @@
 import '../models/check_out_model.dart';
 import '../../domain/entities/check_out_entity.dart';
 
-extension CheckOutResponseModelToEntity on CheckOutResponseModel {
-  CheckOutEntity toEntity() => data.toEntity();
+DateTime? _parseUtcIso(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  try {
+    // WHY: API returns UTC strings without a 'Z' suffix; Dart parses bare ISO
+    // strings as local time, so force UTC before converting.
+    final value = (raw.contains('Z') || raw.contains('+')) ? raw : '${raw}Z';
+    return DateTime.parse(value).toLocal();
+  } catch (_) {
+    return null;
+  }
 }
 
-extension CheckOutDataModelToEntity on CheckOutDataModel {
+extension CheckOutWarningModelToEntity on CheckOutWarningModel {
+  CheckOutWarningEntity toEntity() => CheckOutWarningEntity(
+    code: code ?? '',
+    message: message ?? '',
+    reasonRequired: reasonRequired ?? false,
+  );
+}
+
+extension CheckOutResponseModelToEntity on CheckOutResponseModel {
   CheckOutEntity toEntity() => CheckOutEntity(
-    isMatch: isMatch,
-    similarity: similarity,
-    confidence: confidence,
-    validationStatus: validationStatus,
+    attendanceId: data.attendanceId,
+    checkInTime: _parseUtcIso(data.checkInTime),
+    checkOutTime: _parseUtcIso(data.checkOutTime),
+    totalHours: data.totalHours ?? 0,
+    approvalStatus: data.approvalStatus ?? '',
+    warnings: warnings.map((warning) => warning.toEntity()).toList(),
   );
 }

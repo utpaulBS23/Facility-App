@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_detail_provider.dart';
 import '../riverpod/tasks_provider.dart';
@@ -244,16 +246,20 @@ class _TaskDetailBody extends StatelessWidget {
                 child: Text(context.locale.startTask),
               ),
             ],
-            if (_canComplete) ...[
-              Gap(spacing.s24),
-              FilledButton(
-                onPressed: () => onCompleteTap(task),
-                style: FilledButton.styleFrom(
-                  backgroundColor: context.color.success,
+            if (_canComplete)
+              PermissionGate(
+                permission: AppPermission.taskComplete,
+                child: Padding(
+                  padding: EdgeInsets.only(top: spacing.s24),
+                  child: FilledButton(
+                    onPressed: () => onCompleteTap(task),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: context.color.success,
+                    ),
+                    child: Text(context.locale.completeTask),
+                  ),
                 ),
-                child: Text(context.locale.completeTask),
               ),
-            ],
           ],
         ),
       ),

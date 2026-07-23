@@ -65,8 +65,6 @@ class _ShiftCheckInBody extends StatelessWidget {
                     ),
                   ],
                   Gap(dimensions.spacing.s16),
-                  const _ShiftInfoCard(),
-                  Gap(dimensions.spacing.s16),
                   const _AutoDetectedInfoCard(),
                   Gap(dimensions.spacing.s16),
                 ],

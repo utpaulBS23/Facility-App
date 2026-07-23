@@ -183,16 +183,20 @@ class _TaskCard extends StatelessWidget {
                       child: Text(context.locale.start),
                     ),
                   ],
-                  if (_canComplete) ...[
-                    Gap(spacing.s12),
-                    FilledButton(
-                      onPressed: onCompleteTap,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: context.color.success,
+                  if (_canComplete)
+                    PermissionGate(
+                      permission: AppPermission.taskComplete,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: spacing.s12),
+                        child: FilledButton(
+                          onPressed: onCompleteTap,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: context.color.success,
+                          ),
+                          child: Text(context.locale.completeTask),
+                        ),
                       ),
-                      child: Text(context.locale.completeTask),
                     ),
-                  ],
                 ],
               ),
             ),
