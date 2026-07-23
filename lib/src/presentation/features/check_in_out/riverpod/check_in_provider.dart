@@ -2,31 +2,38 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 
-part 'face_validation_provider.g.dart';
+part 'check_in_provider.g.dart';
 
 @riverpod
-class FaceValidation extends _$FaceValidation {
+class CheckIn extends _$CheckIn {
   @override
   AsyncValue build() => const AsyncValue.data(null);
 
-  Future<void> validate({
+  Future<void> checkIn({
     required int partnerId,
-    required String imagePath,
+    required int shiftSlotId,
     required double lat,
     required double lng,
-    required String address,
+    required String selfieUrl,
   }) async {
     if (state.isLoading) return;
 
+    if (!ref.hasPermission(AppPermission.attendanceCheckIn)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return;
+    }
+
     state = const AsyncValue.loading();
 
-    final result = await ref.read(validateFaceUseCaseProvider).call(
+    final result = await ref.read(checkInUseCaseProvider).call(
       partnerId: partnerId,
-      imagePath: imagePath,
+      shiftSlotId: shiftSlotId,
       lat: lat,
       lng: lng,
-      address: address,
+      selfieUrl: selfieUrl,
     );
 
     state = switch (result) {

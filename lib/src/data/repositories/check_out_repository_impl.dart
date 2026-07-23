@@ -18,27 +18,23 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
   @override
   Future<Result<CheckOutEntity, Failure>> checkOut({
     required int partnerId,
-    required int shiftId,
-    required String imagePath,
+    required int attendanceId,
     required double lat,
     required double lng,
-    required String address,
+    required String selfieUrl,
+    String? reason,
   }) async {
     return asyncGuard(() async {
-      final image = await MultipartFile.fromFile(
-        imagePath,
-        filename: File(imagePath).uri.pathSegments.last,
+      final selfie = await MultipartFile.fromFile(
+        selfieUrl,
+        filename: File(selfieUrl).uri.pathSegments.last,
       );
-      final date = DateTime.now();
-      final dateStr =
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
       final formData = FormData.fromMap({
-        'image': image,
-        'date': dateStr,
-        'shift_id': shiftId,
+        'attendance_id': attendanceId,
         'lat': lat,
         'lng': lng,
-        'address': address,
+        'selfie_url': selfie,
+        'reason': ?reason,
       });
       final response = await remote.checkOut(partnerId, formData);
       return CheckOutResponseModel.fromJson(response.data).toEntity();

@@ -5,9 +5,16 @@ List<GoRoute> _shiftRoutes(Ref ref) {
     GoRoute(
       path: Routes.shiftDetails,
       name: Routes.shiftDetails,
+      // WHY: the attendant list is migrated to shift-slots while the
+      // supervisor list still uses the older shift endpoints, so this route
+      // serves both payloads until the supervisor side can follow (blocked on
+      // weekly_roster_id, which the slots response does not carry).
       pageBuilder: (context, state) {
-        final entity = state.extra as ShiftEntity;
-        return MaterialPage(child: ShiftDetailsPage(entity: entity));
+        final extra = state.extra;
+        if (extra is ShiftSlotEntity) {
+          return MaterialPage(child: SlotDetailsPage(slot: extra));
+        }
+        return MaterialPage(child: ShiftDetailsPage(entity: extra as ShiftEntity));
       },
     ),
     GoRoute(

@@ -120,6 +120,7 @@
   "submit": "জমা দিন",
   "save": "সংরক্ষণ",
   "photoRequired": "অনুগ্রহ করে একটি ছবি যোগ করুন",
+  "noActiveShift": "কোনো সক্রিয় শিফট পাওয়া যায়নি",
   "selectShift": "শিফট নির্বাচন করুন",
   "morning": "সকাল",
   "afternoon": "বিকেল",
@@ -190,6 +191,7 @@
   "shiftNotes": "শিফট নোটস",
   "date": "তারিখ",
   "time": "সময়",
+  "duration": "স্থিতিকাল",
   "leaveBalance": "ছুটির ব্যালেন্স",
   "pending": "অপেক্ষমান",
   "leaveType": "ছুটির ধরন",
@@ -200,8 +202,58 @@
   "submitLeaveRequest": "ছুটির আবেদন জমা দিন",
   "reason": "কারণ",
   "optional": "ঐচ্ছিক",
+  "shiftsUnavailable": "আপনার অ্যাকাউন্টের জন্য শিফট উপলব্ধ নয়।",
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
+  "assignStaffUnavailable": "এই শিফটের জন্য স্টাফ নিয়োগ এখনও উপলব্ধ নয়।",
+  "slotCapacity": "{assigned}/{max}",
+  "@slotCapacity": {
+    "placeholders": {
+      "assigned": {
+        "type": "int",
+        "example": "2"
+      },
+      "max": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "belowMinimumStaff": "প্রয়োজন {min} জন",
+  "@belowMinimumStaff": {
+    "placeholders": {
+      "min": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "slotLead": "স্লট লিড",
+  "slotStatusCompleted": "সম্পন্ন",
+  "slotStatusPartialMiss": "আংশিক অনুপস্থিত",
+  "slotFull": "স্লট পূর্ণ",
+  "slotStatusOpen": "খোলা",
+  "slotStatusFull": "পূর্ণ",
+  "slotStatusMissed": "মিস হয়েছে",
+  "slotStatusCancelled": "বাতিল",
+  "checkedInCount": "{count} জন চেক-ইন করেছেন",
+  "@checkedInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "checkedOutCount": "{count} জন চেক-আউট করেছেন",
+  "@checkedOutCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "employeeShortest": "এমপ্লয়ি শর্টেস্ট",
   "notAvailable": "প্রযোজ্য নয়",
   "noShiftsFound": "এই তারিখে কোনো শিফট নির্ধারিত নেই।",

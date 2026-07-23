@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../core/base/result.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/shift_entity.dart';
-import '../../shift/riverpod/shift_list_provider.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -37,8 +40,23 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
   }
 
   Future<void> _onSelectShiftTap() async {
-    final shifts =
-        ref.read(shiftListProvider).valueOrNull?.toList() ?? [];
+    // WHY: leave owns its own fetch instead of reading the shift tab's
+    // provider. That provider is no longer populated for attendants (the tab
+    // moved to shift-slots), and reaching across features for cached state
+    // broke silently when the other feature changed.
+    final partnerId = ref.activePartnerId;
+    if (partnerId == null) return;
+    final result = await ref
+        .read(getShiftsUseCaseProvider)
+        .call(
+          partnerId: partnerId,
+          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        );
+    final shifts = switch (result) {
+      Success(:final data) => data ?? const <ShiftEntity>[],
+      _ => const <ShiftEntity>[],
+    };
+    if (!mounted) return;
     // WHY: go_router's pushNamed returns Future<T?> — pop(shift) on the
     // destination page delivers the selected shift back here without needing
     // a shared provider or a callback in extra.

@@ -43,7 +43,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> validateFace(
+  Future<HttpResponse<dynamic>> checkIn(
     int partnerId,
     FormData formData,
   ) async {
@@ -55,7 +55,7 @@ class _RestClient implements RestClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/face-validation',
+            '/partners/${partnerId}/attendances/check-in',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -80,7 +80,36 @@ class _RestClient implements RestClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/face-validation/check-out',
+            '/partners/${partnerId}/attendances/check-out',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> getShiftSlots({
+    required int partnerId,
+    required int facilityId,
+    required String date,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'facility_id': facilityId,
+      r'date': date,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/partners/${partnerId}/shift-slots',
             queryParameters: queryParameters,
             data: _data,
           )

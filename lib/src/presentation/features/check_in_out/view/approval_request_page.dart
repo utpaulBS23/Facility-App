@@ -31,8 +31,7 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
     _ => AttendanceStatue.pending,
   };
 
-  int? get _partnerId =>
-      ref.read(getCurrentUserUseCaseProvider).call()?.partnerId;
+  int? get _partnerId => ref.activePartnerId;
 
   void _onRefresh() {
     final partnerId = _partnerId;
@@ -54,7 +53,14 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
 
   void _navigateBack() {
     if (widget.withdrawRoute == Routes.shiftCheckOut) {
-      context.goNamed(Routes.shiftCheckOut, extra: _current.shiftId);
+      // WHY: check-out now takes the attendance id, not the shift id — `id`
+      // here is the attendance record this manual submission created.
+      context.goNamed(Routes.shiftCheckOut, extra: _current.id);
+    } else if (widget.withdrawRoute == Routes.shiftCheckIn) {
+      // WHY: `shiftId` carries the shift_slot_id this manual submission was
+      // made for (see ManualAttendance.submit) — check-in needs it again to
+      // retry the normal flow.
+      context.goNamed(Routes.shiftCheckIn, extra: _current.shiftId);
     } else {
       context.goNamed(widget.withdrawRoute);
     }

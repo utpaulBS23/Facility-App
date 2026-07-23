@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
 
 part 'inspection_checklist_provider.g.dart';
@@ -106,12 +108,11 @@ class InspectionChecklist extends _$InspectionChecklist {
       const InspectionChecklistState(isLoadingChecklist: true);
 
   Future<void> loadChecklist({required int visitId}) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) {
       state = state.copyWith(
         isLoadingChecklist: false,
-        checklistError: 'user-not-found',
+        checklistError: partnerUnavailableMessage,
       );
       return;
     }
@@ -172,8 +173,7 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int itemId,
     required int rating,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     final previousRating = state.starAnswers[itemId];
@@ -249,8 +249,7 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int itemId,
     required bool value,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     final previousYesNo = state.yesNoAnswers[itemId];
@@ -310,8 +309,15 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int visitId,
     required int itemId,
   }) async {
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
+      state = state.copyWith(
+        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+          ..[itemId] = permissionDeniedMessage,
+      );
+      return;
+    }
+
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     final ratingValue = state.starAnswers[itemId];
@@ -420,8 +426,12 @@ class InspectionChecklist extends _$InspectionChecklist {
   Future<void> submit({required int visitId}) async {
     if (!state.isComplete) return;
 
-    final user = ref.read(getCurrentUserUseCaseProvider).call();
-    final partnerId = user?.partnerId;
+    if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
+      state = state.copyWith(submitError: permissionDeniedMessage);
+      return;
+    }
+
+    final partnerId = ref.activePartnerId;
     if (partnerId == null) return;
 
     state = state.copyWith(isSubmitting: true, clearSubmitError: true);

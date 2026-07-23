@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 
 part 'attendance_provider.g.dart';
@@ -12,9 +14,8 @@ Future<MonthlyAttendanceSummaryEntity> monthlyAttendanceOverview(
   Ref ref,
   String month,
 ) async {
-  final user = ref.read(getCurrentUserUseCaseProvider).call();
-  final partnerId = user?.partnerId;
-  if (partnerId == null) throw Exception('User not authenticated');
+  final partnerId = ref.activePartnerId;
+  if (partnerId == null) throw Exception(partnerUnavailableMessage);
   final result = await ref
       .read(getMonthlyAttendanceOverviewUseCaseProvider)
       .call(partnerId: partnerId, month: month);
@@ -35,6 +36,12 @@ class ApproveAttendance extends _$ApproveAttendance {
     required int attendanceId,
   }) async {
     if (state.isLoading) return;
+
+    if (!ref.hasPermission(AppPermission.attendanceApprove)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return;
+    }
+
     state = const AsyncValue.loading();
     final result = await ref
         .read(approveAttendanceUseCaseProvider)
@@ -57,6 +64,12 @@ class RejectAttendance extends _$RejectAttendance {
     required int attendanceId,
   }) async {
     if (state.isLoading) return;
+
+    if (!ref.hasPermission(AppPermission.attendanceReject)) {
+      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      return;
+    }
+
     state = const AsyncValue.loading();
     final result = await ref
         .read(rejectAttendanceUseCaseProvider)

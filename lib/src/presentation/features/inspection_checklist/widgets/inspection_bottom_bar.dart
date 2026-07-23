@@ -4,12 +4,14 @@ class _InspectionBottomBar extends StatelessWidget {
   const _InspectionBottomBar({
     required this.state,
     required this.isResolved,
+    required this.canSubmit,
     required this.onSubmit,
     required this.onCancel,
   });
 
   final InspectionChecklistState state;
   final bool isResolved;
+  final bool canSubmit;
   final VoidCallback onSubmit;
   final VoidCallback onCancel;
 
@@ -26,7 +28,9 @@ class _InspectionBottomBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _ScoreRow(state: state),
-          if (!isResolved) ...[
+          // WHY: without checklist_response.submit the bar is read-only,
+          // same as an already-resolved visit.
+          if (!isResolved && canSubmit) ...[
             if (!state.isComplete) _WarningBanner(),
             Padding(
               padding: EdgeInsets.fromLTRB(

@@ -9,19 +9,19 @@ final class CheckOutUseCase {
 
   Future<Result<CheckOutEntity, String>> call({
     required int partnerId,
-    required int shiftId,
-    required String imagePath,
+    required int attendanceId,
     required double lat,
     required double lng,
-    required String address,
+    required String selfieUrl,
+    String? reason,
   }) async {
     final result = await repository.checkOut(
       partnerId: partnerId,
-      shiftId: shiftId,
-      imagePath: imagePath,
+      attendanceId: attendanceId,
       lat: lat,
       lng: lng,
-      address: address,
+      selfieUrl: selfieUrl,
+      reason: reason,
     );
 
     return switch (result) {

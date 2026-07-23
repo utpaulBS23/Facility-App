@@ -1,17 +1,6 @@
 import '../models/login_model.dart';
 import '../../domain/entities/login_entity.dart';
 
-extension ShiftStatusModelToEntity on ShiftStatusModel {
-  ShiftStatusEntity toEntity() => ShiftStatusEntity(
-    flag: ShiftStatusFlag.fromString(flag),
-    message: message,
-    shiftId: shiftId,
-    facilityName: facilityName,
-    startTime: startTime,
-    endTime: endTime,
-  );
-}
-
 extension UserModelToEntity on UserModel {
   UserEntity toEntity() => UserEntity(
     id: id,
@@ -19,7 +8,6 @@ extension UserModelToEntity on UserModel {
     email: email,
     phoneNumber: phoneNumber,
     userType: userType,
-    userRole: UserRole.fromString(userRole),
     partnerId: partnerId,
     supervisor: supervisor,
     permissionVersion: permissionVersion,
@@ -27,13 +15,34 @@ extension UserModelToEntity on UserModel {
   );
 }
 
+extension PartnerModelToEntity on PartnerModel {
+  PartnerEntity toEntity() => PartnerEntity(
+    id: id,
+    brandName: brandName ?? '',
+    primaryColor: primaryColor,
+    logoUrl: logoUrl,
+  );
+}
+
+extension AccessibleFacilityModelToEntity on AccessibleFacilityModel {
+  AccessibleFacilityEntity toEntity() => AccessibleFacilityEntity(
+    id: id,
+    name: name ?? '',
+    isPrimary: isPrimary ?? false,
+  );
+}
+
 extension LoginResponseModelToEntity on LoginResponseModel {
   LoginResponseEntity toEntity() => LoginResponseEntity(
     user: user.toEntity(),
     accessToken: token.accessToken,
-    permissions: permissions,
-    accessibleFacilities: accessibleFacilities,
-    shiftStatus: shiftStatus?.toEntity(),
+    // WHY: raw wire strings become a typed set here — unknown keys from a
+    // newer backend are dropped so login never breaks on new permissions.
+    permissions: AppPermission.setFromKeys(permissions),
+    accessibleFacilities: accessibleFacilities
+        .map((facility) => facility.toEntity())
+        .toList(),
+    partner: partner?.toEntity(),
   );
 }
 
