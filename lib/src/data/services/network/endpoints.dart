@@ -45,6 +45,11 @@ class Endpoints {
   /// `active_slot` reports the caller's own actionable slot. It supersedes
   /// [myShifts] and [supervisorShifts].
   static const String shiftSlots = '/partners/{partnerId}/shift-slots';
+
+  /// Creates a weekly roster for a facility — the parent resource
+  /// [assignShiftSlot] attaches to.
+  static const String createRoster =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters';
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';

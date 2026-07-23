@@ -137,3 +137,57 @@ class ShiftEntity {
   /// Whether the slot has met its minimum staffing requirement.
   bool get isMinimumStaffed => assignedCount >= minAttendants;
 }
+
+class RosterFacilityEntity {
+  const RosterFacilityEntity({required this.id, required this.name, this.nameBn});
+
+  final int id;
+  final String name;
+  final String? nameBn;
+}
+
+class RosterCreatorEntity {
+  const RosterCreatorEntity({
+    required this.id,
+    required this.fullName,
+    required this.role,
+  });
+
+  final int id;
+  final String fullName;
+  final String role;
+}
+
+class RosterEntity {
+  const RosterEntity({
+    required this.id,
+    required this.facilityId,
+    this.facility,
+    this.createdBy,
+    required this.weekStartDate,
+    required this.weekEndDate,
+    required this.status,
+    this.publishedAt,
+    this.totalShifts = 0,
+    this.filledShifts = 0,
+    this.notes,
+    this.offDays = const [],
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id;
+  final int facilityId;
+  final RosterFacilityEntity? facility;
+  final RosterCreatorEntity? createdBy;
+  final String weekStartDate;
+  final String weekEndDate;
+  final String status;
+  final String? publishedAt;
+  final int totalShifts;
+  final int filledShifts;
+  final String? notes;
+  final List<int> offDays;
+  final String? createdAt;
+  final String? updatedAt;
+}
