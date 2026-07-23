@@ -205,7 +205,6 @@
   "shiftsUnavailable": "আপনার অ্যাকাউন্টের জন্য শিফট উপলব্ধ নয়।",
   "assigned": "নিযুক্ত",
   "assignStaff": "স্টাফ নিয়োগ করুন",
-  "assignStaffUnavailable": "এই শিফটের জন্য স্টাফ নিয়োগ এখনও উপলব্ধ নয়।",
   "slotCapacity": "{assigned}/{max}",
   "@slotCapacity": {
     "placeholders": {
@@ -263,8 +262,19 @@
   "shiftNotYetAccessibleHelp": "শিফট শুরুর ১৫ মিনিট আগে চেক-ইন উপলব্ধ হবে।",
   "shiftWindowClosed": "চেক-ইন উইন্ডো বন্ধ",
   "shiftWindowClosedHelp": "সহায়তার জন্য আপনার সুপারভাইজারের সাথে যোগাযোগ করুন।",
-  "noAttendantsFound": "এই সুবিধার জন্য কোনো অ্যাটেন্ড্যান্ট পাওয়া যায়নি।",
+  "noAttendantsFound": "এই পার্টনারের জন্য কোনো স্টাফ পাওয়া যায়নি।",
   "staffAssignedSuccessfully": "স্টাফ সফলভাবে নিযুক্ত হয়েছে।",
+  "assignAsSlotLead": "স্লট লিড হিসেবে নিয়োগ করুন",
+  "assignAsSlotLeadMessage": "{name} কে কি এই শিফটের স্লট লিড হিসেবে নিয়োগ করা হবে?",
+  "@assignAsSlotLeadMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Frank Rodriguez"
+      }
+    }
+  },
+  "assignmentUnavailable": "এই মুহূর্তে নিয়োগ করা যাচ্ছে না। পরে আবার চেষ্টা করুন।",
   "status": "স্ট্যাটাস",
   "approvedBy": "অনুমোদনকারী",
   "approve": "অনুমোদন করুন",

@@ -172,9 +172,8 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> getFacilityAttendants({
+  Future<HttpResponse<dynamic>> getPartnerUsers({
     required int partnerId,
-    required int facilityId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -184,7 +183,7 @@ class _RestClient implements RestClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/facilities/${facilityId}/attendants',
+            '/partners/${partnerId}/users',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -197,7 +196,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> assignStaff({
+  Future<HttpResponse<dynamic>> assignShiftSlot({
     required int partnerId,
     required int facilityId,
     required int rosterId,

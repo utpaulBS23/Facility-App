@@ -21,8 +21,8 @@ List<GoRoute> _shiftRoutes(Ref ref) {
       path: Routes.assignStaff,
       name: Routes.assignStaff,
       pageBuilder: (context, state) {
-        final shift = state.extra as ShiftEntity;
-        return MaterialPage(child: AssignStaffPage(shift: shift));
+        final slot = state.extra as ShiftSlotEntity;
+        return MaterialPage(child: AssignStaffPage(slot: slot));
       },
     ),
   ];

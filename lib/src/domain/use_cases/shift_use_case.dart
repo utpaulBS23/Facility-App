@@ -101,3 +101,36 @@ final class GetShiftsUseCase {
     };
   }
 }
+
+final class AssignShiftSlotUseCase {
+  AssignShiftSlotUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<void, String>> call({
+    required int facilityId,
+    required int rosterId,
+    required int shiftSlotId,
+    required int attendantId,
+    required bool isSlotLead,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.assignShiftSlot(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+      shiftSlotId: shiftSlotId,
+      attendantId: attendantId,
+      isSlotLead: isSlotLead,
+    );
+
+    return switch (result) {
+      Success() => const Success(),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to assign staff'),
+    };
+  }
+}
