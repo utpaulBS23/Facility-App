@@ -4,17 +4,19 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/attendant_entity.dart';
-import '../../../../domain/entities/shift_entity.dart';
+import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/partner_staff_entity.dart';
+import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../riverpod/assignment_provider.dart';
-import '../riverpod/facility_attendants_provider.dart';
+import '../riverpod/assign_shift_slot_provider.dart';
+import '../riverpod/partner_staff_provider.dart';
+import '../riverpod/shift_slots_provider.dart';
 
 class AssignStaffPage extends ConsumerStatefulWidget {
-  const AssignStaffPage({super.key, required this.shift});
+  const AssignStaffPage({super.key, required this.slot});
 
-  final ShiftEntity shift;
+  final ShiftSlotEntity slot;
 
   @override
   ConsumerState<AssignStaffPage> createState() => _AssignStaffPageState();
@@ -25,25 +27,68 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref
-          .read(facilityAttendantsProvider.notifier)
-          .fetch(facilityId: widget.shift.facility.id),
+      (_) => ref.read(partnerStaffProvider.notifier).fetch(),
     );
   }
 
-  void _onAssignAttendant(int attendantId) {
+  Future<void> _onStaffTap(PartnerStaffEntity person) async {
+    // WHY: facility lives on the day payload, not the slot, so it is read
+    // back from the same provider rather than threaded through navigation
+    // (same pattern as SlotDetailsPage).
+    final facilityId = ref
+        .read(shiftSlotsProvider)
+        .valueOrNull
+        ?.facility
+        ?.id;
+    final rosterId = widget.slot.weeklyRosterId;
+    if (facilityId == null || rosterId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.assignmentUnavailable)),
+      );
+      return;
+    }
+
+    final isSlotLead = await showDialog<bool>(
+      context: context,
+      builder: (_) => _SlotLeadConfirmDialog(staffName: person.name),
+    );
+    if (isSlotLead == null || !mounted) return;
+
     ref
-        .read(assignmentProvider.notifier)
-        .assign(shift: widget.shift, attendantId: attendantId);
+        .read(assignShiftSlotProvider.notifier)
+        .assign(
+          facilityId: facilityId,
+          rosterId: rosterId,
+          shiftSlotId: widget.slot.shiftSlotId,
+          attendantId: person.id,
+          isSlotLead: isSlotLead,
+        );
+  }
+
+  // WHY: assigning changes assigned_count/attendants on this day's slots, so
+  // the list backing shift_slots_page must be refetched, not just popped
+  // back to — its cached state would otherwise show the pre-assign roster.
+  void _refreshShiftSlots() {
+    final current = ref.read(shiftSlotsProvider).valueOrNull;
+    final partnerId = ref.activePartnerId;
+    if (current == null || partnerId == null) return;
+    ref
+        .read(shiftSlotsProvider.notifier)
+        .fetch(
+          partnerId: partnerId,
+          date: current.date,
+          facilityId: current.facility?.id,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(assignmentProvider, (_, next) {
-      if (next is AsyncData && next.value != null) {
+    ref.listen(assignShiftSlotProvider, (_, next) {
+      if (next is AsyncData && next.hasValue) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffAssignedSuccessfully)),
         );
+        _refreshShiftSlots();
         context.pop();
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(
@@ -53,8 +98,11 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
     });
 
     final spacing = context.dimensions.spacing;
-    final attendantsState = ref.watch(facilityAttendantsProvider);
-    final isAssigning = ref.watch(assignmentProvider).isLoading;
+    final staffState = ref.watch(partnerStaffProvider);
+    final isAssigning = ref.watch(assignShiftSlotProvider).isLoading;
+    final assignedIds = widget.slot.activeAttendants
+        .map((attendant) => attendant.userId)
+        .toSet();
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -85,7 +133,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
       ),
       body: SafeArea(
         top: false,
-        child: attendantsState.when(
+        child: staffState.when(
           loading: () =>
               const Center(child: CircularProgressIndicator.adaptive()),
           error: (err, _) => Center(
@@ -97,8 +145,8 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          data: (attendants) {
-            if (attendants.isEmpty) {
+          data: (staff) {
+            if (staff.isEmpty) {
               return Center(
                 child: Text(
                   context.locale.noAttendantsFound,
@@ -109,22 +157,21 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
                 ),
               );
             }
-            final assignedIds = widget.shift.assignedAttendants
-                .map((a) => a.id)
-                .toSet();
             return ListView.separated(
               padding: EdgeInsets.all(spacing.s16),
-              itemCount: attendants.length,
+              itemCount: staff.length,
               separatorBuilder: (context, index) => Gap(spacing.s12),
               itemBuilder: (context, index) {
-                final attendant = attendants[index];
-                final isSelected = assignedIds.contains(attendant.id);
-                return _AttendantTile(
-                  attendant: attendant,
+                final person = staff[index];
+                final isSelected = assignedIds.contains(person.id);
+                return _StaffTile(
+                  staff: person,
                   isSelected: isSelected,
                   onAssign: isAssigning || isSelected
                       ? null
-                      : () => _onAssignAttendant(attendant.id),
+                      : () {
+                          _onStaffTap(person);
+                        },
                 );
               },
             );
@@ -135,14 +182,14 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
   }
 }
 
-class _AttendantTile extends StatelessWidget {
-  const _AttendantTile({
-    required this.attendant,
+class _StaffTile extends StatelessWidget {
+  const _StaffTile({
+    required this.staff,
     required this.isSelected,
     required this.onAssign,
   });
 
-  final AttendantEntity attendant;
+  final PartnerStaffEntity staff;
   final bool isSelected;
   final VoidCallback? onAssign;
 
@@ -168,33 +215,21 @@ class _AttendantTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: isSelected
-                  ? context.color.primary
-                  : context.color.brandAccent,
-              child: Icon(
-                isSelected ? Icons.check_rounded : Icons.person_outline_rounded,
-                color: isSelected
-                    ? context.color.onPrimary
-                    : context.color.text.primary,
-                size: 22,
-              ),
-            ),
+            _StaffAvatar(imageUrl: staff.profileImageUrl),
             Gap(spacing.s12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    attendant.name,
+                    staff.name,
                     style: context.textStyle.labelLarge.copyWith(
                       color: context.color.text.primary,
                     ),
                   ),
                   Gap(spacing.s2),
                   Text(
-                    attendant.phone,
+                    staff.phoneNumber ?? staff.email,
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,
                     ),
@@ -202,34 +237,121 @@ class _AttendantTile extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s8,
-                vertical: spacing.s4,
-              ),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? context.color.primary
-                    : attendant.assignment.isActive
-                    ? context.color.successAlt
-                    : context.color.warningAlt,
-                borderRadius: BorderRadius.circular(radius.r4),
-              ),
-              child: Text(
-                isSelected
-                    ? context.locale.assigned
-                    : attendant.assignment.assignmentType,
-                style: context.textStyle.labelSmall.copyWith(
-                  color: isSelected
-                      ? context.color.onPrimary
-                      : attendant.assignment.isActive
-                      ? context.color.success
-                      : context.color.warning,
+            if (isSelected)
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.s8,
+                  vertical: spacing.s4,
+                ),
+                decoration: BoxDecoration(
+                  color: context.color.primary,
+                  borderRadius: BorderRadius.circular(radius.r4),
+                ),
+                child: Text(
+                  context.locale.assigned,
+                  style: context.textStyle.labelSmall.copyWith(
+                    color: context.color.onPrimary,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SlotLeadConfirmDialog extends StatelessWidget {
+  const _SlotLeadConfirmDialog({required this.staffName});
+
+  final String staffName;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: context.color.onPrimary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+      ),
+      title: Text(
+        context.locale.assignAsSlotLead,
+        style: context.textStyle.titleMedium.copyWith(
+          color: context.color.text.primary,
+        ),
+      ),
+      content: Text(
+        context.locale.assignAsSlotLeadMessage(staffName),
+        style: context.textStyle.bodyRegular.copyWith(
+          color: context.color.text.secondary,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(
+            context.locale.no,
+            style: context.textStyle.labelLarge.copyWith(
+              color: context.color.text.secondary,
+            ),
+          ),
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            context.locale.yes,
+            style: context.textStyle.labelLarge.copyWith(
+              color: context.color.onPrimary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StaffAvatar extends StatelessWidget {
+  const _StaffAvatar({required this.imageUrl});
+
+  final String? imageUrl;
+
+  static const _size = 44.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipOval(
+      child: SizedBox.square(
+        dimension: _size,
+        child: Container(
+          color: context.color.brandAccent,
+          // WHY: loadingBuilder/errorBuilder keep the placeholder icon
+          // showing until the image is fully decoded, avoiding a
+          // partial/broken-image flash while it loads.
+          child: imageUrl == null
+              ? _placeholder(context)
+              : Image.network(
+                  imageUrl!,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) =>
+                      progress == null ? child : _placeholder(context),
+                  errorBuilder: (context, error, stackTrace) =>
+                      _placeholder(context),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _placeholder(BuildContext context) {
+    return Center(
+      child: Icon(
+        Icons.person_outline_rounded,
+        color: context.color.text.primary,
+        size: 22,
       ),
     );
   }

@@ -3,11 +3,12 @@ import 'package:intl/intl.dart';
 final class DateFormatter {
   const DateFormatter._();
 
-  /// UTC `HH:mm:ss` string → local `h:mm a`.
+  /// UTC `HH:mm:ss` or `HH:mm` string → local `h:mm a`.
   static String shiftTime(String hms) {
+    final pattern = hms.split(':').length == 3 ? 'HH:mm:ss' : 'HH:mm';
     try {
       return DateFormat('h:mm a').format(
-        DateFormat('HH:mm:ss').parse(hms, true).toLocal(),
+        DateFormat(pattern).parse(hms, true).toLocal(),
       );
     } catch (_) {
       return hms;

@@ -63,4 +63,27 @@ final class ShiftRepositoryImpl extends ShiftRepository {
       return model.data.map((s) => s.toEntity()).toList();
     });
   }
+
+  @override
+  Future<Result<void, Failure>> assignShiftSlot({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int shiftSlotId,
+    required int attendantId,
+    required bool isSlotLead,
+  }) {
+    return asyncGuard(() async {
+      await remote.assignShiftSlot(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        rosterId: rosterId,
+        request: {
+          'attendant_id': attendantId,
+          'shift_slot_id': shiftSlotId,
+          'is_slot_lead': isSlotLead,
+        },
+      );
+    });
+  }
 }

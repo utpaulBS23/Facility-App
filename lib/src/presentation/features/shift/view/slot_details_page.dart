@@ -23,9 +23,7 @@ class SlotDetailsPage extends ConsumerWidget {
   }
 
   void _onAssignStaff(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.locale.assignStaffUnavailable)),
-    );
+    context.pushNamed(Routes.assignStaff, extra: slot);
   }
 
   @override

@@ -96,6 +96,7 @@ class ShiftSlotEntity {
     required this.checkedInCount,
     required this.checkedOutCount,
     this.attendants = const [],
+    this.weeklyRosterId,
   });
 
   final int shiftSlotId;
@@ -111,6 +112,10 @@ class ShiftSlotEntity {
   final int checkedInCount;
   final int checkedOutCount;
   final List<SlotAttendantEntity> attendants;
+
+  /// The roster this slot belongs to — required by the assign-attendant
+  /// endpoint's URL. Nullable until the shift-slots response carries it.
+  final int? weeklyRosterId;
 
   /// Attendants still on the slot.
   List<SlotAttendantEntity> get activeAttendants => [

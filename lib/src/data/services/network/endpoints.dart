@@ -15,12 +15,12 @@ class Endpoints {
   /// Check-out is location-only — no selfie, unlike [checkIn].
   static const String checkOut = '/partners/{partnerId}/attendances/check-out';
 
-  /// Attendants
-  static const String facilityAttendants =
-      '/partners/{partnerId}/facilities/{facilityId}/attendants';
+  /// Partner staff directory — used to pick a person for [assignShiftSlot].
+  static const String partnerUsers = '/partners/{partnerId}/users';
 
-  /// Assignments
-  static const String rosterAssignments =
+  /// Assigns an attendant to an existing shift slot within a roster. The
+  /// slot must already exist — created via [shiftSlots]'s parent flow.
+  static const String assignShiftSlot =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments';
 
   /// Manual Attendance

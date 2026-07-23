@@ -62,10 +62,8 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
     context.pushNamed(Routes.shiftCheckIn, extra: activeSlot.shiftSlotId);
   }
 
-  void _onAssignStaff(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.locale.assignStaffUnavailable)),
-    );
+  void _onAssignStaff(BuildContext context, ShiftSlotEntity slot) {
+    context.pushNamed(Routes.assignStaff, extra: slot);
   }
 
   @override
@@ -161,7 +159,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
                   return _SlotCard(
                     slot: slot,
                     onTap: () => widget.onSlotTap(slot),
-                    onAssignStaff: () => _onAssignStaff(context),
+                    onAssignStaff: () => _onAssignStaff(context, slot),
                   );
                 },
               );

@@ -20,4 +20,13 @@ abstract base class ShiftRepository extends Repository {
     required int partnerId,
     required String date,
   });
+
+  Future<Result<void, Failure>> assignShiftSlot({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int shiftSlotId,
+    required int attendantId,
+    required bool isSlotLead,
+  });
 }

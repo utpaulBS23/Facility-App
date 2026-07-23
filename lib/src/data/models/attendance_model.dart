@@ -47,6 +47,7 @@ class AttendanceShiftInfoModel with AttendanceShiftInfoModelMappable {
     this.facilityName,
   });
 
+  @MappableField(key: 'shift_slot_id')
   final int id;
 
   @MappableField(key: 'shift_type')

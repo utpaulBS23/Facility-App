@@ -52,18 +52,13 @@ ShiftRepository shiftRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-AttendantRepository attendantRepository(Ref ref) {
-  return AttendantRepositoryImpl(ref.read(restClientServiceProvider));
-}
-
-@Riverpod(keepAlive: true)
 CheckOutRepository checkOutRepository(Ref ref) {
   return CheckOutRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)
-AssignmentRepository assignmentRepository(Ref ref) {
-  return AssignmentRepositoryImpl(ref.read(restClientServiceProvider));
+PartnerStaffRepository partnerStaffRepository(Ref ref) {
+  return PartnerStaffRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

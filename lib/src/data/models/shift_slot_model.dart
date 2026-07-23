@@ -104,6 +104,7 @@ class ShiftSlotModel with ShiftSlotModelMappable {
     this.checkedInCount,
     this.checkedOutCount,
     this.attendants = const [],
+    this.weeklyRosterId,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -125,6 +126,8 @@ class ShiftSlotModel with ShiftSlotModelMappable {
   @MappableField(key: 'checked_out_count')
   final int? checkedOutCount;
   final List<SlotAttendantModel> attendants;
+  @MappableField(key: 'roster_id')
+  final int? weeklyRosterId;
 
   static const fromJson = ShiftSlotModelMapper.fromJson;
 }
