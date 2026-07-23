@@ -2,8 +2,10 @@ import '../../core/base/base.dart';
 import '../../domain/entities/shift_entity.dart';
 import '../../domain/entities/shift_slot_entity.dart';
 import '../../domain/repositories/shift_repository.dart';
+import '../extension/roster_mapper.dart';
 import '../extension/shift_mapper.dart';
 import '../extension/shift_slot_mapper.dart';
+import '../models/roster_model.dart';
 import '../models/shift_model.dart';
 import '../models/shift_slot_model.dart';
 import '../services/network/rest_client.dart';
@@ -84,6 +86,33 @@ final class ShiftRepositoryImpl extends ShiftRepository {
           'is_slot_lead': isSlotLead,
         },
       );
+    });
+  }
+
+  @override
+  Future<Result<RosterEntity, Failure>> createRoster({
+    required int partnerId,
+    required int facilityId,
+    required String weekStartDate,
+    required String weekEndDate,
+    required List<int> offDays,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.createRoster(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        request: {
+          'week_start_date': weekStartDate,
+          'week_end_date': weekEndDate,
+          'off_days': offDays,
+        },
+      );
+      final model = RosterResponseModel.fromJson(response.data);
+      final data = model.data;
+      if (data == null) {
+        throw const FormatException('Create roster response had no data');
+      }
+      return data.toEntity();
     });
   }
 }

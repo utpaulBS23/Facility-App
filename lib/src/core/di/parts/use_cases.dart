@@ -144,6 +144,14 @@ SubmitManualAttendanceUseCase submitManualAttendanceUseCase(Ref ref) {
 }
 
 @riverpod
+CreateRosterUseCase createRosterUseCase(Ref ref) {
+  return CreateRosterUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 RefreshAttendanceUseCase refreshAttendanceUseCase(Ref ref) {
   return RefreshAttendanceUseCase(ref.read(manualAttendanceRepositoryProvider));
 }

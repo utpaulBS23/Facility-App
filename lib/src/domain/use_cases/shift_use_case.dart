@@ -134,3 +134,34 @@ final class AssignShiftSlotUseCase {
     };
   }
 }
+
+final class CreateRosterUseCase {
+  CreateRosterUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<RosterEntity, String>> call({
+    required int facilityId,
+    required String weekStartDate,
+    required String weekEndDate,
+    required List<int> offDays,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.createRoster(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      weekStartDate: weekStartDate,
+      weekEndDate: weekEndDate,
+      offDays: offDays,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to create roster'),
+    };
+  }
+}
