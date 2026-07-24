@@ -20,7 +20,7 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
       path: Routes.leaveDetails,
       name: Routes.leaveDetails,
       pageBuilder: (context, state) {
-        final request = state.extra as MockLeaveRequest;
+        final request = state.extra as LeaveRequestEntity;
         return MaterialPage(child: LeaveDetailsPage(request: request));
       },
     ),
@@ -37,6 +37,14 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
       name: Routes.selectAttendant,
       pageBuilder: (context, state) {
         return const MaterialPage(child: SelectAttendantPage());
+      },
+    ),
+    GoRoute(
+      path: Routes.leaveSubmitted,
+      name: Routes.leaveSubmitted,
+      pageBuilder: (context, state) {
+        final request = state.extra as LeaveRequestEntity;
+        return MaterialPage(child: LeaveSubmittedPage(request: request));
       },
     ),
   ];

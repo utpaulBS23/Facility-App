@@ -393,5 +393,12 @@
   "justNow": "এইমাত্র",
   "leaveApproval": "ছুটি অনুমোদন",
   "awaitingFinalApproval": "চূড়ান্ত অনুমোদনের অপেক্ষায়",
+  "startDate": "শুরুর তারিখ",
+  "endDate": "শেষের তারিখ",
+  "own": "নিজের",
+  "onBehalf": "অন্যের পক্ষে",
+  "leaveRequestSubmitted": "ছুটি আবেদন জমা দেয়া হয়েছে",
+  "leaveSubmittedMessage": "আপনার ছুটির আবেদন অনুমোদনের জন্য আপনার সুপারভাইজারের কাছে পাঠানো হয়েছে। এটি পর্যালোচনা করা হলে আপনাকে জানানো হবে।",
+  "backToShift": "শিফটে ফিরে যান",
   "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন"
 }

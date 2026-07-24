@@ -1,81 +1,29 @@
 part of 'apply_leave_page.dart';
 
-class LeaveDetailsPage extends StatefulWidget {
+class LeaveDetailsPage extends ConsumerWidget {
   const LeaveDetailsPage({super.key, required this.request});
 
-  final MockLeaveRequest request;
+  final LeaveRequestEntity request;
 
   @override
-  State<LeaveDetailsPage> createState() => _LeaveDetailsPageState();
-}
-
-class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
-  late MockLeaveRequest _request;
-
-  @override
-  void initState() {
-    super.initState();
-    _request = widget.request;
-  }
-
-  void _onApprove() {
-    setState(() {
-      _request = MockLeaveRequest(
-        id: _request.id,
-        employeeName: _request.employeeName,
-        status: 'Approved',
-        statusColor: const Color(0xFF27AE60), // Green
-        leaveType: _request.leaveType,
-        dateRange: _request.dateRange,
-        location: _request.location,
-        timeAgo: 'Just now',
-      );
-    });
-    Navigator.of(context).pop(_request);
-  }
-
-  void _onReject() {
-    setState(() {
-      _request = MockLeaveRequest(
-        id: _request.id,
-        employeeName: _request.employeeName,
-        status: 'Rejected',
-        statusColor: const Color(0xFFEB5757), // Red
-        leaveType: _request.leaveType,
-        dateRange: _request.dateRange,
-        location: _request.location,
-        timeAgo: 'Just now',
-      );
-    });
-    Navigator.of(context).pop(_request);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final isActionable = _request.status.toLowerCase() == 'pending' ||
-        _request.status.toLowerCase() == 'manager approval';
+    final isActionable = request.canAction;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
         leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(_request),
+          onTap: () => Navigator.of(context).pop(),
           child: Row(
             children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: color.primary,
-                size: 28,
-              ),
+              Icon(Icons.chevron_left_rounded, color: color.primary, size: 28),
               Text(
                 context.locale.back,
-                style: textStyle.labelXl.copyWith(
-                  color: color.primary,
-                ),
+                style: textStyle.labelXl.copyWith(color: color.primary),
               ),
             ],
           ),
@@ -95,13 +43,13 @@ class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _LeaveDetailHeaderCard(request: _request),
+                  _LeaveDetailHeaderCard(request: request),
                   Gap(spacing.s12),
-                  _LeaveDetailInfoSection(request: _request),
+                  _LeaveDetailInfoSection(request: request),
                   Gap(spacing.s12),
-                  _LeaveDetailShiftSection(request: _request),
+                  _LeaveDetailShiftSection(request: request),
                   Gap(spacing.s12),
-                  _LeaveStatusTimeline(request: _request),
+                  _LeaveStatusTimeline(request: request),
                 ],
               ),
             ),
@@ -123,15 +71,18 @@ class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
                     offset: const Offset(0, -5),
                   ),
                 ],
-                border: Border(
-                  top: BorderSide(color: color.borderSubtle),
-                ),
+                border: Border(top: BorderSide(color: color.borderSubtle)),
               ),
               child: Row(
                 children: [
                   Expanded(
                     child: FilledButton(
-                      onPressed: _onApprove,
+                      onPressed: () async {
+                        final success = await ref
+                            .read(leaveRequestActionProvider.notifier)
+                            .approve(request.id);
+                        if (success && context.mounted) context.pop();
+                      },
                       style: FilledButton.styleFrom(
                         backgroundColor: color.primary,
                         foregroundColor: color.onPrimary,
@@ -148,7 +99,12 @@ class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
                   Gap(spacing.s12),
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: _onReject,
+                      onPressed: () async {
+                        final success = await ref
+                            .read(leaveRequestActionProvider.notifier)
+                            .reject(request.id);
+                        if (success && context.mounted) context.pop();
+                      },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: color.primary,
                         side: BorderSide(color: color.primary),

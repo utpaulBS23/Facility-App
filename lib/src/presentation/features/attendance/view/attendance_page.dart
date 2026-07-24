@@ -102,7 +102,9 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
           onApplyLeave: _onApplyLeave,
           showApplyLeave: ref.watch(
             userSessionProvider.select(
-              (session) => session?.can(AppPermission.leaveRequest) ?? false,
+              (session) =>
+                  (session?.can(AppPermission.leaveRequest) ?? false) ||
+                  (session?.can(AppPermission.leaveFileOnBehalf) ?? false),
             ),
           ),
         ),

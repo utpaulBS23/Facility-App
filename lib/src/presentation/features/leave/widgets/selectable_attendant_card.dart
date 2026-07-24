@@ -2,12 +2,12 @@ part of '../view/apply_leave_page.dart';
 
 class _SelectableAttendantCard extends StatelessWidget {
   const _SelectableAttendantCard({
-    required this.staff,
+    required this.attendant,
     required this.index,
     required this.onTap,
   });
 
-  final PartnerStaffEntity staff;
+  final LeaveAttendantEntity attendant;
   final int index;
   final VoidCallback onTap;
 
@@ -17,21 +17,9 @@ class _SelectableAttendantCard extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final mockLocations = [
-      'Mirpur-10 Public Toilet',
-      'Dhanmondi Park Restroom',
-      'Gulshan Lake Toilet',
-      'Banani Bus Stop Restroom',
-    ];
-    final mockShifts = [
-      context.locale.morningShift,
-      context.locale.eveningShift,
-      context.locale.nightShift,
-    ];
-
-    final location = mockLocations[index % mockLocations.length];
-    final shiftName = mockShifts[index % mockShifts.length];
-    final displayId = staff.uid ?? 'ATT-00${41 + index}';
+    final location = attendant.facilityName;
+    final shiftName = attendant.shift?.shiftName ?? context.locale.morningShift;
+    final displayId = attendant.uid.isNotEmpty ? attendant.uid : 'ATT-00${41 + index}';
 
     return InkWell(
       onTap: onTap,
@@ -62,7 +50,7 @@ class _SelectableAttendantCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    staff.name,
+                    attendant.name,
                     style: textStyle.bodyLarge.copyWith(
                       fontWeight: FontWeight.bold,
                       color: color.text.primary,
@@ -103,18 +91,16 @@ class _SelectableAttendantCard extends StatelessWidget {
                 vertical: spacing.s4,
               ),
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: color.primary,
-                ),
+                color: color.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(
                   context.dimensions.radius.r20,
                 ),
               ),
               child: Text(
-                shiftName,
-                style: textStyle.bodySmall.copyWith(
-                  fontWeight: FontWeight.bold,
+                shiftName.toUpperCase(),
+                style: textStyle.labelSmall.copyWith(
                   color: color.primary,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

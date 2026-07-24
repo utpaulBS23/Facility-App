@@ -3,7 +3,7 @@ part of '../view/apply_leave_page.dart';
 class _LeaveDetailShiftSection extends StatelessWidget {
   const _LeaveDetailShiftSection({required this.request});
 
-  final MockLeaveRequest request;
+  final LeaveRequestEntity request;
 
   @override
   Widget build(BuildContext context) {
@@ -11,20 +11,19 @@ class _LeaveDetailShiftSection extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final String shiftType =
-        request.id == 2 ? context.locale.eveningShift : context.locale.morningShift;
-    final String dateTimeText = request.id == 2
-        ? 'Feb 16, 2026 · 02:00 PM - 10:00 PM'
-        : 'Feb 12, 2026 · 08:00 AM - 04:00 PM';
+    final firstShift = request.shifts.isNotEmpty ? request.shifts.first : null;
+    final facilityName = firstShift?.facilityName ?? 'Main Facility';
+    final shiftType = firstShift?.shiftName ?? context.locale.morningShift;
+    final dateTimeText = firstShift != null
+        ? '${firstShift.shiftDate} · ${firstShift.startTime} - ${firstShift.endTime}'
+        : '${request.startDate} → ${request.endDate}';
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: color.onPrimary,
         borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-        border: Border.all(
-          color: color.borderSubtle,
-        ),
+        border: Border.all(color: color.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +41,7 @@ class _LeaveDetailShiftSection extends StatelessWidget {
           _buildDetailRow(
             context,
             label: context.locale.facility,
-            value: request.location.replaceAll('📍 ', ''),
+            value: facilityName,
           ),
           Gap(spacing.s10),
           _buildDetailRow(
@@ -66,7 +65,6 @@ class _LeaveDetailShiftSection extends StatelessWidget {
     required String label,
     required String value,
   }) {
-    final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
 
@@ -77,18 +75,15 @@ class _LeaveDetailShiftSection extends StatelessWidget {
           width: 100,
           child: Text(
             label,
-            style: textStyle.bodyMedium.copyWith(
-              color: color.text.secondary,
-            ),
+            style: textStyle.bodyMedium.copyWith(color: color.text.secondary),
           ),
         ),
-        Gap(spacing.s8),
         Expanded(
           child: Text(
             value,
             style: textStyle.bodyMedium.copyWith(
               color: color.text.primary,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

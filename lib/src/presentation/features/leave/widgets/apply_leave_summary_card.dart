@@ -1,11 +1,38 @@
 part of '../view/apply_leave_page.dart';
 
-class _LeaveSummaryCard extends StatelessWidget {
-  const _LeaveSummaryCard();
+class _LeaveSummaryCard extends ConsumerWidget {
+  const _LeaveSummaryCard({this.attendantId, this.selectedLeavePolicyId});
+
+  final int? attendantId;
+  final int? selectedLeavePolicyId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final canViewBalance = ref.watch(
+      hasPermissionUseCaseProvider,
+    ).call(AppPermission.leaveBalanceView);
+
+    if (!canViewBalance) return const SizedBox.shrink();
+
+    final balanceState = ref.watch(leaveBalanceProvider(attendantId: attendantId));
     final spacing = context.dimensions.spacing;
+
+    final (remainingStr, pendingStr) = balanceState.maybeWhen(
+      data: (balances) {
+        if (balances.isEmpty) return ('0', '0');
+        final b = selectedLeavePolicyId != null
+            ? balances.firstWhere(
+                (element) => element.leavePolicy.id == selectedLeavePolicyId,
+                orElse: () => balances.first,
+              )
+            : balances.first;
+        return (
+          b.remainingDays.toStringAsFixed(0),
+          b.pendingDays.toStringAsFixed(0)
+        );
+      },
+      orElse: () => ('0', '0'),
+    );
 
     return Container(
       padding: EdgeInsets.all(spacing.s8),
@@ -18,7 +45,7 @@ class _LeaveSummaryCard extends StatelessWidget {
         children: [
           Expanded(
             child: _StatTile(
-              value: '12',
+              value: remainingStr,
               label: context.locale.leaveBalance,
               valueColor: context.color.success,
               backgroundColor: context.color.successAlt,
@@ -27,7 +54,7 @@ class _LeaveSummaryCard extends StatelessWidget {
           Gap(spacing.s6),
           Expanded(
             child: _StatTile(
-              value: '2',
+              value: pendingStr,
               label: context.locale.pending,
               valueColor: context.color.warning,
               backgroundColor: context.color.warningAlt,

@@ -6,7 +6,7 @@ class _SelectAttendantCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final PartnerStaffEntity? selectedAttendant;
+  final LeaveAttendantEntity? selectedAttendant;
   final VoidCallback onTap;
 
   @override
@@ -58,20 +58,10 @@ class _SelectAttendantCard extends StatelessWidget {
                   children: [
                     Icon(
                       selectedAttendant != null
-                          ? Icons.swap_horizontal_circle_outlined
-                          : Icons.add_circle_outline,
-                      color: color.primary,
+                          ? Icons.edit_outlined
+                          : Icons.chevron_right,
+                      color: color.text.secondary,
                       size: 20,
-                    ),
-                    Gap(spacing.s4),
-                    Text(
-                      selectedAttendant != null
-                          ? context.locale.change
-                          : context.locale.add,
-                      style: TextStyle(
-                        color: color.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ],
                 ),
@@ -83,5 +73,3 @@ class _SelectAttendantCard extends StatelessWidget {
     );
   }
 }
-
-

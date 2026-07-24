@@ -16,9 +16,6 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(partnerStaffProvider.notifier).fetch(),
-    );
   }
 
   @override
@@ -39,27 +36,26 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
-    final staffState = ref.watch(partnerStaffProvider);
+    final attendantsState = ref.watch(leaveAttendantsProvider);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () => context.pop(),
-          child: Row(
-            children: [
-              Icon(
-                Icons.close,
-                color: context.color.primary,
-                size: 24,
-              ),
-              Text(
-                context.locale.close,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
+          child: Padding(
+            padding: EdgeInsetsGeometry.directional(start: 6),
+            child: Row(
+              children: [
+                Icon(Icons.close, color: context.color.primary, size: 24),
+                Text(
+                  context.locale.close,
+                  style: context.textStyle.labelXl.copyWith(
+                    color: context.color.primary,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         leadingWidth: 100,
@@ -82,10 +78,9 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
             ),
           ),
           Expanded(
-            child: staffState.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
+            child: attendantsState.when(
+              loading: () =>
+                  const Center(child: CircularProgressIndicator.adaptive()),
               error: (err, _) => Center(
                 child: Padding(
                   padding: EdgeInsets.all(spacing.s24),
@@ -98,13 +93,12 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
                   ),
                 ),
               ),
-              data: (staffList) {
-                final activeStaff = staffList
-                    .where((s) => s.isActive)
+              data: (attendantsList) {
+                final filtered = attendantsList
                     .where((s) => s.name.toLowerCase().contains(_searchQuery))
                     .toList();
 
-                if (activeStaff.isEmpty) {
+                if (filtered.isEmpty) {
                   return Center(
                     child: Text(
                       context.locale.noAttendantsFound,
@@ -117,14 +111,14 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
 
                 return ListView.separated(
                   padding: EdgeInsets.all(spacing.s16),
-                  itemCount: activeStaff.length,
+                  itemCount: filtered.length,
                   separatorBuilder: (context, index) => Gap(spacing.s12),
                   itemBuilder: (context, index) {
-                    final staff = activeStaff[index];
+                    final attendant = filtered[index];
                     return _SelectableAttendantCard(
-                      staff: staff,
+                      attendant: attendant,
                       index: index,
-                      onTap: () => context.pop(staff),
+                      onTap: () => context.pop(attendant),
                     );
                   },
                 );

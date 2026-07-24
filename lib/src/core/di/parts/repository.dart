@@ -75,3 +75,8 @@ TaskRepository taskRepository(Ref ref) {
 VisitRepository visitRepository(Ref ref) {
   return VisitRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+LeaveRepository leaveRepository(Ref ref) {
+  return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
+}

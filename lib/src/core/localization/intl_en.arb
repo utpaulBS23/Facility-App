@@ -393,5 +393,12 @@
   "justNow": "Just now",
   "leaveApproval": "Leave Approval",
   "awaitingFinalApproval": "Awaiting final approval",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "own": "Own",
+  "onBehalf": "On Behalf",
+  "leaveRequestSubmitted": "Leave Request Submitted",
+  "leaveSubmittedMessage": "Your leave request has been sent to your supervisor for approval. You'll be notified once it's reviewed.",
+  "backToShift": "Back to shift",
   "endSessionAndSignOut": "End session and sign out"
 }

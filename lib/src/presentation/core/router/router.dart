@@ -12,6 +12,7 @@ import '../../../domain/entities/shift_entity.dart';
 import '../../../domain/entities/shift_slot_entity.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../../domain/entities/visit_entity.dart';
+import '../../../domain/entities/leave/leave_request_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';
 import '../../features/authentication/forgot_password/view/email_verification_page.dart';

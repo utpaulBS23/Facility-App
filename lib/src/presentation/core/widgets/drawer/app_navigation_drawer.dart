@@ -4,7 +4,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../application_state/logout_provider/logout_provider.dart';
+import '../../application_state/session_provider/session_provider.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../router/routes.dart';
 import '../../theme/theme.dart';
@@ -93,15 +95,22 @@ class AppNavigationDrawer extends ConsumerWidget {
             role: role,
           ),
           Gap(spacing.s16),
-          _DrawerMenuItem(
-            icon: Icons.shield_outlined,
-            title: context.locale.leaveApproval,
-            subtitle: context.locale.awaitingFinalApproval,
-            onTap: () {
-              Navigator.of(context).pop(); // Close drawer
-              context.pushNamed(Routes.leaveRequests);
-            },
-          ),
+          if (ref.watch(
+            userSessionProvider.select(
+              (session) =>
+                  (session?.can(AppPermission.leaveApproveSupervisor) ?? false) ||
+                  (session?.can(AppPermission.leaveApproveManager) ?? false),
+            ),
+          ))
+            _DrawerMenuItem(
+              icon: Icons.shield_outlined,
+              title: context.locale.leaveApproval,
+              subtitle: context.locale.awaitingFinalApproval,
+              onTap: () {
+                Navigator.of(context).pop(); // Close drawer
+                context.pushNamed(Routes.leaveRequests);
+              },
+            ),
           const Spacer(),
           Padding(
             padding: EdgeInsets.fromLTRB(

@@ -3,7 +3,7 @@ part of '../view/apply_leave_page.dart';
 class _LeaveDetailHeaderCard extends StatelessWidget {
   const _LeaveDetailHeaderCard({required this.request});
 
-  final MockLeaveRequest request;
+  final LeaveRequestEntity request;
 
   @override
   Widget build(BuildContext context) {
@@ -11,14 +11,21 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
+    final applicantName = request.applicant?.name ?? context.locale.attendant;
+    final (statusLabel, dotColor) = switch (request.status) {
+      'pending_supervisor' => (context.locale.pending, color.warning),
+      'pending_manager' => (context.locale.managerApproval, color.info),
+      'approved' => (context.locale.approved, color.success),
+      'rejected' => (context.locale.rejected, color.error),
+      _ => (request.status, color.text.secondary),
+    };
+
     return Container(
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: color.onPrimary,
         borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-        border: Border.all(
-          color: color.borderSubtle,
-        ),
+        border: Border.all(color: color.borderSubtle),
       ),
       child: Row(
         children: [
@@ -37,7 +44,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  request.employeeName,
+                  applicantName,
                   style: textStyle.headline2xlTiny.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color.text.primary,
@@ -53,16 +60,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
               ],
             ),
           ),
-          StatusDotTag(
-            label: switch (request.status.toLowerCase()) {
-              'pending' => context.locale.pending,
-              'manager approval' => context.locale.managerApproval,
-              'approved' => context.locale.approved,
-              'rejected' => context.locale.rejected,
-              _ => request.status,
-            },
-            dotColor: request.statusColor,
-          ),
+          StatusDotTag(label: statusLabel, dotColor: dotColor),
         ],
       ),
     );

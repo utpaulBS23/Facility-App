@@ -25,10 +25,7 @@ class _SelectShiftBody extends StatelessWidget {
 }
 
 class _SelectableShiftCard extends StatelessWidget {
-  const _SelectableShiftCard({
-    required this.shift,
-    required this.onTap,
-  });
+  const _SelectableShiftCard({required this.shift, required this.onTap});
 
   final ShiftEntity shift;
   final VoidCallback onTap;

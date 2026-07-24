@@ -1,36 +1,36 @@
 part of '../dependency_injection.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 LoginUseCase loginUseCase(Ref ref) {
   return LoginUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 LogoutUseCase logoutUseCase(Ref ref) {
   return LogoutUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
   return GetCurrentUserUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
   return GetUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 GetActivePartnerUseCase getActivePartnerUseCase(Ref ref) {
   return GetActivePartnerUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 WatchUserSessionUseCase watchUserSessionUseCase(Ref ref) {
   return WatchUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 HasPermissionUseCase hasPermissionUseCase(Ref ref) {
   return HasPermissionUseCase(ref.read(authenticationRepositoryProvider));
 }
@@ -223,4 +223,55 @@ SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
 @riverpod
 ReportIssueUseCase reportIssueUseCase(Ref ref) {
   return ReportIssueUseCase(ref.read(visitRepositoryProvider));
+}
+
+/// Leave Management UseCases
+@riverpod
+GetLeavePoliciesUseCase getLeavePoliciesUseCase(Ref ref) {
+  return GetLeavePoliciesUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
+  return GetLeaveBalancesUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
+  return RequestLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
+  return GetMyLeavesUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
+  return GetLeaveRequestDetailsUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
+  return CancelLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
+  return GetLeaveAttendantsUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
+  return GetLeaveApprovalsUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+ApproveLeaveUseCase approveLeaveUseCase(Ref ref) {
+  return ApproveLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
+  return RejectLeaveUseCase(ref.read(leaveRepositoryProvider));
 }

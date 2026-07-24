@@ -3,7 +3,7 @@ part of '../view/apply_leave_page.dart';
 class _LeaveStatusTimeline extends StatelessWidget {
   const _LeaveStatusTimeline({required this.request});
 
-  final MockLeaveRequest request;
+  final LeaveRequestEntity request;
 
   @override
   Widget build(BuildContext context) {
@@ -11,19 +11,15 @@ class _LeaveStatusTimeline extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final isApproved = request.status.toLowerCase() == 'approved';
-    final isRejected = request.status.toLowerCase() == 'rejected';
-    final isManagerApproval =
-        request.status.toLowerCase() == 'manager approval';
+    final applicantName = request.applicant?.name ?? context.locale.attendant;
+    final steps = request.approvalSteps;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: color.onPrimary,
         borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-        border: Border.all(
-          color: color.borderSubtle,
-        ),
+        border: Border.all(color: color.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,43 +34,39 @@ class _LeaveStatusTimeline extends StatelessWidget {
           Gap(spacing.s16),
           _buildTimelineItem(
             context,
-            title: context.locale.requestedBy(request.employeeName),
-            subtitle: request.timeAgo,
-            iconColor: const Color(0xFF27AE60), // Green
-            isLast: false,
+            title: context.locale.requestedBy(applicantName),
+            subtitle: request.createdAt,
+            iconColor: color.success,
+            isLast: steps.isEmpty,
           ),
-          if (isApproved)
-            _buildTimelineItem(
+          ...steps.asMap().entries.map((entry) {
+            final idx = entry.key;
+            final step = entry.value;
+            final isLast = idx == steps.length - 1;
+
+            final (stepTitle, stepColor) = switch (step.status) {
+              'approved' => (
+                  '${step.approverRole.toUpperCase()} Approved',
+                  color.success,
+                ),
+              'rejected' => (
+                  '${step.approverRole.toUpperCase()} Rejected',
+                  color.error,
+                ),
+              _ => (
+                  '${step.approverRole.toUpperCase()} Pending',
+                  color.warning,
+                ),
+            };
+
+            return _buildTimelineItem(
               context,
-              title: context.locale.approvedBySupervisor,
-              subtitle: context.locale.justNow,
-              iconColor: const Color(0xFF27AE60), // Green
-              isLast: true,
-            )
-          else if (isRejected)
-            _buildTimelineItem(
-              context,
-              title: context.locale.rejectedBySupervisor,
-              subtitle: context.locale.justNow,
-              iconColor: const Color(0xFFEB5757), // Red
-              isLast: true,
-            )
-          else if (isManagerApproval)
-            _buildTimelineItem(
-              context,
-              title: context.locale.waitingForManagerApprovalTitle,
-              subtitle: context.locale.assignedToManager,
-              iconColor: const Color(0xFF2F80ED), // Blue
-              isLast: true,
-            )
-          else
-            _buildTimelineItem(
-              context,
-              title: context.locale.pendingSupervisorApproval,
-              subtitle: context.locale.assignedToSupervisor,
-              iconColor: const Color(0xFFF2994A), // Orange
-              isLast: true,
-            ),
+              title: stepTitle,
+              subtitle: step.decidedAt ?? 'Pending',
+              iconColor: stepColor,
+              isLast: isLast,
+            );
+          }),
         ],
       ),
     );
@@ -107,31 +99,34 @@ class _LeaveStatusTimeline extends StatelessWidget {
             if (!isLast)
               Container(
                 width: 2,
-                height: 40,
+                height: 36,
                 color: color.borderSubtle,
               ),
           ],
         ),
-        Gap(spacing.s16),
+        Gap(spacing.s12),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: textStyle.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: color.text.primary,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: isLast ? 0 : spacing.s12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: textStyle.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: color.text.primary,
+                  ),
                 ),
-              ),
-              Gap(spacing.s4),
-              Text(
-                subtitle,
-                style: textStyle.bodySmall.copyWith(
-                  color: color.text.secondary,
+                Gap(spacing.s2),
+                Text(
+                  subtitle,
+                  style: textStyle.bodySmall.copyWith(
+                    color: color.text.secondary,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
