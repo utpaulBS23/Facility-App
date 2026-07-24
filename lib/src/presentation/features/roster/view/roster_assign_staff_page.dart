@@ -73,6 +73,9 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
     final spacing = context.dimensions.spacing;
     final staffState = ref.watch(rosterStaffProvider);
     final isAssigning = ref.watch(assignRosterShiftProvider).isLoading;
+    final assignedIds = widget.shift.assignedAttendants
+        .map((attendant) => attendant.id)
+        .toSet();
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -133,10 +136,13 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
               separatorBuilder: (context, index) => Gap(spacing.s12),
               itemBuilder: (context, index) {
                 final person = staff[index];
+                final isSelected = assignedIds.contains(person.id);
                 return StaffTile(
                   staff: person,
-                  isSelected: false,
-                  onAssign: isAssigning ? null : () => _onStaffTap(person),
+                  isSelected: isSelected,
+                  onAssign: isAssigning || isSelected
+                      ? null
+                      : () => _onStaffTap(person),
                 );
               },
             );
