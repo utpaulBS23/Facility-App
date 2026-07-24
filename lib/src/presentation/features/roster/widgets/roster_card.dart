@@ -1,9 +1,10 @@
 part of '../view/roster_list_page.dart';
 
 class _RosterCard extends ConsumerWidget {
-  const _RosterCard({required this.roster});
+  const _RosterCard({required this.roster, required this.onTap});
 
   final RosterEntity roster;
+  final VoidCallback onTap;
 
   bool get _isPublished => roster.status.toLowerCase() == 'published';
 
@@ -24,115 +25,122 @@ class _RosterCard extends ConsumerWidget {
       publishRosterProvider.select((state) => state.isLoading),
     );
 
-    return Container(
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        border: Border.all(color: context.color.borderSubtle),
+    return Material(
+      color: context.color.onPrimary,
+      borderRadius: BorderRadius.circular(radius.r12),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(radius.r12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        child: Container(
+          padding: EdgeInsets.all(spacing.s16),
+          decoration: BoxDecoration(
+            border: Border.all(color: context.color.borderSubtle),
+            borderRadius: BorderRadius.circular(radius.r12),
+          ),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  roster.facility?.name ?? '',
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
-                  ),
-                ),
-              ),
-              _Pill(
-                label: context.locale.weekly,
-                background: context.color.backgroundMuted,
-                foreground: context.color.text.secondary,
-              ),
-            ],
-          ),
-          Gap(spacing.s4),
-          Text(
-            '${roster.weekStartDate} → ${roster.weekEndDate}',
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.text.secondary,
-            ),
-          ),
-          Gap(spacing.s12),
-          _ActiveDaysRow(offDays: roster.offDays),
-          Gap(spacing.s12),
-          Row(
-            children: [
-              _Pill(
-                label: roster.status.toLowerCase(),
-                background: _isPublished
-                    ? context.color.successAlt
-                    : context.color.warningAlt,
-                foreground: _isPublished
-                    ? context.color.success
-                    : context.color.warning,
-              ),
-              Gap(spacing.s12),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(radius.r4),
-                  child: LinearProgressIndicator(
-                    value: progress.clamp(0, 1),
-                    minHeight: 6,
-                    backgroundColor: context.color.backgroundMuted,
-                    color: context.color.primary,
-                  ),
-                ),
-              ),
-              Gap(spacing.s8),
-              Text(
-                '${roster.filledShifts}/${roster.totalShifts}',
-                style: context.textStyle.labelMedium.copyWith(
-                  color: context.color.text.secondary,
-                ),
-              ),
-            ],
-          ),
-          if (roster.notes != null && roster.notes!.isNotEmpty) ...[
-            Gap(spacing.s12),
-            _LabeledText(label: context.locale.notes, value: roster.notes!),
-          ],
-          if (_isPublished && roster.createdBy != null) ...[
-            Gap(spacing.s8),
-            _LabeledText(
-              label: context.locale.publishedBy,
-              value: roster.createdBy!.fullName,
-            ),
-          ],
-          if (!_isPublished) ...[
-            Gap(spacing.s12),
-            PermissionGate(
-              permission: AppPermission.rosterPublish,
-              // WHY: OverflowBar (not Align) — this app's OutlinedButton theme
-              // forces minimumSize.width = infinity, which collides with the
-              // unbounded constraints Align gives its child.
-              child: OverflowBar(
-                alignment: MainAxisAlignment.end,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  OutlinedButton(
-                    onPressed: isPublishing ? null : () => _onPublish(ref),
-                    child: isPublishing
-                        ? SizedBox.square(
-                            dimension: 16,
-                            child: CircularProgressIndicator.adaptive(
-                              valueColor: AlwaysStoppedAnimation(
-                                context.color.primary,
-                              ),
-                            ),
-                          )
-                        : Text(context.locale.publish),
+                  Expanded(
+                    child: Text(
+                      roster.facility?.name ?? '',
+                      style: context.textStyle.labelLarge.copyWith(
+                        color: context.color.text.primary,
+                      ),
+                    ),
+                  ),
+                  _Pill(
+                    label: context.locale.weekly,
+                    background: context.color.backgroundMuted,
+                    foreground: context.color.text.secondary,
                   ),
                 ],
               ),
-            ),
-          ],
-        ],
+              Gap(spacing.s4),
+              Text(
+                '${roster.weekStartDate} → ${roster.weekEndDate}',
+                style: context.textStyle.bodySmall.copyWith(
+                  color: context.color.text.secondary,
+                ),
+              ),
+              Gap(spacing.s12),
+              _ActiveDaysRow(offDays: roster.offDays),
+              Gap(spacing.s12),
+              Row(
+                children: [
+                  _Pill(
+                    label: roster.status.toLowerCase(),
+                    background: _isPublished
+                        ? context.color.successAlt
+                        : context.color.warningAlt,
+                    foreground: _isPublished
+                        ? context.color.success
+                        : context.color.warning,
+                  ),
+                  Gap(spacing.s12),
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(radius.r4),
+                      child: LinearProgressIndicator(
+                        value: progress.clamp(0, 1),
+                        minHeight: 6,
+                        backgroundColor: context.color.backgroundMuted,
+                        color: context.color.primary,
+                      ),
+                    ),
+                  ),
+                  Gap(spacing.s8),
+                  Text(
+                    '${roster.filledShifts}/${roster.totalShifts}',
+                    style: context.textStyle.labelMedium.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                ],
+              ),
+              if (roster.notes != null && roster.notes!.isNotEmpty) ...[
+                Gap(spacing.s12),
+                _LabeledText(label: context.locale.notes, value: roster.notes!),
+              ],
+              if (_isPublished && roster.createdBy != null) ...[
+                Gap(spacing.s8),
+                _LabeledText(
+                  label: context.locale.publishedBy,
+                  value: roster.createdBy!.fullName,
+                ),
+              ],
+              if (!_isPublished) ...[
+                Gap(spacing.s12),
+                PermissionGate(
+                  permission: AppPermission.rosterPublish,
+                  // WHY: OverflowBar (not Align) — this app's OutlinedButton theme
+                  // forces minimumSize.width = infinity, which collides with the
+                  // unbounded constraints Align gives its child.
+                  child: OverflowBar(
+                    alignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        onPressed: isPublishing ? null : () => _onPublish(ref),
+                        child: isPublishing
+                            ? SizedBox.square(
+                                dimension: 16,
+                                child: CircularProgressIndicator.adaptive(
+                                  valueColor: AlwaysStoppedAnimation(
+                                    context.color.primary,
+                                  ),
+                                ),
+                              )
+                            : Text(context.locale.publish),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -241,7 +249,9 @@ class _DayCircle extends StatelessWidget {
       child: Text(
         label,
         style: context.textStyle.labelTiny.copyWith(
-          color: isActive ? context.color.onPrimary : context.color.text.secondary,
+          color: isActive
+              ? context.color.onPrimary
+              : context.color.text.secondary,
         ),
       ),
     );

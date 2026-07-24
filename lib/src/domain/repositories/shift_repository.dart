@@ -60,4 +60,10 @@ abstract base class ShiftRepository extends Repository {
     required int minAttendants,
     required int maxAttendants,
   });
+
+  Future<Result<RosterShiftsEntity, Failure>> getRosterShifts({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+  });
 }

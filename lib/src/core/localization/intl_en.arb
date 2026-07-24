@@ -388,5 +388,10 @@
   "notes": "Notes",
   "publishedBy": "Published by",
   "publish": "Publish",
-  "rosterPublishedSuccessfully": "Roster published successfully."
+  "rosterPublishedSuccessfully": "Roster published successfully.",
+  "rosterShifts": "Roster Shifts",
+  "unassigned": "Unassigned",
+  "totalShifts": "Total Shifts",
+  "overtime": "Overtime",
+  "noShiftsInRoster": "No shifts in this roster yet."
 }

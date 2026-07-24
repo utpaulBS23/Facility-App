@@ -168,6 +168,14 @@ PublishRosterUseCase publishRosterUseCase(Ref ref) {
 }
 
 @riverpod
+GetRosterShiftsUseCase getRosterShiftsUseCase(Ref ref) {
+  return GetRosterShiftsUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 CreateShiftUseCase createShiftUseCase(Ref ref) {
   return CreateShiftUseCase(
     ref.read(shiftRepositoryProvider),

@@ -27,6 +27,7 @@ import '../../features/tasks/view/task_page.dart';
 import '../../features/inspection_checklist/view/inspection_checklist_page.dart';
 import '../../features/my_visits/view/visit_detail_page.dart';
 import '../../features/roster/view/roster_list_page.dart';
+import '../../features/roster/view/roster_shifts_page.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';
 import '../../features/shift/widgets/no_shift_today_widget.dart';

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/facility_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -45,6 +47,10 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
   void _onFacilitySelected(int facilityId) {
     setState(() => _selectedFacilityId = facilityId);
     ref.read(rosterListProvider.notifier).fetch(facilityId: facilityId);
+  }
+
+  void _onRosterTap(RosterEntity roster) {
+    context.pushNamed(Routes.rosterShifts, extra: roster);
   }
 
   Future<void> _onCreateRoster() async {
@@ -100,6 +106,7 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         rosterState: rosterState,
         selectedFacilityId: _selectedFacilityId,
         onFacilitySelected: _onFacilitySelected,
+        onRosterTap: _onRosterTap,
       ),
     );
   }
@@ -111,12 +118,14 @@ class _RosterListBody extends StatelessWidget {
     required this.rosterState,
     required this.selectedFacilityId,
     required this.onFacilitySelected,
+    required this.onRosterTap,
   });
 
   final AsyncValue<List<FacilityEntity>> facilitiesState;
   final AsyncValue<RosterListEntity?> rosterState;
   final int? selectedFacilityId;
   final ValueChanged<int> onFacilitySelected;
+  final ValueChanged<RosterEntity> onRosterTap;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +155,10 @@ class _RosterListBody extends StatelessWidget {
             loading: () =>
                 const Center(child: CircularProgressIndicator.adaptive()),
             error: (err, _) => Center(child: _ErrorText(err.toString())),
-            data: (data) => _RosterList(rosters: data?.rosters ?? const []),
+            data: (data) => _RosterList(
+              rosters: data?.rosters ?? const [],
+              onTap: onRosterTap,
+            ),
           ),
         ),
       ],
@@ -155,9 +167,10 @@ class _RosterListBody extends StatelessWidget {
 }
 
 class _RosterList extends StatelessWidget {
-  const _RosterList({required this.rosters});
+  const _RosterList({required this.rosters, required this.onTap});
 
   final List<RosterEntity> rosters;
+  final ValueChanged<RosterEntity> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +195,10 @@ class _RosterList extends StatelessWidget {
       ),
       itemCount: rosters.length,
       separatorBuilder: (context, index) => Gap(spacing.s12),
-      itemBuilder: (context, index) => _RosterCard(roster: rosters[index]),
+      itemBuilder: (context, index) => _RosterCard(
+        roster: rosters[index],
+        onTap: () => onTap(rosters[index]),
+      ),
     );
   }
 }

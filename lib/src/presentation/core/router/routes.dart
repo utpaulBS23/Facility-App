@@ -24,6 +24,7 @@ class Routes {
   static const String selectShift = '/select-shift';
   static const String assignStaff = '/assign-staff';
   static const String rosterList = '/roster-list';
+  static const String rosterShifts = '/roster-shifts';
 
   static const String attendance = '/attendance';
   static const String attendanceDetails = '/attendance-details';

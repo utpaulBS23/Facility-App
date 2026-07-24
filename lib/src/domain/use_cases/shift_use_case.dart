@@ -220,6 +220,33 @@ final class PublishRosterUseCase {
   }
 }
 
+final class GetRosterShiftsUseCase {
+  GetRosterShiftsUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<RosterShiftsEntity, String>> call({
+    required int facilityId,
+    required int rosterId,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.getRosterShifts(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to get roster shifts'),
+    };
+  }
+}
+
 final class CreateShiftUseCase {
   CreateShiftUseCase(this._shiftRepository, this._authRepository);
 
