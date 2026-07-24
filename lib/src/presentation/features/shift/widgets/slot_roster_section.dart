@@ -32,7 +32,7 @@ class _SlotRosterSection extends StatelessWidget {
           ...attendants.map(
             (attendant) => Padding(
               padding: EdgeInsets.only(bottom: spacing.s8),
-              child: _AssignedStaffTile(
+              child: AssignedStaffTile(
                 name: attendant.name,
                 phone: attendant.staffCode,
               ),
@@ -42,7 +42,7 @@ class _SlotRosterSection extends StatelessWidget {
         Gap(spacing.s12),
         PermissionGate(
           permission: AppPermission.shiftAssignAttendant,
-          child: _AssignStaffButton(
+          child: AssignStaffButton(
             onTap: onAssignStaff,
             isSlotFull: !slot.hasFreeCapacity,
           ),
