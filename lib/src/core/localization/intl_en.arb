@@ -401,5 +401,6 @@
   "minAttendants": "Min Attendants",
   "maxAttendants": "Max Attendants",
   "maxAttendantsError": "Max attendants must be at least min attendants.",
-  "shiftCreatedSuccessfully": "Shift created successfully."
+  "shiftCreatedSuccessfully": "Shift created successfully.",
+  "assign": "Assign"
 }

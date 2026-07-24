@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../core/router/routes.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_template_entity.dart';
@@ -51,6 +53,15 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
     _fetchShifts();
   }
 
+  Future<void> _onAssignShift(RosterShiftEntity shift) async {
+    final assigned = await context.pushNamed<bool>(
+      Routes.rosterAssignStaff,
+      extra: (roster: widget.roster, shift: shift),
+    );
+    if (assigned != true || !mounted) return;
+    _fetchShifts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final shiftsState = ref.watch(rosterShiftsProvider);
@@ -82,16 +93,18 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
             textAlign: TextAlign.center,
           ),
         ),
-        data: (data) => _RosterShiftsBody(shifts: data),
+        data: (data) =>
+            _RosterShiftsBody(shifts: data, onAssign: _onAssignShift),
       ),
     );
   }
 }
 
 class _RosterShiftsBody extends StatelessWidget {
-  const _RosterShiftsBody({required this.shifts});
+  const _RosterShiftsBody({required this.shifts, required this.onAssign});
 
   final RosterShiftsEntity? shifts;
+  final ValueChanged<RosterShiftEntity> onAssign;
 
   @override
   Widget build(BuildContext context) {
@@ -131,8 +144,10 @@ class _RosterShiftsBody extends StatelessWidget {
                   ),
                   itemCount: entries.length,
                   separatorBuilder: (context, index) => Gap(spacing.s12),
-                  itemBuilder: (context, index) =>
-                      _RosterShiftCard(shift: entries[index]),
+                  itemBuilder: (context, index) => _RosterShiftCard(
+                    shift: entries[index],
+                    onAssign: () => onAssign(entries[index]),
+                  ),
                 ),
         ),
       ],

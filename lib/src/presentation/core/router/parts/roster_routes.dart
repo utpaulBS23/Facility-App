@@ -16,5 +16,16 @@ List<GoRoute> _rosterRoutes(Ref ref) {
         return MaterialPage(child: RosterShiftsPage(roster: roster));
       },
     ),
+    GoRoute(
+      path: Routes.rosterAssignStaff,
+      name: Routes.rosterAssignStaff,
+      pageBuilder: (context, state) {
+        final args =
+            state.extra as ({RosterEntity roster, RosterShiftEntity shift});
+        return MaterialPage(
+          child: RosterAssignStaffPage(roster: args.roster, shift: args.shift),
+        );
+      },
+    ),
   ];
 }
