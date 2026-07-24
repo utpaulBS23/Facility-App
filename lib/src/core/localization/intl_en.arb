@@ -348,5 +348,45 @@
   "visitSubmittedSuccessfully": "Visit submitted successfully.",
   "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
   "submitChecklistFailed": "Failed to submit inspection checklist.",
-  "saveChecklistAnswerFailed": "Failed to save answer."
+  "saveChecklistAnswerFailed": "Failed to save answer.",
+  "rosters": "Rosters",
+  "noRostersFound": "No rosters found.",
+  "createRoster": "Create Roster",
+  "weekStartLabel": "Week start ({day})",
+  "@weekStartLabel": {
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "Sat"
+      }
+    }
+  },
+  "activeDaysThisWeek": "Active days this week",
+  "mon": "Mon",
+  "tue": "Tue",
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "sun": "Sun",
+  "rosterCoversMessage": "Roster covers {start} → {end}. Created as a draft with no slots — add slots from your shift templates, then publish once every slot meets its minimum attendants.",
+  "@rosterCoversMessage": {
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "2026-07-23"
+      },
+      "end": {
+        "type": "String",
+        "example": "2026-07-29"
+      }
+    }
+  },
+  "createDraftRoster": "Create draft roster",
+  "rosterCreatedSuccessfully": "Roster created successfully.",
+  "weekly": "Weekly",
+  "notes": "Notes",
+  "publishedBy": "Published by",
+  "publish": "Publish",
+  "rosterPublishedSuccessfully": "Roster published successfully."
 }

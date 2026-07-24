@@ -26,6 +26,7 @@ import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
 import '../../features/inspection_checklist/view/inspection_checklist_page.dart';
 import '../../features/my_visits/view/visit_detail_page.dart';
+import '../../features/roster/view/roster_list_page.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';
 import '../../features/shift/widgets/no_shift_today_widget.dart';
@@ -47,6 +48,7 @@ part 'parts/task_routes.dart';
 part 'parts/shell_routes.dart';
 part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
+part 'parts/roster_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -102,6 +104,7 @@ GoRouter goRouter(Ref ref) {
       ..._applyLeaveRoutes(ref),
       ..._shiftCheckInRoutes(ref),
       ..._shiftRoutes(ref),
+      ..._rosterRoutes(ref),
       ..._attendanceRoutes(ref),
       ..._myVisitsRoutes(ref),
       _shellRoutes(ref),

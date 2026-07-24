@@ -117,6 +117,44 @@ final class ShiftRepositoryImpl extends ShiftRepository {
   }
 
   @override
+  Future<Result<RosterListEntity, Failure>> getRosters({
+    required int partnerId,
+    required int facilityId,
+    int? page,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getRosters(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        page: page,
+      );
+      final model = RosterListResponseModel.fromJson(response.data);
+      return model.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<RosterEntity, Failure>> publishRoster({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.publishRoster(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        rosterId: rosterId,
+      );
+      final model = RosterResponseModel.fromJson(response.data);
+      final data = model.data;
+      if (data == null) {
+        throw const FormatException('Publish roster response had no data');
+      }
+      return data.toEntity();
+    });
+  }
+
+  @override
   Future<Result<ShiftEntity, Failure>> createShift({
     required int partnerId,
     required int facilityId,

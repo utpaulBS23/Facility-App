@@ -166,6 +166,60 @@ final class CreateRosterUseCase {
   }
 }
 
+final class GetRostersUseCase {
+  GetRostersUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<RosterListEntity, String>> call({
+    required int facilityId,
+    int? page,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.getRosters(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      page: page,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to get rosters'),
+    };
+  }
+}
+
+final class PublishRosterUseCase {
+  PublishRosterUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<RosterEntity, String>> call({
+    required int facilityId,
+    required int rosterId,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.publishRoster(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to publish roster'),
+    };
+  }
+}
+
 final class CreateShiftUseCase {
   CreateShiftUseCase(this._shiftRepository, this._authRepository);
 

@@ -29,3 +29,12 @@ extension RosterDataModelToEntity on RosterDataModel {
     updatedAt: updatedAt,
   );
 }
+
+extension RosterListResponseModelToEntity on RosterListResponseModel {
+  RosterListEntity toEntity() => RosterListEntity(
+    rosters: data.map((roster) => roster.toEntity()).toList(),
+    currentPage: meta?.currentPage ?? 1,
+    lastPage: meta?.lastPage ?? 1,
+    total: meta?.total ?? data.length,
+  );
+}

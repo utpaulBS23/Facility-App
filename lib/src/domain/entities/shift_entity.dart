@@ -196,3 +196,17 @@ class RosterEntity {
   final String? createdAt;
   final String? updatedAt;
 }
+
+class RosterListEntity {
+  const RosterListEntity({
+    required this.rosters,
+    required this.currentPage,
+    required this.lastPage,
+    required this.total,
+  });
+
+  final List<RosterEntity> rosters;
+  final int currentPage;
+  final int lastPage;
+  final int total;
+}

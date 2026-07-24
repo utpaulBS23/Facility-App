@@ -83,3 +83,26 @@ class RosterResponseModel with RosterResponseModelMappable {
 
   static const fromJson = RosterResponseModelMapper.fromJson;
 }
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class RosterMetaModel with RosterMetaModelMappable {
+  RosterMetaModel({this.currentPage, this.lastPage, this.total});
+
+  @MappableField(key: 'current_page')
+  final int? currentPage;
+  @MappableField(key: 'last_page')
+  final int? lastPage;
+  final int? total;
+
+  static const fromJson = RosterMetaModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class RosterListResponseModel with RosterListResponseModelMappable {
+  RosterListResponseModel({this.data = const [], this.meta});
+
+  final List<RosterDataModel> data;
+  final RosterMetaModel? meta;
+
+  static const fromJson = RosterListResponseModelMapper.fromJson;
+}

@@ -70,6 +70,20 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
+  @GET(Endpoints.getRosters)
+  Future<HttpResponse> getRosters({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Query('page') int? page,
+  });
+
+  @POST(Endpoints.publishRoster)
+  Future<HttpResponse> publishRoster({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Path('rosterId') required int rosterId,
+  });
+
   @POST(Endpoints.createShift)
   Future<HttpResponse> createShift({
     @Path('partnerId') required int partnerId,
