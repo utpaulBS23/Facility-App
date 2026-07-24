@@ -11,7 +11,9 @@ class ResetRepositoryUseCase {
     ref.invalidate(userSessionProvider);
     ref.container.getAllProviderElements().forEach((element) {
       final name = element.provider.name;
-      if (name != null && name.contains('Repository')) {
+      if (name != null &&
+          name.contains('Repository') &&
+          !name.contains('authenticationRepository')) {
         ref.invalidate(element.provider);
       }
     });
