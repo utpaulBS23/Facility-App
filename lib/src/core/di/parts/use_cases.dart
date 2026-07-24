@@ -160,6 +160,14 @@ CreateShiftUseCase createShiftUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilitiesUseCase getFacilitiesUseCase(Ref ref) {
+  return GetFacilitiesUseCase(
+    ref.read(facilityRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 RefreshAttendanceUseCase refreshAttendanceUseCase(Ref ref) {
   return RefreshAttendanceUseCase(ref.read(manualAttendanceRepositoryProvider));
 }
