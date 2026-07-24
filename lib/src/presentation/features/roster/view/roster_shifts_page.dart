@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
+import '../../../../domain/entities/shift_template_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/create_shift_provider.dart';
 import '../riverpod/roster_shifts_provider.dart';
+import '../riverpod/shift_template_list_provider.dart';
 
+part '../widgets/create_shift_dialog.dart';
 part '../widgets/roster_shift_card.dart';
 
 class RosterShiftsPage extends ConsumerStatefulWidget {
@@ -35,6 +42,15 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
         );
   }
 
+  Future<void> _onCreateShift() async {
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (_) => CreateShiftDialog(roster: widget.roster),
+    );
+    if (created != true || !mounted) return;
+    _fetchShifts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final shiftsState = ref.watch(rosterShiftsProvider);
@@ -46,6 +62,13 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
         titleSpacing: context.dimensions.spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+      ),
+      floatingActionButton: PermissionGate(
+        permission: AppPermission.shiftCreate,
+        child: FloatingActionButton(
+          onPressed: _onCreateShift,
+          child: const Icon(Icons.add_rounded),
+        ),
       ),
       body: shiftsState.when(
         loading: () =>

@@ -1,6 +1,7 @@
 import '../../core/base/base.dart';
 import '../entities/shift_entity.dart';
 import '../entities/shift_slot_entity.dart';
+import '../entities/shift_template_entity.dart';
 
 abstract base class ShiftRepository extends Repository {
   /// Facility-and-date scoped slots serving both experiences — supersedes
@@ -65,5 +66,9 @@ abstract base class ShiftRepository extends Repository {
     required int partnerId,
     required int facilityId,
     required int rosterId,
+  });
+
+  Future<Result<List<ShiftTemplateEntity>, Failure>> getShiftTemplates({
+    required int partnerId,
   });
 }

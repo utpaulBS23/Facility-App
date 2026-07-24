@@ -393,5 +393,13 @@
   "unassigned": "Unassigned",
   "totalShifts": "Total Shifts",
   "overtime": "Overtime",
-  "noShiftsInRoster": "No shifts in this roster yet."
+  "noShiftsInRoster": "No shifts in this roster yet.",
+  "createShift": "Create Shift",
+  "shiftTemplate": "Shift Template",
+  "selectShiftTemplate": "Select a shift template",
+  "shiftDate": "Shift Date",
+  "minAttendants": "Min Attendants",
+  "maxAttendants": "Max Attendants",
+  "maxAttendantsError": "Max attendants must be at least min attendants.",
+  "shiftCreatedSuccessfully": "Shift created successfully."
 }

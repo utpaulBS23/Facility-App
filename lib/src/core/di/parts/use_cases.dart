@@ -176,6 +176,14 @@ GetRosterShiftsUseCase getRosterShiftsUseCase(Ref ref) {
 }
 
 @riverpod
+GetShiftTemplatesUseCase getShiftTemplatesUseCase(Ref ref) {
+  return GetShiftTemplatesUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 CreateShiftUseCase createShiftUseCase(Ref ref) {
   return CreateShiftUseCase(
     ref.read(shiftRepositoryProvider),

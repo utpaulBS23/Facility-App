@@ -99,6 +99,11 @@ abstract class RestClient {
     @Path('rosterId') required int rosterId,
   });
 
+  @GET(Endpoints.shiftTemplates)
+  Future<HttpResponse> getShiftTemplates({
+    @Path('partnerId') required int partnerId,
+  });
+
   @POST(Endpoints.manualAttendance)
   Future<HttpResponse> submitManualAttendance({
     @Path('partnerId') required int partnerId,

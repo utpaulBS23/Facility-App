@@ -1,15 +1,18 @@
 import '../../core/base/base.dart';
 import '../../domain/entities/shift_entity.dart';
 import '../../domain/entities/shift_slot_entity.dart';
+import '../../domain/entities/shift_template_entity.dart';
 import '../../domain/repositories/shift_repository.dart';
 import '../extension/roster_mapper.dart';
 import '../extension/roster_shift_mapper.dart';
 import '../extension/shift_mapper.dart';
 import '../extension/shift_slot_mapper.dart';
+import '../extension/shift_template_mapper.dart';
 import '../models/roster_model.dart';
 import '../models/roster_shift_model.dart';
 import '../models/shift_model.dart';
 import '../models/shift_slot_model.dart';
+import '../models/shift_template_model.dart';
 import '../services/network/rest_client.dart';
 
 final class ShiftRepositoryImpl extends ShiftRepository {
@@ -203,6 +206,17 @@ final class ShiftRepositoryImpl extends ShiftRepository {
       );
       final model = RosterShiftsResponseModel.fromJson(response.data);
       return model.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<List<ShiftTemplateEntity>, Failure>> getShiftTemplates({
+    required int partnerId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getShiftTemplates(partnerId: partnerId);
+      final model = ShiftTemplateListResponseModel.fromJson(response.data);
+      return model.data.map((template) => template.toEntity()).toList();
     });
   }
 }

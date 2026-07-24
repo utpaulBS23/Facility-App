@@ -68,6 +68,9 @@ class Endpoints {
 
   /// Lists every shift within a specific roster.
   static const String getRosterShifts = createShift;
+
+  /// Partner-wide catalog of reusable shift templates.
+  static const String shiftTemplates = '/partners/{partnerId}/shift-templates';
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';
