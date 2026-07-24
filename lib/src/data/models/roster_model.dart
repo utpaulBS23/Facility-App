@@ -4,10 +4,10 @@ part 'roster_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class RosterFacilityModel with RosterFacilityModelMappable {
-  RosterFacilityModel({required this.id, required this.name, this.nameBn});
+  RosterFacilityModel({required this.id, this.name, this.nameBn});
 
   final int id;
-  final String name;
+  final String? name;
   @MappableField(key: 'name_bn')
   final String? nameBn;
 
@@ -16,16 +16,12 @@ class RosterFacilityModel with RosterFacilityModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class RosterCreatorModel with RosterCreatorModelMappable {
-  RosterCreatorModel({
-    required this.id,
-    required this.fullName,
-    required this.role,
-  });
+  RosterCreatorModel({required this.id, this.fullName, this.role});
 
   final int id;
   @MappableField(key: 'full_name')
-  final String fullName;
-  final String role;
+  final String? fullName;
+  final String? role;
 
   static const fromJson = RosterCreatorModelMapper.fromJson;
 }
