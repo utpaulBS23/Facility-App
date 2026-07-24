@@ -2,6 +2,7 @@ import '../../core/base/result.dart';
 import '../entities/login_entity.dart';
 import '../entities/shift_entity.dart';
 import '../entities/shift_slot_entity.dart';
+import '../entities/shift_template_entity.dart';
 import '../repositories/authentication_repository.dart';
 import '../repositories/shift_repository.dart';
 
@@ -243,6 +244,28 @@ final class GetRosterShiftsUseCase {
       Success(:final data) when data != null => Success(data: data),
       Error(:final error) => Error(error.message),
       _ => const Error('Failed to get roster shifts'),
+    };
+  }
+}
+
+final class GetShiftTemplatesUseCase {
+  GetShiftTemplatesUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<List<ShiftTemplateEntity>, String>> call() async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error('Partner ID not found');
+
+    final result = await _shiftRepository.getShiftTemplates(
+      partnerId: partnerId,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to get shift templates'),
     };
   }
 }

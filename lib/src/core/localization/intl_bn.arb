@@ -373,5 +373,13 @@
   "unassigned": "অনির্ধারিত",
   "totalShifts": "মোট শিফট",
   "overtime": "ওভারটাইম",
-  "noShiftsInRoster": "এই রোস্টারে এখনো কোনো শিফট নেই।"
+  "noShiftsInRoster": "এই রোস্টারে এখনো কোনো শিফট নেই।",
+  "createShift": "শিফট তৈরি করুন",
+  "shiftTemplate": "শিফট টেমপ্লেট",
+  "selectShiftTemplate": "একটি শিফট টেমপ্লেট নির্বাচন করুন",
+  "shiftDate": "শিফটের তারিখ",
+  "minAttendants": "সর্বনিম্ন কর্মী",
+  "maxAttendants": "সর্বোচ্চ কর্মী",
+  "maxAttendantsError": "সর্বোচ্চ কর্মী সর্বনিম্ন কর্মীর চেয়ে কম হতে পারবে না।",
+  "shiftCreatedSuccessfully": "শিফট সফলভাবে তৈরি হয়েছে।"
 }
