@@ -21,7 +21,10 @@ class Routes {
   static const String shiftWindowClosed = '/shift-window-closed';
 
   static const String applyLeave = '/apply-leave';
+  static const String leaveRequests = '/leave-requests';
+  static const String leaveDetails = '/leave-details';
   static const String selectShift = '/select-shift';
+  static const String selectAttendant = '/select-attendant';
   static const String assignStaff = '/assign-staff';
 
   static const String attendance = '/attendance';

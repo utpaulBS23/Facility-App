@@ -75,6 +75,11 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
         (session) => session?.can(AppPermission.leaveRequest) ?? false,
       ),
     );
+    final canViewLeaveRequests = ref.watch(
+      userSessionProvider.select(
+        (session) => session?.can(AppPermission.leaveView) ?? false,
+      ),
+    );
     final facilityName = ref.watch(
       shiftSlotsProvider.select(
         (state) => state.valueOrNull?.facility?.name ?? '',
@@ -89,6 +94,27 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
+        if (canViewLeaveRequests) ...[
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: spacing.s16,
+              vertical: spacing.s8,
+            ),
+            child: FilledButton.icon(
+              onPressed: () => context.pushNamed(Routes.leaveRequests),
+              icon: const Icon(Icons.assignment_turned_in_outlined),
+              label: Text(context.locale.leaveRequests),
+              style: FilledButton.styleFrom(
+                backgroundColor: context.color.primary,
+                foregroundColor: context.color.onPrimary,
+                minimumSize: Size(double.infinity, spacing.s44),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                ),
+              ),
+            ),
+          ),
+        ],
         Expanded(
           child: slotsState.when(
             loading: () =>

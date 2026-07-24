@@ -10,11 +10,33 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.leaveRequests,
+      name: Routes.leaveRequests,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: LeaveRequestsPage());
+      },
+    ),
+    GoRoute(
+      path: Routes.leaveDetails,
+      name: Routes.leaveDetails,
+      pageBuilder: (context, state) {
+        final request = state.extra as MockLeaveRequest;
+        return MaterialPage(child: LeaveDetailsPage(request: request));
+      },
+    ),
+    GoRoute(
       path: Routes.selectShift,
       name: Routes.selectShift,
       pageBuilder: (context, state) {
         final shifts = state.extra as List<ShiftEntity>;
         return MaterialPage(child: SelectShiftPage(shifts: shifts));
+      },
+    ),
+    GoRoute(
+      path: Routes.selectAttendant,
+      name: Routes.selectAttendant,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: SelectAttendantPage());
       },
     ),
   ];

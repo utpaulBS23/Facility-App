@@ -6,12 +6,18 @@ class _ApplyLeaveBody extends StatelessWidget {
     required this.selectedLeaveType,
     required this.reasonController,
     required this.onSelectShiftTap,
+    required this.selectedAttendant,
+    required this.onSelectAttendantTap,
+    required this.showAttendantSelector,
   });
 
   final ShiftEntity? selectedShift;
   final String? selectedLeaveType;
   final TextEditingController reasonController;
   final VoidCallback onSelectShiftTap;
+  final PartnerStaffEntity? selectedAttendant;
+  final VoidCallback onSelectAttendantTap;
+  final bool showAttendantSelector;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,13 @@ class _ApplyLeaveBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (showAttendantSelector) ...[
+            _SelectAttendantCard(
+              selectedAttendant: selectedAttendant,
+              onTap: onSelectAttendantTap,
+            ),
+            Gap(spacing.s8),
+          ],
           _LeaveSummaryCard(),
           Gap(spacing.s8),
           _SelectShiftCard(
