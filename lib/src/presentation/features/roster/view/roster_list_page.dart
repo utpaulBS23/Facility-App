@@ -151,15 +151,22 @@ class _RosterListBody extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: rosterState.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
-            error: (err, _) => Center(child: _ErrorText(err.toString())),
-            data: (data) => _RosterList(
-              rosters: data?.rosters ?? const [],
-              onTap: onRosterTap,
-            ),
-          ),
+          // WHY: rosterState's initial value is AsyncData(null) —
+          // indistinguishable from "fetched, no rosters" — so while
+          // facilities are still loading (and no fetch has started yet) this
+          // would otherwise flash "No rosters found" under the dropdown's
+          // own loading spinner.
+          child: facilitiesState.isLoading
+              ? const Center(child: CircularProgressIndicator.adaptive())
+              : rosterState.when(
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator.adaptive()),
+                  error: (err, _) => Center(child: _ErrorText(err.toString())),
+                  data: (data) => _RosterList(
+                    rosters: data?.rosters ?? const [],
+                    onTap: onRosterTap,
+                  ),
+                ),
         ),
       ],
     );
