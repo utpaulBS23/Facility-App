@@ -390,5 +390,8 @@
   "pendingSupervisorApproval": "সুপারভাইজার অনুমোদনের জন্য অপেক্ষমান",
   "assignedToSupervisor": "সুপারভাইজারকে অর্পিত",
   "assignedToManager": "ম্যানেজারকে অর্পিত",
-  "justNow": "এইমাত্র"
+  "justNow": "এইমাত্র",
+  "leaveApproval": "ছুটি অনুমোদন",
+  "awaitingFinalApproval": "চূড়ান্ত অনুমোদনের অপেক্ষায়",
+  "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন"
 }

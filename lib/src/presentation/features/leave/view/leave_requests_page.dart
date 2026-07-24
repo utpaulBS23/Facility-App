@@ -284,7 +284,7 @@ class _LeaveRequestsPageState extends State<LeaveRequestsPage> {
         backgroundColor: color.primary,
         foregroundColor: color.onPrimary,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
         ),
         child: const Icon(
           Icons.add,

@@ -390,5 +390,8 @@
   "pendingSupervisorApproval": "Pending Supervisor Approval",
   "assignedToSupervisor": "Assigned to Supervisor",
   "assignedToManager": "Assigned to Manager",
-  "justNow": "Just now"
+  "justNow": "Just now",
+  "leaveApproval": "Leave Approval",
+  "awaitingFinalApproval": "Awaiting final approval",
+  "endSessionAndSignOut": "End session and sign out"
 }
