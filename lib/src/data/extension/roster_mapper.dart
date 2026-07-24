@@ -3,12 +3,12 @@ import '../models/roster_model.dart';
 
 extension RosterFacilityModelToEntity on RosterFacilityModel {
   RosterFacilityEntity toEntity() =>
-      RosterFacilityEntity(id: id, name: name, nameBn: nameBn);
+      RosterFacilityEntity(id: id, name: name ?? '', nameBn: nameBn);
 }
 
 extension RosterCreatorModelToEntity on RosterCreatorModel {
   RosterCreatorEntity toEntity() =>
-      RosterCreatorEntity(id: id, fullName: fullName, role: role);
+      RosterCreatorEntity(id: id, fullName: fullName ?? '', role: role ?? '');
 }
 
 extension RosterDataModelToEntity on RosterDataModel {

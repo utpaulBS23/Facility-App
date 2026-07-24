@@ -132,14 +132,19 @@ class ShiftEntity {
   ];
 
   /// Whether the slot has room for another attendant.
-  bool get hasFreeCapacity => maxAttendants > 0 && assignedCount < maxAttendants;
+  bool get hasFreeCapacity =>
+      maxAttendants > 0 && assignedCount < maxAttendants;
 
   /// Whether the slot has met its minimum staffing requirement.
   bool get isMinimumStaffed => assignedCount >= minAttendants;
 }
 
 class RosterFacilityEntity {
-  const RosterFacilityEntity({required this.id, required this.name, this.nameBn});
+  const RosterFacilityEntity({
+    required this.id,
+    required this.name,
+    this.nameBn,
+  });
 
   final int id;
   final String name;
