@@ -61,9 +61,13 @@ class Endpoints {
   static const String publishRoster =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/publish';
 
-  /// Creates a shift slot within an existing roster.
+  /// Creates a shift slot within an existing roster. [getRosterShifts] lists
+  /// the same resource.
   static const String createShift =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/shifts';
+
+  /// Lists every shift within a specific roster.
+  static const String getRosterShifts = createShift;
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';

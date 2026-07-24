@@ -3,9 +3,11 @@ import '../../domain/entities/shift_entity.dart';
 import '../../domain/entities/shift_slot_entity.dart';
 import '../../domain/repositories/shift_repository.dart';
 import '../extension/roster_mapper.dart';
+import '../extension/roster_shift_mapper.dart';
 import '../extension/shift_mapper.dart';
 import '../extension/shift_slot_mapper.dart';
 import '../models/roster_model.dart';
+import '../models/roster_shift_model.dart';
 import '../models/shift_model.dart';
 import '../models/shift_slot_model.dart';
 import '../services/network/rest_client.dart';
@@ -184,6 +186,23 @@ final class ShiftRepositoryImpl extends ShiftRepository {
         throw const FormatException('Create shift response had no data');
       }
       return data.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<RosterShiftsEntity, Failure>> getRosterShifts({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getRosterShifts(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        rosterId: rosterId,
+      );
+      final model = RosterShiftsResponseModel.fromJson(response.data);
+      return model.toEntity();
     });
   }
 }

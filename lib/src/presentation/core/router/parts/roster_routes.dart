@@ -8,5 +8,13 @@ List<GoRoute> _rosterRoutes(Ref ref) {
       pageBuilder: (context, state) =>
           const MaterialPage(child: RosterListPage()),
     ),
+    GoRoute(
+      path: Routes.rosterShifts,
+      name: Routes.rosterShifts,
+      pageBuilder: (context, state) {
+        final roster = state.extra as RosterEntity;
+        return MaterialPage(child: RosterShiftsPage(roster: roster));
+      },
+    ),
   ];
 }

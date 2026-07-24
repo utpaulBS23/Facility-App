@@ -92,6 +92,13 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
+  @GET(Endpoints.getRosterShifts)
+  Future<HttpResponse> getRosterShifts({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Path('rosterId') required int rosterId,
+  });
+
   @POST(Endpoints.manualAttendance)
   Future<HttpResponse> submitManualAttendance({
     @Path('partnerId') required int partnerId,

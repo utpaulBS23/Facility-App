@@ -368,5 +368,10 @@
   "notes": "নোট",
   "publishedBy": "প্রকাশ করেছেন",
   "publish": "প্রকাশ করুন",
-  "rosterPublishedSuccessfully": "রোস্টার সফলভাবে প্রকাশিত হয়েছে।"
+  "rosterPublishedSuccessfully": "রোস্টার সফলভাবে প্রকাশিত হয়েছে।",
+  "rosterShifts": "রোস্টার শিফট",
+  "unassigned": "অনির্ধারিত",
+  "totalShifts": "মোট শিফট",
+  "overtime": "ওভারটাইম",
+  "noShiftsInRoster": "এই রোস্টারে এখনো কোনো শিফট নেই।"
 }
