@@ -29,7 +29,7 @@ class _SlotDetailContractCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (slot.slotStatus.isNotEmpty)
-            _SlotStatusChip(status: slot.slotStatus),
+            SlotStatusChip(status: slot.slotStatus),
           Gap(spacing.s20),
           if (facilityName.isNotEmpty) ...[
             Text(

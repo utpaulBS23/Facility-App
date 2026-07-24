@@ -10,7 +10,11 @@ import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_template_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/assign_staff_button.dart';
+import '../../../core/widgets/assigned_staff_tile.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/slot_status_chip.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/create_shift_provider.dart';
 import '../riverpod/roster_shifts_provider.dart';
@@ -53,7 +57,7 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
     _fetchShifts();
   }
 
-  Future<void> _onAssignShift(RosterShiftEntity shift) async {
+  Future<void> _onAssignShift(ShiftEntity shift) async {
     final assigned = await context.pushNamed<bool>(
       Routes.rosterAssignStaff,
       extra: (roster: widget.roster, shift: shift),
@@ -104,11 +108,11 @@ class _RosterShiftsBody extends StatelessWidget {
   const _RosterShiftsBody({required this.shifts, required this.onAssign});
 
   final RosterShiftsEntity? shifts;
-  final ValueChanged<RosterShiftEntity> onAssign;
+  final ValueChanged<ShiftEntity> onAssign;
 
   @override
   Widget build(BuildContext context) {
-    final entries = shifts?.shifts ?? const <RosterShiftEntity>[];
+    final entries = shifts?.shifts ?? const <ShiftEntity>[];
     final spacing = context.dimensions.spacing;
 
     return Column(

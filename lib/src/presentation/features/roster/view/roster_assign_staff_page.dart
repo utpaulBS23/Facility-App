@@ -21,7 +21,7 @@ class RosterAssignStaffPage extends ConsumerStatefulWidget {
   });
 
   final RosterEntity roster;
-  final RosterShiftEntity shift;
+  final ShiftEntity shift;
 
   @override
   ConsumerState<RosterAssignStaffPage> createState() =>

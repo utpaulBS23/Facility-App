@@ -211,40 +211,6 @@ class RosterListEntity {
   final int total;
 }
 
-/// One shift instance within a roster — a `shift_template` occurrence on a
-/// date, either open (no [attendant]) or filled.
-class RosterShiftEntity {
-  const RosterShiftEntity({
-    required this.id,
-    required this.weeklyRosterId,
-    required this.shiftTemplateId,
-    required this.shiftTemplateName,
-    this.attendant,
-    required this.shiftDate,
-    required this.startTime,
-    required this.endTime,
-    this.durationHours,
-    required this.status,
-    this.notes,
-    this.isOvertime = false,
-  });
-
-  final int id;
-  final int weeklyRosterId;
-  final int shiftTemplateId;
-  final String shiftTemplateName;
-  final ShiftAttendantEntity? attendant;
-  final String shiftDate;
-  final String startTime;
-  final String endTime;
-  final String? durationHours;
-  final String status;
-  final String? notes;
-  final bool isOvertime;
-
-  bool get isAssigned => attendant != null;
-}
-
 class RosterShiftStatsEntity {
   const RosterShiftStatsEntity({
     this.totalShifts = 0,
@@ -260,6 +226,6 @@ class RosterShiftStatsEntity {
 class RosterShiftsEntity {
   const RosterShiftsEntity({required this.shifts, required this.stats});
 
-  final List<RosterShiftEntity> shifts;
+  final List<ShiftEntity> shifts;
   final RosterShiftStatsEntity stats;
 }

@@ -20,8 +20,7 @@ List<GoRoute> _rosterRoutes(Ref ref) {
       path: Routes.rosterAssignStaff,
       name: Routes.rosterAssignStaff,
       pageBuilder: (context, state) {
-        final args =
-            state.extra as ({RosterEntity roster, RosterShiftEntity shift});
+        final args = state.extra as ({RosterEntity roster, ShiftEntity shift});
         return MaterialPage(
           child: RosterAssignStaffPage(roster: args.roster, shift: args.shift),
         );

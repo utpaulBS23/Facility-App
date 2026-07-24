@@ -1,15 +1,21 @@
 part of '../view/roster_shifts_page.dart';
 
+/// Card for one shift within a roster — mirrors [_SlotCard] from the shift
+/// feature (same status chip, capacity line, and assigned-staff list), but
+/// also shows the shift template name, which this payload carries and the
+/// shift-slots payload does not.
 class _RosterShiftCard extends StatelessWidget {
   const _RosterShiftCard({required this.shift, required this.onAssign});
 
-  final RosterShiftEntity shift;
+  final ShiftEntity shift;
   final VoidCallback onAssign;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+    final timeRange =
+        '${DateFormatter.shiftTime(shift.startTime)} – ${DateFormatter.shiftTime(shift.endTime)}';
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -31,103 +37,66 @@ class _RosterShiftCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (shift.isOvertime)
-                _ShiftPill(
-                  label: context.locale.overtime,
-                  background: context.color.warningAlt,
-                  foreground: context.color.warning,
-                ),
+              if (shift.slotStatus.isNotEmpty)
+                SlotStatusChip(status: shift.slotStatus),
             ],
           ),
           Gap(spacing.s4),
           Text(
-            '${shift.shiftDate} • ${shift.startTime} – ${shift.endTime}',
+            '${shift.shiftDate} • $timeRange',
             style: context.textStyle.bodySmall.copyWith(
               color: context.color.text.secondary,
             ),
           ),
-          Gap(spacing.s12),
-          shift.isAssigned
-              ? _AssignedRow(name: shift.attendant!.fullName)
-              : Row(
-                  children: [
-                    _ShiftPill(
-                      label: context.locale.unassigned,
-                      background: context.color.backgroundMuted,
-                      foreground: context.color.text.secondary,
-                    ),
-                    const Spacer(),
-                    PermissionGate(
-                      permission: AppPermission.shiftAssignAttendant,
-                      // WHY: TextButton (not Filled/Outlined) — this app's
-                      // Filled/Outlined button themes force
-                      // minimumSize.width = infinity, which crashes when
-                      // placed as a non-flex Row child. TextButton has no
-                      // such override.
-                      child: TextButton(
-                        onPressed: onAssign,
-                        child: Text(context.locale.assign),
-                      ),
-                    ),
-                  ],
-                ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AssignedRow extends StatelessWidget {
-  const _AssignedRow({required this.name});
-
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          Icons.person_outline_rounded,
-          size: 16,
-          color: context.color.text.secondary,
-        ),
-        Gap(context.dimensions.spacing.s4),
-        Text(
-          name,
-          style: context.textStyle.labelMedium.copyWith(
-            color: context.color.text.primary,
+          Gap(spacing.s6),
+          Text(
+            context.locale.slotCapacity(
+              shift.assignedCount,
+              shift.maxAttendants,
+            ),
+            style: context.textStyle.bodySmall.copyWith(
+              color: context.color.text.secondary,
+            ),
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ShiftPill extends StatelessWidget {
-  const _ShiftPill({
-    required this.label,
-    required this.background,
-    required this.foreground,
-  });
-
-  final String label;
-  final Color background;
-  final Color foreground;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.dimensions.spacing.s8,
-        vertical: context.dimensions.spacing.s4,
-      ),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
-      ),
-      child: Text(
-        label,
-        style: context.textStyle.labelSmall.copyWith(color: foreground),
+          Gap(spacing.s4),
+          Text(
+            '${context.locale.checkedInCount(shift.checkedInCount)}'
+            ' · '
+            '${context.locale.checkedOutCount(shift.checkedOutCount)}',
+            style: context.textStyle.bodySmall.copyWith(
+              color: context.color.text.secondary,
+            ),
+          ),
+          if (shift.notes != null && shift.notes!.isNotEmpty) ...[
+            Gap(spacing.s8),
+            Text(
+              shift.notes!,
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.text.secondary,
+              ),
+            ),
+          ],
+          Gap(spacing.s12),
+          if (shift.assignedAttendants.isNotEmpty) ...[
+            ...shift.assignedAttendants.map(
+              (attendant) => Padding(
+                padding: EdgeInsets.only(bottom: spacing.s8),
+                child: AssignedStaffTile(
+                  name: attendant.fullName,
+                  phone: attendant.phone ?? '',
+                ),
+              ),
+            ),
+            Gap(spacing.s4),
+          ],
+          PermissionGate(
+            permission: AppPermission.shiftAssignAttendant,
+            child: AssignStaffButton(
+              onTap: onAssign,
+              isSlotFull: !shift.hasFreeCapacity,
+            ),
+          ),
+        ],
       ),
     );
   }
