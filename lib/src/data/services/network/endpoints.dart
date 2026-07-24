@@ -50,9 +50,16 @@ class Endpoints {
   static const String shiftSlots = '/partners/{partnerId}/shift-slots';
 
   /// Creates a weekly roster for a facility — the parent resource
-  /// [assignShiftSlot] attaches to.
+  /// [assignShiftSlot] attaches to. [getRosters] lists the same resource.
   static const String createRoster =
       '/partners/{partnerId}/facilities/{facilityId}/rosters';
+
+  /// Lists rosters for a facility — same resource [createRoster] posts to.
+  static const String getRosters = createRoster;
+
+  /// Publishes a draft roster, notifying staff.
+  static const String publishRoster =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/publish';
 
   /// Creates a shift slot within an existing roster.
   static const String createShift =

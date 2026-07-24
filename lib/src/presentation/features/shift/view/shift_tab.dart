@@ -40,6 +40,10 @@ class ShiftTab extends ConsumerWidget {
     context.pushNamed(Routes.applyLeave);
   }
 
+  void _onOpenRosters(BuildContext context) {
+    context.pushNamed(Routes.rosterList);
+  }
+
   void _onSlotTap(BuildContext context, ShiftSlotEntity slot) {
     context.pushNamed(Routes.shiftDetails, extra: slot);
   }
@@ -64,6 +68,18 @@ class ShiftTab extends ConsumerWidget {
         titleSpacing: context.dimensions.spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          PermissionGate(
+            permission: AppPermission.rosterView,
+            child: IconButton(
+              onPressed: () => _onOpenRosters(context),
+              icon: Icon(
+                Icons.calendar_view_week_rounded,
+                color: context.color.icon,
+              ),
+            ),
+          ),
+        ],
       ),
       body: hasShiftAccess
           ? _ShiftSlotsView(

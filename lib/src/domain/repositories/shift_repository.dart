@@ -38,6 +38,18 @@ abstract base class ShiftRepository extends Repository {
     required List<int> offDays,
   });
 
+  Future<Result<RosterListEntity, Failure>> getRosters({
+    required int partnerId,
+    required int facilityId,
+    int? page,
+  });
+
+  Future<Result<RosterEntity, Failure>> publishRoster({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+  });
+
   Future<Result<ShiftEntity, Failure>> createShift({
     required int partnerId,
     required int facilityId,
