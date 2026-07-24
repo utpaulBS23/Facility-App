@@ -381,5 +381,6 @@
   "minAttendants": "সর্বনিম্ন কর্মী",
   "maxAttendants": "সর্বোচ্চ কর্মী",
   "maxAttendantsError": "সর্বোচ্চ কর্মী সর্বনিম্ন কর্মীর চেয়ে কম হতে পারবে না।",
-  "shiftCreatedSuccessfully": "শিফট সফলভাবে তৈরি হয়েছে।"
+  "shiftCreatedSuccessfully": "শিফট সফলভাবে তৈরি হয়েছে।",
+  "assign": "নিয়োগ দিন"
 }

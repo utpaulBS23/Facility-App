@@ -1,9 +1,10 @@
 part of '../view/roster_shifts_page.dart';
 
 class _RosterShiftCard extends StatelessWidget {
-  const _RosterShiftCard({required this.shift});
+  const _RosterShiftCard({required this.shift, required this.onAssign});
 
   final RosterShiftEntity shift;
+  final VoidCallback onAssign;
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +49,27 @@ class _RosterShiftCard extends StatelessWidget {
           Gap(spacing.s12),
           shift.isAssigned
               ? _AssignedRow(name: shift.attendant!.fullName)
-              : _ShiftPill(
-                  label: context.locale.unassigned,
-                  background: context.color.backgroundMuted,
-                  foreground: context.color.text.secondary,
+              : Row(
+                  children: [
+                    _ShiftPill(
+                      label: context.locale.unassigned,
+                      background: context.color.backgroundMuted,
+                      foreground: context.color.text.secondary,
+                    ),
+                    const Spacer(),
+                    PermissionGate(
+                      permission: AppPermission.shiftAssignAttendant,
+                      // WHY: TextButton (not Filled/Outlined) — this app's
+                      // Filled/Outlined button themes force
+                      // minimumSize.width = infinity, which crashes when
+                      // placed as a non-flex Row child. TextButton has no
+                      // such override.
+                      child: TextButton(
+                        onPressed: onAssign,
+                        child: Text(context.locale.assign),
+                      ),
+                    ),
+                  ],
                 ),
         ],
       ),
