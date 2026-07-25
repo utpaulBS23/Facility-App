@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/shift_entity.dart';
@@ -26,6 +25,7 @@ import '../riverpod/leave_approvals_provider.dart';
 import '../riverpod/leave_attendants_provider.dart';
 import '../riverpod/leave_balance_provider.dart';
 import '../riverpod/leave_policies_provider.dart';
+import '../riverpod/leave_shifts_provider.dart';
 
 part '../widgets/apply_leave_body.dart';
 part '../widgets/apply_leave_attendant_selector.dart';

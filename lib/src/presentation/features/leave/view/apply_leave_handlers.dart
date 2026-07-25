@@ -39,27 +39,14 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
   Future<void> _onSelectShiftTap() async {
     final pid = ref.read(getActivePartnerUseCaseProvider).call();
     if (pid == null) return;
-    final res = await ref.read(getShiftsUseCaseProvider).call(
-          partnerId: pid,
-          date: DateFormat('yyyy-MM-dd').format(_startDate),
-        );
-    final list = switch (res) {
-      Success(:final data) => data ?? const <ShiftEntity>[],
-      _ => const <ShiftEntity>[],
-    };
-    if (!mounted) return;
-    // WHY: no shifts means the SelectShiftPage would open empty. Show a
-    // message instead so the user knows to pick a different date.
-    if (list.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.noShiftsAvailableForDate)),
-      );
-      return;
-    }
-    final s = await context.pushNamed<ShiftEntity>(Routes.selectShift, extra: list);
-    if (s != null && mounted) {
-      updateState(() => _selectedShift = s);
-    }
+    // WHY: the API call is now owned by SelectShiftPage via LeaveShiftsProvider.
+    // This handler is a pure navigation call — no blocking IO, no empty checks.
+    final date = DateFormat('yyyy-MM-dd').format(_startDate);
+    final s = await context.pushNamed<ShiftEntity>(
+      Routes.selectShift,
+      extra: (date: date, partnerId: pid),
+    );
+    if (s != null && mounted) updateState(() => _selectedShift = s);
   }
 
   Future<void> _onSelectAttendantTap() async {

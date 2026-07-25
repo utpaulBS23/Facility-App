@@ -1,12 +1,21 @@
 part of 'apply_leave_page.dart';
 
-class SelectShiftPage extends StatelessWidget {
-  const SelectShiftPage({super.key, required this.shifts});
+class SelectShiftPage extends ConsumerWidget {
+  const SelectShiftPage({
+    super.key,
+    required this.date,
+    required this.partnerId,
+  });
 
-  final List<ShiftEntity> shifts;
+  final String date;
+  final int partnerId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final shiftsState = ref.watch(
+      leaveShiftsProvider(partnerId: partnerId, date: date),
+    );
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
@@ -34,7 +43,32 @@ class SelectShiftPage extends StatelessWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: _SelectShiftBody(shifts: shifts),
+      body: shiftsState.when(
+        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+        error: (e, _) => Center(
+          child: Padding(
+            padding: EdgeInsets.all(context.dimensions.spacing.s24),
+            child: Text(
+              e.toString(),
+              style: context.textStyle.bodyMedium.copyWith(
+                color: context.color.text.secondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        data: (shifts) => shifts.isEmpty
+            ? Center(
+                child: Text(
+                  context.locale.noShiftsAvailableForDate,
+                  style: context.textStyle.bodyMedium.copyWith(
+                    color: context.color.text.secondary,
+                  ),
+                ),
+              )
+            : _SelectShiftBody(shifts: shifts),
+      ),
     );
   }
 }
+

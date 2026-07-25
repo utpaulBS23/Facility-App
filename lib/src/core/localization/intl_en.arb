@@ -402,5 +402,6 @@
   "backToShift": "Back to shift",
   "endSessionAndSignOut": "End session and sign out",
   "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
-  "noShiftsAvailableForDate": "No shifts available for the selected date"
+  "noShiftsAvailableForDate": "No shifts available for the selected date",
+  "pendingManager": "Pending Manager"
 }

@@ -28,8 +28,10 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
       path: Routes.selectShift,
       name: Routes.selectShift,
       pageBuilder: (context, state) {
-        final shifts = state.extra as List<ShiftEntity>;
-        return MaterialPage(child: SelectShiftPage(shifts: shifts));
+        final extra = state.extra! as ({String date, int partnerId});
+        return MaterialPage(
+          child: SelectShiftPage(date: extra.date, partnerId: extra.partnerId),
+        );
       },
     ),
     GoRoute(

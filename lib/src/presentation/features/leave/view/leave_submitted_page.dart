@@ -83,10 +83,10 @@ class LeaveSubmittedPage extends StatelessWidget {
                     Gap(spacing.s12),
                     _SummaryRow(
                       label: context.locale.statusTimeline,
-                      valueWidget: StatusDotTag(
-                        label: context.locale.pending,
-                        dotColor: color.warning,
-                      ),
+                      // WHY: backend may auto-approve the supervisor step when
+                      // filing on behalf, so the returned status is not always
+                      // "pending". Reflect the real status here.
+                      valueWidget: _statusTag(context, request.status),
                     ),
                   ],
                 ),
@@ -105,6 +105,29 @@ class LeaveSubmittedPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Maps a raw API [status] string to the correct [StatusDotTag].
+  StatusDotTag _statusTag(BuildContext context, String status) {
+    final color = context.color;
+    return switch (status) {
+      'approved' => StatusDotTag(
+          label: context.locale.approved,
+          dotColor: color.success,
+        ),
+      'pending_manager' => StatusDotTag(
+          label: context.locale.pendingManager,
+          dotColor: color.warning,
+        ),
+      'rejected' => StatusDotTag(
+          label: context.locale.rejected,
+          dotColor: color.error,
+        ),
+      _ => StatusDotTag(
+          label: context.locale.pending,
+          dotColor: color.warning,
+        ),
+    };
   }
 }
 
