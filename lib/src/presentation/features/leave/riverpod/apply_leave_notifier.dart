@@ -45,7 +45,7 @@ class ApplyLeaveAction extends _$ApplyLeaveAction {
           return data;
         }(),
       Error(:final error) => () {
-          state = AsyncValue.error(error.message, StackTrace.current);
+          state = AsyncValue.error(error, StackTrace.current);
           return null;
         }(),
       _ => () {

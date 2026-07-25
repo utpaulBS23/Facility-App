@@ -73,7 +73,7 @@ class LeaveRequestAction extends _$LeaveRequestAction {
     return _handleResult(result);
   }
 
-  bool _handleResult(Result<LeaveRequestEntity, dynamic> result) {
+  bool _handleResult(Result<LeaveRequestEntity, String> result) {
     return switch (result) {
       Success(:final data) => () {
           state = AsyncValue.data(data);
@@ -83,7 +83,7 @@ class LeaveRequestAction extends _$LeaveRequestAction {
         }(),
       Error(:final error) => () {
           state = AsyncValue.error(
-            error.message ?? 'Operation failed',
+            error,
             StackTrace.current,
           );
           return false;

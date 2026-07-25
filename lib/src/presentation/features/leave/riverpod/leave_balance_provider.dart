@@ -30,7 +30,7 @@ class LeaveBalance extends _$LeaveBalance {
 
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data ?? const []),
-      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
       _ => AsyncValue.error('Failed to load leave balances', StackTrace.current),
     };
   }

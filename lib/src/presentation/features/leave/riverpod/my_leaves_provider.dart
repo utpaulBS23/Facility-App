@@ -30,7 +30,7 @@ class MyLeaves extends _$MyLeaves {
 
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data ?? const []),
-      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
       _ => AsyncValue.error('Failed to load my leaves', StackTrace.current),
     };
   }
