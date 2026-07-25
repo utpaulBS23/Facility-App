@@ -42,6 +42,12 @@ class _LeaveSummaryCard extends ConsumerWidget {
 
     final balanceState = ref.watch(leaveBalanceProvider(attendantId: attendantId));
 
+    if (balanceState.isLoading) {
+      return const _LeaveSummaryCardShimmer();
+    }
+
+
+
     final (remainingStr, pendingStr) = balanceState.maybeWhen(
       data: (balances) {
         if (balances.isEmpty) return ('0', '0');

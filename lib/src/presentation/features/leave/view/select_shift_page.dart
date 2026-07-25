@@ -44,7 +44,7 @@ class SelectShiftPage extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
       ),
       body: shiftsState.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () => const _ShiftListShimmer(),
         error: (e, _) => Center(
           child: Padding(
             padding: EdgeInsets.all(context.dimensions.spacing.s24),

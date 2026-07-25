@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
@@ -49,6 +50,11 @@ part '../widgets/apply_leave_type_switch.dart';
 part '../widgets/apply_leave_date_selector.dart';
 part 'leave_submitted_page.dart';
 part 'apply_leave_handlers.dart';
+part '../widgets/shimmer/shimmer_box.dart';
+part '../widgets/shimmer/stat_tile_shimmer.dart';
+part '../widgets/shimmer/leave_request_shimmer.dart';
+part '../widgets/shimmer/attendant_shimmer.dart';
+part '../widgets/shimmer/shift_shimmer.dart';
 
 enum LeaveApplicationType { own, onBehalf }
 

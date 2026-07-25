@@ -61,8 +61,43 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: approvalsState.when(
-        loading: () =>
-            const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () => Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s16,
+                vertical: spacing.s8,
+              ),
+              child: const _LeaveSupervisorSummaryCardShimmer(),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s16,
+                vertical: spacing.s8,
+              ),
+              child: AppTextField.search(
+                controller: _searchController,
+                hint: context.locale.search,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s16,
+                vertical: spacing.s8,
+              ),
+              child: _LeaveFilterBar(
+                filters: _filters,
+                selectedFilter: _selectedFilter,
+                onFilterSelected: (_) {},
+              ),
+            ),
+            Expanded(
+              child: _LeaveRequestListShimmer(
+                showActionButtons: _selectedFilter != 'Approved',
+              ),
+            ),
+          ],
+        ),
         error: (err, _) => Center(child: Text(err.toString())),
         data: (requests) => Column(
           children: [

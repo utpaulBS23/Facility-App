@@ -79,8 +79,7 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
           ),
           Expanded(
             child: attendantsState.when(
-              loading: () =>
-                  const Center(child: CircularProgressIndicator.adaptive()),
+              loading: () => const _AttendantListShimmer(),
               error: (err, _) => Center(
                 child: Padding(
                   padding: EdgeInsets.all(spacing.s24),
