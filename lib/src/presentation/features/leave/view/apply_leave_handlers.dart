@@ -48,6 +48,14 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
       _ => const <ShiftEntity>[],
     };
     if (!mounted) return;
+    // WHY: no shifts means the SelectShiftPage would open empty. Show a
+    // message instead so the user knows to pick a different date.
+    if (list.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.noShiftsAvailableForDate)),
+      );
+      return;
+    }
     final s = await context.pushNamed<ShiftEntity>(Routes.selectShift, extra: list);
     if (s != null && mounted) {
       updateState(() => _selectedShift = s);
