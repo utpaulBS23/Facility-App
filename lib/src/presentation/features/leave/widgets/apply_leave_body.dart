@@ -112,6 +112,7 @@ class _LeaveTypeInput extends ConsumerWidget {
     );
 
     return DropdownMenuFormField<int>(
+      key: ValueKey(selectedLeavePolicyId),
       width: double.infinity,
       hintText: context.locale.leaveType,
       dropdownMenuEntries: entries,
@@ -142,9 +143,10 @@ class _ReasonInput extends StatelessWidget {
 }
 
 class _SubmitBar extends StatelessWidget {
-  const _SubmitBar({required this.onTap});
+  const _SubmitBar({required this.onTap, this.isEnabled = true});
 
   final VoidCallback onTap;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +175,7 @@ class _SubmitBar extends StatelessWidget {
           height: spacing.s44,
           width: double.infinity,
           child: FilledButton(
-            onPressed: onTap,
+            onPressed: isEnabled ? onTap : null,
             child: Text(context.locale.submitLeaveRequest),
           ),
         ),

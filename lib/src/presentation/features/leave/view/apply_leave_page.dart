@@ -100,6 +100,14 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
     super.dispose();
   }
 
+  bool get _isSubmitEnabled {
+    final hasLeaveType = _selectedLeavePolicyId != null;
+    if (_appType == LeaveApplicationType.onBehalf) {
+      return _selectedAttendant != null && hasLeaveType;
+    }
+    return hasLeaveType;
+  }
+
   @override
   Widget build(BuildContext context) {
     final canFileOnBehalf = ref
@@ -118,7 +126,17 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
       ),
       body: _ApplyLeaveBody(
         appType: _appType,
-        onAppTypeChanged: (type) => setState(() => _appType = type),
+        onAppTypeChanged: (type) {
+          if (_appType == type) return;
+          setState(() {
+            _appType = type;
+            _selectedLeavePolicyId = null;
+            _selectedShift = null;
+            _startDate = DateTime.now();
+            _endDate = DateTime.now();
+            _selectedAttendant = null;
+          });
+        },
         startDate: _startDate,
         endDate: _endDate,
         onStartDateTap: _onPickStartDate,
@@ -132,7 +150,10 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         onSelectAttendantTap: _onSelectAttendantTap,
         showAttendantTab: canFileOnBehalf,
       ),
-      bottomNavigationBar: _SubmitBar(onTap: _onSubmit),
+      bottomNavigationBar: _SubmitBar(
+        isEnabled: _isSubmitEnabled,
+        onTap: _onSubmit,
+      ),
     );
   }
 }
