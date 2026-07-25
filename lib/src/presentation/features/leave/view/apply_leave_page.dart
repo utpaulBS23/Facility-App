@@ -73,25 +73,35 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
   final _reasonController = TextEditingController();
+  ProviderSubscription<AsyncValue>? _actionSub;
 
   void updateState(VoidCallback fn) => setState(fn);
 
   @override
+  void initState() {
+    super.initState();
+    _actionSub = ref.listenManual(applyLeaveActionProvider, (_, next) {
+      next.whenOrNull(
+        error: (e, _) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        },
+      );
+    });
+  }
+
+  @override
   void dispose() {
+    _actionSub?.close();
     _reasonController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listenManual(applyLeaveActionProvider, (_, next) {
-      next.whenOrNull(
-        error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        ),
-      );
-    });
-
     final canFileOnBehalf = ref
         .watch(hasPermissionUseCaseProvider)
         .call(AppPermission.leaveFileOnBehalf);

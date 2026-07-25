@@ -1,20 +1,42 @@
 part of 'apply_leave_page.dart';
 
-class LeaveDetailsPage extends ConsumerWidget {
+class LeaveDetailsPage extends ConsumerStatefulWidget {
   const LeaveDetailsPage({super.key, required this.request});
 
   final LeaveRequestEntity request;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listenManual(leaveRequestActionProvider, (_, next) {
+  ConsumerState<LeaveDetailsPage> createState() => _LeaveDetailsPageState();
+}
+
+class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
+  ProviderSubscription<AsyncValue>? _actionSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _actionSub = ref.listenManual(leaveRequestActionProvider, (_, next) {
       next.whenOrNull(
-        error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        ),
+        error: (e, _) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        },
       );
     });
+  }
 
+  @override
+  void dispose() {
+    _actionSub?.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final request = widget.request;
     final spacing = context.dimensions.spacing;
     final color = context.color;
 
