@@ -14,8 +14,33 @@ class _LeaveSummaryCard extends ConsumerWidget {
 
     if (!canViewBalance) return const SizedBox.shrink();
 
-    final balanceState = ref.watch(leaveBalanceProvider(attendantId: attendantId));
     final spacing = context.dimensions.spacing;
+
+    // WHY: -1 is a sentinel from apply_leave_body.dart meaning the user has
+    // switched to on-behalf mode but hasn't picked an attendant yet.
+    // Show a prompt instead of fetching the supervisor's own balance.
+    if (attendantId == -1) {
+      return Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s14,
+        ),
+        decoration: BoxDecoration(
+          color: context.color.onPrimary,
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+        ),
+        child: Text(
+          context.locale.selectAttendantToViewBalance,
+          textAlign: TextAlign.center,
+          style: context.textStyle.bodySmall.copyWith(
+            color: context.color.text.secondary,
+          ),
+        ),
+      );
+    }
+
+    final balanceState = ref.watch(leaveBalanceProvider(attendantId: attendantId));
 
     final (remainingStr, pendingStr) = balanceState.maybeWhen(
       data: (balances) {

@@ -12,6 +12,9 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
       updateState(() {
         _startDate = picked;
         if (_endDate.isBefore(_startDate)) _endDate = _startDate;
+        // WHY: shifts are date-specific — a shift selected for a previous date
+        // is invalid for the new date, so force re-selection.
+        _selectedShift = null;
       });
     }
   }
@@ -24,7 +27,12 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null && mounted) {
-      updateState(() => _endDate = picked);
+      updateState(() {
+        _endDate = picked;
+        // WHY: end date change also resets shift — shifts are tied to a
+        // specific date range; a different end date may require a different shift.
+        _selectedShift = null;
+      });
     }
   }
 

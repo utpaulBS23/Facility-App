@@ -400,5 +400,6 @@
   "leaveRequestSubmitted": "Leave Request Submitted",
   "leaveSubmittedMessage": "Your leave request has been sent to your supervisor for approval. You'll be notified once it's reviewed.",
   "backToShift": "Back to shift",
-  "endSessionAndSignOut": "End session and sign out"
+  "endSessionAndSignOut": "End session and sign out",
+  "selectAttendantToViewBalance": "Select an attendant to view their leave balance"
 }

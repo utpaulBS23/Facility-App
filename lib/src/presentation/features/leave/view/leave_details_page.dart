@@ -7,27 +7,23 @@ class LeaveDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listenManual(leaveRequestActionProvider, (_, next) {
+      next.whenOrNull(
+        error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        ),
+      );
+    });
+
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final textStyle = context.textStyle;
 
     final isActionable = request.canAction;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            children: [
-              Icon(Icons.chevron_left_rounded, color: color.primary, size: 28),
-              Text(
-                context.locale.back,
-                style: textStyle.labelXl.copyWith(color: color.primary),
-              ),
-            ],
-          ),
-        ),
+        leading: const BackLeading(),
         leadingWidth: 100,
         title: Headline2xlTinyText(context.locale.leaveDetails),
         centerTitle: true,
