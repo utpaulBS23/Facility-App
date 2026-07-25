@@ -42,29 +42,18 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     final color = context.color;
     final approvalsState = ref.watch(leaveApprovalsProvider());
 
-    final canApplyLeave =
-        ref
-            .watch(hasPermissionUseCaseProvider)
-            .call(AppPermission.leaveRequest) ||
-        ref
-            .watch(hasPermissionUseCaseProvider)
-            .call(AppPermission.leaveFileOnBehalf);
+    final canApplyLeave = ref.watch(
+      userSessionProvider.select(
+        (session) =>
+            (session?.can(AppPermission.leaveRequest) ?? false) ||
+            (session?.can(AppPermission.leaveFileOnBehalf) ?? false),
+      ),
+    );
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () => context.pop(),
-          child: Row(
-            children: [
-              Icon(Icons.chevron_left_rounded, color: color.primary, size: 28),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(color: color.primary),
-              ),
-            ],
-          ),
-        ),
+        leading: const BackLeading(),
         leadingWidth: 100,
         title: Headline2xlTinyText(context.locale.leaveRequests),
         centerTitle: true,

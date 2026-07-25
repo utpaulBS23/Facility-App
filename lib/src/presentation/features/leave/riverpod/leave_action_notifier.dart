@@ -16,6 +16,8 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   AsyncValue<LeaveRequestEntity?> build() => const AsyncValue.data(null);
 
   Future<bool> approve(int leaveRequestId) async {
+    if (state.isLoading) return false;
+
     final hasPerm = ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveApproveSupervisor) ||
         ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveApproveManager);
     if (!hasPerm) {
@@ -36,6 +38,8 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   }
 
   Future<bool> reject(int leaveRequestId, {String? reason}) async {
+    if (state.isLoading) return false;
+
     final hasPerm = ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveReject);
     if (!hasPerm) {
       state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
@@ -55,6 +59,8 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   }
 
   Future<bool> cancel(int leaveRequestId) async {
+    if (state.isLoading) return false;
+
     final hasPerm = ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveCancel);
     if (!hasPerm) {
       state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);

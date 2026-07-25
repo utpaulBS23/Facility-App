@@ -18,6 +18,8 @@ class ApplyLeaveAction extends _$ApplyLeaveAction {
   AsyncValue<LeaveRequestEntity?> build() => const AsyncValue.data(null);
 
   Future<LeaveRequestEntity?> submit(RequestLeaveParams params) async {
+    if (state.isLoading) return null;
+
     final hasPerm = ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveRequest) ||
         ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveFileOnBehalf);
     if (!hasPerm) {

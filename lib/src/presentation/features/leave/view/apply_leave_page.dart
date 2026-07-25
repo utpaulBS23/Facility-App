@@ -12,10 +12,12 @@ import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/repositories/leave_repository.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../riverpod/apply_leave_notifier.dart';
@@ -76,6 +78,14 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listenManual(applyLeaveActionProvider, (_, next) {
+      next.whenOrNull(
+        error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        ),
+      );
+    });
+
     final canFileOnBehalf = ref
         .watch(hasPermissionUseCaseProvider)
         .call(AppPermission.leaveFileOnBehalf);
@@ -83,15 +93,7 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(Icons.chevron_left_rounded, color: context.color.primary, size: 28),
-              Text(context.locale.back, style: context.textStyle.labelXl.copyWith(color: context.color.primary)),
-            ],
-          ),
-        ),
+        leading: const BackLeading(),
         leadingWidth: 100,
         title: Headline2xlTinyText(context.locale.applyLeave),
         centerTitle: true,
