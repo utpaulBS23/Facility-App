@@ -224,3 +224,54 @@ SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
 ReportIssueUseCase reportIssueUseCase(Ref ref) {
   return ReportIssueUseCase(ref.read(visitRepositoryProvider));
 }
+
+/// Leave Management UseCases
+@riverpod
+GetLeavePoliciesUseCase getLeavePoliciesUseCase(Ref ref) {
+  return GetLeavePoliciesUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
+  return GetLeaveBalancesUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
+  return RequestLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
+  return GetMyLeavesUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
+  return GetLeaveRequestDetailsUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
+  return CancelLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
+  return GetLeaveAttendantsUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
+  return GetLeaveApprovalsUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+ApproveLeaveUseCase approveLeaveUseCase(Ref ref) {
+  return ApproveLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
+
+@riverpod
+RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
+  return RejectLeaveUseCase(ref.read(leaveRepositoryProvider));
+}
