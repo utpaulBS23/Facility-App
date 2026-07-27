@@ -1,36 +1,36 @@
 part of '../dependency_injection.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 LoginUseCase loginUseCase(Ref ref) {
   return LoginUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 LogoutUseCase logoutUseCase(Ref ref) {
   return LogoutUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 GetCurrentUserUseCase getCurrentUserUseCase(Ref ref) {
   return GetCurrentUserUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 GetUserSessionUseCase getUserSessionUseCase(Ref ref) {
   return GetUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 GetActivePartnerUseCase getActivePartnerUseCase(Ref ref) {
   return GetActivePartnerUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 WatchUserSessionUseCase watchUserSessionUseCase(Ref ref) {
   return WatchUserSessionUseCase(ref.read(authenticationRepositoryProvider));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 HasPermissionUseCase hasPermissionUseCase(Ref ref) {
   return HasPermissionUseCase(ref.read(authenticationRepositoryProvider));
 }
