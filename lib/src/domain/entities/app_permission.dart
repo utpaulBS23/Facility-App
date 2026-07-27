@@ -43,6 +43,7 @@ enum AppPermission {
   leaveCancel('leave.cancel'),
   leaveReject('leave.reject'),
   leaveApproveSupervisor('leave.approve_supervisor'),
+  leaveApproveManager('leave.approve_manager'),
   leaveFileOnBehalf('leave.file_on_behalf'),
   publicHolidayView('public_holiday.view'),
 
