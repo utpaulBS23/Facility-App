@@ -53,7 +53,7 @@ class _LeaveSummaryCard extends ConsumerWidget {
         if (balances.isEmpty) return ('0', '0');
         final b = selectedLeavePolicyId != null
             ? balances.firstWhere(
-                (element) => element.leavePolicy.id == selectedLeavePolicyId,
+                (element) => element.leavePolicy?.id == selectedLeavePolicyId,
                 orElse: () => balances.first,
               )
             : balances.first;

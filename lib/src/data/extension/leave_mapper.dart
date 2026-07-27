@@ -10,43 +10,33 @@ import '../models/leave/leave_request_model.dart';
 extension LeavePolicyModelToEntity on LeavePolicyModel {
   LeavePolicyEntity toEntity() => LeavePolicyEntity(
         id: id,
-        partnerId: partnerId,
-        name: name,
-        leaveType: leaveType,
-        defaultDaysPerYear: defaultDaysPerYear,
+        partnerId: partnerId ?? 0,
+        name: name ?? '',
+        leaveType: leaveType ?? 'annual',
+        defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
         maxConsecutiveDays: maxConsecutiveDays,
-        requiresApproval: requiresApproval,
-        canCarryForward: canCarryForward,
+        requiresApproval: requiresApproval ?? true,
+        canCarryForward: canCarryForward ?? false,
         maxCarryForwardDays: maxCarryForwardDays,
         minNoticeDays: minNoticeDays,
         color: color,
         description: description,
-        isActive: isActive,
+        isActive: isActive ?? true,
       );
 }
 
 extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() => LeaveBalanceEntity(
         id: id,
-        leavePolicy: leavePolicy?.toEntity() ??
-            LeavePolicyEntity(
-              id: 0,
-              partnerId: 0,
-              name: 'Annual Leave',
-              leaveType: 'annual',
-              defaultDaysPerYear: 0,
-              requiresApproval: true,
-              canCarryForward: false,
-              isActive: true,
-            ),
-        year: year,
-        allocatedDays: allocatedDays,
-        usedDays: usedDays,
-        carriedForwardDays: carriedForwardDays,
-        pendingDays: pendingDays,
-        adjustedDays: adjustedDays,
-        totalAvailableDays: totalAvailableDays,
-        remainingDays: remainingDays,
+        leavePolicy: leavePolicy?.toEntity(),
+        year: year ?? DateTime.now().year,
+        allocatedDays: allocatedDays ?? 0.0,
+        usedDays: usedDays ?? 0.0,
+        carriedForwardDays: carriedForwardDays ?? 0.0,
+        pendingDays: pendingDays ?? 0.0,
+        adjustedDays: adjustedDays ?? 0.0,
+        totalAvailableDays: totalAvailableDays ?? 0.0,
+        remainingDays: remainingDays ?? 0.0,
         notes: notes,
       );
 }
@@ -54,7 +44,7 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
 extension LeaveApplicantModelToEntity on LeaveApplicantModel {
   LeaveApplicantEntity toEntity() => LeaveApplicantEntity(
         id: id,
-        name: name,
+        name: name ?? '',
         email: email,
         groupName: groupName,
       );
@@ -62,10 +52,10 @@ extension LeaveApplicantModelToEntity on LeaveApplicantModel {
 
 extension LeaveApprovalStepModelToEntity on LeaveApprovalStepModel {
   LeaveApprovalStepEntity toEntity() => LeaveApprovalStepEntity(
-        stepNumber: stepNumber,
-        approverRole: approverRole,
+        stepNumber: stepNumber ?? 1,
+        approverRole: approverRole ?? 'supervisor',
         approver: approver?.toEntity(),
-        status: status,
+        status: status ?? 'pending',
         decidedAt: decidedAt,
         rejectionNote: rejectionNote,
       );
@@ -74,58 +64,58 @@ extension LeaveApprovalStepModelToEntity on LeaveApprovalStepModel {
 extension LeaveShiftDetailModelToEntity on LeaveShiftDetailModel {
   LeaveShiftDetailEntity toEntity() => LeaveShiftDetailEntity(
         id: id,
-        shiftDate: shiftDate,
-        shiftName: shiftName,
-        startTime: startTime,
-        endTime: endTime,
-        facilityId: facilityId,
-        facilityName: facilityName,
-        status: status,
+        shiftDate: shiftDate ?? '',
+        shiftName: shiftName ?? '',
+        startTime: startTime ?? '',
+        endTime: endTime ?? '',
+        facilityId: facilityId ?? 0,
+        facilityName: facilityName ?? '',
+        status: status ?? 'scheduled',
       );
 }
 
 extension LeaveRequestModelToEntity on LeaveRequestModel {
   LeaveRequestEntity toEntity() => LeaveRequestEntity(
         id: id,
-        referenceCode: referenceCode,
-        partnerId: partnerId,
+        referenceCode: referenceCode ?? '',
+        partnerId: partnerId ?? 0,
         applicant: applicant?.toEntity(),
         createdBy: createdBy?.toEntity(),
         leavePolicy: leavePolicy?.toEntity(),
-        startDate: startDate,
-        endDate: endDate,
-        daysCount: daysCount,
-        leaveType: leaveType,
+        startDate: startDate ?? '',
+        endDate: endDate ?? '',
+        daysCount: daysCount ?? 1,
+        leaveType: leaveType ?? 'annual',
         reason: reason,
         coverAttendant: coverAttendant?.toEntity(),
         attachments: attachments,
-        status: status,
-        currentStep: currentStep,
-        canAction: canAction,
+        status: status ?? 'pending_supervisor',
+        currentStep: currentStep ?? 1,
+        canAction: canAction ?? false,
         shifts: shifts.map((s) => s.toEntity()).toList(),
         approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        createdAt: createdAt ?? '',
+        updatedAt: updatedAt ?? '',
       );
 }
 
 extension LeaveAttendantShiftModelToEntity on LeaveAttendantShiftModel {
   LeaveAttendantShiftEntity toEntity() => LeaveAttendantShiftEntity(
         id: id,
-        shiftName: shiftName,
-        startTime: startTime,
-        endTime: endTime,
-        status: status,
+        shiftName: shiftName ?? '',
+        startTime: startTime ?? '',
+        endTime: endTime ?? '',
+        status: status ?? 'scheduled',
       );
 }
 
 extension LeaveAttendantModelToEntity on LeaveAttendantModel {
   LeaveAttendantEntity toEntity() => LeaveAttendantEntity(
         id: id,
-        uid: uid,
-        name: name,
-        facilityId: facilityId,
-        facilityName: facilityName,
+        uid: uid ?? '',
+        name: name ?? '',
+        facilityId: facilityId ?? 0,
+        facilityName: facilityName ?? '',
         shift: shift?.toEntity(),
       );
 }
