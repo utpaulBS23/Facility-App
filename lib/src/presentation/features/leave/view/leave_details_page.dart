@@ -11,6 +11,8 @@ class LeaveDetailsPage extends ConsumerStatefulWidget {
 
 class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
   ProviderSubscription<AsyncValue>? _actionSub;
+  bool _isApproving = false;
+  bool _isRejecting = false;
 
   @override
   void initState() {
@@ -32,6 +34,56 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
   void dispose() {
     _actionSub?.close();
     super.dispose();
+  }
+
+  void _onApprove() async {
+    if (_isApproving || _isRejecting) return;
+    setState(() => _isApproving = true);
+
+    final success = await ref
+        .read(leaveRequestActionProvider.notifier)
+        .approve(widget.request.id);
+
+    if (mounted) setState(() => _isApproving = false);
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: context.color.success,
+          content: Text(
+            'Leave request approved.',
+            style: TextStyle(color: context.color.onPrimary),
+          ),
+        ),
+      );
+      context.pop();
+    }
+  }
+
+  void _onReject() async {
+    if (_isApproving || _isRejecting) return;
+    setState(() => _isRejecting = true);
+
+    final success = await ref
+        .read(leaveRequestActionProvider.notifier)
+        .reject(widget.request.id);
+
+    if (mounted) setState(() => _isRejecting = false);
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: context.color.error,
+          content: Text(
+            'Leave request rejected.',
+            style: TextStyle(color: context.color.onPrimary),
+          ),
+        ),
+      );
+      context.pop();
+    }
   }
 
   @override
@@ -95,12 +147,8 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                 children: [
                   Expanded(
                     child: FilledButton(
-                      onPressed: () async {
-                        final success = await ref
-                            .read(leaveRequestActionProvider.notifier)
-                            .approve(request.id);
-                        if (success && context.mounted) context.pop();
-                      },
+                      onPressed:
+                          (_isApproving || _isRejecting) ? null : _onApprove,
                       style: FilledButton.styleFrom(
                         backgroundColor: color.primary,
                         foregroundColor: color.onPrimary,
@@ -111,18 +159,23 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                           ),
                         ),
                       ),
-                      child: Text(context.locale.approved),
+                      child: _isApproving
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: color.onPrimary,
+                              ),
+                            )
+                          : Text(context.locale.approved),
                     ),
                   ),
                   Gap(spacing.s12),
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () async {
-                        final success = await ref
-                            .read(leaveRequestActionProvider.notifier)
-                            .reject(request.id);
-                        if (success && context.mounted) context.pop();
-                      },
+                      onPressed:
+                          (_isApproving || _isRejecting) ? null : _onReject,
                       style: OutlinedButton.styleFrom(
                         foregroundColor: color.primary,
                         side: BorderSide(color: color.primary),
@@ -133,7 +186,16 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                           ),
                         ),
                       ),
-                      child: Text(context.locale.rejection),
+                      child: _isRejecting
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: color.primary,
+                              ),
+                            )
+                          : Text(context.locale.rejection),
                     ),
                   ),
                 ],

@@ -1,6 +1,6 @@
 part of '../view/apply_leave_page.dart';
 
-class _LeaveRequestActionCard extends ConsumerWidget {
+class _LeaveRequestActionCard extends ConsumerStatefulWidget {
   const _LeaveRequestActionCard({
     required this.request,
     required this.onTap,
@@ -10,7 +10,62 @@ class _LeaveRequestActionCard extends ConsumerWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_LeaveRequestActionCard> createState() =>
+      _LeaveRequestActionCardState();
+}
+
+class _LeaveRequestActionCardState
+    extends ConsumerState<_LeaveRequestActionCard> {
+  bool _isApproving = false;
+  bool _isRejecting = false;
+
+  void _onApprove() async {
+    if (_isApproving || _isRejecting) return;
+    setState(() => _isApproving = true);
+    final success = await ref
+        .read(leaveRequestActionProvider.notifier)
+        .approve(widget.request.id);
+    if (mounted) setState(() => _isApproving = false);
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: context.color.success,
+          content: Text(
+            'Leave request approved.',
+            style: TextStyle(color: context.color.onPrimary),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _onReject() async {
+    if (_isApproving || _isRejecting) return;
+    setState(() => _isRejecting = true);
+    final success = await ref
+        .read(leaveRequestActionProvider.notifier)
+        .reject(widget.request.id);
+    if (mounted) setState(() => _isRejecting = false);
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: context.color.error,
+          content: Text(
+            'Leave request rejected.',
+            style: TextStyle(color: context.color.onPrimary),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final request = widget.request;
     final spacing = context.dimensions.spacing;
     final textStyle = context.textStyle;
     final color = context.color;
@@ -28,7 +83,7 @@ class _LeaveRequestActionCard extends ConsumerWidget {
     };
 
     return InkWell(
-      onTap: onTap,
+      onTap: widget.onTap,
       borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
       child: Container(
         padding: EdgeInsets.all(spacing.s16),
@@ -66,11 +121,8 @@ class _LeaveRequestActionCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: FilledButton(
-                      onPressed: () {
-                        ref
-                            .read(leaveRequestActionProvider.notifier)
-                            .approve(request.id);
-                      },
+                      onPressed:
+                          (_isApproving || _isRejecting) ? null : _onApprove,
                       style: FilledButton.styleFrom(
                         backgroundColor: color.primary,
                         foregroundColor: color.onPrimary,
@@ -80,17 +132,23 @@ class _LeaveRequestActionCard extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      child: Text(context.locale.approved),
+                      child: _isApproving
+                          ? SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: color.onPrimary,
+                              ),
+                            )
+                          : Text(context.locale.approved),
                     ),
                   ),
                   Gap(spacing.s12),
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {
-                        ref
-                            .read(leaveRequestActionProvider.notifier)
-                            .reject(request.id);
-                      },
+                      onPressed:
+                          (_isApproving || _isRejecting) ? null : _onReject,
                       style: OutlinedButton.styleFrom(
                         foregroundColor: color.primary,
                         side: BorderSide(color: color.primary),
@@ -100,7 +158,16 @@ class _LeaveRequestActionCard extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      child: Text(context.locale.rejection),
+                      child: _isRejecting
+                          ? SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: color.primary,
+                              ),
+                            )
+                          : Text(context.locale.rejection),
                     ),
                   ),
                 ],
