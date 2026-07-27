@@ -4,14 +4,10 @@ class LeaveApplicantEntity {
   const LeaveApplicantEntity({
     required this.id,
     required this.name,
-    this.email,
-    this.groupName,
   });
 
   final int id;
   final String name;
-  final String? email;
-  final String? groupName;
 }
 
 class LeaveApprovalStepEntity {
@@ -58,7 +54,6 @@ class LeaveRequestEntity {
   const LeaveRequestEntity({
     required this.id,
     required this.referenceCode,
-    required this.partnerId,
     this.applicant,
     this.createdBy,
     this.leavePolicy,
@@ -70,17 +65,14 @@ class LeaveRequestEntity {
     this.coverAttendant,
     this.attachments = const [],
     required this.status,
-    required this.currentStep,
     required this.canAction,
     this.shifts = const [],
     this.approvalSteps = const [],
     required this.createdAt,
-    required this.updatedAt,
   });
 
   final int id;
   final String referenceCode;
-  final int partnerId;
   final LeaveApplicantEntity? applicant;
   final LeaveApplicantEntity? createdBy;
   final LeavePolicyEntity? leavePolicy;
@@ -92,12 +84,10 @@ class LeaveRequestEntity {
   final LeaveApplicantEntity? coverAttendant;
   final List<String> attachments;
   final String status;
-  final int currentStep;
   final bool canAction;
   final List<LeaveShiftDetailEntity> shifts;
   final List<LeaveApprovalStepEntity> approvalSteps;
   final String createdAt;
-  final String updatedAt;
 
   /// Visible approval steps for display: stops after the first rejected step.
   List<LeaveApprovalStepEntity> get visibleApprovalSteps {

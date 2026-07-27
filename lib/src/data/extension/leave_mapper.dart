@@ -10,18 +10,11 @@ import '../models/leave/leave_request_model.dart';
 extension LeavePolicyModelToEntity on LeavePolicyModel {
   LeavePolicyEntity toEntity() => LeavePolicyEntity(
         id: id,
-        partnerId: partnerId ?? 0,
         name: name ?? '',
         leaveType: leaveType ?? 'annual',
         defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
-        maxConsecutiveDays: maxConsecutiveDays,
         requiresApproval: requiresApproval ?? true,
         canCarryForward: canCarryForward ?? false,
-        maxCarryForwardDays: maxCarryForwardDays,
-        minNoticeDays: minNoticeDays,
-        color: color,
-        description: description,
-        isActive: isActive ?? true,
       );
 }
 
@@ -29,15 +22,10 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() => LeaveBalanceEntity(
         id: id,
         leavePolicy: leavePolicy?.toEntity(),
-        year: year ?? DateTime.now().year,
         allocatedDays: allocatedDays ?? 0.0,
         usedDays: usedDays ?? 0.0,
-        carriedForwardDays: carriedForwardDays ?? 0.0,
         pendingDays: pendingDays ?? 0.0,
-        adjustedDays: adjustedDays ?? 0.0,
-        totalAvailableDays: totalAvailableDays ?? 0.0,
         remainingDays: remainingDays ?? 0.0,
-        notes: notes,
       );
 }
 
@@ -45,8 +33,6 @@ extension LeaveApplicantModelToEntity on LeaveApplicantModel {
   LeaveApplicantEntity toEntity() => LeaveApplicantEntity(
         id: id,
         name: name ?? '',
-        email: email,
-        groupName: groupName,
       );
 }
 
@@ -78,7 +64,6 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
   LeaveRequestEntity toEntity() => LeaveRequestEntity(
         id: id,
         referenceCode: referenceCode ?? '',
-        partnerId: partnerId ?? 0,
         applicant: applicant?.toEntity(),
         createdBy: createdBy?.toEntity(),
         leavePolicy: leavePolicy?.toEntity(),
@@ -90,12 +75,10 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
         coverAttendant: coverAttendant?.toEntity(),
         attachments: attachments,
         status: status ?? 'pending_supervisor',
-        currentStep: currentStep ?? 1,
         canAction: canAction ?? false,
         shifts: shifts.map((s) => s.toEntity()).toList(),
         approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
         createdAt: createdAt ?? '',
-        updatedAt: updatedAt ?? '',
       );
 }
 
