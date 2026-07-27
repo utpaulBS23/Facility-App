@@ -251,3 +251,5 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 }
+// Force regeneration
+

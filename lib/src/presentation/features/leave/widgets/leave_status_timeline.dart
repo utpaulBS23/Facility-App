@@ -12,7 +12,7 @@ class _LeaveStatusTimeline extends StatelessWidget {
     final textStyle = context.textStyle;
 
     final applicantName = request.applicant?.name ?? context.locale.attendant;
-    final steps = request.approvalSteps;
+    final steps = request.visibleApprovalSteps;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -44,17 +44,18 @@ class _LeaveStatusTimeline extends StatelessWidget {
             final step = entry.value;
             final isLast = idx == steps.length - 1;
 
+            final roleName = _formatRole(step.approverRole);
             final (stepTitle, stepColor) = switch (step.status) {
               'approved' => (
-                  '${step.approverRole.toUpperCase()} Approved',
+                  '$roleName Approved',
                   color.success,
                 ),
               'rejected' => (
-                  '${step.approverRole.toUpperCase()} Rejected',
+                  '$roleName Rejected',
                   color.error,
                 ),
               _ => (
-                  '${step.approverRole.toUpperCase()} Pending',
+                  '$roleName Pending',
                   color.warning,
                 ),
             };
@@ -132,4 +133,26 @@ class _LeaveStatusTimeline extends StatelessWidget {
       ],
     );
   }
+}
+
+String _formatRole(String role) {
+  final upper = role.trim().toUpperCase();
+  if (upper == 'OPS_MANAGER' || upper == 'OPS_MGR') {
+    return 'Operation Manager';
+  }
+  if (upper == 'LINE_MANAGER' || upper == 'LINE_MGR') {
+    return 'Line Manager';
+  }
+  if (upper == 'HR_MANAGER' || upper == 'HR_MGR') {
+    return 'HR Manager';
+  }
+  if (upper == 'FACILITY_MANAGER' || upper == 'FACILITY_MGR') {
+    return 'Facility Manager';
+  }
+  return upper
+      .replaceAll('_', ' ')
+      .toLowerCase()
+      .split(' ')
+      .map((w) => w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '')
+      .join(' ');
 }

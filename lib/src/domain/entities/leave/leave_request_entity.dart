@@ -98,4 +98,16 @@ class LeaveRequestEntity {
   final List<LeaveApprovalStepEntity> approvalSteps;
   final String createdAt;
   final String updatedAt;
+
+  /// Visible approval steps for display: stops after the first rejected step.
+  List<LeaveApprovalStepEntity> get visibleApprovalSteps {
+    final result = <LeaveApprovalStepEntity>[];
+    for (final step in approvalSteps) {
+      result.add(step);
+      if (step.status.toLowerCase() == 'rejected') {
+        break;
+      }
+    }
+    return result;
+  }
 }
