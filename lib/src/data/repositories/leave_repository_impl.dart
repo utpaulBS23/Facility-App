@@ -5,10 +5,7 @@ import '../../domain/entities/leave/leave_policy_entity.dart';
 import '../../domain/entities/leave/leave_request_entity.dart';
 import '../../domain/repositories/leave_repository.dart';
 import '../extension/leave_mapper.dart';
-import '../models/leave/leave_attendant_model.dart';
-import '../models/leave/leave_balance_model.dart';
-import '../models/leave/leave_policy_model.dart';
-import '../models/leave/leave_request_model.dart';
+import '../models/leave/leave_response_models.dart';
 import '../services/network/rest_client.dart';
 
 final class LeaveRepositoryImpl extends LeaveRepository {
@@ -28,18 +25,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         page: page,
         perPage: perPage,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to load leave policies',
-        );
-      }
-      final rawList = body['data'] as List<dynamic>? ?? const [];
-      final models = rawList
-          .map((e) => LeavePolicyModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return models.map((m) => m.toEntity()).toList();
+      final responseModel =
+          LeavePolicyListResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -61,18 +49,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         page: page,
         perPage: perPage,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to load leave balances',
-        );
-      }
-      final rawList = body['data'] as List<dynamic>? ?? const [];
-      final models = rawList
-          .map((e) => LeaveBalanceModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return models.map((m) => m.toEntity()).toList();
+      final responseModel =
+          LeaveBalanceListResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -86,16 +65,8 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         partnerId: partnerId,
         body: params.toJson(),
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to submit leave request',
-        );
-      }
-      final rawData = body['data'] as Map<String, dynamic>;
-      final model = LeaveRequestModel.fromJson(rawData);
-      return model.toEntity();
+      final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -109,18 +80,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         partnerId: partnerId,
         status: status,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to load my leaves',
-        );
-      }
-      final rawList = body['data'] as List<dynamic>? ?? const [];
-      final models = rawList
-          .map((e) => LeaveRequestModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return models.map((m) => m.toEntity()).toList();
+      final responseModel =
+          LeaveRequestListResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -134,16 +96,8 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         partnerId: partnerId,
         leaveRequestId: leaveRequestId,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to load leave details',
-        );
-      }
-      final rawData = body['data'] as Map<String, dynamic>;
-      final model = LeaveRequestModel.fromJson(rawData);
-      return model.toEntity();
+      final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -157,16 +111,8 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         partnerId: partnerId,
         leaveRequestId: leaveRequestId,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to cancel leave request',
-        );
-      }
-      final rawData = body['data'] as Map<String, dynamic>;
-      final model = LeaveRequestModel.fromJson(rawData);
-      return model.toEntity();
+      final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -176,18 +122,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   ) {
     return asyncGuard(() async {
       final response = await remote.getLeaveAttendants(partnerId: partnerId);
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to load attendants',
-        );
-      }
-      final rawList = body['data'] as List<dynamic>? ?? const [];
-      final models = rawList
-          .map((e) => LeaveAttendantModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return models.map((m) => m.toEntity()).toList();
+      final responseModel =
+          LeaveAttendantListResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -201,18 +138,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         partnerId: partnerId,
         status: status,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to load leave approvals',
-        );
-      }
-      final rawList = body['data'] as List<dynamic>? ?? const [];
-      final models = rawList
-          .map((e) => LeaveRequestModel.fromJson(e as Map<String, dynamic>))
-          .toList();
-      return models.map((m) => m.toEntity()).toList();
+      final responseModel =
+          LeaveRequestListResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -226,16 +154,8 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         partnerId: partnerId,
         leaveRequestId: leaveRequestId,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to approve leave request',
-        );
-      }
-      final rawData = body['data'] as Map<String, dynamic>;
-      final model = LeaveRequestModel.fromJson(rawData);
-      return model.toEntity();
+      final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 
@@ -253,16 +173,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
             ? {'rejection_reason': reason}
             : <String, dynamic>{},
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(
-          body['message'] as String? ?? 'Failed to reject leave request',
-        );
-      }
-      final rawData = body['data'] as Map<String, dynamic>;
-      final model = LeaveRequestModel.fromJson(rawData);
-      return model.toEntity();
+      final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
     });
   }
 }
+

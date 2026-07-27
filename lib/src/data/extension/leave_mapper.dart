@@ -6,6 +6,7 @@ import '../models/leave/leave_attendant_model.dart';
 import '../models/leave/leave_balance_model.dart';
 import '../models/leave/leave_policy_model.dart';
 import '../models/leave/leave_request_model.dart';
+import '../models/leave/leave_response_models.dart';
 
 extension LeavePolicyModelToEntity on LeavePolicyModel {
   LeavePolicyEntity toEntity() => LeavePolicyEntity(
@@ -101,4 +102,28 @@ extension LeaveAttendantModelToEntity on LeaveAttendantModel {
         facilityName: facilityName ?? '',
         shift: shift?.toEntity(),
       );
+}
+
+extension LeavePolicyListResponseModelToEntity on LeavePolicyListResponseModel {
+  List<LeavePolicyEntity> toEntity() =>
+      data.map((model) => model.toEntity()).toList();
+}
+
+extension LeaveBalanceListResponseModelToEntity on LeaveBalanceListResponseModel {
+  List<LeaveBalanceEntity> toEntity() =>
+      data.map((model) => model.toEntity()).toList();
+}
+
+extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
+  LeaveRequestEntity toEntity() => data!.toEntity();
+}
+
+extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel {
+  List<LeaveRequestEntity> toEntity() =>
+      data.map((model) => model.toEntity()).toList();
+}
+
+extension LeaveAttendantListResponseModelToEntity on LeaveAttendantListResponseModel {
+  List<LeaveAttendantEntity> toEntity() =>
+      data.map((model) => model.toEntity()).toList();
 }
