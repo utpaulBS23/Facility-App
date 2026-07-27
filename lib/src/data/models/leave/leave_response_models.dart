@@ -50,10 +50,18 @@ class LeaveRequestResponseModel with LeaveRequestResponseModelMappable {
 class LeaveRequestListResponseModel with LeaveRequestListResponseModelMappable {
   const LeaveRequestListResponseModel({
     this.success,
+    this.totalRecords,
+    this.page,
+    this.pageSize,
     this.data = const [],
   });
 
   final bool? success;
+  @MappableField(key: 'total_records')
+  final int? totalRecords;
+  final int? page;
+  @MappableField(key: 'page_size')
+  final int? pageSize;
   final List<LeaveRequestModel> data;
 
   static const fromJson = LeaveRequestListResponseModelMapper.fromJson;

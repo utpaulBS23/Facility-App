@@ -189,8 +189,6 @@ abstract class RestClient {
   @GET(Endpoints.leavePolicies)
   Future<HttpResponse> getLeavePolicies({
     @Path('partnerId') required int partnerId,
-    @Query('page') int? page,
-    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.leaveBalances)
@@ -213,6 +211,8 @@ abstract class RestClient {
   Future<HttpResponse> getMyLeaves({
     @Path('partnerId') required int partnerId,
     @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('page_size') int? pageSize,
   });
 
   @GET(Endpoints.leaveRequestDetails)
@@ -236,6 +236,8 @@ abstract class RestClient {
   Future<HttpResponse> getLeaveApprovals({
     @Path('partnerId') required int partnerId,
     @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('page_size') int? pageSize,
   });
 
   @POST(Endpoints.approveLeave)

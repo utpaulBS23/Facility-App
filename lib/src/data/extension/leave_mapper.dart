@@ -1,3 +1,4 @@
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -104,6 +105,7 @@ extension LeaveAttendantModelToEntity on LeaveAttendantModel {
       );
 }
 
+
 extension LeavePolicyListResponseModelToEntity on LeavePolicyListResponseModel {
   List<LeavePolicyEntity> toEntity() =>
       data.map((model) => model.toEntity()).toList();
@@ -119,8 +121,21 @@ extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
 }
 
 extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel {
-  List<LeaveRequestEntity> toEntity() =>
-      data.map((model) => model.toEntity()).toList();
+  PaginatedListEntity<LeaveRequestEntity> toEntity() {
+    final items = data.map((model) => model.toEntity()).toList();
+    final curPage = page ?? 1;
+    final size = pageSize ?? 20;
+    final total = totalRecords ?? items.length;
+    final hasMore = (curPage * size) < total;
+
+    return PaginatedListEntity<LeaveRequestEntity>(
+      items: items,
+      currentPage: curPage,
+      pageSize: size,
+      totalRecords: total,
+      hasMore: hasMore,
+    );
+  }
 }
 
 extension LeaveAttendantListResponseModelToEntity on LeaveAttendantListResponseModel {

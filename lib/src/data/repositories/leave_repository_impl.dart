@@ -1,4 +1,5 @@
 import '../../core/base/base.dart';
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -15,16 +16,10 @@ final class LeaveRepositoryImpl extends LeaveRepository {
 
   @override
   Future<Result<List<LeavePolicyEntity>, Failure>> getLeavePolicies(
-    int partnerId, {
-    int? page,
-    int? perPage,
-  }) {
+    int partnerId,
+  ) {
     return asyncGuard(() async {
-      final response = await remote.getLeavePolicies(
-        partnerId: partnerId,
-        page: page,
-        perPage: perPage,
-      );
+      final response = await remote.getLeavePolicies(partnerId: partnerId);
       final responseModel =
           LeavePolicyListResponseModel.fromJson(response.data);
       return responseModel.toEntity();
@@ -71,14 +66,18 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   }
 
   @override
-  Future<Result<List<LeaveRequestEntity>, Failure>> getMyLeaves(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getMyLeaves(
     int partnerId, {
     String? status,
+    int? page,
+    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getMyLeaves(
         partnerId: partnerId,
         status: status,
+        page: page,
+        pageSize: pageSize,
       );
       final responseModel =
           LeaveRequestListResponseModel.fromJson(response.data);
@@ -129,14 +128,18 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   }
 
   @override
-  Future<Result<List<LeaveRequestEntity>, Failure>> getLeaveApprovals(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getLeaveApprovals(
     int partnerId, {
     String? status,
+    int? page,
+    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getLeaveApprovals(
         partnerId: partnerId,
         status: status,
+        page: page,
+        pageSize: pageSize,
       );
       final responseModel =
           LeaveRequestListResponseModel.fromJson(response.data);
@@ -178,4 +181,3 @@ final class LeaveRepositoryImpl extends LeaveRepository {
     });
   }
 }
-

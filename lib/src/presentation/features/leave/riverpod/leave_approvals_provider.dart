@@ -19,7 +19,7 @@ class LeaveApprovals extends _$LeaveApprovals {
         );
 
     return switch (result) {
-      Success(:final data) => data ?? const [],
+      Success(:final data) => data?.items ?? const [],
       Error(:final error) => throw Exception(error),
       _ => throw Exception('Failed to load leave approvals'),
     };

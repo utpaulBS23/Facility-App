@@ -1,4 +1,5 @@
 import '../../core/base/base.dart';
+import '../entities/common/paginated_list_entity.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
@@ -38,10 +39,8 @@ class RequestLeaveParams {
 
 abstract base class LeaveRepository extends Repository {
   Future<Result<List<LeavePolicyEntity>, Failure>> getLeavePolicies(
-    int partnerId, {
-    int? page,
-    int? perPage,
-  });
+    int partnerId,
+  );
 
   Future<Result<List<LeaveBalanceEntity>, Failure>> getLeaveBalances(
     int partnerId, {
@@ -57,9 +56,11 @@ abstract base class LeaveRepository extends Repository {
     RequestLeaveParams params,
   );
 
-  Future<Result<List<LeaveRequestEntity>, Failure>> getMyLeaves(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getMyLeaves(
     int partnerId, {
     String? status,
+    int? page,
+    int? pageSize,
   });
 
   Future<Result<LeaveRequestEntity, Failure>> getLeaveRequestDetails(
@@ -76,9 +77,11 @@ abstract base class LeaveRepository extends Repository {
     int partnerId,
   );
 
-  Future<Result<List<LeaveRequestEntity>, Failure>> getLeaveApprovals(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getLeaveApprovals(
     int partnerId, {
     String? status,
+    int? page,
+    int? pageSize,
   });
 
   Future<Result<LeaveRequestEntity, Failure>> approveLeave(

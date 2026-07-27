@@ -1,4 +1,5 @@
 import '../../core/base/result.dart';
+import '../entities/common/paginated_list_entity.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
@@ -10,15 +11,9 @@ final class GetLeavePoliciesUseCase {
   final LeaveRepository repository;
 
   Future<Result<List<LeavePolicyEntity>, String>> call(
-    int partnerId, {
-    int? page,
-    int? perPage,
-  }) async {
-    final result = await repository.getLeavePolicies(
-      partnerId,
-      page: page,
-      perPage: perPage,
-    );
+    int partnerId,
+  ) async {
+    final result = await repository.getLeavePolicies(partnerId);
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error.message),
@@ -76,11 +71,18 @@ final class GetMyLeavesUseCase {
   GetMyLeavesUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<List<LeaveRequestEntity>, String>> call(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, String>> call(
     int partnerId, {
     String? status,
+    int? page,
+    int? pageSize,
   }) async {
-    final result = await repository.getMyLeaves(partnerId, status: status);
+    final result = await repository.getMyLeaves(
+      partnerId,
+      status: status,
+      page: page,
+      pageSize: pageSize,
+    );
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error.message),
@@ -146,11 +148,18 @@ final class GetLeaveApprovalsUseCase {
   GetLeaveApprovalsUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<List<LeaveRequestEntity>, String>> call(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, String>> call(
     int partnerId, {
     String? status,
+    int? page,
+    int? pageSize,
   }) async {
-    final result = await repository.getLeaveApprovals(partnerId, status: status);
+    final result = await repository.getLeaveApprovals(
+      partnerId,
+      status: status,
+      page: page,
+      pageSize: pageSize,
+    );
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error.message),
