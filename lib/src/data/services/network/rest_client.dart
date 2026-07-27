@@ -184,4 +184,74 @@ abstract class RestClient {
     @Path('taskId') required int taskId,
     @Body() required FormData formData,
   });
+
+  /// Leave Management
+  @GET(Endpoints.leavePolicies)
+  Future<HttpResponse> getLeavePolicies({
+    @Path('partnerId') required int partnerId,
+  });
+
+  @GET(Endpoints.leaveBalances)
+  Future<HttpResponse> getLeaveBalances({
+    @Path('partnerId') required int partnerId,
+    @Query('year') int? year,
+    @Query('leave_policy_id') int? leavePolicyId,
+    @Query('attendant_id') int? attendantId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.requestLeave)
+  Future<HttpResponse> requestLeave({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.myLeaves)
+  Future<HttpResponse> getMyLeaves({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('page_size') int? pageSize,
+  });
+
+  @GET(Endpoints.leaveRequestDetails)
+  Future<HttpResponse> getLeaveRequestDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('leaveRequestId') required int leaveRequestId,
+  });
+
+  @POST(Endpoints.cancelLeave)
+  Future<HttpResponse> cancelLeave({
+    @Path('partnerId') required int partnerId,
+    @Path('leaveRequestId') required int leaveRequestId,
+  });
+
+  @GET(Endpoints.leaveAttendants)
+  Future<HttpResponse> getLeaveAttendants({
+    @Path('partnerId') required int partnerId,
+  });
+
+  @GET(Endpoints.leaveApprovals)
+  Future<HttpResponse> getLeaveApprovals({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('page_size') int? pageSize,
+  });
+
+  @POST(Endpoints.approveLeave)
+  Future<HttpResponse> approveLeave({
+    @Path('partnerId') required int partnerId,
+    @Path('leaveRequestId') required int leaveRequestId,
+  });
+
+  @POST(Endpoints.rejectLeave)
+  Future<HttpResponse> rejectLeave({
+    @Path('partnerId') required int partnerId,
+    @Path('leaveRequestId') required int leaveRequestId,
+    @Body() required Map<String, dynamic> body,
+  });
 }
+// Force regeneration
+
