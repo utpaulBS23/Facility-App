@@ -30,13 +30,6 @@ part '../widgets/shimmer/leave_request_shimmer.dart';
 
 const _kLeaveFilters = ['All', 'Pending', 'Manager Approval', 'Approved', 'Rejected'];
 
-const _kStatusForFilter = {
-  'Pending': 'pending_supervisor',
-  'Manager Approval': 'pending_manager',
-  'Approved': 'approved',
-  'Rejected': 'rejected',
-};
-
 class LeaveRequestsPage extends ConsumerStatefulWidget {
   const LeaveRequestsPage({super.key});
 
@@ -81,8 +74,10 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     final color = context.color;
     final padding =
         EdgeInsets.symmetric(horizontal: spacing.s16, vertical: spacing.s8);
-    final status = _kStatusForFilter[_selectedFilter];
-    final approvalsState = ref.watch(leaveApprovalsProvider(status: status));
+    // WHY: always fetch unfiltered — _LeaveRequestsList does client-side
+    // status/search filtering, and the summary cards need full counts
+    // regardless of which filter chip is selected.
+    final approvalsState = ref.watch(leaveApprovalsProvider());
     final canApplyLeave = ref.watch(
       userSessionProvider.select(
         (session) =>
