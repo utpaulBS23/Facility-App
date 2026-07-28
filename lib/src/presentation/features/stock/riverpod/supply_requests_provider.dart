@@ -1,0 +1,27 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../core/base/result.dart';
+import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/common/paginated_list_entity.dart';
+import '../../../../domain/entities/supply/supply_request_entity.dart';
+
+part 'supply_requests_provider.g.dart';
+
+@riverpod
+class SupplyRequests extends _$SupplyRequests {
+  @override
+  Future<PaginatedListEntity<SupplyRequestEntity>> build({String? status}) async {
+    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
+    if (partnerId == null) return const PaginatedListEntity.empty();
+
+    final result = await ref.read(getSupplyRequestsUseCaseProvider).call(
+          partnerId: partnerId,
+          status: status,
+        );
+
+    return result.when(
+      success: (data) => data ?? const PaginatedListEntity.empty(),
+      error: (error) => throw Exception(error),
+    );
+  }
+}

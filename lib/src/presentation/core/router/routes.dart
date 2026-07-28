@@ -21,7 +21,11 @@ class Routes {
   static const String shiftWindowClosed = '/shift-window-closed';
 
   static const String applyLeave = '/apply-leave';
+  static const String leaveRequests = '/leave-requests';
+  static const String leaveDetails = '/leave-details';
   static const String selectShift = '/select-shift';
+  static const String selectAttendant = '/select-attendant';
+  static const String leaveSubmitted = '/leave-submitted';
   static const String assignStaff = '/assign-staff';
 
   static const String attendance = '/attendance';
@@ -35,4 +39,12 @@ class Routes {
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
   static const String menu = '/menu';
+
+  static const String supplyRequests = '/supply-requests';
+  static const String requestDetails = '/request-details';
+  static const String deliveryComplaint = '/delivery-complaint';
+  static const String confirmDelivery = '/confirm-delivery';
+  static const String newRequest = '/new-request';
+  static const String stock = '/stock';
+  static const String updateStock = '/update-stock';
 }

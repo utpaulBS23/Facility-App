@@ -12,6 +12,7 @@ import '../../../domain/entities/shift_entity.dart';
 import '../../../domain/entities/shift_slot_entity.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../../domain/entities/visit_entity.dart';
+import '../../../domain/entities/leave/leave_request_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';
 import '../../features/authentication/forgot_password/view/email_verification_page.dart';
@@ -21,6 +22,14 @@ import '../../features/authentication/login/view/login_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
 import '../../features/menu/view/menu_page.dart';
+import '../../features/stock/view/confirm_delivery_page.dart';
+import '../../features/stock/view/delivery_complaint_page.dart';
+import '../../features/stock/view/new_request_page.dart';
+import '../../features/stock/view/request_details_page.dart';
+import '../../features/stock/view/stock_page.dart';
+import '../../features/stock/view/supply_requests_page.dart';
+import '../../features/stock/view/update_stock_page.dart';
+import '../../features/stock/widgets/stock_mock_models.dart';
 import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
@@ -47,6 +56,7 @@ part 'parts/task_routes.dart';
 part 'parts/shell_routes.dart';
 part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
+part 'parts/stock_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -104,6 +114,7 @@ GoRouter goRouter(Ref ref) {
       ..._shiftRoutes(ref),
       ..._attendanceRoutes(ref),
       ..._myVisitsRoutes(ref),
+      ...stockRoutes,
       _shellRoutes(ref),
     ],
   );
