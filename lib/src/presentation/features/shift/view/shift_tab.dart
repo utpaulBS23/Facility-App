@@ -57,11 +57,7 @@ class ShiftTab extends ConsumerWidget {
     // assign-staff button inside each card differs by permission. A session
     // entitled to neither shift capability gets an explicit empty state.
     final hasShiftAccess = ref.watch(
-      userSessionProvider.select(
-        (session) =>
-            (session?.shiftViewMode ?? ShiftViewMode.unavailable) !=
-            ShiftViewMode.unavailable,
-      ),
+      userSessionProvider.select((session) => session?.hasShiftAccess ?? false),
     );
 
     return Scaffold(
