@@ -52,6 +52,11 @@ ShiftRepository shiftRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+FacilityRepository facilityRepository(Ref ref) {
+  return FacilityRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 CheckOutRepository checkOutRepository(Ref ref) {
   return CheckOutRepositoryImpl(ref.read(restClientServiceProvider));
 }

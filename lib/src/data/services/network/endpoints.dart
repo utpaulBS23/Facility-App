@@ -18,6 +18,9 @@ class Endpoints {
   /// Partner staff directory — used to pick a person for [assignShiftSlot].
   static const String partnerUsers = '/partners/{partnerId}/users';
 
+  /// Facilities
+  static const String facilities = '/partners/{partnerId}/facilities';
+
   /// Assigns an attendant to an existing shift slot within a roster. The
   /// slot must already exist — created via [shiftSlots]'s parent flow.
   static const String assignShiftSlot =
@@ -45,6 +48,29 @@ class Endpoints {
   /// `active_slot` reports the caller's own actionable slot. It supersedes
   /// [myShifts] and [supervisorShifts].
   static const String shiftSlots = '/partners/{partnerId}/shift-slots';
+
+  /// Creates a weekly roster for a facility — the parent resource
+  /// [assignShiftSlot] attaches to. [getRosters] lists the same resource.
+  static const String createRoster =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters';
+
+  /// Lists rosters for a facility — same resource [createRoster] posts to.
+  static const String getRosters = createRoster;
+
+  /// Publishes a draft roster, notifying staff.
+  static const String publishRoster =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/publish';
+
+  /// Creates a shift slot within an existing roster. [getRosterShifts] lists
+  /// the same resource.
+  static const String createShift =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/shifts';
+
+  /// Lists every shift within a specific roster.
+  static const String getRosterShifts = createShift;
+
+  /// Partner-wide catalog of reusable shift templates.
+  static const String shiftTemplates = '/partners/{partnerId}/shift-templates';
   static const String myShifts = '/partners/{partnerId}/attendants/my-shifts';
   static const String supervisorShifts =
       '/partners/{partnerId}/supervisors/manage-shifts';

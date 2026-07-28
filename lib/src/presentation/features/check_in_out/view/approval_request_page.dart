@@ -31,24 +31,16 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
     _ => AttendanceStatue.pending,
   };
 
-  int? get _partnerId => ref.activePartnerId;
-
   void _onRefresh() {
-    final partnerId = _partnerId;
-    if (partnerId == null) return;
-    ref.read(refreshAttendanceProvider.notifier).refresh(
-      partnerId: partnerId,
-      shiftId: _current.shiftId,
-    );
+    ref
+        .read(refreshAttendanceProvider.notifier)
+        .refresh(shiftId: _current.shiftId);
   }
 
   void _onWithdraw() {
-    final partnerId = _partnerId;
-    if (partnerId == null) return;
-    ref.read(withdrawAttendanceProvider.notifier).withdraw(
-      partnerId: partnerId,
-      attendanceId: _current.id,
-    );
+    ref
+        .read(withdrawAttendanceProvider.notifier)
+        .withdraw(attendanceId: _current.id);
   }
 
   void _navigateBack() {
@@ -71,7 +63,7 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
   void _showError(Object error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(error.toString()),
+        content: Text(error.localizedMessage(context)),
         backgroundColor: context.color.error,
       ),
     );

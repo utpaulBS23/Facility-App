@@ -5,15 +5,18 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/assign_staff_button.dart';
+import '../../../core/widgets/assigned_staff_tile.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/slot_status_chip.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_slots_provider.dart';
 import '../../../core/utils/date_formatter.dart';
@@ -40,6 +43,10 @@ class ShiftTab extends ConsumerWidget {
     context.pushNamed(Routes.applyLeave);
   }
 
+  void _onOpenRosters(BuildContext context) {
+    context.pushNamed(Routes.rosterList);
+  }
+
   void _onSlotTap(BuildContext context, ShiftSlotEntity slot) {
     context.pushNamed(Routes.shiftDetails, extra: slot);
   }
@@ -50,11 +57,7 @@ class ShiftTab extends ConsumerWidget {
     // assign-staff button inside each card differs by permission. A session
     // entitled to neither shift capability gets an explicit empty state.
     final hasShiftAccess = ref.watch(
-      userSessionProvider.select(
-        (session) =>
-            (session?.shiftViewMode ?? ShiftViewMode.unavailable) !=
-            ShiftViewMode.unavailable,
-      ),
+      userSessionProvider.select((session) => session?.hasShiftAccess ?? false),
     );
 
     return Scaffold(
@@ -64,6 +67,18 @@ class ShiftTab extends ConsumerWidget {
         titleSpacing: context.dimensions.spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          PermissionGate(
+            permission: AppPermission.rosterView,
+            child: IconButton(
+              onPressed: () => _onOpenRosters(context),
+              icon: Icon(
+                Icons.calendar_view_week_rounded,
+                color: context.color.icon,
+              ),
+            ),
+          ),
+        ],
       ),
       body: hasShiftAccess
           ? _ShiftSlotsView(

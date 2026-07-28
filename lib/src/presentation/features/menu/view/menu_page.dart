@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -29,7 +30,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
         case AsyncError(:final error):
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text(error.toString())));
+          ).showSnackBar(SnackBar(content: Text(error.localizedMessage(context))));
       }
     });
   }
