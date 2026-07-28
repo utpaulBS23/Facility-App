@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
@@ -107,7 +107,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text(err.toString())),
+        error: (err, _) => Center(child: Text(err.localizedMessage(context))),
       ),
     );
   }

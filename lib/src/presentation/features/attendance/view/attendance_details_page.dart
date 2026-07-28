@@ -32,30 +32,22 @@ class _AttendanceDetailsPageState
         false;
   }
 
-  int? get _partnerId => ref.activePartnerId;
-
   void _onApprove() {
-    final partnerId = _partnerId;
-    if (partnerId == null) return;
-    ref.read(approveAttendanceProvider.notifier).approve(
-      partnerId: partnerId,
-      attendanceId: _current.id,
-    );
+    ref
+        .read(approveAttendanceProvider.notifier)
+        .approve(attendanceId: _current.id);
   }
 
   void _onReject() {
-    final partnerId = _partnerId;
-    if (partnerId == null) return;
-    ref.read(rejectAttendanceProvider.notifier).reject(
-      partnerId: partnerId,
-      attendanceId: _current.id,
-    );
+    ref
+        .read(rejectAttendanceProvider.notifier)
+        .reject(attendanceId: _current.id);
   }
 
   void _showError(Object error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(error.toString()),
+        content: Text(error.localizedMessage(context)),
         backgroundColor: context.color.error,
       ),
     );

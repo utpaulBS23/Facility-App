@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
@@ -21,7 +22,7 @@ class RosterStaff extends _$RosterStaff {
 
     state = const AsyncValue.loading();
 
-    final Result<List<PartnerStaffEntity>, String> result = await ref
+    final Result<List<PartnerStaffEntity>, Failure> result = await ref
         .read(getPartnerStaffUseCaseProvider)
         .call();
 

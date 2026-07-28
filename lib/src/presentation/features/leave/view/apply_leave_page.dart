@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/router/routes.dart';
@@ -44,14 +43,9 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
     // provider. That provider is no longer populated for attendants (the tab
     // moved to shift-slots), and reaching across features for cached state
     // broke silently when the other feature changed.
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
     final result = await ref
         .read(getShiftsUseCaseProvider)
-        .call(
-          partnerId: partnerId,
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        );
+        .call(date: DateFormat('yyyy-MM-dd').format(DateTime.now()));
     final shifts = switch (result) {
       Success(:final data) => data ?? const <ShiftEntity>[],
       _ => const <ShiftEntity>[],

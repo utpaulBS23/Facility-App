@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/shift_entity.dart';
@@ -16,7 +17,7 @@ class RosterShifts extends _$RosterShifts {
 
     state = const AsyncValue.loading();
 
-    final Result<RosterShiftsEntity, String> result = await ref
+    final Result<RosterShiftsEntity, Failure> result = await ref
         .read(getRosterShiftsUseCaseProvider)
         .call(facilityId: facilityId, rosterId: rosterId);
 

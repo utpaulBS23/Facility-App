@@ -1,8 +1,8 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
-import '../../../../core/extensions/permission_guard.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/visit_entity.dart';
 
@@ -26,9 +26,9 @@ class VisitCheckInState {
   final bool isLoadingLocation;
   final VisitCheckInCaptureEntity? captureResult;
   final bool isCapturing;
-  final String? captureError;
+  final Failure? captureError;
   final bool isCheckingIn;
-  final String? checkInError;
+  final Failure? checkInError;
   final bool checkInSuccess;
 
   bool get hasLocation => position != null;
@@ -41,9 +41,9 @@ class VisitCheckInState {
     bool? isLoadingLocation,
     VisitCheckInCaptureEntity? captureResult,
     bool? isCapturing,
-    String? captureError,
+    Failure? captureError,
     bool? isCheckingIn,
-    String? checkInError,
+    Failure? checkInError,
     bool? checkInSuccess,
     bool clearLocationError = false,
     bool clearCaptureError = false,
@@ -112,15 +112,11 @@ class VisitCheckIn extends _$VisitCheckIn {
     final pos = state.position;
     if (pos == null) return;
 
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
-
     state = state.copyWith(isCapturing: true, clearCaptureError: true);
 
     final result = await ref
         .read(captureCheckInUseCaseProvider)
         .call(
-          partnerId: partnerId,
           visitId: visitId,
           request: VisitCheckInRequestEntity(
             latitude: pos.latitude,
@@ -146,15 +142,11 @@ class VisitCheckIn extends _$VisitCheckIn {
     final capture = state.captureResult;
     if (capture == null) return;
 
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
-
     state = state.copyWith(isCheckingIn: true, clearCheckInError: true);
 
-    final Result<void, String> result = await ref
+    final Result<void, Failure> result = await ref
         .read(checkInVisitUseCaseProvider)
         .call(
-          partnerId: partnerId,
           visitId: visitId,
           request: VisitCheckInRequestEntity(
             latitude: capture.yourLat,

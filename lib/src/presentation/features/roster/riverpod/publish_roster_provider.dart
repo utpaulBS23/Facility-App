@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -17,13 +18,13 @@ class PublishRoster extends _$PublishRoster {
     if (state.isLoading) return;
 
     if (!ref.hasPermission(AppPermission.rosterPublish)) {
-      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 
     state = const AsyncValue.loading();
 
-    final Result<RosterEntity, String> result = await ref
+    final Result<RosterEntity, Failure> result = await ref
         .read(publishRosterUseCaseProvider)
         .call(facilityId: facilityId, rosterId: rosterId);
 

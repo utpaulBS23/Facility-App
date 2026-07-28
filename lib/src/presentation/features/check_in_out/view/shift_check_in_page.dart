@@ -8,9 +8,10 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/check_in_entity.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/check_out_entity.dart';
@@ -67,8 +68,6 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       );
       return;
     }
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
     if (checkInInfo == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,7 +79,6 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     // path is sent as-is in place of a hosted selfie_url, same value the
     // old face-validation endpoint sent as its multipart `image` field.
     ref.read(checkInProvider.notifier).checkIn(
-      partnerId: partnerId,
       shiftSlotId: shiftSlotId,
       lat: checkInInfo.latitude,
       lng: checkInInfo.longitude,
@@ -96,14 +94,9 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
   // made from here would otherwise leave it showing pre-check-in state until
   // the user manually changes the date.
   void _refreshShiftSlots() {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(
-          partnerId: partnerId,
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        );
+        .fetch(date: DateFormat('yyyy-MM-dd').format(DateTime.now()));
   }
 
   void _showWarnings(List<CheckInWarningEntity> warnings) {
@@ -146,14 +139,14 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
   Widget build(BuildContext context) {
     ref.listen(checkInProvider, (_, next) {
       if (next.hasValue && next.value != null) {
-        final entity = (next.value as Success<CheckInEntity, String>).data;
+        final entity = (next.value as Success<CheckInEntity, Failure>).data;
         if (entity != null) _showWarnings(entity.warnings);
         _refreshShiftSlots();
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error.toString()),
+            content: Text(next.error!.localizedMessage(context)),
             backgroundColor: context.color.error,
           ),
         );

@@ -43,13 +43,16 @@ class UserSessionEntity {
   /// Manage wins when a session holds both (e.g. a slot lead). Revisit if
   /// leads need their own check-in flow — that becomes a UI affordance, not a
   /// change to this rule.
+  // WHY: written long-hand, not with dot shorthand — the analyzer bundled with
+  // the code generators cannot parse `.supervisor` here and fails the whole
+  // build_runner run ("requires the 'dot-shorthands' language feature").
   ShiftViewMode get shiftViewMode {
     if (can(AppPermission.shiftAssignAttendant)) {
-      return .supervisor;
+      return ShiftViewMode.supervisor;
     }
 
-    if (can(AppPermission.attendanceCheckIn)) return .attendant;
-    return .unavailable;
+    if (can(AppPermission.attendanceCheckIn)) return ShiftViewMode.attendant;
+    return ShiftViewMode.unavailable;
   }
 }
 
