@@ -83,7 +83,9 @@ void main() {
       session.clear();
       await pumpEventQueue();
 
-      expect(emitted, [null], reason: 'listeners must be told the session died');
+      expect(emitted, [
+        null,
+      ], reason: 'listeners must be told the session died');
       expect(repository.currentSession, isNull);
       expect(session.isAuthenticated, isFalse);
     });

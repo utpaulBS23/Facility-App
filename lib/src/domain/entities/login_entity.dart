@@ -31,9 +31,9 @@ class UserSessionEntity {
   bool canAny(Iterable<AppPermission> candidates) =>
       candidates.any(permissions.contains);
 
-  /// Which shift experience this session gets.
+  /// Which shift endpoint this session may read.
   ///
-  /// WHY: each mode is chosen by the permission that is its *purpose* —
+  /// WHY: each entitlement is chosen by the permission that is its *purpose* —
   /// managing a roster needs `shift.assign_attendant`, working a shift needs
   /// `attendance.check_in`. Deriving "supervisor" from the *absence* of
   /// check-in (the old `!isShiftAttendant`) defined authority as a gap, so a
@@ -46,18 +46,35 @@ class UserSessionEntity {
   // WHY: written long-hand, not with dot shorthand — the analyzer bundled with
   // the code generators cannot parse `.supervisor` here and fails the whole
   // build_runner run ("requires the 'dot-shorthands' language feature").
-  ShiftViewMode get shiftViewMode {
+  ShiftEntitlement get shiftEntitlement {
     if (can(AppPermission.shiftAssignAttendant)) {
-      return ShiftViewMode.supervisor;
+      return ShiftEntitlement.supervisor;
     }
 
-    if (can(AppPermission.attendanceCheckIn)) return ShiftViewMode.attendant;
-    return ShiftViewMode.unavailable;
+    if (can(AppPermission.attendanceCheckIn)) return ShiftEntitlement.attendant;
+    return ShiftEntitlement.none;
   }
+
+  /// Whether the shift feature can serve this session at all.
+  ///
+  /// WHY: presentation only ever needs this yes/no — which of the two
+  /// entitlements a session holds decides an *endpoint*, not a widget. Exposing
+  /// the predicate keeps callers from re-deriving it by comparing against
+  /// [ShiftEntitlement.none], which is how the enum previously leaked into
+  /// authorization decisions it was never meant to answer.
+  bool get hasShiftAccess => shiftEntitlement != ShiftEntitlement.none;
 }
 
-/// The shift experience a session is entitled to.
-enum ShiftViewMode { attendant, supervisor, unavailable }
+/// Which of the two shift endpoints a session is entitled to read.
+///
+/// WHY: named for the API it selects (`/attendants/my-shifts` vs
+/// `/supervisors/manage-shifts`), not for a screen. It was `ShiftViewMode`,
+/// which framed a data-access decision as a UI variant and invited callers to
+/// treat it as a role — the thing this app deliberately does not have. Gate
+/// *actions* on the permission that governs them; use this only to choose an
+/// endpoint, or [UserSessionEntity.hasShiftAccess] to ask if the feature
+/// applies at all.
+enum ShiftEntitlement { attendant, supervisor, none }
 
 interface class LoginEntity {}
 

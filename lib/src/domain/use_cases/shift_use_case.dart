@@ -22,8 +22,7 @@ final class GetShiftSlotsUseCase {
     final partnerId = session?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
-    if ((session?.shiftViewMode ?? ShiftViewMode.unavailable) ==
-        ShiftViewMode.unavailable) {
+    if (!(session?.hasShiftAccess ?? false)) {
       return const Error(Failure.shiftsUnavailable);
     }
 
@@ -76,18 +75,18 @@ final class GetShiftsUseCase {
     // WHY: the endpoint follows the session's entitlement, not a proxy. A
     // session with neither permission is not silently sent to the supervisor
     // endpoint — it fails closed instead of issuing an unauthorised request.
-    final mode = session?.shiftViewMode ?? ShiftViewMode.unavailable;
+    final entitlement = session?.shiftEntitlement ?? ShiftEntitlement.none;
 
-    final result = switch (mode) {
-      ShiftViewMode.supervisor => await _shiftRepository.getSupervisorShifts(
+    final result = switch (entitlement) {
+      ShiftEntitlement.supervisor => await _shiftRepository.getSupervisorShifts(
         partnerId: partnerId,
         date: date,
       ),
-      ShiftViewMode.attendant => await _shiftRepository.getMyShifts(
+      ShiftEntitlement.attendant => await _shiftRepository.getMyShifts(
         partnerId: partnerId,
         date: date,
       ),
-      ShiftViewMode.unavailable => null,
+      ShiftEntitlement.none => null,
     };
 
     if (result == null) return const Error(Failure.shiftsUnavailable);
