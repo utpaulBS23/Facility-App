@@ -56,5 +56,6 @@ List<ShellTabConfig> permittedShellTabs(Set<AppPermission> permissions) => [
 /// practice; login route is a defensive default.
 String firstPermittedShellRoute(Set<AppPermission> permissions) {
   final tabs = permittedShellTabs(permissions);
+
   return tabs.isEmpty ? Routes.login : tabs.first.route;
 }

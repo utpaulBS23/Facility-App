@@ -31,13 +31,6 @@ class UserSessionEntity {
   bool canAny(Iterable<AppPermission> candidates) =>
       candidates.any(permissions.contains);
 
-  // WHY: backend dropped user_role entirely — the attendant experience is
-  // now defined by capability: whoever can check in to a shift gets the
-  // attendant UI variant; everyone else gets the supervisor/manager variant.
-  // Single derivation point — swap this expression if the backend later
-  // ships an explicit capability or role key.
-  bool get isShiftAttendant => can(AppPermission.attendanceCheckIn);
-
   /// Which shift experience this session gets.
   ///
   /// WHY: each mode is chosen by the permission that is its *purpose* —
@@ -51,10 +44,12 @@ class UserSessionEntity {
   /// leads need their own check-in flow — that becomes a UI affordance, not a
   /// change to this rule.
   ShiftViewMode get shiftViewMode {
-    if (can(AppPermission.shiftAssignAttendant))
-      return ShiftViewMode.supervisor;
-    if (can(AppPermission.attendanceCheckIn)) return ShiftViewMode.attendant;
-    return ShiftViewMode.unavailable;
+    if (can(AppPermission.shiftAssignAttendant)) {
+      return .supervisor;
+    }
+
+    if (can(AppPermission.attendanceCheckIn)) return .attendant;
+    return .unavailable;
   }
 }
 
