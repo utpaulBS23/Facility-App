@@ -18,8 +18,8 @@ class _SelectableAttendantCard extends StatelessWidget {
     final textStyle = context.textStyle;
 
     final location = attendant.facilityName;
-    final shiftName = attendant.shift?.shiftName ?? context.locale.morningShift;
-    final displayId = attendant.uid.isNotEmpty ? attendant.uid : 'ATT-00${41 + index}';
+    final shiftName =
+        attendant.shift?.shiftName ?? context.locale.morningShift;
 
     return InkWell(
       onTap: onTap,
@@ -29,9 +29,7 @@ class _SelectableAttendantCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.onPrimary,
           borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-          border: Border.all(
-            color: color.borderSubtle,
-          ),
+          border: Border.all(color: color.borderSubtle),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,13 +54,15 @@ class _SelectableAttendantCard extends StatelessWidget {
                       color: color.text.primary,
                     ),
                   ),
-                  Gap(spacing.s4),
-                  Text(
-                    'ID: $displayId',
-                    style: textStyle.bodyMedium.copyWith(
-                      color: color.text.secondary,
+                  if (attendant.uid.isNotEmpty) ...[
+                    Gap(spacing.s4),
+                    Text(
+                      'ID: ${attendant.uid}',
+                      style: textStyle.bodyMedium.copyWith(
+                        color: color.text.secondary,
+                      ),
                     ),
-                  ),
+                  ],
                   Gap(spacing.s4),
                   Row(
                     children: [
