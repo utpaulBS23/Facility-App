@@ -2,10 +2,16 @@ part of '../dependency_injection.dart';
 
 @Riverpod(keepAlive: true)
 AuthenticationRepository authenticationRepository(Ref ref) {
-  return AuthenticationRepositoryImpl(
+  final repository = AuthenticationRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
     session: ref.read(sessionServiceProvider),
   );
+  // WHY: ResetRepositoryUseCase invalidates every `…Repository` provider on
+  // logout, so this singleton really is rebuilt — without disposal the old
+  // instance keeps its onCleared subscription and leaks a listener per logout.
+  ref.onDispose(repository.dispose);
+
+  return repository;
 }
 
 @Riverpod(keepAlive: true)
