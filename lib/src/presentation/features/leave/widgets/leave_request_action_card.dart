@@ -22,45 +22,25 @@ class _LeaveRequestActionCardState
   void _onApprove() async {
     if (_isApproving || _isRejecting) return;
     setState(() => _isApproving = true);
-    final success = await ref
-        .read(leaveRequestActionProvider.notifier)
-        .approve(widget.request.id);
+    await executeLeaveAction(
+      context,
+      ref,
+      requestId: widget.request.id,
+      isApprove: true,
+    );
     if (mounted) setState(() => _isApproving = false);
-
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: context.color.success,
-          content: Text(
-            'Leave request approved.',
-            style: TextStyle(color: context.color.onPrimary),
-          ),
-        ),
-      );
-    }
   }
 
   void _onReject() async {
     if (_isApproving || _isRejecting) return;
     setState(() => _isRejecting = true);
-    final success = await ref
-        .read(leaveRequestActionProvider.notifier)
-        .reject(widget.request.id);
+    await executeLeaveAction(
+      context,
+      ref,
+      requestId: widget.request.id,
+      isApprove: false,
+    );
     if (mounted) setState(() => _isRejecting = false);
-
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: context.color.error,
-          content: Text(
-            'Leave request rejected.',
-            style: TextStyle(color: context.color.onPrimary),
-          ),
-        ),
-      );
-    }
   }
 
   @override
