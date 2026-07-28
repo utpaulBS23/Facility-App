@@ -23,18 +23,6 @@ class RequestLeaveParams {
   final String? reason;
   final int? coverAttendantId;
   final List<String> attachments;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'leave_policy_id': leavePolicyId,
-      'start_date': startDate,
-      'end_date': endDate,
-      if (attendantId != null) 'attendant_id': attendantId,
-      if (reason != null && reason!.isNotEmpty) 'reason': reason,
-      if (coverAttendantId != null) 'cover_attendant_id': coverAttendantId,
-      if (attachments.isNotEmpty) 'attachments': attachments,
-    };
-  }
 }
 
 abstract base class LeaveRepository extends Repository {
