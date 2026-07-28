@@ -11,7 +11,9 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
     if (picked != null && mounted) {
       updateState(() {
         _startDate = picked;
-        if (_endDate.isBefore(_startDate)) _endDate = _startDate;
+        if (_endDate.isBefore(_startDate)) {
+          _endDate = _startDate;
+        }
         // WHY: shifts are date-specific — a shift selected for a previous date
         // is invalid for the new date, so force re-selection.
         _selectedShift = null;
@@ -50,7 +52,9 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
   }
 
   Future<void> _onSelectAttendantTap() async {
-    final a = await context.pushNamed<LeaveAttendantEntity>(Routes.selectAttendant);
+    final a = await context.pushNamed<LeaveAttendantEntity>(
+      Routes.selectAttendant,
+    );
     if (a != null && mounted) {
       updateState(() => _selectedAttendant = a);
     }
@@ -68,7 +72,9 @@ extension _ApplyLeavePageHandlers on _ApplyLeavePageState {
       attendantId: attendantId,
       reason: _reasonController.text,
     );
-    final created = await ref.read(applyLeaveActionProvider.notifier).submit(params);
+    final created = await ref
+        .read(applyLeaveActionProvider.notifier)
+        .submit(params);
     if (created != null && mounted) {
       context.pushReplacementNamed(Routes.leaveSubmitted, extra: created);
     }

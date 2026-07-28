@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/result.dart';
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_policy_entity.dart';
 
@@ -28,7 +28,7 @@ class LeavePolicies extends _$LeavePolicies {
 
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data ?? const []),
-      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
       _ => AsyncValue.error('Failed to load leave policies', StackTrace.current),
     };
   }

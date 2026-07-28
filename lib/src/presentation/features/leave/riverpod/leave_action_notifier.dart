@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/result.dart';
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
@@ -87,14 +87,14 @@ class LeaveRequestAction extends _$LeaveRequestAction {
     return _handleResult(result);
   }
 
-  bool _handleResult(Result<LeaveRequestEntity, String> result) {
+  bool _handleResult(Result<LeaveRequestEntity, Failure> result) {
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data),
-      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
       _ => AsyncValue.error('Operation failed', StackTrace.current),
     };
 
-    if (result is Success<LeaveRequestEntity, String>) {
+    if (result is Success<LeaveRequestEntity, Failure>) {
       ref.invalidate(leaveApprovalsProvider);
       ref.invalidate(myLeavesProvider);
       return true;

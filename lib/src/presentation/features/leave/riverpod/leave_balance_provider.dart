@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/result.dart';
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_balance_entity.dart';
 
@@ -20,7 +20,7 @@ class LeaveBalance extends _$LeaveBalance {
 
     return switch (result) {
       Success(:final data) => data ?? const [],
-      Error(:final error) => throw Exception(error),
+      Error(:final error) => throw Exception(error.message),
       _ => throw Exception('Failed to load leave balances'),
     };
   }

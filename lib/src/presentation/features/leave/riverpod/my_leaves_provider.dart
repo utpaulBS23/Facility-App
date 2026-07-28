@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/result.dart';
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 
@@ -20,7 +20,7 @@ class MyLeaves extends _$MyLeaves {
 
     return switch (result) {
       Success(:final data) => data?.items ?? const [],
-      Error(:final error) => throw Exception(error),
+      Error(:final error) => throw Exception(error.message),
       _ => throw Exception('Failed to load my leaves'),
     };
   }

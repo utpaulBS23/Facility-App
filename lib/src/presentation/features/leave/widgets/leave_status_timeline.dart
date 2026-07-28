@@ -44,7 +44,7 @@ class _LeaveStatusTimeline extends StatelessWidget {
             final step = entry.value;
             final isLast = idx == steps.length - 1;
 
-            final roleName = _formatRole(step.approverRole);
+            final roleName = _formatRole(context, step.approverRole);
             final (stepTitle, stepColor) = switch (step.status) {
               'approved' => (
                   '$roleName ${context.locale.approved}',
@@ -135,19 +135,13 @@ class _LeaveStatusTimeline extends StatelessWidget {
   }
 }
 
-String _formatRole(String role) {
+String _formatRole(BuildContext context, String role) {
   final upper = role.trim().toUpperCase();
-  if (upper == 'OPS_MANAGER' || upper == 'OPS_MGR') {
-    return 'Operation Manager';
-  }
-  if (upper == 'LINE_MANAGER' || upper == 'LINE_MGR') {
-    return 'Line Manager';
-  }
-  if (upper == 'HR_MANAGER' || upper == 'HR_MGR') {
-    return 'HR Manager';
-  }
-  if (upper == 'FACILITY_MANAGER' || upper == 'FACILITY_MGR') {
-    return 'Facility Manager';
+  if (upper == 'OPS_MANAGER' || upper == 'OPS_MGR' ||
+      upper == 'LINE_MANAGER' || upper == 'LINE_MGR' ||
+      upper == 'FACILITY_MANAGER' || upper == 'FACILITY_MGR' ||
+      upper == 'HR_MANAGER' || upper == 'HR_MGR') {
+    return context.locale.managerApproval;
   }
   return upper
       .replaceAll('_', ' ')
