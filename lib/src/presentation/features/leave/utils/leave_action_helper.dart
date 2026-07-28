@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 import '../riverpod/leave_action_notifier.dart';
 
@@ -25,9 +26,7 @@ Future<bool> executeLeaveAction(
         backgroundColor:
             isApprove ? context.color.success : context.color.error,
         content: Text(
-          isApprove
-              ? 'Leave request approved.'
-              : 'Leave request rejected.',
+          isApprove ? context.locale.approved : context.locale.rejection,
           style: TextStyle(color: context.color.onPrimary),
         ),
       ),

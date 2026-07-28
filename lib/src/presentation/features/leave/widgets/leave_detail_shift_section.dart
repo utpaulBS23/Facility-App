@@ -12,7 +12,7 @@ class _LeaveDetailShiftSection extends StatelessWidget {
     final textStyle = context.textStyle;
 
     final firstShift = request.shifts.isNotEmpty ? request.shifts.first : null;
-    final facilityName = firstShift?.facilityName ?? 'Main Facility';
+    final facilityName = firstShift?.facilityName ?? context.locale.facility;
     final shiftType = firstShift?.shiftName ?? context.locale.morningShift;
     final dateTimeText = firstShift != null
         ? '${firstShift.shiftDate} · ${firstShift.startTime} - ${firstShift.endTime}'

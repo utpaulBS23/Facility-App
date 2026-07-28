@@ -46,13 +46,13 @@ class LeaveSubmittedPage extends StatelessWidget {
                 ),
               ),
               Gap(spacing.s24),
-              const Headline2xlTinyText(
-                'Leave Request Submitted',
+              Headline2xlTinyText(
+                context.locale.leaveRequestSubmitted,
                 textAlign: TextAlign.center,
               ),
               Gap(spacing.s8),
               Text(
-                'Your leave request has been submitted for approval.',
+                context.locale.leaveSubmittedMessage,
                 textAlign: TextAlign.center,
                 style: textStyle.bodyMedium.copyWith(
                   color: color.text.secondary,
@@ -71,7 +71,7 @@ class LeaveSubmittedPage extends StatelessWidget {
                 child: Column(
                   children: [
                     _SubmittedRow(
-                      label: 'Reference Code',
+                      label: context.locale.leaveDetails,
                       value: request.referenceCode,
                     ),
                     Divider(color: color.borderSubtle, height: spacing.s24),
@@ -81,7 +81,7 @@ class LeaveSubmittedPage extends StatelessWidget {
                     ),
                     Divider(color: color.borderSubtle, height: spacing.s24),
                     _SubmittedRow(
-                      label: 'Date Range',
+                      label: context.locale.dateRange,
                       value: dateRange,
                     ),
                     Divider(color: color.borderSubtle, height: spacing.s24),
@@ -107,7 +107,7 @@ class LeaveSubmittedPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: const Text('Done'),
+                child: Text(context.locale.close),
               ),
             ],
           ),
