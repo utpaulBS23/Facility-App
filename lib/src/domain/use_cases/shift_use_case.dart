@@ -1,5 +1,4 @@
 import '../../core/base/result.dart';
-import '../../core/logger/log.dart';
 import '../entities/login_entity.dart';
 import '../entities/shift_entity.dart';
 import '../entities/shift_slot_entity.dart';
@@ -28,10 +27,7 @@ final class GetShiftSlotsUseCase {
     final session = _authRepository.currentSession;
     final mode = session?.shiftViewMode ?? ShiftViewMode.unavailable;
 
-    Log.info('[ShiftUseCase] GetShiftSlots called: partnerId=$partnerId, date=$date, shiftViewMode=$mode, sessionPermissions=${session?.permissions}');
-
     if (mode == ShiftViewMode.unavailable) {
-      Log.warning('[ShiftUseCase] ShiftViewMode is unavailable for session activePartnerId: ${session?.activePartnerId}');
       return const Error(shiftsUnavailableMessage);
     }
 
@@ -84,8 +80,6 @@ final class GetShiftsUseCase {
         _authRepository.currentSession?.shiftViewMode ??
         ShiftViewMode.unavailable;
 
-    Log.info('[ShiftUseCase] GetShifts called: partnerId=$partnerId, date=$date, mode=$mode');
-
     final result = switch (mode) {
       ShiftViewMode.supervisor => await _shiftRepository.getSupervisorShifts(
         partnerId: partnerId,
@@ -99,7 +93,6 @@ final class GetShiftsUseCase {
     };
 
     if (result == null) {
-      Log.warning('[ShiftUseCase] GetShifts result is null due to unavailable mode');
       return const Error(shiftsUnavailableMessage);
     }
 

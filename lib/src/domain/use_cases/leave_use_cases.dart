@@ -1,4 +1,4 @@
-import '../../core/base/result.dart';
+import '../../core/base/base.dart';
 import '../entities/common/paginated_list_entity.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
@@ -10,14 +10,19 @@ final class GetLeavePoliciesUseCase {
   GetLeavePoliciesUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<List<LeavePolicyEntity>, String>> call(
+  Future<Result<List<LeavePolicyEntity>, Failure>> call(
     int partnerId,
   ) async {
     final result = await repository.getLeavePolicies(partnerId);
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -26,7 +31,7 @@ final class GetLeaveBalancesUseCase {
   GetLeaveBalancesUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<List<LeaveBalanceEntity>, String>> call(
+  Future<Result<List<LeaveBalanceEntity>, Failure>> call(
     int partnerId, {
     int? year,
     int? leavePolicyId,
@@ -44,8 +49,13 @@ final class GetLeaveBalancesUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -54,15 +64,20 @@ final class RequestLeaveUseCase {
   RequestLeaveUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<LeaveRequestEntity, String>> call(
+  Future<Result<LeaveRequestEntity, Failure>> call(
     int partnerId,
     RequestLeaveParams params,
   ) async {
     final result = await repository.requestLeave(partnerId, params);
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -71,7 +86,7 @@ final class GetMyLeavesUseCase {
   GetMyLeavesUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, String>> call(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
     int partnerId, {
     String? status,
     int? page,
@@ -85,8 +100,13 @@ final class GetMyLeavesUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -95,7 +115,7 @@ final class GetLeaveRequestDetailsUseCase {
   GetLeaveRequestDetailsUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<LeaveRequestEntity, String>> call(
+  Future<Result<LeaveRequestEntity, Failure>> call(
     int partnerId,
     int leaveRequestId,
   ) async {
@@ -105,8 +125,13 @@ final class GetLeaveRequestDetailsUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -115,15 +140,20 @@ final class CancelLeaveUseCase {
   CancelLeaveUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<LeaveRequestEntity, String>> call(
+  Future<Result<LeaveRequestEntity, Failure>> call(
     int partnerId,
     int leaveRequestId,
   ) async {
     final result = await repository.cancelLeave(partnerId, leaveRequestId);
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -132,14 +162,19 @@ final class GetLeaveAttendantsUseCase {
   GetLeaveAttendantsUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<List<LeaveAttendantEntity>, String>> call(
+  Future<Result<List<LeaveAttendantEntity>, Failure>> call(
     int partnerId,
   ) async {
     final result = await repository.getLeaveAttendants(partnerId);
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -148,7 +183,7 @@ final class GetLeaveApprovalsUseCase {
   GetLeaveApprovalsUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, String>> call(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
     int partnerId, {
     String? status,
     int? page,
@@ -162,8 +197,13 @@ final class GetLeaveApprovalsUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -172,15 +212,20 @@ final class ApproveLeaveUseCase {
   ApproveLeaveUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<LeaveRequestEntity, String>> call(
+  Future<Result<LeaveRequestEntity, Failure>> call(
     int partnerId,
     int leaveRequestId,
   ) async {
     final result = await repository.approveLeave(partnerId, leaveRequestId);
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
@@ -189,7 +234,7 @@ final class RejectLeaveUseCase {
   RejectLeaveUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<LeaveRequestEntity, String>> call(
+  Future<Result<LeaveRequestEntity, Failure>> call(
     int partnerId,
     int leaveRequestId, {
     String? reason,
@@ -201,8 +246,13 @@ final class RejectLeaveUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Unexpected error'),
+      Error(:final error) => Error(error),
+      // WHY: Result's generated variants aren't exhaustiveness-checkable by
+      // the analyzer here, so this wildcard stays reachable-in-practice-never
+      // but required for compilation.
+      _ => const Error(
+          Failure(type: FailureType.unknown, message: 'Unexpected error'),
+        ),
     };
   }
 }
