@@ -20,6 +20,7 @@ class _LeaveRequestsList extends StatelessWidget {
       if (selectedFilter == 'Pending') return r.status == 'pending_supervisor';
       if (selectedFilter == 'Manager Approval') return r.status == 'pending_manager';
       if (selectedFilter == 'Approved') return r.status == 'approved';
+      if (selectedFilter == 'Rejected') return r.status == 'rejected';
       return true;
     }).toList();
 

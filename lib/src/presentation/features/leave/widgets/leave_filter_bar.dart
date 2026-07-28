@@ -34,6 +34,7 @@ class _LeaveFilterBar extends StatelessWidget {
             'Pending' => context.locale.pending,
             'Manager Approval' => context.locale.managerApproval,
             'Approved' => context.locale.approved,
+            'Rejected' => context.locale.rejected,
             _ => filter,
           };
 
@@ -48,15 +49,15 @@ class _LeaveFilterBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected ? context.color.onPrimary : Colors.transparent,
                 borderRadius: BorderRadius.circular(radius.r20),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: context.color.shadow,
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        )
-                      ]
-                    : null,
+                // boxShadow: isSelected
+                //     ? [
+                //         BoxShadow(
+                //           color: context.color.shadow,
+                //           blurRadius: 4,
+                //           offset: const Offset(0, 2),
+                //         )
+                //       ]
+                //     : null,
               ),
               child: Text(
                 displayLabel,

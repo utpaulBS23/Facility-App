@@ -43,6 +43,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     'Pending',
     'Manager Approval',
     'Approved',
+    'Rejected',
   ];
 
   @override
@@ -67,6 +68,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
       'Pending' => 'pending_supervisor',
       'Manager Approval' => 'pending_manager',
       'Approved' => 'approved',
+      'Rejected' => 'rejected',
       _ => null,
     };
   }
@@ -128,7 +130,8 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
             ),
             Expanded(
               child: _LeaveRequestListShimmer(
-                showActionButtons: _selectedFilter != 'Approved',
+                showActionButtons:
+                    _selectedFilter != 'Approved' && _selectedFilter != 'Rejected',
               ),
             ),
           ],
