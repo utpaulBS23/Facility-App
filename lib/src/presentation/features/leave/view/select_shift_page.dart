@@ -45,7 +45,14 @@ class SelectShiftPage extends ConsumerWidget {
       ),
       body: shiftsAsync.when(
         loading: () => const _ShiftListShimmer(),
-        error: (err, _) => Center(child: Text(err.toString())),
+        error: (err, _) => Center(
+          child: Text(
+            err.toString().replaceAll('Exception: ', ''),
+            style: context.textStyle.bodyMedium.copyWith(
+              color: color.text.secondary,
+            ),
+          ),
+        ),
         data: (shifts) => _SelectShiftBody(shifts: shifts),
       ),
     );

@@ -26,7 +26,7 @@ class _LeaveRequestsList extends StatelessWidget {
     if (filtered.isEmpty) {
       return Center(
         child: Text(
-          context.locale.noAttendantsFound,
+          context.locale.noRequestsFound,
           style: context.textStyle.bodyMedium.copyWith(
             color: context.color.text.secondary,
           ),

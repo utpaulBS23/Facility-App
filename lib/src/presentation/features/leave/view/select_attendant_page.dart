@@ -76,7 +76,14 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
           Expanded(
             child: attendantsState.when(
               loading: () => const _AttendantListShimmer(),
-              error: (err, _) => Center(child: Text(err.toString())),
+              error: (err, _) => Center(
+                child: Text(
+                  err.toString().replaceAll('Exception: ', ''),
+                  style: context.textStyle.bodyMedium.copyWith(
+                    color: color.text.secondary,
+                  ),
+                ),
+              ),
               data: (attendants) {
                 final filtered = attendants.where((a) {
                   if (_searchQuery.isEmpty) return true;

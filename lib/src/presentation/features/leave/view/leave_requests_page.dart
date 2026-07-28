@@ -133,7 +133,14 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
             ),
           ],
         ),
-        error: (err, _) => Center(child: Text(err.toString())),
+        error: (err, _) => Center(
+          child: Text(
+            err.toString().replaceAll('Exception: ', ''),
+            style: context.textStyle.bodyMedium.copyWith(
+              color: color.text.secondary,
+            ),
+          ),
+        ),
         data: (requests) => Column(
           children: [
             Padding(
