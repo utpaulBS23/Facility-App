@@ -1,8 +1,10 @@
-part of '../../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import '../../../../core/theme/theme.dart';
 
 /// Base shimmer container wrapper using design system tokens.
-class _ShimmerBox extends StatelessWidget {
-  const _ShimmerBox({
+class ShimmerBox extends StatelessWidget {
+  const ShimmerBox({
+    super.key,
     required this.width,
     required this.height,
     this.borderRadius,

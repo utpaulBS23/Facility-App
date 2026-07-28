@@ -62,11 +62,20 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     setState(() => _searchQuery = _searchController.text.toLowerCase());
   }
 
+  String? get _apiStatusParam {
+    return switch (_selectedFilter) {
+      'Pending' => 'pending_supervisor',
+      'Manager Approval' => 'pending_manager',
+      'Approved' => 'approved',
+      _ => null,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final approvalsState = ref.watch(leaveApprovalsProvider());
+    final approvalsState = ref.watch(leaveApprovalsProvider(status: _apiStatusParam));
 
     final canApplyLeave = ref.watch(
       userSessionProvider.select(
