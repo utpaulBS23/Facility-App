@@ -26,14 +26,9 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   }
 
   void _fetchSlots(DateTime date) {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(
-          partnerId: partnerId,
-          date: DateFormat('yyyy-MM-dd').format(date),
-        );
+        .fetch(date: DateFormat('yyyy-MM-dd').format(date));
   }
 
   void _onDateChanged(DateTime date) {
@@ -95,7 +90,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
                 const Center(child: CircularProgressIndicator.adaptive()),
             error: (err, _) => Center(
               child: Text(
-                err.toString(),
+                err.localizedMessage(context),
                 style: context.textStyle.bodyMedium.copyWith(
                   color: context.color.text.secondary,
                 ),
@@ -156,6 +151,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
                     cursor -= 1;
                   }
                   final slot = slots[cursor];
+
                   return _SlotCard(
                     slot: slot,
                     onTap: () => widget.onSlotTap(slot),

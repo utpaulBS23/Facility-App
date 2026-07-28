@@ -1,3 +1,4 @@
+import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../entities/login_entity.dart';
 import '../repositories/authentication_repository.dart';
@@ -7,7 +8,7 @@ final class LoginUseCase {
 
   final AuthenticationRepository repository;
 
-  Future<Result<LoginResponseEntity, String>> call({
+  Future<Result<LoginResponseEntity, Failure>> call({
     required String uid,
     required String password,
     required String deviceName,
@@ -22,8 +23,8 @@ final class LoginUseCase {
 
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Something went wrong'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('complete the request')),
     };
   }
 }
@@ -52,14 +53,6 @@ final class GetUserSessionUseCase {
   final AuthenticationRepository repository;
 
   UserSessionEntity? call() => repository.currentSession;
-}
-
-final class GetActivePartnerUseCase {
-  GetActivePartnerUseCase(this.repository);
-
-  final AuthenticationRepository repository;
-
-  int? call() => repository.currentSession?.activePartnerId;
 }
 
 final class WatchUserSessionUseCase {

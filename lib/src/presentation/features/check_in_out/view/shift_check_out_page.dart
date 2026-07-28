@@ -27,8 +27,6 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       );
       return;
     }
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
     if (checkInInfo == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -41,7 +39,6 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     ref
         .read(checkOutProvider.notifier)
         .checkOut(
-          partnerId: partnerId,
           attendanceId: widget.attendanceId,
           lat: checkInInfo.latitude,
           lng: checkInInfo.longitude,
@@ -53,14 +50,9 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
   // made from here would otherwise leave it showing pre-check-out state until
   // the user manually changes the date.
   void _refreshShiftSlots() {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(
-          partnerId: partnerId,
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        );
+        .fetch(date: DateFormat('yyyy-MM-dd').format(DateTime.now()));
   }
 
   void _showResult(CheckOutEntity? entity) {
@@ -83,14 +75,14 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
   Widget build(BuildContext context) {
     ref.listen(checkOutProvider, (_, next) {
       if (next.hasValue && next.value != null) {
-        final entity = (next.value as Success<CheckOutEntity, String>).data;
+        final entity = (next.value as Success<CheckOutEntity, Failure>).data;
         _showResult(entity);
         _refreshShiftSlots();
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error.toString()),
+            content: Text(next.error!.localizedMessage(context)),
             backgroundColor: context.color.error,
           ),
         );

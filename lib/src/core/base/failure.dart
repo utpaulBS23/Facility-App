@@ -19,6 +19,22 @@ enum FailureType {
   forbidden,
   typeError,
   unknown,
+
+  // WHY: the four below never reach the network — they are decided by the
+  // session before a request is built. They are `Failure`s rather than a
+  // separate error channel so a caller has exactly one thing to switch on,
+  // and so presentation can localize them by [type] like any other failure.
+  /// Session carries no active partner (platform/system account).
+  partnerUnavailable,
+
+  /// Session is entitled to neither shift experience.
+  shiftsUnavailable,
+
+  /// Session carries no facility to scope a facility-nested query to.
+  noAccessibleFacility,
+
+  /// Transport succeeded but the payload was absent where one was required.
+  emptyResponse,
 }
 
 @freezed
@@ -31,6 +47,41 @@ abstract class Failure with _$Failure {
   }) = _Failure;
 
   const Failure._();
+
+  // WHY: the `message` on these is a developer/log string, not UI copy —
+  // presentation renders them by [type] through `Failure.localized(context)`.
+  // It stays English on purpose so logs and crash reports read consistently
+  // regardless of the user's locale.
+  static const Failure partnerUnavailable = Failure(
+    type: FailureType.partnerUnavailable,
+    message: 'Session carries no active partner.',
+  );
+
+  static const Failure shiftsUnavailable = Failure(
+    type: FailureType.shiftsUnavailable,
+    message: 'Session is entitled to neither shift experience.',
+  );
+
+  static const Failure noAccessibleFacility = Failure(
+    type: FailureType.noAccessibleFacility,
+    message: 'Session carries no accessible facility.',
+  );
+
+  /// Client-side permission gate rejected the action before calling a use case.
+  ///
+  /// WHY: shares [FailureType.forbidden] with the server's 403 — the user sees
+  /// the same sentence either way, and the distinction (we blocked it vs the
+  /// server blocked it) only matters in logs, where [message] carries it.
+  static const Failure permissionDenied = Failure(
+    type: FailureType.forbidden,
+    message: 'Client-side permission gate rejected the action.',
+  );
+
+  /// [operation] is a developer hint (e.g. `'get rosters'`) — logged, never shown.
+  factory Failure.emptyResponse(String operation) => Failure(
+    type: FailureType.emptyResponse,
+    message: 'Empty payload while trying to $operation.',
+  );
 
   factory Failure.mapExceptionToFailure(Object e) {
     if (e is DioException) {
