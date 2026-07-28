@@ -30,7 +30,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 24,
+            radius: spacing.s24,
             backgroundColor: color.brandAccent,
             child: Icon(
               Icons.person_rounded,

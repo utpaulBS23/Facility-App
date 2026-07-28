@@ -44,7 +44,7 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
                 Expanded(
                   child: ShimmerBox(
                     width: double.infinity,
-                    height: 44,
+                    height: spacing.s44,
                     borderRadius: BorderRadius.circular(radius.r10),
                   ),
                 ),
@@ -52,7 +52,7 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
                 Expanded(
                   child: ShimmerBox(
                     width: double.infinity,
-                    height: 44,
+                    height: spacing.s44,
                     borderRadius: BorderRadius.circular(radius.r10),
                   ),
                 ),

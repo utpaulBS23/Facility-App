@@ -64,8 +64,8 @@ class _SelectableShiftCard extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        width: 10,
-                        height: 10,
+                        width: spacing.s10,
+                        height: spacing.s10,
                         decoration: BoxDecoration(
                           color: _dotColor(context),
                           shape: BoxShape.circle,
@@ -92,7 +92,7 @@ class _SelectableShiftCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.calendar_today_outlined,
-                        size: 12,
+                        size: spacing.s12,
                         color: context.color.text.secondary,
                       ),
                       Gap(spacing.s4),
@@ -105,7 +105,7 @@ class _SelectableShiftCard extends StatelessWidget {
                       Gap(spacing.s8),
                       Icon(
                         Icons.access_time_outlined,
-                        size: 12,
+                        size: spacing.s12,
                         color: context.color.text.secondary,
                       ),
                       Gap(spacing.s4),
@@ -122,7 +122,7 @@ class _SelectableShiftCard extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              size: 24,
+              size: spacing.s24,
               color: context.color.primary,
             ),
           ],

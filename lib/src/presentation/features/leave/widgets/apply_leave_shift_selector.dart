@@ -78,7 +78,7 @@ class _SelectedShiftRow extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.calendar_today_outlined,
-                            size: 12,
+                            size: spacing.s12,
                             color: context.color.text.secondary,
                           ),
                           Gap(spacing.s4),
@@ -93,7 +93,7 @@ class _SelectedShiftRow extends StatelessWidget {
                           Gap(spacing.s8),
                           Icon(
                             Icons.access_time_outlined,
-                            size: 12,
+                            size: spacing.s12,
                             color: context.color.text.secondary,
                           ),
                           Gap(spacing.s4),

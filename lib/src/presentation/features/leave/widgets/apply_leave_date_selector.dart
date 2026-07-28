@@ -82,7 +82,7 @@ class _DateTile extends StatelessWidget {
               children: [
                 Icon(
                   Icons.calendar_today_outlined,
-                  size: 16,
+                  size: spacing.s16,
                   color: color.primary,
                 ),
                 Gap(spacing.s6),

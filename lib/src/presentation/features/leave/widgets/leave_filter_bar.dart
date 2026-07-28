@@ -17,7 +17,7 @@ class _LeaveFilterBar extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      height: 36,
+      height: spacing.s36,
       padding: EdgeInsets.all(spacing.s4),
       decoration: BoxDecoration(
         color: context.color.borderSubtle,
@@ -51,7 +51,7 @@ class _LeaveFilterBar extends StatelessWidget {
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
+                          color: context.color.shadow,
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         )

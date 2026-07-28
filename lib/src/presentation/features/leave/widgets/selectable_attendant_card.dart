@@ -35,7 +35,7 @@ class _SelectableAttendantCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              radius: 20,
+              radius: spacing.s20,
               backgroundColor: color.primary.withValues(alpha: 0.1),
               child: Icon(
                 Icons.person,
@@ -68,7 +68,7 @@ class _SelectableAttendantCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.location_on_outlined,
-                        size: 14,
+                        size: spacing.s14,
                         color: color.text.secondary,
                       ),
                       Gap(spacing.s4),

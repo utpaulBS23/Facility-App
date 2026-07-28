@@ -41,7 +41,7 @@ class _SelectAttendantCard extends StatelessWidget {
                 Icon(
                   Icons.person_outline,
                   color: color.text.primary,
-                  size: 24,
+                  size: spacing.s24,
                 ),
                 Gap(spacing.s8),
                 Expanded(
@@ -61,7 +61,7 @@ class _SelectAttendantCard extends StatelessWidget {
                           ? Icons.edit_outlined
                           : Icons.chevron_right,
                       color: color.text.secondary,
-                      size: 20,
+                      size: spacing.s20,
                     ),
                   ],
                 ),
