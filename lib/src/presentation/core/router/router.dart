@@ -55,6 +55,17 @@ part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
 
+/// Routes reachable without a session.
+///
+/// WHY: a prefix test rather than a list — the password-reset flow is nested
+/// under `/login`, so its child paths (`/login/reset-password/…`) must stay
+/// reachable while logged out. Anything not matched here requires a session.
+bool _isPublicRoute(String path) =>
+    path == Routes.login ||
+    path.startsWith('${Routes.login}/') ||
+    path == Routes.splash ||
+    path == Routes.initial;
+
 @Riverpod(keepAlive: true)
 GoRouter goRouter(Ref ref) {
   return GoRouter(
@@ -72,10 +83,21 @@ GoRouter goRouter(Ref ref) {
         return ref.asListenable(routerStateProvider).value;
       }
 
+      final session = ref.read(getUserSessionUseCaseProvider).call();
+
+      // WHY: nothing used to stop an unauthenticated deep link or a
+      // programmatic push from rendering a shell tab — the redirect only ever
+      // compared permissions. After a failed token refresh that meant a screen
+      // that could do nothing but fire 401s. The session is torn down with the
+      // token (see SessionService.onCleared), so a null session here is the
+      // same statement as "no token".
+      if (session == null && !_isPublicRoute(state.uri.path)) {
+        return Routes.login;
+      }
+
       // WHY: hiding a navbar item is cosmetic — deep links and programmatic
       // navigation can still target a shell branch the user lacks permission
       // for. Redirect those to the first permitted tab.
-      final session = ref.read(getUserSessionUseCaseProvider).call();
       if (session != null) {
         for (final tab in shellTabConfigs) {
           final required = tab.permission;

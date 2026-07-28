@@ -32,4 +32,7 @@ abstract base class AuthenticationRepository extends Repository {
   bool hasPermission(AppPermission permission);
 
   List<AccessibleFacilityEntity> getAccessibleFacilities();
+
+  /// Releases the session stream and the token-cleared subscription.
+  void dispose();
 }
