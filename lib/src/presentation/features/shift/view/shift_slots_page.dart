@@ -156,6 +156,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
                     cursor -= 1;
                   }
                   final slot = slots[cursor];
+
                   return _SlotCard(
                     slot: slot,
                     onTap: () => widget.onSlotTap(slot),
