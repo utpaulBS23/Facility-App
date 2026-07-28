@@ -22,9 +22,20 @@ import '../widgets/stat_tile.dart';
 
 part '../widgets/leave_filter_bar.dart';
 part '../widgets/leave_request_action_card.dart';
+part '../widgets/leave_requests_app_bar.dart';
+part '../widgets/leave_requests_body.dart';
 part '../widgets/leave_requests_list.dart';
 part '../widgets/leave_supervisor_summary_card.dart';
 part '../widgets/shimmer/leave_request_shimmer.dart';
+
+const _kLeaveFilters = ['All', 'Pending', 'Manager Approval', 'Approved', 'Rejected'];
+
+const _kStatusForFilter = {
+  'Pending': 'pending_supervisor',
+  'Manager Approval': 'pending_manager',
+  'Approved': 'approved',
+  'Rejected': 'rejected',
+};
 
 class LeaveRequestsPage extends ConsumerStatefulWidget {
   const LeaveRequestsPage({super.key});
@@ -37,14 +48,6 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
   final _searchController = TextEditingController();
   String _selectedFilter = 'All';
   String _searchQuery = '';
-
-  final List<String> _filters = [
-    'All',
-    'Pending',
-    'Manager Approval',
-    'Approved',
-    'Rejected',
-  ];
 
   @override
   void initState() {
@@ -63,22 +66,23 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     setState(() => _searchQuery = _searchController.text.toLowerCase());
   }
 
-  String? get _apiStatusParam {
-    return switch (_selectedFilter) {
-      'Pending' => 'pending_supervisor',
-      'Manager Approval' => 'pending_manager',
-      'Approved' => 'approved',
-      'Rejected' => 'rejected',
-      _ => null,
-    };
+  void _onBack(BuildContext context) {
+    // WHY: reachable via LeaveSubmittedPage's goNamed reset (empty stack).
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(Routes.shift);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final approvalsState = ref.watch(leaveApprovalsProvider(status: _apiStatusParam));
-
+    final padding =
+        EdgeInsets.symmetric(horizontal: spacing.s16, vertical: spacing.s8);
+    final status = _kStatusForFilter[_selectedFilter];
+    final approvalsState = ref.watch(leaveApprovalsProvider(status: status));
     final canApplyLeave = ref.watch(
       userSessionProvider.select(
         (session) =>
@@ -89,127 +93,49 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: BackLeading(
-          onTap: () {
-            // WHY: reachable via LeaveSubmittedPage's goNamed reset, which
-            // clears the stack — canPop is false there, so fall back to the
-            // shift tab instead of hitting GoError: There is nothing to pop.
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.goNamed(Routes.shift);
-            }
-          },
-        ),
-        leadingWidth: 100,
-        title: Headline2xlTinyText(context.locale.leaveRequests),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: _LeaveRequestsAppBar(onBack: () => _onBack(context)),
       body: approvalsState.when(
-        loading: () => Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s8,
-              ),
-              child: const LeaveSupervisorSummaryCardShimmer(),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s8,
-              ),
-              child: AppTextField.search(
-                controller: _searchController,
-                hint: context.locale.search,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s8,
-              ),
-              child: _LeaveFilterBar(
-                filters: _filters,
-                selectedFilter: _selectedFilter,
-                onFilterSelected: (_) {},
-              ),
-            ),
-            Expanded(
-              child: _LeaveRequestListShimmer(
-                showActionButtons:
-                    _selectedFilter != 'Approved' && _selectedFilter != 'Rejected',
-              ),
-            ),
-          ],
+        loading: () => _LeaveRequestsBody(
+          padding: padding,
+          searchController: _searchController,
+          selectedFilter: _selectedFilter,
+          onFilterSelected: (_) {},
+          summary: const LeaveSupervisorSummaryCardShimmer(),
+          list: _LeaveRequestListShimmer(
+            showActionButtons:
+                _selectedFilter != 'Approved' && _selectedFilter != 'Rejected',
+          ),
         ),
         error: (err, _) => Center(
           child: Text(
             err.toString().replaceAll('Exception: ', ''),
-            style: context.textStyle.bodyMedium.copyWith(
-              color: color.text.secondary,
-            ),
+            style:
+                context.textStyle.bodyMedium.copyWith(color: color.text.secondary),
           ),
         ),
-        data: (requests) => Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s8,
-              ),
-              child: _LeaveSupervisorSummaryCard(
-                pendingCount: requests
-                    .where((r) => r.status == 'pending_supervisor')
-                    .length,
-                managerCount: requests
-                    .where((r) => r.status == 'pending_manager')
-                    .length,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s8,
-              ),
-              child: AppTextField.search(
-                controller: _searchController,
-                hint: context.locale.search,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s16,
-                vertical: spacing.s8,
-              ),
-              child: _LeaveFilterBar(
-                filters: _filters,
-                selectedFilter: _selectedFilter,
-                onFilterSelected: (filter) =>
-                    setState(() => _selectedFilter = filter),
-              ),
-            ),
-            Expanded(
-              child: _LeaveRequestsList(
-                requests: requests,
-                selectedFilter: _selectedFilter,
-                searchQuery: _searchQuery,
-              ),
-            ),
-          ],
+        data: (requests) => _LeaveRequestsBody(
+          padding: padding,
+          searchController: _searchController,
+          selectedFilter: _selectedFilter,
+          onFilterSelected: (filter) => setState(() => _selectedFilter = filter),
+          summary: _LeaveSupervisorSummaryCard(
+            pendingCount:
+                requests.where((r) => r.status == 'pending_supervisor').length,
+            managerCount:
+                requests.where((r) => r.status == 'pending_manager').length,
+          ),
+          list: _LeaveRequestsList(
+            requests: requests,
+            selectedFilter: _selectedFilter,
+            searchQuery: _searchQuery,
+          ),
         ),
       ),
       floatingActionButton: canApplyLeave
           ? FloatingActionButton(
               onPressed: () => context.pushNamed(Routes.applyLeave),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
-                ),
+                borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
               ),
               backgroundColor: color.primary,
               child: const Icon(Icons.add, size: 28),
