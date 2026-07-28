@@ -90,7 +90,18 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
+        leading: BackLeading(
+          onTap: () {
+            // WHY: reachable via LeaveSubmittedPage's goNamed reset, which
+            // clears the stack — canPop is false there, so fall back to the
+            // shift tab instead of hitting GoError: There is nothing to pop.
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.goNamed(Routes.shift);
+            }
+          },
+        ),
         leadingWidth: 100,
         title: Headline2xlTinyText(context.locale.leaveRequests),
         centerTitle: true,
