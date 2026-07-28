@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/base/base.dart';
 import '../../../../../core/extensions/app_localization.dart';
+import '../../../../../core/extensions/failure_localization.dart';
 import '../../../../../domain/entities/login_entity.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/router/shell_tab_config.dart';
@@ -55,7 +56,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void _onLoginStateChanged(AsyncValue? previous, AsyncValue next) {
     switch (next) {
       case AsyncData(:final value) when value != null:
-        final entity = (value as Success<LoginResponseEntity, String>).data;
+        final entity = (value as Success<LoginResponseEntity, Failure>).data;
         final permissions = entity?.permissions ?? const <AppPermission>{};
         // WHY: landing tab is permission-driven — a user without shift.view
         // goes straight to their first permitted tab; the shift-status flow
@@ -67,7 +68,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       case AsyncError(:final error):
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
+        ).showSnackBar(SnackBar(content: Text(error.localizedMessage(context))));
     }
   }
 

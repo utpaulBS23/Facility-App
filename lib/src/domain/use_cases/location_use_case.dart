@@ -1,5 +1,6 @@
 // Created: 2026-04-08
 
+import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../entities/location_entity.dart';
 import '../repositories/location_repository.dart';
@@ -10,12 +11,12 @@ final class GetCurrentLocationUseCase {
 
   final LocationRepository _repository;
 
-  Future<Result<LocationResponseEntity, String>> call() async {
+  Future<Result<LocationResponseEntity, Failure>> call() async {
     final result = await _repository.getCurrentLocation();
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to get current location'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get current location')),
     };
   }
 }

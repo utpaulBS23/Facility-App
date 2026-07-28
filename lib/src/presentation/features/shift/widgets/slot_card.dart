@@ -47,7 +47,7 @@ class _SlotCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (slot.slotStatus.isNotEmpty)
-                  _SlotStatusChip(status: slot.slotStatus),
+                  SlotStatusChip(status: slot.slotStatus),
               ],
             ),
             Gap(spacing.s6),
