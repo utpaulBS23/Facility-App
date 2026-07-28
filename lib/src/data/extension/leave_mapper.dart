@@ -1,3 +1,4 @@
+import '../../core/base/exceptions.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
@@ -106,7 +107,6 @@ extension LeaveAttendantModelToEntity on LeaveAttendantModel {
       );
 }
 
-
 extension LeavePolicyListResponseModelToEntity on LeavePolicyListResponseModel {
   List<LeavePolicyEntity> toEntity() =>
       data.map((model) => model.toEntity()).toList();
@@ -118,7 +118,16 @@ extension LeaveBalanceListResponseModelToEntity on LeaveBalanceListResponseModel
 }
 
 extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
-  LeaveRequestEntity toEntity() => data!.toEntity();
+  LeaveRequestEntity toEntity() {
+    final model = data;
+    if (model == null) {
+      throw const CustomException.parsing(
+        message: 'Leave request response missing data.',
+        field: 'data',
+      );
+    }
+    return model.toEntity();
+  }
 }
 
 extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel {
@@ -142,6 +151,17 @@ extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel
 extension LeaveAttendantListResponseModelToEntity on LeaveAttendantListResponseModel {
   List<LeaveAttendantEntity> toEntity() =>
       data.map((model) => model.toEntity()).toList();
+}
+
+extension RejectLeaveReasonMapper on String? {
+  /// Wire body for `POST .../leave-requests/{id}/reject` — omits
+  /// `rejection_reason` entirely when no reason was given.
+  Map<String, dynamic> toRejectLeaveBody() {
+    final reason = this;
+    return reason != null && reason.isNotEmpty
+        ? {'rejection_reason': reason}
+        : <String, dynamic>{};
+  }
 }
 
 extension RequestLeaveParamsMapper on RequestLeaveParams {
