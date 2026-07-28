@@ -99,30 +99,7 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: _ApplyLeaveBody(
-        appType: _appType,
-        onAppTypeChanged: (type) {
-          if (_appType == type) return;
-          setState(() {
-            _appType = type;
-            _selectedLeavePolicyId = null;
-            _selectedShift = null;
-            _startDate = DateTime.now();
-            _endDate = DateTime.now();
-            _selectedAttendant = null;
-          });
-        },
-        startDate: _startDate,
-        endDate: _endDate,
-        onStartDateTap: _onPickStartDate,
-        onEndDateTap: _onPickEndDate,
-        selectedShift: _selectedShift,
-        selectedLeavePolicyId: _selectedLeavePolicyId,
-        onLeavePolicyChanged: (id) =>
-            setState(() => _selectedLeavePolicyId = id),
-        reasonController: _reasonController,
-        onSelectShiftTap: _onSelectShiftTap,
-        selectedAttendant: _selectedAttendant,
-        onSelectAttendantTap: _onSelectAttendantTap,
+        pageState: this,
         showAttendantTab: canFileOnBehalf,
       ),
       bottomNavigationBar: _SubmitBar(

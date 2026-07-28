@@ -2,41 +2,17 @@ part of '../view/apply_leave_page.dart';
 
 class _ApplyLeaveBody extends StatelessWidget {
   const _ApplyLeaveBody({
-    required this.appType,
-    required this.onAppTypeChanged,
-    required this.startDate,
-    required this.endDate,
-    required this.onStartDateTap,
-    required this.onEndDateTap,
-    required this.selectedShift,
-    required this.selectedLeavePolicyId,
-    required this.onLeavePolicyChanged,
-    required this.reasonController,
-    required this.onSelectShiftTap,
-    required this.selectedAttendant,
-    required this.onSelectAttendantTap,
+    required this.pageState,
     required this.showAttendantTab,
   });
 
-  final LeaveApplicationType appType;
-  final ValueChanged<LeaveApplicationType> onAppTypeChanged;
-  final DateTime startDate;
-  final DateTime endDate;
-  final VoidCallback onStartDateTap;
-  final VoidCallback onEndDateTap;
-  final ShiftEntity? selectedShift;
-  final int? selectedLeavePolicyId;
-  final ValueChanged<int?> onLeavePolicyChanged;
-  final TextEditingController reasonController;
-  final VoidCallback onSelectShiftTap;
-  final LeaveAttendantEntity? selectedAttendant;
-  final VoidCallback onSelectAttendantTap;
+  final _ApplyLeavePageState pageState;
   final bool showAttendantTab;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final isBehalf = appType == LeaveApplicationType.onBehalf;
+    final isBehalf = pageState._appType == LeaveApplicationType.onBehalf;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(spacing.s16),
@@ -45,42 +21,53 @@ class _ApplyLeaveBody extends StatelessWidget {
         children: [
           if (showAttendantTab) ...[
             _ApplicationTypeSwitch(
-              selectedType: appType,
-              onTypeChanged: onAppTypeChanged,
+              selectedType: pageState._appType,
+              onTypeChanged: (type) {
+                if (pageState._appType == type) return;
+                pageState.updateState(() {
+                  pageState._appType = type;
+                  pageState._selectedLeavePolicyId = null;
+                  pageState._selectedShift = null;
+                  pageState._startDate = DateTime.now();
+                  pageState._endDate = DateTime.now();
+                  pageState._selectedAttendant = null;
+                });
+              },
             ),
             Gap(spacing.s12),
           ],
           if (showAttendantTab && isBehalf) ...[
             _SelectAttendantCard(
-              selectedAttendant: selectedAttendant,
-              onTap: onSelectAttendantTap,
+              selectedAttendant: pageState._selectedAttendant,
+              onTap: pageState._onSelectAttendantTap,
             ),
             Gap(spacing.s8),
           ],
           _LeaveSummaryCard(
-            attendantId: isBehalf ? selectedAttendant?.id : null,
-            isAttendantPending: isBehalf && selectedAttendant == null,
-            selectedLeavePolicyId: selectedLeavePolicyId,
+            attendantId: isBehalf ? pageState._selectedAttendant?.id : null,
+            isAttendantPending: isBehalf && pageState._selectedAttendant == null,
+            selectedLeavePolicyId: pageState._selectedLeavePolicyId,
           ),
           Gap(spacing.s8),
           _LeaveDateRangeCard(
-            startDate: startDate,
-            endDate: endDate,
-            onStartDateTap: onStartDateTap,
-            onEndDateTap: onEndDateTap,
+            startDate: pageState._startDate,
+            endDate: pageState._endDate,
+            onStartDateTap: pageState._onPickStartDate,
+            onEndDateTap: pageState._onPickEndDate,
           ),
           Gap(spacing.s8),
           _SelectShiftCard(
-            selectedShift: selectedShift,
-            onTap: onSelectShiftTap,
+            selectedShift: pageState._selectedShift,
+            onTap: pageState._onSelectShiftTap,
           ),
           Gap(spacing.s8),
           _LeaveTypeInput(
-            selectedLeavePolicyId: selectedLeavePolicyId,
-            onChanged: onLeavePolicyChanged,
+            selectedLeavePolicyId: pageState._selectedLeavePolicyId,
+            onChanged: (id) =>
+                pageState.updateState(() => pageState._selectedLeavePolicyId = id),
           ),
           Gap(spacing.s8),
-          _ReasonInput(controller: reasonController),
+          _ReasonInput(controller: pageState._reasonController),
         ],
       ),
     );
