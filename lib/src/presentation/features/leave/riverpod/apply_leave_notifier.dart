@@ -20,8 +20,12 @@ class ApplyLeaveAction extends _$ApplyLeaveAction {
   Future<LeaveRequestEntity?> submit(RequestLeaveParams params) async {
     if (state.isLoading) return null;
 
-    final hasPerm = ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveRequest) ||
-        ref.read(hasPermissionUseCaseProvider).call(AppPermission.leaveFileOnBehalf);
+    final hasPerm = ref
+            .read(hasPermissionUseCaseProvider)
+            .call(AppPermission.leaveRequest) ||
+        ref
+            .read(hasPermissionUseCaseProvider)
+            .call(AppPermission.leaveFileOnBehalf);
     if (!hasPerm) {
       state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
       return null;
@@ -39,21 +43,18 @@ class ApplyLeaveAction extends _$ApplyLeaveAction {
         .read(requestLeaveUseCaseProvider)
         .call(partnerId, params);
 
-    return switch (result) {
-      Success(:final data) => () {
-          state = AsyncValue.data(data);
-          ref.invalidate(myLeavesProvider);
-          ref.invalidate(leaveBalanceProvider);
-          return data;
-        }(),
-      Error(:final error) => () {
-          state = AsyncValue.error(error, StackTrace.current);
-          return null;
-        }(),
-      _ => () {
-          state = AsyncValue.error('Submission failed', StackTrace.current);
-          return null;
-        }(),
+    state = switch (result) {
+      Success(:final data) => AsyncValue.data(data),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      _ => AsyncValue.error('Submission failed', StackTrace.current),
     };
+
+    if (result is Success<LeaveRequestEntity, String>) {
+      ref.invalidate(myLeavesProvider);
+      ref.invalidate(leaveBalanceProvider);
+      return result.data;
+    }
+
+    return null;
   }
 }
