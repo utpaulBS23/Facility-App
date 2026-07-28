@@ -1,4 +1,4 @@
-part of '../view/apply_leave_page.dart';
+part of '../view/select_attendant_page.dart';
 
 class _SelectableAttendantCard extends StatelessWidget {
   const _SelectableAttendantCard({

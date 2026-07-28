@@ -1,8 +1,14 @@
-part of '../../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../../core/theme/theme.dart';
+import 'shimmer_box.dart';
 
 /// Reusable stat tile shimmer preserving background colors.
-class _StatTileShimmer extends StatelessWidget {
-  const _StatTileShimmer({
+class StatTileShimmer extends StatelessWidget {
+  const StatTileShimmer({
+    super.key,
     required this.backgroundColor,
     required this.valueWidth,
     required this.labelWidth,
@@ -28,9 +34,9 @@ class _StatTileShimmer extends StatelessWidget {
         highlightColor: color.scaffoldBackground,
         child: Column(
           children: [
-            _ShimmerBox(width: valueWidth, height: 16),
+            ShimmerBox(width: valueWidth, height: 16),
             Gap(spacing.s4),
-            _ShimmerBox(width: labelWidth, height: 16),
+            ShimmerBox(width: labelWidth, height: 16),
           ],
         ),
       ),
@@ -39,8 +45,8 @@ class _StatTileShimmer extends StatelessWidget {
 }
 
 /// Shimmer skeleton matching [_LeaveSummaryCard] (Leave Balance & Pending tiles).
-class _LeaveSummaryCardShimmer extends StatelessWidget {
-  const _LeaveSummaryCardShimmer();
+class LeaveSummaryCardShimmer extends StatelessWidget {
+  const LeaveSummaryCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +63,7 @@ class _LeaveSummaryCardShimmer extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _StatTileShimmer(
+            child: StatTileShimmer(
               backgroundColor: color.successAlt,
               valueWidth: 36,
               labelWidth: 80,
@@ -65,7 +71,7 @@ class _LeaveSummaryCardShimmer extends StatelessWidget {
           ),
           Gap(spacing.s6),
           Expanded(
-            child: _StatTileShimmer(
+            child: StatTileShimmer(
               backgroundColor: color.warningAlt,
               valueWidth: 36,
               labelWidth: 60,
@@ -78,8 +84,8 @@ class _LeaveSummaryCardShimmer extends StatelessWidget {
 }
 
 /// Shimmer skeleton matching [_LeaveSupervisorSummaryCard] (Pending & Manager Approval tiles).
-class _LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
-  const _LeaveSupervisorSummaryCardShimmer();
+class LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
+  const LeaveSupervisorSummaryCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +102,7 @@ class _LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _StatTileShimmer(
+            child: StatTileShimmer(
               backgroundColor: color.warningAlt,
               valueWidth: 28,
               labelWidth: 60,
@@ -104,7 +110,7 @@ class _LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
           ),
           Gap(spacing.s6),
           Expanded(
-            child: _StatTileShimmer(
+            child: StatTileShimmer(
               backgroundColor: color.info.withValues(alpha: 0.1),
               valueWidth: 28,
               labelWidth: 100,

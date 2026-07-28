@@ -43,10 +43,8 @@ class _LeaveSummaryCard extends ConsumerWidget {
     final balanceState = ref.watch(leaveBalanceProvider(attendantId: attendantId));
 
     if (balanceState.isLoading) {
-      return const _LeaveSummaryCardShimmer();
+      return const LeaveSummaryCardShimmer();
     }
-
-
 
     final (remainingStr, pendingStr) = balanceState.maybeWhen(
       data: (balances) {
@@ -75,7 +73,7 @@ class _LeaveSummaryCard extends ConsumerWidget {
       child: Row(
         children: [
           Expanded(
-            child: _StatTile(
+            child: StatTile(
               value: remainingStr,
               label: context.locale.leaveBalance,
               valueColor: context.color.success,
@@ -84,53 +82,11 @@ class _LeaveSummaryCard extends ConsumerWidget {
           ),
           Gap(spacing.s6),
           Expanded(
-            child: _StatTile(
+            child: StatTile(
               value: pendingStr,
               label: context.locale.pending,
               valueColor: context.color.warning,
               backgroundColor: context.color.warningAlt,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatTile extends StatelessWidget {
-  const _StatTile({
-    required this.value,
-    required this.label,
-    required this.valueColor,
-    required this.backgroundColor,
-  });
-
-  final String value;
-  final String label;
-  final Color valueColor;
-  final Color backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Container(
-      padding: EdgeInsets.all(spacing.s12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: context.textStyle.titleMedium.copyWith(color: valueColor),
-          ),
-          Gap(spacing.s4),
-          Text(
-            label,
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.text.secondary,
             ),
           ),
         ],

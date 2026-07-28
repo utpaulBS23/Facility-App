@@ -3,58 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/shift_entity.dart';
-import '../../../../domain/entities/leave/leave_attendant_entity.dart';
-import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/leave/leave_attendant_entity.dart';
+import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/repositories/leave_repository.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
-import '../../../core/utils/date_formatter.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../../core/widgets/status_dot_tag.dart';
 import '../riverpod/apply_leave_notifier.dart';
-import '../riverpod/leave_action_notifier.dart';
-import '../riverpod/leave_approvals_provider.dart';
-import '../riverpod/leave_attendants_provider.dart';
 import '../riverpod/leave_balance_provider.dart';
 import '../riverpod/leave_policies_provider.dart';
-import '../riverpod/leave_shifts_provider.dart';
+import '../widgets/shimmer/stat_tile_shimmer.dart';
+import '../widgets/stat_tile.dart';
 
-part '../widgets/apply_leave_body.dart';
+part 'apply_leave_handlers.dart';
 part '../widgets/apply_leave_attendant_selector.dart';
+part '../widgets/apply_leave_body.dart';
+part '../widgets/apply_leave_date_selector.dart';
 part '../widgets/apply_leave_shift_selector.dart';
 part '../widgets/apply_leave_summary_card.dart';
-part '../widgets/select_shift_body.dart';
-part 'select_shift_page.dart';
-part 'select_attendant_page.dart';
-part 'leave_requests_page.dart';
-part 'leave_details_page.dart';
-part '../widgets/selectable_attendant_card.dart';
-part '../widgets/leave_supervisor_summary_card.dart';
-part '../widgets/leave_filter_bar.dart';
-part '../widgets/leave_request_action_card.dart';
-part '../widgets/leave_detail_header_card.dart';
-part '../widgets/leave_detail_info_section.dart';
-part '../widgets/leave_detail_shift_section.dart';
-part '../widgets/leave_status_timeline.dart';
-part '../widgets/leave_requests_list.dart';
 part '../widgets/apply_leave_type_switch.dart';
-part '../widgets/apply_leave_date_selector.dart';
-part 'leave_submitted_page.dart';
-part 'apply_leave_handlers.dart';
-part '../widgets/shimmer/shimmer_box.dart';
-part '../widgets/shimmer/stat_tile_shimmer.dart';
-part '../widgets/shimmer/leave_request_shimmer.dart';
-part '../widgets/shimmer/attendant_shimmer.dart';
-part '../widgets/shimmer/shift_shimmer.dart';
 
 enum LeaveApplicationType { own, onBehalf }
 
@@ -143,7 +117,8 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         onEndDateTap: _onPickEndDate,
         selectedShift: _selectedShift,
         selectedLeavePolicyId: _selectedLeavePolicyId,
-        onLeavePolicyChanged: (id) => setState(() => _selectedLeavePolicyId = id),
+        onLeavePolicyChanged: (id) =>
+            setState(() => _selectedLeavePolicyId = id),
         reasonController: _reasonController,
         onSelectShiftTap: _onSelectShiftTap,
         selectedAttendant: _selectedAttendant,

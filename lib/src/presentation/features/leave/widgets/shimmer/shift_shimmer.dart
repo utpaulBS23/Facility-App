@@ -1,4 +1,4 @@
-part of '../../view/apply_leave_page.dart';
+part of '../../view/select_shift_page.dart';
 
 /// Shimmer skeleton matching [_SelectableShiftCard].
 class _ShiftCardShimmer extends StatelessWidget {
@@ -25,23 +25,23 @@ class _ShiftCardShimmer extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _ShimmerBox(
+                    ShimmerBox(
                       width: 10,
                       height: 10,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     Gap(spacing.s4),
-                    const _ShimmerBox(width: 70, height: 14),
+                    const ShimmerBox(width: 70, height: 14),
                   ],
                 ),
                 Gap(spacing.s8),
-                const _ShimmerBox(width: 160, height: 16),
+                const ShimmerBox(width: 160, height: 16),
                 Gap(spacing.s6),
-                const _ShimmerBox(width: 200, height: 14),
+                const ShimmerBox(width: 200, height: 14),
               ],
             ),
           ),
-          const _ShimmerBox(width: 24, height: 24),
+          const ShimmerBox(width: 24, height: 24),
         ],
       ),
     );

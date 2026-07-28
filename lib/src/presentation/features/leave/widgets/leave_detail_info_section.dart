@@ -1,4 +1,4 @@
-part of '../view/apply_leave_page.dart';
+part of '../view/leave_details_page.dart';
 
 class _LeaveDetailInfoSection extends StatelessWidget {
   const _LeaveDetailInfoSection({required this.request});

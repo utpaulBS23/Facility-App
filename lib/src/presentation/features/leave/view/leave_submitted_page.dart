@@ -1,4 +1,12 @@
-part of 'apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../core/router/routes.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/text/typography.dart';
 
 class LeaveSubmittedPage extends StatelessWidget {
   const LeaveSubmittedPage({super.key, required this.request});
@@ -11,10 +19,8 @@ class LeaveSubmittedPage extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final facilityName = request.shifts.isNotEmpty
-        ? request.shifts.first.facilityName
-        : (request.applicant?.name ?? 'Main Facility');
     final dateRange = '${request.startDate} → ${request.endDate}';
+    final daysCountText = '${request.daysCount} ${request.daysCount == 1 ? 'day' : 'days'}';
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -22,37 +28,35 @@ class LeaveSubmittedPage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(spacing.s24),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
               Container(
-                width: 72,
-                height: 72,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
-                  color: color.success,
+                  color: color.success.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.check_rounded,
-                  color: color.onPrimary,
-                  size: 44,
+                  Icons.check_circle_rounded,
+                  color: color.success,
+                  size: 48,
                 ),
               ),
               Gap(spacing.s24),
-              Text(
-                context.locale.leaveRequestSubmitted,
-                style: textStyle.headline2xlTiny.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color.text.primary,
-                ),
+              const Headline2xlTinyText(
+                'Leave Request Submitted',
                 textAlign: TextAlign.center,
               ),
-              Gap(spacing.s12),
+              Gap(spacing.s8),
               Text(
-                context.locale.leaveSubmittedMessage,
+                'Your leave request has been submitted for approval.',
+                textAlign: TextAlign.center,
                 style: textStyle.bodyMedium.copyWith(
                   color: color.text.secondary,
                 ),
-                textAlign: TextAlign.center,
               ),
               Gap(spacing.s32),
               Container(
@@ -66,39 +70,44 @@ class LeaveSubmittedPage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    _SummaryRow(
-                      label: context.locale.shift,
-                      value: facilityName,
+                    _SubmittedRow(
+                      label: 'Reference Code',
+                      value: request.referenceCode,
                     ),
-                    Gap(spacing.s12),
-                    _SummaryRow(
-                      label: context.locale.dateTime,
-                      value: dateRange,
-                    ),
-                    Gap(spacing.s12),
-                    _SummaryRow(
+                    Divider(color: color.borderSubtle, height: spacing.s24),
+                    _SubmittedRow(
                       label: context.locale.leaveType,
                       value: request.leaveType.toUpperCase(),
                     ),
-                    Gap(spacing.s12),
-                    _SummaryRow(
-                      label: context.locale.statusTimeline,
-                      // WHY: backend may auto-approve the supervisor step when
-                      // filing on behalf, so the returned status is not always
-                      // "pending". Reflect the real status here.
-                      valueWidget: _statusTag(context, request.status),
+                    Divider(color: color.borderSubtle, height: spacing.s24),
+                    _SubmittedRow(
+                      label: 'Date Range',
+                      value: dateRange,
+                    ),
+                    Divider(color: color.borderSubtle, height: spacing.s24),
+                    _SubmittedRow(
+                      label: context.locale.duration,
+                      value: daysCountText,
                     ),
                   ],
                 ),
               ),
-              const Spacer(flex: 2),
-              SizedBox(
-                width: double.infinity,
-                height: spacing.s44,
-                child: FilledButton(
-                  onPressed: () => context.pop(),
-                  child: Text(context.locale.backToShift),
+              const Spacer(),
+              FilledButton(
+                onPressed: () {
+                  context.goNamed(Routes.leaveRequests);
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: color.primary,
+                  foregroundColor: color.onPrimary,
+                  minimumSize: Size(double.infinity, spacing.s48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
                 ),
+                child: const Text('Done'),
               ),
             ],
           ),
@@ -106,41 +115,13 @@ class LeaveSubmittedPage extends StatelessWidget {
       ),
     );
   }
-
-  /// Maps a raw API [status] string to the correct [StatusDotTag].
-  StatusDotTag _statusTag(BuildContext context, String status) {
-    final color = context.color;
-    return switch (status) {
-      'approved' => StatusDotTag(
-          label: context.locale.approved,
-          dotColor: color.success,
-        ),
-      'pending_manager' => StatusDotTag(
-          label: context.locale.pendingManager,
-          dotColor: color.warning,
-        ),
-      'rejected' => StatusDotTag(
-          label: context.locale.rejected,
-          dotColor: color.error,
-        ),
-      _ => StatusDotTag(
-          label: context.locale.pending,
-          dotColor: color.warning,
-        ),
-    };
-  }
 }
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({
-    required this.label,
-    this.value,
-    this.valueWidget,
-  });
+class _SubmittedRow extends StatelessWidget {
+  const _SubmittedRow({required this.label, required this.value});
 
   final String label;
-  final String? value;
-  final Widget? valueWidget;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
@@ -154,14 +135,13 @@ class _SummaryRow extends StatelessWidget {
           label,
           style: textStyle.bodyMedium.copyWith(color: color.text.secondary),
         ),
-        valueWidget ??
-            Text(
-              value ?? '',
-              style: textStyle.bodyMedium.copyWith(
-                color: color.text.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+        Text(
+          value,
+          style: textStyle.bodyMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: color.text.primary,
+          ),
+        ),
       ],
     );
   }

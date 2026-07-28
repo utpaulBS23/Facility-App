@@ -1,4 +1,30 @@
-part of 'apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
+import '../../../core/router/routes.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/status_dot_tag.dart';
+import '../../../core/widgets/text/typography.dart';
+import '../riverpod/leave_action_notifier.dart';
+import '../riverpod/leave_approvals_provider.dart';
+import '../widgets/shimmer/shimmer_box.dart';
+import '../widgets/shimmer/stat_tile_shimmer.dart';
+import '../widgets/stat_tile.dart';
+
+part '../widgets/leave_filter_bar.dart';
+part '../widgets/leave_request_action_card.dart';
+part '../widgets/leave_requests_list.dart';
+part '../widgets/leave_supervisor_summary_card.dart';
+part '../widgets/shimmer/leave_request_shimmer.dart';
 
 class LeaveRequestsPage extends ConsumerStatefulWidget {
   const LeaveRequestsPage({super.key});
@@ -68,7 +94,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
                 horizontal: spacing.s16,
                 vertical: spacing.s8,
               ),
-              child: const _LeaveSupervisorSummaryCardShimmer(),
+              child: const LeaveSupervisorSummaryCardShimmer(),
             ),
             Padding(
               padding: EdgeInsets.symmetric(
@@ -137,7 +163,6 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
                     setState(() => _selectedFilter = filter),
               ),
             ),
-
             Expanded(
               child: _LeaveRequestsList(
                 requests: requests,
@@ -156,7 +181,6 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
                   context.dimensions.radius.r12,
                 ),
               ),
-
               backgroundColor: color.primary,
               child: const Icon(Icons.add, size: 28),
             )

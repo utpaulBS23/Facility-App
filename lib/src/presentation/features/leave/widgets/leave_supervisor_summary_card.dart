@@ -1,4 +1,4 @@
-part of '../view/apply_leave_page.dart';
+part of '../view/leave_requests_page.dart';
 
 class _LeaveSupervisorSummaryCard extends StatelessWidget {
   const _LeaveSupervisorSummaryCard({
@@ -23,7 +23,7 @@ class _LeaveSupervisorSummaryCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: _StatTile(
+            child: StatTile(
               value: pendingCount.toString(),
               label: context.locale.pending,
               valueColor: context.color.warning,
@@ -32,7 +32,7 @@ class _LeaveSupervisorSummaryCard extends StatelessWidget {
           ),
           Gap(spacing.s6),
           Expanded(
-            child: _StatTile(
+            child: StatTile(
               value: managerCount.toString(),
               label: context.locale.managerApproval,
               valueColor: context.color.info,

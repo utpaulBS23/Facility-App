@@ -1,4 +1,20 @@
-part of 'apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/shift_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/text/typography.dart';
+import '../riverpod/leave_shifts_provider.dart';
+import '../widgets/shimmer/shimmer_box.dart';
+
+part '../widgets/select_shift_body.dart';
+part '../widgets/shimmer/shift_shimmer.dart';
 
 class SelectShiftPage extends ConsumerWidget {
   const SelectShiftPage({
@@ -12,63 +28,26 @@ class SelectShiftPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final shiftsState = ref.watch(
+    final color = context.color;
+    final shiftsAsync = ref.watch(
       leaveShiftsProvider(partnerId: partnerId, date: date),
     );
 
     return Scaffold(
-      backgroundColor: context.color.scaffoldBackground,
+      backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
+        leading: const BackLeading(),
         leadingWidth: 100,
         title: Headline2xlTinyText(context.locale.selectShift),
         centerTitle: true,
-        backgroundColor: context.color.onPrimary,
+        backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: shiftsState.when(
+      body: shiftsAsync.when(
         loading: () => const _ShiftListShimmer(),
-        error: (e, _) => Center(
-          child: Padding(
-            padding: EdgeInsets.all(context.dimensions.spacing.s24),
-            child: Text(
-              e.toString(),
-              style: context.textStyle.bodyMedium.copyWith(
-                color: context.color.text.secondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        data: (shifts) => shifts.isEmpty
-            ? Center(
-                child: Text(
-                  context.locale.noShiftsAvailableForDate,
-                  style: context.textStyle.bodyMedium.copyWith(
-                    color: context.color.text.secondary,
-                  ),
-                ),
-              )
-            : _SelectShiftBody(shifts: shifts),
+        error: (err, _) => Center(child: Text(err.toString())),
+        data: (shifts) => _SelectShiftBody(shifts: shifts),
       ),
     );
   }
 }
-

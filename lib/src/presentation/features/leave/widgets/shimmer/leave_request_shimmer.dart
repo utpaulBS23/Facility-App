@@ -1,4 +1,4 @@
-part of '../../view/apply_leave_page.dart';
+part of '../../view/leave_requests_page.dart';
 
 /// Shimmer skeleton matching [_LeaveRequestActionCard].
 class _LeaveRequestCardShimmer extends StatelessWidget {
@@ -25,8 +25,8 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const _ShimmerBox(width: 140, height: 20),
-              _ShimmerBox(
+              const ShimmerBox(width: 140, height: 20),
+              ShimmerBox(
                 width: 76,
                 height: 22,
                 borderRadius: BorderRadius.circular(radius.r20),
@@ -34,7 +34,7 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
             ],
           ),
           Gap(spacing.s8),
-          const _ShimmerBox(width: 200, height: 18),
+          const ShimmerBox(width: 200, height: 18),
           if (showActionButtons) ...[
             Gap(spacing.s12),
             Divider(color: color.borderSubtle, height: 1),
@@ -42,7 +42,7 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _ShimmerBox(
+                  child: ShimmerBox(
                     width: double.infinity,
                     height: 44,
                     borderRadius: BorderRadius.circular(radius.r10),
@@ -50,7 +50,7 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
                 ),
                 Gap(spacing.s12),
                 Expanded(
-                  child: _ShimmerBox(
+                  child: ShimmerBox(
                     width: double.infinity,
                     height: 44,
                     borderRadius: BorderRadius.circular(radius.r10),

@@ -1,4 +1,4 @@
-part of '../view/apply_leave_page.dart';
+part of '../view/select_shift_page.dart';
 
 class _SelectShiftBody extends StatelessWidget {
   const _SelectShiftBody({required this.shifts});

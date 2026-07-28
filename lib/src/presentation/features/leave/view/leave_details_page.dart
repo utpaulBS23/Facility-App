@@ -1,4 +1,20 @@
-part of 'apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/status_dot_tag.dart';
+import '../../../core/widgets/text/typography.dart';
+import '../riverpod/leave_action_notifier.dart';
+
+part '../widgets/leave_detail_header_card.dart';
+part '../widgets/leave_detail_info_section.dart';
+part '../widgets/leave_detail_shift_section.dart';
+part '../widgets/leave_status_timeline.dart';
 
 class LeaveDetailsPage extends ConsumerStatefulWidget {
   const LeaveDetailsPage({super.key, required this.request});

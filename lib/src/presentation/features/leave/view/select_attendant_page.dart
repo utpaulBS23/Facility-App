@@ -1,4 +1,20 @@
-part of 'apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/leave_attendant_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/text/typography.dart';
+import '../riverpod/leave_attendants_provider.dart';
+import '../widgets/shimmer/shimmer_box.dart';
+
+part '../widgets/selectable_attendant_card.dart';
+part '../widgets/shimmer/attendant_shimmer.dart';
 
 class SelectAttendantPage extends ConsumerStatefulWidget {
   const SelectAttendantPage({super.key});
@@ -26,51 +42,31 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
   }
 
   void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text.toLowerCase();
-    });
+    setState(() => _searchQuery = _searchController.text.toLowerCase());
   }
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final textStyle = context.textStyle;
     final attendantsState = ref.watch(leaveAttendantsProvider);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () => context.pop(),
-          child: Padding(
-            padding: EdgeInsetsGeometry.directional(start: 6),
-            child: Row(
-              children: [
-                Icon(Icons.close, color: context.color.primary, size: 24),
-                Text(
-                  context.locale.close,
-                  style: context.textStyle.labelXl.copyWith(
-                    color: context.color.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        leading: const BackLeading(),
         leadingWidth: 100,
-        title: Headline2xlTinyText(context.locale.attendant),
+        title: Headline2xlTinyText(context.locale.selectAttendant),
         centerTitle: true,
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: spacing.s16,
-              vertical: spacing.s12,
+              vertical: spacing.s8,
             ),
             child: AppTextField.search(
               controller: _searchController,
@@ -80,28 +76,19 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
           Expanded(
             child: attendantsState.when(
               loading: () => const _AttendantListShimmer(),
-              error: (err, _) => Center(
-                child: Padding(
-                  padding: EdgeInsets.all(spacing.s24),
-                  child: Text(
-                    err.toString(),
-                    style: textStyle.bodyMedium.copyWith(
-                      color: color.text.secondary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              data: (attendantsList) {
-                final filtered = attendantsList
-                    .where((s) => s.name.toLowerCase().contains(_searchQuery))
-                    .toList();
+              error: (err, _) => Center(child: Text(err.toString())),
+              data: (attendants) {
+                final filtered = attendants.where((a) {
+                  if (_searchQuery.isEmpty) return true;
+                  return a.name.toLowerCase().contains(_searchQuery) ||
+                      a.uid.toLowerCase().contains(_searchQuery);
+                }).toList();
 
                 if (filtered.isEmpty) {
                   return Center(
                     child: Text(
                       context.locale.noAttendantsFound,
-                      style: textStyle.bodyMedium.copyWith(
+                      style: context.textStyle.bodyMedium.copyWith(
                         color: color.text.secondary,
                       ),
                     ),
@@ -111,7 +98,7 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
                 return ListView.separated(
                   padding: EdgeInsets.all(spacing.s16),
                   itemCount: filtered.length,
-                  separatorBuilder: (context, index) => Gap(spacing.s12),
+                  separatorBuilder: (_, _) => Gap(spacing.s12),
                   itemBuilder: (context, index) {
                     final attendant = filtered[index];
                     return _SelectableAttendantCard(

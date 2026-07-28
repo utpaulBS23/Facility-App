@@ -1,4 +1,4 @@
-part of '../../view/apply_leave_page.dart';
+part of '../../view/select_attendant_page.dart';
 
 /// Shimmer skeleton matching [_SelectableAttendantCard].
 class _AttendantCardShimmer extends StatelessWidget {
@@ -20,7 +20,7 @@ class _AttendantCardShimmer extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ShimmerBox(
+          ShimmerBox(
             width: 40,
             height: 40,
             borderRadius: BorderRadius.circular(20),
@@ -30,15 +30,15 @@ class _AttendantCardShimmer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _ShimmerBox(width: 120, height: 16),
+                const ShimmerBox(width: 120, height: 16),
                 Gap(spacing.s6),
-                const _ShimmerBox(width: 80, height: 14),
+                const ShimmerBox(width: 80, height: 14),
                 Gap(spacing.s6),
-                const _ShimmerBox(width: 140, height: 14),
+                const ShimmerBox(width: 140, height: 14),
               ],
             ),
           ),
-          _ShimmerBox(
+          ShimmerBox(
             width: 90,
             height: 24,
             borderRadius: BorderRadius.circular(radius.r20),

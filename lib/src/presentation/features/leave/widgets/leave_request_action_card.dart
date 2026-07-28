@@ -1,4 +1,4 @@
-part of '../view/apply_leave_page.dart';
+part of '../view/leave_requests_page.dart';
 
 class _LeaveRequestActionCard extends ConsumerStatefulWidget {
   const _LeaveRequestActionCard({
