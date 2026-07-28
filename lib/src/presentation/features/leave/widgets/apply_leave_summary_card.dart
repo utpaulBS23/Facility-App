@@ -1,10 +1,15 @@
 part of '../view/apply_leave_page.dart';
 
 class _LeaveSummaryCard extends ConsumerWidget {
-  const _LeaveSummaryCard({this.attendantId, this.selectedLeavePolicyId});
+  const _LeaveSummaryCard({
+    this.attendantId,
+    this.selectedLeavePolicyId,
+    this.isAttendantPending = false,
+  });
 
   final int? attendantId;
   final int? selectedLeavePolicyId;
+  final bool isAttendantPending;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,10 +21,7 @@ class _LeaveSummaryCard extends ConsumerWidget {
 
     final spacing = context.dimensions.spacing;
 
-    // WHY: -1 is a sentinel from apply_leave_body.dart meaning the user has
-    // switched to on-behalf mode but hasn't picked an attendant yet.
-    // Show a prompt instead of fetching the supervisor's own balance.
-    if (attendantId == -1) {
+    if (isAttendantPending) {
       return Container(
         padding: EdgeInsets.symmetric(
           horizontal: spacing.s12,

@@ -58,12 +58,8 @@ class _ApplyLeaveBody extends StatelessWidget {
             Gap(spacing.s8),
           ],
           _LeaveSummaryCard(
-            // WHY: -1 is a sentinel meaning "on behalf mode, no attendant
-            // picked yet". Prevents the card from showing the supervisor's
-            // own balance when the user hasn't selected an attendant.
-            attendantId: isBehalf
-                ? (selectedAttendant?.id ?? -1)
-                : null,
+            attendantId: isBehalf ? selectedAttendant?.id : null,
+            isAttendantPending: isBehalf && selectedAttendant == null,
             selectedLeavePolicyId: selectedLeavePolicyId,
           ),
           Gap(spacing.s8),
