@@ -1,3 +1,4 @@
+import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../entities/facility_entity.dart';
 import '../repositories/authentication_repository.dart';
@@ -9,9 +10,9 @@ final class GetFacilitiesUseCase {
   final FacilityRepository _facilityRepository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<FacilityListEntity, String>> call({int? page}) async {
+  Future<Result<FacilityListEntity, Failure>> call({int? page}) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error('Partner ID not found');
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
     final result = await _facilityRepository.getFacilities(
       partnerId: partnerId,
@@ -20,8 +21,8 @@ final class GetFacilitiesUseCase {
 
     return switch (result) {
       Success(:final data) when data != null => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to get facilities'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get facilities')),
     };
   }
 }

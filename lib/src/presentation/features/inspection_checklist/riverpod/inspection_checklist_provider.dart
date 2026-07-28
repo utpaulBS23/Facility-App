@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -32,11 +33,11 @@ class InspectionChecklistState {
   // Server-confirmed points per item; drives total score display.
   final Map<int, int> confirmedPoints;
   final Set<int> savingItemIds;
-  final Map<int, String> itemSaveErrors;
+  final Map<int, Failure> itemSaveErrors;
   final bool isLoadingChecklist;
-  final String? checklistError;
+  final Failure? checklistError;
   final bool isSubmitting;
-  final String? submitError;
+  final Failure? submitError;
   final bool submitSuccess;
 
   int get totalAnswerableCount =>
@@ -73,11 +74,11 @@ class InspectionChecklistState {
     Map<int, List<XFile>>? proofImages,
     Map<int, int>? confirmedPoints,
     Set<int>? savingItemIds,
-    Map<int, String>? itemSaveErrors,
+    Map<int, Failure>? itemSaveErrors,
     bool? isLoadingChecklist,
-    String? checklistError,
+    Failure? checklistError,
     bool? isSubmitting,
-    String? submitError,
+    Failure? submitError,
     bool? submitSuccess,
     bool clearChecklistError = false,
     bool clearSubmitError = false,
@@ -108,20 +109,11 @@ class InspectionChecklist extends _$InspectionChecklist {
       const InspectionChecklistState(isLoadingChecklist: true);
 
   Future<void> loadChecklist({required int visitId}) async {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) {
-      state = state.copyWith(
-        isLoadingChecklist: false,
-        checklistError: partnerUnavailableMessage,
-      );
-      return;
-    }
-
     state = state.copyWith(isLoadingChecklist: true, clearChecklistError: true);
 
-    final Result<ChecklistEntity, String> result = await ref
+    final Result<ChecklistEntity, Failure> result = await ref
         .read(getChecklistUseCaseProvider)
-        .call(partnerId: partnerId, visitId: visitId);
+        .call(visitId: visitId);
 
     state = result.when(
       success: (data) {
@@ -173,9 +165,6 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int itemId,
     required int rating,
   }) async {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
-
     final previousRating = state.starAnswers[itemId];
     final isSameRating = previousRating == rating;
     final updatedStarAnswers = Map<int, int>.from(state.starAnswers);
@@ -188,14 +177,13 @@ class InspectionChecklist extends _$InspectionChecklist {
     state = state.copyWith(
       starAnswers: updatedStarAnswers,
       savingItemIds: Set<int>.from(state.savingItemIds)..add(itemId),
-      itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+      itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
         ..remove(itemId),
     );
 
     final result = await ref
         .read(saveChecklistItemResponseUseCaseProvider)
         .call(
-          partnerId: partnerId,
           visitId: visitId,
           itemId: itemId,
           ratingValue: isSameRating ? 0 : rating,
@@ -237,7 +225,7 @@ class InspectionChecklist extends _$InspectionChecklist {
         return state.copyWith(
           starAnswers: revertedAnswers,
           savingItemIds: doneSaving,
-          itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+          itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
             ..[itemId] = err,
         );
       },
@@ -249,22 +237,18 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int itemId,
     required bool value,
   }) async {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
-
     final previousYesNo = state.yesNoAnswers[itemId];
 
     state = state.copyWith(
       yesNoAnswers: Map<int, bool>.from(state.yesNoAnswers)..[itemId] = value,
       savingItemIds: Set<int>.from(state.savingItemIds)..add(itemId),
-      itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+      itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
         ..remove(itemId),
     );
 
     final result = await ref
         .read(saveChecklistItemResponseUseCaseProvider)
         .call(
-          partnerId: partnerId,
           visitId: visitId,
           itemId: itemId,
           booleanValue: value,
@@ -296,7 +280,7 @@ class InspectionChecklist extends _$InspectionChecklist {
         return state.copyWith(
           yesNoAnswers: revertedYesNo,
           savingItemIds: doneSaving,
-          itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+          itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
             ..[itemId] = err,
         );
       },
@@ -311,14 +295,11 @@ class InspectionChecklist extends _$InspectionChecklist {
   }) async {
     if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
       state = state.copyWith(
-        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
-          ..[itemId] = permissionDeniedMessage,
+        itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
+          ..[itemId] = Failure.permissionDenied,
       );
       return;
     }
-
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
 
     final ratingValue = state.starAnswers[itemId];
     final booleanValue = state.yesNoAnswers[itemId];
@@ -326,14 +307,13 @@ class InspectionChecklist extends _$InspectionChecklist {
 
     state = state.copyWith(
       savingItemIds: Set<int>.from(state.savingItemIds)..add(itemId),
-      itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+      itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
         ..remove(itemId),
     );
 
     final result = await ref
         .read(saveChecklistItemResponseUseCaseProvider)
         .call(
-          partnerId: partnerId,
           visitId: visitId,
           itemId: itemId,
           ratingValue: ratingValue,
@@ -365,7 +345,7 @@ class InspectionChecklist extends _$InspectionChecklist {
       },
       error: (err) => state.copyWith(
         savingItemIds: doneSaving,
-        itemSaveErrors: Map<int, String>.from(state.itemSaveErrors)
+        itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
           ..[itemId] = err,
       ),
     );
@@ -427,12 +407,9 @@ class InspectionChecklist extends _$InspectionChecklist {
     if (!state.isComplete) return;
 
     if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
-      state = state.copyWith(submitError: permissionDeniedMessage);
+      state = state.copyWith(submitError: Failure.permissionDenied);
       return;
     }
-
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
 
     state = state.copyWith(isSubmitting: true, clearSubmitError: true);
 
@@ -443,10 +420,9 @@ class InspectionChecklist extends _$InspectionChecklist {
         ChecklistAnswerRequestEntity(itemId: e.key, yesNoAnswer: e.value),
     ];
 
-    final Result<void, String> result = await ref
+    final Result<void, Failure> result = await ref
         .read(submitChecklistUseCaseProvider)
         .call(
-          partnerId: partnerId,
           visitId: visitId,
           request: ChecklistSubmitRequestEntity(answers: answers),
         );

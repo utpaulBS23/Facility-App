@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/theme/theme.dart';
@@ -68,15 +68,10 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
   // back to — its cached state would otherwise show the pre-assign roster.
   void _refreshShiftSlots() {
     final current = ref.read(shiftSlotsProvider).valueOrNull;
-    final partnerId = ref.activePartnerId;
-    if (current == null || partnerId == null) return;
+    if (current == null) return;
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(
-          partnerId: partnerId,
-          date: current.date,
-          facilityId: current.facility?.id,
-        );
+        .fetch(date: current.date, facilityId: current.facility?.id);
   }
 
   @override
@@ -91,7 +86,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(next.error.toString())));
+        ).showSnackBar(SnackBar(content: Text(next.error.localizedMessage(context))));
       }
     });
 
@@ -136,7 +131,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
               const Center(child: CircularProgressIndicator.adaptive()),
           error: (err, _) => Center(
             child: Text(
-              err.toString(),
+              err.localizedMessage(context),
               style: context.textStyle.bodyMedium.copyWith(
                 color: context.color.text.secondary,
               ),

@@ -152,3 +152,5 @@ app.*.symbols
 /.github/
 *.md
 !README.md
+# Local Flutter devtools socket handle (machine-specific)
+.flutter_skill_uri

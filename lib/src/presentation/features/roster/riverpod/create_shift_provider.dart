@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -25,7 +26,7 @@ class CreateShift extends _$CreateShift {
     if (state.isLoading) return;
 
     if (!ref.hasPermission(AppPermission.shiftCreate)) {
-      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 

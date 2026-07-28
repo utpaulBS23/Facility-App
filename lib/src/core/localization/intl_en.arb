@@ -400,5 +400,13 @@
   "minAttendants": "Min Attendants",
   "maxAttendants": "Max Attendants",
   "maxAttendantsError": "Max attendants must be at least min attendants.",
-  "shiftCreatedSuccessfully": "Shift created successfully."
+  "shiftCreatedSuccessfully": "Shift created successfully.",
+  "errorPartnerUnavailable": "This area is not available for your account.",
+  "errorNoAccessibleFacility": "No facility is available for your account.",
+  "errorPermissionDenied": "You do not have permission to perform this action.",
+  "errorNoConnection": "Unable to connect. Please check your internet connection and try again.",
+  "errorTimeout": "The request took too long to complete. Please try again.",
+  "errorSessionExpired": "Your session has expired. Please sign in again.",
+  "errorNotFound": "We could not find what you were looking for.",
+  "errorGeneric": "Something went wrong. Please try again."
 }

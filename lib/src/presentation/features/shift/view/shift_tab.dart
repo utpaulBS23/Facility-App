@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';

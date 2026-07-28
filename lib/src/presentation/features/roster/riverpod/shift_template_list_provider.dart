@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/shift_template_entity.dart';
@@ -18,7 +19,7 @@ class ShiftTemplateList extends _$ShiftTemplateList {
 
     state = const AsyncValue.loading();
 
-    final Result<List<ShiftTemplateEntity>, String> result = await ref
+    final Result<List<ShiftTemplateEntity>, Failure> result = await ref
         .read(getShiftTemplatesUseCaseProvider)
         .call();
 

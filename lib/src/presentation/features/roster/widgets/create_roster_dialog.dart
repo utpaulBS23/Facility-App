@@ -152,7 +152,7 @@ class _CreateRosterDialogState extends ConsumerState<CreateRosterDialog> {
                     if (createState is AsyncError) ...[
                       Gap(spacing.s12),
                       Text(
-                        createState.error.toString(),
+                        createState.error!.localizedMessage(context),
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.error,
                         ),
@@ -226,7 +226,7 @@ class _FacilityField extends StatelessWidget {
         facilitiesState.when(
           loading: () => const LinearProgressIndicator(),
           error: (err, _) => Text(
-            err.toString(),
+            err.localizedMessage(context),
             style: context.textStyle.bodySmall.copyWith(
               color: context.color.error,
             ),

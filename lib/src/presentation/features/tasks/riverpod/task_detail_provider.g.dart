@@ -6,7 +6,7 @@ part of 'task_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskDetailHash() => r'1790bcd6ab0f24960f1f38d8b47afb2c2206c5df';
+String _$taskDetailHash() => r'54ec98a8cf40ced7a0950e98c6c655bb63747d65';
 
 /// See also [TaskDetail].
 @ProviderFor(TaskDetail)

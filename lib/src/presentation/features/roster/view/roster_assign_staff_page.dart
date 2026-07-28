@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
@@ -66,7 +67,7 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(next.error.toString())));
+        ).showSnackBar(SnackBar(content: Text(next.error.localizedMessage(context))));
       }
     });
 
@@ -111,7 +112,7 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
               const Center(child: CircularProgressIndicator.adaptive()),
           error: (err, _) => Center(
             child: Text(
-              err.toString(),
+              err.localizedMessage(context),
               style: context.textStyle.bodyMedium.copyWith(
                 color: context.color.text.secondary,
               ),

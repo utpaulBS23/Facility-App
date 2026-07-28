@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -16,15 +17,9 @@ class TaskDetail extends _$TaskDetail {
   Future<void> fetch({required int taskId}) async {
     state = const AsyncValue.loading();
 
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) {
-      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
-      return;
-    }
-
-    final Result<TaskEntity, String> result = await ref
+    final Result<TaskEntity, Failure> result = await ref
         .read(getTaskDetailUseCaseProvider)
-        .call(partnerId: partnerId, id: taskId);
+        .call(id: taskId);
 
     state = result.when(
       success: (data) => data != null
@@ -35,15 +30,9 @@ class TaskDetail extends _$TaskDetail {
   }
 
   Future<void> startIssue({required int issueId}) async {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) {
-      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
-      return;
-    }
-
-    final Result<TaskEntity, String> result = await ref
+    final Result<TaskEntity, Failure> result = await ref
         .read(startIssueUseCaseProvider)
-        .call(partnerId: partnerId, issueId: issueId);
+        .call(issueId: issueId);
 
     state = result.when(
       success: (data) => data != null
@@ -58,17 +47,10 @@ class TaskDetail extends _$TaskDetail {
     required String photoPath,
     required String alt,
   }) async {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) {
-      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
-      return null;
-    }
-
     final previousTask = state.valueOrNull;
-    final Result<TaskMediaEntity, String> result = await ref
+    final Result<TaskMediaEntity, Failure> result = await ref
         .read(uploadTaskMediaUseCaseProvider)
         .call(
-          partnerId: partnerId,
           taskId: taskId,
           photoPath: photoPath,
           alt: alt,
@@ -92,20 +74,14 @@ class TaskDetail extends _$TaskDetail {
 
   Future<TaskEntity?> completeIssue({required int issueId}) async {
     if (!ref.hasPermission(AppPermission.taskComplete)) {
-      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
-      return null;
-    }
-
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) {
-      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return null;
     }
 
     final previousTask = state.valueOrNull;
-    final Result<TaskEntity, String> result = await ref
+    final Result<TaskEntity, Failure> result = await ref
         .read(completeIssueUseCaseProvider)
-        .call(partnerId: partnerId, issueId: issueId);
+        .call(issueId: issueId);
 
     TaskEntity? completedTask;
     switch (result) {

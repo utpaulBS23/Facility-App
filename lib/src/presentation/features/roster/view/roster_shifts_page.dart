@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../core/router/routes.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
@@ -90,7 +91,7 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
             const Center(child: CircularProgressIndicator.adaptive()),
         error: (err, _) => Center(
           child: Text(
-            err.toString(),
+            err.localizedMessage(context),
             style: context.textStyle.bodyMedium.copyWith(
               color: context.color.text.secondary,
             ),

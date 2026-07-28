@@ -1,61 +1,67 @@
 import '../entities/checklist_entity.dart';
-import '../entities/report_issue_entity.dart';
 import '../entities/visit_entity.dart';
+import '../repositories/authentication_repository.dart';
 import '../repositories/visit_repository.dart';
+import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 
 final class GetMyVisitsUseCase {
-  GetMyVisitsUseCase(this._repository);
+  GetMyVisitsUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<VisitListEntity, String>> call({
-    required int partnerId,
-    required String date,
-  }) async {
+  Future<Result<VisitListEntity, Failure>> call({required String date}) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.getMyVisits(
       partnerId: partnerId,
       date: date,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to load visits'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load visits')),
     };
   }
 }
 
 final class GetVisitDetailUseCase {
-  GetVisitDetailUseCase(this._repository);
+  GetVisitDetailUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<VisitDetailEntity, String>> call({
-    required int partnerId,
-    required int visitId,
-  }) async {
+  Future<Result<VisitDetailEntity, Failure>> call({required int visitId}) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.getVisitDetail(
       partnerId: partnerId,
       visitId: visitId,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to load visit details'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load visit details')),
     };
   }
 }
 
 final class CheckInVisitUseCase {
-  CheckInVisitUseCase(this._repository);
+  CheckInVisitUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<void, String>> call({
-    required int partnerId,
+  Future<Result<void, Failure>> call({
     required int visitId,
     required VisitCheckInRequestEntity request,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.checkInVisit(
       partnerId: partnerId,
       visitId: visitId,
@@ -63,22 +69,25 @@ final class CheckInVisitUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to check in'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('check in')),
     };
   }
 }
 
 final class CaptureCheckInUseCase {
-  CaptureCheckInUseCase(this._repository);
+  CaptureCheckInUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<VisitCheckInCaptureEntity, String>> call({
-    required int partnerId,
+  Future<Result<VisitCheckInCaptureEntity, Failure>> call({
     required int visitId,
     required VisitCheckInRequestEntity request,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.captureCheckIn(
       partnerId: partnerId,
       visitId: visitId,
@@ -86,43 +95,47 @@ final class CaptureCheckInUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to capture check-in'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('capture check-in')),
     };
   }
 }
 
 final class GetChecklistUseCase {
-  GetChecklistUseCase(this._repository);
+  GetChecklistUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<ChecklistEntity, String>> call({
-    required int partnerId,
-    required int visitId,
-  }) async {
+  Future<Result<ChecklistEntity, Failure>> call({required int visitId}) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.getChecklist(
       partnerId: partnerId,
       visitId: visitId,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to load checklist'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load checklist')),
     };
   }
 }
 
 final class SubmitChecklistUseCase {
-  SubmitChecklistUseCase(this._repository);
+  SubmitChecklistUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<void, String>> call({
-    required int partnerId,
+  Future<Result<void, Failure>> call({
     required int visitId,
     required ChecklistSubmitRequestEntity request,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.submitChecklist(
       partnerId: partnerId,
       visitId: visitId,
@@ -130,46 +143,28 @@ final class SubmitChecklistUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to submit checklist'),
-    };
-  }
-}
-
-final class SubmitVisitUseCase {
-  SubmitVisitUseCase(this._repository);
-
-  final VisitRepository _repository;
-
-  Future<Result<void, String>> call({
-    required int partnerId,
-    required int visitId,
-  }) async {
-    final result = await _repository.submitVisit(
-      partnerId: partnerId,
-      visitId: visitId,
-    );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to submit visit'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('submit checklist')),
     };
   }
 }
 
 final class SaveChecklistItemResponseUseCase {
-  SaveChecklistItemResponseUseCase(this._repository);
+  SaveChecklistItemResponseUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<ChecklistItemSaveResponseEntity, String>> call({
-    required int partnerId,
+  Future<Result<ChecklistItemSaveResponseEntity, Failure>> call({
     required int visitId,
     required int itemId,
     int? ratingValue,
     bool? booleanValue,
     String? photoPath,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.saveChecklistItemResponse(
       partnerId: partnerId,
       visitId: visitId,
@@ -180,29 +175,8 @@ final class SaveChecklistItemResponseUseCase {
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to save answer'),
-    };
-  }
-}
-
-final class ReportIssueUseCase {
-  ReportIssueUseCase(this._repository);
-
-  final VisitRepository _repository;
-
-  Future<Result<ReportIssueResponseEntity, String>> call({
-    required int partnerId,
-    required ReportIssueRequestEntity request,
-  }) async {
-    final result = await _repository.reportIssue(
-      partnerId: partnerId,
-      request: request,
-    );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error.message),
-      _ => const Error('Failed to submit issue report'),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('save answer')),
     };
   }
 }

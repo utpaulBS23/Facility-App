@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/facility_entity.dart';
@@ -18,7 +19,7 @@ class FacilityList extends _$FacilityList {
 
     state = const AsyncValue.loading();
 
-    final Result<FacilityListEntity, String> result = await ref
+    final Result<FacilityListEntity, Failure> result = await ref
         .read(getFacilitiesUseCaseProvider)
         .call();
 
