@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
-import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 
@@ -95,7 +94,11 @@ class LeaveSubmittedPage extends StatelessWidget {
               const Spacer(),
               FilledButton(
                 onPressed: () {
-                  context.goNamed(Routes.leaveRequests);
+                  // WHY: pop back to wherever apply-leave was launched from
+                  // (shift/attendance/leave-requests) instead of forcing a
+                  // redirect to leaveRequests — that route needs a view
+                  // permission not every role has, and popping needs none.
+                  context.pop();
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: color.primary,
