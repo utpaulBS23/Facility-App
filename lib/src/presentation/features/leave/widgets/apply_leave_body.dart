@@ -147,8 +147,8 @@ class _SubmitBar extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: context.color.shadow,
-            offset: const Offset(0, 2),
-            blurRadius: 14,
+            offset: Offset(0, spacing.s2),
+            blurRadius: spacing.s16,
           ),
         ],
       ),

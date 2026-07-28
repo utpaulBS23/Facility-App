@@ -114,8 +114,8 @@ class _LeaveRequestActionCardState
                       ),
                       child: _isApproving
                           ? SizedBox(
-                              width: 18,
-                              height: 18,
+                              width: spacing.s20,
+                              height: spacing.s20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: color.onPrimary,
@@ -140,8 +140,8 @@ class _LeaveRequestActionCardState
                       ),
                       child: _isRejecting
                           ? SizedBox(
-                              width: 18,
-                              height: 18,
+                              width: spacing.s20,
+                              height: spacing.s20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: color.primary,

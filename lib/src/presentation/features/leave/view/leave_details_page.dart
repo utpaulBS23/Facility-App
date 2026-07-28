@@ -162,8 +162,8 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                       ),
                       child: _isApproving
                           ? SizedBox(
-                              width: 20,
-                              height: 20,
+                              width: spacing.s20,
+                              height: spacing.s20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: color.onPrimary,
@@ -189,8 +189,8 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                       ),
                       child: _isRejecting
                           ? SizedBox(
-                              width: 20,
-                              height: 20,
+                              width: spacing.s20,
+                              height: spacing.s20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: color.primary,
