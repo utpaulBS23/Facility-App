@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/result.dart';
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
@@ -19,9 +19,10 @@ class SupplyRequests extends _$SupplyRequests {
           status: status,
         );
 
-    return result.when(
-      success: (data) => data ?? const PaginatedListEntity.empty(),
-      error: (error) => throw Exception(error),
-    );
+    return switch (result) {
+      Success(:final data) => data ?? const PaginatedListEntity.empty(),
+      Error(:final error) => throw Exception(error.message),
+      _ => throw Exception('Failed to load supply requests'),
+    };
   }
 }
