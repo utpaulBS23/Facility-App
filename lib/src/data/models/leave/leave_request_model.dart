@@ -1,7 +1,28 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import '../../../domain/entities/leave/leave_status.dart';
 import 'leave_policy_model.dart';
 
 part 'leave_request_model.mapper.dart';
+
+class LeaveStatusHook extends MappingHook {
+  const LeaveStatusHook();
+
+  @override
+  Object? beforeDecode(Object? value) {
+    if (value is String) {
+      return LeaveStatus.fromWireString(value);
+    }
+    return value;
+  }
+
+  @override
+  Object? beforeEncode(Object? value) {
+    if (value is LeaveStatus) {
+      return value.toWireString();
+    }
+    return value;
+  }
+}
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class LeaveApplicantModel with LeaveApplicantModelMappable {
@@ -36,7 +57,8 @@ class LeaveApprovalStepModel with LeaveApprovalStepModelMappable {
   final int stepNumber;
   @MappableField(key: 'approver_role')
   final String approverRole;
-  final String status;
+  @MappableField(hook: LeaveStatusHook())
+  final LeaveStatus status;
   final LeaveApplicantModel? approver;
   @MappableField(key: 'decided_at')
   final String? decidedAt;
@@ -115,7 +137,8 @@ class LeaveRequestModel with LeaveRequestModelMappable {
   final int daysCount;
   @MappableField(key: 'leave_type')
   final String leaveType;
-  final String status;
+  @MappableField(hook: LeaveStatusHook())
+  final LeaveStatus status;
   @MappableField(key: 'created_at')
   final String createdAt;
   final LeaveApplicantModel? applicant;
