@@ -18,8 +18,8 @@ class LeavePolicyModel with LeavePolicyModelMappable {
   const LeavePolicyModel({
     required this.id,
     this.partnerId,
-    this.name,
-    this.leaveType,
+    required this.name,
+    required this.leaveType,
     this.defaultDaysPerYear,
     this.maxConsecutiveDays,
     this.requiresApproval,
@@ -34,9 +34,9 @@ class LeavePolicyModel with LeavePolicyModelMappable {
   final int id;
   @MappableField(key: 'partner_id')
   final int? partnerId;
-  final String? name;
+  final String name;
   @MappableField(key: 'leave_type')
-  final String? leaveType;
+  final String leaveType;
   @MappableField(key: 'default_days_per_year', hook: StringToNullableDoubleHook())
   final double? defaultDaysPerYear;
   @MappableField(key: 'max_consecutive_days')
