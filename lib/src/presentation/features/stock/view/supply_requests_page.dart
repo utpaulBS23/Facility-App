@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
@@ -14,40 +15,13 @@ import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/supply_requests_provider.dart';
+import '../utils/supply_status_helper.dart';
+import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/pending_delivery_alert.dart';
+part '../widgets/shimmer/supply_request_shimmer.dart';
 part '../widgets/supply_request_list_card.dart';
 part '../widgets/supply_summary_row.dart';
-
-const List<String> _kSupplyRequestStatuses = [
-  'pending_supervisor',
-  'pending_operation_manager',
-  'operation_manager_approved',
-  'in_delivery',
-  'delivered',
-  'rejected',
-];
-
-String _supplyStatusLabel(BuildContext context, String status) => switch (status) {
-      'pending_supervisor' => context.locale.pendingSupervisor,
-      'pending_operation_manager' => context.locale.pendingOperationManager,
-      'operation_manager_approved' => context.locale.operationManagerApproved,
-      'in_delivery' => context.locale.inDelivery,
-      'delivered' => context.locale.delivered,
-      'rejected' => context.locale.rejected,
-      _ => status,
-    };
-
-List<String> _supplyFilterLabels(BuildContext context) => [
-      context.locale.all,
-      ..._kSupplyRequestStatuses.map((s) => _supplyStatusLabel(context, s)),
-    ];
-
-String? _supplyStatusCodeForFilter(BuildContext context, String filter) =>
-    filter == context.locale.all
-        ? null
-        : _kSupplyRequestStatuses
-            .firstWhere((s) => _supplyStatusLabel(context, s) == filter);
 
 class SupplyRequestsPage extends ConsumerStatefulWidget {
   const SupplyRequestsPage({super.key});
@@ -57,20 +31,30 @@ class SupplyRequestsPage extends ConsumerStatefulWidget {
 }
 
 class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
-  String _selectedFilter = 'All';
+  String? _selectedFilter;
   ProviderSubscription? _requestsSub;
+  bool _didInitListener = false;
 
   @override
-  void initState() {
-    super.initState();
-    _listenRequests();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // WHY: _listenRequests/_selectedFilter default need context.locale,
+    // unavailable in initState (InheritedWidget not attached yet). Run once
+    // on first dependency pass.
+    if (!_didInitListener) {
+      _didInitListener = true;
+      _selectedFilter = context.locale.all;
+      _listenRequests();
+    }
   }
+
+  String get _effectiveFilter => _selectedFilter ?? context.locale.all;
 
   void _listenRequests() {
     _requestsSub?.close();
     _requestsSub = ref.listenManual(
       supplyRequestsProvider(
-        status: _supplyStatusCodeForFilter(context, _selectedFilter),
+        status: supplyStatusCodeForFilter(context, _effectiveFilter),
       ),
       (previous, next) {
         if (next is AsyncError) {
@@ -123,7 +107,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     );
     final filteredRequestsAsync = ref.watch(
       supplyRequestsProvider(
-        status: _supplyStatusCodeForFilter(context, _selectedFilter),
+        status: supplyStatusCodeForFilter(context, _effectiveFilter),
       ),
     );
 
@@ -183,8 +167,8 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
               Gap(spacing.s16),
             ],
             CategoryFilterChips(
-              categories: _supplyFilterLabels(context),
-              selectedCategory: _selectedFilter,
+              categories: supplyFilterLabels(context),
+              selectedCategory: _effectiveFilter,
               onSelected: _onFilterSelected,
             ),
             Gap(spacing.s16),
@@ -219,12 +203,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
                   },
                 );
               },
-              loading: () => Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: spacing.s32),
-                  child: const CircularProgressIndicator(),
-                ),
-              ),
+              loading: () => const _SupplyRequestListShimmer(),
               error: (err, _) => Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: spacing.s32),
