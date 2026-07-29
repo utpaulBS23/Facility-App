@@ -6,10 +6,10 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../core/router/routes.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_template_entity.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/assign_staff_button.dart';
@@ -80,7 +80,7 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
         surfaceTintColor: Colors.transparent,
       ),
       floatingActionButton: PermissionGate(
-        permission: AppPermission.shiftCreate,
+        permission: UserPermission.shiftCreate,
         child: FloatingActionButton(
           onPressed: _onCreateShift,
           child: const Icon(Icons.add_rounded),

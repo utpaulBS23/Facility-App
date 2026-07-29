@@ -12,6 +12,7 @@ import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/assign_staff_button.dart';
 import '../../../core/widgets/assigned_staff_tile.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
@@ -19,7 +20,6 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/slot_status_chip.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_slots_provider.dart';
-import '../../../core/utils/date_formatter.dart';
 
 part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_card_helpers.dart';
@@ -69,7 +69,7 @@ class ShiftTab extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         actions: [
           PermissionGate(
-            permission: AppPermission.rosterView,
+            permission: UserPermission.rosterView,
             child: IconButton(
               onPressed: () => _onOpenRosters(context),
               icon: Icon(

@@ -73,7 +73,7 @@ class NavigationShell extends ConsumerWidget {
         ref.watch(
           userSessionProvider.select((session) => session?.permissions),
         ) ??
-        const <AppPermission>{};
+        const <UserPermission>{};
     final visibleTabs = permittedShellTabs(permissions);
 
     // WHY: current branch may be outside the visible tabs for one frame while

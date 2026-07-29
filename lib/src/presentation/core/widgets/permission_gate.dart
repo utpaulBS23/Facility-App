@@ -14,6 +14,8 @@ class PermissionGate extends ConsumerWidget {
     super.key,
     this.permission,
     this.anyOf,
+
+    /// single list of permissions thakbe
     this.fallback,
     required this.child,
   }) : assert(
@@ -21,8 +23,8 @@ class PermissionGate extends ConsumerWidget {
          'Provide permission or anyOf',
        );
 
-  final AppPermission? permission;
-  final List<AppPermission>? anyOf;
+  final UserPermission? permission;
+  final List<UserPermission>? anyOf;
   final Widget? fallback;
   final Widget child;
 
@@ -32,13 +34,14 @@ class PermissionGate extends ConsumerWidget {
     final allowed = ref.watch(
       userSessionProvider.select((session) {
         if (session == null) return false;
-        final single = permission;
-        if (single != null) return session.can(single);
+        if (permission != null) return session.can(permission!);
+
         return session.canAny(anyOf!);
       }),
     );
 
     if (!allowed) return fallback ?? const SizedBox.shrink();
+
     return child;
   }
 }

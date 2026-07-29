@@ -81,9 +81,9 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
           ref.read(rosterListProvider.notifier).fetch(facilityId: facilityId);
         }
       } else if (next is AsyncError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error!.localizedMessage(context))));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error!.localizedMessage(context))),
+        );
       }
     });
 
@@ -96,7 +96,7 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         surfaceTintColor: Colors.transparent,
       ),
       floatingActionButton: PermissionGate(
-        permission: AppPermission.rosterCreate,
+        permission: UserPermission.rosterCreate,
         child: FloatingActionButton(
           onPressed: _onCreateRoster,
           child: const Icon(Icons.add_rounded),
@@ -162,7 +162,8 @@ class _RosterListBody extends StatelessWidget {
               : rosterState.when(
                   loading: () =>
                       const Center(child: CircularProgressIndicator.adaptive()),
-                  error: (err, _) => Center(child: _ErrorText(err.localizedMessage(context))),
+                  error: (err, _) =>
+                      Center(child: _ErrorText(err.localizedMessage(context))),
                   data: (data) => _RosterList(
                     rosters: data?.rosters ?? const [],
                     onTap: onRosterTap,

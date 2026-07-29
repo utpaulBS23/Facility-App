@@ -95,8 +95,8 @@ class _ActiveSlotBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final requiredPermission = switch (activeSlot.action) {
-      SlotAction.checkIn => AppPermission.attendanceCheckIn,
-      SlotAction.checkOut => AppPermission.attendanceCheckOut,
+      SlotAction.checkIn => UserPermission.attendanceCheckIn,
+      SlotAction.checkOut => UserPermission.attendanceCheckOut,
       _ => null,
     };
 

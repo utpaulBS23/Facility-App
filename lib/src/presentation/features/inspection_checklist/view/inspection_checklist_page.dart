@@ -15,11 +15,11 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/inspection_checklist_provider.dart';
 
-part '../widgets/inspection_facility_card.dart';
-part '../widgets/inspection_progress_header.dart';
-part '../widgets/inspection_item_tile.dart';
-part '../widgets/inspection_repair_work_section.dart';
 part '../widgets/inspection_bottom_bar.dart';
+part '../widgets/inspection_facility_card.dart';
+part '../widgets/inspection_item_tile.dart';
+part '../widgets/inspection_progress_header.dart';
+part '../widgets/inspection_repair_work_section.dart';
 
 class InspectionChecklistPage extends ConsumerStatefulWidget {
   const InspectionChecklistPage({super.key, required this.detail});
@@ -114,7 +114,7 @@ class _InspectionChecklistPageState
               canSubmit: ref.watch(
                 userSessionProvider.select(
                   (session) =>
-                      session?.can(AppPermission.checklistResponseSubmit) ??
+                      session?.can(UserPermission.checklistResponseSubmit) ??
                       false,
                 ),
               ),

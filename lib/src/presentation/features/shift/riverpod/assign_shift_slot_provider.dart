@@ -22,7 +22,7 @@ class AssignShiftSlot extends _$AssignShiftSlot {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.shiftAssignAttendant)) {
+    if (!ref.hasPermission(UserPermission.shiftAssignAttendant)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }

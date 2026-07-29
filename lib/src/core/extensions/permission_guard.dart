@@ -9,6 +9,6 @@ extension PermissionGuardRef on Ref {
   /// WHY: mutation notifiers guard with this before calling use cases —
   /// belt-and-suspenders behind widget-level gating; the server's 403 remains
   /// the final authority.
-  bool hasPermission(AppPermission permission) =>
+  bool hasPermission(UserPermission permission) =>
       read(hasPermissionUseCaseProvider).call(permission);
 }

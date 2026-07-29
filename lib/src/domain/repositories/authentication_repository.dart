@@ -27,9 +27,9 @@ abstract base class AuthenticationRepository extends Repository {
   /// Emits after every login/logout so listeners rebuild from [currentSession].
   Stream<UserSessionEntity?> watchSession();
 
-  Set<AppPermission> getPermissions();
+  Set<UserPermission> getPermissions();
 
-  bool hasPermission(AppPermission permission);
+  bool hasPermission(UserPermission permission);
 
   List<AccessibleFacilityEntity> getAccessibleFacilities();
 

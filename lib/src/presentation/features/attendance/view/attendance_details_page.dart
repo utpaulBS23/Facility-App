@@ -10,8 +10,7 @@ class AttendanceDetailsPage extends ConsumerStatefulWidget {
       _AttendanceDetailsPageState();
 }
 
-class _AttendanceDetailsPageState
-    extends ConsumerState<AttendanceDetailsPage> {
+class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   late AttendanceItemEntity _current;
   late bool _canReview;
 
@@ -26,8 +25,8 @@ class _AttendanceDetailsPageState
     final session = ref.read(getUserSessionUseCaseProvider).call();
     _canReview =
         session?.canAny(const [
-          AppPermission.attendanceApprove,
-          AppPermission.attendanceReject,
+          UserPermission.attendanceApprove,
+          UserPermission.attendanceReject,
         ]) ??
         false;
   }
@@ -107,9 +106,7 @@ class _AttendanceDetailsPageState
       ),
       body: Column(
         children: [
-          Expanded(
-            child: _AttendanceDetailsBody(detail: _current),
-          ),
+          Expanded(child: _AttendanceDetailsBody(detail: _current)),
           if (_canReview && isPending)
             _ApproveRejectBar(
               onApprove: _onApprove,
@@ -122,4 +119,3 @@ class _AttendanceDetailsPageState
     );
   }
 }
-
