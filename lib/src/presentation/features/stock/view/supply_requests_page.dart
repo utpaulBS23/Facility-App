@@ -19,6 +19,7 @@ import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/pending_delivery_alert.dart';
 part '../widgets/shimmer/supply_request_shimmer.dart';
+part '../widgets/shimmer/supply_summary_row_shimmer.dart';
 part '../widgets/supply_filter_bar.dart';
 part '../widgets/supply_request_list_card.dart';
 part '../widgets/supply_summary_row.dart';
@@ -126,11 +127,14 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _SupplySummaryRow(
-              pendingCount: pendingCount,
-              inDeliveryCount: inDeliveryCount,
-              deliveredCount: deliveredCount,
-              rejectedCount: rejectedCount,
+            allRequestsAsync.maybeWhen(
+              data: (_) => _SupplySummaryRow(
+                pendingCount: pendingCount,
+                inDeliveryCount: inDeliveryCount,
+                deliveredCount: deliveredCount,
+                rejectedCount: rejectedCount,
+              ),
+              orElse: () => const _SupplySummaryRowShimmer(),
             ),
             Gap(spacing.s16),
             if (inDeliveryCount > 0) ...[
