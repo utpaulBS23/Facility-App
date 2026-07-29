@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/back_leading.dart';
@@ -97,10 +99,23 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     context.pushNamed(Routes.requestDetails, extra: req);
   }
 
+  void _onBack(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(Routes.shift);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final allRequestsAsync = ref.watch(supplyRequestsProvider());
+    final canCreateRequest = ref.watch(
+      userSessionProvider.select(
+        (session) => session?.can(AppPermission.supplyRequestCreate) ?? false,
+      ),
+    );
     final filteredRequestsAsync = ref.watch(
       supplyRequestsProvider(status: _supplyStatusCodeForFilter(_selectedFilter)),
     );
@@ -118,7 +133,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
+        leading: BackLeading(onTap: () => _onBack(context)),
         leadingWidth: spacing.s100,
         title: const Headline2xlTinyText('Supply Requests'),
         centerTitle: true,
@@ -148,16 +163,18 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
               ),
               Gap(spacing.s16),
             ],
-            SizedBox(
-              width: double.infinity,
-              height: spacing.s44,
-              child: FilledButton.icon(
-                onPressed: _onNewRequest,
-                icon: const Icon(Icons.add_rounded),
-                label: const Text('New Request'),
+            if (canCreateRequest) ...[
+              SizedBox(
+                width: double.infinity,
+                height: spacing.s44,
+                child: FilledButton.icon(
+                  onPressed: _onNewRequest,
+                  icon: const Icon(Icons.add_rounded),
+                  label: const Text('New Request'),
+                ),
               ),
-            ),
-            Gap(spacing.s16),
+              Gap(spacing.s16),
+            ],
             CategoryFilterChips(
               categories: _kSupplyFilterLabels,
               selectedCategory: _selectedFilter,
