@@ -65,7 +65,7 @@ class _SupplyRequestListCard extends StatelessWidget {
                     children: [
                       StatusDotTag(
                         dotColor: _statusDotColor(context),
-                        label: _supplyStatusLabel(request.status),
+                        label: _supplyStatusLabel(context, request.status),
                       ),
                       const Spacer(),
                       Icon(

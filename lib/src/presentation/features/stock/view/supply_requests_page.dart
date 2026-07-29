@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
@@ -27,24 +28,26 @@ const List<String> _kSupplyRequestStatuses = [
   'rejected',
 ];
 
-String _supplyStatusLabel(String status) => switch (status) {
-      'pending_supervisor' => 'Pending Supervisor',
-      'pending_operation_manager' => 'Pending Operation Manager',
-      'operation_manager_approved' => 'Operation Manager Approved',
-      'in_delivery' => 'In Delivery',
-      'delivered' => 'Delivered',
-      'rejected' => 'Rejected',
+String _supplyStatusLabel(BuildContext context, String status) => switch (status) {
+      'pending_supervisor' => context.locale.pendingSupervisor,
+      'pending_operation_manager' => context.locale.pendingOperationManager,
+      'operation_manager_approved' => context.locale.operationManagerApproved,
+      'in_delivery' => context.locale.inDelivery,
+      'delivered' => context.locale.delivered,
+      'rejected' => context.locale.rejected,
       _ => status,
     };
 
-final List<String> _kSupplyFilterLabels = [
-  'All',
-  ..._kSupplyRequestStatuses.map(_supplyStatusLabel),
-];
+List<String> _supplyFilterLabels(BuildContext context) => [
+      context.locale.all,
+      ..._kSupplyRequestStatuses.map((s) => _supplyStatusLabel(context, s)),
+    ];
 
-String? _supplyStatusCodeForFilter(String filter) => filter == 'All'
-    ? null
-    : _kSupplyRequestStatuses.firstWhere((s) => _supplyStatusLabel(s) == filter);
+String? _supplyStatusCodeForFilter(BuildContext context, String filter) =>
+    filter == context.locale.all
+        ? null
+        : _kSupplyRequestStatuses
+            .firstWhere((s) => _supplyStatusLabel(context, s) == filter);
 
 class SupplyRequestsPage extends ConsumerStatefulWidget {
   const SupplyRequestsPage({super.key});
@@ -66,7 +69,9 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   void _listenRequests() {
     _requestsSub?.close();
     _requestsSub = ref.listenManual(
-      supplyRequestsProvider(status: _supplyStatusCodeForFilter(_selectedFilter)),
+      supplyRequestsProvider(
+        status: _supplyStatusCodeForFilter(context, _selectedFilter),
+      ),
       (previous, next) {
         if (next is AsyncError) {
           if (!mounted) return;
@@ -117,7 +122,9 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
       ),
     );
     final filteredRequestsAsync = ref.watch(
-      supplyRequestsProvider(status: _supplyStatusCodeForFilter(_selectedFilter)),
+      supplyRequestsProvider(
+        status: _supplyStatusCodeForFilter(context, _selectedFilter),
+      ),
     );
 
     final allList = allRequestsAsync.valueOrNull?.items ?? [];
@@ -135,7 +142,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
       appBar: AppBar(
         leading: BackLeading(onTap: () => _onBack(context)),
         leadingWidth: spacing.s100,
-        title: const Headline2xlTinyText('Supply Requests'),
+        title: Headline2xlTinyText(context.locale.supplyRequests),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
@@ -170,13 +177,13 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
                 child: FilledButton.icon(
                   onPressed: _onNewRequest,
                   icon: const Icon(Icons.add_rounded),
-                  label: const Text('New Request'),
+                  label: Text(context.locale.newRequest),
                 ),
               ),
               Gap(spacing.s16),
             ],
             CategoryFilterChips(
-              categories: _kSupplyFilterLabels,
+              categories: _supplyFilterLabels(context),
               selectedCategory: _selectedFilter,
               onSelected: _onFilterSelected,
             ),
@@ -189,7 +196,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: spacing.s32),
                       child: Text(
-                        'No supply requests found',
+                        context.locale.noSupplyRequestsFound,
                         style: context.textStyle.bodyMedium.copyWith(
                           color: context.color.text.secondary,
                         ),

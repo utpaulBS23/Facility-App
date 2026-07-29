@@ -400,5 +400,15 @@
   "leaveRequestSubmitted": "ছুটি আবেদন জমা দেয়া হয়েছে",
   "leaveSubmittedMessage": "আপনার ছুটির আবেদন অনুমোদনের জন্য আপনার সুপারভাইজারের কাছে পাঠানো হয়েছে। এটি পর্যালোচনা করা হলে আপনাকে জানানো হবে।",
   "backToShift": "শিফটে ফিরে যান",
-  "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন"
+  "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন",
+  "supplyRequests": "সরবরাহ অনুরোধ",
+  "newRequest": "নতুন অনুরোধ",
+  "noSupplyRequestsFound": "কোনো সরবরাহ অনুরোধ পাওয়া যায়নি",
+  "pendingSupervisor": "সুপারভাইজার অপেক্ষমান",
+  "pendingOperationManager": "অপারেশন ম্যানেজার অপেক্ষমান",
+  "operationManagerApproved": "অপারেশন ম্যানেজার অনুমোদিত",
+  "inDelivery": "ডেলিভারি চলছে",
+  "delivered": "ডেলিভার করা হয়েছে",
+  "pendingDeliveries": "মুলতুবি ডেলিভারি",
+  "pendingDeliveryAlertSubtitle": "১টি অনুমোদিত অনুরোধ ডেলিভারির অপেক্ষায়"
 }

@@ -403,5 +403,15 @@
   "endSessionAndSignOut": "End session and sign out",
   "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
   "noShiftsAvailableForDate": "No shifts available for the selected date",
-  "pendingManager": "Pending Manager"
+  "pendingManager": "Pending Manager",
+  "supplyRequests": "Supply Requests",
+  "newRequest": "New Request",
+  "noSupplyRequestsFound": "No supply requests found",
+  "pendingSupervisor": "Pending Supervisor",
+  "pendingOperationManager": "Pending Operation Manager",
+  "operationManagerApproved": "Operation Manager Approved",
+  "inDelivery": "In Delivery",
+  "delivered": "Delivered",
+  "pendingDeliveries": "Pending Deliveries",
+  "pendingDeliveryAlertSubtitle": "1 approved request awaiting delivery"
 }
