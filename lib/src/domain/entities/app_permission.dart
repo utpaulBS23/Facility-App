@@ -104,7 +104,10 @@ enum AppPermission {
   // Supply request
   supplyRequestView('supply_request.view'),
   supplyRequestCreate('supply_request.create'),
-  supplyRequestApprove('supply_request.approve'),
+  supplyRequestApproveSupervisor('supply_request.approve_supervisor'),
+  supplyRequestApproveOperationManager(
+    'supply_request.approve_operation_manager',
+  ),
 
   // Delivery
   deliveryView('delivery.view'),
