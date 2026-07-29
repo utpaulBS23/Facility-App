@@ -3,13 +3,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../../domain/entities/leave/leave_status.dart';
 
 part 'leave_approvals_provider.g.dart';
 
 @riverpod
 class LeaveApprovals extends _$LeaveApprovals {
   @override
-  Future<List<LeaveRequestEntity>> build({String? status}) async {
+  Future<List<LeaveRequestEntity>> build({LeaveStatus? status}) async {
     final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
     if (partnerId == null) return const [];
 
