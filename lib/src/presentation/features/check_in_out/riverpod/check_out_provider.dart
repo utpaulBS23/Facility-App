@@ -22,20 +22,22 @@ class CheckOut extends _$CheckOut {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.attendanceCheckOut)) {
+    if (!ref.hasPermission(UserPermission.attendanceCheckOut)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 
     state = const AsyncValue.loading();
 
-    final result = await ref.read(checkOutUseCaseProvider).call(
-      attendanceId: attendanceId,
-      lat: lat,
-      lng: lng,
-      selfieUrl: selfieUrl,
-      reason: reason,
-    );
+    final result = await ref
+        .read(checkOutUseCaseProvider)
+        .call(
+          attendanceId: attendanceId,
+          lat: lat,
+          lng: lng,
+          selfieUrl: selfieUrl,
+          reason: reason,
+        );
 
     state = switch (result) {
       Success() => AsyncValue.data(result),

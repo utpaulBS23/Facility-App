@@ -18,43 +18,43 @@ class ShellTabConfig {
   final String route;
 
   /// null = tab visible to every logged-in user.
-  final AppPermission? permission;
+  final UserPermission? permission;
 }
 
 const List<ShellTabConfig> shellTabConfigs = [
   ShellTabConfig(
     branchIndex: 0,
     route: Routes.shift,
-    permission: AppPermission.shiftView,
+    permission: UserPermission.shiftView,
   ),
   ShellTabConfig(
     branchIndex: 1,
     route: Routes.attendance,
-    permission: AppPermission.attendanceView,
+    permission: UserPermission.attendanceView,
   ),
   ShellTabConfig(
     branchIndex: 2,
     route: Routes.myVisits,
-    permission: AppPermission.checklistResponseView,
+    permission: UserPermission.checklistResponseView,
   ),
   ShellTabConfig(
     branchIndex: 3,
     route: Routes.task,
-    permission: AppPermission.taskView,
+    permission: UserPermission.taskView,
   ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
   // gated individually.
   ShellTabConfig(branchIndex: 4, route: Routes.menu),
 ];
 
-List<ShellTabConfig> permittedShellTabs(Set<AppPermission> permissions) => [
+List<ShellTabConfig> permittedShellTabs(Set<UserPermission> permissions) => [
   for (final tab in shellTabConfigs)
     if (tab.permission == null || permissions.contains(tab.permission)) tab,
 ];
 
 /// Menu has no permission requirement, so this never falls through in
 /// practice; login route is a defensive default.
-String firstPermittedShellRoute(Set<AppPermission> permissions) {
+String firstPermittedShellRoute(Set<UserPermission> permissions) {
   final tabs = permittedShellTabs(permissions);
 
   return tabs.isEmpty ? Routes.login : tabs.first.route;

@@ -1,5 +1,5 @@
-import '../models/login_model.dart';
 import '../../domain/entities/login_entity.dart';
+import '../models/login_model.dart';
 
 extension UserModelToEntity on UserModel {
   UserEntity toEntity() => UserEntity(
@@ -38,7 +38,7 @@ extension LoginResponseModelToEntity on LoginResponseModel {
     accessToken: token.accessToken,
     // WHY: raw wire strings become a typed set here — unknown keys from a
     // newer backend are dropped so login never breaks on new permissions.
-    permissions: AppPermission.setFromKeys(permissions),
+    permissions: UserPermission.setFromKeys(permissions),
     accessibleFacilities: accessibleFacilities
         .map((facility) => facility.toEntity())
         .toList(),
@@ -47,9 +47,6 @@ extension LoginResponseModelToEntity on LoginResponseModel {
 }
 
 extension LoginRequestEntityToModel on LoginRequestEntity {
-  LoginRequestModel toModel() => LoginRequestModel(
-    uid: uid,
-    password: password,
-    deviceName: deviceName,
-  );
+  LoginRequestModel toModel() =>
+      LoginRequestModel(uid: uid, password: password, deviceName: deviceName);
 }

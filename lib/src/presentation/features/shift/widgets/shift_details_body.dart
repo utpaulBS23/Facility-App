@@ -19,7 +19,7 @@ class _ShiftDetailsBody extends StatelessWidget {
           if (entity.checkInTime != null) ...[
             Gap(spacing.s8),
             PermissionGate(
-              permission: AppPermission.attendanceCheckIn,
+              permission: UserPermission.attendanceCheckIn,
               child: _ShiftDetailCheckInCard(entity: entity),
             ),
           ],

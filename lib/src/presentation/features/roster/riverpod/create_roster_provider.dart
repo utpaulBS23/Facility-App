@@ -22,7 +22,7 @@ class CreateRoster extends _$CreateRoster {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.rosterCreate)) {
+    if (!ref.hasPermission(UserPermission.rosterCreate)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }

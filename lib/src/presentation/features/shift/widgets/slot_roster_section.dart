@@ -41,7 +41,7 @@ class _SlotRosterSection extends StatelessWidget {
         ],
         Gap(spacing.s12),
         PermissionGate(
-          permission: AppPermission.shiftAssignAttendant,
+          permission: UserPermission.shiftAssignAttendant,
           child: AssignStaffButton(
             onTap: onAssignStaff,
             isSlotFull: !slot.hasFreeCapacity,

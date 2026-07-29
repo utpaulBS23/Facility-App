@@ -114,7 +114,7 @@ class _RosterCard extends ConsumerWidget {
               if (!_isPublished) ...[
                 Gap(spacing.s12),
                 PermissionGate(
-                  permission: AppPermission.rosterPublish,
+                  permission: UserPermission.rosterPublish,
                   // WHY: OverflowBar (not Align) — this app's OutlinedButton theme
                   // forces minimumSize.width = infinity, which collides with the
                   // unbounded constraints Align gives its child.

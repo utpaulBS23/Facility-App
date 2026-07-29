@@ -67,7 +67,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
     final slotsState = ref.watch(shiftSlotsProvider);
     final canApplyLeave = ref.watch(
       userSessionProvider.select(
-        (session) => session?.can(AppPermission.leaveRequest) ?? false,
+        (session) => session?.can(UserPermission.leaveRequest) ?? false,
       ),
     );
     final facilityName = ref.watch(

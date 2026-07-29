@@ -17,7 +17,7 @@ class PublishRoster extends _$PublishRoster {
   Future<void> publish({required int facilityId, required int rosterId}) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.rosterPublish)) {
+    if (!ref.hasPermission(UserPermission.rosterPublish)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }

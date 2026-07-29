@@ -11,18 +11,13 @@ import '../services/network/rest_client.dart';
 import '../services/session/session_service.dart';
 
 final class AuthenticationRepositoryImpl extends AuthenticationRepository {
-  AuthenticationRepositoryImpl({
-    required this.remote,
-    required this.session,
-  }) {
+  AuthenticationRepositoryImpl({required this.remote, required this.session}) {
     // WHY: the token is the authority on "authenticated"; this session is
     // derived from it. TokenManager clears the token from inside the Dio
     // interceptor when a refresh fails, on a path this repository cannot see —
     // without this subscription the session outlived its token and the app
     // kept rendering permitted UI that could only produce 401s.
-    _tokenClearedSubscription = session.onCleared.listen(
-      (_) => _dropSession(),
-    );
+    _tokenClearedSubscription = session.onCleared.listen((_) => _dropSession());
   }
 
   final RestClient remote;
@@ -124,11 +119,11 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   Stream<UserSessionEntity?> watchSession() => _sessionController.stream;
 
   @override
-  Set<AppPermission> getPermissions() =>
-      _session?.permissions ?? const <AppPermission>{};
+  Set<UserPermission> getPermissions() =>
+      _session?.permissions ?? const <UserPermission>{};
 
   @override
-  bool hasPermission(AppPermission permission) =>
+  bool hasPermission(UserPermission permission) =>
       _session?.can(permission) ?? false;
 
   @override

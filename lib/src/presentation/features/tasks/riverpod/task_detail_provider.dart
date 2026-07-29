@@ -50,11 +50,7 @@ class TaskDetail extends _$TaskDetail {
     final previousTask = state.valueOrNull;
     final Result<TaskMediaEntity, Failure> result = await ref
         .read(uploadTaskMediaUseCaseProvider)
-        .call(
-          taskId: taskId,
-          photoPath: photoPath,
-          alt: alt,
-        );
+        .call(taskId: taskId, photoPath: photoPath, alt: alt);
 
     TaskMediaEntity? uploadedMedia;
     switch (result) {
@@ -73,7 +69,7 @@ class TaskDetail extends _$TaskDetail {
   }
 
   Future<TaskEntity?> completeIssue({required int issueId}) async {
-    if (!ref.hasPermission(AppPermission.taskComplete)) {
+    if (!ref.hasPermission(UserPermission.taskComplete)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return null;
     }

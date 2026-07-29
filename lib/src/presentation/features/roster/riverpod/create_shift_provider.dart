@@ -25,7 +25,7 @@ class CreateShift extends _$CreateShift {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.shiftCreate)) {
+    if (!ref.hasPermission(UserPermission.shiftCreate)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }

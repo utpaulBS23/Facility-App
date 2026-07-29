@@ -93,7 +93,7 @@ class SlotDetailsPage extends ConsumerWidget {
           ),
           if (showCheckOut)
             PermissionGate(
-              permission: AppPermission.attendanceCheckOut,
+              permission: UserPermission.attendanceCheckOut,
               child: SafeArea(
                 top: false,
                 child: Padding(
