@@ -1,25 +1,36 @@
-import 'package:facility_management_app/src/presentation/core/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../core/extensions/permission_guard.dart';
+import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
-import '../../../core/utils/date_formatter.dart';
+import '../../../../domain/repositories/leave_repository.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/apply_leave_notifier.dart';
+import '../riverpod/leave_balance_provider.dart';
+import '../riverpod/leave_policies_provider.dart';
+import '../widgets/shimmer/stat_tile_shimmer.dart';
+import '../widgets/stat_tile.dart';
 
+part 'apply_leave_handlers.dart';
+part '../widgets/apply_leave_attendant_selector.dart';
 part '../widgets/apply_leave_body.dart';
+part '../widgets/apply_leave_date_selector.dart';
 part '../widgets/apply_leave_shift_selector.dart';
 part '../widgets/apply_leave_summary_card.dart';
-part '../widgets/select_shift_body.dart';
-part 'select_shift_page.dart';
+part '../widgets/apply_leave_type_switch.dart';
+
+enum LeaveApplicationType { own, onBehalf }
 
 class ApplyLeavePage extends ConsumerStatefulWidget {
   const ApplyLeavePage({super.key});
@@ -30,72 +41,57 @@ class ApplyLeavePage extends ConsumerStatefulWidget {
 
 class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
   ShiftEntity? _selectedShift;
-  String? _selectedLeaveType;
+  int? _selectedLeavePolicyId;
+  LeaveAttendantEntity? _selectedAttendant;
+  LeaveApplicationType _appType = LeaveApplicationType.own;
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
   final _reasonController = TextEditingController();
+  ProviderSubscription<AsyncValue>? _actionSub;
+
+  void updateState(VoidCallback fn) => setState(fn);
+
+  @override
+  void initState() {
+    super.initState();
+    _actionSub = ref.listenManual(applyLeaveActionProvider, (_, next) {
+      next.whenOrNull(
+        error: (e, _) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        },
+      );
+    });
+  }
 
   @override
   void dispose() {
+    _actionSub?.close();
     _reasonController.dispose();
     super.dispose();
   }
 
-  Future<void> _onSelectShiftTap() async {
-    // WHY: leave owns its own fetch instead of reading the shift tab's
-    // provider. That provider is no longer populated for attendants (the tab
-    // moved to shift-slots), and reaching across features for cached state
-    // broke silently when the other feature changed.
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
-    final result = await ref
-        .read(getShiftsUseCaseProvider)
-        .call(
-          partnerId: partnerId,
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        );
-    final shifts = switch (result) {
-      Success(:final data) => data ?? const <ShiftEntity>[],
-      _ => const <ShiftEntity>[],
-    };
-    if (!mounted) return;
-    // WHY: go_router's pushNamed returns Future<T?> — pop(shift) on the
-    // destination page delivers the selected shift back here without needing
-    // a shared provider or a callback in extra.
-    final shift = await context.pushNamed<ShiftEntity>(
-      Routes.selectShift,
-      extra: shifts,
-    );
-    if (shift != null && mounted) {
-      setState(() => _selectedShift = shift);
+  bool get _isSubmitEnabled {
+    final hasLeaveType = _selectedLeavePolicyId != null;
+    if (_appType == LeaveApplicationType.onBehalf) {
+      return _selectedAttendant != null && hasLeaveType;
     }
-  }
-
-  void _onSubmit() {
-    // TODO: submit leave request
+    return hasLeaveType;
   }
 
   @override
   Widget build(BuildContext context) {
+    final canFileOnBehalf = ref
+        .watch(hasPermissionUseCaseProvider)
+        .call(AppPermission.leaveFileOnBehalf);
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
+        leading: const BackLeading(),
         leadingWidth: 100,
         title: Headline2xlTinyText(context.locale.applyLeave),
         centerTitle: true,
@@ -103,12 +99,13 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: _ApplyLeaveBody(
-        selectedShift: _selectedShift,
-        selectedLeaveType: _selectedLeaveType,
-        reasonController: _reasonController,
-        onSelectShiftTap: _onSelectShiftTap,
+        pageState: this,
+        showAttendantTab: canFileOnBehalf,
       ),
-      bottomNavigationBar: _SubmitBar(onTap: _onSubmit),
+      bottomNavigationBar: _SubmitBar(
+        isEnabled: _isSubmitEnabled,
+        onTap: _onSubmit,
+      ),
     );
   }
 }

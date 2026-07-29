@@ -21,6 +21,11 @@ import '../../features/authentication/forgot_password/view/reset_password_succes
 import '../../features/authentication/login/view/login_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
+import '../../features/leave/view/leave_details_page.dart';
+import '../../features/leave/view/leave_requests_page.dart';
+import '../../features/leave/view/leave_submitted_page.dart';
+import '../../features/leave/view/select_attendant_page.dart';
+import '../../features/leave/view/select_shift_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/stock/view/confirm_delivery_page.dart';
 import '../../features/stock/view/delivery_complaint_page.dart';

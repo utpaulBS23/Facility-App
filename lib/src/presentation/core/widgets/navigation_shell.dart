@@ -6,19 +6,48 @@ import 'package:go_router/go_router.dart';
 import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../application_state/session_provider/session_provider.dart';
+import '../application_state/logout_provider/logout_provider.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
+import '../router/routes.dart';
+import 'drawer/app_navigation_drawer.dart';
 
-class NavigationShell extends ConsumerWidget {
+class NavigationShell extends ConsumerStatefulWidget {
   const NavigationShell({super.key, required this.statefulNavigationShell});
 
   final StatefulNavigationShell statefulNavigationShell;
+
+  @override
+  ConsumerState<NavigationShell> createState() => _NavigationShellState();
+}
+
+class _NavigationShellState extends ConsumerState<NavigationShell> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(logoutProvider, (previous, next) {
+      switch (next) {
+        case AsyncData(:final value) when value == true:
+          context.pushReplacementNamed(Routes.login);
+        case AsyncError(:final error):
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(error.toString())));
+      }
+    });
+  }
 
   void _onTabSelected({
     required List<ShellTabConfig> visibleTabs,
     required int index,
   }) {
-    statefulNavigationShell.goBranch(visibleTabs[index].branchIndex);
+    if (visibleTabs[index].route == Routes.menu) {
+      _scaffoldKey.currentState?.openDrawer();
+    } else {
+      widget.statefulNavigationShell.goBranch(visibleTabs[index].branchIndex);
+    }
   }
 
   SvgGenImage _assetFor(int branchIndex) => switch (branchIndex) {
@@ -68,7 +97,7 @@ class NavigationShell extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final permissions =
         ref.watch(
           userSessionProvider.select((session) => session?.permissions),
@@ -79,11 +108,13 @@ class NavigationShell extends ConsumerWidget {
     // WHY: current branch may be outside the visible tabs for one frame while
     // the router redirect kicks in — clamp to 0 instead of crashing.
     final selectedIndex = visibleTabs.indexWhere(
-      (tab) => tab.branchIndex == statefulNavigationShell.currentIndex,
+      (tab) => tab.branchIndex == widget.statefulNavigationShell.currentIndex,
     );
 
     return Scaffold(
-      body: statefulNavigationShell,
+      key: _scaffoldKey,
+      body: widget.statefulNavigationShell,
+      drawer: const AppNavigationDrawer(),
       // WHY: BottomNavigationBar requires >=2 items; a user permitted a single
       // tab gets no navbar at all.
       bottomNavigationBar: visibleTabs.length < 2

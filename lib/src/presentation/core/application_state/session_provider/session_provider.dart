@@ -10,7 +10,7 @@ part 'session_provider.g.dart';
 // the snapshot and subscribes for changes, so any remount re-derives identical
 // state. Logout unmounts the shell, disposing this provider, so the next
 // login always rebinds to the (possibly recreated) repository instance.
-@riverpod
+@Riverpod(keepAlive: true)
 class UserSession extends _$UserSession {
   @override
   UserSessionEntity? build() {

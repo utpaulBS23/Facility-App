@@ -25,9 +25,9 @@ final class GetShiftSlotsUseCase {
     int? facilityId,
   }) async {
     final session = _authRepository.currentSession;
+    final mode = session?.shiftViewMode ?? ShiftViewMode.unavailable;
 
-    if ((session?.shiftViewMode ?? ShiftViewMode.unavailable) ==
-        ShiftViewMode.unavailable) {
+    if (mode == ShiftViewMode.unavailable) {
       return const Error(shiftsUnavailableMessage);
     }
 
@@ -92,7 +92,9 @@ final class GetShiftsUseCase {
       ShiftViewMode.unavailable => null,
     };
 
-    if (result == null) return const Error(shiftsUnavailableMessage);
+    if (result == null) {
+      return const Error(shiftsUnavailableMessage);
+    }
 
     return switch (result) {
       Success(:final data) => Success(data: data),
