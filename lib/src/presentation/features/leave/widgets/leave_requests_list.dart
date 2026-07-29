@@ -17,10 +17,10 @@ class _LeaveRequestsList extends StatelessWidget {
       final name = r.applicant?.name.toLowerCase() ?? '';
       final matchesSearch = name.contains(searchQuery);
       if (!matchesSearch) return false;
-      if (selectedFilter == 'Pending') return r.status == 'pending_supervisor';
-      if (selectedFilter == 'Manager Approval') return r.status == 'pending_manager';
-      if (selectedFilter == 'Approved') return r.status == 'approved';
-      if (selectedFilter == 'Rejected') return r.status == 'rejected';
+      if (selectedFilter == 'Pending') return r.status == LeaveStatus.pendingSupervisor;
+      if (selectedFilter == 'Manager Approval') return r.status == LeaveStatus.pendingManager;
+      if (selectedFilter == 'Approved') return r.status == LeaveStatus.approved;
+      if (selectedFilter == 'Rejected') return r.status == LeaveStatus.rejected;
       return true;
     }).toList();
 

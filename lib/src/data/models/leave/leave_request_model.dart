@@ -1,19 +1,40 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import '../../../domain/entities/leave/leave_status.dart';
 import 'leave_policy_model.dart';
 
 part 'leave_request_model.mapper.dart';
+
+class LeaveStatusHook extends MappingHook {
+  const LeaveStatusHook();
+
+  @override
+  Object? beforeDecode(Object? value) {
+    if (value is String) {
+      return LeaveStatus.fromWireString(value);
+    }
+    return value;
+  }
+
+  @override
+  Object? beforeEncode(Object? value) {
+    if (value is LeaveStatus) {
+      return value.toWireString();
+    }
+    return value;
+  }
+}
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class LeaveApplicantModel with LeaveApplicantModelMappable {
   const LeaveApplicantModel({
     required this.id,
-    this.name,
+    required this.name,
     this.email,
     this.groupName,
   });
 
   final int id;
-  final String? name;
+  final String name;
   final String? email;
   @MappableField(key: 'group_name')
   final String? groupName;
@@ -24,20 +45,21 @@ class LeaveApplicantModel with LeaveApplicantModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class LeaveApprovalStepModel with LeaveApprovalStepModelMappable {
   const LeaveApprovalStepModel({
-    this.stepNumber,
-    this.approverRole,
+    required this.stepNumber,
+    required this.approverRole,
+    required this.status,
     this.approver,
-    this.status,
     this.decidedAt,
     this.rejectionNote,
   });
 
   @MappableField(key: 'step_number')
-  final int? stepNumber;
+  final int stepNumber;
   @MappableField(key: 'approver_role')
-  final String? approverRole;
+  final String approverRole;
+  @MappableField(hook: LeaveStatusHook())
+  final LeaveStatus status;
   final LeaveApplicantModel? approver;
-  final String? status;
   @MappableField(key: 'decided_at')
   final String? decidedAt;
   @MappableField(key: 'rejection_note')
@@ -50,29 +72,29 @@ class LeaveApprovalStepModel with LeaveApprovalStepModelMappable {
 class LeaveShiftDetailModel with LeaveShiftDetailModelMappable {
   const LeaveShiftDetailModel({
     required this.id,
-    this.shiftDate,
-    this.shiftName,
-    this.startTime,
-    this.endTime,
-    this.facilityId,
-    this.facilityName,
-    this.status,
+    required this.facilityId,
+    required this.facilityName,
+    required this.shiftDate,
+    required this.shiftName,
+    required this.startTime,
+    required this.endTime,
+    required this.status,
   });
 
   final int id;
-  @MappableField(key: 'shift_date')
-  final String? shiftDate;
-  @MappableField(key: 'shift_name')
-  final String? shiftName;
-  @MappableField(key: 'start_time')
-  final String? startTime;
-  @MappableField(key: 'end_time')
-  final String? endTime;
   @MappableField(key: 'facility_id')
-  final int? facilityId;
+  final int facilityId;
   @MappableField(key: 'facility_name')
-  final String? facilityName;
-  final String? status;
+  final String facilityName;
+  @MappableField(key: 'shift_date')
+  final String shiftDate;
+  @MappableField(key: 'shift_name')
+  final String shiftName;
+  @MappableField(key: 'start_time')
+  final String startTime;
+  @MappableField(key: 'end_time')
+  final String endTime;
+  final String status;
 
   static const fromJson = LeaveShiftDetailModelMapper.fromJson;
 }
@@ -81,59 +103,57 @@ class LeaveShiftDetailModel with LeaveShiftDetailModelMappable {
 class LeaveRequestModel with LeaveRequestModelMappable {
   const LeaveRequestModel({
     required this.id,
-    this.referenceCode,
-    this.partnerId,
+    required this.partnerId,
+    required this.referenceCode,
+    required this.startDate,
+    required this.endDate,
+    required this.daysCount,
+    required this.leaveType,
+    required this.status,
+    required this.createdAt,
     this.applicant,
     this.createdBy,
     this.leavePolicy,
-    this.startDate,
-    this.endDate,
-    this.daysCount,
-    this.leaveType,
     this.reason,
     this.coverAttendant,
     this.attachments = const [],
-    this.status,
     this.currentStep,
-    this.canAction,
     this.shifts = const [],
     this.approvalSteps = const [],
-    this.createdAt,
     this.updatedAt,
   });
 
   final int id;
-  @MappableField(key: 'reference_code')
-  final String? referenceCode;
   @MappableField(key: 'partner_id')
-  final int? partnerId;
+  final int partnerId;
+  @MappableField(key: 'reference_code')
+  final String referenceCode;
+  @MappableField(key: 'start_date')
+  final String startDate;
+  @MappableField(key: 'end_date')
+  final String endDate;
+  @MappableField(key: 'days_count')
+  final int daysCount;
+  @MappableField(key: 'leave_type')
+  final String leaveType;
+  @MappableField(hook: LeaveStatusHook())
+  final LeaveStatus status;
+  @MappableField(key: 'created_at')
+  final String createdAt;
   final LeaveApplicantModel? applicant;
   @MappableField(key: 'created_by')
   final LeaveApplicantModel? createdBy;
   @MappableField(key: 'leave_policy')
   final LeavePolicyModel? leavePolicy;
-  @MappableField(key: 'start_date')
-  final String? startDate;
-  @MappableField(key: 'end_date')
-  final String? endDate;
-  @MappableField(key: 'days_count')
-  final int? daysCount;
-  @MappableField(key: 'leave_type')
-  final String? leaveType;
   final String? reason;
   @MappableField(key: 'cover_attendant')
   final LeaveApplicantModel? coverAttendant;
   final List<String> attachments;
-  final String? status;
   @MappableField(key: 'current_step')
   final int? currentStep;
-  @MappableField(key: 'can_action')
-  final bool? canAction;
   final List<LeaveShiftDetailModel> shifts;
   @MappableField(key: 'approval_steps')
   final List<LeaveApprovalStepModel> approvalSteps;
-  @MappableField(key: 'created_at')
-  final String? createdAt;
   @MappableField(key: 'updated_at')
   final String? updatedAt;
 

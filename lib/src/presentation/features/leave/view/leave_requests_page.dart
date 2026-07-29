@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -115,9 +116,9 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
           onFilterSelected: (filter) => setState(() => _selectedFilter = filter),
           summary: _LeaveSupervisorSummaryCard(
             pendingCount:
-                requests.where((r) => r.status == 'pending_supervisor').length,
+                requests.where((r) => r.status == LeaveStatus.pendingSupervisor).length,
             managerCount:
-                requests.where((r) => r.status == 'pending_manager').length,
+                requests.where((r) => r.status == LeaveStatus.pendingManager).length,
           ),
           list: _LeaveRequestsList(
             requests: requests,

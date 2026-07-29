@@ -52,14 +52,14 @@ class _LeaveRequestActionCardState
 
     final applicantName = request.applicant?.name ?? context.locale.attendant;
     final dateRange = '${request.startDate} → ${request.endDate}';
-    final isActionable = request.canAction;
+    final isActionable = request.canUserAction(ref.watch(userSessionProvider));
 
     final (statusLabel, dotColor) = switch (request.status) {
-      'pending_supervisor' => (context.locale.pending, color.warning),
-      'pending_manager' => (context.locale.managerApproval, color.info),
-      'approved' => (context.locale.approved, color.success),
-      'rejected' => (context.locale.rejected, color.error),
-      _ => (request.status, color.text.secondary),
+      LeaveStatus.pendingSupervisor => (context.locale.pending, color.warning),
+      LeaveStatus.pendingManager => (context.locale.managerApproval, color.info),
+      LeaveStatus.approved => (context.locale.approved, color.success),
+      LeaveStatus.rejected => (context.locale.rejected, color.error),
+      LeaveStatus.cancelled => (context.locale.cancel, color.text.secondary),
     };
 
     return InkWell(

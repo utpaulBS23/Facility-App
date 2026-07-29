@@ -4,6 +4,7 @@ import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
+import '../entities/leave/leave_status.dart';
 import '../repositories/leave_repository.dart';
 
 final class GetLeavePoliciesUseCase {
@@ -88,7 +89,7 @@ final class GetMyLeavesUseCase {
 
   Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
     int partnerId, {
-    String? status,
+    LeaveStatus? status,
     int? page,
     int? pageSize,
   }) async {
@@ -185,7 +186,7 @@ final class GetLeaveApprovalsUseCase {
 
   Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
     int partnerId, {
-    String? status,
+    LeaveStatus? status,
     int? page,
     int? pageSize,
   }) async {

@@ -1,4 +1,5 @@
 import 'leave_policy_entity.dart';
+import 'leave_status.dart';
 
 class LeaveApplicantEntity {
   const LeaveApplicantEntity({
@@ -23,7 +24,7 @@ class LeaveApprovalStepEntity {
   final int stepNumber;
   final String approverRole;
   final LeaveApplicantEntity? approver;
-  final String status;
+  final LeaveStatus status;
   final String? decidedAt;
   final String? rejectionNote;
 }
@@ -65,7 +66,6 @@ class LeaveRequestEntity {
     this.coverAttendant,
     this.attachments = const [],
     required this.status,
-    required this.canAction,
     this.shifts = const [],
     this.approvalSteps = const [],
     required this.createdAt,
@@ -83,8 +83,7 @@ class LeaveRequestEntity {
   final String? reason;
   final LeaveApplicantEntity? coverAttendant;
   final List<String> attachments;
-  final String status;
-  final bool canAction;
+  final LeaveStatus status;
   final List<LeaveShiftDetailEntity> shifts;
   final List<LeaveApprovalStepEntity> approvalSteps;
   final String createdAt;
@@ -94,7 +93,7 @@ class LeaveRequestEntity {
     final result = <LeaveApprovalStepEntity>[];
     for (final step in approvalSteps) {
       result.add(step);
-      if (step.status.toLowerCase() == 'rejected') {
+      if (step.status == LeaveStatus.rejected) {
         break;
       }
     }

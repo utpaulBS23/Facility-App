@@ -46,11 +46,11 @@ class _LeaveStatusTimeline extends StatelessWidget {
 
             final roleName = _formatRole(context, step.approverRole);
             final (stepTitle, stepColor) = switch (step.status) {
-              'approved' => (
+              LeaveStatus.approved => (
                   '$roleName ${context.locale.approved}',
                   color.success,
                 ),
-              'rejected' => (
+              LeaveStatus.rejected => (
                   '$roleName ${context.locale.rejected}',
                   color.error,
                 ),
