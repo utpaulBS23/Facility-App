@@ -63,17 +63,19 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
 
   @override
   Widget build(BuildContext context) {
+    return PermissionGate(
+      permissions: [UserPermission.leaveRequest],
+      builder: _buildSlots,
+    );
+  }
+
+  Widget _buildSlots(BuildContext context, bool canApplyLeave) {
     final spacing = context.dimensions.spacing;
     final slotsState = ref.watch(shiftSlotsProvider);
-    final canApplyLeave = ref.watch(
-      userSessionProvider.select(
-        (session) => session?.can(UserPermission.leaveRequest) ?? false,
-      ),
-    );
-    final facilityName = ref.watch(
-      shiftSlotsProvider.select(
-        (state) => state.valueOrNull?.facility?.name ?? '',
-      ),
+    // WHY: the facility is no longer a list header — each slot card carries
+    // its own title/address row, matching the design.
+    final facility = ref.watch(
+      shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
     );
 
     // WHY: Calendar sits above the ListView in a Column instead of being
@@ -114,9 +116,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
               }
 
               final leadingCount =
-                  (facilityName.isNotEmpty ? 1 : 0) +
-                  (canApplyLeave ? 1 : 0) +
-                  (activeSlot != null ? 1 : 0);
+                  (canApplyLeave ? 1 : 0) + (activeSlot != null ? 1 : 0);
 
               return ListView.separated(
                 padding: EdgeInsets.fromLTRB(
@@ -129,12 +129,6 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
                 separatorBuilder: (context, index) => Gap(spacing.s12),
                 itemBuilder: (context, index) {
                   var cursor = index;
-                  if (facilityName.isNotEmpty) {
-                    if (cursor == 0) {
-                      return _FacilityHeader(name: facilityName);
-                    }
-                    cursor -= 1;
-                  }
                   if (canApplyLeave) {
                     if (cursor == 0) {
                       return _ApplyLeaveButton(onTap: widget.onApplyLeave);
@@ -154,6 +148,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
 
                   return _SlotCard(
                     slot: slot,
+                    facility: facility,
                     onTap: () => widget.onSlotTap(slot),
                     onAssignStaff: () => _onAssignStaff(context, slot),
                   );
@@ -163,22 +158,6 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _FacilityHeader extends StatelessWidget {
-  const _FacilityHeader({required this.name});
-
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      name,
-      style: context.textStyle.labelLarge.copyWith(
-        color: context.color.text.primary,
-      ),
     );
   }
 }

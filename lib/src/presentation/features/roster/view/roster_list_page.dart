@@ -96,7 +96,7 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         surfaceTintColor: Colors.transparent,
       ),
       floatingActionButton: PermissionGate(
-        permission: UserPermission.rosterCreate,
+        permissions: [UserPermission.rosterCreate],
         child: FloatingActionButton(
           onPressed: _onCreateRoster,
           child: const Icon(Icons.add_rounded),

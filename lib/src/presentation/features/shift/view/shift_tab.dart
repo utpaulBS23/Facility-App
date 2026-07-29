@@ -9,7 +9,6 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
@@ -18,6 +17,7 @@ import '../../../core/widgets/assigned_staff_tile.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/slot_status_chip.dart';
+import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_slots_provider.dart';
 
@@ -53,13 +53,6 @@ class ShiftTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // WHY: every role with shift access reads the same slots list — only the
-    // assign-staff button inside each card differs by permission. A session
-    // entitled to neither shift capability gets an explicit empty state.
-    final hasShiftAccess = ref.watch(
-      userSessionProvider.select((session) => session?.hasShiftAccess ?? false),
-    );
-
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
@@ -69,7 +62,7 @@ class ShiftTab extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         actions: [
           PermissionGate(
-            permission: UserPermission.rosterView,
+            permissions: [UserPermission.rosterView],
             child: IconButton(
               onPressed: () => _onOpenRosters(context),
               icon: Icon(
@@ -80,23 +73,33 @@ class ShiftTab extends ConsumerWidget {
           ),
         ],
       ),
-      body: hasShiftAccess
-          ? _ShiftSlotsView(
-              onApplyLeave: () => _onApplyLeave(context),
-              onSlotTap: (slot) => _onSlotTap(context, slot),
-            )
-          : Center(
-              child: Padding(
-                padding: EdgeInsets.all(context.dimensions.spacing.s24),
-                child: Text(
-                  context.locale.shiftsUnavailable,
-                  style: context.textStyle.bodyMedium.copyWith(
-                    color: context.color.text.secondary,
+      // WHY these two permissions: they are what [ShiftEntitlement] is derived
+      // from — managing a roster (`shift.assign_attendant`) or working a shift
+      // (`attendance.check_in`). Every role with either reads the same slots
+      // list; a session with neither gets an explicit empty state.
+      body: PermissionGate(
+        permissions: const [
+          UserPermission.shiftAssignAttendant,
+          UserPermission.attendanceCheckIn,
+        ],
+        builder: (context, hasShiftAccess) => hasShiftAccess
+            ? _ShiftSlotsView(
+                onApplyLeave: () => _onApplyLeave(context),
+                onSlotTap: (slot) => _onSlotTap(context, slot),
+              )
+            : Center(
+                child: Padding(
+                  padding: EdgeInsets.all(context.dimensions.spacing.s24),
+                  child: Text(
+                    context.locale.shiftsUnavailable,
+                    style: context.textStyle.bodyMedium.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
-            ),
+      ),
     );
   }
 }

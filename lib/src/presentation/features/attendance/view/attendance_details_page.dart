@@ -12,23 +12,10 @@ class AttendanceDetailsPage extends ConsumerStatefulWidget {
 
 class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   late AttendanceItemEntity _current;
-  late bool _canReview;
-
   @override
   void initState() {
     super.initState();
     _current = widget.attendance;
-    // WHY: gate on the real backend permissions rather than inferring
-    // "supervisor" from the absence of attendance.check_in — the backend now
-    // ships attendance.approve/.reject explicitly, so the proxy is obsolete.
-    // Read once in initState: permissions never change mid-session.
-    final session = ref.read(getUserSessionUseCaseProvider).call();
-    _canReview =
-        session?.canAny(const [
-          UserPermission.attendanceApprove,
-          UserPermission.attendanceReject,
-        ]) ??
-        false;
   }
 
   void _onApprove() {
@@ -107,12 +94,24 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
       body: Column(
         children: [
           Expanded(child: _AttendanceDetailsBody(detail: _current)),
-          if (_canReview && isPending)
-            _ApproveRejectBar(
-              onApprove: _onApprove,
-              onReject: _onReject,
-              isApproving: isApproving,
-              isRejecting: isRejecting,
+          // WHY gate on the real backend permissions rather than inferring
+          // "supervisor" from the absence of attendance.check_in — the backend
+          // ships attendance.approve/.reject explicitly, so the proxy is
+          // obsolete.
+          if (isPending)
+            PermissionGate(
+              permissions: const [
+                UserPermission.attendanceApprove,
+                UserPermission.attendanceReject,
+              ],
+              builder: (context, canReview) => canReview
+                  ? _ApproveRejectBar(
+                      onApprove: _onApprove,
+                      onReject: _onReject,
+                      isApproving: isApproving,
+                      isRejecting: isRejecting,
+                    )
+                  : const SizedBox.shrink(),
             ),
         ],
       ),

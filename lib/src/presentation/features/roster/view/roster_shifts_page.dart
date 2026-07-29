@@ -80,7 +80,7 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
         surfaceTintColor: Colors.transparent,
       ),
       floatingActionButton: PermissionGate(
-        permission: UserPermission.shiftCreate,
+        permissions: [UserPermission.shiftCreate],
         child: FloatingActionButton(
           onPressed: _onCreateShift,
           child: const Icon(Icons.add_rounded),
