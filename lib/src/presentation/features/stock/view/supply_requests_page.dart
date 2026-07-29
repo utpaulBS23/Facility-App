@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
@@ -22,6 +23,8 @@ part '../widgets/shimmer/supply_request_shimmer.dart';
 part '../widgets/shimmer/supply_summary_row_shimmer.dart';
 part '../widgets/supply_filter_bar.dart';
 part '../widgets/supply_request_list_card.dart';
+part '../widgets/supply_requests_body.dart';
+part '../widgets/supply_requests_list.dart';
 part '../widgets/supply_summary_row.dart';
 
 class SupplyRequestsPage extends ConsumerStatefulWidget {
@@ -106,7 +109,8 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     final pendingCount = allList
         .where((r) =>
             r.status == 'pending_supervisor' ||
-            r.status == 'pending_operation_manager')
+            r.status == 'pending_operation_manager' ||
+            r.status == 'operation_manager_approved')
         .length;
     final inDeliveryCount = allList.where((r) => r.status == 'in_delivery').length;
     final deliveredCount = allList.where((r) => r.status == 'delivered').length;
@@ -122,34 +126,29 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
+      body: _SupplyRequestsBody(
         padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            allRequestsAsync.maybeWhen(
-              data: (_) => _SupplySummaryRow(
-                pendingCount: pendingCount,
-                inDeliveryCount: inDeliveryCount,
-                deliveredCount: deliveredCount,
-                rejectedCount: rejectedCount,
-              ),
-              orElse: () => const _SupplySummaryRowShimmer(),
-            ),
-            Gap(spacing.s16),
-            if (inDeliveryCount > 0) ...[
-              PendingDeliveryAlert(
+        summary: allRequestsAsync.maybeWhen(
+          data: (_) => _SupplySummaryRow(
+            pendingCount: pendingCount,
+            inDeliveryCount: inDeliveryCount,
+            deliveredCount: deliveredCount,
+            rejectedCount: rejectedCount,
+          ),
+          orElse: () => const _SupplySummaryRowShimmer(),
+        ),
+        pendingDeliveryAlert: inDeliveryCount > 0
+            ? PendingDeliveryAlert(
                 onTap: () {
                   final inDelivery = allList.firstWhere(
                     (r) => r.status == 'in_delivery',
                   );
                   _onRequestTap(inDelivery);
                 },
-              ),
-              Gap(spacing.s16),
-            ],
-            if (canCreateRequest) ...[
-              SizedBox(
+              )
+            : null,
+        newRequestButton: canCreateRequest
+            ? SizedBox(
                 width: double.infinity,
                 height: spacing.s44,
                 child: FilledButton.icon(
@@ -157,60 +156,16 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
                   icon: const Icon(Icons.add_rounded),
                   label: Text(context.locale.newRequest),
                 ),
-              ),
-              Gap(spacing.s16),
-            ],
-            _SupplyFilterBar(
-              filters: kSupplyFilterKeys,
-              selectedFilter: _selectedFilter,
-              onFilterSelected: _onFilterSelected,
-            ),
-            Gap(spacing.s16),
-            filteredRequestsAsync.when(
-              data: (paginated) {
-                final requests = paginated.items;
-                if (requests.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: spacing.s32),
-                      child: Text(
-                        context.locale.noSupplyRequestsFound,
-                        style: context.textStyle.bodyMedium.copyWith(
-                          color: context.color.text.secondary,
-                        ),
-                      ),
-                    ),
-                  );
-                }
-
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: requests.length,
-                  separatorBuilder: (context, index) => Gap(spacing.s12),
-                  itemBuilder: (context, index) {
-                    final req = requests[index];
-                    return _SupplyRequestListCard(
-                      request: req,
-                      onTap: () => _onRequestTap(req),
-                    );
-                  },
-                );
-              },
-              loading: () => const _SupplyRequestListShimmer(),
-              error: (err, _) => Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: spacing.s32),
-                  child: Text(
-                    err.toString(),
-                    style: context.textStyle.bodyMedium.copyWith(
-                      color: context.color.error,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+              )
+            : null,
+        filterBar: _SupplyFilterBar(
+          filters: kSupplyFilterKeys,
+          selectedFilter: _selectedFilter,
+          onFilterSelected: _onFilterSelected,
+        ),
+        list: _SupplyRequestsListSection(
+          requestsAsync: filteredRequestsAsync,
+          onRequestTap: _onRequestTap,
         ),
       ),
     );
