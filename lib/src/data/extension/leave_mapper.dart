@@ -80,7 +80,6 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
         coverAttendant: coverAttendant?.toEntity(),
         attachments: attachments,
         status: status,
-        canAction: canAction ?? false,
         shifts: shifts.map((s) => s.toEntity()).toList(),
         approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
         createdAt: createdAt,

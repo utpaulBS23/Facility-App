@@ -66,7 +66,6 @@ class LeaveRequestEntity {
     this.coverAttendant,
     this.attachments = const [],
     required this.status,
-    required this.canAction,
     this.shifts = const [],
     this.approvalSteps = const [],
     required this.createdAt,
@@ -85,7 +84,6 @@ class LeaveRequestEntity {
   final LeaveApplicantEntity? coverAttendant;
   final List<String> attachments;
   final LeaveStatus status;
-  final bool canAction;
   final List<LeaveShiftDetailEntity> shifts;
   final List<LeaveApprovalStepEntity> approvalSteps;
   final String createdAt;

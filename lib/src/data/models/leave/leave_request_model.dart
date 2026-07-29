@@ -118,7 +118,6 @@ class LeaveRequestModel with LeaveRequestModelMappable {
     this.coverAttendant,
     this.attachments = const [],
     this.currentStep,
-    this.canAction,
     this.shifts = const [],
     this.approvalSteps = const [],
     this.updatedAt,
@@ -152,8 +151,6 @@ class LeaveRequestModel with LeaveRequestModelMappable {
   final List<String> attachments;
   @MappableField(key: 'current_step')
   final int? currentStep;
-  @MappableField(key: 'can_action')
-  final bool? canAction;
   final List<LeaveShiftDetailModel> shifts;
   @MappableField(key: 'approval_steps')
   final List<LeaveApprovalStepModel> approvalSteps;
