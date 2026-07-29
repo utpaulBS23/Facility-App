@@ -1,3 +1,4 @@
+import '../../core/base/exceptions.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
 import '../models/supply/supply_request_model.dart';
@@ -52,7 +53,16 @@ extension SupplyRequestModelMapper on SupplyRequestModel {
 }
 
 extension SupplyRequestResponseModelToEntity on SupplyRequestResponseModel {
-  SupplyRequestEntity toEntity() => data!.toEntity();
+  SupplyRequestEntity toEntity() {
+    final model = data;
+    if (model == null) {
+      throw const CustomException.parsing(
+        message: 'Supply request response missing data.',
+        field: 'data',
+      );
+    }
+    return model.toEntity();
+  }
 }
 
 extension SupplyRequestListResponseModelToEntity on SupplyRequestListResponseModel {
