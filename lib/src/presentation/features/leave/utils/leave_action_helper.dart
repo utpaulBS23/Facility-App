@@ -2,8 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../../domain/entities/leave/leave_status.dart';
+import '../../../../domain/entities/login_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../riverpod/leave_action_notifier.dart';
+
+extension LeaveActionableX on LeaveRequestEntity {
+  bool canUserAction(UserSessionEntity? session) {
+    if (session == null) return false;
+    return switch (status) {
+      LeaveStatus.pendingSupervisor =>
+        session.can(AppPermission.leaveApproveSupervisor),
+      LeaveStatus.pendingManager =>
+        session.can(AppPermission.leaveApproveManager),
+      _ => false,
+    };
+  }
+}
 
 Future<bool> executeLeaveAction(
   BuildContext context,

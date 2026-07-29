@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../../domain/entities/leave/leave_status.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/status_dot_tag.dart';
@@ -93,7 +95,7 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
     final spacing = context.dimensions.spacing;
     final color = context.color;
 
-    final isActionable = request.canAction;
+    final isActionable = request.canUserAction(ref.watch(userSessionProvider));
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
