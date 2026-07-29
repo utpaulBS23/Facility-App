@@ -413,5 +413,15 @@
   "inDelivery": "In Delivery",
   "delivered": "Delivered",
   "pendingDeliveries": "Pending Deliveries",
-  "pendingDeliveryAlertSubtitle": "1 approved request awaiting delivery"
+  "pendingDeliveryAlertSubtitle": "{count} approved request awaiting delivery",
+  "@pendingDeliveryAlertSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "urgencyUrgent": "Urgent",
+  "urgencyHigh": "High Priority",
+  "urgencyNormal": "Normal"
 }

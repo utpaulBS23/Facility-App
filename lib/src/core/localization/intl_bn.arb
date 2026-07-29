@@ -410,5 +410,8 @@
   "inDelivery": "ডেলিভারি চলছে",
   "delivered": "ডেলিভার করা হয়েছে",
   "pendingDeliveries": "মুলতুবি ডেলিভারি",
-  "pendingDeliveryAlertSubtitle": "১টি অনুমোদিত অনুরোধ ডেলিভারির অপেক্ষায়"
+  "pendingDeliveryAlertSubtitle": "{count}টি অনুমোদিত অনুরোধ ডেলিভারির অপেক্ষায়",
+  "urgencyUrgent": "জরুরি",
+  "urgencyHigh": "উচ্চ অগ্রাধিকার",
+  "urgencyNormal": "স্বাভাবিক"
 }

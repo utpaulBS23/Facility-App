@@ -1,8 +1,9 @@
 part of '../view/supply_requests_page.dart';
 
 class PendingDeliveryAlert extends StatelessWidget {
-  const PendingDeliveryAlert({super.key, this.onTap});
+  const PendingDeliveryAlert({super.key, required this.count, this.onTap});
 
+  final int count;
   final VoidCallback? onTap;
 
   @override
@@ -46,7 +47,7 @@ class PendingDeliveryAlert extends StatelessWidget {
                   ),
                   Gap(spacing.s2),
                   Text(
-                    context.locale.pendingDeliveryAlertSubtitle,
+                    context.locale.pendingDeliveryAlertSubtitle(count),
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,
                     ),

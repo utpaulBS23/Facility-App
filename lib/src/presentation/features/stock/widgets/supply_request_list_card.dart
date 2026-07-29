@@ -19,13 +19,6 @@ class _SupplyRequestListCard extends StatelessWidget {
         _ => context.color.text.secondary,
       };
 
-  Color _priorityColor(BuildContext context) => switch (request.urgency.toLowerCase()) {
-        'urgent' => context.color.primary,
-        'high priority' => context.color.warning,
-        'high' => context.color.warning,
-        _ => context.color.success,
-      };
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -118,15 +111,15 @@ class _SupplyRequestListCard extends StatelessWidget {
                         width: spacing.s8,
                         height: spacing.s8,
                         decoration: BoxDecoration(
-                          color: _priorityColor(context),
+                          color: supplyUrgencyColor(context, request.urgency),
                           shape: BoxShape.circle,
                         ),
                       ),
                       Gap(spacing.s4),
                       Text(
-                        request.urgency,
+                        supplyUrgencyLabel(context, request.urgency),
                         style: context.textStyle.bodySmall.copyWith(
-                          color: _priorityColor(context),
+                          color: supplyUrgencyColor(context, request.urgency),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

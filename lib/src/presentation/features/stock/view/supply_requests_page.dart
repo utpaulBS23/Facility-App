@@ -109,12 +109,13 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     final pendingCount = allList
         .where((r) =>
             r.status == 'pending_supervisor' ||
-            r.status == 'pending_operation_manager' ||
-            r.status == 'operation_manager_approved')
+            r.status == 'pending_operation_manager')
         .length;
     final inDeliveryCount = allList.where((r) => r.status == 'in_delivery').length;
     final deliveredCount = allList.where((r) => r.status == 'delivered').length;
     final rejectedCount = allList.where((r) => r.status == 'rejected').length;
+    final approvedCount =
+        allList.where((r) => r.status == 'operation_manager_approved').length;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -137,13 +138,14 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
           ),
           orElse: () => const _SupplySummaryRowShimmer(),
         ),
-        pendingDeliveryAlert: inDeliveryCount > 0
+        pendingDeliveryAlert: approvedCount > 0
             ? PendingDeliveryAlert(
+                count: approvedCount,
                 onTap: () {
-                  final inDelivery = allList.firstWhere(
-                    (r) => r.status == 'in_delivery',
+                  final approved = allList.firstWhere(
+                    (r) => r.status == 'operation_manager_approved',
                   );
-                  _onRequestTap(inDelivery);
+                  _onRequestTap(approved);
                 },
               )
             : null,
