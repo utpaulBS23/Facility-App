@@ -49,7 +49,7 @@ class _SupplyRequestsListSection extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: spacing.s32),
           child: Text(
-            err.toString(),
+            context.locale.somethingWentWrong,
             style: context.textStyle.bodyMedium.copyWith(
               color: context.color.error,
             ),

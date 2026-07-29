@@ -1,3 +1,5 @@
+import 'supply_request_status.dart';
+
 class SupplyRequestItemEntity {
   const SupplyRequestItemEntity({
     required this.id,
@@ -69,9 +71,9 @@ class SupplyRequestEntity {
   final int requestedBy;
   final String requestedByName;
   final String initiatedByRole;
-  final String urgency;
+  final SupplyUrgency urgency;
   final String? notes;
-  final String status;
+  final SupplyRequestStatus status;
   final int itemCount;
   final double totalValue;
   final List<SupplyRequestItemEntity> items;

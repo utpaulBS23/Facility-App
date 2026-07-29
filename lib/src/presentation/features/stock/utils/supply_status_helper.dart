@@ -1,53 +1,49 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/theme/theme.dart';
-
-const List<String> kSupplyRequestStatuses = [
-  'pending_supervisor',
-  'pending_operation_manager',
-  'operation_manager_approved',
-  'in_delivery',
-  'delivered',
-  'rejected',
-];
 
 const String kSupplyFilterAll = 'All';
 
-const List<String> kSupplyFilterKeys = [
+final List<String> kSupplyFilterKeys = [
   kSupplyFilterAll,
-  ...kSupplyRequestStatuses,
+  ...SupplyRequestStatus.values.map((s) => s.toWireString()),
 ];
 
-String supplyStatusLabel(BuildContext context, String status) => switch (status) {
-      'pending_supervisor' => context.locale.pendingSupervisor,
-      'pending_operation_manager' => context.locale.pendingOperationManager,
-      'operation_manager_approved' => context.locale.operationManagerApproved,
-      'in_delivery' => context.locale.inDelivery,
-      'delivered' => context.locale.delivered,
-      'rejected' => context.locale.rejected,
-      _ => status,
+String supplyStatusLabel(BuildContext context, SupplyRequestStatus status) =>
+    switch (status) {
+      SupplyRequestStatus.pendingSupervisor => context.locale.pendingSupervisor,
+      SupplyRequestStatus.pendingOperationManager =>
+        context.locale.pendingOperationManager,
+      SupplyRequestStatus.operationManagerApproved =>
+        context.locale.operationManagerApproved,
+      SupplyRequestStatus.inDelivery => context.locale.inDelivery,
+      SupplyRequestStatus.delivered => context.locale.delivered,
+      SupplyRequestStatus.rejected => context.locale.rejected,
     };
 
 String supplyFilterLabel(BuildContext context, String filterKey) =>
     filterKey == kSupplyFilterAll
         ? context.locale.all
-        : supplyStatusLabel(context, filterKey);
+        : supplyStatusLabel(
+            context, SupplyRequestStatus.fromWireString(filterKey));
 
-String? supplyStatusCodeForFilter(String filterKey) =>
-    filterKey == kSupplyFilterAll ? null : filterKey;
+SupplyRequestStatus? supplyStatusCodeForFilter(String filterKey) =>
+    filterKey == kSupplyFilterAll
+        ? null
+        : SupplyRequestStatus.fromWireString(filterKey);
 
-String supplyUrgencyLabel(BuildContext context, String urgency) => switch (urgency.toLowerCase()) {
-      'urgent' => context.locale.urgencyUrgent,
-      'high' => context.locale.urgencyHigh,
-      'high priority' => context.locale.urgencyHigh,
-      'normal' => context.locale.urgencyNormal,
-      _ => urgency,
+String supplyUrgencyLabel(BuildContext context, SupplyUrgency urgency) =>
+    switch (urgency) {
+      SupplyUrgency.urgent => context.locale.urgencyUrgent,
+      SupplyUrgency.high => context.locale.urgencyHigh,
+      SupplyUrgency.normal => context.locale.urgencyNormal,
     };
 
-Color supplyUrgencyColor(BuildContext context, String urgency) => switch (urgency.toLowerCase()) {
-      'urgent' => context.color.primary,
-      'high' => context.color.warning,
-      'high priority' => context.color.warning,
-      _ => context.color.success,
+Color supplyUrgencyColor(BuildContext context, SupplyUrgency urgency) =>
+    switch (urgency) {
+      SupplyUrgency.urgent => context.color.primary,
+      SupplyUrgency.high => context.color.warning,
+      SupplyUrgency.normal => context.color.success,
     };

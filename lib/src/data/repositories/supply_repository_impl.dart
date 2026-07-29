@@ -1,15 +1,14 @@
 import '../../core/base/failure.dart';
-import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
+import '../../domain/entities/supply/supply_request_status.dart';
 import '../../domain/repositories/supply_repository.dart';
 import '../extension/supply_request_mapper.dart';
 import '../models/supply/supply_response_models.dart';
 import '../services/network/rest_client.dart';
 
-final class SupplyRepositoryImpl extends Repository<dynamic>
-    implements SupplyRepository {
+final class SupplyRepositoryImpl extends SupplyRepository {
   SupplyRepositoryImpl({required this.remote});
 
   final RestClient remote;
@@ -18,8 +17,8 @@ final class SupplyRepositoryImpl extends Repository<dynamic>
   Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> getSupplyRequests({
     required int partnerId,
     int? facilityId,
-    String? status,
-    String? urgency,
+    SupplyRequestStatus? status,
+    SupplyUrgency? urgency,
     String? search,
     int? page,
     int? perPage,
@@ -28,8 +27,8 @@ final class SupplyRepositoryImpl extends Repository<dynamic>
       final response = await remote.getSupplyRequests(
         partnerId: partnerId,
         facilityId: facilityId,
-        status: status,
-        urgency: urgency,
+        status: status?.toWireString(),
+        urgency: urgency?.toWireString(),
         search: search,
         page: page,
         perPage: perPage,

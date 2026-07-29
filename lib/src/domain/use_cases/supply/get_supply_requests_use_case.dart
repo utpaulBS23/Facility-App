@@ -2,6 +2,7 @@ import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
 import '../../entities/common/paginated_list_entity.dart';
 import '../../entities/supply/supply_request_entity.dart';
+import '../../entities/supply/supply_request_status.dart';
 import '../../repositories/supply_repository.dart';
 
 final class GetSupplyRequestsUseCase {
@@ -11,8 +12,8 @@ final class GetSupplyRequestsUseCase {
   Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> call({
     required int partnerId,
     int? facilityId,
-    String? status,
-    String? urgency,
+    SupplyRequestStatus? status,
+    SupplyUrgency? urgency,
     String? search,
     int? page,
     int? perPage,

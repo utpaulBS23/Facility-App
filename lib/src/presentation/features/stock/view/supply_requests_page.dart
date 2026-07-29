@@ -8,6 +8,7 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
+import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -55,7 +56,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
           if (!mounted) return;
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(next.error.toString())),
+            SnackBar(content: Text(context.locale.somethingWentWrong)),
           );
         }
       },
@@ -108,14 +109,18 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     final allList = allRequestsAsync.valueOrNull?.items ?? [];
     final pendingCount = allList
         .where((r) =>
-            r.status == 'pending_supervisor' ||
-            r.status == 'pending_operation_manager')
+            r.status == SupplyRequestStatus.pendingSupervisor ||
+            r.status == SupplyRequestStatus.pendingOperationManager)
         .length;
-    final inDeliveryCount = allList.where((r) => r.status == 'in_delivery').length;
-    final deliveredCount = allList.where((r) => r.status == 'delivered').length;
-    final rejectedCount = allList.where((r) => r.status == 'rejected').length;
-    final approvedCount =
-        allList.where((r) => r.status == 'operation_manager_approved').length;
+    final inDeliveryCount =
+        allList.where((r) => r.status == SupplyRequestStatus.inDelivery).length;
+    final deliveredCount =
+        allList.where((r) => r.status == SupplyRequestStatus.delivered).length;
+    final rejectedCount =
+        allList.where((r) => r.status == SupplyRequestStatus.rejected).length;
+    final approvedCount = allList
+        .where((r) => r.status == SupplyRequestStatus.operationManagerApproved)
+        .length;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -141,12 +146,9 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         pendingDeliveryAlert: approvedCount > 0
             ? PendingDeliveryAlert(
                 count: approvedCount,
-                onTap: () {
-                  final approved = allList.firstWhere(
-                    (r) => r.status == 'operation_manager_approved',
-                  );
-                  _onRequestTap(approved);
-                },
+                onTap: () => _onFilterSelected(
+                  SupplyRequestStatus.operationManagerApproved.toWireString(),
+                ),
               )
             : null,
         newRequestButton: canCreateRequest

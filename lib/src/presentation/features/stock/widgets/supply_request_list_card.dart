@@ -10,13 +10,12 @@ class _SupplyRequestListCard extends StatelessWidget {
   final VoidCallback onTap;
 
   Color _statusDotColor(BuildContext context) => switch (request.status) {
-        'pending_supervisor' => context.color.warning,
-        'pending_operation_manager' => context.color.info,
-        'operation_manager_approved' => context.color.primary,
-        'in_delivery' => context.color.text.secondary,
-        'delivered' => context.color.success,
-        'rejected' => context.color.error,
-        _ => context.color.text.secondary,
+        SupplyRequestStatus.pendingSupervisor => context.color.warning,
+        SupplyRequestStatus.pendingOperationManager => context.color.info,
+        SupplyRequestStatus.operationManagerApproved => context.color.primary,
+        SupplyRequestStatus.inDelivery => context.color.text.secondary,
+        SupplyRequestStatus.delivered => context.color.success,
+        SupplyRequestStatus.rejected => context.color.error,
       };
 
   @override
@@ -96,7 +95,7 @@ class _SupplyRequestListCard extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        '${request.itemCount} items',
+                        context.locale.supplyItemsCount(request.itemCount),
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.text.secondary,
                         ),

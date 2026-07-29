@@ -407,6 +407,15 @@
   "supplyRequests": "Supply Requests",
   "newRequest": "New Request",
   "noSupplyRequestsFound": "No supply requests found",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "supplyItemsCount": "{count} items",
+  "@supplyItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pendingSupervisor": "Pending Supervisor",
   "pendingOperationManager": "Pending Operation Manager",
   "operationManagerApproved": "Operation Manager Approved",

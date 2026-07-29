@@ -404,6 +404,15 @@
   "supplyRequests": "সরবরাহ অনুরোধ",
   "newRequest": "নতুন অনুরোধ",
   "noSupplyRequestsFound": "কোনো সরবরাহ অনুরোধ পাওয়া যায়নি",
+  "somethingWentWrong": "কিছু ভুল হয়েছে। আবার চেষ্টা করুন।",
+  "supplyItemsCount": "{count}টি আইটেম",
+  "@supplyItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pendingSupervisor": "সুপারভাইজার অপেক্ষমান",
   "pendingOperationManager": "অপারেশন ম্যানেজার অপেক্ষমান",
   "operationManagerApproved": "অপারেশন ম্যানেজার অনুমোদিত",
