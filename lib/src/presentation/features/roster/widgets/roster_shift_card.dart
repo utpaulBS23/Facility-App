@@ -90,7 +90,7 @@ class _RosterShiftCard extends StatelessWidget {
             Gap(spacing.s4),
           ],
           PermissionGate(
-            permission: UserPermission.shiftAssignAttendant,
+            permissions: [UserPermission.shiftAssignAttendant],
             child: AssignStaffButton(
               onTap: onAssign,
               isSlotFull: !shift.hasFreeCapacity,

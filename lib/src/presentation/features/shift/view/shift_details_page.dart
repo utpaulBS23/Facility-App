@@ -50,7 +50,7 @@ class ShiftDetailsPage extends StatelessWidget {
           Expanded(child: _ShiftDetailsBody(entity: entity)),
           if (_showCheckOutButton)
             PermissionGate(
-              permission: UserPermission.attendanceCheckOut,
+              permissions: [UserPermission.attendanceCheckOut],
               child: SafeArea(
                 top: false,
                 child: Padding(

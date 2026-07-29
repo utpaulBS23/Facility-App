@@ -185,7 +185,7 @@ class _TaskCard extends StatelessWidget {
                   ],
                   if (_canComplete)
                     PermissionGate(
-                      permission: UserPermission.taskComplete,
+                      permissions: [UserPermission.taskComplete],
                       child: Padding(
                         padding: EdgeInsets.only(top: spacing.s12),
                         child: FilledButton(

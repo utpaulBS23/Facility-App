@@ -2,10 +2,10 @@ part of 'shift_tab.dart';
 
 /// Slot-based details, shown to every role.
 ///
-/// WHY a second details page: the slots payload has no shift-template name,
-/// facility address, per-slot supervisor or notes, so [ShiftDetailsPage] (fed
-/// by the older, now-unreachable endpoints) cannot be reused without
-/// rendering empty rows. Card styling matches [ShiftDetailsPage] — same
+/// WHY a second details page: the slots payload has no shift-template name or
+/// notes, so [ShiftDetailsPage] (fed by the older, now-unreachable endpoints)
+/// cannot be reused without rendering empty rows. Card styling matches
+/// [ShiftDetailsPage] — same
 /// [_ShiftDetailContractCard]/[_ShiftDetailCheckInCard] look, rebuilt from
 /// only the fields a slot actually carries.
 class SlotDetailsPage extends ConsumerWidget {
@@ -33,10 +33,8 @@ class SlotDetailsPage extends ConsumerWidget {
     final me = slot.me;
     // WHY: facility lives on the day payload, not the slot, so it is read back
     // from the same provider rather than threaded through navigation.
-    final facilityName = ref.watch(
-      shiftSlotsProvider.select(
-        (state) => state.valueOrNull?.facility?.name ?? '',
-      ),
+    final facility = ref.watch(
+      shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
     );
     final showCheckOut = me?.action == SlotAction.checkOut;
 
@@ -74,18 +72,24 @@ class SlotDetailsPage extends ConsumerWidget {
               padding: EdgeInsets.all(spacing.s16),
               child: Column(
                 children: [
-                  _SlotDetailContractCard(
-                    slot: slot,
-                    facilityName: facilityName,
-                  ),
+                  _SlotDetailContractCard(slot: slot, facility: facility),
                   if (me?.attendance != null) ...[
                     Gap(spacing.s8),
                     _SlotDetailCheckInCard(attendance: me!.attendance!),
                   ],
-                  Gap(spacing.s8),
-                  _SlotDetailStaffingCard(
-                    slot: slot,
-                    onAssignStaff: () => _onAssignStaff(context),
+                  // WHY the gap is inside the gate: without the card there is
+                  // nothing to space away from.
+                  PermissionGate(
+                    permissions: [UserPermission.shiftAssignAttendant],
+                    child: Column(
+                      children: [
+                        Gap(spacing.s8),
+                        _SlotDetailStaffingCard(
+                          slot: slot,
+                          onAssignStaff: () => _onAssignStaff(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -93,7 +97,7 @@ class SlotDetailsPage extends ConsumerWidget {
           ),
           if (showCheckOut)
             PermissionGate(
-              permission: UserPermission.attendanceCheckOut,
+              permissions: [UserPermission.attendanceCheckOut],
               child: SafeArea(
                 top: false,
                 child: Padding(

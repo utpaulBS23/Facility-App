@@ -1,15 +1,14 @@
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
-import '../application_state/session_provider/session_provider.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
+import 'permission_gate.dart';
 
-class NavigationShell extends ConsumerWidget {
+class NavigationShell extends StatelessWidget {
   const NavigationShell({super.key, required this.statefulNavigationShell});
 
   final StatefulNavigationShell statefulNavigationShell;
@@ -68,12 +67,13 @@ class NavigationShell extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final permissions =
-        ref.watch(
-          userSessionProvider.select((session) => session?.permissions),
-        ) ??
-        const <UserPermission>{};
+  Widget build(BuildContext context) {
+    return PermissionSetScope(
+      builder: (context, permissions) => _buildShell(context, permissions),
+    );
+  }
+
+  Widget _buildShell(BuildContext context, Set<UserPermission> permissions) {
     final visibleTabs = permittedShellTabs(permissions);
 
     // WHY: current branch may be outside the visible tabs for one frame while

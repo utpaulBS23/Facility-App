@@ -8,7 +8,6 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -106,17 +105,14 @@ class _InspectionChecklistPageState
                 ],
               ),
             )
-          : _ChecklistBody(
-              detail: widget.detail,
-              checklistState: checklistState,
-              onSubmit: _onSubmit,
-              onNewIssue: _onNewIssue,
-              canSubmit: ref.watch(
-                userSessionProvider.select(
-                  (session) =>
-                      session?.can(UserPermission.checklistResponseSubmit) ??
-                      false,
-                ),
+          : PermissionGate(
+              permissions: [UserPermission.checklistResponseSubmit],
+              builder: (context, isGranted) => _ChecklistBody(
+                detail: widget.detail,
+                checklistState: checklistState,
+                onSubmit: _onSubmit,
+                onNewIssue: _onNewIssue,
+                canSubmit: isGranted,
               ),
             ),
     );

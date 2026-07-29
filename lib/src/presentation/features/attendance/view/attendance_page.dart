@@ -4,12 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
@@ -96,14 +95,13 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
         ],
       ),
       body: state.when(
-        data: (summary) => _AttendanceBody(
-          summary: summary,
-          onItemTap: _onItemTap,
-          onApplyLeave: _onApplyLeave,
-          showApplyLeave: ref.watch(
-            userSessionProvider.select(
-              (session) => session?.can(UserPermission.leaveRequest) ?? false,
-            ),
+        data: (summary) => PermissionGate(
+          permissions: [UserPermission.leaveRequest],
+          builder: (context, isGranted) => _AttendanceBody(
+            summary: summary,
+            onItemTap: _onItemTap,
+            onApplyLeave: _onApplyLeave,
+            showApplyLeave: isGranted,
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
