@@ -4,6 +4,7 @@ import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
 import '../../domain/entities/leave/leave_request_entity.dart';
+import '../../domain/entities/leave/leave_status.dart';
 import '../../domain/repositories/leave_repository.dart';
 import '../extension/leave_mapper.dart';
 import '../models/leave/leave_response_models.dart';
@@ -68,14 +69,14 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   @override
   Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getMyLeaves(
     int partnerId, {
-    String? status,
+    LeaveStatus? status,
     int? page,
     int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getMyLeaves(
         partnerId: partnerId,
-        status: status,
+        status: status?.toWireString(),
         page: page,
         pageSize: pageSize,
       );
@@ -130,14 +131,14 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   @override
   Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getLeaveApprovals(
     int partnerId, {
-    String? status,
+    LeaveStatus? status,
     int? page,
     int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getLeaveApprovals(
         partnerId: partnerId,
-        status: status,
+        status: status?.toWireString(),
         page: page,
         pageSize: pageSize,
       );
