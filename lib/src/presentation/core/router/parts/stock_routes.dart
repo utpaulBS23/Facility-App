@@ -1,6 +1,6 @@
 part of '../router.dart';
 
-List<RouteBase> get stockRoutes => [
+List<RouteBase> _stockRoutes(Ref ref) => [
       GoRoute(
         path: Routes.supplyRequests,
         name: Routes.supplyRequests,

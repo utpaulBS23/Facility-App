@@ -120,7 +120,7 @@ GoRouter goRouter(Ref ref) {
       ..._shiftRoutes(ref),
       ..._attendanceRoutes(ref),
       ..._myVisitsRoutes(ref),
-      ...stockRoutes,
+      ..._stockRoutes(ref),
       _shellRoutes(ref),
     ],
   );
