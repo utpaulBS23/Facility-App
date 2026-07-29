@@ -11,7 +11,6 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/back_leading.dart';
-import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/supply_requests_provider.dart';
@@ -20,6 +19,7 @@ import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/pending_delivery_alert.dart';
 part '../widgets/shimmer/supply_request_shimmer.dart';
+part '../widgets/supply_filter_bar.dart';
 part '../widgets/supply_request_list_card.dart';
 part '../widgets/supply_summary_row.dart';
 
@@ -31,30 +31,20 @@ class SupplyRequestsPage extends ConsumerStatefulWidget {
 }
 
 class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
-  String? _selectedFilter;
+  String _selectedFilter = kSupplyFilterAll;
   ProviderSubscription? _requestsSub;
-  bool _didInitListener = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // WHY: _listenRequests/_selectedFilter default need context.locale,
-    // unavailable in initState (InheritedWidget not attached yet). Run once
-    // on first dependency pass.
-    if (!_didInitListener) {
-      _didInitListener = true;
-      _selectedFilter = context.locale.all;
-      _listenRequests();
-    }
+  void initState() {
+    super.initState();
+    _listenRequests();
   }
-
-  String get _effectiveFilter => _selectedFilter ?? context.locale.all;
 
   void _listenRequests() {
     _requestsSub?.close();
     _requestsSub = ref.listenManual(
       supplyRequestsProvider(
-        status: supplyStatusCodeForFilter(context, _effectiveFilter),
+        status: supplyStatusCodeForFilter(_selectedFilter),
       ),
       (previous, next) {
         if (next is AsyncError) {
@@ -107,7 +97,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     );
     final filteredRequestsAsync = ref.watch(
       supplyRequestsProvider(
-        status: supplyStatusCodeForFilter(context, _effectiveFilter),
+        status: supplyStatusCodeForFilter(_selectedFilter),
       ),
     );
 
@@ -166,10 +156,10 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
               ),
               Gap(spacing.s16),
             ],
-            CategoryFilterChips(
-              categories: supplyFilterLabels(context),
-              selectedCategory: _effectiveFilter,
-              onSelected: _onFilterSelected,
+            _SupplyFilterBar(
+              filters: kSupplyFilterKeys,
+              selectedFilter: _selectedFilter,
+              onFilterSelected: _onFilterSelected,
             ),
             Gap(spacing.s16),
             filteredRequestsAsync.when(

@@ -11,6 +11,13 @@ const List<String> kSupplyRequestStatuses = [
   'rejected',
 ];
 
+const String kSupplyFilterAll = 'All';
+
+const List<String> kSupplyFilterKeys = [
+  kSupplyFilterAll,
+  ...kSupplyRequestStatuses,
+];
+
 String supplyStatusLabel(BuildContext context, String status) => switch (status) {
       'pending_supervisor' => context.locale.pendingSupervisor,
       'pending_operation_manager' => context.locale.pendingOperationManager,
@@ -21,13 +28,10 @@ String supplyStatusLabel(BuildContext context, String status) => switch (status)
       _ => status,
     };
 
-List<String> supplyFilterLabels(BuildContext context) => [
-      context.locale.all,
-      ...kSupplyRequestStatuses.map((s) => supplyStatusLabel(context, s)),
-    ];
+String supplyFilterLabel(BuildContext context, String filterKey) =>
+    filterKey == kSupplyFilterAll
+        ? context.locale.all
+        : supplyStatusLabel(context, filterKey);
 
-String? supplyStatusCodeForFilter(BuildContext context, String filter) =>
-    filter == context.locale.all
-        ? null
-        : kSupplyRequestStatuses
-            .firstWhere((s) => supplyStatusLabel(context, s) == filter);
+String? supplyStatusCodeForFilter(String filterKey) =>
+    filterKey == kSupplyFilterAll ? null : filterKey;
