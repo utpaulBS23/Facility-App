@@ -14,8 +14,8 @@ import '../models/leave/leave_response_models.dart';
 extension LeavePolicyModelToEntity on LeavePolicyModel {
   LeavePolicyEntity toEntity() => LeavePolicyEntity(
         id: id,
-        name: name ?? '',
-        leaveType: leaveType ?? 'annual',
+        name: name,
+        leaveType: leaveType,
         defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
         requiresApproval: requiresApproval ?? true,
         canCarryForward: canCarryForward ?? false,
@@ -36,16 +36,16 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
 extension LeaveApplicantModelToEntity on LeaveApplicantModel {
   LeaveApplicantEntity toEntity() => LeaveApplicantEntity(
         id: id,
-        name: name ?? '',
+        name: name,
       );
 }
 
 extension LeaveApprovalStepModelToEntity on LeaveApprovalStepModel {
   LeaveApprovalStepEntity toEntity() => LeaveApprovalStepEntity(
-        stepNumber: stepNumber ?? 1,
-        approverRole: approverRole ?? 'supervisor',
+        stepNumber: stepNumber,
+        approverRole: approverRole,
         approver: approver?.toEntity(),
-        status: status ?? 'pending',
+        status: status,
         decidedAt: decidedAt,
         rejectionNote: rejectionNote,
       );
@@ -54,55 +54,55 @@ extension LeaveApprovalStepModelToEntity on LeaveApprovalStepModel {
 extension LeaveShiftDetailModelToEntity on LeaveShiftDetailModel {
   LeaveShiftDetailEntity toEntity() => LeaveShiftDetailEntity(
         id: id,
-        shiftDate: shiftDate ?? '',
-        shiftName: shiftName ?? '',
-        startTime: startTime ?? '',
-        endTime: endTime ?? '',
-        facilityId: facilityId ?? 0,
-        facilityName: facilityName ?? '',
-        status: status ?? 'scheduled',
+        shiftDate: shiftDate,
+        shiftName: shiftName,
+        startTime: startTime,
+        endTime: endTime,
+        facilityId: facilityId,
+        facilityName: facilityName,
+        status: status,
       );
 }
 
 extension LeaveRequestModelToEntity on LeaveRequestModel {
   LeaveRequestEntity toEntity() => LeaveRequestEntity(
         id: id,
-        referenceCode: referenceCode ?? '',
+        referenceCode: referenceCode,
         applicant: applicant?.toEntity(),
         createdBy: createdBy?.toEntity(),
         leavePolicy: leavePolicy?.toEntity(),
-        startDate: startDate ?? '',
-        endDate: endDate ?? '',
-        daysCount: daysCount ?? 1,
-        leaveType: leaveType ?? 'annual',
+        startDate: startDate,
+        endDate: endDate,
+        daysCount: daysCount,
+        leaveType: leaveType,
         reason: reason,
         coverAttendant: coverAttendant?.toEntity(),
         attachments: attachments,
-        status: status ?? 'pending_supervisor',
+        status: status,
         canAction: canAction ?? false,
         shifts: shifts.map((s) => s.toEntity()).toList(),
         approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
-        createdAt: createdAt ?? '',
+        createdAt: createdAt,
       );
 }
 
 extension LeaveAttendantShiftModelToEntity on LeaveAttendantShiftModel {
   LeaveAttendantShiftEntity toEntity() => LeaveAttendantShiftEntity(
         id: id,
-        shiftName: shiftName ?? '',
-        startTime: startTime ?? '',
-        endTime: endTime ?? '',
-        status: status ?? 'scheduled',
+        shiftName: shiftName,
+        startTime: startTime,
+        endTime: endTime,
+        status: status,
       );
 }
 
 extension LeaveAttendantModelToEntity on LeaveAttendantModel {
   LeaveAttendantEntity toEntity() => LeaveAttendantEntity(
         id: id,
-        uid: uid ?? '',
-        name: name ?? '',
-        facilityId: facilityId ?? 0,
-        facilityName: facilityName ?? '',
+        uid: uid,
+        name: name,
+        facilityId: facilityId,
+        facilityName: facilityName,
         shift: shift?.toEntity(),
       );
 }
@@ -118,16 +118,7 @@ extension LeaveBalanceListResponseModelToEntity on LeaveBalanceListResponseModel
 }
 
 extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
-  LeaveRequestEntity toEntity() {
-    final model = data;
-    if (model == null) {
-      throw const CustomException.parsing(
-        message: 'Leave request response missing data.',
-        field: 'data',
-      );
-    }
-    return model.toEntity();
-  }
+  LeaveRequestEntity toEntity() => data!.toEntity();
 }
 
 extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel {
