@@ -13,6 +13,10 @@ class LeaveShifts extends _$LeaveShifts {
     required int partnerId,
     required String date,
   }) async {
+
+
+    // shift usecase returns string instead of failure. need confirmation which one to follow
+
     final Result<List<ShiftEntity>, String> result = await ref
         .read(getShiftsUseCaseProvider)
         .call(partnerId: partnerId, date: date);

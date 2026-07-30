@@ -365,6 +365,7 @@
   "rejected": "প্রত্যাখ্যাত",
   "all": "সব",
   "noAttendantsFound": "কোনো কর্মী পাওয়া যায়নি",
+  "somethingWentWrong": "কিছু ভুল হয়েছে। আবার চেষ্টা করুন।",
   "morningShift": "সকালের শিফট",
   "eveningShift": "বিয়ালের শিফট",
   "nightShift": "রাতের শিফট",
@@ -400,5 +401,22 @@
   "leaveRequestSubmitted": "ছুটি আবেদন জমা দেয়া হয়েছে",
   "leaveSubmittedMessage": "আপনার ছুটির আবেদন অনুমোদনের জন্য আপনার সুপারভাইজারের কাছে পাঠানো হয়েছে। এটি পর্যালোচনা করা হলে আপনাকে জানানো হবে।",
   "backToShift": "শিফটে ফিরে যান",
-  "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন"
+  "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন",
+  "daysCount": "{count, plural, =1{{count} দিন} other{{count} দিন}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sickLeave": "চিকিৎসা সংক্রান্ত ছুটি",
+  "casualLeave": "নৈমিত্তিক ছুটি",
+  "maternityLeave": "মাতৃত্বকালীন ছুটি",
+  "annualLeave": "বার্ষিক ছুটি",
+  "unpaidLeave": "বিনা বেতনে ছুটি",
+  "other": "অন্যান্য",
+  "leaveType": "ছুটির ধরন",
+  "reasonOptional": "কারণ (ঐচ্ছিক)"
 }

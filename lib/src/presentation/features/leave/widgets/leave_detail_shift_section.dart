@@ -67,12 +67,13 @@ class _LeaveDetailShiftSection extends StatelessWidget {
   }) {
     final color = context.color;
     final textStyle = context.textStyle;
+    final spacing = context.dimensions.spacing;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 100,
+          width: spacing.s100,
           child: Text(
             label,
             style: textStyle.bodyMedium.copyWith(color: color.text.secondary),

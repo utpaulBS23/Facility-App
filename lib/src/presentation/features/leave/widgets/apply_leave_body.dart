@@ -1,167 +1,95 @@
-part of '../view/apply_leave_page.dart';
+import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
-class _ApplyLeaveBody extends StatelessWidget {
-  const _ApplyLeaveBody({
-    required this.pageState,
-    required this.showAttendantTab,
+import '../../../../domain/entities/app_permission.dart';
+import '../../../core/theme/theme.dart';
+import '../riverpod/apply_leave_form_provider.dart';
+import 'apply_leave_attendant_selector.dart';
+import 'apply_leave_date_selector.dart';
+import 'apply_leave_reason_input.dart';
+import 'apply_leave_shift_selector.dart';
+import 'apply_leave_summary_card.dart';
+import 'apply_leave_type_input.dart';
+import 'apply_leave_type_switch.dart';
+
+class ApplyLeaveBody extends ConsumerWidget {
+  const ApplyLeaveBody({
+    super.key,
+    required this.onPickStartDate,
+    required this.onPickEndDate,
+    required this.onSelectShiftTap,
+    required this.onSelectAttendantTap,
   });
 
-  final _ApplyLeavePageState pageState;
-  final bool showAttendantTab;
+  final VoidCallback onPickStartDate;
+  final VoidCallback onPickEndDate;
+  final VoidCallback onSelectShiftTap;
+  final VoidCallback onSelectAttendantTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    final isBehalf = pageState._appType == LeaveApplicationType.onBehalf;
+    final form = ref.watch(applyLeaveFormProvider);
+    final formNotifier = ref.read(applyLeaveFormProvider.notifier);
+    final isBehalf = form.appType == LeaveApplicationType.onBehalf;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(spacing.s16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (showAttendantTab) ...[
-            _ApplicationTypeSwitch(
-              selectedType: pageState._appType,
-              onTypeChanged: (type) {
-                if (pageState._appType == type) return;
-                pageState.updateState(() {
-                  pageState._appType = type;
-                  pageState._selectedLeavePolicyId = null;
-                  pageState._selectedShift = null;
-                  pageState._startDate = DateTime.now();
-                  pageState._endDate = DateTime.now();
-                  pageState._selectedAttendant = null;
-                });
-              },
+          PermissionGate(
+            anyOf: const [AppPermission.leaveFileOnBehalf],
+            child: Column(
+              children: [
+                ApplicationTypeSwitch(
+                  selectedType: form.appType,
+                  onTypeChanged: formNotifier.setApplicationType,
+                ),
+                Gap(spacing.s12),
+                if (isBehalf) ...[
+                  SelectAttendantCard(
+                    selectedAttendant: form.selectedAttendant,
+                    onTap: onSelectAttendantTap,
+                  ),
+                  Gap(spacing.s8),
+                ],
+              ],
             ),
-            Gap(spacing.s12),
-          ],
-          if (showAttendantTab && isBehalf) ...[
-            _SelectAttendantCard(
-              selectedAttendant: pageState._selectedAttendant,
-              onTap: pageState._onSelectAttendantTap,
+          ),
+          PermissionGate(
+            anyOf: const [AppPermission.leaveBalanceView],
+            child: LeaveSummaryCard(
+              attendantId: isBehalf ? form.selectedAttendant?.id : null,
+              isAttendantPending: isBehalf && form.selectedAttendant == null,
+              selectedLeavePolicyId: form.leavePolicyId,
             ),
-            Gap(spacing.s8),
-          ],
-          _LeaveSummaryCard(
-            attendantId: isBehalf ? pageState._selectedAttendant?.id : null,
-            isAttendantPending: isBehalf && pageState._selectedAttendant == null,
-            selectedLeavePolicyId: pageState._selectedLeavePolicyId,
           ),
           Gap(spacing.s8),
-          _LeaveDateRangeCard(
-            startDate: pageState._startDate,
-            endDate: pageState._endDate,
-            onStartDateTap: pageState._onPickStartDate,
-            onEndDateTap: pageState._onPickEndDate,
+          LeaveDateRangeCard(
+            startDate: form.startDate,
+            endDate: form.endDate,
+            onStartDateTap: onPickStartDate,
+            onEndDateTap: onPickEndDate,
           ),
           Gap(spacing.s8),
-          _SelectShiftCard(
-            selectedShift: pageState._selectedShift,
-            onTap: pageState._onSelectShiftTap,
+          SelectShiftCard(
+            selectedShift: form.selectedShift,
+            onTap: onSelectShiftTap,
           ),
           Gap(spacing.s8),
-          _LeaveTypeInput(
-            selectedLeavePolicyId: pageState._selectedLeavePolicyId,
-            onChanged: (id) =>
-                pageState.updateState(() => pageState._selectedLeavePolicyId = id),
+          LeaveTypeInput(
+            selectedLeavePolicyId: form.leavePolicyId,
+            onChanged: formNotifier.setLeavePolicyId,
           ),
           Gap(spacing.s8),
-          _ReasonInput(controller: pageState._reasonController),
-        ],
-      ),
-    );
-  }
-}
-
-class _LeaveTypeInput extends ConsumerWidget {
-  const _LeaveTypeInput({
-    required this.selectedLeavePolicyId,
-    required this.onChanged,
-  });
-
-  final int? selectedLeavePolicyId;
-  final ValueChanged<int?> onChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final policiesState = ref.watch(leavePoliciesProvider);
-
-    final entries = policiesState.maybeWhen(
-      data: (policies) => policies
-          .map((p) => DropdownMenuEntry<int>(value: p.id, label: p.name))
-          .toList(),
-      orElse: () => <DropdownMenuEntry<int>>[],
-    );
-
-    return DropdownMenuFormField<int>(
-      key: ValueKey(selectedLeavePolicyId),
-      width: double.infinity,
-      hintText: context.locale.leaveType,
-      dropdownMenuEntries: entries,
-      onSelected: onChanged,
-      initialSelection: selectedLeavePolicyId,
-      menuStyle: MenuStyle(
-        padding: WidgetStatePropertyAll(
-          EdgeInsets.all(context.dimensions.spacing.s16),
-        ),
-      ),
-    );
-  }
-}
-
-class _ReasonInput extends StatelessWidget {
-  const _ReasonInput({required this.controller});
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppTextField.description(
-      controller: controller,
-      hint: '${context.locale.reason} (${context.locale.optional})',
-      textInputAction: TextInputAction.done,
-    );
-  }
-}
-
-class _SubmitBar extends StatelessWidget {
-  const _SubmitBar({required this.onTap, this.isEnabled = true});
-
-  final VoidCallback onTap;
-  final bool isEnabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        spacing.s16,
-        spacing.s12,
-        spacing.s16,
-        spacing.s20,
-      ),
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        boxShadow: [
-          BoxShadow(
-            color: context.color.shadow,
-            offset: Offset(0, spacing.s2),
-            blurRadius: spacing.s16,
+          LeaveReasonInput(
+            initialValue: form.reason,
+            onChanged: formNotifier.setReason,
           ),
         ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: spacing.s44,
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: isEnabled ? onTap : null,
-            child: Text(context.locale.submitLeaveRequest),
-          ),
-        ),
       ),
     );
   }

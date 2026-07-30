@@ -37,7 +37,7 @@ class _LeaveDetailInfoSection extends StatelessWidget {
           _buildDetailRow(
             context,
             label: context.locale.leaveType,
-            value: request.leaveType.toUpperCase(),
+            value: request.leaveType.localizedName(context),
           ),
           Gap(spacing.s10),
           _buildDetailRow(
@@ -63,12 +63,13 @@ class _LeaveDetailInfoSection extends StatelessWidget {
   }) {
     final color = context.color;
     final textStyle = context.textStyle;
+    final spacing = context.dimensions.spacing;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 100,
+          width: spacing.s100,
           child: Text(
             label,
             style: textStyle.bodyMedium.copyWith(color: color.text.secondary),

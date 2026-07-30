@@ -18,6 +18,7 @@ class _DrawerMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
     final color = context.color;
     final textStyle = context.textStyle;
 
@@ -34,14 +35,12 @@ class _DrawerMenuItem extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s12),
               decoration: BoxDecoration(
                 color: color.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
-                ),
+                borderRadius: BorderRadius.circular(radius.r12),
               ),
               child: Icon(
                 icon,
                 color: color.primary,
-                size: 24,
+                size: spacing.s24,
               ),
             ),
             Gap(spacing.s16),
@@ -66,11 +65,12 @@ class _DrawerMenuItem extends StatelessWidget {
                 ],
               ),
             ),
-            if (showTrailing)
+            if (showTrailing) ... [
               Icon(
                 Icons.chevron_right,
                 color: color.text.secondary,
               ),
+            ]
           ],
         ),
       ),

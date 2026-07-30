@@ -1,3 +1,6 @@
+import 'package:facility_management_app/src/domain/entities/login_entity.dart';
+import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -6,13 +9,14 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../riverpod/leave_action_notifier.dart';
-import '../utils/leave_action_helper.dart';
+import '../extensions/leave_type_extension.dart';
+import '../riverpod/leave_request_action_provider.dart';
+import '../widgets/leave_details_action_bar.dart';
 
 part '../widgets/leave_detail_header_card.dart';
 part '../widgets/leave_detail_info_section.dart';
@@ -30,20 +34,24 @@ class LeaveDetailsPage extends ConsumerStatefulWidget {
 
 class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
   ProviderSubscription<AsyncValue>? _actionSub;
-  bool _isApproving = false;
-  bool _isRejecting = false;
+  bool _lastActionWasApprove = true;
 
   @override
   void initState() {
     super.initState();
     _actionSub = ref.listenManual(leaveRequestActionProvider, (_, next) {
       next.whenOrNull(
+        data: (value) {
+          if (value == null || !mounted) return;
+          final msg = _lastActionWasApprove
+              ? context.locale.approved
+              : context.locale.rejection;
+          AppSnackBar.showSuccess(context, msg);
+          context.pop();
+        },
         error: (e, _) {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString())),
-          );
+          AppSnackBar.showError(context, context.locale.somethingWentWrong);
         },
       );
     });
@@ -55,53 +63,17 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
     super.dispose();
   }
 
-  void _onApprove() async {
-    if (_isApproving || _isRejecting) return;
-    setState(() => _isApproving = true);
-
-    await executeLeaveAction(
-      context,
-      ref,
-      requestId: widget.request.id,
-      isApprove: true,
-      onSuccess: () {
-        if (mounted) context.pop();
-      },
-    );
-
-    if (mounted) setState(() => _isApproving = false);
-  }
-
-  void _onReject() async {
-    if (_isApproving || _isRejecting) return;
-    setState(() => _isRejecting = true);
-
-    await executeLeaveAction(
-      context,
-      ref,
-      requestId: widget.request.id,
-      isApprove: false,
-      onSuccess: () {
-        if (mounted) context.pop();
-      },
-    );
-
-    if (mounted) setState(() => _isRejecting = false);
-  }
-
   @override
   Widget build(BuildContext context) {
     final request = widget.request;
     final spacing = context.dimensions.spacing;
     final color = context.color;
 
-    final isActionable = request.canUserAction(ref.watch(userSessionProvider));
-
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
         leading: const BackLeading(),
-        leadingWidth: 100,
+        leadingWidth: context.dimensions.spacing.s100,
         title: Headline2xlTinyText(context.locale.leaveDetails),
         centerTitle: true,
         backgroundColor: color.onPrimary,
@@ -127,83 +99,17 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
               ),
             ),
           ),
-          if (isActionable)
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                spacing.s16,
-                spacing.s12,
-                spacing.s16,
-                spacing.s20,
-              ),
-              decoration: BoxDecoration(
-                color: color.onPrimary,
-                boxShadow: [
-                  BoxShadow(
-                    color: color.shadow.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
-                border: Border(top: BorderSide(color: color.borderSubtle)),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: FilledButton(
-                      onPressed:
-                          (_isApproving || _isRejecting) ? null : _onApprove,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: color.primary,
-                        foregroundColor: color.onPrimary,
-                        minimumSize: Size(double.infinity, spacing.s44),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            context.dimensions.radius.r10,
-                          ),
-                        ),
-                      ),
-                      child: _isApproving
-                          ? SizedBox(
-                              width: spacing.s20,
-                              height: spacing.s20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: color.onPrimary,
-                              ),
-                            )
-                          : Text(context.locale.approved),
-                    ),
-                  ),
-                  Gap(spacing.s12),
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed:
-                          (_isApproving || _isRejecting) ? null : _onReject,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: color.primary,
-                        side: BorderSide(color: color.primary),
-                        minimumSize: Size(double.infinity, spacing.s44),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            context.dimensions.radius.r10,
-                          ),
-                        ),
-                      ),
-                      child: _isRejecting
-                          ? SizedBox(
-                              width: spacing.s20,
-                              height: spacing.s20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: color.primary,
-                              ),
-                            )
-                          : Text(context.locale.rejection),
-                    ),
-                  ),
-                ],
-              ),
+          // Show action bar based on permission
+          PermissionGate(
+            anyOf: const [
+              AppPermission.leaveApproveSupervisor,
+              AppPermission.leaveApproveManager,
+            ],
+            child: LeaveDetailsActionBar(
+              request: request,
+              onActionStarted: (isApprove) => _lastActionWasApprove = isApprove,
             ),
+          ),
         ],
       ),
     );

@@ -1,13 +1,14 @@
+import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../application_state/logout_provider/logout_provider.dart';
 import '../../application_state/session_provider/session_provider.dart';
-import '../../../../core/di/dependency_injection.dart';
 import '../../router/routes.dart';
 import '../../theme/theme.dart';
 
@@ -39,7 +40,7 @@ class AppNavigationDrawer extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
+            onPressed: () => context.pop(),
             child: Text(
               context.locale.cancel,
               style: context.textStyle.labelLarge.copyWith(
@@ -55,8 +56,8 @@ class AppNavigationDrawer extends ConsumerWidget {
               ),
             ),
             onPressed: () {
-              Navigator.of(dialogContext).pop();
-              Navigator.of(context).pop(); // Close drawer
+              context.pop(); // Close dialog
+              context.pop(); // Close drawer
               ref.read(logoutProvider.notifier).call();
             },
             child: Text(
@@ -74,12 +75,15 @@ class AppNavigationDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
     final color = context.color;
 
     final user = ref.watch(getCurrentUserUseCaseProvider).call();
-    final name = user?.name ?? 'Rafiqul Islam';
-    final email = user?.email ?? 'rafiqul.islam@bhumijo.bd';
-    final role = user?.userType ?? 'SUPERVISOR';
+    final session = ref.watch(userSessionProvider);
+
+    final name = user?.name ?? session?.partner?.brandName ?? '';
+    final email = user?.email ?? '';
+    final partnerName = session?.partner?.brandName;
 
     return Drawer(
       backgroundColor: color.onPrimary,
@@ -92,25 +96,24 @@ class AppNavigationDrawer extends ConsumerWidget {
           _DrawerHeaderSection(
             name: name,
             email: email,
-            role: role,
+            partnerName: partnerName,
           ),
           Gap(spacing.s16),
-          if (ref.watch(
-            userSessionProvider.select(
-              (session) =>
-                  (session?.can(AppPermission.leaveApproveSupervisor) ?? false) ||
-                  (session?.can(AppPermission.leaveApproveManager) ?? false),
-            ),
-          ))
-            _DrawerMenuItem(
+          PermissionGate(
+            anyOf: const [
+              AppPermission.leaveApproveSupervisor,
+              AppPermission.leaveApproveManager,
+            ],
+            child: _DrawerMenuItem(
               icon: Icons.shield_outlined,
               title: context.locale.leaveApproval,
               subtitle: context.locale.awaitingFinalApproval,
               onTap: () {
-                Navigator.of(context).pop(); // Close drawer
+                context.pop(); // Close drawer
                 context.pushNamed(Routes.leaveRequests);
               },
             ),
+          ),
           const Spacer(),
           Padding(
             padding: EdgeInsets.fromLTRB(
@@ -124,9 +127,7 @@ class AppNavigationDrawer extends ConsumerWidget {
                 border: Border.all(
                   color: color.borderSubtle,
                 ),
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r16,
-                ),
+                borderRadius: BorderRadius.circular(radius.r16),
               ),
               child: _DrawerMenuItem(
                 icon: Icons.logout_rounded,

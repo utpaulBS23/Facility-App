@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/presentation/core/widgets/app_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -37,7 +38,7 @@ class SelectShiftPage extends ConsumerWidget {
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
         leading: const BackLeading(),
-        leadingWidth: 100,
+        leadingWidth: context.dimensions.spacing.s100,
         title: Headline2xlTinyText(context.locale.selectShift),
         centerTitle: true,
         backgroundColor: color.onPrimary,
@@ -45,12 +46,10 @@ class SelectShiftPage extends ConsumerWidget {
       ),
       body: shiftsAsync.when(
         loading: () => const _ShiftListShimmer(),
-        error: (err, _) => Center(
-          child: Text(
-            err.toString().replaceAll('Exception: ', ''),
-            style: context.textStyle.bodyMedium.copyWith(
-              color: color.text.secondary,
-            ),
+        error: (err, _) => AppErrorWidget(
+          message: err.toString(),
+          onRetry: () => ref.invalidate(
+            leaveShiftsProvider(partnerId: partnerId, date: date),
           ),
         ),
         data: (shifts) => _SelectShiftBody(shifts: shifts),

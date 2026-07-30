@@ -90,8 +90,8 @@ class _LeaveStatusTimeline extends StatelessWidget {
         Column(
           children: [
             Container(
-              width: 12,
-              height: 12,
+              width: spacing.s12,
+              height: spacing.s12,
               decoration: BoxDecoration(
                 color: iconColor,
                 shape: BoxShape.circle,
@@ -99,8 +99,8 @@ class _LeaveStatusTimeline extends StatelessWidget {
             ),
             if (!isLast)
               Container(
-                width: 2,
-                height: 36,
+                width: spacing.s2,
+                height: spacing.s36,
                 color: color.borderSubtle,
               ),
           ],
@@ -135,6 +135,8 @@ class _LeaveStatusTimeline extends StatelessWidget {
   }
 }
 
+
+// need clarification for approver role before removing it
 String _formatRole(BuildContext context, String role) {
   final upper = role.trim().toUpperCase();
   if (upper == 'OPS_MANAGER' || upper == 'OPS_MGR' ||

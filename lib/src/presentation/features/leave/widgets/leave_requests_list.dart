@@ -8,20 +8,16 @@ class _LeaveRequestsList extends StatelessWidget {
   });
 
   final List<LeaveRequestEntity> requests;
-  final String selectedFilter;
+  final LeaveFilter selectedFilter;
   final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
     final filtered = requests.where((r) {
       final name = r.applicant?.name.toLowerCase() ?? '';
-      final matchesSearch = name.contains(searchQuery);
+      final matchesSearch = searchQuery.isEmpty || name.contains(searchQuery);
       if (!matchesSearch) return false;
-      if (selectedFilter == 'Pending') return r.status == LeaveStatus.pendingSupervisor;
-      if (selectedFilter == 'Manager Approval') return r.status == LeaveStatus.pendingManager;
-      if (selectedFilter == 'Approved') return r.status == LeaveStatus.approved;
-      if (selectedFilter == 'Rejected') return r.status == LeaveStatus.rejected;
-      return true;
+      return selectedFilter.matches(r.status);
     }).toList();
 
     if (filtered.isEmpty) {

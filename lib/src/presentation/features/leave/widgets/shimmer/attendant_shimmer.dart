@@ -21,26 +21,26 @@ class _AttendantCardShimmer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ShimmerBox(
-            width: 40,
-            height: 40,
-            borderRadius: BorderRadius.circular(20),
+            width: spacing.s40,
+            height: spacing.s40,
+            borderRadius: BorderRadius.circular(radius.r20),
           ),
           Gap(spacing.s12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ShimmerBox(width: 120, height: 16),
+                ShimmerBox(width: spacing.s120, height: spacing.s16),
                 Gap(spacing.s6),
-                const ShimmerBox(width: 80, height: 14),
+                ShimmerBox(width: spacing.s80, height: spacing.s14),
                 Gap(spacing.s6),
-                const ShimmerBox(width: 140, height: 14),
+                ShimmerBox(width: spacing.s180, height: spacing.s14),
               ],
             ),
           ),
           ShimmerBox(
-            width: 90,
-            height: 24,
+            width: spacing.s96,
+            height: spacing.s24,
             borderRadius: BorderRadius.circular(radius.r20),
           ),
         ],

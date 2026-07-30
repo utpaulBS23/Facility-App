@@ -6,22 +6,38 @@ class _LeaveRequestsBody extends StatelessWidget {
     required this.searchController,
     required this.selectedFilter,
     required this.onFilterSelected,
-    required this.summary,
-    required this.list,
+    required this.approvalsState,
+    required this.searchQuery,
+    required this.onRetry,
   });
 
   final EdgeInsetsGeometry padding;
   final TextEditingController searchController;
-  final String selectedFilter;
-  final ValueChanged<String> onFilterSelected;
-  final Widget summary;
-  final Widget list;
+  final LeaveFilter selectedFilter;
+  final ValueChanged<LeaveFilter> onFilterSelected;
+  final AsyncValue<List<LeaveRequestEntity>> approvalsState;
+  final String searchQuery;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(padding: padding, child: summary),
+        Padding(
+          padding: padding,
+          child: approvalsState.when(
+            data: (requests) => _LeaveSupervisorSummaryCard(
+              pendingCount: requests
+                  .where((r) => r.status == LeaveStatus.pendingSupervisor)
+                  .length,
+              managerCount: requests
+                  .where((r) => r.status == LeaveStatus.pendingManager)
+                  .length,
+            ),
+            loading: () => const LeaveSupervisorSummaryCardShimmer(),
+            error: (err, stack) => const SizedBox.shrink(),
+          ),
+        ),
         Padding(
           padding: padding,
           child: AppTextField.search(
@@ -31,13 +47,30 @@ class _LeaveRequestsBody extends StatelessWidget {
         ),
         Padding(
           padding: padding,
-          child: _LeaveFilterBar(
-            filters: _kLeaveFilters,
-            selectedFilter: selectedFilter,
-            onFilterSelected: onFilterSelected,
+          child: CategoryFilterChips<LeaveFilter>(
+            categories: LeaveFilter.values,
+            selectedCategory: selectedFilter,
+            labelBuilder: (filter) => filter.localizedName(context),
+            onSelected: onFilterSelected,
           ),
         ),
-        Expanded(child: list),
+        Expanded(
+          child: approvalsState.when(
+            loading: () => _LeaveRequestListShimmer(
+              showActionButtons: selectedFilter != LeaveFilter.approved &&
+                  selectedFilter != LeaveFilter.rejected,
+            ),
+            error: (err, _) => AppErrorWidget(
+              message: err.toString(),
+              onRetry: onRetry,
+            ),
+            data: (requests) => _LeaveRequestsList(
+              requests: requests,
+              selectedFilter: selectedFilter,
+              searchQuery: searchQuery,
+            ),
+          ),
+        ),
       ],
     );
   }

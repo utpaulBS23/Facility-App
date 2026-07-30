@@ -30,6 +30,7 @@ class _SelectableShiftCard extends StatelessWidget {
   final ShiftEntity shift;
   final VoidCallback onTap;
 
+  // need shift enum
   bool get _isInProgress => shift.status == 'in_progress';
 
   Color _dotColor(BuildContext context) =>

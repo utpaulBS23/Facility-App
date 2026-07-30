@@ -365,6 +365,7 @@
   "rejected": "Rejected",
   "all": "All",
   "noAttendantsFound": "No attendants found",
+  "somethingWentWrong": "Something went wrong. Please try again.",
   "morningShift": "MORNING SHIFT",
   "eveningShift": "EVENING SHIFT",
   "nightShift": "NIGHT SHIFT",
@@ -403,5 +404,22 @@
   "endSessionAndSignOut": "End session and sign out",
   "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
   "noShiftsAvailableForDate": "No shifts available for the selected date",
-  "pendingManager": "Pending Manager"
+  "pendingManager": "Pending Manager",
+  "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sickLeave": "Sick Leave",
+  "casualLeave": "Casual Leave",
+  "maternityLeave": "Maternity Leave",
+  "annualLeave": "Annual Leave",
+  "unpaidLeave": "Unpaid Leave",
+  "other": "Other",
+  "leaveType": "Leave Type",
+  "reasonOptional": "Reason (optional)"
 }

@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/presentation/core/widgets/app_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -55,7 +56,7 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
         leading: const BackLeading(),
-        leadingWidth: 100,
+        leadingWidth: context.dimensions.spacing.s100,
         title: Headline2xlTinyText(context.locale.selectAttendant),
         centerTitle: true,
         backgroundColor: color.onPrimary,
@@ -76,13 +77,9 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
           Expanded(
             child: attendantsState.when(
               loading: () => const _AttendantListShimmer(),
-              error: (err, _) => Center(
-                child: Text(
-                  err.toString().replaceAll('Exception: ', ''),
-                  style: context.textStyle.bodyMedium.copyWith(
-                    color: color.text.secondary,
-                  ),
-                ),
+              error: (err, _) => AppErrorWidget(
+                message: err.toString(),
+                onRetry: () => ref.invalidate(leaveAttendantsProvider),
               ),
               data: (attendants) {
                 final filtered = attendants.where((a) {

@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-class CategoryFilterChips extends StatelessWidget {
+class CategoryFilterChips<T> extends StatelessWidget {
   const CategoryFilterChips({
     super.key,
     required this.categories,
     required this.selectedCategory,
     required this.onSelected,
+    this.labelBuilder,
   });
 
-  final List<String> categories;
-  final String selectedCategory;
-  final ValueChanged<String> onSelected;
+  final List<T> categories;
+  final T selectedCategory;
+  final ValueChanged<T> onSelected;
+  final String Function(T category)? labelBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +33,10 @@ class CategoryFilterChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: categories.map((category) {
-            final isSelected =
-                category.toLowerCase() == selectedCategory.toLowerCase();
+            final isSelected = category == selectedCategory;
+            final label = labelBuilder != null
+                ? labelBuilder!(category)
+                : category.toString();
 
             return GestureDetector(
               onTap: () => onSelected(category),
@@ -57,7 +61,7 @@ class CategoryFilterChips extends StatelessWidget {
                       : null,
                 ),
                 child: Text(
-                  category,
+                  label,
                   style: context.textStyle.labelLarge.copyWith(
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     color: isSelected ? color.primary : color.text.secondary,
