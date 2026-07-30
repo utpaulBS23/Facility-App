@@ -228,6 +228,8 @@
     }
   },
   "slotLead": "স্লট লিড",
+  "attendantName": "নাম",
+  "staffCode": "স্টাফ কোড",
   "slotStatusCompleted": "সম্পন্ন",
   "slotStatusPartialMiss": "আংশিক অনুপস্থিত",
   "slotFull": "স্লট পূর্ণ",

@@ -49,6 +49,7 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
 class SlotAttendantModel with SlotAttendantModelMappable {
   SlotAttendantModel({
     required this.userId,
+    this.shiftAssignmentId,
     this.name,
     this.staffCode,
     this.isSlotLead,
@@ -63,6 +64,8 @@ class SlotAttendantModel with SlotAttendantModelMappable {
 
   @MappableField(key: 'user_id')
   final int userId;
+  @MappableField(key: 'shift_assignment_id')
+  final int? shiftAssignmentId;
   final String? name;
   @MappableField(key: 'staff_code')
   final String? staffCode;

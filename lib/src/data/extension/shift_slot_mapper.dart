@@ -34,6 +34,7 @@ extension SlotAttendanceModelToEntity on SlotAttendanceModel {
 extension SlotAttendantModelToEntity on SlotAttendantModel {
   SlotAttendantEntity toEntity() => SlotAttendantEntity(
     userId: userId,
+    assignmentId: shiftAssignmentId,
     name: name ?? '',
     staffCode: staffCode ?? '',
     isSlotLead: isSlotLead ?? false,

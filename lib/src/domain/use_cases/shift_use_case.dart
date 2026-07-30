@@ -141,8 +141,7 @@ final class UnassignShiftSlotUseCase {
   Future<Result<void, Failure>> call({
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -151,8 +150,7 @@ final class UnassignShiftSlotUseCase {
       partnerId: partnerId,
       facilityId: facilityId,
       rosterId: rosterId,
-      shiftSlotId: shiftSlotId,
-      attendantId: attendantId,
+      assignmentId: assignmentId,
     );
 
     return switch (result) {
@@ -172,8 +170,7 @@ final class MakeSlotLeadUseCase {
   Future<Result<void, Failure>> call({
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -182,8 +179,7 @@ final class MakeSlotLeadUseCase {
       partnerId: partnerId,
       facilityId: facilityId,
       rosterId: rosterId,
-      shiftSlotId: shiftSlotId,
-      attendantId: attendantId,
+      assignmentId: assignmentId,
     );
 
     return switch (result) {

@@ -34,7 +34,8 @@ class SlotDetailsPage extends ConsumerWidget {
   ) async {
     final rosterId = currentSlot.weeklyRosterId;
     final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
-    if (rosterId == null || facilityId == null) {
+    final assignmentId = attendant.assignmentId;
+    if (rosterId == null || facilityId == null || assignmentId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.assignmentUnavailable)),
       );
@@ -52,8 +53,7 @@ class SlotDetailsPage extends ConsumerWidget {
         .unassign(
           facilityId: facilityId,
           rosterId: rosterId,
-          shiftSlotId: currentSlot.shiftSlotId,
-          attendantId: attendant.userId,
+          assignmentId: assignmentId,
         );
   }
 
@@ -65,7 +65,8 @@ class SlotDetailsPage extends ConsumerWidget {
   ) async {
     final rosterId = currentSlot.weeklyRosterId;
     final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
-    if (rosterId == null || facilityId == null) {
+    final assignmentId = attendant.assignmentId;
+    if (rosterId == null || facilityId == null || assignmentId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.assignmentUnavailable)),
       );
@@ -77,8 +78,7 @@ class SlotDetailsPage extends ConsumerWidget {
         .makeLead(
           facilityId: facilityId,
           rosterId: rosterId,
-          shiftSlotId: currentSlot.shiftSlotId,
-          attendantId: attendant.userId,
+          assignmentId: assignmentId,
         );
   }
 

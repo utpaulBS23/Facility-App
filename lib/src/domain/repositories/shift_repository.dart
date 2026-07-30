@@ -35,16 +35,14 @@ abstract base class ShiftRepository extends Repository {
     required int partnerId,
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   });
 
   Future<Result<void, Failure>> makeSlotLead({
     required int partnerId,
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   });
 
   Future<Result<RosterEntity, Failure>> createRoster({

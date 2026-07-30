@@ -26,14 +26,19 @@ class Endpoints {
   static const String assignShiftSlot =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments';
 
-  /// One attendant's assignment within a slot. Scoped by both the slot and
-  /// the attendant, since [assignShiftSlot] carries both in its body rather
-  /// than a single assignment id the app can address directly.
-  ///
-  /// `DELETE` removes them from the slot; `PATCH` updates the assignment
-  /// (currently just promoting to slot lead).
-  static const String shiftSlotAttendant =
-      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/shift-slots/{shiftSlotId}/attendants/{attendantId}';
+  /// One assignment row (`shift_assignments.id`) — `assignShiftSlot`'s
+  /// singular resource. Hard-deletes the row: `unassigned_at`/
+  /// `unassigned_reason` are never set by this call, only by a slot-lead
+  /// change. Allowed on draft and published rosters alike.
+  static const String unassignShiftSlot =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments/{assignmentId}';
+
+  /// Promotes [unassignShiftSlot]'s assignment to slot lead. Exactly one lead
+  /// per slot — the backend demotes any other lead on the same shift slot as
+  /// part of this call. Idempotent: promoting the current lead again is a
+  /// no-op. 409s if the assignment is already unassigned.
+  static const String makeSlotLead =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments/{assignmentId}/lead';
 
   /// Manual Attendance
   static const String manualAttendance = '/partners/{partnerId}/attendances';

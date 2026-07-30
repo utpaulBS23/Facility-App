@@ -16,8 +16,7 @@ class UnassignShiftSlot extends _$UnassignShiftSlot {
   Future<void> unassign({
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) async {
     if (state.isLoading) return;
 
@@ -33,8 +32,7 @@ class UnassignShiftSlot extends _$UnassignShiftSlot {
         .call(
           facilityId: facilityId,
           rosterId: rosterId,
-          shiftSlotId: shiftSlotId,
-          attendantId: attendantId,
+          assignmentId: assignmentId,
         );
 
     state = switch (result) {
