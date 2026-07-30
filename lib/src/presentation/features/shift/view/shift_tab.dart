@@ -19,7 +19,9 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/slot_status_chip.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../../core/widgets/unassign_staff_confirm_dialog.dart';
 import '../riverpod/shift_slots_provider.dart';
+import '../riverpod/unassign_shift_slot_provider.dart';
 
 part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_card_helpers.dart';

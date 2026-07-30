@@ -275,6 +275,18 @@
     }
   },
   "assignmentUnavailable": "এই মুহূর্তে নিয়োগ করা যাচ্ছে না। পরে আবার চেষ্টা করুন।",
+  "unassignStaff": "স্টাফ অপসারণ করুন",
+  "unassignStaffMessage": "{name} কে এই শিফট থেকে অপসারণ করবেন?",
+  "@unassignStaffMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Frank Rodriguez"
+      }
+    }
+  },
+  "remove": "অপসারণ",
+  "staffUnassignedSuccessfully": "শিফট থেকে স্টাফ অপসারণ করা হয়েছে।",
   "status": "স্ট্যাটাস",
   "approvedBy": "অনুমোদনকারী",
   "approve": "অনুমোদন করুন",

@@ -275,6 +275,18 @@
     }
   },
   "assignmentUnavailable": "Assignment isn't available right now. Please try again later.",
+  "unassignStaff": "Remove Staff",
+  "unassignStaffMessage": "Remove {name} from this shift?",
+  "@unassignStaffMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Frank Rodriguez"
+      }
+    }
+  },
+  "remove": "Remove",
+  "staffUnassignedSuccessfully": "Staff removed from shift.",
   "status": "Status",
   "approvedBy": "Approved By",
   "approve": "Approve",
