@@ -1,5 +1,7 @@
 import 'leave_policy_entity.dart';
 import 'leave_status.dart';
+import 'leave_type.dart';
+import 'shift_status.dart';
 
 class LeaveApplicantEntity {
   const LeaveApplicantEntity({
@@ -48,7 +50,7 @@ class LeaveShiftDetailEntity {
   final String endTime;
   final int facilityId;
   final String facilityName;
-  final String status;
+  final ShiftStatus status;
 }
 
 class LeaveRequestEntity {
@@ -79,7 +81,7 @@ class LeaveRequestEntity {
   final String startDate;
   final String endDate;
   final int daysCount;
-  final String leaveType;
+  final LeaveType leaveType;
   final String? reason;
   final LeaveApplicantEntity? coverAttendant;
   final List<String> attachments;

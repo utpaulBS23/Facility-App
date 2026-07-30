@@ -11,20 +11,13 @@ final class GetLeavePoliciesUseCase {
   GetLeavePoliciesUseCase(this.repository);
   final LeaveRepository repository;
 
-  Future<Result<List<LeavePolicyEntity>, Failure>> call(
-    int partnerId,
-  ) async {
+  Future<Result<List<LeavePolicyEntity>, Failure>> call(int partnerId) async {
     final result = await repository.getLeavePolicies(partnerId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -38,7 +31,7 @@ final class GetLeaveBalancesUseCase {
     int? leavePolicyId,
     int? attendantId,
     int? page,
-    int? perPage,
+    int? pageSize,
   }) async {
     final result = await repository.getLeaveBalances(
       partnerId,
@@ -46,18 +39,13 @@ final class GetLeaveBalancesUseCase {
       leavePolicyId: leavePolicyId,
       attendantId: attendantId,
       page: page,
-      perPage: perPage,
+      pageSize: pageSize,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -70,16 +58,11 @@ final class RequestLeaveUseCase {
     RequestLeaveParams params,
   ) async {
     final result = await repository.requestLeave(partnerId, params);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -99,16 +82,11 @@ final class GetMyLeavesUseCase {
       page: page,
       pageSize: pageSize,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -124,16 +102,11 @@ final class GetLeaveRequestDetailsUseCase {
       partnerId,
       leaveRequestId,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -146,16 +119,11 @@ final class CancelLeaveUseCase {
     int leaveRequestId,
   ) async {
     final result = await repository.cancelLeave(partnerId, leaveRequestId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -167,16 +135,11 @@ final class GetLeaveAttendantsUseCase {
     int partnerId,
   ) async {
     final result = await repository.getLeaveAttendants(partnerId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -196,16 +159,11 @@ final class GetLeaveApprovalsUseCase {
       page: page,
       pageSize: pageSize,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -218,16 +176,11 @@ final class ApproveLeaveUseCase {
     int leaveRequestId,
   ) async {
     final result = await repository.approveLeave(partnerId, leaveRequestId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
@@ -245,15 +198,10 @@ final class RejectLeaveUseCase {
       leaveRequestId,
       reason: reason,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }

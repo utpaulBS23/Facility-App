@@ -3,7 +3,8 @@ enum LeaveStatus {
   pendingManager,
   approved,
   rejected,
-  cancelled;
+  cancelled,
+  unknown;
 
   static LeaveStatus fromWireString(String? raw) {
     return switch (raw?.toLowerCase()) {
@@ -12,7 +13,7 @@ enum LeaveStatus {
       'approved' => LeaveStatus.approved,
       'rejected' => LeaveStatus.rejected,
       'cancelled' || 'canceled' => LeaveStatus.cancelled,
-      _ => LeaveStatus.pendingSupervisor,
+      _ => LeaveStatus.unknown,
     };
   }
 
@@ -23,6 +24,7 @@ enum LeaveStatus {
       LeaveStatus.approved => 'approved',
       LeaveStatus.rejected => 'rejected',
       LeaveStatus.cancelled => 'cancelled',
+      LeaveStatus.unknown => 'unknown',
     };
   }
 }
