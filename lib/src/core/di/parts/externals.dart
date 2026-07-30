@@ -30,3 +30,8 @@ Dio dio(Ref ref) {
 
   return dio;
 }
+
+@Riverpod(keepAlive: true)
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin(Ref ref) {
+  return FlutterLocalNotificationsPlugin();
+}

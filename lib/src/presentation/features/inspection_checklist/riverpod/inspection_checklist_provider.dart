@@ -248,11 +248,7 @@ class InspectionChecklist extends _$InspectionChecklist {
 
     final result = await ref
         .read(saveChecklistItemResponseUseCaseProvider)
-        .call(
-          visitId: visitId,
-          itemId: itemId,
-          booleanValue: value,
-        );
+        .call(visitId: visitId, itemId: itemId, booleanValue: value);
 
     final doneSaving = Set<int>.from(state.savingItemIds)..remove(itemId);
 
@@ -428,7 +424,11 @@ class InspectionChecklist extends _$InspectionChecklist {
         );
 
     state = result.when(
-      success: (_) => state.copyWith(isSubmitting: false, submitSuccess: true),
+      success: (_) {
+        ref.read(stopLocationPingTrackingUseCaseProvider).call();
+
+        return state.copyWith(isSubmitting: false, submitSuccess: true);
+      },
       error: (err) => state.copyWith(isSubmitting: false, submitError: err),
     );
   }
