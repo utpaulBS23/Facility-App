@@ -116,6 +116,13 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   UserSessionEntity? get currentSession => _session;
 
   @override
+  Result<int, Failure> requireActivePartnerId() {
+    final partnerId = _session?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    return Success(data: partnerId);
+  }
+
+  @override
   Stream<UserSessionEntity?> watchSession() => _sessionController.stream;
 
   @override

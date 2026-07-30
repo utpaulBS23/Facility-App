@@ -36,6 +36,7 @@ class Dimensions extends ThemeExtension<Dimensions> {
   static const double _v180 = 180;
   static const double _v200 = 200;
   static const double _v210 = 210;
+  static const double _v420 = 420;
 
   @override
   ThemeExtension<Dimensions> lerp(
@@ -87,6 +88,7 @@ class _Spacing {
   final double s180 = Dimensions._v180;
   final double s200 = Dimensions._v200;
   final double s210 = Dimensions._v210;
+  final double s420 = Dimensions._v420;
 }
 
 class _Padding {
