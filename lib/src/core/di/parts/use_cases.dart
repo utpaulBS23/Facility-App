@@ -153,6 +153,14 @@ UnassignShiftSlotUseCase unassignShiftSlotUseCase(Ref ref) {
 }
 
 @riverpod
+MakeSlotLeadUseCase makeSlotLeadUseCase(Ref ref) {
+  return MakeSlotLeadUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 SubmitManualAttendanceUseCase submitManualAttendanceUseCase(Ref ref) {
   return SubmitManualAttendanceUseCase(
     ref.read(manualAttendanceRepositoryProvider),

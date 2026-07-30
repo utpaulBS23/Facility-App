@@ -3,13 +3,20 @@ import 'package:gap/gap.dart';
 
 import '../../../core/extensions/app_localization.dart';
 import '../theme/theme.dart';
+import 'status_pill.dart';
 
 /// Row for one attendant already assigned to a shift slot.
 ///
-/// WHY [onRemove] is nullable rather than a second widget: most callers only
-/// display the roster (the list card, other roles on the details page) — only
-/// whoever holds `shift.unassign_attendant` gets the action, and passing null
-/// keeps that a caller decision instead of a second constructor.
+/// WHY [onRemove]/[onMakeLead] are nullable rather than separate widgets: most
+/// callers only display the roster (the list card, other roles on the details
+/// page) — only whoever holds the relevant permission gets an action, and
+/// passing null keeps that a caller decision instead of extra constructors.
+///
+/// WHY actions are labelled, not bare icons: a star or a cross alone reads
+/// clearly only to someone who already knows what it does, and tooltips don't
+/// help on touch — they need a long-press, easy to never discover. A visible
+/// word removes the guess without adding visual weight, since each action is
+/// a small tonal chip that only appears when there's something to do.
 class AssignedStaffTile extends StatelessWidget {
   /// Creates an [AssignedStaffTile].
   const AssignedStaffTile({
@@ -18,6 +25,7 @@ class AssignedStaffTile extends StatelessWidget {
     required this.phone,
     this.isSlotLead = false,
     this.onRemove,
+    this.onMakeLead,
   });
 
   /// The attendant's display name.
@@ -29,79 +37,161 @@ class AssignedStaffTile extends StatelessWidget {
   /// Highlights the row as the slot's lead.
   final bool isSlotLead;
 
-  /// Shows a trailing remove button when set.
+  /// Shows a "Remove" action when set.
   final VoidCallback? onRemove;
+
+  /// Shows a "Make Slot Lead" action when set. Never shown on the lead's own
+  /// row regardless — there is nothing to promote them to.
+  final VoidCallback? onMakeLead;
+
+  bool get _showMakeLead => !isSlotLead && onMakeLead != null;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final hasActions = _showMakeLead || onRemove != null;
 
     return Container(
       padding: isSlotLead ? EdgeInsets.all(spacing.s8) : EdgeInsets.zero,
       decoration: isSlotLead
           ? BoxDecoration(
-              color: context.color.brandAccent,
+              color: context.color.warningAlt,
               borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
             )
           : null,
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: context.color.brandAccent,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.person_outline_rounded,
-              size: 24,
-              color: context.color.text.primary,
-            ),
-          ),
-          Gap(spacing.s16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: context.color.brandAccent,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  size: 24,
+                  color: context.color.text.primary,
+                ),
+              ),
+              Gap(spacing.s16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: Text(
-                        name,
-                        style: context.textStyle.labelLarge.copyWith(
-                          color: context.color.text.primary,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            name,
+                            style: context.textStyle.labelLarge.copyWith(
+                              color: context.color.text.primary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
+                        if (isSlotLead) ...[
+                          Gap(spacing.s6),
+                          StatusPill(
+                            label: context.locale.slotLead,
+                            background: context.color.onPrimary,
+                            foreground: context.color.warning,
+                          ),
+                        ],
+                      ],
+                    ),
+                    Gap(spacing.s2),
+                    Text(
+                      phone,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.text.secondary,
                       ),
                     ),
-                    if (isSlotLead) ...[
-                      Gap(spacing.s4),
-                      Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: context.color.warning,
-                      ),
-                    ],
                   ],
                 ),
-                Gap(spacing.s2),
-                Text(
-                  isSlotLead ? '$phone · ${context.locale.slotLead}' : phone,
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: context.color.text.secondary,
+              ),
+            ],
+          ),
+          if (hasActions) ...[
+            Gap(spacing.s8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (_showMakeLead)
+                  _StaffTileActionChip(
+                    icon: Icons.star_outline_rounded,
+                    label: context.locale.makeSlotLead,
+                    color: context.color.warning,
+                    background: context.color.warningAlt,
+                    onTap: onMakeLead!,
                   ),
-                ),
+                if (_showMakeLead && onRemove != null) Gap(spacing.s8),
+                if (onRemove != null)
+                  _StaffTileActionChip(
+                    icon: Icons.close_rounded,
+                    label: context.locale.remove,
+                    color: context.color.error,
+                    background: context.color.errorAlt,
+                    onTap: onRemove!,
+                  ),
               ],
             ),
-          ),
-          if (onRemove != null)
-            IconButton(
-              onPressed: onRemove,
-              icon: Icon(Icons.close_rounded, color: context.color.primary),
-              visualDensity: VisualDensity.compact,
-            ),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+/// Small tonal action chip for [AssignedStaffTile] — icon and word together,
+/// coloured like the rest of the app's status pills so an action reads as
+/// belonging to the same visual language rather than a stray control.
+class _StaffTileActionChip extends StatelessWidget {
+  const _StaffTileActionChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.background,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final Color background;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = BorderRadius.circular(context.dimensions.radius.r6);
+
+    return Material(
+      color: background,
+      borderRadius: radius,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: radius,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: spacing.s8,
+            vertical: spacing.s6,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: color),
+              Gap(spacing.s4),
+              Text(
+                label,
+                style: context.textStyle.labelSmall.copyWith(color: color),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

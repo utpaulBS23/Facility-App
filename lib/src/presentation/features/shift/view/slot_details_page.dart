@@ -57,6 +57,31 @@ class SlotDetailsPage extends ConsumerWidget {
         );
   }
 
+  Future<void> _onMakeLead(
+    BuildContext context,
+    WidgetRef ref,
+    ShiftSlotEntity currentSlot,
+    SlotAttendantEntity attendant,
+  ) async {
+    final rosterId = currentSlot.weeklyRosterId;
+    final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
+    if (rosterId == null || facilityId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.assignmentUnavailable)),
+      );
+      return;
+    }
+
+    await ref
+        .read(makeSlotLeadProvider.notifier)
+        .makeLead(
+          facilityId: facilityId,
+          rosterId: rosterId,
+          shiftSlotId: currentSlot.shiftSlotId,
+          attendantId: attendant.userId,
+        );
+  }
+
   // WHY: unassigning changes assigned_count/attendants on this day's slots,
   // so the list backing shift_slots_page must be refetched — its cached
   // state would otherwise still show the removed attendant.
@@ -74,6 +99,19 @@ class SlotDetailsPage extends ConsumerWidget {
       if (next is AsyncData && next.hasValue) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffUnassignedSuccessfully)),
+        );
+        _refreshShiftSlots(ref);
+      } else if (next is AsyncError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error.localizedMessage(context))),
+        );
+      }
+    });
+
+    ref.listen(makeSlotLeadProvider, (_, next) {
+      if (next is AsyncData && next.hasValue) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.locale.slotLeadUpdatedSuccessfully)),
         );
         _refreshShiftSlots(ref);
       } else if (next is AsyncError) {
@@ -165,6 +203,8 @@ class SlotDetailsPage extends ConsumerWidget {
                             currentSlot,
                             attendant,
                           ),
+                          onMakeLead: (attendant) =>
+                              _onMakeLead(context, ref, currentSlot, attendant),
                         ),
                       ],
                     ),

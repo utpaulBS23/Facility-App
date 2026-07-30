@@ -63,13 +63,23 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
-  @DELETE(Endpoints.unassignShiftSlot)
+  @DELETE(Endpoints.shiftSlotAttendant)
   Future<HttpResponse> unassignShiftSlot({
     @Path('partnerId') required int partnerId,
     @Path('facilityId') required int facilityId,
     @Path('rosterId') required int rosterId,
     @Path('shiftSlotId') required int shiftSlotId,
     @Path('attendantId') required int attendantId,
+  });
+
+  @PATCH(Endpoints.shiftSlotAttendant)
+  Future<HttpResponse> makeSlotLead({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Path('rosterId') required int rosterId,
+    @Path('shiftSlotId') required int shiftSlotId,
+    @Path('attendantId') required int attendantId,
+    @Body() required Map<String, dynamic> request,
   });
 
   @POST(Endpoints.createRoster)

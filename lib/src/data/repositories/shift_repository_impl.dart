@@ -114,6 +114,26 @@ final class ShiftRepositoryImpl extends ShiftRepository {
   }
 
   @override
+  Future<Result<void, Failure>> makeSlotLead({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int shiftSlotId,
+    required int attendantId,
+  }) {
+    return asyncGuard(() async {
+      await remote.makeSlotLead(
+        partnerId: partnerId,
+        facilityId: facilityId,
+        rosterId: rosterId,
+        shiftSlotId: shiftSlotId,
+        attendantId: attendantId,
+        request: {'is_slot_lead': true},
+      );
+    });
+  }
+
+  @override
   Future<Result<RosterEntity, Failure>> createRoster({
     required int partnerId,
     required int facilityId,

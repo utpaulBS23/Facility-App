@@ -287,6 +287,8 @@
   },
   "remove": "অপসারণ",
   "staffUnassignedSuccessfully": "শিফট থেকে স্টাফ অপসারণ করা হয়েছে।",
+  "makeSlotLead": "স্লট লিড করুন",
+  "slotLeadUpdatedSuccessfully": "স্লট লিড আপডেট করা হয়েছে।",
   "status": "স্ট্যাটাস",
   "approvedBy": "অনুমোদনকারী",
   "approve": "অনুমোদন করুন",
