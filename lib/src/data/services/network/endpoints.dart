@@ -26,10 +26,13 @@ class Endpoints {
   static const String assignShiftSlot =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments';
 
-  /// Removes one attendant from a slot they are assigned to. Scoped by both
-  /// the slot and the attendant, since [assignShiftSlot] carries both in its
-  /// body rather than a single assignment id the app can address directly.
-  static const String unassignShiftSlot =
+  /// One attendant's assignment within a slot. Scoped by both the slot and
+  /// the attendant, since [assignShiftSlot] carries both in its body rather
+  /// than a single assignment id the app can address directly.
+  ///
+  /// `DELETE` removes them from the slot; `PATCH` updates the assignment
+  /// (currently just promoting to slot lead).
+  static const String shiftSlotAttendant =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/shift-slots/{shiftSlotId}/attendants/{attendantId}';
 
   /// Manual Attendance

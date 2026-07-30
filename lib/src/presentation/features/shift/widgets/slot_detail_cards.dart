@@ -298,11 +298,13 @@ class _SlotDetailStaffingCard extends StatelessWidget {
     required this.slot,
     required this.onAssignStaff,
     required this.onUnassignStaff,
+    required this.onMakeLead,
   });
 
   final ShiftSlotEntity slot;
   final VoidCallback onAssignStaff;
   final ValueChanged<SlotAttendantEntity> onUnassignStaff;
+  final ValueChanged<SlotAttendantEntity> onMakeLead;
 
   @override
   Widget build(BuildContext context) {
@@ -342,6 +344,7 @@ class _SlotDetailStaffingCard extends StatelessWidget {
             slot: slot,
             onAssignStaff: onAssignStaff,
             onUnassignStaff: onUnassignStaff,
+            onMakeLead: onMakeLead,
           ),
         ],
       ),

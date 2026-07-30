@@ -163,6 +163,37 @@ final class UnassignShiftSlotUseCase {
   }
 }
 
+final class MakeSlotLeadUseCase {
+  MakeSlotLeadUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<void, Failure>> call({
+    required int facilityId,
+    required int rosterId,
+    required int shiftSlotId,
+    required int attendantId,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
+    final result = await _shiftRepository.makeSlotLead(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+      shiftSlotId: shiftSlotId,
+      attendantId: attendantId,
+    );
+
+    return switch (result) {
+      Success() => const Success(),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('make slot lead')),
+    };
+  }
+}
+
 final class CreateRosterUseCase {
   CreateRosterUseCase(this._shiftRepository, this._authRepository);
 

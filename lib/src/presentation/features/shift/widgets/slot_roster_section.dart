@@ -2,21 +2,24 @@ part of '../view/shift_tab.dart';
 
 /// Staffing roster + assign-staff action for one [ShiftSlotEntity].
 ///
-/// WHY no permission check here for the roster itself: this only ever renders
-/// inside [_SlotDetailStaffingCard], which the details page gates on
-/// `shift.assign_attendant` as a whole — heading, counts and roster together.
-/// Gating again inside would be a second answer to a question already asked.
-/// The remove action is a narrower permission, so it is gated per-tile.
+/// WHY no permission check here for the roster or make-lead action: this
+/// only ever renders inside [_SlotDetailStaffingCard], which the details page
+/// gates on `shift.assign_attendant` as a whole — heading, counts, roster and
+/// make-lead together. Gating again inside would be a second answer to a
+/// question already asked. The remove action is a narrower permission, so it
+/// is gated per-tile.
 class _SlotRosterSection extends StatelessWidget {
   const _SlotRosterSection({
     required this.slot,
     required this.onAssignStaff,
     required this.onUnassignStaff,
+    required this.onMakeLead,
   });
 
   final ShiftSlotEntity slot;
   final VoidCallback onAssignStaff;
   final ValueChanged<SlotAttendantEntity> onUnassignStaff;
+  final ValueChanged<SlotAttendantEntity> onMakeLead;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,7 @@ class _SlotRosterSection extends StatelessWidget {
                       onRemove: canUnassign
                           ? () => onUnassignStaff(attendant)
                           : null,
+                      onMakeLead: () => onMakeLead(attendant),
                     ),
                   ],
                 ],

@@ -287,6 +287,8 @@
   },
   "remove": "Remove",
   "staffUnassignedSuccessfully": "Staff removed from shift.",
+  "makeSlotLead": "Make Slot Lead",
+  "slotLeadUpdatedSuccessfully": "Slot lead updated.",
   "status": "Status",
   "approvedBy": "Approved By",
   "approve": "Approve",
