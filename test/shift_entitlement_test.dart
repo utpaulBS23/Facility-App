@@ -1,8 +1,7 @@
+import 'package:facility_management_app/src/domain/entities/login_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:facility_management_app/src/domain/entities/login_entity.dart';
-
-UserSessionEntity _session(Set<AppPermission> permissions) =>
+UserSessionEntity _session(Set<UserPermission> permissions) =>
     UserSessionEntity(permissions: permissions, accessibleFacilities: const []);
 
 /// Pins the single point where a session's shift entitlement is derived.
@@ -15,14 +14,14 @@ UserSessionEntity _session(Set<AppPermission> permissions) =>
 void main() {
   group('shiftEntitlement', () {
     test('assign_attendant selects the supervisor endpoint', () {
-      final session = _session({AppPermission.shiftAssignAttendant});
+      final session = _session({UserPermission.shiftAssignAttendant});
 
       expect(session.shiftEntitlement, ShiftEntitlement.supervisor);
       expect(session.hasShiftAccess, isTrue);
     });
 
     test('check_in selects the attendant endpoint', () {
-      final session = _session({AppPermission.attendanceCheckIn});
+      final session = _session({UserPermission.attendanceCheckIn});
 
       expect(session.shiftEntitlement, ShiftEntitlement.attendant);
       expect(session.hasShiftAccess, isTrue);
@@ -30,8 +29,8 @@ void main() {
 
     test('managing wins when a session holds both (e.g. a slot lead)', () {
       final session = _session({
-        AppPermission.shiftAssignAttendant,
-        AppPermission.attendanceCheckIn,
+        UserPermission.shiftAssignAttendant,
+        UserPermission.attendanceCheckIn,
       });
 
       expect(session.shiftEntitlement, ShiftEntitlement.supervisor);
@@ -49,7 +48,7 @@ void main() {
     });
 
     test('an unrelated permission grants no shift access', () {
-      final session = _session({AppPermission.taskView});
+      final session = _session({UserPermission.taskView});
 
       expect(session.shiftEntitlement, ShiftEntitlement.none);
       expect(session.hasShiftAccess, isFalse);
@@ -58,20 +57,20 @@ void main() {
 
   group('permission predicates', () {
     final session = _session({
-      AppPermission.taskView,
-      AppPermission.attendanceApprove,
+      UserPermission.taskView,
+      UserPermission.attendanceApprove,
     });
 
     test('can() is exact, not prefix or substring', () {
-      expect(session.can(AppPermission.taskView), isTrue);
-      expect(session.can(AppPermission.taskComplete), isFalse);
+      expect(session.can(UserPermission.taskView), isTrue);
+      expect(session.can(UserPermission.taskComplete), isFalse);
     });
 
     test('canAny() is true when one candidate matches', () {
       expect(
         session.canAny(const [
-          AppPermission.attendanceApprove,
-          AppPermission.attendanceReject,
+          UserPermission.attendanceApprove,
+          UserPermission.attendanceReject,
         ]),
         isTrue,
       );
@@ -80,7 +79,7 @@ void main() {
     test(
       'canAny() is false when none match, and on an empty candidate list',
       () {
-        expect(session.canAny(const [AppPermission.rosterCreate]), isFalse);
+        expect(session.canAny(const [UserPermission.rosterCreate]), isFalse);
         expect(session.canAny(const []), isFalse);
       },
     );

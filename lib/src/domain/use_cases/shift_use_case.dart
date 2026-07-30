@@ -58,6 +58,27 @@ final class GetShiftSlotsUseCase {
   }
 }
 
+final class GetShiftGlobalConfigUseCase {
+  GetShiftGlobalConfigUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<ShiftGlobalConfigEntity, Failure>> call() async {
+    if (!_authRepository.hasPermission(UserPermission.shiftConfigView)) {
+      return const Error(Failure.permissionDenied);
+    }
+
+    final result = await _shiftRepository.getShiftGlobalConfig();
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get shift global config')),
+    };
+  }
+}
+
 final class GetShiftsUseCase {
   GetShiftsUseCase(this._shiftRepository, this._authRepository);
 
@@ -112,8 +133,20 @@ final class AssignShiftSlotUseCase {
     required int attendantId,
     required bool isSlotLead,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.assignShiftSlot(
       partnerId: partnerId,
@@ -132,6 +165,88 @@ final class AssignShiftSlotUseCase {
   }
 }
 
+final class UnassignShiftSlotUseCase {
+  UnassignShiftSlotUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<void, Failure>> call({
+    required int facilityId,
+    required int rosterId,
+    required int assignmentId,
+  }) async {
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
+
+    final result = await _shiftRepository.unassignShiftSlot(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+      assignmentId: assignmentId,
+    );
+
+    return switch (result) {
+      Success() => const Success(),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('unassign staff')),
+    };
+  }
+}
+
+final class MakeSlotLeadUseCase {
+  MakeSlotLeadUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<void, Failure>> call({
+    required int facilityId,
+    required int rosterId,
+    required int assignmentId,
+  }) async {
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
+
+    final result = await _shiftRepository.makeSlotLead(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      rosterId: rosterId,
+      assignmentId: assignmentId,
+    );
+
+    return switch (result) {
+      Success() => const Success(),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('make slot lead')),
+    };
+  }
+}
+
 final class CreateRosterUseCase {
   CreateRosterUseCase(this._shiftRepository, this._authRepository);
 
@@ -144,8 +259,20 @@ final class CreateRosterUseCase {
     required String weekEndDate,
     required List<int> offDays,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.createRoster(
       partnerId: partnerId,
@@ -173,8 +300,20 @@ final class GetRostersUseCase {
     required int facilityId,
     int? page,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.getRosters(
       partnerId: partnerId,
@@ -200,8 +339,20 @@ final class PublishRosterUseCase {
     required int facilityId,
     required int rosterId,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.publishRoster(
       partnerId: partnerId,
@@ -227,8 +378,20 @@ final class GetRosterShiftsUseCase {
     required int facilityId,
     required int rosterId,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.getRosterShifts(
       partnerId: partnerId,
@@ -251,8 +414,20 @@ final class GetShiftTemplatesUseCase {
   final AuthenticationRepository _authRepository;
 
   Future<Result<List<ShiftTemplateEntity>, Failure>> call() async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.getShiftTemplates(
       partnerId: partnerId,
@@ -281,8 +456,20 @@ final class CreateShiftUseCase {
     required int minAttendants,
     required int maxAttendants,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    final int partnerId;
+    switch (_authRepository.requireActivePartnerId()) {
+      // WHY: [requireActivePartnerId] always populates `data` on success;
+      // the `!` only satisfies the shared Result<T, E> type, which keeps
+      // `data` nullable for constructors with no payload. Result is not a
+      // sealed type, so the switch still needs the fallback arm the rest of
+      // this file uses for exhaustiveness.
+      case Success(:final data):
+        partnerId = data!;
+      case Error(:final error):
+        return Error(error);
+      default:
+        return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _shiftRepository.createShift(
       partnerId: partnerId,

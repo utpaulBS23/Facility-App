@@ -2,18 +2,23 @@ part of '../view/shift_tab.dart';
 
 /// Card for one shift slot, shown to every role.
 ///
-/// WHY no shift-template name, facility address or per-slot supervisor: the
-/// slots payload carries none of those — this renders only what a slot
-/// actually has — time, status, staffing, the caller's own attendance, and
-/// (permission-gated) the roster + assign-staff action.
+/// Summarises the slot — status, time, facility, supervisor, who is assigned
+/// — and offers the permission-gated assign-staff action.
+///
+/// WHY assigned names only: the full roster (staff code, per-person check-in
+/// state, unassigned rows) belongs to [SlotDetailsPage].
 class _SlotCard extends StatelessWidget {
   const _SlotCard({
     required this.slot,
+    required this.facility,
     required this.onTap,
     required this.onAssignStaff,
   });
 
   final ShiftSlotEntity slot;
+
+  /// The facility the whole slots payload is scoped to — the card's title.
+  final SlotFacilityEntity? facility;
   final VoidCallback onTap;
   final VoidCallback onAssignStaff;
 
@@ -22,7 +27,8 @@ class _SlotCard extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final timeRange =
         '${DateFormatter.shiftTime(slot.startTime)} – ${DateFormatter.shiftTime(slot.endTime)}';
-    final me = slot.me;
+    final facilityName = facility?.name ?? '';
+    final address = facility?.address ?? '';
 
     return GestureDetector(
       onTap: onTap,
@@ -39,115 +45,64 @@ class _SlotCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  timeRange,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
+                if (slot.slotStatus.isNotEmpty) ...[
+                  _SlotMarkerTag(
+                    color: slotStatusColor(context, slot.slotStatus),
+                    label: slotStatusLabel(context, slot.slotStatus),
                   ),
-                ),
+                  Gap(spacing.s8),
+                ],
+                // WHY: the design's staffing signal replaces the old "1/5"
+                // capacity line — it only speaks up when the slot is short.
+                if (slot.hasFreeCapacity)
+                  _SlotMarkerTag(
+                    color: context.color.warning,
+                    label: context.locale.employeeShortest,
+                  ),
                 const Spacer(),
-                if (slot.slotStatus.isNotEmpty)
-                  SlotStatusChip(status: slot.slotStatus),
+                // WHY paired with the hidden assign button below: a full slot
+                // states its state once, instead of offering a dead control.
+                // WHY success, not a warning: a full slot is fully staffed —
+                // the desired end state, not a problem to flag.
+                if (!slot.hasFreeCapacity) ...[
+                  StatusPill(
+                    label: context.locale.slotFull,
+                    background: context.color.successAlt,
+                    foreground: context.color.success,
+                  ),
+                ],
               ],
             ),
-            Gap(spacing.s6),
+            Gap(spacing.s8),
             Text(
-              context.locale.slotCapacity(
-                slot.assignedCount,
-                slot.maxAttendants,
-              ),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.text.secondary,
+              timeRange,
+              style: context.textStyle.titleSmall.copyWith(
+                color: context.color.text.primary,
               ),
             ),
-            if (me != null && me.isSlotLead) ...[
-              Gap(spacing.s6),
-              _InfoRow(
-                icon: Icons.star_outline_rounded,
-                label: context.locale.slotLead,
-              ),
-            ],
-            if (me?.attendance?.checkInTime != null) ...[
-              Gap(spacing.s6),
-              _InfoRow(
-                icon: Icons.login_rounded,
-                label: DateFormatter.shiftTime(
-                  DateFormat('HH:mm').format(me!.attendance!.checkInTime!),
+            if (facilityName.isNotEmpty) ...[
+              Gap(spacing.s8),
+              Text(
+                facilityName,
+                style: context.textStyle.titleSmall.copyWith(
+                  color: context.color.text.primary,
                 ),
               ),
             ],
-            Gap(spacing.s12),
-            _SlotRosterSection(slot: slot, onAssignStaff: onAssignStaff),
+            if (slot.supervisorName.isNotEmpty) ...[
+              Gap(spacing.s8),
+              _InfoRow(
+                icon: Icons.person_outline_rounded,
+                label: slot.supervisorName,
+              ),
+            ],
+            if (address.isNotEmpty) ...[
+              Gap(spacing.s6),
+              _InfoRow(icon: Icons.location_on_outlined, label: address),
+            ],
+            _SlotAssignedSection(slot: slot, onAssignStaff: onAssignStaff),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Backend-authored call to action for the caller's current slot.
-class _ActiveSlotBanner extends StatelessWidget {
-  const _ActiveSlotBanner({required this.activeSlot, required this.onAction});
-
-  final ActiveSlotEntity activeSlot;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final requiredPermission = switch (activeSlot.action) {
-      SlotAction.checkIn => AppPermission.attendanceCheckIn,
-      SlotAction.checkOut => AppPermission.attendanceCheckOut,
-      _ => null,
-    };
-
-    final banner = _buildBanner(context);
-    if (requiredPermission == null) return banner;
-    return PermissionGate(permission: requiredPermission, child: banner);
-  }
-
-  Widget _buildBanner(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final dimensions = context.dimensions;
-
-    return Container(
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: context.color.brandAccent,
-        borderRadius: BorderRadius.circular(dimensions.radius.r12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // WHY: the server owns this copy — it explains why the action is or
-          // is not available right now, so it is shown verbatim.
-          Text(
-            activeSlot.message,
-            style: context.textStyle.bodyMedium.copyWith(
-              color: context.color.text.primary,
-            ),
-          ),
-          if (activeSlot.action == SlotAction.checkIn ||
-              activeSlot.action == SlotAction.checkOut) ...[
-            Gap(spacing.s12),
-            SizedBox(
-              width: double.infinity,
-              height: spacing.s44,
-              child: FilledButton.icon(
-                onPressed: onAction,
-                icon: Icon(
-                  activeSlot.action == SlotAction.checkIn
-                      ? Icons.login_rounded
-                      : Icons.logout_rounded,
-                ),
-                label: Text(
-                  activeSlot.action == SlotAction.checkIn
-                      ? context.locale.checkIn
-                      : context.locale.checkOut,
-                ),
-              ),
-            ),
-          ],
-        ],
       ),
     );
   }

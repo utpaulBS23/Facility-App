@@ -7,13 +7,14 @@
 /// Grouped by backend resource. Keep this catalog in sync with the backend's
 /// permission list: an unlisted key is silently dropped at login, so its
 /// feature can never be gated on (see [setFromKeys]).
-enum AppPermission {
+enum UserPermission {
   // Facility
   facilityView('facility.view'),
   facilityUpdate('facility.update'),
   facilityAssignStaff('facility.assign_staff'),
 
   // Shift + template
+  shiftConfigView('shift_config.view'),
   shiftTemplateView('shift_template.view'),
   shiftView('shift.view'),
   shiftCreate('shift.create'),
@@ -116,22 +117,22 @@ enum AppPermission {
   userView('user.view'),
   userViewProfile('user.view_profile');
 
-  const AppPermission(this.key);
+  const UserPermission(this.key);
 
   /// Wire value exactly as the backend sends it.
   final String key;
 
-  static final Map<String, AppPermission> _byKey = {
+  static final Map<String, UserPermission> _byKey = {
     for (final permission in values) permission.key: permission,
   };
 
   /// Returns null for permission keys this app version doesn't know yet.
-  static AppPermission? fromKey(String key) => _byKey[key];
+  static UserPermission? fromKey(String key) => _byKey[key];
 
   /// WHY: unknown keys are dropped (not errors) so a newer backend can ship
   /// permissions ahead of the app without breaking login. The trade-off is
   /// silence — a key missing from this enum can never gate a feature, so the
   /// catalog above must track the backend's list.
-  static Set<AppPermission> setFromKeys(Iterable<String> keys) =>
-      keys.map(fromKey).whereType<AppPermission>().toSet();
+  static Set<UserPermission> setFromKeys(Iterable<String> keys) =>
+      keys.map(fromKey).whereType<UserPermission>().toSet();
 }

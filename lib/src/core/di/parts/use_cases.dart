@@ -129,6 +129,14 @@ GetShiftSlotsUseCase getShiftSlotsUseCase(Ref ref) {
 }
 
 @riverpod
+GetShiftGlobalConfigUseCase getShiftGlobalConfigUseCase(Ref ref) {
+  return GetShiftGlobalConfigUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 CheckOutUseCase checkOutUseCase(Ref ref) {
   return CheckOutUseCase(
     ref.read(checkOutRepositoryProvider),
@@ -139,6 +147,22 @@ CheckOutUseCase checkOutUseCase(Ref ref) {
 @riverpod
 AssignShiftSlotUseCase assignShiftSlotUseCase(Ref ref) {
   return AssignShiftSlotUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+UnassignShiftSlotUseCase unassignShiftSlotUseCase(Ref ref) {
+  return UnassignShiftSlotUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+MakeSlotLeadUseCase makeSlotLeadUseCase(Ref ref) {
+  return MakeSlotLeadUseCase(
     ref.read(shiftRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );

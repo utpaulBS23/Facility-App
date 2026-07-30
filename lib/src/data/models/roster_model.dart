@@ -3,6 +3,32 @@ import 'package:dart_mappable/dart_mappable.dart';
 part 'roster_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class ShiftGlobalConfigDataModel with ShiftGlobalConfigDataModelMappable {
+  ShiftGlobalConfigDataModel({required this.weekStartDay});
+
+  @MappableField(key: 'week_start_day')
+  final int weekStartDay;
+
+  static const fromJson = ShiftGlobalConfigDataModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class ShiftGlobalConfigResponseModel
+    with ShiftGlobalConfigResponseModelMappable {
+  ShiftGlobalConfigResponseModel({
+    required this.success,
+    this.message,
+    this.data,
+  });
+
+  final bool success;
+  final String? message;
+  final ShiftGlobalConfigDataModel? data;
+
+  static const fromJson = ShiftGlobalConfigResponseModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class RosterFacilityModel with RosterFacilityModelMappable {
   RosterFacilityModel({required this.id, this.name, this.nameBn});
 

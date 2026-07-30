@@ -24,12 +24,17 @@ abstract base class AuthenticationRepository extends Repository {
   /// Synchronous snapshot of the logged-in session; null when logged out.
   UserSessionEntity? get currentSession;
 
+  /// Resolves the session's active partner, or [Failure.partnerUnavailable]
+  /// when logged out. Use cases call this instead of re-deriving
+  /// `currentSession?.activePartnerId` and its null guard individually.
+  Result<int, Failure> requireActivePartnerId();
+
   /// Emits after every login/logout so listeners rebuild from [currentSession].
   Stream<UserSessionEntity?> watchSession();
 
-  Set<AppPermission> getPermissions();
+  Set<UserPermission> getPermissions();
 
-  bool hasPermission(AppPermission permission);
+  bool hasPermission(UserPermission permission);
 
   List<AccessibleFacilityEntity> getAccessibleFacilities();
 

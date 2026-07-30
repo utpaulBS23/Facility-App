@@ -33,7 +33,7 @@ class ApproveAttendance extends _$ApproveAttendance {
   Future<void> approve({required int attendanceId}) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.attendanceApprove)) {
+    if (!ref.hasPermission(UserPermission.attendanceApprove)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
@@ -58,7 +58,7 @@ class RejectAttendance extends _$RejectAttendance {
   Future<void> reject({required int attendanceId}) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.attendanceReject)) {
+    if (!ref.hasPermission(UserPermission.attendanceReject)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }

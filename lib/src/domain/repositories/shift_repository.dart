@@ -4,6 +4,8 @@ import '../entities/shift_slot_entity.dart';
 import '../entities/shift_template_entity.dart';
 
 abstract base class ShiftRepository extends Repository {
+  Future<Result<ShiftGlobalConfigEntity, Failure>> getShiftGlobalConfig();
+
   /// Facility-and-date scoped slots serving both experiences — supersedes
   /// [getMyShifts] and [getSupervisorShifts].
   Future<Result<ShiftSlotsEntity, Failure>> getShiftSlots({
@@ -29,6 +31,20 @@ abstract base class ShiftRepository extends Repository {
     required int shiftSlotId,
     required int attendantId,
     required bool isSlotLead,
+  });
+
+  Future<Result<void, Failure>> unassignShiftSlot({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int assignmentId,
+  });
+
+  Future<Result<void, Failure>> makeSlotLead({
+    required int partnerId,
+    required int facilityId,
+    required int rosterId,
+    required int assignmentId,
   });
 
   Future<Result<RosterEntity, Failure>> createRoster({

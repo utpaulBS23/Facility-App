@@ -4,17 +4,17 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../../core/utils/date_formatter.dart';
 import '../riverpod/attendance_provider.dart';
 
 part '../widgets/attendance_approve_reject_bar.dart';
@@ -96,14 +96,13 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
         ],
       ),
       body: state.when(
-        data: (summary) => _AttendanceBody(
-          summary: summary,
-          onItemTap: _onItemTap,
-          onApplyLeave: _onApplyLeave,
-          showApplyLeave: ref.watch(
-            userSessionProvider.select(
-              (session) => session?.can(AppPermission.leaveRequest) ?? false,
-            ),
+        data: (summary) => PermissionGate(
+          permissions: [UserPermission.leaveRequest],
+          builder: (context, isGranted) => _AttendanceBody(
+            summary: summary,
+            onItemTap: _onItemTap,
+            onApplyLeave: _onApplyLeave,
+            showApplyLeave: isGranted,
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -137,9 +136,10 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
     _current = DateTime(widget.initialDate.year, widget.initialDate.month);
   }
 
-  String _monthLabel(BuildContext context, int month) =>
-      DateFormat('MMM', Localizations.localeOf(context).languageCode)
-          .format(DateTime(2000, month));
+  String _monthLabel(BuildContext context, int month) => DateFormat(
+    'MMM',
+    Localizations.localeOf(context).languageCode,
+  ).format(DateTime(2000, month));
 
   bool _isDisabled(int year, int month) {
     final date = DateTime(year, month);

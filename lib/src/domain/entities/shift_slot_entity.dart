@@ -22,10 +22,18 @@ enum SlotAction {
 }
 
 class SlotFacilityEntity {
-  const SlotFacilityEntity({required this.id, required this.name});
+  const SlotFacilityEntity({
+    required this.id,
+    required this.name,
+    required this.address,
+  });
 
   final int id;
   final String name;
+
+  /// Empty when the slots payload omits it — the address row is then hidden
+  /// rather than rendered blank.
+  final String address;
 }
 
 class SlotAttendanceEntity {
@@ -55,8 +63,10 @@ class SlotAttendanceEntity {
 class SlotAttendantEntity {
   const SlotAttendantEntity({
     required this.userId,
+    this.assignmentId,
     required this.name,
     required this.staffCode,
+    this.phoneNumber,
     required this.isSlotLead,
     required this.isMe,
     required this.action,
@@ -68,8 +78,17 @@ class SlotAttendantEntity {
   });
 
   final int userId;
+
+  /// `shift_assignments.id` — addresses the unassign and make-slot-lead
+  /// endpoints, which take an assignment id, not a user/slot pair.
+  ///
+  /// WHY nullable: defensive against an older payload or a row where the
+  /// backend genuinely omits it. Actions that need it stay hidden in the UI
+  /// when it's absent — there is nothing to fall back to that would work.
+  final int? assignmentId;
   final String name;
   final String staffCode;
+  final String? phoneNumber;
   final bool isSlotLead;
 
   /// True on the caller's own row.
@@ -95,6 +114,7 @@ class ShiftSlotEntity {
     required this.maxAttendants,
     required this.checkedInCount,
     required this.checkedOutCount,
+    required this.supervisorName,
     this.attendants = const [],
     this.weeklyRosterId,
   });
@@ -111,6 +131,9 @@ class ShiftSlotEntity {
   final int maxAttendants;
   final int checkedInCount;
   final int checkedOutCount;
+
+  /// Supervisor who owns this slot. Empty when the payload omits it.
+  final String supervisorName;
   final List<SlotAttendantEntity> attendants;
 
   /// The roster this slot belongs to — required by the assign-attendant
