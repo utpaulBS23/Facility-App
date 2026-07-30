@@ -21,19 +21,21 @@ class CheckIn extends _$CheckIn {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.attendanceCheckIn)) {
+    if (!ref.hasPermission(UserPermission.attendanceCheckIn)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 
     state = const AsyncValue.loading();
 
-    final result = await ref.read(checkInUseCaseProvider).call(
-      shiftSlotId: shiftSlotId,
-      lat: lat,
-      lng: lng,
-      selfieUrl: selfieUrl,
-    );
+    final result = await ref
+        .read(checkInUseCaseProvider)
+        .call(
+          shiftSlotId: shiftSlotId,
+          lat: lat,
+          lng: lng,
+          selfieUrl: selfieUrl,
+        );
 
     state = switch (result) {
       Success() => AsyncValue.data(result),

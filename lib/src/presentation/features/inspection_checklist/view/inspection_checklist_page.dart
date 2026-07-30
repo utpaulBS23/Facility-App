@@ -8,18 +8,17 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/inspection_checklist_provider.dart';
 
-part '../widgets/inspection_facility_card.dart';
-part '../widgets/inspection_progress_header.dart';
-part '../widgets/inspection_item_tile.dart';
-part '../widgets/inspection_repair_work_section.dart';
 part '../widgets/inspection_bottom_bar.dart';
+part '../widgets/inspection_facility_card.dart';
+part '../widgets/inspection_item_tile.dart';
+part '../widgets/inspection_progress_header.dart';
+part '../widgets/inspection_repair_work_section.dart';
 
 class InspectionChecklistPage extends ConsumerStatefulWidget {
   const InspectionChecklistPage({super.key, required this.detail});
@@ -106,17 +105,14 @@ class _InspectionChecklistPageState
                 ],
               ),
             )
-          : _ChecklistBody(
-              detail: widget.detail,
-              checklistState: checklistState,
-              onSubmit: _onSubmit,
-              onNewIssue: _onNewIssue,
-              canSubmit: ref.watch(
-                userSessionProvider.select(
-                  (session) =>
-                      session?.can(AppPermission.checklistResponseSubmit) ??
-                      false,
-                ),
+          : PermissionGate(
+              permissions: [UserPermission.checklistResponseSubmit],
+              builder: (context, isGranted) => _ChecklistBody(
+                detail: widget.detail,
+                checklistState: checklistState,
+                onSubmit: _onSubmit,
+                onNewIssue: _onNewIssue,
+                canSubmit: isGranted,
               ),
             ),
     );

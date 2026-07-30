@@ -20,26 +20,8 @@ class ShiftDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        // WHY: iOS-style back button with label text matches the Figma design.
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        leadingWidth: 100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.shiftDetails),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,
@@ -50,7 +32,7 @@ class ShiftDetailsPage extends StatelessWidget {
           Expanded(child: _ShiftDetailsBody(entity: entity)),
           if (_showCheckOutButton)
             PermissionGate(
-              permission: AppPermission.attendanceCheckOut,
+              permissions: [UserPermission.attendanceCheckOut],
               child: SafeArea(
                 top: false,
                 child: Padding(

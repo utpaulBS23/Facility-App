@@ -4,10 +4,11 @@ part 'shift_slot_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class SlotFacilityModel with SlotFacilityModelMappable {
-  SlotFacilityModel({required this.id, this.name});
+  SlotFacilityModel({required this.id, this.name, this.address});
 
   final int id;
   final String? name;
+  final String? address;
 
   static const fromJson = SlotFacilityModelMapper.fromJson;
 }
@@ -48,8 +49,11 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
 class SlotAttendantModel with SlotAttendantModelMappable {
   SlotAttendantModel({
     required this.userId,
+    this.shiftAssignmentId,
     this.name,
     this.staffCode,
+    this.phoneNumber,
+    this.phone,
     this.isSlotLead,
     this.isMe,
     this.action,
@@ -62,9 +66,14 @@ class SlotAttendantModel with SlotAttendantModelMappable {
 
   @MappableField(key: 'user_id')
   final int userId;
+  @MappableField(key: 'shift_assignment_id')
+  final int? shiftAssignmentId;
   final String? name;
   @MappableField(key: 'staff_code')
   final String? staffCode;
+  @MappableField(key: 'phone_number')
+  final String? phoneNumber;
+  final String? phone;
   @MappableField(key: 'is_slot_lead')
   final bool? isSlotLead;
 
@@ -103,6 +112,7 @@ class ShiftSlotModel with ShiftSlotModelMappable {
     this.maxAttendants,
     this.checkedInCount,
     this.checkedOutCount,
+    this.supervisorName,
     this.attendants = const [],
     this.weeklyRosterId,
   });
@@ -125,6 +135,8 @@ class ShiftSlotModel with ShiftSlotModelMappable {
   final int? checkedInCount;
   @MappableField(key: 'checked_out_count')
   final int? checkedOutCount;
+  @MappableField(key: 'supervisor_name')
+  final String? supervisorName;
   final List<SlotAttendantModel> attendants;
   @MappableField(key: 'roster_id')
   final int? weeklyRosterId;

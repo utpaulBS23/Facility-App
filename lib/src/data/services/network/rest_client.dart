@@ -32,6 +32,9 @@ abstract class RestClient {
     @Query('date') required String date,
   });
 
+  @GET(Endpoints.shiftGlobalConfig)
+  Future<HttpResponse> getShiftGlobalConfig();
+
   @GET(Endpoints.myShifts)
   Future<HttpResponse> getMyShifts({
     @Path('partnerId') required int partnerId,
@@ -61,6 +64,24 @@ abstract class RestClient {
     @Path('facilityId') required int facilityId,
     @Path('rosterId') required int rosterId,
     @Body() required Map<String, dynamic> request,
+  });
+
+  @DELETE(Endpoints.unassignShiftSlot)
+  Future<HttpResponse> unassignShiftSlot({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Path('rosterId') required int rosterId,
+    @Path('assignmentId') required int assignmentId,
+  });
+
+  // WHY no body: the backend takes no request payload on this action — the
+  // promoted attendant is implied entirely by which assignment id is PATCHed.
+  @PATCH(Endpoints.makeSlotLead)
+  Future<HttpResponse> makeSlotLead({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+    @Path('rosterId') required int rosterId,
+    @Path('assignmentId') required int assignmentId,
   });
 
   @POST(Endpoints.createRoster)

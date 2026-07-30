@@ -11,16 +11,29 @@ import '../../../../domain/entities/facility_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/app_dropdown_button_form_field.dart';
+import '../../../core/widgets/form_dialog_shell.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/create_roster_provider.dart';
 import '../riverpod/facility_list_provider.dart';
 import '../riverpod/publish_roster_provider.dart';
 import '../riverpod/roster_list_provider.dart';
+import '../riverpod/shift_global_config_provider.dart';
 
 part '../widgets/create_roster_dialog.dart';
+part '../widgets/create_roster_dialog_active_days_field.dart';
+part '../widgets/create_roster_dialog_facility_field.dart';
+part '../widgets/create_roster_dialog_field_label.dart';
+part '../widgets/create_roster_dialog_info_box.dart';
+part '../widgets/create_roster_dialog_week_start_field.dart';
 part '../widgets/day_chip_selector.dart';
 part '../widgets/roster_card.dart';
+part '../widgets/roster_card_active_days_row.dart';
+part '../widgets/roster_card_labeled_text.dart';
+part '../widgets/roster_card_pill.dart';
+part '../widgets/roster_list_body.dart';
 
 class RosterListPage extends ConsumerStatefulWidget {
   const RosterListPage({super.key});
@@ -35,7 +48,14 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadFacilities());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadInitialData());
+  }
+
+  Future<void> _loadInitialData() async {
+    await Future.wait([
+      _loadFacilities(),
+      ref.read(shiftGlobalConfigProvider.notifier).fetch(),
+    ]);
   }
 
   Future<void> _loadFacilities() async {
@@ -56,20 +76,62 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
 
   Future<void> _onCreateRoster() async {
     final facilityId = _selectedFacilityId;
+    final weekStartDay = await _resolveWeekStartDay();
+    if (!mounted || weekStartDay == null) return;
+
     final created = await showDialog<bool>(
       context: context,
-      builder: (_) => CreateRosterDialog(initialFacilityId: facilityId),
+      builder: (_) => CreateRosterDialog(
+        initialFacilityId: facilityId,
+        weekStartDay: weekStartDay,
+      ),
     );
     if (created != true || !mounted) return;
-    final refreshId = ref.read(createRosterProvider).valueOrNull?.facilityId;
-    _onFacilitySelected(refreshId ?? facilityId ?? 0);
+
+    final createdFacilityId = ref
+        .read(createRosterProvider)
+        .valueOrNull
+        ?.facilityId;
+    final refreshFacilityId = createdFacilityId ?? facilityId;
+    if (refreshFacilityId != null) {
+      _onFacilitySelected(refreshFacilityId);
+    }
+  }
+
+  Future<int?> _resolveWeekStartDay() async {
+    final configState = ref.read(shiftGlobalConfigProvider);
+    final weekStartDay = configState.valueOrNull?.weekStartDay;
+    if (weekStartDay != null) return weekStartDay;
+
+    if (configState.isLoading) {
+      _showSnackBar(context.locale.loading);
+      return null;
+    }
+
+    await ref.read(shiftGlobalConfigProvider.notifier).fetch();
+    if (!mounted) return null;
+
+    final refreshedState = ref.read(shiftGlobalConfigProvider);
+    final refreshedWeekStartDay = refreshedState.valueOrNull?.weekStartDay;
+    if (refreshedWeekStartDay != null) return refreshedWeekStartDay;
+
+    if (refreshedState case AsyncError(:final error)) {
+      _showSnackBar(error.localizedMessage(context));
+    }
+
+    return null;
+  }
+
+  void _showSnackBar(String message) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final facilitiesState = ref.watch(facilityListProvider);
     final rosterState = ref.watch(rosterListProvider);
+    final shiftGlobalConfigState = ref.watch(shiftGlobalConfigProvider);
 
     ref.listen(publishRosterProvider, (previous, next) {
       if (next is AsyncData && next.value != null) {
@@ -81,24 +143,29 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
           ref.read(rosterListProvider.notifier).fetch(facilityId: facilityId);
         }
       } else if (next is AsyncError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error!.localizedMessage(context))));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error!.localizedMessage(context))),
+        );
       }
     });
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: DisplaySmallText(context.locale.rosters),
-        titleSpacing: spacing.s16,
+        centerTitle: true,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
       floatingActionButton: PermissionGate(
-        permission: AppPermission.rosterCreate,
+        permissions: [UserPermission.rosterCreate],
         child: FloatingActionButton(
           onPressed: _onCreateRoster,
+          tooltip: shiftGlobalConfigState.isLoading
+              ? context.locale.loading
+              : null,
           child: const Icon(Icons.add_rounded),
         ),
       ),
@@ -109,155 +176,6 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         onFacilitySelected: _onFacilitySelected,
         onRosterTap: _onRosterTap,
       ),
-    );
-  }
-}
-
-class _RosterListBody extends StatelessWidget {
-  const _RosterListBody({
-    required this.facilitiesState,
-    required this.rosterState,
-    required this.selectedFacilityId,
-    required this.onFacilitySelected,
-    required this.onRosterTap,
-  });
-
-  final AsyncValue<List<FacilityEntity>> facilitiesState;
-  final AsyncValue<RosterListEntity?> rosterState;
-  final int? selectedFacilityId;
-  final ValueChanged<int> onFacilitySelected;
-  final ValueChanged<RosterEntity> onRosterTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-            spacing.s16,
-            spacing.s12,
-            spacing.s16,
-            spacing.s4,
-          ),
-          child: facilitiesState.when(
-            loading: () => const LinearProgressIndicator(),
-            error: (err, _) => _ErrorText(err.localizedMessage(context)),
-            data: (facilities) => _FacilityDropdown(
-              facilities: facilities,
-              selectedFacilityId: selectedFacilityId,
-              onChanged: onFacilitySelected,
-            ),
-          ),
-        ),
-        Expanded(
-          // WHY: rosterState's initial value is AsyncData(null) —
-          // indistinguishable from "fetched, no rosters" — so while
-          // facilities are still loading (and no fetch has started yet) this
-          // would otherwise flash "No rosters found" under the dropdown's
-          // own loading spinner.
-          child: facilitiesState.isLoading
-              ? const Center(child: CircularProgressIndicator.adaptive())
-              : rosterState.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator.adaptive()),
-                  error: (err, _) => Center(child: _ErrorText(err.localizedMessage(context))),
-                  data: (data) => _RosterList(
-                    rosters: data?.rosters ?? const [],
-                    onTap: onRosterTap,
-                  ),
-                ),
-        ),
-      ],
-    );
-  }
-}
-
-class _RosterList extends StatelessWidget {
-  const _RosterList({required this.rosters, required this.onTap});
-
-  final List<RosterEntity> rosters;
-  final ValueChanged<RosterEntity> onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    if (rosters.isEmpty) {
-      return Center(
-        child: Text(
-          context.locale.noRostersFound,
-          style: context.textStyle.bodyMedium.copyWith(
-            color: context.color.text.secondary,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      );
-    }
-    return ListView.separated(
-      padding: EdgeInsets.fromLTRB(
-        spacing.s16,
-        spacing.s12,
-        spacing.s16,
-        spacing.s96,
-      ),
-      itemCount: rosters.length,
-      separatorBuilder: (context, index) => Gap(spacing.s12),
-      itemBuilder: (context, index) => _RosterCard(
-        roster: rosters[index],
-        onTap: () => onTap(rosters[index]),
-      ),
-    );
-  }
-}
-
-class _ErrorText extends StatelessWidget {
-  const _ErrorText(this.message);
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      message,
-      style: context.textStyle.bodyMedium.copyWith(
-        color: context.color.text.secondary,
-      ),
-      textAlign: TextAlign.center,
-    );
-  }
-}
-
-class _FacilityDropdown extends StatelessWidget {
-  const _FacilityDropdown({
-    required this.facilities,
-    required this.selectedFacilityId,
-    required this.onChanged,
-  });
-
-  final List<FacilityEntity> facilities;
-  final int? selectedFacilityId;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    if (facilities.isEmpty) return const SizedBox.shrink();
-
-    return DropdownButtonFormField<int>(
-      initialValue: selectedFacilityId,
-      decoration: InputDecoration(
-        labelText: context.locale.facilityName,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
-        ),
-      ),
-      items: [
-        for (final facility in facilities)
-          DropdownMenuItem(value: facility.id, child: Text(facility.name)),
-      ],
-      onChanged: (value) {
-        if (value != null) onChanged(value);
-      },
     );
   }
 }

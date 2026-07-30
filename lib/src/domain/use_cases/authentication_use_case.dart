@@ -68,5 +68,5 @@ final class HasPermissionUseCase {
 
   final AuthenticationRepository repository;
 
-  bool call(AppPermission permission) => repository.hasPermission(permission);
+  bool call(UserPermission permission) => repository.hasPermission(permission);
 }

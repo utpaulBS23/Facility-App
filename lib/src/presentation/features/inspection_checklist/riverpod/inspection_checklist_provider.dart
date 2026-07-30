@@ -293,7 +293,7 @@ class InspectionChecklist extends _$InspectionChecklist {
     required int visitId,
     required int itemId,
   }) async {
-    if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
+    if (!ref.hasPermission(UserPermission.checklistResponseSubmit)) {
       state = state.copyWith(
         itemSaveErrors: Map<int, Failure>.from(state.itemSaveErrors)
           ..[itemId] = Failure.permissionDenied,
@@ -406,7 +406,7 @@ class InspectionChecklist extends _$InspectionChecklist {
   Future<void> submit({required int visitId}) async {
     if (!state.isComplete) return;
 
-    if (!ref.hasPermission(AppPermission.checklistResponseSubmit)) {
+    if (!ref.hasPermission(UserPermission.checklistResponseSubmit)) {
       state = state.copyWith(submitError: Failure.permissionDenied);
       return;
     }

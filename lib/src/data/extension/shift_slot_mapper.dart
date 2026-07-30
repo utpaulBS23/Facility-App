@@ -15,7 +15,7 @@ DateTime? _parseUtcIso(String? raw) {
 
 extension SlotFacilityModelToEntity on SlotFacilityModel {
   SlotFacilityEntity toEntity() =>
-      SlotFacilityEntity(id: id, name: name ?? '');
+      SlotFacilityEntity(id: id, name: name ?? '', address: address ?? '');
 }
 
 extension SlotAttendanceModelToEntity on SlotAttendanceModel {
@@ -34,8 +34,10 @@ extension SlotAttendanceModelToEntity on SlotAttendanceModel {
 extension SlotAttendantModelToEntity on SlotAttendantModel {
   SlotAttendantEntity toEntity() => SlotAttendantEntity(
     userId: userId,
+    assignmentId: shiftAssignmentId,
     name: name ?? '',
     staffCode: staffCode ?? '',
+    phoneNumber: phoneNumber ?? phone,
     isSlotLead: isSlotLead ?? false,
     isMe: isMe ?? false,
     action: SlotAction.fromKey(action),
@@ -60,6 +62,7 @@ extension ShiftSlotModelToEntity on ShiftSlotModel {
     maxAttendants: maxAttendants ?? 0,
     checkedInCount: checkedInCount ?? 0,
     checkedOutCount: checkedOutCount ?? 0,
+    supervisorName: supervisorName ?? '',
     attendants: attendants.map((a) => a.toEntity()).toList(),
     weeklyRosterId: weeklyRosterId,
   );

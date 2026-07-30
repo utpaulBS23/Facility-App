@@ -31,7 +31,7 @@ class _InspectionRepairWorkSection extends StatelessWidget {
                 ),
               ),
               PermissionGate(
-                permission: AppPermission.issueCreate,
+                permissions: [UserPermission.issueCreate],
                 child: _NewIssueButton(onTap: onNewIssue),
               ),
             ],

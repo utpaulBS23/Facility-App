@@ -26,6 +26,20 @@ class Endpoints {
   static const String assignShiftSlot =
       '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments';
 
+  /// One assignment row (`shift_assignments.id`) — `assignShiftSlot`'s
+  /// singular resource. Hard-deletes the row: `unassigned_at`/
+  /// `unassigned_reason` are never set by this call, only by a slot-lead
+  /// change. Allowed on draft and published rosters alike.
+  static const String unassignShiftSlot =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments/{assignmentId}';
+
+  /// Promotes [unassignShiftSlot]'s assignment to slot lead. Exactly one lead
+  /// per slot — the backend demotes any other lead on the same shift slot as
+  /// part of this call. Idempotent: promoting the current lead again is a
+  /// no-op. 409s if the assignment is already unassigned.
+  static const String makeSlotLead =
+      '/partners/{partnerId}/facilities/{facilityId}/rosters/{rosterId}/assignments/{assignmentId}/lead';
+
   /// Manual Attendance
   static const String manualAttendance = '/partners/{partnerId}/attendances';
   static const String manualAttendanceRefresh =
@@ -42,7 +56,10 @@ class Endpoints {
       '/partners/{partnerId}/attendances/{attendanceId}/reject';
 
   /// Shifts
-  ///
+
+  /// Global shift configuration (templates, defaults) shared across facilities.
+  static const String shiftGlobalConfig = '/shift-config';
+
   /// [shiftSlots] is facility-and-date scoped and serves both experiences:
   /// every slot carries its attendants with an `is_me` marker, and
   /// `active_slot` reports the caller's own actionable slot. It supersedes

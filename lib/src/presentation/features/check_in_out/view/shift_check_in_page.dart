@@ -19,6 +19,7 @@ import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_dropdown_button_form_field.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../../shift/riverpod/shift_slots_provider.dart';
@@ -63,9 +64,9 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     }
     final shiftSlotId = widget.shiftSlotId;
     if (shiftSlotId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.noActiveShift)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.locale.noActiveShift)));
       return;
     }
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
@@ -78,12 +79,14 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     // WHY: no upload-to-storage step exists yet — the captured photo's local
     // path is sent as-is in place of a hosted selfie_url, same value the
     // old face-validation endpoint sent as its multipart `image` field.
-    ref.read(checkInProvider.notifier).checkIn(
-      shiftSlotId: shiftSlotId,
-      lat: checkInInfo.latitude,
-      lng: checkInInfo.longitude,
-      selfieUrl: photoPath,
-    );
+    ref
+        .read(checkInProvider.notifier)
+        .checkIn(
+          shiftSlotId: shiftSlotId,
+          lat: checkInInfo.latitude,
+          lng: checkInInfo.longitude,
+          selfieUrl: photoPath,
+        );
   }
 
   void _onTakePhoto() {

@@ -14,7 +14,7 @@ class UserSessionEntity {
     this.activePartnerId,
   });
 
-  final Set<AppPermission> permissions;
+  final Set<UserPermission> permissions;
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
 
@@ -26,10 +26,11 @@ class UserSessionEntity {
 
   bool get hasActivePartner => activePartnerId != null;
 
-  bool can(AppPermission permission) => permissions.contains(permission);
+  bool can(UserPermission permission) => permissions.contains(permission);
 
-  bool canAny(Iterable<AppPermission> candidates) =>
-      candidates.any(permissions.contains);
+  bool canAny(Iterable<UserPermission> candidates) => candidates.any((element) {
+    return permissions.contains(element);
+  });
 
   /// Which shift endpoint this session may read.
   ///
@@ -47,11 +48,14 @@ class UserSessionEntity {
   // the code generators cannot parse `.supervisor` here and fails the whole
   // build_runner run ("requires the 'dot-shorthands' language feature").
   ShiftEntitlement get shiftEntitlement {
-    if (can(AppPermission.shiftAssignAttendant)) {
+    if (can(UserPermission.shiftAssignAttendant)) {
       return ShiftEntitlement.supervisor;
     }
 
-    if (can(AppPermission.attendanceCheckIn)) return ShiftEntitlement.attendant;
+    if (can(UserPermission.attendanceCheckIn)) {
+      return ShiftEntitlement.attendant;
+    }
+
     return ShiftEntitlement.none;
   }
 
@@ -125,7 +129,7 @@ class LoginResponseEntity extends LoginEntity {
 
   final UserEntity user;
   final String accessToken;
-  final Set<AppPermission> permissions;
+  final Set<UserPermission> permissions;
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
 }

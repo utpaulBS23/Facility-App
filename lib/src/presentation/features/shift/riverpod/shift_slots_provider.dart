@@ -29,4 +29,16 @@ class ShiftSlots extends _$ShiftSlots {
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
+
+  /// Re-fetches the currently-loaded day/facility.
+  ///
+  /// WHY: several actions elsewhere on a slot (assign, unassign, make-lead)
+  /// change assigned_count/attendants on this day's slots, so the cached list
+  /// must be refetched rather than just left as-is. No-op if nothing has
+  /// been fetched yet.
+  void refresh() {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    fetch(date: current.date, facilityId: current.facility?.id);
+  }
 }

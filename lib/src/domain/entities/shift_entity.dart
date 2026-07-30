@@ -139,6 +139,13 @@ class ShiftEntity {
   bool get isMinimumStaffed => assignedCount >= minAttendants;
 }
 
+class ShiftGlobalConfigEntity {
+  const ShiftGlobalConfigEntity({required this.weekStartDay});
+
+  /// Carbon/JS day numbering from the backend: 0=Sunday ... 6=Saturday.
+  final int weekStartDay;
+}
+
 class RosterFacilityEntity {
   const RosterFacilityEntity({
     required this.id,
