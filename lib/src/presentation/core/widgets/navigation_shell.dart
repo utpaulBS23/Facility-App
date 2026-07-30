@@ -6,12 +6,15 @@ import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
+import 'drawer/app_navigation_drawer.dart';
 import 'permission_gate.dart';
 
 class NavigationShell extends StatelessWidget {
   const NavigationShell({super.key, required this.statefulNavigationShell});
 
   final StatefulNavigationShell statefulNavigationShell;
+
+  static const _menuBranchIndex = 4;
 
   void _onTabSelected({
     required List<ShellTabConfig> visibleTabs,
@@ -44,22 +47,23 @@ class NavigationShell extends StatelessWidget {
   }) {
     final muted = context.color.text.muted;
     final primary = context.color.primary;
+    final spacing = context.dimensions.spacing;
 
     return BottomNavigationBarItem(
       label: label,
       icon: Padding(
-        padding: const EdgeInsets.all(6.0),
+        padding: EdgeInsets.all(spacing.s6),
         child: asset.svg(
-          width: 28,
-          height: 28,
+          width: spacing.s30,
+          height: spacing.s30,
           colorFilter: ColorFilter.mode(muted, BlendMode.srcIn),
         ),
       ),
       activeIcon: Padding(
-        padding: const EdgeInsets.all(6.0),
+        padding: EdgeInsets.all(spacing.s6),
         child: asset.svg(
-          width: 28,
-          height: 28,
+          width: spacing.s30,
+          height: spacing.s30,
           colorFilter: ColorFilter.mode(primary, BlendMode.srcIn),
         ),
       ),
@@ -84,26 +88,38 @@ class NavigationShell extends StatelessWidget {
 
     return Scaffold(
       body: statefulNavigationShell,
+      // WHY: the "Menu" tab (_menuBranchIndex) opens this Drawer as an
+      // overlay instead of navigating to a branch — it's a quick panel, not
+      // a destination, so the bottom nav's selection indicator shouldn't move.
+      drawer: const AppNavigationDrawer(),
       // WHY: BottomNavigationBar requires >=2 items; a user permitted a single
       // tab gets no navbar at all.
       bottomNavigationBar: visibleTabs.length < 2
           ? null
-          : BottomNavigationBar(
-              selectedItemColor: context.color.primary,
-              unselectedItemColor: context.color.text.muted,
-              unselectedLabelStyle: context.textStyle.labelMedium12,
-              selectedLabelStyle: context.textStyle.labelMedium12,
-              currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
-              onTap: (index) =>
-                  _onTabSelected(visibleTabs: visibleTabs, index: index),
-              items: [
-                for (final tab in visibleTabs)
-                  _navItem(
-                    context,
-                    asset: _assetFor(tab.branchIndex),
-                    label: _labelFor(context, tab.branchIndex),
-                  ),
-              ],
+          : Builder(
+              builder: (scaffoldContext) => BottomNavigationBar(
+                selectedItemColor: context.color.primary,
+                unselectedItemColor: context.color.text.muted,
+                unselectedLabelStyle: context.textStyle.labelMedium12,
+                selectedLabelStyle: context.textStyle.labelMedium12,
+                currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
+                onTap: (index) {
+                  final tab = visibleTabs[index];
+                  if (tab.branchIndex == _menuBranchIndex) {
+                    Scaffold.of(scaffoldContext).openDrawer();
+                  } else {
+                    _onTabSelected(visibleTabs: visibleTabs, index: index);
+                  }
+                },
+                items: [
+                  for (final tab in visibleTabs)
+                    _navItem(
+                      context,
+                      asset: _assetFor(tab.branchIndex),
+                      label: _labelFor(context, tab.branchIndex),
+                    ),
+                ],
+              ),
             ),
     );
   }

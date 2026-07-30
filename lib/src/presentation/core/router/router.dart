@@ -26,7 +26,7 @@ import '../../features/leave/view/leave_requests_page.dart';
 import '../../features/leave/view/leave_submitted_page.dart';
 import '../../features/leave/view/select_attendant_page.dart';
 import '../../features/leave/view/select_shift_page.dart';
-import '../../features/menu/view/menu_page.dart';
+// import '../../features/menu/view/menu_page.dart'; // WHY: menu navigates to the drawer now
 import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
