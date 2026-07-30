@@ -12,6 +12,7 @@ import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/assign_staff_button.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -31,9 +32,27 @@ part '../widgets/shift_detail_notes_card.dart';
 part '../widgets/shift_detail_supervisor_card.dart';
 part '../widgets/shift_detail_tiles.dart';
 part '../widgets/shift_details_body.dart';
+part '../widgets/shift_slots_content.dart';
+part '../widgets/shift_slots_list.dart';
+part '../widgets/shift_slots_message.dart';
+part '../widgets/active_slot_banner.dart';
+part '../widgets/assigned_staff_table.dart';
+part '../widgets/row_action_button.dart';
 part '../widgets/slot_card.dart';
-part '../widgets/slot_detail_cards.dart';
+part '../widgets/slot_assigned_section.dart';
+part '../widgets/slot_detail_check_in_card.dart';
+part '../widgets/slot_detail_contract_card.dart';
+part '../widgets/slot_detail_staffing_card.dart';
+part '../widgets/slot_details_action_listener.dart';
+part '../widgets/slot_details_app_bar.dart';
+part '../widgets/slot_details_check_out_bar.dart';
+part '../widgets/slot_details_content.dart';
 part '../widgets/slot_roster_section.dart';
+part '../widgets/slot_selfie_avatar.dart';
+part '../widgets/slot_selfie_entry.dart';
+part '../widgets/slot_marker_tag.dart';
+part '../widgets/staff_row_actions.dart';
+part '../widgets/table_cell.dart';
 part 'shift_details_page.dart';
 part 'shift_slots_page.dart';
 part 'slot_details_page.dart';
@@ -62,18 +81,13 @@ class ShiftTab extends ConsumerWidget {
         titleSpacing: context.dimensions.spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
-        actions: [
-          PermissionGate(
-            permissions: [UserPermission.rosterView],
-            child: IconButton(
-              onPressed: () => _onOpenRosters(context),
-              icon: Icon(
-                Icons.calendar_view_week_rounded,
-                color: context.color.icon,
-              ),
-            ),
-          ),
-        ],
+      ),
+      floatingActionButton: PermissionGate(
+        permissions: [UserPermission.rosterView],
+        child: FloatingActionButton(
+          onPressed: () => _onOpenRosters(context),
+          child: const Icon(Icons.calendar_view_week_rounded),
+        ),
       ),
       // WHY these two permissions: they are what [ShiftEntitlement] is derived
       // from — managing a roster (`shift.assign_attendant`) or working a shift

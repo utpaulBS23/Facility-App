@@ -39,9 +39,15 @@ class MakeSlotLead extends _$MakeSlotLead {
         );
 
     state = switch (result) {
-      Success() => AsyncValue.data(result),
+      Success() => const AsyncValue.data(null),
       Error(:final error) => AsyncValue.error(error, StackTrace.current),
-      _ => AsyncValue.error('Something went wrong', StackTrace.current),
+      // WHY: Result<void, Failure> only ever constructs as Success or Error,
+      // but the analyzer can't prove that without a `sealed` declaration —
+      // this branch is unreachable at runtime.
+      _ => AsyncValue.error(
+        const Failure(type: FailureType.unknown, message: 'Unreachable'),
+        StackTrace.current,
+      ),
     };
   }
 }

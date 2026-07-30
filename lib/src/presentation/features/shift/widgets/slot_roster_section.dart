@@ -44,6 +44,7 @@ class _SlotRosterSection extends StatelessWidget {
               permissions: [UserPermission.shiftUnassignAttendant],
               builder: (context, canUnassign) => _AssignedStaffTable(
                 attendants: attendants,
+                showStaffCode: false,
                 onRemove: canUnassign ? onUnassignStaff : null,
                 onMakeLead: onMakeLead,
               ),

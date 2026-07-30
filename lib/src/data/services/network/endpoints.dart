@@ -56,7 +56,10 @@ class Endpoints {
       '/partners/{partnerId}/attendances/{attendanceId}/reject';
 
   /// Shifts
-  ///
+
+  /// Global shift configuration (templates, defaults) shared across facilities.
+  static const String shiftGlobalConfig = '/shift-config';
+
   /// [shiftSlots] is facility-and-date scoped and serves both experiences:
   /// every slot carries its attendants with an `is_me` marker, and
   /// `active_slot` reports the caller's own actionable slot. It supersedes

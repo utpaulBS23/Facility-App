@@ -58,6 +58,27 @@ final class GetShiftSlotsUseCase {
   }
 }
 
+final class GetShiftGlobalConfigUseCase {
+  GetShiftGlobalConfigUseCase(this._shiftRepository, this._authRepository);
+
+  final ShiftRepository _shiftRepository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<ShiftGlobalConfigEntity, Failure>> call() async {
+    if (!_authRepository.hasPermission(UserPermission.shiftConfigView)) {
+      return const Error(Failure.permissionDenied);
+    }
+
+    final result = await _shiftRepository.getShiftGlobalConfig();
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get shift global config')),
+    };
+  }
+}
+
 final class GetShiftsUseCase {
   GetShiftsUseCase(this._shiftRepository, this._authRepository);
 

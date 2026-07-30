@@ -52,6 +52,8 @@ class SlotAttendantModel with SlotAttendantModelMappable {
     this.shiftAssignmentId,
     this.name,
     this.staffCode,
+    this.phoneNumber,
+    this.phone,
     this.isSlotLead,
     this.isMe,
     this.action,
@@ -69,6 +71,9 @@ class SlotAttendantModel with SlotAttendantModelMappable {
   final String? name;
   @MappableField(key: 'staff_code')
   final String? staffCode;
+  @MappableField(key: 'phone_number')
+  final String? phoneNumber;
+  final String? phone;
   @MappableField(key: 'is_slot_lead')
   final bool? isSlotLead;
 

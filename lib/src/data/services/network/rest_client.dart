@@ -32,6 +32,9 @@ abstract class RestClient {
     @Query('date') required String date,
   });
 
+  @GET(Endpoints.shiftGlobalConfig)
+  Future<HttpResponse> getShiftGlobalConfig();
+
   @GET(Endpoints.myShifts)
   Future<HttpResponse> getMyShifts({
     @Path('partnerId') required int partnerId,

@@ -14,6 +14,7 @@ enum UserPermission {
   facilityAssignStaff('facility.assign_staff'),
 
   // Shift + template
+  shiftConfigView('shift_config.view'),
   shiftTemplateView('shift_template.view'),
   shiftView('shift.view'),
   shiftCreate('shift.create'),

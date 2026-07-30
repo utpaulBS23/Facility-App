@@ -42,41 +42,41 @@ class _RequestSupervisorApprovalBottomSheetState
           spacing.s16,
         ),
         child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          HeadlineSmallText(context.locale.requestSupervisor),
-          Gap(spacing.s12),
-          BodyRegularText.secondary(context.locale.requestSupervisorMessage),
-          Gap(spacing.s16),
-          _ReasonDropdown(
-            selectedReason: _selectedReason,
-            reasons: reasons,
-            onChanged: (value) => setState(() => _selectedReason = value),
-          ),
-          Gap(spacing.s16),
-          SizedBox(
-            width: double.infinity,
-            height: spacing.s56,
-            child: FilledButton(
-              onPressed: _selectedReason != null ? _onSubmit : null,
-              child: Text(context.locale.requestSupervisor),
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            HeadlineSmallText(context.locale.requestSupervisor),
+            Gap(spacing.s12),
+            BodyRegularText.secondary(context.locale.requestSupervisorMessage),
+            Gap(spacing.s16),
+            _ReasonDropdown(
+              selectedReason: _selectedReason,
+              reasons: reasons,
+              onChanged: (value) => setState(() => _selectedReason = value),
             ),
-          ),
-          Gap(spacing.s12),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              onPressed: _onCancel,
-              style: TextButton.styleFrom(
-                backgroundColor: context.color.subtle,
-                foregroundColor: context.color.text.primary,
-                shape: const StadiumBorder(),
+            Gap(spacing.s16),
+            SizedBox(
+              width: double.infinity,
+              height: spacing.s56,
+              child: FilledButton(
+                onPressed: _selectedReason != null ? _onSubmit : null,
+                child: Text(context.locale.requestSupervisor),
               ),
-              child: LabelLargeText(context.locale.cancel),
             ),
-          ),
-        ],
+            Gap(spacing.s12),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: _onCancel,
+                style: TextButton.styleFrom(
+                  backgroundColor: context.color.subtle,
+                  foregroundColor: context.color.text.primary,
+                  shape: const StadiumBorder(),
+                ),
+                child: LabelLargeText(context.locale.cancel),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -105,7 +105,7 @@ class _ReasonDropdown extends StatelessWidget {
 
     return SizedBox(
       height: spacing.s56,
-      child: DropdownButtonFormField<String>(
+      child: AppDropdownButtonFormField<String>(
         initialValue: selectedReason,
         decoration: InputDecoration(
           labelText: context.locale.reasonLabel,

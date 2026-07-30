@@ -8,6 +8,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -65,9 +66,9 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
         );
         context.pop(true);
       } else if (next is AsyncError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error.localizedMessage(context))));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error.localizedMessage(context))),
+        );
       }
     });
 
@@ -81,25 +82,8 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () => context.pop(false),
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        leadingWidth: 100,
+        leading: AppBackButton(onTap: () => context.pop(false)),
+        leadingWidth: AppBackButton.width,
         title: LabelLargeText(context.locale.assignStaff),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,

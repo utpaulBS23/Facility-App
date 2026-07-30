@@ -1,6 +1,11 @@
 import '../../domain/entities/shift_entity.dart';
 import '../models/roster_model.dart';
 
+extension ShiftGlobalConfigDataModelToEntity on ShiftGlobalConfigDataModel {
+  ShiftGlobalConfigEntity toEntity() =>
+      ShiftGlobalConfigEntity(weekStartDay: weekStartDay);
+}
+
 extension RosterFacilityModelToEntity on RosterFacilityModel {
   RosterFacilityEntity toEntity() =>
       RosterFacilityEntity(id: id, name: name ?? '', nameBn: nameBn);

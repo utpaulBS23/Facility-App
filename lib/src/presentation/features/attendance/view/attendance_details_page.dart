@@ -66,26 +66,8 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        // WHY: iOS-style back button — icon + label mimic native feel.
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        leadingWidth: 100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.attendanceDetails),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,

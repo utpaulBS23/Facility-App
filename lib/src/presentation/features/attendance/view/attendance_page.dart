@@ -12,6 +12,7 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/attendance_provider.dart';

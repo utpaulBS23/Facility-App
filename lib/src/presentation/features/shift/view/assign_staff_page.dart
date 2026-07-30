@@ -8,6 +8,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -63,17 +64,6 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
         );
   }
 
-  // WHY: assigning changes assigned_count/attendants on this day's slots, so
-  // the list backing shift_slots_page must be refetched, not just popped
-  // back to — its cached state would otherwise show the pre-assign roster.
-  void _refreshShiftSlots() {
-    final current = ref.read(shiftSlotsProvider).valueOrNull;
-    if (current == null) return;
-    ref
-        .read(shiftSlotsProvider.notifier)
-        .fetch(date: current.date, facilityId: current.facility?.id);
-  }
-
   @override
   Widget build(BuildContext context) {
     ref.listen(assignShiftSlotProvider, (_, next) {
@@ -81,12 +71,12 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffAssignedSuccessfully)),
         );
-        _refreshShiftSlots();
+        ref.read(shiftSlotsProvider.notifier).refresh();
         context.pop();
       } else if (next is AsyncError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error.localizedMessage(context))));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.error.localizedMessage(context))),
+        );
       }
     });
 
@@ -100,25 +90,8 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        leadingWidth: 100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: LabelLargeText(context.locale.assignStaff),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,
