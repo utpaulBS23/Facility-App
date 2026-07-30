@@ -99,16 +99,14 @@ final class ShiftRepositoryImpl extends ShiftRepository {
     required int partnerId,
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) {
     return asyncGuard(() async {
       await remote.unassignShiftSlot(
         partnerId: partnerId,
         facilityId: facilityId,
         rosterId: rosterId,
-        shiftSlotId: shiftSlotId,
-        attendantId: attendantId,
+        assignmentId: assignmentId,
       );
     });
   }
@@ -118,17 +116,19 @@ final class ShiftRepositoryImpl extends ShiftRepository {
     required int partnerId,
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) {
     return asyncGuard(() async {
+      // WHY the response is discarded: the endpoint returns the updated
+      // assignment, but every lead change also demotes another row elsewhere
+      // on the slot — the shift-slots list is refetched after this succeeds
+      // (see SlotDetailsPage), which is the only place that reflects both
+      // sides of that change at once.
       await remote.makeSlotLead(
         partnerId: partnerId,
         facilityId: facilityId,
         rosterId: rosterId,
-        shiftSlotId: shiftSlotId,
-        attendantId: attendantId,
-        request: {'is_slot_lead': true},
+        assignmentId: assignmentId,
       );
     });
   }

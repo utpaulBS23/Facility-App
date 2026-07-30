@@ -254,8 +254,7 @@ class _RestClient implements RestClient {
     required int partnerId,
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -265,7 +264,7 @@ class _RestClient implements RestClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/facilities/${facilityId}/rosters/${rosterId}/shift-slots/${shiftSlotId}/attendants/${attendantId}',
+            '/partners/${partnerId}/facilities/${facilityId}/rosters/${rosterId}/assignments/${assignmentId}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -282,20 +281,17 @@ class _RestClient implements RestClient {
     required int partnerId,
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
-    required Map<String, dynamic> request,
+    required int assignmentId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(request);
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/facilities/${facilityId}/rosters/${rosterId}/shift-slots/${shiftSlotId}/attendants/${attendantId}',
+            '/partners/${partnerId}/facilities/${facilityId}/rosters/${rosterId}/assignments/${assignmentId}/lead',
             queryParameters: queryParameters,
             data: _data,
           )

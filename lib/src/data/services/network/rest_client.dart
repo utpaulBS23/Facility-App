@@ -63,23 +63,22 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
-  @DELETE(Endpoints.shiftSlotAttendant)
+  @DELETE(Endpoints.unassignShiftSlot)
   Future<HttpResponse> unassignShiftSlot({
     @Path('partnerId') required int partnerId,
     @Path('facilityId') required int facilityId,
     @Path('rosterId') required int rosterId,
-    @Path('shiftSlotId') required int shiftSlotId,
-    @Path('attendantId') required int attendantId,
+    @Path('assignmentId') required int assignmentId,
   });
 
-  @PATCH(Endpoints.shiftSlotAttendant)
+  // WHY no body: the backend takes no request payload on this action — the
+  // promoted attendant is implied entirely by which assignment id is PATCHed.
+  @PATCH(Endpoints.makeSlotLead)
   Future<HttpResponse> makeSlotLead({
     @Path('partnerId') required int partnerId,
     @Path('facilityId') required int facilityId,
     @Path('rosterId') required int rosterId,
-    @Path('shiftSlotId') required int shiftSlotId,
-    @Path('attendantId') required int attendantId,
-    @Body() required Map<String, dynamic> request,
+    @Path('assignmentId') required int assignmentId,
   });
 
   @POST(Endpoints.createRoster)

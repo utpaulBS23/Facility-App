@@ -228,6 +228,8 @@
     }
   },
   "slotLead": "Slot lead",
+  "attendantName": "Name",
+  "staffCode": "Staff Code",
   "slotStatusCompleted": "Completed",
   "slotStatusPartialMiss": "Partial miss",
   "slotFull": "Slot full",

@@ -63,6 +63,7 @@ class SlotAttendanceEntity {
 class SlotAttendantEntity {
   const SlotAttendantEntity({
     required this.userId,
+    this.assignmentId,
     required this.name,
     required this.staffCode,
     required this.isSlotLead,
@@ -76,6 +77,14 @@ class SlotAttendantEntity {
   });
 
   final int userId;
+
+  /// `shift_assignments.id` — addresses the unassign and make-slot-lead
+  /// endpoints, which take an assignment id, not a user/slot pair.
+  ///
+  /// WHY nullable: defensive against an older payload or a row where the
+  /// backend genuinely omits it. Actions that need it stay hidden in the UI
+  /// when it's absent — there is nothing to fall back to that would work.
+  final int? assignmentId;
   final String name;
   final String staffCode;
   final bool isSlotLead;

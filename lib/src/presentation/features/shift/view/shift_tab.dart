@@ -13,7 +13,6 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/assign_staff_button.dart';
-import '../../../core/widgets/assigned_staff_tile.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/slot_status_chip.dart';

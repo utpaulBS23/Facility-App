@@ -8,10 +8,9 @@ import '../../../../domain/entities/app_permission.dart';
 
 part 'make_slot_lead_provider.g.dart';
 
-/// WHY gated on `shift.assign_attendant`, not a dedicated permission: choosing
-/// the lead is offered as part of assigning staff (see
-/// [SlotLeadConfirmDialog]) — promoting an already-assigned attendant later is
-/// the same authority applied at a different time, not a new capability.
+/// Backend confirms `shift.assign_attendant` gates this endpoint too —
+/// promoting an already-assigned attendant is the same authority as choosing
+/// the lead at assign time (see [SlotLeadConfirmDialog]), applied later.
 @riverpod
 class MakeSlotLead extends _$MakeSlotLead {
   @override
@@ -20,8 +19,7 @@ class MakeSlotLead extends _$MakeSlotLead {
   Future<void> makeLead({
     required int facilityId,
     required int rosterId,
-    required int shiftSlotId,
-    required int attendantId,
+    required int assignmentId,
   }) async {
     if (state.isLoading) return;
 
@@ -37,8 +35,7 @@ class MakeSlotLead extends _$MakeSlotLead {
         .call(
           facilityId: facilityId,
           rosterId: rosterId,
-          shiftSlotId: shiftSlotId,
-          attendantId: attendantId,
+          assignmentId: assignmentId,
         );
 
     state = switch (result) {

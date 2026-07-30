@@ -42,29 +42,10 @@ class _SlotRosterSection extends StatelessWidget {
             padding: EdgeInsets.only(top: spacing.s12),
             child: PermissionGate(
               permissions: [UserPermission.shiftUnassignAttendant],
-              builder: (context, canUnassign) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final attendant in attendants) ...[
-                    if (attendant != attendants.first)
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: spacing.s8),
-                        child: Divider(
-                          color: context.color.borderSubtle,
-                          height: 1,
-                        ),
-                      ),
-                    AssignedStaffTile(
-                      name: attendant.name,
-                      phone: attendant.staffCode,
-                      isSlotLead: attendant.isSlotLead,
-                      onRemove: canUnassign
-                          ? () => onUnassignStaff(attendant)
-                          : null,
-                      onMakeLead: () => onMakeLead(attendant),
-                    ),
-                  ],
-                ],
+              builder: (context, canUnassign) => _AssignedStaffTable(
+                attendants: attendants,
+                onRemove: canUnassign ? onUnassignStaff : null,
+                onMakeLead: onMakeLead,
               ),
             ),
           ),

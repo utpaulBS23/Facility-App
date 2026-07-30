@@ -144,12 +144,10 @@ class _SlotAssignedSection extends StatelessWidget {
                     color: context.color.text.secondary,
                   ),
                 ),
-                // WHY: names only — staff code and per-person status stay on
-                // [SlotDetailsPage].
-                for (final attendant in attendants) ...[
-                  Gap(spacing.s8),
-                  _InfoRow(icon: Icons.badge_outlined, label: attendant.name),
-                ],
+                Gap(spacing.s8),
+                // WHY names + staff code only: per-person status and the
+                // remove/make-lead actions stay on [SlotDetailsPage].
+                _AssignedStaffTable(attendants: attendants),
               ],
               if (slot.hasFreeCapacity) ...[
                 Gap(spacing.s12),
@@ -159,6 +157,224 @@ class _SlotAssignedSection extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Assigned roster as a table — name and staff code aligned in columns,
+/// the slot lead's row tinted and starred.
+///
+/// WHY a real [Table] over stacked rows: a list of icon+name lines reads fine
+/// for one person, but scanning several staff codes against names is what a
+/// table is for — the eye can track a column instead of re-reading each row.
+///
+/// WHY [onRemove]/[onMakeLead] are nullable: the list card on the shift page
+/// shows this same table read-only (see [_SlotAssignedSection]) — only
+/// [SlotDetailsPage] wires the actions column in.
+class _AssignedStaffTable extends StatelessWidget {
+  const _AssignedStaffTable({
+    required this.attendants,
+    this.onRemove,
+    this.onMakeLead,
+  });
+
+  final List<SlotAttendantEntity> attendants;
+
+  /// Shows a per-row remove action when set. Still gated per row — hidden
+  /// wherever [SlotAttendantEntity.assignmentId] is null.
+  final ValueChanged<SlotAttendantEntity>? onRemove;
+
+  /// Shows a per-row "make lead" action when set. Hidden on the lead's own
+  /// row and wherever [SlotAttendantEntity.assignmentId] is null.
+  final ValueChanged<SlotAttendantEntity>? onMakeLead;
+
+  bool get _hasActionsColumn => onRemove != null || onMakeLead != null;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+    final headerStyle = context.textStyle.labelSmall.copyWith(
+      color: context.color.text.secondary,
+    );
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius.r6),
+      child: Table(
+        columnWidths: {
+          0: const FlexColumnWidth(3),
+          1: const FlexColumnWidth(2),
+          if (_hasActionsColumn) 2: const IntrinsicColumnWidth(),
+        },
+        border: TableBorder(
+          horizontalInside: BorderSide(color: context.color.borderSubtle),
+        ),
+        children: [
+          TableRow(
+            decoration: BoxDecoration(color: context.color.subtle),
+            children: [
+              _TableCell(
+                child: Text(context.locale.attendantName, style: headerStyle),
+              ),
+              _TableCell(
+                child: Text(context.locale.staffCode, style: headerStyle),
+              ),
+              if (_hasActionsColumn) const _TableCell(child: SizedBox.shrink()),
+            ],
+          ),
+          for (final attendant in attendants)
+            TableRow(
+              // WHY tinted across the whole row, not just the name cell: the
+              // lead needs to stand out while scanning the staff-code column
+              // too, not only when reading names.
+              decoration: attendant.isSlotLead
+                  ? BoxDecoration(color: context.color.warningAlt)
+                  : null,
+              children: [
+                _TableCell(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          attendant.name,
+                          style: context.textStyle.bodySmall.copyWith(
+                            color: context.color.text.primary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (attendant.isSlotLead) ...[
+                        Gap(spacing.s4),
+                        Icon(
+                          Icons.star_rounded,
+                          size: 14,
+                          color: context.color.warning,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                _TableCell(
+                  child: Text(
+                    attendant.staffCode,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                ),
+                if (_hasActionsColumn)
+                  _TableCell(
+                    padding: EdgeInsets.zero,
+                    child: _StaffRowActions(
+                      attendant: attendant,
+                      onRemove: onRemove,
+                      onMakeLead: onMakeLead,
+                    ),
+                  ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Compact per-row actions for [_AssignedStaffTable] — text buttons rather
+/// than bare icons, so the action reads without needing a tooltip.
+class _StaffRowActions extends StatelessWidget {
+  const _StaffRowActions({
+    required this.attendant,
+    required this.onRemove,
+    required this.onMakeLead,
+  });
+
+  final SlotAttendantEntity attendant;
+  final ValueChanged<SlotAttendantEntity>? onRemove;
+  final ValueChanged<SlotAttendantEntity>? onMakeLead;
+
+  @override
+  Widget build(BuildContext context) {
+    final assignmentId = attendant.assignmentId;
+    final showMakeLead =
+        !attendant.isSlotLead && onMakeLead != null && assignmentId != null;
+    final showRemove = onRemove != null && assignmentId != null;
+
+    if (!showMakeLead && !showRemove) return const SizedBox.shrink();
+
+    // WHY mainAxisSize.max + alignment.end: the actions column is sized to
+    // the widest row (make lead + remove together), so a row showing only
+    // "Remove" — the slot lead's own row — would otherwise sit flush left,
+    // out of line with every other row's remove button.
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (showMakeLead)
+          _RowActionButton(
+            label: context.locale.makeSlotLead,
+            color: context.color.warning,
+            onTap: () => onMakeLead!(attendant),
+          ),
+        if (showMakeLead && showRemove) Gap(context.dimensions.spacing.s4),
+        if (showRemove)
+          _RowActionButton(
+            label: context.locale.remove,
+            color: context.color.error,
+            onTap: () => onRemove!(attendant),
+          ),
+      ],
+    );
+  }
+}
+
+/// Small text button for a table-row action — same shape wherever
+/// [_AssignedStaffTable] needs one, coloured by intent.
+class _RowActionButton extends StatelessWidget {
+  const _RowActionButton({
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        foregroundColor: color,
+        padding: EdgeInsets.symmetric(
+          horizontal: context.dimensions.spacing.s8,
+        ),
+        minimumSize: const Size(0, 32),
+        visualDensity: VisualDensity.compact,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Text(
+        label,
+        style: context.textStyle.labelSmall.copyWith(color: color),
+      ),
+    );
+  }
+}
+
+class _TableCell extends StatelessWidget {
+  const _TableCell({required this.child, this.padding});
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Padding(
+      padding:
+          padding ??
+          EdgeInsets.symmetric(horizontal: spacing.s8, vertical: spacing.s8),
+      child: child,
     );
   }
 }
