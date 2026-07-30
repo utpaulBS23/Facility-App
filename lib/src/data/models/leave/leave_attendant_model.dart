@@ -1,5 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../../../domain/entities/leave/shift_status.dart';
+import 'leave_request_model.dart';
+
 part 'leave_attendant_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -19,7 +22,8 @@ class LeaveAttendantShiftModel with LeaveAttendantShiftModelMappable {
   final String startTime;
   @MappableField(key: 'end_time')
   final String endTime;
-  final String status;
+  @MappableField(hook: ShiftStatusHook())
+  final ShiftStatus status;
 
   static const fromJson = LeaveAttendantShiftModelMapper.fromJson;
 }

@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../../../domain/entities/leave/leave_type.dart';
+
 part 'leave_policy_model.mapper.dart';
 
 class StringToNullableDoubleHook extends MappingHook {
@@ -10,6 +12,26 @@ class StringToNullableDoubleHook extends MappingHook {
     if (value == null) return null;
     if (value is num) return value.toDouble();
     return double.tryParse(value.toString());
+  }
+}
+
+class LeaveTypeHook extends MappingHook {
+  const LeaveTypeHook();
+
+  @override
+  Object? beforeDecode(Object? value) {
+    if (value is String) {
+      return LeaveType.fromWireString(value);
+    }
+    return value;
+  }
+
+  @override
+  Object? beforeEncode(Object? value) {
+    if (value is LeaveType) {
+      return value.toWireString();
+    }
+    return value;
   }
 }
 
@@ -35,8 +57,8 @@ class LeavePolicyModel with LeavePolicyModelMappable {
   @MappableField(key: 'partner_id')
   final int? partnerId;
   final String name;
-  @MappableField(key: 'leave_type')
-  final String leaveType;
+  @MappableField(key: 'leave_type', hook: LeaveTypeHook())
+  final LeaveType leaveType;
   @MappableField(key: 'default_days_per_year', hook: StringToNullableDoubleHook())
   final double? defaultDaysPerYear;
   @MappableField(key: 'max_consecutive_days')
