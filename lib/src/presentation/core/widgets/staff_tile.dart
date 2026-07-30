@@ -101,13 +101,11 @@ class _StaffAvatar extends StatelessWidget {
 
   final String? imageUrl;
 
-  static const _size = 44.0;
-
   @override
   Widget build(BuildContext context) {
     return ClipOval(
       child: SizedBox.square(
-        dimension: _size,
+        dimension: context.dimensions.spacing.s44,
         child: Container(
           color: context.color.brandAccent,
           // WHY: loadingBuilder/errorBuilder keep the placeholder icon

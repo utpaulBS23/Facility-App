@@ -11,6 +11,8 @@ import '../theme/theme.dart';
 /// only the title, body, and submit copy differing. One widget now owns the
 /// chrome; each dialog only supplies its fields.
 class FormDialogShell extends StatelessWidget {
+  static const double _maxHeightFraction = 0.85;
+
   /// Creates a [FormDialogShell].
   const FormDialogShell({
     super.key,
@@ -60,8 +62,12 @@ class FormDialogShell extends StatelessWidget {
       ),
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: 420,
-          maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+          maxWidth: spacing.s420,
+          // WHY: a fraction of the viewport, not a fixed size — Dimensions
+          // only holds absolute pixel buckets, so this stays a local
+          // constant rather than a mis-fitting token (same precedent as
+          // selfie_zone.dart's `screenHeight * 0.4`).
+          maxHeight: MediaQuery.sizeOf(context).height * _maxHeightFraction,
         ),
         child: SingleChildScrollView(
           child: Column(
