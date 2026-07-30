@@ -5,6 +5,8 @@ import '../../../core/extensions/app_localization.dart';
 import '../theme/theme.dart';
 import 'status_pill.dart';
 
+part 'assigned_staff_tile_action_chip.dart';
+
 /// Row for one attendant already assigned to a shift slot.
 ///
 /// WHY [onRemove]/[onMakeLead] are nullable rather than separate widgets: most
@@ -65,15 +67,15 @@ class AssignedStaffTile extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: spacing.s40,
+                height: spacing.s40,
                 decoration: BoxDecoration(
                   color: context.color.brandAccent,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.person_outline_rounded,
-                  size: 24,
+                  size: spacing.s24,
                   color: context.color.text.primary,
                 ),
               ),
@@ -141,57 +143,6 @@ class AssignedStaffTile extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-/// Small tonal action chip for [AssignedStaffTile] — icon and word together,
-/// coloured like the rest of the app's status pills so an action reads as
-/// belonging to the same visual language rather than a stray control.
-class _StaffTileActionChip extends StatelessWidget {
-  const _StaffTileActionChip({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.background,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color color;
-  final Color background;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = BorderRadius.circular(context.dimensions.radius.r6);
-
-    return Material(
-      color: background,
-      borderRadius: radius,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: radius,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.s8,
-            vertical: spacing.s6,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 14, color: color),
-              Gap(spacing.s4),
-              Text(
-                label,
-                style: context.textStyle.labelSmall.copyWith(color: color),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

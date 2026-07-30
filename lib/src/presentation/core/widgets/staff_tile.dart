@@ -133,7 +133,7 @@ class _StaffAvatar extends StatelessWidget {
       child: Icon(
         Icons.person_outline_rounded,
         color: context.color.text.primary,
-        size: 22,
+        size: context.dimensions.spacing.s20,
       ),
     );
   }

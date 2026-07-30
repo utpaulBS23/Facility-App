@@ -4,6 +4,8 @@ import '../entities/shift_slot_entity.dart';
 import '../entities/shift_template_entity.dart';
 
 abstract base class ShiftRepository extends Repository {
+  Future<Result<ShiftGlobalConfigEntity, Failure>> getShiftGlobalConfig();
+
   /// Facility-and-date scoped slots serving both experiences — supersedes
   /// [getMyShifts] and [getSupervisorShifts].
   Future<Result<ShiftSlotsEntity, Failure>> getShiftSlots({

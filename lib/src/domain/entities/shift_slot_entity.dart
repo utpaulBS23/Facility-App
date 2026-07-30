@@ -66,6 +66,7 @@ class SlotAttendantEntity {
     this.assignmentId,
     required this.name,
     required this.staffCode,
+    this.phoneNumber,
     required this.isSlotLead,
     required this.isMe,
     required this.action,
@@ -87,6 +88,7 @@ class SlotAttendantEntity {
   final int? assignmentId;
   final String name;
   final String staffCode;
+  final String? phoneNumber;
   final bool isSlotLead;
 
   /// True on the caller's own row.

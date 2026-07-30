@@ -2,10 +2,13 @@ part of '../dependency_injection.dart';
 
 @Riverpod(keepAlive: true)
 AuthenticationRepository authenticationRepository(Ref ref) {
-  return AuthenticationRepositoryImpl(
+  final repository = AuthenticationRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
     session: ref.read(sessionServiceProvider),
   );
+  ref.onDispose(repository.dispose);
+
+  return repository;
 }
 
 @Riverpod(keepAlive: true)

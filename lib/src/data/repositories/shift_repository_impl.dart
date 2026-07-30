@@ -21,24 +21,42 @@ final class ShiftRepositoryImpl extends ShiftRepository {
   final RestClient remote;
 
   @override
+  Future<Result<ShiftGlobalConfigEntity, Failure>>
+  getShiftGlobalConfig() async {
+    final result = await asyncGuard(() async {
+      final response = await remote.getShiftGlobalConfig();
+      final model = ShiftGlobalConfigResponseModel.fromJson(response.data);
+      return model.data?.toEntity();
+    });
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get shift global config')),
+    };
+  }
+
+  @override
   Future<Result<ShiftSlotsEntity, Failure>> getShiftSlots({
     required int partnerId,
     required int facilityId,
     required String date,
-  }) {
-    return asyncGuard(() async {
+  }) async {
+    final result = await asyncGuard(() async {
       final response = await remote.getShiftSlots(
         partnerId: partnerId,
         facilityId: facilityId,
         date: date,
       );
       final model = ShiftSlotsResponseModel.fromJson(response.data);
-      final data = model.data;
-      if (data == null) {
-        throw const FormatException('Shift slots response had no data');
-      }
-      return data.toEntity();
+      return model.data?.toEntity();
     });
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get shift slots')),
+    };
   }
 
   @override
@@ -140,8 +158,8 @@ final class ShiftRepositoryImpl extends ShiftRepository {
     required String weekStartDate,
     required String weekEndDate,
     required List<int> offDays,
-  }) {
-    return asyncGuard(() async {
+  }) async {
+    final result = await asyncGuard(() async {
       final response = await remote.createRoster(
         partnerId: partnerId,
         facilityId: facilityId,
@@ -152,12 +170,14 @@ final class ShiftRepositoryImpl extends ShiftRepository {
         },
       );
       final model = RosterResponseModel.fromJson(response.data);
-      final data = model.data;
-      if (data == null) {
-        throw const FormatException('Create roster response had no data');
-      }
-      return data.toEntity();
+      return model.data?.toEntity();
     });
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('create roster')),
+    };
   }
 
   @override
@@ -182,20 +202,22 @@ final class ShiftRepositoryImpl extends ShiftRepository {
     required int partnerId,
     required int facilityId,
     required int rosterId,
-  }) {
-    return asyncGuard(() async {
+  }) async {
+    final result = await asyncGuard(() async {
       final response = await remote.publishRoster(
         partnerId: partnerId,
         facilityId: facilityId,
         rosterId: rosterId,
       );
       final model = RosterResponseModel.fromJson(response.data);
-      final data = model.data;
-      if (data == null) {
-        throw const FormatException('Publish roster response had no data');
-      }
-      return data.toEntity();
+      return model.data?.toEntity();
     });
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('publish roster')),
+    };
   }
 
   @override
@@ -208,8 +230,8 @@ final class ShiftRepositoryImpl extends ShiftRepository {
     String? notes,
     required int minAttendants,
     required int maxAttendants,
-  }) {
-    return asyncGuard(() async {
+  }) async {
+    final result = await asyncGuard(() async {
       final response = await remote.createShift(
         partnerId: partnerId,
         facilityId: facilityId,
@@ -223,12 +245,14 @@ final class ShiftRepositoryImpl extends ShiftRepository {
         },
       );
       final model = CreateShiftResponseModel.fromJson(response.data);
-      final data = model.data;
-      if (data == null) {
-        throw const FormatException('Create shift response had no data');
-      }
-      return data.toEntity();
+      return model.data?.toEntity();
     });
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('create shift')),
+    };
   }
 
   @override

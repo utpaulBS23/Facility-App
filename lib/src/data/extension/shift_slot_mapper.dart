@@ -37,6 +37,7 @@ extension SlotAttendantModelToEntity on SlotAttendantModel {
     assignmentId: shiftAssignmentId,
     name: name ?? '',
     staffCode: staffCode ?? '',
+    phoneNumber: phoneNumber ?? phone,
     isSlotLead: isSlotLead ?? false,
     isMe: isMe ?? false,
     action: SlotAction.fromKey(action),

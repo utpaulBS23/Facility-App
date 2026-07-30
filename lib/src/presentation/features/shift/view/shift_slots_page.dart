@@ -65,99 +65,14 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   Widget build(BuildContext context) {
     return PermissionGate(
       permissions: [UserPermission.leaveRequest],
-      builder: _buildSlots,
-    );
-  }
-
-  Widget _buildSlots(BuildContext context, bool canApplyLeave) {
-    final spacing = context.dimensions.spacing;
-    final slotsState = ref.watch(shiftSlotsProvider);
-    // WHY: the facility is no longer a list header — each slot card carries
-    // its own title/address row, matching the design.
-    final facility = ref.watch(
-      shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
-    );
-
-    // WHY: Calendar sits above the ListView in a Column instead of being
-    // item 0 inside it. Nesting a GestureDetector inside a ListView puts
-    // the day-tap recogniser in direct competition with the ListView's
-    // scroll recogniser, causing hit-test failures on the day cells.
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
-        Expanded(
-          child: slotsState.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
-            error: (err, _) => Center(
-              child: Text(
-                err.localizedMessage(context),
-                style: context.textStyle.bodyMedium.copyWith(
-                  color: context.color.text.secondary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            data: (data) {
-              final slots = data?.slots ?? const <ShiftSlotEntity>[];
-              final activeSlot = data?.activeSlot;
-
-              if (slots.isEmpty && activeSlot == null) {
-                return Center(
-                  child: Text(
-                    context.locale.noShiftsFound,
-                    style: context.textStyle.bodyMedium.copyWith(
-                      color: context.color.text.secondary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-
-              final leadingCount =
-                  (canApplyLeave ? 1 : 0) + (activeSlot != null ? 1 : 0);
-
-              return ListView.separated(
-                padding: EdgeInsets.fromLTRB(
-                  spacing.s16,
-                  spacing.s12,
-                  spacing.s16,
-                  spacing.s16,
-                ),
-                itemCount: slots.length + leadingCount,
-                separatorBuilder: (context, index) => Gap(spacing.s12),
-                itemBuilder: (context, index) {
-                  var cursor = index;
-                  if (canApplyLeave) {
-                    if (cursor == 0) {
-                      return _ApplyLeaveButton(onTap: widget.onApplyLeave);
-                    }
-                    cursor -= 1;
-                  }
-                  if (activeSlot != null) {
-                    if (cursor == 0) {
-                      return _ActiveSlotBanner(
-                        activeSlot: activeSlot,
-                        onAction: () => _onActiveSlotAction(data!),
-                      );
-                    }
-                    cursor -= 1;
-                  }
-                  final slot = slots[cursor];
-
-                  return _SlotCard(
-                    slot: slot,
-                    facility: facility,
-                    onTap: () => widget.onSlotTap(slot),
-                    onAssignStaff: () => _onAssignStaff(context, slot),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-      ],
+      builder: (context, canApplyLeave) => _ShiftSlotsContent(
+        canApplyLeave: canApplyLeave,
+        onDateChanged: _onDateChanged,
+        onApplyLeave: widget.onApplyLeave,
+        onActiveSlotAction: _onActiveSlotAction,
+        onSlotTap: widget.onSlotTap,
+        onAssignStaff: (slot) => _onAssignStaff(context, slot),
+      ),
     );
   }
 }

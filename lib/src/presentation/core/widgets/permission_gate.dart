@@ -65,10 +65,9 @@ class PermissionGate extends ConsumerWidget {
     // WHY select(): only gates whose answer changed rebuild when the session
     // is swapped, rather than every gate on screen.
     final isGranted = ref.watch(
-      userSessionProvider.select((session) {
-        return session?.permissions.any((p) => permissions.contains(p)) ??
-            false;
-      }),
+      userSessionProvider.select(
+        (session) => session?.canAny(permissions) ?? false,
+      ),
     );
 
     final build = builder;
