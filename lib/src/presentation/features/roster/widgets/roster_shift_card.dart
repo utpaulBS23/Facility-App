@@ -78,15 +78,16 @@ class _RosterShiftCard extends StatelessWidget {
           ],
           Gap(spacing.s12),
           if (shift.assignedAttendants.isNotEmpty) ...[
-            ...shift.assignedAttendants.map(
-              (attendant) => Padding(
-                padding: EdgeInsets.only(bottom: spacing.s8),
-                child: AssignedStaffTile(
-                  name: attendant.fullName,
-                  phone: attendant.phone ?? '',
+            for (final assignment in shift.assignments)
+              if (assignment.isActive)
+                Padding(
+                  padding: EdgeInsets.only(bottom: spacing.s8),
+                  child: AssignedStaffTile(
+                    name: assignment.attendant.fullName,
+                    phone: assignment.attendant.phone ?? '',
+                    isSlotLead: assignment.isSlotLead,
+                  ),
                 ),
-              ),
-            ),
             Gap(spacing.s4),
           ],
           PermissionGate(

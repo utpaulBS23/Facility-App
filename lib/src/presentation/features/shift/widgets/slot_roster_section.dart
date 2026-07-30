@@ -2,15 +2,21 @@ part of '../view/shift_tab.dart';
 
 /// Staffing roster + assign-staff action for one [ShiftSlotEntity].
 ///
-/// WHY no permission check here: this only ever renders inside
-/// [_SlotDetailStaffingCard], which the details page gates on
+/// WHY no permission check here for the roster itself: this only ever renders
+/// inside [_SlotDetailStaffingCard], which the details page gates on
 /// `shift.assign_attendant` as a whole — heading, counts and roster together.
 /// Gating again inside would be a second answer to a question already asked.
+/// The remove action is a narrower permission, so it is gated per-tile.
 class _SlotRosterSection extends StatelessWidget {
-  const _SlotRosterSection({required this.slot, required this.onAssignStaff});
+  const _SlotRosterSection({
+    required this.slot,
+    required this.onAssignStaff,
+    required this.onUnassignStaff,
+  });
 
   final ShiftSlotEntity slot;
   final VoidCallback onAssignStaff;
+  final ValueChanged<SlotAttendantEntity> onUnassignStaff;
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +37,31 @@ class _SlotRosterSection extends StatelessWidget {
         if (attendants.isNotEmpty)
           Padding(
             padding: EdgeInsets.only(top: spacing.s12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final attendant in attendants)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: spacing.s8),
-                    child: AssignedStaffTile(
+            child: PermissionGate(
+              permissions: [UserPermission.shiftUnassignAttendant],
+              builder: (context, canUnassign) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final attendant in attendants) ...[
+                    if (attendant != attendants.first)
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: spacing.s8),
+                        child: Divider(
+                          color: context.color.borderSubtle,
+                          height: 1,
+                        ),
+                      ),
+                    AssignedStaffTile(
                       name: attendant.name,
                       phone: attendant.staffCode,
+                      isSlotLead: attendant.isSlotLead,
+                      onRemove: canUnassign
+                          ? () => onUnassignStaff(attendant)
+                          : null,
                     ),
-                  ),
-              ],
+                  ],
+                ],
+              ),
             ),
           ),
         // WHY hidden rather than disabled: a full slot says so with the pill in
