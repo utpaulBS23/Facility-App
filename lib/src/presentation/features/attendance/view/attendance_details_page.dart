@@ -10,52 +10,30 @@ class AttendanceDetailsPage extends ConsumerStatefulWidget {
       _AttendanceDetailsPageState();
 }
 
-class _AttendanceDetailsPageState
-    extends ConsumerState<AttendanceDetailsPage> {
+class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   late AttendanceItemEntity _current;
-  late bool _canReview;
-
   @override
   void initState() {
     super.initState();
     _current = widget.attendance;
-    // WHY: gate on the real backend permissions rather than inferring
-    // "supervisor" from the absence of attendance.check_in — the backend now
-    // ships attendance.approve/.reject explicitly, so the proxy is obsolete.
-    // Read once in initState: permissions never change mid-session.
-    final session = ref.read(getUserSessionUseCaseProvider).call();
-    _canReview =
-        session?.canAny(const [
-          AppPermission.attendanceApprove,
-          AppPermission.attendanceReject,
-        ]) ??
-        false;
   }
 
-  int? get _partnerId => ref.activePartnerId;
-
   void _onApprove() {
-    final partnerId = _partnerId;
-    if (partnerId == null) return;
-    ref.read(approveAttendanceProvider.notifier).approve(
-      partnerId: partnerId,
-      attendanceId: _current.id,
-    );
+    ref
+        .read(approveAttendanceProvider.notifier)
+        .approve(attendanceId: _current.id);
   }
 
   void _onReject() {
-    final partnerId = _partnerId;
-    if (partnerId == null) return;
-    ref.read(rejectAttendanceProvider.notifier).reject(
-      partnerId: partnerId,
-      attendanceId: _current.id,
-    );
+    ref
+        .read(rejectAttendanceProvider.notifier)
+        .reject(attendanceId: _current.id);
   }
 
   void _showError(Object error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(error.toString()),
+        content: Text(error.localizedMessage(context)),
         backgroundColor: context.color.error,
       ),
     );
@@ -88,26 +66,8 @@ class _AttendanceDetailsPageState
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        // WHY: iOS-style back button — icon + label mimic native feel.
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        leadingWidth: 100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.attendanceDetails),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,
@@ -115,19 +75,28 @@ class _AttendanceDetailsPageState
       ),
       body: Column(
         children: [
-          Expanded(
-            child: _AttendanceDetailsBody(detail: _current),
-          ),
-          if (_canReview && isPending)
-            _ApproveRejectBar(
-              onApprove: _onApprove,
-              onReject: _onReject,
-              isApproving: isApproving,
-              isRejecting: isRejecting,
+          Expanded(child: _AttendanceDetailsBody(detail: _current)),
+          // WHY gate on the real backend permissions rather than inferring
+          // "supervisor" from the absence of attendance.check_in — the backend
+          // ships attendance.approve/.reject explicitly, so the proxy is
+          // obsolete.
+          if (isPending)
+            PermissionGate(
+              permissions: const [
+                UserPermission.attendanceApprove,
+                UserPermission.attendanceReject,
+              ],
+              builder: (context, canReview) => canReview
+                  ? _ApproveRejectBar(
+                      onApprove: _onApprove,
+                      onReject: _onReject,
+                      isApproving: isApproving,
+                      isRejecting: isRejecting,
+                    )
+                  : const SizedBox.shrink(),
             ),
         ],
       ),
     );
   }
 }
-

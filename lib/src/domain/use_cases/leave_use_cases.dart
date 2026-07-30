@@ -5,15 +5,19 @@ import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
 import '../entities/leave/leave_status.dart';
+import '../repositories/authentication_repository.dart';
 import '../repositories/leave_repository.dart';
 
 final class GetLeavePoliciesUseCase {
-  GetLeavePoliciesUseCase(this.repository);
+  GetLeavePoliciesUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<List<LeavePolicyEntity>, Failure>> call(int partnerId) async {
+  Future<Result<List<LeavePolicyEntity>, Failure>> call() async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeavePolicies(partnerId);
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -22,17 +26,20 @@ final class GetLeavePoliciesUseCase {
 }
 
 final class GetLeaveBalancesUseCase {
-  GetLeaveBalancesUseCase(this.repository);
+  GetLeaveBalancesUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<List<LeaveBalanceEntity>, Failure>> call(
-    int partnerId, {
+  Future<Result<List<LeaveBalanceEntity>, Failure>> call({
     int? year,
     int? leavePolicyId,
     int? attendantId,
     int? page,
     int? pageSize,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveBalances(
       partnerId,
       year: year,
@@ -41,7 +48,6 @@ final class GetLeaveBalancesUseCase {
       page: page,
       pageSize: pageSize,
     );
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -50,15 +56,17 @@ final class GetLeaveBalancesUseCase {
 }
 
 final class RequestLeaveUseCase {
-  RequestLeaveUseCase(this.repository);
+  RequestLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
   Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
     RequestLeaveParams params,
   ) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.requestLeave(partnerId, params);
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -67,22 +75,24 @@ final class RequestLeaveUseCase {
 }
 
 final class GetMyLeavesUseCase {
-  GetMyLeavesUseCase(this.repository);
+  GetMyLeavesUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
-    int partnerId, {
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
     LeaveStatus? status,
     int? page,
     int? pageSize,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getMyLeaves(
       partnerId,
       status: status,
       page: page,
       pageSize: pageSize,
     );
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -91,18 +101,18 @@ final class GetMyLeavesUseCase {
 }
 
 final class GetLeaveRequestDetailsUseCase {
-  GetLeaveRequestDetailsUseCase(this.repository);
+  GetLeaveRequestDetailsUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
-    int leaveRequestId,
-  ) async {
+  Future<Result<LeaveRequestEntity, Failure>> call(int leaveRequestId) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveRequestDetails(
       partnerId,
       leaveRequestId,
     );
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -111,15 +121,15 @@ final class GetLeaveRequestDetailsUseCase {
 }
 
 final class CancelLeaveUseCase {
-  CancelLeaveUseCase(this.repository);
+  CancelLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
-    int leaveRequestId,
-  ) async {
+  Future<Result<LeaveRequestEntity, Failure>> call(int leaveRequestId) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.cancelLeave(partnerId, leaveRequestId);
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -128,14 +138,15 @@ final class CancelLeaveUseCase {
 }
 
 final class GetLeaveAttendantsUseCase {
-  GetLeaveAttendantsUseCase(this.repository);
+  GetLeaveAttendantsUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<List<LeaveAttendantEntity>, Failure>> call(
-    int partnerId,
-  ) async {
+  Future<Result<List<LeaveAttendantEntity>, Failure>> call() async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveAttendants(partnerId);
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -144,22 +155,24 @@ final class GetLeaveAttendantsUseCase {
 }
 
 final class GetLeaveApprovalsUseCase {
-  GetLeaveApprovalsUseCase(this.repository);
+  GetLeaveApprovalsUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
-    int partnerId, {
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
     LeaveStatus? status,
     int? page,
     int? pageSize,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveApprovals(
       partnerId,
       status: status,
       page: page,
       pageSize: pageSize,
     );
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -168,15 +181,15 @@ final class GetLeaveApprovalsUseCase {
 }
 
 final class ApproveLeaveUseCase {
-  ApproveLeaveUseCase(this.repository);
+  ApproveLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
-    int leaveRequestId,
-  ) async {
+  Future<Result<LeaveRequestEntity, Failure>> call(int leaveRequestId) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.approveLeave(partnerId, leaveRequestId);
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
@@ -185,20 +198,22 @@ final class ApproveLeaveUseCase {
 }
 
 final class RejectLeaveUseCase {
-  RejectLeaveUseCase(this.repository);
+  RejectLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
   Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
     int leaveRequestId, {
     String? reason,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.rejectLeave(
       partnerId,
       leaveRequestId,
       reason: reason,
     );
-    
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),

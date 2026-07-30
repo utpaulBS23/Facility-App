@@ -14,6 +14,7 @@ class UserSession extends _$UserSession {
         .call()
         .listen(_onSessionChanged);
     ref.onDispose(subscription.cancel);
+
     return ref.read(getUserSessionUseCaseProvider).call();
   }
 

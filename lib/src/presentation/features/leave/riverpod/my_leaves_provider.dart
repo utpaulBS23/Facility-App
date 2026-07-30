@@ -18,13 +18,9 @@ class MyLeaves extends _$MyLeaves {
     // WHY: re-fetch user's leave requests when a leave request is approved, rejected, or cancelled.
     ref.invalidateProviderOnSuccess(leaveRequestActionProvider);
 
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const [];
-
-    final result = await ref.read(getMyLeavesUseCaseProvider).call(
-          partnerId,
-          status: status,
-        );
+    final result = await ref
+        .read(getMyLeavesUseCaseProvider)
+        .call(status: status);
 
     return result.getOrThrow()?.items ?? const[];
   }

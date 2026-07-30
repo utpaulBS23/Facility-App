@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -108,7 +109,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      err.toString(),
+                      err.localizedMessage(context),
                       style: context.textStyle.bodyMedium.copyWith(
                         color: context.color.text.secondary,
                       ),

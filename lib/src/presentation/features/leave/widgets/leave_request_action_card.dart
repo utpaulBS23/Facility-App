@@ -122,9 +122,9 @@ class _LeaveRequestActionCardState
             ),
             Gap(spacing.s12),
             PermissionGate(
-              anyOf: const [
-                AppPermission.leaveApproveSupervisor,
-                AppPermission.leaveApproveManager,
+              permissions: const [
+                UserPermission.leaveApproveSupervisor,
+                UserPermission.leaveApproveManager,
               ],
               child: Column(
                 children: [

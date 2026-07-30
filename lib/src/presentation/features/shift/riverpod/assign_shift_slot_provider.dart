@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -21,8 +22,8 @@ class AssignShiftSlot extends _$AssignShiftSlot {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.shiftAssignAttendant)) {
-      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+    if (!ref.hasPermission(UserPermission.shiftAssignAttendant)) {
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 

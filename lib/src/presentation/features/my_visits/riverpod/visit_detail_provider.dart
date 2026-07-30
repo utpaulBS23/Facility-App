@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
-import '../../../../core/extensions/permission_guard.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/visit_entity.dart';
 
@@ -13,14 +13,11 @@ class VisitDetail extends _$VisitDetail {
   AsyncValue<VisitDetailEntity> build() => const AsyncValue.loading();
 
   Future<void> fetch({required int visitId}) async {
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) return;
-
     state = const AsyncValue.loading();
 
-    final Result<VisitDetailEntity, String> result = await ref
+    final Result<VisitDetailEntity, Failure> result = await ref
         .read(getVisitDetailUseCaseProvider)
-        .call(partnerId: partnerId, visitId: visitId);
+        .call(visitId: visitId);
 
     state = result.when(
       success: (data) => data != null

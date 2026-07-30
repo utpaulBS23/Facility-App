@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
@@ -14,22 +15,30 @@ class ShiftSlots extends _$ShiftSlots {
   @override
   AsyncValue<ShiftSlotsEntity?> build() => const AsyncValue.data(null);
 
-  Future<void> fetch({
-    required int partnerId,
-    required String date,
-    int? facilityId,
-  }) async {
+  Future<void> fetch({required String date, int? facilityId}) async {
     if (state.isLoading) return;
 
     state = const AsyncValue.loading();
 
-    final Result<ShiftSlotsEntity, String> result = await ref
+    final Result<ShiftSlotsEntity, Failure> result = await ref
         .read(getShiftSlotsUseCaseProvider)
-        .call(partnerId: partnerId, date: date, facilityId: facilityId);
+        .call(date: date, facilityId: facilityId);
 
     state = result.when(
       success: AsyncValue.data,
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
+  }
+
+  /// Re-fetches the currently-loaded day/facility.
+  ///
+  /// WHY: several actions elsewhere on a slot (assign, unassign, make-lead)
+  /// change assigned_count/attendants on this day's slots, so the cached list
+  /// must be refetched rather than just left as-is. No-op if nothing has
+  /// been fetched yet.
+  void refresh() {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    fetch(date: current.date, facilityId: current.facility?.id);
   }
 }

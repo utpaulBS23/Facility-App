@@ -41,7 +41,7 @@ class ApplyLeaveBody extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PermissionGate(
-            anyOf: const [AppPermission.leaveFileOnBehalf],
+            permissions: const [UserPermission.leaveFileOnBehalf],
             child: Column(
               children: [
                 ApplicationTypeSwitch(
@@ -60,7 +60,7 @@ class ApplyLeaveBody extends ConsumerWidget {
             ),
           ),
           PermissionGate(
-            anyOf: const [AppPermission.leaveBalanceView],
+            permissions: const [UserPermission.leaveBalanceView],
             child: LeaveSummaryCard(
               attendantId: isBehalf ? form.selectedAttendant?.id : null,
               isAttendantPending: isBehalf && form.selectedAttendant == null,

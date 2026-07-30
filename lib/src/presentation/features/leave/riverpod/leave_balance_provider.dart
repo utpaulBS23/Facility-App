@@ -17,12 +17,9 @@ class LeaveBalance extends _$LeaveBalance {
     // WHY: re-fetch leave balance quota when a leave is approved or cancelled.
     ref.invalidateProviderOnSuccess(leaveRequestActionProvider);
 
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const [];
-
     final result = await ref
         .read(getLeaveBalancesUseCaseProvider)
-        .call(partnerId, attendantId: attendantId);
+        .call(attendantId: attendantId);
 
     return result.getOrThrow() ?? const[];
   }

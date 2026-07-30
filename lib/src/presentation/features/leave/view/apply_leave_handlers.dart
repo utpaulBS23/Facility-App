@@ -30,13 +30,11 @@ Future<void> _onPickEndDate(BuildContext context, WidgetRef ref) async {
 }
 
 Future<void> _onSelectShiftTap(BuildContext context, WidgetRef ref) async {
-  final pid = ref.read(getActivePartnerUseCaseProvider).call();
-  if (pid == null) return;
   final form = ref.read(applyLeaveFormProvider);
   final date = DateFormat('yyyy-MM-dd').format(form.startDate);
   final s = await context.pushNamed<ShiftEntity>(
     Routes.selectShift,
-    extra: (date: date, partnerId: pid),
+    extra: date,
   );
   if (s != null) {
     ref.read(applyLeaveFormProvider.notifier).setSelectedShift(s);

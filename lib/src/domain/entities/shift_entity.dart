@@ -132,8 +132,107 @@ class ShiftEntity {
   ];
 
   /// Whether the slot has room for another attendant.
-  bool get hasFreeCapacity => maxAttendants > 0 && assignedCount < maxAttendants;
+  bool get hasFreeCapacity =>
+      maxAttendants > 0 && assignedCount < maxAttendants;
 
   /// Whether the slot has met its minimum staffing requirement.
   bool get isMinimumStaffed => assignedCount >= minAttendants;
+}
+
+class ShiftGlobalConfigEntity {
+  const ShiftGlobalConfigEntity({required this.weekStartDay});
+
+  /// Carbon/JS day numbering from the backend: 0=Sunday ... 6=Saturday.
+  final int weekStartDay;
+}
+
+class RosterFacilityEntity {
+  const RosterFacilityEntity({
+    required this.id,
+    required this.name,
+    this.nameBn,
+  });
+
+  final int id;
+  final String name;
+  final String? nameBn;
+}
+
+class RosterCreatorEntity {
+  const RosterCreatorEntity({
+    required this.id,
+    required this.fullName,
+    required this.role,
+  });
+
+  final int id;
+  final String fullName;
+  final String role;
+}
+
+class RosterEntity {
+  const RosterEntity({
+    required this.id,
+    required this.facilityId,
+    this.facility,
+    this.createdBy,
+    required this.weekStartDate,
+    required this.weekEndDate,
+    required this.status,
+    this.publishedAt,
+    this.totalShifts = 0,
+    this.filledShifts = 0,
+    this.notes,
+    this.offDays = const [],
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id;
+  final int facilityId;
+  final RosterFacilityEntity? facility;
+  final RosterCreatorEntity? createdBy;
+  final String weekStartDate;
+  final String weekEndDate;
+  final String status;
+  final String? publishedAt;
+  final int totalShifts;
+  final int filledShifts;
+  final String? notes;
+  final List<int> offDays;
+  final String? createdAt;
+  final String? updatedAt;
+}
+
+class RosterListEntity {
+  const RosterListEntity({
+    required this.rosters,
+    required this.currentPage,
+    required this.lastPage,
+    required this.total,
+  });
+
+  final List<RosterEntity> rosters;
+  final int currentPage;
+  final int lastPage;
+  final int total;
+}
+
+class RosterShiftStatsEntity {
+  const RosterShiftStatsEntity({
+    this.totalShifts = 0,
+    this.assignedShifts = 0,
+    this.unassignedShifts = 0,
+  });
+
+  final int totalShifts;
+  final int assignedShifts;
+  final int unassignedShifts;
+}
+
+class RosterShiftsEntity {
+  const RosterShiftsEntity({required this.shifts, required this.stats});
+
+  final List<ShiftEntity> shifts;
+  final RosterShiftStatsEntity stats;
 }

@@ -22,8 +22,8 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
       path: Routes.selectShift,
       name: Routes.selectShift,
       builder: (context, state) {
-        final extra = state.extra! as ({String date, int partnerId});
-        return SelectShiftPage(date: extra.date, partnerId: extra.partnerId);
+        final date = state.extra! as String;
+        return SelectShiftPage(date: date);
       },
     ),
     GoRoute(

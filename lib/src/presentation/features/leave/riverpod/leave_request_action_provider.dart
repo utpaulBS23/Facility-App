@@ -14,29 +14,22 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   Future<void> approve(int leaveRequestId) async {
     if (state.isLoading) return;
 
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return;
-
     state = const AsyncValue.loading();
 
-    final result = await ref
-        .read(approveLeaveUseCaseProvider)
-        .call(partnerId, leaveRequestId);
+    final result =
+        await ref.read(approveLeaveUseCaseProvider).call(leaveRequestId);
 
     state = result.toAsyncValue();
   }
 
   Future<void> reject(int leaveRequestId, {String? reason}) async {
     if (state.isLoading) return;
-    
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return;
 
     state = const AsyncValue.loading();
 
     final result = await ref
         .read(rejectLeaveUseCaseProvider)
-        .call(partnerId, leaveRequestId, reason: reason);
+        .call(leaveRequestId, reason: reason);
 
     state = result.toAsyncValue();
   }
@@ -44,16 +37,11 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   Future<void> cancel(int leaveRequestId) async {
     if (state.isLoading) return;
 
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return;
-
     state = const AsyncValue.loading();
 
-    final result = await ref
-        .read(cancelLeaveUseCaseProvider)
-        .call(partnerId, leaveRequestId);
+    final result =
+        await ref.read(cancelLeaveUseCaseProvider).call(leaveRequestId);
 
     state = result.toAsyncValue();
   }
-
 }

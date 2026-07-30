@@ -10,12 +10,7 @@ part 'leave_attendants_provider.g.dart';
 class LeaveAttendants extends _$LeaveAttendants {
   @override
   Future<List<LeaveAttendantEntity>> build() async {
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const [];
-
-    final result = await ref
-        .read(getLeaveAttendantsUseCaseProvider)
-        .call(partnerId);
+    final result = await ref.read(getLeaveAttendantsUseCaseProvider).call();
 
     return result.getOrThrow() ?? const [];
   }

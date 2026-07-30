@@ -10,12 +10,7 @@ part 'leave_policies_provider.g.dart';
 class LeavePolicies extends _$LeavePolicies {
   @override
   Future<List<LeavePolicyEntity>> build() async {
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const [];
-
-    final result = await ref
-        .read(getLeavePoliciesUseCaseProvider)
-        .call(partnerId);
+    final result = await ref.read(getLeavePoliciesUseCaseProvider).call();
 
     return result.getOrThrow() ?? const[];
   }

@@ -100,9 +100,9 @@ class AppNavigationDrawer extends ConsumerWidget {
           ),
           Gap(spacing.s16),
           PermissionGate(
-            anyOf: const [
-              AppPermission.leaveApproveSupervisor,
-              AppPermission.leaveApproveManager,
+            permissions: const [
+              UserPermission.leaveApproveSupervisor,
+              UserPermission.leaveApproveManager,
             ],
             child: _DrawerMenuItem(
               icon: Icons.shield_outlined,

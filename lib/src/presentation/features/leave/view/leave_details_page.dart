@@ -101,9 +101,9 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
           ),
           // Show action bar based on permission
           PermissionGate(
-            anyOf: const [
-              AppPermission.leaveApproveSupervisor,
-              AppPermission.leaveApproveManager,
+            permissions: const [
+              UserPermission.leaveApproveSupervisor,
+              UserPermission.leaveApproveManager,
             ],
             child: LeaveDetailsActionBar(
               request: request,

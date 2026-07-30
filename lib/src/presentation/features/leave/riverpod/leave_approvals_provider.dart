@@ -18,13 +18,9 @@ class LeaveApprovals extends _$LeaveApprovals {
     // WHY: re-fetch supervisor approval queue when a new leave request is submitted for review.
     ref.invalidateProviderOnSuccess(applyLeaveActionProvider);
 
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const [];
-
-    final result = await ref.read(getLeaveApprovalsUseCaseProvider).call(
-          partnerId,
-          status: status,
-        );
+    final result = await ref
+        .read(getLeaveApprovalsUseCaseProvider)
+        .call(status: status);
 
     return result.getOrThrow()?.items ?? const []; 
   

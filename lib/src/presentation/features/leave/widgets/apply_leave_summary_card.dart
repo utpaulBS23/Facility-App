@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/app_permission.dart';
 import '../../../core/theme/theme.dart';
 import '../riverpod/leave_balance_provider.dart';
 import 'shimmer/stat_tile_shimmer.dart';

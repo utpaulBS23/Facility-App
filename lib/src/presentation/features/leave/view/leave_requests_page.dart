@@ -93,9 +93,9 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
         onRetry: () => ref.invalidate(leaveApprovalsProvider),
       ),
       floatingActionButton: PermissionGate(
-        anyOf: const [
-          AppPermission.leaveRequest,
-          AppPermission.leaveFileOnBehalf,
+        permissions: const [
+          UserPermission.leaveRequest,
+          UserPermission.leaveFileOnBehalf,
         ],
         child: FloatingActionButton(
           onPressed: () => context.pushNamed(Routes.applyLeave),
