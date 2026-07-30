@@ -79,6 +79,28 @@ GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
 }
 
 @riverpod
+StartLocationPingTrackingUseCase startLocationPingTrackingUseCase(Ref ref) {
+  return StartLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+StopLocationPingTrackingUseCase stopLocationPingTrackingUseCase(Ref ref) {
+  return StopLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+SyncCurrentLocationPingUseCase syncCurrentLocationPingUseCase(Ref ref) {
+  return SyncCurrentLocationPingUseCase(
+    ref.read(locationPingRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
   Ref ref,
 ) {

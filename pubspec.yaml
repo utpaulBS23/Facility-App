@@ -45,6 +45,7 @@ dependencies:
   pinput: ^6.0.2
   google_mlkit_face_detection: ^0.13.2
   device_info_plus: ^12.4.0
+  flutter_local_notifications: ^22.2.0
 
 dev_dependencies:
   flutter_test:
