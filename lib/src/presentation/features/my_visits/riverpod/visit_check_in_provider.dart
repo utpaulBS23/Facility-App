@@ -125,8 +125,13 @@ class VisitCheckIn extends _$VisitCheckIn {
         );
 
     state = result.when(
-      success: (data) =>
-          state.copyWith(isCapturing: false, captureResult: data),
+      success: (data) {
+        ref
+            .read(startLocationPingTrackingUseCaseProvider)
+            .call(taskId: visitId);
+
+        return state.copyWith(isCapturing: false, captureResult: data);
+      },
       error: (err) => state.copyWith(isCapturing: false, captureError: err),
     );
   }
