@@ -65,12 +65,12 @@ class _DrawerMenuItem extends StatelessWidget {
                 ],
               ),
             ),
-            if (showTrailing) ... [
+            if (showTrailing) ...[
               Icon(
                 Icons.chevron_right,
                 color: color.text.secondary,
               ),
-            ]
+            ],
           ],
         ),
       ),

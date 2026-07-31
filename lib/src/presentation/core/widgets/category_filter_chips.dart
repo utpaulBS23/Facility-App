@@ -67,7 +67,7 @@ class _CategoryFilterChipsState<T> extends State<CategoryFilterChips<T>> {
     final color = context.color;
 
     return Container(
-      height: 40,
+      height: spacing.s40,
       padding: EdgeInsets.all(spacing.s4),
       decoration: BoxDecoration(
         color: color.borderSubtle,
@@ -83,6 +83,29 @@ class _CategoryFilterChipsState<T> extends State<CategoryFilterChips<T>> {
                 ? widget.labelBuilder!(category)
                 : category.toString();
 
+            final backgroundColor = switch (isSelected) {
+              true => color.onPrimary,
+              false => Colors.transparent,
+            };
+            final boxShadow = switch (isSelected) {
+              true => [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              false => null,
+            };
+            final fontWeight = switch (isSelected) {
+              true => FontWeight.bold,
+              false => FontWeight.normal,
+            };
+            final textColor = switch (isSelected) {
+              true => color.primary,
+              false => color.text.secondary,
+            };
+
             return GestureDetector(
               onTap: () => widget.onSelected(category),
               child: AnimatedContainer(
@@ -93,23 +116,15 @@ class _CategoryFilterChipsState<T> extends State<CategoryFilterChips<T>> {
                 ),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isSelected ? color.onPrimary : Colors.transparent,
+                  color: backgroundColor,
                   borderRadius: BorderRadius.circular(radius.r20),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
+                  boxShadow: boxShadow,
                 ),
                 child: Text(
                   label,
                   style: context.textStyle.labelLarge.copyWith(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? color.primary : color.text.secondary,
+                    fontWeight: fontWeight,
+                    color: textColor,
                   ),
                 ),
               ),

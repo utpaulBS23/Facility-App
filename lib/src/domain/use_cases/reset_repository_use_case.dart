@@ -1,27 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../presentation/core/application_state/session_provider/session_provider.dart';
-
 class ResetRepositoryUseCase {
   const ResetRepositoryUseCase();
 
   /// Invalidates all repository dependencies in the dependency injection
-  /// container and resets session state.
+  /// container.
+  ///
+  /// This method will invalidate all repository providers, forcing them to be
+  /// recreated on next access. This is useful for clearing cached data and
+  /// ensuring fresh repository instances.
+  ///
+  /// This is particularly important in scenarios where cached data needs to be
+  /// cleared and fresh repository instances are required. For example, when
+  /// switching between different businesses, or when a user logs out and then
+  /// logs back in, we need to ensure that repositories do not retain data from
+  /// the previous context. Without invalidation, repositories would retain
+  /// data from the previous state since they are kept alive by the dependency
+  /// injection container.
   void call(Ref ref) {
-    // WHY: userSessionProvider is invalidated explicitly so a stale session
-    // (permissions, active partner) never survives a reset — e.g. logout or
-    // switching partner — instead of the old instance lingering until some
-    // other provider happens to re-read it.
-    ref.invalidate(userSessionProvider);
+    // Invalidate all repository providers
     ref.container.getAllProviderElements().forEach((element) {
-      final name = element.provider.name;
-      // WHY: authenticationRepository holds the session/token machinery this
-      // very reset depends on (see userSessionProvider above) — invalidating
-      // it mid-reset would tear down the repository this call is running
-      // through, so it's excluded from the bulk sweep.
-      if (name != null &&
-          name.contains('Repository') &&
-          !name.contains('authenticationRepository')) {
+      if (element.provider.name!.contains('Repository')) {
         ref.invalidate(element.provider);
       }
     });

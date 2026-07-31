@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/app_localization.dart';
 import '../theme/theme.dart';
@@ -29,7 +30,7 @@ class LogoutConfirmDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: Text(
             context.locale.cancel,
             style: context.textStyle.labelLarge.copyWith(
@@ -45,7 +46,7 @@ class LogoutConfirmDialog extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            context.pop();
             onConfirm();
           },
           child: Text(

@@ -1,6 +1,6 @@
-import 'package:facility_management_app/src/presentation/core/extensions/ref_extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 
@@ -12,6 +12,9 @@ class LeaveAttendants extends _$LeaveAttendants {
   Future<List<LeaveAttendantEntity>> build() async {
     final result = await ref.read(getLeaveAttendantsUseCaseProvider).call();
 
-    return result.getOrThrow() ?? const [];
+    return result.when(
+      success: (data) => data ?? const [],
+      error: (error) => throw Exception(error.message),
+    );
   }
 }

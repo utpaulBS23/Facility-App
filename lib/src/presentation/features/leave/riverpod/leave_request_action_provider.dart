@@ -1,6 +1,6 @@
-import 'package:facility_management_app/src/presentation/core/extensions/ref_extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 
@@ -21,7 +21,10 @@ class LeaveRequestAction extends _$LeaveRequestAction {
     final result =
         await ref.read(approveLeaveUseCaseProvider).call(leaveRequestId);
 
-    state = result.toAsyncValue();
+    state = result.when(
+      success: (data) => AsyncValue.data(data),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
+    );
   }
 
   Future<void> reject(int leaveRequestId, {String? reason}) async {
@@ -35,7 +38,10 @@ class LeaveRequestAction extends _$LeaveRequestAction {
         .read(rejectLeaveUseCaseProvider)
         .call(leaveRequestId, reason: reason);
 
-    state = result.toAsyncValue();
+    state = result.when(
+      success: (data) => AsyncValue.data(data),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
+    );
   }
 
   Future<void> cancel(int leaveRequestId) async {
@@ -48,6 +54,9 @@ class LeaveRequestAction extends _$LeaveRequestAction {
     final result =
         await ref.read(cancelLeaveUseCaseProvider).call(leaveRequestId);
 
-    state = result.toAsyncValue();
+    state = result.when(
+      success: (data) => AsyncValue.data(data),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
+    );
   }
 }

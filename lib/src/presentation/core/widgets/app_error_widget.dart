@@ -22,8 +22,6 @@ class AppErrorWidget extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final cleanMessage = message.replaceAll('Exception: ', '');
-
     return Center(
       child: Padding(
         padding: EdgeInsets.all(spacing.s16),
@@ -37,7 +35,7 @@ class AppErrorWidget extends StatelessWidget {
             ),
             Gap(spacing.s12),
             Text(
-              cleanMessage,
+              message,
               textAlign: TextAlign.center,
               style: textStyle.bodyMedium.copyWith(
                 color: color.text.secondary,

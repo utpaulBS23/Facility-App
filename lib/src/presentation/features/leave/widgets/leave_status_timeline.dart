@@ -139,16 +139,22 @@ class _LeaveStatusTimeline extends StatelessWidget {
 // need clarification for approver role before removing it
 String _formatRole(BuildContext context, String role) {
   final upper = role.trim().toUpperCase();
-  if (upper == 'OPS_MANAGER' || upper == 'OPS_MGR' ||
-      upper == 'LINE_MANAGER' || upper == 'LINE_MGR' ||
-      upper == 'FACILITY_MANAGER' || upper == 'FACILITY_MGR' ||
-      upper == 'HR_MANAGER' || upper == 'HR_MGR') {
-    return context.locale.managerApproval;
-  }
-  return upper
-      .replaceAll('_', ' ')
-      .toLowerCase()
-      .split(' ')
-      .map((w) => w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '')
-      .join(' ');
+
+  return switch (upper) {
+    'OPS_MANAGER' ||
+    'OPS_MGR' ||
+    'LINE_MANAGER' ||
+    'LINE_MGR' ||
+    'FACILITY_MANAGER' ||
+    'FACILITY_MGR' ||
+    'HR_MANAGER' ||
+    'HR_MGR' =>
+      context.locale.managerApproval,
+    _ => upper
+        .replaceAll('_', ' ')
+        .toLowerCase()
+        .split(' ')
+        .map((w) => w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '')
+        .join(' '),
+  };
 }

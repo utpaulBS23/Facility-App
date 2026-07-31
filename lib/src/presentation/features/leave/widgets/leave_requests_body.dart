@@ -61,7 +61,7 @@ class _LeaveRequestsBody extends StatelessWidget {
                   selectedFilter != LeaveFilter.rejected,
             ),
             error: (err, _) => AppErrorWidget(
-              message: err.toString(),
+              message: err.localizedMessage(context),
               onRetry: onRetry,
             ),
             data: (requests) => _LeaveRequestsList(
