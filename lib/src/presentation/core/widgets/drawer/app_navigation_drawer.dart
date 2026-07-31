@@ -32,7 +32,7 @@ class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
     ref.listenManual(logoutProvider, (previous, next) {
       switch (next) {
         case AsyncData(:final value) when value == true:
-          context.pushReplacementNamed(Routes.login);
+          context.goNamed(Routes.login);
         case AsyncError(:final error):
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(error.localizedMessage(context))),
