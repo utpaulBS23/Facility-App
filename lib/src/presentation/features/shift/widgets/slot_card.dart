@@ -100,6 +100,7 @@ class _SlotCard extends StatelessWidget {
               Gap(spacing.s6),
               _InfoRow(icon: Icons.location_on_outlined, label: address),
             ],
+            _SlotAssignedSection(slot: slot, onAssignStaff: onAssignStaff),
           ],
         ),
       ),
