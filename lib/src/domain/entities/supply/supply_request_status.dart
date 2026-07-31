@@ -1,54 +1,56 @@
 enum SupplyRequestStatus {
-  pendingSupervisor,
-  pendingOperationManager,
-  operationManagerApproved,
-  inDelivery,
-  delivered,
-  rejected;
+  pendingSupervisor('pending_supervisor'),
+  pendingOperationManager('pending_operation_manager'),
+  operationManagerApproved('operation_manager_approved'),
+  inDelivery('in_delivery'),
+  delivered('delivered'),
+  rejected('rejected'),
+  unknown('unknown');
 
-  static SupplyRequestStatus fromWireString(String? raw) {
-    return switch (raw?.toLowerCase()) {
-      'pending_supervisor' => SupplyRequestStatus.pendingSupervisor,
-      'pending_operation_manager' => SupplyRequestStatus.pendingOperationManager,
-      'operation_manager_approved' => SupplyRequestStatus.operationManagerApproved,
-      'in_delivery' => SupplyRequestStatus.inDelivery,
-      'delivered' => SupplyRequestStatus.delivered,
-      'rejected' => SupplyRequestStatus.rejected,
-      _ => SupplyRequestStatus.pendingSupervisor,
-    };
+  const SupplyRequestStatus(this.wireName);
+  final String wireName;
+
+  static final Map<String, SupplyRequestStatus> _byWireName = {
+    for (final status in values)
+      status.wireName.toLowerCase().replaceAll('_', ''): status,
+  };
+
+  static SupplyRequestStatus fromWireString(String? wire) {
+    if (wire == null || wire.isEmpty) {
+      return SupplyRequestStatus.unknown;
+    }
+
+    final normalized = wire.toLowerCase().replaceAll('_', '');
+
+    return _byWireName[normalized] ?? SupplyRequestStatus.unknown;
   }
 
-  String toWireString() {
-    return switch (this) {
-      SupplyRequestStatus.pendingSupervisor => 'pending_supervisor',
-      SupplyRequestStatus.pendingOperationManager => 'pending_operation_manager',
-      SupplyRequestStatus.operationManagerApproved => 'operation_manager_approved',
-      SupplyRequestStatus.inDelivery => 'in_delivery',
-      SupplyRequestStatus.delivered => 'delivered',
-      SupplyRequestStatus.rejected => 'rejected',
-    };
-  }
+  String toWireString() => wireName;
 }
 
 enum SupplyUrgency {
-  normal,
-  high,
-  urgent;
+  normal('normal'),
+  high('high'),
+  urgent('urgent');
 
-  static SupplyUrgency fromWireString(String? raw) {
-    return switch (raw?.toLowerCase()) {
-      'urgent' => SupplyUrgency.urgent,
-      'high' || 'high priority' => SupplyUrgency.high,
-      'normal' => SupplyUrgency.normal,
-      _ => SupplyUrgency.normal,
-    };
+  const SupplyUrgency(this.wireName);
+  final String wireName;
+
+  static final Map<String, SupplyUrgency> _byWireName = {
+    for (final urgency in values)
+      urgency.wireName.toLowerCase().replaceAll('_', ''): urgency,
+    'highpriority': SupplyUrgency.high,
+  };
+
+  static SupplyUrgency fromWireString(String? wire) {
+    if (wire == null || wire.isEmpty) {
+      return SupplyUrgency.normal;
+    }
+
+    final normalized = wire.toLowerCase().replaceAll('_', '');
+
+    return _byWireName[normalized] ?? SupplyUrgency.normal;
   }
 
-  String toWireString() {
-    return switch (this) {
-      SupplyUrgency.normal => 'normal',
-      SupplyUrgency.high => 'high',
-      SupplyUrgency.urgent => 'urgent',
-    };
-  }
+  String toWireString() => wireName;
 }

@@ -4,10 +4,12 @@ class _SupplyRequestsListSection extends StatelessWidget {
   const _SupplyRequestsListSection({
     required this.requestsAsync,
     required this.onRequestTap,
+    required this.onRetry,
   });
 
   final AsyncValue<PaginatedListEntity<SupplyRequestEntity>> requestsAsync;
   final ValueChanged<SupplyRequestEntity> onRequestTap;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class _SupplyRequestsListSection extends StatelessWidget {
           separatorBuilder: (context, index) => Gap(spacing.s12),
           itemBuilder: (context, index) {
             final req = requests[index];
+
             return _SupplyRequestListCard(
               request: req,
               onTap: () => onRequestTap(req),
@@ -45,16 +48,9 @@ class _SupplyRequestsListSection extends StatelessWidget {
         );
       },
       loading: () => const _SupplyRequestListShimmer(),
-      error: (err, _) => Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: spacing.s32),
-          child: Text(
-            context.locale.somethingWentWrong,
-            style: context.textStyle.bodyMedium.copyWith(
-              color: context.color.error,
-            ),
-          ),
-        ),
+      error: (err, _) => AppErrorWidget(
+        message: context.locale.somethingWentWrong,
+        onRetry: onRetry,
       ),
     );
   }

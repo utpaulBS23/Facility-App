@@ -9,15 +9,6 @@ class _SupplyRequestListCard extends StatelessWidget {
   final SupplyRequestEntity request;
   final VoidCallback onTap;
 
-  Color _statusDotColor(BuildContext context) => switch (request.status) {
-        SupplyRequestStatus.pendingSupervisor => context.color.warning,
-        SupplyRequestStatus.pendingOperationManager => context.color.info,
-        SupplyRequestStatus.operationManagerApproved => context.color.primary,
-        SupplyRequestStatus.inDelivery => context.color.text.secondary,
-        SupplyRequestStatus.delivered => context.color.success,
-        SupplyRequestStatus.rejected => context.color.error,
-      };
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -56,8 +47,8 @@ class _SupplyRequestListCard extends StatelessWidget {
                   Row(
                     children: [
                       StatusDotTag(
-                        dotColor: _statusDotColor(context),
-                        label: supplyStatusLabel(context, request.status),
+                        dotColor: request.status.statusColor(context),
+                        label: request.status.localizedName(context),
                       ),
                       const Spacer(),
                       Icon(
@@ -110,15 +101,15 @@ class _SupplyRequestListCard extends StatelessWidget {
                         width: spacing.s8,
                         height: spacing.s8,
                         decoration: BoxDecoration(
-                          color: supplyUrgencyColor(context, request.urgency),
+                          color: request.urgency.urgencyColor(context),
                           shape: BoxShape.circle,
                         ),
                       ),
                       Gap(spacing.s4),
                       Text(
-                        supplyUrgencyLabel(context, request.urgency),
+                        request.urgency.localizedName(context),
                         style: context.textStyle.bodySmall.copyWith(
-                          color: supplyUrgencyColor(context, request.urgency),
+                          color: request.urgency.urgencyColor(context),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

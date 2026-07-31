@@ -12,17 +12,19 @@ import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/supply_status_extension.dart';
+import '../models/supply_filter.dart';
 import '../riverpod/supply_requests_provider.dart';
-import '../utils/supply_status_helper.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/pending_delivery_alert.dart';
 part '../widgets/shimmer/supply_request_shimmer.dart';
 part '../widgets/shimmer/supply_summary_row_shimmer.dart';
-part '../widgets/supply_filter_bar.dart';
 part '../widgets/supply_request_list_card.dart';
 part '../widgets/supply_requests_body.dart';
 part '../widgets/supply_requests_list.dart';
@@ -36,43 +38,14 @@ class SupplyRequestsPage extends ConsumerStatefulWidget {
 }
 
 class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
-  String _selectedFilter = kSupplyFilterAll;
-  ProviderSubscription? _requestsSub;
+  SupplyFilter _selectedFilter = SupplyFilter.all;
 
-  @override
-  void initState() {
-    super.initState();
-    _listenRequests();
-  }
+  void _onFilterSelected(SupplyFilter filter) {
+    if (_selectedFilter == filter) {
+      return;
+    }
 
-  void _listenRequests() {
-    _requestsSub?.close();
-    _requestsSub = ref.listenManual(
-      supplyRequestsProvider(
-        status: supplyStatusCodeForFilter(_selectedFilter),
-      ),
-      (previous, next) {
-        if (next is AsyncError) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.locale.somethingWentWrong)),
-          );
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _requestsSub?.close();
-    super.dispose();
-  }
-
-  void _onFilterSelected(String filter) {
-    if (_selectedFilter == filter) return;
     setState(() => _selectedFilter = filter);
-    _listenRequests();
   }
 
   void _onNewRequest() {
@@ -102,7 +75,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     );
     final filteredRequestsAsync = ref.watch(
       supplyRequestsProvider(
-        status: supplyStatusCodeForFilter(_selectedFilter),
+        status: _selectedFilter.toRequestStatus(),
       ),
     );
 
@@ -147,7 +120,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
             ? PendingDeliveryAlert(
                 count: approvedCount,
                 onTap: () => _onFilterSelected(
-                  SupplyRequestStatus.operationManagerApproved.toWireString(),
+                  SupplyFilter.operationManagerApproved,
                 ),
               )
             : null,
@@ -162,14 +135,18 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
                 ),
               )
             : null,
-        filterBar: _SupplyFilterBar(
-          filters: kSupplyFilterKeys,
-          selectedFilter: _selectedFilter,
-          onFilterSelected: _onFilterSelected,
+        filterBar: CategoryFilterChips<SupplyFilter>(
+          categories: SupplyFilter.values,
+          selectedCategory: _selectedFilter,
+          onSelected: _onFilterSelected,
+          labelBuilder: (filter) => filter.localizedName(context),
         ),
         list: _SupplyRequestsListSection(
           requestsAsync: filteredRequestsAsync,
           onRequestTap: _onRequestTap,
+          onRetry: () => ref.invalidate(
+            supplyRequestsProvider(status: _selectedFilter.toRequestStatus()),
+          ),
         ),
       ),
     );

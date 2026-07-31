@@ -14,14 +14,15 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   final RestClient remote;
 
   @override
-  Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> getSupplyRequests({
+  Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>>
+      getSupplyRequests({
     required int partnerId,
     int? facilityId,
     SupplyRequestStatus? status,
     SupplyUrgency? urgency,
     String? search,
     int? page,
-    int? perPage,
+    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getSupplyRequests(
@@ -31,10 +32,11 @@ final class SupplyRepositoryImpl extends SupplyRepository {
         urgency: urgency?.toWireString(),
         search: search,
         page: page,
-        perPage: perPage,
+        perPage: pageSize,
       );
       final responseModel =
           SupplyRequestListResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }

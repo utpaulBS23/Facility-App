@@ -5,7 +5,10 @@ import 'supply_request_model.dart';
 
 part 'supply_response_models.mapper.dart';
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class SupplyRequestResponseModel with SupplyRequestResponseModelMappable {
   const SupplyRequestResponseModel({
     this.success,
@@ -20,7 +23,10 @@ class SupplyRequestResponseModel with SupplyRequestResponseModelMappable {
   static const fromJson = SupplyRequestResponseModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class SupplyRequestListResponseModel with SupplyRequestListResponseModelMappable {
   const SupplyRequestListResponseModel({
     this.success,

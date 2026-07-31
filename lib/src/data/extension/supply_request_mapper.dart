@@ -1,58 +1,74 @@
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
+import '../../domain/entities/supply/supply_request_status.dart';
 import '../models/supply/supply_request_model.dart';
 import '../models/supply/supply_response_models.dart';
 
 extension SupplyRequestItemModelMapper on SupplyRequestItemModel {
-  SupplyRequestItemEntity toEntity() => SupplyRequestItemEntity(
-        id: id,
-        stockItemId: stockItemId,
-        itemCode: itemCode,
-        itemName: itemName,
-        unit: unit,
-        qtyRequested: qtyRequested,
-        unitPrice: unitPrice,
-        lineTotal: lineTotal,
-      );
+  SupplyRequestItemEntity toEntity() {
+    return SupplyRequestItemEntity(
+      id: id,
+      stockItemId: stockItemId,
+      itemCode: itemCode,
+      itemName: itemName,
+      unit: unit,
+      qtyRequested: qtyRequested,
+      unitPrice: unitPrice,
+      lineTotal: lineTotal,
+    );
+  }
 }
 
 extension SupplyRequestApprovalModelMapper on SupplyRequestApprovalModel {
-  SupplyRequestApprovalEntity toEntity() => SupplyRequestApprovalEntity(
-        id: id,
-        approverId: approverId,
-        approverName: approverName,
-        approverRole: approverRole,
-        action: action,
-        notes: notes,
-        actedAt: actedAt,
-      );
+  SupplyRequestApprovalEntity toEntity() {
+    return SupplyRequestApprovalEntity(
+      id: id,
+      approverId: approverId,
+      approverName: approverName,
+      approverRole: approverRole,
+      action: action,
+      notes: notes,
+      actedAt: actedAt,
+    );
+  }
 }
 
 extension SupplyRequestModelMapper on SupplyRequestModel {
-  SupplyRequestEntity toEntity() => SupplyRequestEntity(
-        id: id,
-        requestCode: requestCode,
-        facilityId: facilityId,
-        facilityName: facilityName,
-        requestedBy: requestedBy,
-        requestedByName: requestedByName,
-        initiatedByRole: initiatedByRole,
-        urgency: urgency,
-        notes: notes,
-        status: status,
-        itemCount: itemCount,
-        totalValue: totalValue,
-        items: items.map((i) => i.toEntity()).toList(),
-        approvals: approvals.map((a) => a.toEntity()).toList(),
-        linkedAllocationId: linkedAllocationId,
-        allocationCode: allocationCode,
-        createdAt: createdAt,
-        updatedAt: updatedAt ?? createdAt,
-      );
+  SupplyRequestEntity toEntity() {
+    return SupplyRequestEntity(
+      id: id,
+      requestCode: requestCode,
+      facilityId: facilityId,
+      facilityName: facilityName,
+      requestedBy: requestedBy,
+      requestedByName: requestedByName,
+      initiatedByRole: initiatedByRole,
+      urgency: SupplyUrgency.fromWireString(urgency),
+      notes: notes,
+      status: SupplyRequestStatus.fromWireString(status),
+      itemCount: itemCount,
+      totalValue: totalValue,
+      items: items.map((i) => i.toEntity()).toList(),
+      approvals: approvals.map((a) => a.toEntity()).toList(),
+      linkedAllocationId: linkedAllocationId,
+      allocationCode: allocationCode,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? createdAt,
+    );
+  }
 }
 
 extension SupplyRequestResponseModelToEntity on SupplyRequestResponseModel {
-  SupplyRequestEntity toEntity() => data!.toEntity();
+  SupplyRequestEntity toEntity() {
+    final payload = data;
+    if (payload == null) {
+      throw const FormatException(
+        'Missing data payload in SupplyRequestResponse',
+      );
+    }
+
+    return payload.toEntity();
+  }
 }
 
 extension SupplyRequestListResponseModelToEntity on SupplyRequestListResponseModel {

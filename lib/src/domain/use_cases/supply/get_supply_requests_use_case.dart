@@ -8,6 +8,7 @@ import '../../repositories/supply_repository.dart';
 
 final class GetSupplyRequestsUseCase {
   GetSupplyRequestsUseCase(this._repository, this._authRepository);
+
   final SupplyRepository _repository;
   final AuthenticationRepository _authRepository;
 
@@ -17,10 +18,12 @@ final class GetSupplyRequestsUseCase {
     SupplyUrgency? urgency,
     String? search,
     int? page,
-    int? perPage,
+    int? pageSize,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    if (partnerId == null) {
+      return const Error(Failure.partnerUnavailable);
+    }
 
     final result = await _repository.getSupplyRequests(
       partnerId: partnerId,
@@ -29,8 +32,9 @@ final class GetSupplyRequestsUseCase {
       urgency: urgency,
       search: search,
       page: page,
-      perPage: perPage,
+      pageSize: pageSize,
     );
+
     return result.when(
       success: (data) => Success(data: data),
       error: (error) => Error(error),
