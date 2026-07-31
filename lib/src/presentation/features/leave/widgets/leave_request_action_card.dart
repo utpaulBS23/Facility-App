@@ -17,23 +17,33 @@ class _LeaveRequestActionCardState
   bool _isRejecting = false;
 
   void _onApprove() async {
-    if (_isApproving || _isRejecting) return;
+    if (_isApproving || _isRejecting) {
+      return;
+    }
+
     setState(() => _isApproving = true);
     await ref
         .read(leaveRequestActionProvider.notifier)
         .approve(widget.request.id);
     _showResultSnackBar(wasApprove: true);
-    if (mounted) setState(() => _isApproving = false);
+    if (mounted) {
+      setState(() => _isApproving = false);
+    }
   }
 
   void _onReject() async {
-    if (_isApproving || _isRejecting) return;
+    if (_isApproving || _isRejecting) {
+      return;
+    }
+
     setState(() => _isRejecting = true);
     await ref
         .read(leaveRequestActionProvider.notifier)
         .reject(widget.request.id);
     _showResultSnackBar(wasApprove: false);
-    if (mounted) setState(() => _isRejecting = false);
+    if (mounted) {
+      setState(() => _isRejecting = false);
+    }
   }
 
   // WHY: every row in the list holds its own instance of this widget, all
@@ -41,12 +51,18 @@ class _LeaveRequestActionCardState
   // every row at once. Reading state right after this row's own await keeps
   // the snackbar scoped to the row that triggered it.
   void _showResultSnackBar({required bool wasApprove}) {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
+
     final result = ref.read(leaveRequestActionProvider);
     ScaffoldMessenger.of(context).clearSnackBars();
     result.whenOrNull(
       data: (value) {
-        if (value == null) return;
+        if (value == null) {
+          return;
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: wasApprove

@@ -12,7 +12,9 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   AsyncValue<LeaveRequestEntity?> build() => const AsyncValue.data(null);
 
   Future<void> approve(int leaveRequestId) async {
-    if (state.isLoading) return;
+    if (state.isLoading) {
+      return;
+    }
 
     state = const AsyncValue.loading();
 
@@ -23,7 +25,9 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   }
 
   Future<void> reject(int leaveRequestId, {String? reason}) async {
-    if (state.isLoading) return;
+    if (state.isLoading) {
+      return;
+    }
 
     state = const AsyncValue.loading();
 
@@ -35,7 +39,9 @@ class LeaveRequestAction extends _$LeaveRequestAction {
   }
 
   Future<void> cancel(int leaveRequestId) async {
-    if (state.isLoading) return;
+    if (state.isLoading) {
+      return;
+    }
 
     state = const AsyncValue.loading();
 

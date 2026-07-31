@@ -10,8 +10,12 @@ enum LeaveType {
   final String wireName;
 
   static LeaveType fromWireString(String? wire) {
-    if (wire == null || wire.isEmpty) return LeaveType.other;
+    if (wire == null || wire.isEmpty) {
+      return LeaveType.other;
+    }
+
     final normalized = wire.toLowerCase().replaceAll('_', '');
+
     return LeaveType.values.firstWhere(
       (e) => e.wireName.replaceAll('_', '') == normalized,
       orElse: () => LeaveType.other,

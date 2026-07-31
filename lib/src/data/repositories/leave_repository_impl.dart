@@ -23,6 +23,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       final response = await remote.getLeavePolicies(partnerId: partnerId);
       final responseModel =
           LeavePolicyListResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -47,6 +48,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       );
       final responseModel =
           LeaveBalanceListResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -62,6 +64,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         body: params.toJson(),
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -82,6 +85,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       );
       final responseModel =
           LeaveRequestListResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -97,6 +101,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leaveRequestId: leaveRequestId,
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -112,6 +117,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leaveRequestId: leaveRequestId,
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -124,6 +130,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       final response = await remote.getLeaveAttendants(partnerId: partnerId);
       final responseModel =
           LeaveAttendantListResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -144,6 +151,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       );
       final responseModel =
           LeaveRequestListResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -159,6 +167,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leaveRequestId: leaveRequestId,
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -176,6 +185,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         body: reason.toRejectLeaveBody(),
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }

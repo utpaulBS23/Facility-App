@@ -9,8 +9,12 @@ enum ShiftStatus {
   final String wireName;
 
   static ShiftStatus fromWireString(String? wire) {
-    if (wire == null || wire.isEmpty) return ShiftStatus.upcoming;
+    if (wire == null || wire.isEmpty) {
+      return ShiftStatus.upcoming;
+    }
+
     final normalized = wire.toLowerCase().replaceAll('_', '');
+
     return ShiftStatus.values.firstWhere(
       (e) => e.wireName.replaceAll('_', '') == normalized,
       orElse: () => ShiftStatus.upcoming,
