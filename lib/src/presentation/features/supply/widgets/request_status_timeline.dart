@@ -19,11 +19,15 @@ class _RequestStatusTimeline extends StatelessWidget {
         return approval;
       }
     }
+
     return null;
   }
 
   String _formatStepDate(String? iso) {
-    if (iso == null || iso.isEmpty) return '-';
+    if (iso == null || iso.isEmpty) {
+      return '-';
+    }
+
     try {
       return DateFormatter.shortDate(DateTime.parse(iso).toLocal());
     } catch (_) {
@@ -33,8 +37,11 @@ class _RequestStatusTimeline extends StatelessWidget {
 
   SupplyRequestApprovalEntity? _lastRejection() {
     for (final approval in request.approvals.reversed) {
-      if (approval.action.toLowerCase() == 'rejected') return approval;
+      if (approval.action.toLowerCase() == 'rejected') {
+        return approval;
+      }
     }
+
     return null;
   }
 
@@ -88,8 +95,10 @@ class _RequestStatusTimeline extends StatelessWidget {
     ];
 
     final labels = _labels(context);
+
     return List.generate(4, (i) {
       final isRejected = rejectedIndex == i;
+
       return _TimelineStepData(
         title: labels[i],
         subtitle: subtitles[i],
@@ -197,25 +206,30 @@ class _TimelineCircleNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.color;
 
-    final IconData icon = step.isRejected
-        ? Icons.close_rounded
-        : (step.isCompleted
-            ? Icons.check_rounded
-            : Icons.access_time_rounded);
+    final IconData icon = switch (step) {
+      _ when step.isRejected => Icons.close_rounded,
+      _ when step.isCompleted => Icons.check_rounded,
+      _ => Icons.access_time_rounded,
+    };
 
-    final Color nodeBg = (step.isCompleted || step.isRejected)
-        ? (step.isRejected ? color.error : color.success)
-        : color.onPrimary;
+    final Color nodeBg = switch (step) {
+      _ when step.isRejected => color.error,
+      _ when step.isCompleted => color.success,
+      _ => color.onPrimary,
+    };
 
-    final Color nodeBorder = step.isRejected
-        ? color.error
-        : (step.isCompleted
-            ? color.success
-            : (step.isActive ? color.warning : color.borderSubtle));
+    final Color nodeBorder = switch (step) {
+      _ when step.isRejected => color.error,
+      _ when step.isCompleted => color.success,
+      _ when step.isActive => color.warning,
+      _ => color.borderSubtle,
+    };
 
-    final Color iconColor = (step.isCompleted || step.isRejected)
-        ? color.onPrimary
-        : (step.isActive ? color.warning : color.text.secondary);
+    final Color iconColor = switch (step) {
+      _ when step.isRejected || step.isCompleted => color.onPrimary,
+      _ when step.isActive => color.warning,
+      _ => color.text.secondary,
+    };
 
     return Container(
       width: 36,
