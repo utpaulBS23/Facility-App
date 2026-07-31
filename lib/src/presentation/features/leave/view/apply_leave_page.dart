@@ -9,7 +9,7 @@ import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/apply_leave_form_provider.dart';
 import '../riverpod/apply_leave_provider.dart';
@@ -132,8 +132,8 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: context.dimensions.spacing.s100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.applyLeave),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,

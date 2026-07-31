@@ -11,7 +11,7 @@ import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/leave_type_extension.dart';
@@ -43,9 +43,10 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
       next.whenOrNull(
         data: (value) {
           if (value == null || !mounted) return;
-          final msg = _lastActionWasApprove
-              ? context.locale.approved
-              : context.locale.rejection;
+          final msg = switch (_lastActionWasApprove) {
+            true => context.locale.approved,
+            false => context.locale.rejection,
+          };
           AppSnackBar.showSuccess(context, msg);
           context.pop();
         },
@@ -72,8 +73,8 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: context.dimensions.spacing.s100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.leaveDetails),
         centerTitle: true,
         backgroundColor: color.onPrimary,
