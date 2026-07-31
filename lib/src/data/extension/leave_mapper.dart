@@ -3,6 +3,9 @@ import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
 import '../../domain/entities/leave/leave_request_entity.dart';
+import '../../domain/entities/leave/leave_status.dart';
+import '../../domain/entities/leave/leave_type.dart';
+import '../../domain/entities/leave/shift_status.dart';
 import '../../domain/repositories/leave_repository.dart';
 import '../models/leave/leave_attendant_model.dart';
 import '../models/leave/leave_balance_model.dart';
@@ -11,108 +14,126 @@ import '../models/leave/leave_request_model.dart';
 import '../models/leave/leave_response_models.dart';
 
 extension LeavePolicyModelToEntity on LeavePolicyModel {
-  LeavePolicyEntity toEntity() => LeavePolicyEntity(
-        id: id,
-        name: name,
-        leaveType: leaveType,
-        defaultDaysPerYear: defaultDaysPerYear,
-        requiresApproval: requiresApproval,
-        canCarryForward: canCarryForward,
-      );
+  LeavePolicyEntity toEntity() {
+    return LeavePolicyEntity(
+      id: id,
+      name: name,
+      leaveType: LeaveType.fromWireString(leaveType),
+      defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
+      requiresApproval: requiresApproval ?? true,
+      canCarryForward: canCarryForward ?? false,
+    );
+  }
 }
 
 extension LeaveBalanceModelToEntity on LeaveBalanceModel {
-  LeaveBalanceEntity toEntity() => LeaveBalanceEntity(
-        id: id,
-        leavePolicy: leavePolicy?.toEntity(),
-        allocatedDays: allocatedDays,
-        usedDays: usedDays,
-        pendingDays: pendingDays,
-        remainingDays: remainingDays,
-      );
+  LeaveBalanceEntity toEntity() {
+    return LeaveBalanceEntity(
+      id: id,
+      leavePolicy: leavePolicy?.toEntity(),
+      allocatedDays: allocatedDays ?? 0.0,
+      usedDays: usedDays ?? 0.0,
+      pendingDays: pendingDays ?? 0.0,
+      remainingDays: remainingDays ?? 0.0,
+    );
+  }
 }
 
 extension LeaveApplicantModelToEntity on LeaveApplicantModel {
-  LeaveApplicantEntity toEntity() => LeaveApplicantEntity(
-        id: id,
-        name: name,
-      );
+  LeaveApplicantEntity toEntity() {
+    return LeaveApplicantEntity(
+      id: id,
+      name: name,
+    );
+  }
 }
 
 extension LeaveApprovalStepModelToEntity on LeaveApprovalStepModel {
-  LeaveApprovalStepEntity toEntity() => LeaveApprovalStepEntity(
-        stepNumber: stepNumber,
-        approverRole: approverRole,
-        approver: approver?.toEntity(),
-        status: status,
-        decidedAt: decidedAt,
-        rejectionNote: rejectionNote,
-      );
+  LeaveApprovalStepEntity toEntity() {
+    return LeaveApprovalStepEntity(
+      stepNumber: stepNumber,
+      approverRole: approverRole,
+      approver: approver?.toEntity(),
+      status: LeaveStatus.fromWireString(status),
+      decidedAt: decidedAt,
+      rejectionNote: rejectionNote,
+    );
+  }
 }
 
 extension LeaveShiftDetailModelToEntity on LeaveShiftDetailModel {
-  LeaveShiftDetailEntity toEntity() => LeaveShiftDetailEntity(
-        id: id,
-        shiftDate: shiftDate,
-        shiftName: shiftName,
-        startTime: startTime,
-        endTime: endTime,
-        facilityId: facilityId,
-        facilityName: facilityName,
-        status: status,
-      );
+  LeaveShiftDetailEntity toEntity() {
+    return LeaveShiftDetailEntity(
+      id: id,
+      shiftDate: shiftDate,
+      shiftName: shiftName,
+      startTime: startTime,
+      endTime: endTime,
+      facilityId: facilityId,
+      facilityName: facilityName,
+      status: ShiftStatus.fromWireString(status),
+    );
+  }
 }
 
 extension LeaveRequestModelToEntity on LeaveRequestModel {
-  LeaveRequestEntity toEntity() => LeaveRequestEntity(
-        id: id,
-        referenceCode: referenceCode,
-        applicant: applicant?.toEntity(),
-        createdBy: createdBy?.toEntity(),
-        leavePolicy: leavePolicy?.toEntity(),
-        startDate: startDate,
-        endDate: endDate,
-        daysCount: daysCount,
-        leaveType: leaveType,
-        reason: reason,
-        coverAttendant: coverAttendant?.toEntity(),
-        attachments: attachments,
-        status: status,
-        shifts: shifts.map((s) => s.toEntity()).toList(),
-        approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
-        createdAt: createdAt,
-      );
+  LeaveRequestEntity toEntity() {
+    return LeaveRequestEntity(
+      id: id,
+      referenceCode: referenceCode,
+      applicant: applicant?.toEntity(),
+      createdBy: createdBy?.toEntity(),
+      leavePolicy: leavePolicy?.toEntity(),
+      startDate: startDate,
+      endDate: endDate,
+      daysCount: daysCount,
+      leaveType: LeaveType.fromWireString(leaveType),
+      reason: reason,
+      coverAttendant: coverAttendant?.toEntity(),
+      attachments: attachments,
+      status: LeaveStatus.fromWireString(status),
+      shifts: shifts.map((s) => s.toEntity()).toList(),
+      approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
+      createdAt: createdAt,
+    );
+  }
 }
 
 extension LeaveAttendantShiftModelToEntity on LeaveAttendantShiftModel {
-  LeaveAttendantShiftEntity toEntity() => LeaveAttendantShiftEntity(
-        id: id,
-        shiftName: shiftName,
-        startTime: startTime,
-        endTime: endTime,
-        status: status,
-      );
+  LeaveAttendantShiftEntity toEntity() {
+    return LeaveAttendantShiftEntity(
+      id: id,
+      shiftName: shiftName,
+      startTime: startTime,
+      endTime: endTime,
+      status: ShiftStatus.fromWireString(status),
+    );
+  }
 }
 
 extension LeaveAttendantModelToEntity on LeaveAttendantModel {
-  LeaveAttendantEntity toEntity() => LeaveAttendantEntity(
-        id: id,
-        uid: uid,
-        name: name,
-        facilityId: facilityId,
-        facilityName: facilityName,
-        shift: shift?.toEntity(),
-      );
+  LeaveAttendantEntity toEntity() {
+    return LeaveAttendantEntity(
+      id: id,
+      uid: uid,
+      name: name,
+      facilityId: facilityId,
+      facilityName: facilityName,
+      shift: shift?.toEntity(),
+    );
+  }
 }
 
 extension LeavePolicyListResponseModelToEntity on LeavePolicyListResponseModel {
-  List<LeavePolicyEntity> toEntity() =>
-      data.map((model) => model.toEntity()).toList();
+  List<LeavePolicyEntity> toEntity() {
+    return data.map((model) => model.toEntity()).toList();
+  }
 }
 
 extension LeaveBalanceListResponseModelToEntity on LeaveBalanceListResponseModel {
-  List<LeaveBalanceEntity> toEntity() =>
-      data.map((model) => model.toEntity()).toList();
+  List<LeaveBalanceEntity> toEntity() {
+    return data.map((model) => model.toEntity()).toList();
+  }
 }
 
 extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
@@ -121,6 +142,7 @@ extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
     if (payload == null) {
       throw const FormatException('Missing data payload in LeaveRequestResponse');
     }
+
     return payload.toEntity();
   }
 }
@@ -153,6 +175,7 @@ extension RejectLeaveReasonMapper on String? {
   /// `rejection_reason` entirely when no reason was given.
   Map<String, dynamic> toRejectLeaveBody() {
     final reason = this;
+
     return reason != null && reason.isNotEmpty
         ? {'rejection_reason': reason}
         : <String, dynamic>{};

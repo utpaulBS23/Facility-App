@@ -7,7 +7,10 @@ import 'leave_request_model.dart';
 
 part 'leave_response_models.mapper.dart';
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class LeavePolicyListResponseModel with LeavePolicyListResponseModelMappable {
   const LeavePolicyListResponseModel({
     this.success,
@@ -20,7 +23,10 @@ class LeavePolicyListResponseModel with LeavePolicyListResponseModelMappable {
   static const fromJson = LeavePolicyListResponseModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class LeaveBalanceListResponseModel with LeaveBalanceListResponseModelMappable {
   const LeaveBalanceListResponseModel({
     this.success,
@@ -33,7 +39,10 @@ class LeaveBalanceListResponseModel with LeaveBalanceListResponseModelMappable {
   static const fromJson = LeaveBalanceListResponseModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class LeaveRequestResponseModel with LeaveRequestResponseModelMappable {
   const LeaveRequestResponseModel({
     this.success,
@@ -46,7 +55,10 @@ class LeaveRequestResponseModel with LeaveRequestResponseModelMappable {
   static const fromJson = LeaveRequestResponseModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class LeaveRequestListResponseModel with LeaveRequestListResponseModelMappable {
   const LeaveRequestListResponseModel({
     this.success,
@@ -57,17 +69,18 @@ class LeaveRequestListResponseModel with LeaveRequestListResponseModelMappable {
   });
 
   final bool? success;
-  @MappableField(key: 'total_records')
   final int? totalRecords;
   final int? page;
-  @MappableField(key: 'page_size')
   final int? pageSize;
   final List<LeaveRequestModel> data;
 
   static const fromJson = LeaveRequestListResponseModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class LeaveAttendantListResponseModel with LeaveAttendantListResponseModelMappable {
   const LeaveAttendantListResponseModel({
     this.success,
