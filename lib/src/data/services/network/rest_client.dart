@@ -181,24 +181,10 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
-  @POST(Endpoints.visitCheckInCapture)
-  Future<HttpResponse> captureCheckIn({
-    @Path('partnerId') required int partnerId,
-    @Path('visitId') required int visitId,
-    @Body() required Map<String, dynamic> request,
-  });
-
   @GET(Endpoints.visitChecklist)
   Future<HttpResponse> getChecklist({
     @Path('partnerId') required int partnerId,
     @Path('visitId') required int visitId,
-  });
-
-  @POST(Endpoints.visitChecklistSubmit)
-  Future<HttpResponse> submitChecklist({
-    @Path('partnerId') required int partnerId,
-    @Path('visitId') required int visitId,
-    @Body() required Map<String, dynamic> request,
   });
 
   @POST(Endpoints.visitSubmit)

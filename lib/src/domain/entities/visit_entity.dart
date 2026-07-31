@@ -4,14 +4,16 @@ enum VisitType { routineInspection, followUp }
 
 class VisitStatsSummaryEntity {
   const VisitStatsSummaryEntity({
-    required this.todayCount,
-    required this.thisWeekCount,
-    required this.completedCount,
+    required this.total,
+    required this.pending,
+    required this.inProgress,
+    required this.completed,
   });
 
-  final int todayCount;
-  final int thisWeekCount;
-  final int completedCount;
+  final int total;
+  final int pending;
+  final int inProgress;
+  final int completed;
 }
 
 class VisitSummaryEntity {
@@ -116,20 +118,3 @@ class VisitCheckInRequestEntity {
   final double longitude;
 }
 
-class VisitCheckInCaptureEntity {
-  const VisitCheckInCaptureEntity({
-    required this.distanceMeters,
-    required this.locationVerified,
-    required this.facilityLat,
-    required this.facilityLng,
-    required this.yourLat,
-    required this.yourLng,
-  });
-
-  final int distanceMeters;
-  final bool locationVerified;
-  final double facilityLat;
-  final double facilityLng;
-  final double yourLat;
-  final double yourLng;
-}

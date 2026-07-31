@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 abstract class LocationSharingNotificationService {
@@ -37,6 +38,8 @@ final class LocationSharingNotificationServiceImpl
 
   @override
   Future<void> showSharingNotification() async {
+    if (defaultTargetPlatform == TargetPlatform.android) return;
+
     await _initialize();
     await _requestNotificationPermission();
 
@@ -70,6 +73,8 @@ final class LocationSharingNotificationServiceImpl
 
   @override
   Future<void> hideSharingNotification() async {
+    if (defaultTargetPlatform == TargetPlatform.android) return;
+
     await _initialize();
     await _notifications.cancel(id: _notificationId);
   }
