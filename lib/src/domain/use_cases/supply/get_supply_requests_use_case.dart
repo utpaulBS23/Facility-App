@@ -7,9 +7,12 @@ import '../../repositories/authentication_repository.dart';
 import '../../repositories/supply_repository.dart';
 
 final class GetSupplyRequestsUseCase {
-  GetSupplyRequestsUseCase(this._repository, this._authRepository);
+  GetSupplyRequestsUseCase({
+    required this.repository,
+    required AuthenticationRepository authRepository,
+  }) : _authRepository = authRepository;
 
-  final SupplyRepository _repository;
+  final SupplyRepository repository;
   final AuthenticationRepository _authRepository;
 
   Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> call({
@@ -25,7 +28,7 @@ final class GetSupplyRequestsUseCase {
       return const Error(Failure.partnerUnavailable);
     }
 
-    final result = await _repository.getSupplyRequests(
+    final result = await repository.getSupplyRequests(
       partnerId: partnerId,
       facilityId: facilityId,
       status: status,
