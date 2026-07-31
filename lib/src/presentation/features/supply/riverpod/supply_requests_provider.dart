@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
@@ -23,6 +24,9 @@ class SupplyRequests extends _$SupplyRequests {
         .read(getSupplyRequestsUseCaseProvider)
         .call(status: status);
 
-    return result.getOrThrow() ?? const PaginatedListEntity.empty();
+    return result.when(
+      success: (data) => data ?? const PaginatedListEntity.empty(),
+      error: (error) => throw error,
+    );
   }
 }
