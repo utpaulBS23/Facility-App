@@ -348,79 +348,80 @@ SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
 @riverpod
 GetLeavePoliciesUseCase getLeavePoliciesUseCase(Ref ref) {
   return GetLeavePoliciesUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
   return GetLeaveBalancesUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
   return RequestLeaveUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
   return GetLeaveRequestDetailsUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
   return CancelLeaveUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
   return GetLeaveAttendantsUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
   return GetLeaveApprovalsUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 ApproveLeaveUseCase approveLeaveUseCase(Ref ref) {
   return ApproveLeaveUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
   return RejectLeaveUseCase(
-    ref.read(leaveRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
+

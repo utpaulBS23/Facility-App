@@ -1,4 +1,3 @@
-import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -6,11 +5,14 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../application_state/logout_provider/logout_provider.dart';
 import '../../application_state/session_provider/session_provider.dart';
 import '../../router/routes.dart';
 import '../../theme/theme.dart';
+import '../logout_confirm_dialog.dart';
+import '../permission_gate.dart';
 
 part 'widgets/drawer_header_section.dart';
 part 'widgets/drawer_menu_item.dart';
@@ -21,65 +23,32 @@ class AppNavigationDrawer extends ConsumerWidget {
   void _onLogoutTap(BuildContext context, WidgetRef ref) {
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: context.color.onPrimary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(context.radius.r12),
-        ),
-        title: Text(
-          context.locale.logout,
-          style: context.textStyle.titleMedium.copyWith(
-            color: context.color.text.primary,
-          ),
-        ),
-        content: Text(
-          context.locale.logoutConfirmMessage,
-          style: context.textStyle.bodyRegular.copyWith(
-            color: context.color.text.secondary,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: Text(
-              context.locale.cancel,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.text.secondary,
-              ),
-            ),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.error,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(context.radius.r6),
-              ),
-            ),
-            onPressed: () {
-              context.pop(); // Close dialog
-              context.pop(); // Close drawer
-              ref.read(logoutProvider.notifier).call();
-            },
-            child: Text(
-              context.locale.confirm,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.onPrimary,
-              ),
-            ),
-          ),
-        ],
+      builder: (dialogContext) => LogoutConfirmDialog(
+        onConfirm: () => ref.read(logoutProvider.notifier).call(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(logoutProvider, (previous, next) {
+      switch (next) {
+        case AsyncData(:final value) when value == true:
+          context.goNamed(Routes.login);
+        case AsyncError(:final error):
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.localizedMessage(context))),
+          );
+        case _:
+      }
+    });
+
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final color = context.color;
 
-    final user = ref.watch(getCurrentUserUseCaseProvider).call();
     final session = ref.watch(userSessionProvider);
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
 
     final name = user?.name ?? session?.partner?.brandName ?? '';
     final email = user?.email ?? '';
@@ -87,9 +56,7 @@ class AppNavigationDrawer extends ConsumerWidget {
 
     return Drawer(
       backgroundColor: color.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -109,8 +76,8 @@ class AppNavigationDrawer extends ConsumerWidget {
               title: context.locale.leaveApproval,
               subtitle: context.locale.awaitingFinalApproval,
               onTap: () {
-                context.pop(); // Close drawer
-                context.pushNamed(Routes.leaveRequests);
+                context.pop();
+                context.goNamed(Routes.leaveRequests);
               },
             ),
           ),
@@ -124,9 +91,7 @@ class AppNavigationDrawer extends ConsumerWidget {
             ),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: color.borderSubtle,
-                ),
+                border: Border.all(color: color.borderSubtle),
                 borderRadius: BorderRadius.circular(radius.r16),
               ),
               child: _DrawerMenuItem(
@@ -138,11 +103,7 @@ class AppNavigationDrawer extends ConsumerWidget {
               ),
             ),
           ),
-          SafeArea(
-            top: false,
-            bottom: true,
-            child: SizedBox(height: spacing.s8),
-          ),
+          Gap(spacing.s8),
         ],
       ),
     );

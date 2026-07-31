@@ -8,8 +8,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/leave_attendants_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
@@ -55,8 +55,8 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: context.dimensions.spacing.s100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.selectAttendant),
         centerTitle: true,
         backgroundColor: color.onPrimary,

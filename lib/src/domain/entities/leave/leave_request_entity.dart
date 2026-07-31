@@ -99,6 +99,7 @@ class LeaveRequestEntity {
         break;
       }
     }
+
     return result;
   }
 }

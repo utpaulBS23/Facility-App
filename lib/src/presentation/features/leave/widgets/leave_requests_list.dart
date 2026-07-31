@@ -16,7 +16,10 @@ class _LeaveRequestsList extends StatelessWidget {
     final filtered = requests.where((r) {
       final name = r.applicant?.name.toLowerCase() ?? '';
       final matchesSearch = searchQuery.isEmpty || name.contains(searchQuery);
-      if (!matchesSearch) return false;
+      if (!matchesSearch) {
+        return false;
+      }
+
       return selectedFilter.matches(r.status);
     }).toList();
 
@@ -37,6 +40,7 @@ class _LeaveRequestsList extends StatelessWidget {
       separatorBuilder: (context, index) => Gap(context.dimensions.spacing.s12),
       itemBuilder: (context, index) {
         final request = filtered[index];
+
         return _LeaveRequestActionCard(
           request: request,
           onTap: () => context.pushNamed(Routes.leaveDetails, extra: request),

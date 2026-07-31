@@ -10,7 +10,7 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/leave_shifts_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
@@ -34,8 +34,8 @@ class SelectShiftPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: context.dimensions.spacing.s100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.selectShift),
         centerTitle: true,
         backgroundColor: color.onPrimary,

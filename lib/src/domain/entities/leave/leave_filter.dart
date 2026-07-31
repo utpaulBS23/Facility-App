@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/leave/leave_status.dart';
+import '../../../core/extensions/app_localization.dart';
+import 'leave_status.dart';
 
 enum LeaveFilter {
   all,

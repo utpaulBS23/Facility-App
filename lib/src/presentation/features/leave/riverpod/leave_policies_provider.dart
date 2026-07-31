@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_policy_entity.dart';
-import '../../../core/extensions/ref_extensions.dart';
 
 part 'leave_policies_provider.g.dart';
 
@@ -12,6 +12,9 @@ class LeavePolicies extends _$LeavePolicies {
   Future<List<LeavePolicyEntity>> build() async {
     final result = await ref.read(getLeavePoliciesUseCaseProvider).call();
 
-    return result.getOrThrow() ?? const[];
+    return result.when(
+      success: (data) => data ?? const [],
+      error: (error) => throw Exception(error.message),
+    );
   }
 }

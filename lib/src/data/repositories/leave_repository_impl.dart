@@ -1,5 +1,5 @@
 import '../../core/base/base.dart';
-import '../../domain/entities/common/paginated_list_entity.dart';
+import '../../domain/entities/leave/apply_leave_params.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -21,8 +21,10 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   ) {
     return asyncGuard(() async {
       final response = await remote.getLeavePolicies(partnerId: partnerId);
-      final responseModel =
-          LeavePolicyListResponseModel.fromJson(response.data);
+      final responseModel = LeavePolicyListResponseModel.fromJson(
+        response.data,
+      );
+
       return responseModel.toEntity();
     });
   }
@@ -33,8 +35,6 @@ final class LeaveRepositoryImpl extends LeaveRepository {
     int? year,
     int? leavePolicyId,
     int? attendantId,
-    int? page,
-    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getLeaveBalances(
@@ -42,11 +42,11 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         year: year,
         leavePolicyId: leavePolicyId,
         attendantId: attendantId,
-        page: page,
-        perPage: pageSize,
       );
-      final responseModel =
-          LeaveBalanceListResponseModel.fromJson(response.data);
+      final responseModel = LeaveBalanceListResponseModel.fromJson(
+        response.data,
+      );
+
       return responseModel.toEntity();
     });
   }
@@ -54,7 +54,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   @override
   Future<Result<LeaveRequestEntity, Failure>> requestLeave(
     int partnerId,
-    RequestLeaveParams params,
+    ApplyLeaveParams params,
   ) {
     return asyncGuard(() async {
       final response = await remote.requestLeave(
@@ -62,26 +62,25 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         body: params.toJson(),
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
 
   @override
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getMyLeaves(
+  Future<Result<List<LeaveRequestEntity>, Failure>> getMyLeaves(
     int partnerId, {
     LeaveStatus? status,
-    int? page,
-    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getMyLeaves(
         partnerId: partnerId,
         status: status?.toWireString(),
-        page: page,
-        pageSize: pageSize,
       );
-      final responseModel =
-          LeaveRequestListResponseModel.fromJson(response.data);
+      final responseModel = LeaveRequestListResponseModel.fromJson(
+        response.data,
+      );
+
       return responseModel.toEntity();
     });
   }
@@ -97,6 +96,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leaveRequestId: leaveRequestId,
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -112,6 +112,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leaveRequestId: leaveRequestId,
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -122,28 +123,28 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   ) {
     return asyncGuard(() async {
       final response = await remote.getLeaveAttendants(partnerId: partnerId);
-      final responseModel =
-          LeaveAttendantListResponseModel.fromJson(response.data);
+      final responseModel = LeaveAttendantListResponseModel.fromJson(
+        response.data,
+      );
+
       return responseModel.toEntity();
     });
   }
 
   @override
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> getLeaveApprovals(
+  Future<Result<List<LeaveRequestEntity>, Failure>> getLeaveApprovals(
     int partnerId, {
     LeaveStatus? status,
-    int? page,
-    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getLeaveApprovals(
         partnerId: partnerId,
         status: status?.toWireString(),
-        page: page,
-        pageSize: pageSize,
       );
-      final responseModel =
-          LeaveRequestListResponseModel.fromJson(response.data);
+      final responseModel = LeaveRequestListResponseModel.fromJson(
+        response.data,
+      );
+
       return responseModel.toEntity();
     });
   }
@@ -159,6 +160,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leaveRequestId: leaveRequestId,
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }
@@ -176,6 +178,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         body: reason.toRejectLeaveBody(),
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
+
       return responseModel.toEntity();
     });
   }

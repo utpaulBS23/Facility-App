@@ -17,6 +17,7 @@ class _DrawerHeaderSection extends StatelessWidget {
     final radius = context.dimensions.radius;
     final color = context.color;
     final textStyle = context.textStyle;
+    final partner = partnerName;
 
     return Container(
       color: color.primary,
@@ -65,7 +66,7 @@ class _DrawerHeaderSection extends StatelessWidget {
                   ),
                 ),
               ],
-              if (partnerName != null && partnerName!.isNotEmpty) ...[
+              if (partner != null && partner.isNotEmpty) ...[
                 Gap(spacing.s12),
                 Container(
                   padding: EdgeInsets.symmetric(
@@ -77,7 +78,7 @@ class _DrawerHeaderSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(radius.r16),
                   ),
                   child: Text(
-                    partnerName!.toUpperCase(),
+                    partner.toUpperCase(),
                     style: textStyle.bodySmall.copyWith(
                       fontWeight: FontWeight.bold,
                       color: color.primary,

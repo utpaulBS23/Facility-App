@@ -5,15 +5,15 @@ class LeavePolicyEntity {
     required this.id,
     required this.name,
     required this.leaveType,
-    this.defaultDaysPerYear,
-    this.requiresApproval,
-    this.canCarryForward,
+    required this.defaultDaysPerYear,
+    required this.requiresApproval,
+    required this.canCarryForward,
   });
 
   final int id;
   final String name;
   final LeaveType leaveType;
-  final double? defaultDaysPerYear;
-  final bool? requiresApproval;
-  final bool? canCarryForward;
+  final double defaultDaysPerYear;
+  final bool requiresApproval;
+  final bool canCarryForward;
 }
