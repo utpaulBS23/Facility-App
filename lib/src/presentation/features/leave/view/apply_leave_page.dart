@@ -8,6 +8,7 @@ import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/apply_leave_form_provider.dart';
@@ -39,14 +40,7 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
           context.pushReplacementNamed(Routes.leaveSubmitted, extra: value);
         },
         error: (e, _) {
-          if (!mounted) {
-            return;
-          }
-
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.locale.somethingWentWrong)),
-          );
+          AppSnackBar.showError(context, context.locale.somethingWentWrong);
         },
       );
     });

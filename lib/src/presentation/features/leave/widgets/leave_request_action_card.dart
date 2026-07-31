@@ -56,33 +56,20 @@ class _LeaveRequestActionCardState
     }
 
     final result = ref.read(leaveRequestActionProvider);
-    ScaffoldMessenger.of(context).clearSnackBars();
     result.whenOrNull(
       data: (value) {
         if (value == null) {
           return;
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: switch (wasApprove) {
-              true => context.color.success,
-              false => context.color.error,
-            },
-            content: Text(
-              switch (wasApprove) {
-                true => context.locale.approved,
-                false => context.locale.rejection,
-              },
-              style: TextStyle(color: context.color.onPrimary),
-            ),
-          ),
-        );
+        if (wasApprove) {
+          AppSnackBar.showSuccess(context, context.locale.approved);
+        } else {
+          AppSnackBar.showError(context, context.locale.rejection);
+        }
       },
       error: (e, _) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.locale.somethingWentWrong)),
-        );
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
       },
     );
   }
