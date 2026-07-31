@@ -413,12 +413,15 @@ class InspectionChecklist extends _$InspectionChecklist {
         .read(submitVisitUseCaseProvider)
         .call(visitId: visitId);
 
-    state = result.when(
-      success: (_) {
-        ref.read(stopLocationPingTrackingUseCaseProvider).call();
+    switch (result) {
+      case Success():
+        await ref.read(stopLocationPingTrackingUseCaseProvider).call();
+      case Error():
+        break;
+    }
 
-        return state.copyWith(isSubmitting: false, submitSuccess: true);
-      },
+    state = result.when(
+      success: (_) => state.copyWith(isSubmitting: false, submitSuccess: true),
       error: (err) => state.copyWith(isSubmitting: false, submitError: err),
     );
   }

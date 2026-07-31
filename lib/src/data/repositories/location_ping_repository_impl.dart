@@ -4,6 +4,7 @@ import '../../core/base/base.dart';
 import '../../domain/entities/location_ping_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/location_ping_repository.dart';
+import '../extension/location_ping_mapper.dart';
 import '../services/location/background_location_tracking_service.dart';
 import '../services/network/rest_client.dart';
 import '../services/notification/location_sharing_notification_service.dart';
@@ -151,26 +152,5 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
       await Geolocator.openAppSettings();
       throw Exception('Background location permission is required');
     }
-  }
-}
-
-extension LocationPingSyncRequestMapper on LocationPingSyncRequestEntity {
-  Map<String, dynamic> toJson() {
-    return {
-      'task_id': taskId,
-      'pings': pings.map((ping) => ping.toJson()).toList(),
-    };
-  }
-}
-
-extension LocationPingMapper on LocationPingEntity {
-  Map<String, dynamic> toJson() {
-    return {
-      'lat': latitude,
-      'lng': longitude,
-      if (accuracy != null) 'accuracy': accuracy,
-      'recorded_at': recordedAt.toUtc().toIso8601String(),
-      if (battery != null) 'battery': battery,
-    };
   }
 }
