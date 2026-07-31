@@ -17,31 +17,10 @@ import '../permission_gate.dart';
 part 'widgets/drawer_header_section.dart';
 part 'widgets/drawer_menu_item.dart';
 
-class AppNavigationDrawer extends ConsumerStatefulWidget {
+class AppNavigationDrawer extends ConsumerWidget {
   const AppNavigationDrawer({super.key});
 
-  @override
-  ConsumerState<AppNavigationDrawer> createState() =>
-      _AppNavigationDrawerState();
-}
-
-class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
-  @override
-  void initState() {
-    super.initState();
-    ref.listenManual(logoutProvider, (previous, next) {
-      switch (next) {
-        case AsyncData(:final value) when value == true:
-          context.pushReplacementNamed(Routes.login);
-        case AsyncError(:final error):
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.localizedMessage(context))),
-          );
-      }
-    });
-  }
-
-  void _onLogoutTap() {
+  void _onLogoutTap(BuildContext context, WidgetRef ref) {
     showDialog<void>(
       context: context,
       builder: (dialogContext) => LogoutConfirmDialog(
@@ -51,13 +30,25 @@ class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(logoutProvider, (previous, next) {
+      switch (next) {
+        case AsyncData(:final value) when value == true:
+          context.goNamed(Routes.login);
+        case AsyncError(:final error):
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.localizedMessage(context))),
+          );
+        case _:
+      }
+    });
+
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final color = context.color;
 
-    final user = ref.watch(getCurrentUserUseCaseProvider).call();
     final session = ref.watch(userSessionProvider);
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
 
     final name = user?.name ?? session?.partner?.brandName ?? '';
     final email = user?.email ?? '';
@@ -85,8 +76,8 @@ class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
               title: context.locale.leaveApproval,
               subtitle: context.locale.awaitingFinalApproval,
               onTap: () {
-                context.pop(); // Close drawer
-                context.pushNamed(Routes.leaveRequests);
+                context.pop();
+                context.goNamed(Routes.leaveRequests);
               },
             ),
           ),
@@ -121,15 +112,11 @@ class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
                 title: context.locale.logout,
                 subtitle: context.locale.endSessionAndSignOut,
                 showTrailing: false,
-                onTap: _onLogoutTap,
+                onTap: () => _onLogoutTap(context, ref),
               ),
             ),
           ),
-          SafeArea(
-            top: false,
-            bottom: true,
-            child: SizedBox(height: spacing.s8),
-          ),
+          Gap(spacing.s8),
         ],
       ),
     );
