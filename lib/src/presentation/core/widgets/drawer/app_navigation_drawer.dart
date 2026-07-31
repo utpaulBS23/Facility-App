@@ -87,9 +87,7 @@ class AppNavigationDrawer extends ConsumerWidget {
 
     return Drawer(
       backgroundColor: color.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -114,24 +112,19 @@ class AppNavigationDrawer extends ConsumerWidget {
               },
             ),
           ),
-          _DrawerMenuItem(
-            icon: Icons.inventory_2_outlined,
-            title: 'Supply Requests',
-            subtitle: 'Manage and request facility stock',
-            onTap: () {
-              Navigator.of(context).pop(); // Close drawer
-              context.pushNamed(Routes.supplyRequests);
-            },
+          PermissionGate(
+            permissions: [UserPermission.supplyRequestView],
+            child: _DrawerMenuItem(
+              icon: Icons.inventory_2_outlined,
+              title: context.locale.supplyRequests,
+              subtitle: context.locale.supplyRequestsSubtitle,
+              onTap: () {
+                Navigator.of(context).pop(); // Close drawer
+                context.pushNamed(Routes.supplyRequests);
+              },
+            ),
           ),
-          _DrawerMenuItem(
-            icon: Icons.inventory_2_outlined,
-            title: 'Stock',
-            subtitle: 'Manage stock balances and inventory',
-            onTap: () {
-              Navigator.pop(context);
-              context.pushNamed(Routes.stock);
-            },
-          ),
+
           const Spacer(),
           Padding(
             padding: EdgeInsets.fromLTRB(
@@ -142,9 +135,7 @@ class AppNavigationDrawer extends ConsumerWidget {
             ),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: color.borderSubtle,
-                ),
+                border: Border.all(color: color.borderSubtle),
                 borderRadius: BorderRadius.circular(radius.r16),
               ),
               child: _DrawerMenuItem(

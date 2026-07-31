@@ -498,5 +498,6 @@
   "pendingDeliveryAlertSubtitle": "{count}টি অনুমোদিত অনুরোধ ডেলিভারির অপেক্ষায়",
   "urgencyUrgent": "জরুরি",
   "urgencyHigh": "উচ্চ অগ্রাধিকার",
-  "urgencyNormal": "স্বাভাবিক"
+  "urgencyNormal": "স্বাভাবিক",
+  "supplyRequestsSubtitle": "সুবিধার স্টক পরিচালনা ও অনুরোধ করুন"
 }

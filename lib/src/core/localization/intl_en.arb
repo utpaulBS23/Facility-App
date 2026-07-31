@@ -527,5 +527,6 @@
   },
   "urgencyUrgent": "Urgent",
   "urgencyHigh": "High Priority",
-  "urgencyNormal": "Normal"
+  "urgencyNormal": "Normal",
+  "supplyRequestsSubtitle": "Manage and request facility stock"
 }
