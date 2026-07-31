@@ -528,5 +528,6 @@
   "urgencyUrgent": "Urgent",
   "urgencyHigh": "High Priority",
   "urgencyNormal": "Normal",
+  "urgencyLow": "Low",
   "supplyRequestsSubtitle": "Manage and request facility stock"
 }

@@ -38,6 +38,7 @@ extension SupplyUrgencyLocalization on SupplyUrgency {
       SupplyUrgency.urgent => context.locale.urgencyUrgent,
       SupplyUrgency.high => context.locale.urgencyHigh,
       SupplyUrgency.normal => context.locale.urgencyNormal,
+      SupplyUrgency.low => context.locale.urgencyLow,
     };
   }
 
@@ -46,6 +47,7 @@ extension SupplyUrgencyLocalization on SupplyUrgency {
       SupplyUrgency.urgent => context.color.primary,
       SupplyUrgency.high => context.color.warning,
       SupplyUrgency.normal => context.color.success,
+      SupplyUrgency.low => context.color.text.secondary,
     };
   }
 }

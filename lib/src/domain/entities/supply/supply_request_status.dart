@@ -29,6 +29,7 @@ enum SupplyRequestStatus {
 }
 
 enum SupplyUrgency {
+  low('low'),
   normal('normal'),
   high('high'),
   urgent('urgent');
@@ -39,7 +40,6 @@ enum SupplyUrgency {
   static final Map<String, SupplyUrgency> _byWireName = {
     for (final urgency in values)
       urgency.wireName.toLowerCase().replaceAll('_', ''): urgency,
-    'highpriority': SupplyUrgency.high,
   };
 
   static SupplyUrgency fromWireString(String? wire) {
