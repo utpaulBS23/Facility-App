@@ -7,18 +7,18 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
+import '../../../../domain/entities/supply/supply_filter.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
-import '../../../core/widgets/back_leading.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
-import '../models/supply_filter.dart';
 import '../riverpod/supply_requests_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
@@ -98,8 +98,8 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: BackLeading(onTap: () => _onBack(context)),
-        leadingWidth: spacing.s100,
+        leading: AppBackButton(onTap: () => _onBack(context)),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.supplyRequests),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,

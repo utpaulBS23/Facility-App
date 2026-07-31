@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/supply/supply_request_status.dart';
+import '../../../core/extensions/app_localization.dart';
+import 'supply_request_status.dart';
 
 enum SupplyFilter {
   all,
