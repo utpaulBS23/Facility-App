@@ -1,4 +1,3 @@
-import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -6,74 +5,53 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../application_state/logout_provider/logout_provider.dart';
 import '../../application_state/session_provider/session_provider.dart';
 import '../../router/routes.dart';
 import '../../theme/theme.dart';
+import '../logout_confirm_dialog.dart';
+import '../permission_gate.dart';
 
 part 'widgets/drawer_header_section.dart';
 part 'widgets/drawer_menu_item.dart';
 
-class AppNavigationDrawer extends ConsumerWidget {
+class AppNavigationDrawer extends ConsumerStatefulWidget {
   const AppNavigationDrawer({super.key});
 
-  void _onLogoutTap(BuildContext context, WidgetRef ref) {
+  @override
+  ConsumerState<AppNavigationDrawer> createState() =>
+      _AppNavigationDrawerState();
+}
+
+class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(logoutProvider, (previous, next) {
+      switch (next) {
+        case AsyncData(:final value) when value == true:
+          context.pushReplacementNamed(Routes.login);
+        case AsyncError(:final error):
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.localizedMessage(context))),
+          );
+      }
+    });
+  }
+
+  void _onLogoutTap() {
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: context.color.onPrimary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(context.radius.r12),
-        ),
-        title: Text(
-          context.locale.logout,
-          style: context.textStyle.titleMedium.copyWith(
-            color: context.color.text.primary,
-          ),
-        ),
-        content: Text(
-          context.locale.logoutConfirmMessage,
-          style: context.textStyle.bodyRegular.copyWith(
-            color: context.color.text.secondary,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: Text(
-              context.locale.cancel,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.text.secondary,
-              ),
-            ),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.error,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(context.radius.r6),
-              ),
-            ),
-            onPressed: () {
-              context.pop(); // Close dialog
-              context.pop(); // Close drawer
-              ref.read(logoutProvider.notifier).call();
-            },
-            child: Text(
-              context.locale.confirm,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.onPrimary,
-              ),
-            ),
-          ),
-        ],
+      builder: (dialogContext) => LogoutConfirmDialog(
+        onConfirm: () => ref.read(logoutProvider.notifier).call(),
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final color = context.color;
@@ -143,7 +121,7 @@ class AppNavigationDrawer extends ConsumerWidget {
                 title: context.locale.logout,
                 subtitle: context.locale.endSessionAndSignOut,
                 showTrailing: false,
-                onTap: () => _onLogoutTap(context, ref),
+                onTap: _onLogoutTap,
               ),
             ),
           ),
