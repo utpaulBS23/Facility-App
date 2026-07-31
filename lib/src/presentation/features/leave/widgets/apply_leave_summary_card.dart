@@ -22,7 +22,6 @@ class LeaveSummaryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final spacing = context.dimensions.spacing;
 
     if (isAttendantPending) {
@@ -65,8 +64,8 @@ class LeaveSummaryCard extends ConsumerWidget {
             : balances.first;
             
         return (
-          b.remainingDays?.toStringAsFixed(0) ?? context.locale.notAvailable,
-          b.pendingDays?.toStringAsFixed(0) ?? context.locale.notAvailable,
+          b.remainingDays.toStringAsFixed(0),
+          b.pendingDays.toStringAsFixed(0),
         );
       },
       orElse: () => (context.locale.notAvailable, context.locale.notAvailable),

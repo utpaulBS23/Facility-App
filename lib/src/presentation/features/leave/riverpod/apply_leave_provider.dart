@@ -13,7 +13,9 @@ class ApplyLeaveAction extends _$ApplyLeaveAction {
   AsyncValue<LeaveRequestEntity?> build() => const AsyncValue.data(null);
 
   Future<void> submit(RequestLeaveParams params) async {
-    if (state.isLoading) return;
+    if (state.isLoading) {
+      return;
+    }
 
     state = const AsyncValue.loading();
 
