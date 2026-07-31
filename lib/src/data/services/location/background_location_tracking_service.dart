@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
+
 abstract class BackgroundLocationTrackingService {
   bool get isRunning;
 
   void start({
     required Duration interval,
-    required Future<void> Function() onTick,
+    required Future<void> Function(Position position) onPosition,
     bool fireImmediately = false,
   });
 
@@ -14,42 +17,103 @@ abstract class BackgroundLocationTrackingService {
 
 final class BackgroundLocationTrackingServiceImpl
     implements BackgroundLocationTrackingService {
+  StreamSubscription<Position>? _subscription;
   Timer? _timer;
-  bool _isTicking = false;
+  Position? _latestPosition;
+  bool _isHandlingPosition = false;
 
   @override
-  bool get isRunning => _timer?.isActive ?? false;
+  bool get isRunning => _subscription != null;
 
   @override
   void start({
     required Duration interval,
-    required Future<void> Function() onTick,
+    required Future<void> Function(Position position) onPosition,
     bool fireImmediately = false,
   }) {
     stop();
 
+    final settings = _locationSettings(interval);
     if (fireImmediately) {
-      unawaited(_runTick(onTick));
+      unawaited(
+        _emitCurrentPosition(settings: settings, onPosition: onPosition),
+      );
     }
 
-    _timer = Timer.periodic(interval, (_) => unawaited(_runTick(onTick)));
+    _subscription = Geolocator.getPositionStream(
+      locationSettings: settings,
+    ).listen((position) => unawaited(_handlePosition(position, onPosition)));
+
+    _timer = Timer.periodic(interval, (_) {
+      final position = _latestPosition;
+      if (position == null) return;
+
+      unawaited(_handlePosition(position, onPosition));
+    });
   }
 
   @override
   void stop() {
     _timer?.cancel();
     _timer = null;
-    _isTicking = false;
+    unawaited(_subscription?.cancel());
+    _subscription = null;
+    _latestPosition = null;
+    _isHandlingPosition = false;
   }
 
-  Future<void> _runTick(Future<void> Function() onTick) async {
-    if (_isTicking) return;
+  LocationSettings _locationSettings(Duration interval) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 0,
+        intervalDuration: interval,
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationTitle: 'Location sharing active',
+          notificationText: 'Your location is being shared every 10 seconds.',
+          notificationChannelName: 'Location Sharing',
+          enableWakeLock: true,
+          setOngoing: true,
+        ),
+      );
+    }
 
-    _isTicking = true;
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      return AppleSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 0,
+        pauseLocationUpdatesAutomatically: false,
+        showBackgroundLocationIndicator: true,
+        allowBackgroundLocationUpdates: true,
+      );
+    }
+
+    return LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 0);
+  }
+
+  Future<void> _emitCurrentPosition({
+    required LocationSettings settings,
+    required Future<void> Function(Position position) onPosition,
+  }) async {
+    final position = await Geolocator.getCurrentPosition(
+      locationSettings: settings,
+    );
+    await _handlePosition(position, onPosition);
+  }
+
+  Future<void> _handlePosition(
+    Position position,
+    Future<void> Function(Position position) onPosition,
+  ) async {
+    _latestPosition = position;
+    if (_isHandlingPosition) return;
+
+    _isHandlingPosition = true;
     try {
-      await onTick();
+      await onPosition(position);
     } finally {
-      _isTicking = false;
+      _isHandlingPosition = false;
     }
   }
 }

@@ -335,14 +335,6 @@ CheckInVisitUseCase checkInVisitUseCase(Ref ref) {
 }
 
 @riverpod
-CaptureCheckInUseCase captureCheckInUseCase(Ref ref) {
-  return CaptureCheckInUseCase(
-    ref.read(visitRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
-  );
-}
-
-@riverpod
 GetChecklistUseCase getChecklistUseCase(Ref ref) {
   return GetChecklistUseCase(
     ref.read(visitRepositoryProvider),
@@ -351,8 +343,8 @@ GetChecklistUseCase getChecklistUseCase(Ref ref) {
 }
 
 @riverpod
-SubmitChecklistUseCase submitChecklistUseCase(Ref ref) {
-  return SubmitChecklistUseCase(
+SubmitVisitUseCase submitVisitUseCase(Ref ref) {
+  return SubmitVisitUseCase(
     ref.read(visitRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );
