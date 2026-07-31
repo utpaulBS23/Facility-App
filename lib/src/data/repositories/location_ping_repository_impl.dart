@@ -1,21 +1,20 @@
+import 'package:geolocator/geolocator.dart';
+
 import '../../core/base/base.dart';
 import '../../domain/entities/location_ping_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/location_ping_repository.dart';
 import '../services/location/background_location_tracking_service.dart';
-import '../services/location/location_service.dart';
 import '../services/network/rest_client.dart';
 import '../services/notification/location_sharing_notification_service.dart';
 
 final class LocationPingRepositoryImpl extends LocationPingRepository {
   LocationPingRepositoryImpl({
     required RestClient remote,
-    required LocationService locationService,
     required BackgroundLocationTrackingService trackingService,
     required LocationSharingNotificationService notificationService,
     required AuthenticationRepository authenticationRepository,
   }) : _remote = remote,
-       _locationService = locationService,
        _trackingService = trackingService,
        _notificationService = notificationService,
        _authenticationRepository = authenticationRepository;
@@ -23,7 +22,6 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
   static const _syncInterval = Duration(seconds: 10);
 
   final RestClient _remote;
-  final LocationService _locationService;
   final BackgroundLocationTrackingService _trackingService;
   final LocationSharingNotificationService _notificationService;
   final AuthenticationRepository _authenticationRepository;
@@ -31,12 +29,13 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
   @override
   Future<Result<void, Failure>> startTracking({required int taskId}) {
     return asyncGuard(() async {
+      await _ensureTrackingPermission();
       await _notificationService.showSharingNotification();
       _trackingService.start(
         interval: _syncInterval,
         fireImmediately: true,
-        onTick: () async {
-          await syncCurrentLocation(taskId: taskId);
+        onPosition: (position) async {
+          await syncPosition(taskId: taskId, position: position);
         },
       );
     });
@@ -58,26 +57,12 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
     final requestResult = await asyncGuard(() async {
-      final position = await _locationService.getCurrentPosition();
-      if (position == null) {
-        throw Exception('Unable to get current location');
-      }
-
-      if (position.isMocked) {
-        throw Exception('You are using a mocked location');
-      }
-
-      return LocationPingSyncRequestEntity(
-        taskId: taskId,
-        pings: [
-          LocationPingEntity(
-            latitude: position.latitude,
-            longitude: position.longitude,
-            accuracy: position.accuracy,
-            recordedAt: DateTime.now().toUtc(),
-          ),
-        ],
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
+      return _requestFromPosition(taskId: taskId, position: position);
     });
 
     return switch (requestResult) {
@@ -88,6 +73,48 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('build location ping request')),
     };
+  }
+
+  Future<Result<void, Failure>> syncPosition({
+    required int taskId,
+    required Position position,
+  }) async {
+    final partnerId = _authenticationRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
+    final requestResult = asyncGuard(() async {
+      return _requestFromPosition(taskId: taskId, position: position);
+    });
+
+    return switch (await requestResult) {
+      Success(:final data) when data != null => syncLocationPings(
+        partnerId: partnerId,
+        request: data,
+      ),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('build location ping request')),
+    };
+  }
+
+  LocationPingSyncRequestEntity _requestFromPosition({
+    required int taskId,
+    required Position position,
+  }) {
+    if (position.isMocked) {
+      throw Exception('You are using a mocked location');
+    }
+
+    return LocationPingSyncRequestEntity(
+      taskId: taskId,
+      pings: [
+        LocationPingEntity(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          accuracy: position.accuracy,
+          recordedAt: DateTime.now().toUtc(),
+        ),
+      ],
+    );
   }
 
   @override
@@ -101,6 +128,29 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
         request: request.toJson(),
       );
     });
+  }
+
+  Future<void> _ensureTrackingPermission() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception('Location service is disabled');
+    }
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.whileInUse) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      throw Exception('Location permission denied');
+    }
+
+    if (permission != LocationPermission.always) {
+      await Geolocator.openAppSettings();
+      throw Exception('Background location permission is required');
+    }
   }
 }
 

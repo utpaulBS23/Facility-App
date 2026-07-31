@@ -409,19 +409,9 @@ class InspectionChecklist extends _$InspectionChecklist {
 
     state = state.copyWith(isSubmitting: true, clearSubmitError: true);
 
-    final answers = [
-      for (final e in state.starAnswers.entries)
-        ChecklistAnswerRequestEntity(itemId: e.key, starRating: e.value),
-      for (final e in state.yesNoAnswers.entries)
-        ChecklistAnswerRequestEntity(itemId: e.key, yesNoAnswer: e.value),
-    ];
-
     final Result<void, Failure> result = await ref
-        .read(submitChecklistUseCaseProvider)
-        .call(
-          visitId: visitId,
-          request: ChecklistSubmitRequestEntity(answers: answers),
-        );
+        .read(submitVisitUseCaseProvider)
+        .call(visitId: visitId);
 
     state = result.when(
       success: (_) {

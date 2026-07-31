@@ -1,7 +1,7 @@
 class Endpoints {
   static const base = baseDev;
 
-  static const baseDev = 'http://3.108.132.91/api/backend';
+  static const baseDev = 'https://resort-gourmet-gdp-admissions.trycloudflare.com/api/backend';
   static const baseLocal =
       'https://tuning-realized-representing-cooked.trycloudflare.com/api/backend';
 
@@ -104,12 +104,8 @@ class Endpoints {
   static const String visitDetail = '/partners/{partnerId}/visits/{visitId}';
   static const String visitCheckIn =
       '/partners/{partnerId}/visits/{visitId}/check-in/confirm';
-  static const String visitCheckInCapture =
-      '/partners/{partnerId}/visits/{visitId}/check-in/capture';
   static const String visitChecklist =
       '/partners/{partnerId}/visits/{visitId}/checklist';
-  static const String visitChecklistSubmit =
-      '/partners/{partnerId}/visits/{visitId}/checklist/submit';
   static const String visitSubmit =
       '/partners/{partnerId}/visits/{visitId}/submit';
   static const String visitChecklistItemResponse =
