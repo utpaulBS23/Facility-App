@@ -1,9 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
-import '../../../core/extensions/ref_extensions.dart';
 import 'apply_leave_provider.dart';
 import 'leave_request_action_provider.dart';
 
@@ -13,15 +13,25 @@ part 'leave_approvals_provider.g.dart';
 class LeaveApprovals extends _$LeaveApprovals {
   @override
   Future<List<LeaveRequestEntity>> build({LeaveStatus? status}) async {
-    // WHY: re-fetch supervisor approval queue when a leave action (approve/reject) completes.
-    ref.invalidateProviderOnSuccess(leaveRequestActionProvider);
-    // WHY: re-fetch supervisor approval queue when a new leave request is submitted for review.
-    ref.invalidateProviderOnSuccess(applyLeaveActionProvider);
+    ref.listen(leaveRequestActionProvider, (previous, next) {
+      if (next is AsyncData && next.value != null) {
+        ref.invalidateSelf();
+      }
+    });
+
+    ref.listen(applyLeaveActionProvider, (previous, next) {
+      if (next is AsyncData && next.value != null) {
+        ref.invalidateSelf();
+      }
+    });
 
     final result = await ref
         .read(getLeaveApprovalsUseCaseProvider)
         .call(status: status);
 
-    return result.getOrThrow() ?? const [];
+    return result.when(
+      success: (data) => data ?? const [],
+      error: (error) => throw Exception(error.message),
+    );
   }
 }
