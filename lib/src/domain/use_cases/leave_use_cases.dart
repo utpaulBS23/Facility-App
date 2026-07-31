@@ -1,5 +1,4 @@
 import '../../core/base/base.dart';
-import '../entities/common/paginated_list_entity.dart';
 import '../entities/leave/apply_leave_params.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
@@ -46,8 +45,6 @@ final class GetLeaveBalancesUseCase {
     int? year,
     int? leavePolicyId,
     int? attendantId,
-    int? page,
-    int? pageSize,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) {
@@ -59,8 +56,6 @@ final class GetLeaveBalancesUseCase {
       year: year,
       leavePolicyId: leavePolicyId,
       attendantId: attendantId,
-      page: page,
-      pageSize: pageSize,
     );
 
     return result.when(
@@ -105,10 +100,8 @@ final class GetMyLeavesUseCase {
   final LeaveRepository repository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
+  Future<Result<List<LeaveRequestEntity>, Failure>> call({
     LeaveStatus? status,
-    int? page,
-    int? pageSize,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) {
@@ -118,8 +111,6 @@ final class GetMyLeavesUseCase {
     final result = await repository.getMyLeaves(
       partnerId,
       status: status,
-      page: page,
-      pageSize: pageSize,
     );
 
     return result.when(
@@ -213,10 +204,8 @@ final class GetLeaveApprovalsUseCase {
   final LeaveRepository repository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
+  Future<Result<List<LeaveRequestEntity>, Failure>> call({
     LeaveStatus? status,
-    int? page,
-    int? pageSize,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) {
@@ -226,8 +215,6 @@ final class GetLeaveApprovalsUseCase {
     final result = await repository.getLeaveApprovals(
       partnerId,
       status: status,
-      page: page,
-      pageSize: pageSize,
     );
 
     return result.when(

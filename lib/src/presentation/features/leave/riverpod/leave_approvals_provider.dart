@@ -22,7 +22,6 @@ class LeaveApprovals extends _$LeaveApprovals {
         .read(getLeaveApprovalsUseCaseProvider)
         .call(status: status);
 
-    return result.getOrThrow()?.items ?? const []; 
-  
+    return result.getOrThrow() ?? const [];
   }
 }

@@ -22,6 +22,6 @@ class MyLeaves extends _$MyLeaves {
         .read(getMyLeavesUseCaseProvider)
         .call(status: status);
 
-    return result.getOrThrow()?.items ?? const[];
+    return result.getOrThrow() ?? const [];
   }
 }
