@@ -1,4 +1,5 @@
 import '../../domain/entities/common/paginated_list_entity.dart';
+import '../../domain/entities/leave/apply_leave_params.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -6,7 +7,6 @@ import '../../domain/entities/leave/leave_request_entity.dart';
 import '../../domain/entities/leave/leave_status.dart';
 import '../../domain/entities/leave/leave_type.dart';
 import '../../domain/entities/leave/shift_status.dart';
-import '../../domain/repositories/leave_repository.dart';
 import '../models/leave/leave_attendant_model.dart';
 import '../models/leave/leave_balance_model.dart';
 import '../models/leave/leave_policy_model.dart';
@@ -41,10 +41,7 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
 
 extension LeaveApplicantModelToEntity on LeaveApplicantModel {
   LeaveApplicantEntity toEntity() {
-    return LeaveApplicantEntity(
-      id: id,
-      name: name,
-    );
+    return LeaveApplicantEntity(id: id, name: name);
   }
 }
 
@@ -130,7 +127,8 @@ extension LeavePolicyListResponseModelToEntity on LeavePolicyListResponseModel {
   }
 }
 
-extension LeaveBalanceListResponseModelToEntity on LeaveBalanceListResponseModel {
+extension LeaveBalanceListResponseModelToEntity
+    on LeaveBalanceListResponseModel {
   List<LeaveBalanceEntity> toEntity() {
     return data.map((model) => model.toEntity()).toList();
   }
@@ -140,14 +138,17 @@ extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
   LeaveRequestEntity toEntity() {
     final payload = data;
     if (payload == null) {
-      throw const FormatException('Missing data payload in LeaveRequestResponse');
+      throw const FormatException(
+        'Missing data payload in LeaveRequestResponse',
+      );
     }
 
     return payload.toEntity();
   }
 }
 
-extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel {
+extension LeaveRequestListResponseModelToEntity
+    on LeaveRequestListResponseModel {
   PaginatedListEntity<LeaveRequestEntity> toEntity() {
     final items = data.map((model) => model.toEntity()).toList();
     final curPage = page ?? 1;
@@ -165,7 +166,8 @@ extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel
   }
 }
 
-extension LeaveAttendantListResponseModelToEntity on LeaveAttendantListResponseModel {
+extension LeaveAttendantListResponseModelToEntity
+    on LeaveAttendantListResponseModel {
   List<LeaveAttendantEntity> toEntity() =>
       data.map((model) => model.toEntity()).toList();
 }
@@ -182,7 +184,7 @@ extension RejectLeaveReasonMapper on String? {
   }
 }
 
-extension RequestLeaveParamsMapper on RequestLeaveParams {
+extension ApplyLeaveParamsMapper on ApplyLeaveParams {
   Map<String, dynamic> toJson() {
     return {
       'leave_policy_id': leavePolicyId,

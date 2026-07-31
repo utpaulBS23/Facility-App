@@ -1,9 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../domain/entities/leave/apply_leave_params.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
-import '../../../../domain/repositories/leave_repository.dart';
 
 part 'apply_leave_form_provider.g.dart';
 
@@ -38,12 +38,13 @@ class ApplyLeaveFormState {
     };
   }
 
-  /// Converts current form inputs to domain [RequestLeaveParams]
-  RequestLeaveParams toParams() {
-    final attendantId =
-        appType == LeaveApplicationType.onBehalf ? selectedAttendant?.id : null;
+  /// Converts current form inputs to domain [ApplyLeaveParams]
+  ApplyLeaveParams toParams() {
+    final attendantId = appType == LeaveApplicationType.onBehalf
+        ? selectedAttendant?.id
+        : null;
     final formatter = DateFormat('yyyy-MM-dd');
-    return RequestLeaveParams(
+    return ApplyLeaveParams(
       leavePolicyId: leavePolicyId!,
       startDate: formatter.format(startDate),
       endDate: formatter.format(endDate),
@@ -66,10 +67,10 @@ class ApplyLeaveFormState {
   }) {
     return ApplyLeaveFormState(
       appType: appType ?? this.appType,
-      leavePolicyId:
-          clearPolicy ? null : (leavePolicyId ?? this.leavePolicyId),
-      selectedAttendant:
-          clearAttendant ? null : (selectedAttendant ?? this.selectedAttendant),
+      leavePolicyId: clearPolicy ? null : (leavePolicyId ?? this.leavePolicyId),
+      selectedAttendant: clearAttendant
+          ? null
+          : (selectedAttendant ?? this.selectedAttendant),
       selectedShift: clearShift ? null : (selectedShift ?? this.selectedShift),
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
@@ -116,18 +117,11 @@ class ApplyLeaveForm extends _$ApplyLeaveForm {
     if (end.isBefore(date)) {
       end = date;
     }
-    state = state.copyWith(
-      startDate: date,
-      endDate: end,
-      clearShift: true,
-    );
+    state = state.copyWith(startDate: date, endDate: end, clearShift: true);
   }
 
   void setEndDate(DateTime date) {
-    state = state.copyWith(
-      endDate: date,
-      clearShift: true,
-    );
+    state = state.copyWith(endDate: date, clearShift: true);
   }
 
   void setReason(String reason) {
