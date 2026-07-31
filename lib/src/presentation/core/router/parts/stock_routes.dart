@@ -8,16 +8,16 @@ List<RouteBase> _stockRoutes(Ref ref) => [
           child: SupplyRequestsPage(),
         ),
       ),
-      // GoRoute(
-      //   path: Routes.requestDetails,
-      //   name: Routes.requestDetails,
-      //   pageBuilder: (context, state) {
-      //     final payload = state.extra as MockRequestDetailsPayload?;
-      //     return MaterialPage(
-      //       child: RequestDetailsPage(payload: payload),
-      //     );
-      //   },
-      // ),
+      GoRoute(
+        path: Routes.requestDetails,
+        name: Routes.requestDetails,
+        pageBuilder: (context, state) {
+          final request = state.extra as SupplyRequestEntity;
+          return MaterialPage(
+            child: RequestDetailsPage(request: request),
+          );
+        },
+      ),
       // GoRoute(
       //   path: Routes.deliveryComplaint,
       //   name: Routes.deliveryComplaint,

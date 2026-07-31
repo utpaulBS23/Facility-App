@@ -16,4 +16,21 @@ abstract base class SupplyRepository extends Repository {
     int? page,
     int? pageSize,
   });
+
+  Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails(
+    int partnerId,
+    int supplyRequestId,
+  );
+
+  Future<Result<SupplyRequestEntity, Failure>> approveSupplyRequest(
+    int partnerId,
+    int supplyRequestId, {
+    String? notes,
+  });
+
+  Future<Result<SupplyRequestEntity, Failure>> rejectSupplyRequest(
+    int partnerId,
+    int supplyRequestId, {
+    String? notes,
+  });
 }

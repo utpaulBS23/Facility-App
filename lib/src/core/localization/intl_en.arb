@@ -529,5 +529,47 @@
   "urgencyHigh": "High Priority",
   "urgencyNormal": "Normal",
   "urgencyLow": "Low",
-  "supplyRequestsSubtitle": "Manage and request facility stock"
+  "supplyRequestsSubtitle": "Manage and request facility stock",
+  "edit": "Edit",
+  "addItem": "Add Item",
+  "itemChangesSavedSuccessfully": "Item changes saved successfully",
+  "requestDetailsTitle": "Request Details",
+  "requestedByLabel": "Requested by",
+  "submittedOn": "Submitted {date}",
+  "@submittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "notes": "Notes",
+  "noNotesProvided": "No notes provided",
+  "confirmDeliveryReceipt": "Confirm Delivery Receipt",
+  "deliveryStage": "Delivery",
+  "receivedItemsCount": "Received items ({count})",
+  "@receivedItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "requestedItemsCount": "Requested items ({count})",
+  "@requestedItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "receivedBy": "Received By",
+  "receivedOn": "Received {date}",
+  "@receivedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -500,5 +500,19 @@
   "urgencyHigh": "উচ্চ অগ্রাধিকার",
   "urgencyNormal": "স্বাভাবিক",
   "urgencyLow": "কম",
-  "supplyRequestsSubtitle": "সুবিধার স্টক পরিচালনা ও অনুরোধ করুন"
+  "supplyRequestsSubtitle": "সুবিধার স্টক পরিচালনা ও অনুরোধ করুন",
+  "edit": "সম্পাদনা",
+  "addItem": "আইটেম যোগ করুন",
+  "itemChangesSavedSuccessfully": "আইটেম পরিবর্তন সফলভাবে সংরক্ষিত হয়েছে",
+  "requestDetailsTitle": "অনুরোধের বিবরণ",
+  "requestedByLabel": "অনুরোধকারী",
+  "submittedOn": "{date} তারিখে জমা দেওয়া হয়েছে",
+  "notes": "নোট",
+  "noNotesProvided": "কোনো নোট প্রদান করা হয়নি",
+  "confirmDeliveryReceipt": "ডেলিভারি প্রাপ্তি নিশ্চিত করুন",
+  "deliveryStage": "ডেলিভারি",
+  "receivedItemsCount": "প্রাপ্ত আইটেম ({count})",
+  "requestedItemsCount": "অনুরোধকৃত আইটেম ({count})",
+  "receivedBy": "গ্রহণকারী",
+  "receivedOn": "{date} তারিখে গ্রহণ করা হয়েছে"
 }

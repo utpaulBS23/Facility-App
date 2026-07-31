@@ -90,6 +90,11 @@ LeaveRepository leaveRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+DeliveryRepository deliveryRepository(Ref ref) {
+  return DeliveryRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 SupplyRepository supplyRepository(Ref ref) {
   return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }

@@ -15,6 +15,7 @@ extension SupplyRequestStatusLocalization on SupplyRequestStatus {
       SupplyRequestStatus.inDelivery => context.locale.inDelivery,
       SupplyRequestStatus.delivered => context.locale.delivered,
       SupplyRequestStatus.rejected => context.locale.rejected,
+      SupplyRequestStatus.completed => context.locale.completed,
       SupplyRequestStatus.unknown => context.locale.notAvailable,
     };
   }
@@ -27,6 +28,7 @@ extension SupplyRequestStatusLocalization on SupplyRequestStatus {
       SupplyRequestStatus.inDelivery => context.color.text.secondary,
       SupplyRequestStatus.delivered => context.color.success,
       SupplyRequestStatus.rejected => context.color.error,
+      SupplyRequestStatus.completed => context.color.success,
       SupplyRequestStatus.unknown => context.color.text.secondary,
     };
   }

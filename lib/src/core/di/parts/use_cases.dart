@@ -432,3 +432,43 @@ GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
     ref.read(authenticationRepositoryProvider),
   );
 }
+
+@riverpod
+GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
+  return GetSupplyRequestDetailsUseCase(
+    ref.read(supplyRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+ApproveSupplyRequestUseCase approveSupplyRequestUseCase(Ref ref) {
+  return ApproveSupplyRequestUseCase(
+    ref.read(supplyRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RejectSupplyRequestUseCase rejectSupplyRequestUseCase(Ref ref) {
+  return RejectSupplyRequestUseCase(
+    ref.read(supplyRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
+  return GetDeliveryForSupplyRequestUseCase(
+    ref.read(deliveryRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
+  return ConfirmDeliveryUseCase(
+    ref.read(deliveryRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}

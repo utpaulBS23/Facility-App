@@ -90,3 +90,12 @@ extension SupplyRequestListResponseModelToEntity on SupplyRequestListResponseMod
     );
   }
 }
+
+extension SupplyDecisionNotesMapper on String? {
+  Map<String, dynamic> toDecisionBody() {
+    final notes = this;
+    return notes != null && notes.isNotEmpty
+        ? {'notes': notes}
+        : <String, dynamic>{};
+  }
+}

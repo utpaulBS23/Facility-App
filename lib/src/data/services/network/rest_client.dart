@@ -332,6 +332,43 @@ abstract class RestClient {
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
+
+  @GET(Endpoints.supplyRequestDetails)
+  Future<HttpResponse> getSupplyRequestDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+  });
+
+  @POST(Endpoints.approveSupplyRequest)
+  Future<HttpResponse> approveSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.rejectSupplyRequest)
+  Future<HttpResponse> rejectSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.deliveries)
+  Future<HttpResponse> getDeliveries({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('search') String? search,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.confirmDelivery)
+  Future<HttpResponse> confirmDelivery({
+    @Path('partnerId') required int partnerId,
+    @Path('deliveryId') required int deliveryId,
+    @Body() required Map<String, dynamic> body,
+  });
 }
 // Force regeneration
 

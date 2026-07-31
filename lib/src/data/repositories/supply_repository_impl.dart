@@ -40,4 +40,53 @@ final class SupplyRepositoryImpl extends SupplyRepository {
       return responseModel.toEntity();
     });
   }
+
+  @override
+  Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails(
+    int partnerId,
+    int supplyRequestId,
+  ) {
+    return asyncGuard(() async {
+      final response = await remote.getSupplyRequestDetails(
+        partnerId: partnerId,
+        supplyRequestId: supplyRequestId,
+      );
+      final responseModel = SupplyRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<SupplyRequestEntity, Failure>> approveSupplyRequest(
+    int partnerId,
+    int supplyRequestId, {
+    String? notes,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.approveSupplyRequest(
+        partnerId: partnerId,
+        supplyRequestId: supplyRequestId,
+        body: notes.toDecisionBody(),
+      );
+      final responseModel = SupplyRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<SupplyRequestEntity, Failure>> rejectSupplyRequest(
+    int partnerId,
+    int supplyRequestId, {
+    String? notes,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.rejectSupplyRequest(
+        partnerId: partnerId,
+        supplyRequestId: supplyRequestId,
+        body: notes.toDecisionBody(),
+      );
+      final responseModel = SupplyRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
+    });
+  }
 }

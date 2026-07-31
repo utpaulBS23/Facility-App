@@ -144,4 +144,13 @@ class Endpoints {
 
   /// Stock & Supply Management
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';
+  static const String supplyRequestDetails =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}';
+  static const String approveSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
+  static const String rejectSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+  static const String deliveries = '/partners/{partnerId}/deliveries';
+  static const String confirmDelivery =
+      '/partners/{partnerId}/deliveries/{deliveryId}/confirm';
 }

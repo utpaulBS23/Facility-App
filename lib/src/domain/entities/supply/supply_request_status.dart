@@ -5,6 +5,7 @@ enum SupplyRequestStatus {
   inDelivery('in_delivery'),
   delivered('delivered'),
   rejected('rejected'),
+  completed('completed'),
   unknown('unknown');
 
   const SupplyRequestStatus(this.wireName);
