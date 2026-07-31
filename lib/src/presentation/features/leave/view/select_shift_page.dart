@@ -1,3 +1,5 @@
+import 'package:facility_management_app/src/presentation/core/widgets/app_error_widget.dart';
+import 'package:facility_management_app/src/presentation/core/widgets/status_dot_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -20,24 +22,20 @@ class SelectShiftPage extends ConsumerWidget {
   const SelectShiftPage({
     super.key,
     required this.date,
-    required this.partnerId,
   });
 
   final String date;
-  final int partnerId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = context.color;
-    final shiftsAsync = ref.watch(
-      leaveShiftsProvider(partnerId: partnerId, date: date),
-    );
+    final shiftsAsync = ref.watch(leaveShiftsProvider(date: date));
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
         leading: const BackLeading(),
-        leadingWidth: 100,
+        leadingWidth: context.dimensions.spacing.s100,
         title: Headline2xlTinyText(context.locale.selectShift),
         centerTitle: true,
         backgroundColor: color.onPrimary,
@@ -45,13 +43,9 @@ class SelectShiftPage extends ConsumerWidget {
       ),
       body: shiftsAsync.when(
         loading: () => const _ShiftListShimmer(),
-        error: (err, _) => Center(
-          child: Text(
-            err.toString().replaceAll('Exception: ', ''),
-            style: context.textStyle.bodyMedium.copyWith(
-              color: color.text.secondary,
-            ),
-          ),
+        error: (err, _) => AppErrorWidget(
+          message: err.toString(),
+          onRetry: () => ref.invalidate(leaveShiftsProvider(date: date)),
         ),
         data: (shifts) => _SelectShiftBody(shifts: shifts),
       ),

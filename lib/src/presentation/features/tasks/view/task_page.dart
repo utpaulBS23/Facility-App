@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/router/routes.dart';
@@ -104,7 +105,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      err.toString(),
+                      err.localizedMessage(context),
                       style: context.textStyle.bodyMedium.copyWith(
                         color: context.color.text.secondary,
                       ),

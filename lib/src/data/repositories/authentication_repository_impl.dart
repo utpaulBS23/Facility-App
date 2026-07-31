@@ -11,13 +11,19 @@ import '../services/network/rest_client.dart';
 import '../services/session/session_service.dart';
 
 final class AuthenticationRepositoryImpl extends AuthenticationRepository {
-  AuthenticationRepositoryImpl({
-    required this.remote,
-    required this.session,
-  });
+  AuthenticationRepositoryImpl({required this.remote, required this.session}) {
+    // WHY: the token is the authority on "authenticated"; this session is
+    // derived from it. TokenManager clears the token from inside the Dio
+    // interceptor when a refresh fails, on a path this repository cannot see —
+    // without this subscription the session outlived its token and the app
+    // kept rendering permitted UI that could only produce 401s.
+    _tokenClearedSubscription = session.onCleared.listen((_) => _dropSession());
+  }
 
   final RestClient remote;
   final SessionService session;
+
+  late final StreamSubscription<void> _tokenClearedSubscription;
 
   UserEntity? _currentUser;
 
@@ -85,12 +91,22 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
     throw UnimplementedError();
   }
 
+  // WHY: teardown is not duplicated here — clearing the token emits on
+  // [SessionService.onCleared] and [_dropSession] does the rest. One path, so
+  // an explicit logout and an expired-token logout cannot diverge.
   @override
-  Future<void> logout() async {
-    session.clear();
+  Future<void> logout() async => session.clear();
+
+  void _dropSession() {
     _currentUser = null;
     _session = null;
     _sessionController.add(null);
+  }
+
+  @override
+  void dispose() {
+    _tokenClearedSubscription.cancel();
+    _sessionController.close();
   }
 
   @override
@@ -100,14 +116,21 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   UserSessionEntity? get currentSession => _session;
 
   @override
+  Result<int, Failure> requireActivePartnerId() {
+    final partnerId = _session?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+    return Success(data: partnerId);
+  }
+
+  @override
   Stream<UserSessionEntity?> watchSession() => _sessionController.stream;
 
   @override
-  Set<AppPermission> getPermissions() =>
-      _session?.permissions ?? const <AppPermission>{};
+  Set<UserPermission> getPermissions() =>
+      _session?.permissions ?? const <UserPermission>{};
 
   @override
-  bool hasPermission(AppPermission permission) =>
+  bool hasPermission(UserPermission permission) =>
       _session?.can(permission) ?? false;
 
   @override

@@ -34,9 +34,9 @@ class StatTileShimmer extends StatelessWidget {
         highlightColor: color.scaffoldBackground,
         child: Column(
           children: [
-            ShimmerBox(width: valueWidth, height: 16),
+            ShimmerBox(width: valueWidth, height: spacing.s16),
             Gap(spacing.s4),
-            ShimmerBox(width: labelWidth, height: 16),
+            ShimmerBox(width: labelWidth, height: spacing.s16),
           ],
         ),
       ),
@@ -65,16 +65,16 @@ class LeaveSummaryCardShimmer extends StatelessWidget {
           Expanded(
             child: StatTileShimmer(
               backgroundColor: color.successAlt,
-              valueWidth: 36,
-              labelWidth: 80,
+              valueWidth: spacing.s36,
+              labelWidth: spacing.s80,
             ),
           ),
           Gap(spacing.s6),
           Expanded(
             child: StatTileShimmer(
               backgroundColor: color.warningAlt,
-              valueWidth: 36,
-              labelWidth: 60,
+              valueWidth: spacing.s36,
+              labelWidth: spacing.s66,
             ),
           ),
         ],
@@ -104,16 +104,16 @@ class LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
           Expanded(
             child: StatTileShimmer(
               backgroundColor: color.warningAlt,
-              valueWidth: 28,
-              labelWidth: 60,
+              valueWidth: spacing.s30,
+              labelWidth: spacing.s66,
             ),
           ),
           Gap(spacing.s6),
           Expanded(
             child: StatTileShimmer(
               backgroundColor: color.info.withValues(alpha: 0.1),
-              valueWidth: 28,
-              labelWidth: 100,
+              valueWidth: spacing.s30,
+              labelWidth: spacing.s100,
             ),
           ),
         ],

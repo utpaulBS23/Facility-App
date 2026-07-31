@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -86,7 +87,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                err.toString(),
+                err.localizedMessage(context),
                 style: context.textStyle.bodyMedium.copyWith(
                   color: context.color.text.secondary,
                 ),
@@ -173,7 +174,8 @@ class _DetailBody extends StatelessWidget {
           if (checkInState.captureError != null ||
               checkInState.locationError != null) ...[
             Text(
-              checkInState.captureError ?? checkInState.locationError!,
+              checkInState.captureError?.localized(context) ??
+                  checkInState.locationError!,
               style: context.textStyle.bodySmall.copyWith(
                 color: context.color.error,
               ),
@@ -235,7 +237,7 @@ class _CheckInBody extends StatelessWidget {
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
           Text(
-            checkInState.checkInError!,
+            checkInState.checkInError!.localized(context),
             style: context.textStyle.bodySmall.copyWith(
               color: context.color.error,
             ),

@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -8,28 +9,28 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/leave_type_extension.dart';
+import '../models/leave_filter.dart';
 import '../riverpod/leave_approvals_provider.dart';
-import '../utils/leave_action_helper.dart';
+import '../riverpod/leave_request_action_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 import '../widgets/shimmer/stat_tile_shimmer.dart';
 import '../widgets/stat_tile.dart';
 
-part '../widgets/leave_filter_bar.dart';
 part '../widgets/leave_request_action_card.dart';
 part '../widgets/leave_requests_app_bar.dart';
 part '../widgets/leave_requests_body.dart';
 part '../widgets/leave_requests_list.dart';
 part '../widgets/leave_supervisor_summary_card.dart';
 part '../widgets/shimmer/leave_request_shimmer.dart';
-
-const _kLeaveFilters = ['All', 'Pending', 'Manager Approval', 'Approved', 'Rejected'];
 
 class LeaveRequestsPage extends ConsumerStatefulWidget {
   const LeaveRequestsPage({super.key});
@@ -40,7 +41,7 @@ class LeaveRequestsPage extends ConsumerStatefulWidget {
 
 class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
   final _searchController = TextEditingController();
-  String _selectedFilter = 'All';
+  LeaveFilter _selectedFilter = LeaveFilter.all;
   String _searchQuery = '';
 
   @override
@@ -61,7 +62,6 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
   }
 
   void _onBack(BuildContext context) {
-    // WHY: reachable via LeaveSubmittedPage's goNamed reset (empty stack).
     if (context.canPop()) {
       context.pop();
     } else {
@@ -73,70 +73,39 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final padding =
-        EdgeInsets.symmetric(horizontal: spacing.s16, vertical: spacing.s8);
-    // WHY: always fetch unfiltered — _LeaveRequestsList does client-side
-    // status/search filtering, and the summary cards need full counts
-    // regardless of which filter chip is selected.
-    final approvalsState = ref.watch(leaveApprovalsProvider());
-    final canApplyLeave = ref.watch(
-      userSessionProvider.select(
-        (session) =>
-            (session?.can(AppPermission.leaveRequest) ?? false) ||
-            (session?.can(AppPermission.leaveFileOnBehalf) ?? false),
-      ),
+    final padding = EdgeInsets.symmetric(
+      horizontal: spacing.s16,
+      vertical: spacing.s8,
     );
+
+    final approvalsState = ref.watch(leaveApprovalsProvider());
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: _LeaveRequestsAppBar(onBack: () => _onBack(context)),
-      body: approvalsState.when(
-        loading: () => _LeaveRequestsBody(
-          padding: padding,
-          searchController: _searchController,
-          selectedFilter: _selectedFilter,
-          onFilterSelected: (_) {},
-          summary: const LeaveSupervisorSummaryCardShimmer(),
-          list: _LeaveRequestListShimmer(
-            showActionButtons:
-                _selectedFilter != 'Approved' && _selectedFilter != 'Rejected',
+      body: _LeaveRequestsBody(
+        padding: padding,
+        searchController: _searchController,
+        selectedFilter: _selectedFilter,
+        onFilterSelected: (filter) => setState(() => _selectedFilter = filter),
+        approvalsState: approvalsState,
+        searchQuery: _searchQuery,
+        onRetry: () => ref.invalidate(leaveApprovalsProvider),
+      ),
+      floatingActionButton: PermissionGate(
+        permissions: const [
+          UserPermission.leaveRequest,
+          UserPermission.leaveFileOnBehalf,
+        ],
+        child: FloatingActionButton(
+          onPressed: () => context.pushNamed(Routes.applyLeave),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
           ),
-        ),
-        error: (err, _) => Center(
-          child: Text(
-            err.toString().replaceAll('Exception: ', ''),
-            style:
-                context.textStyle.bodyMedium.copyWith(color: color.text.secondary),
-          ),
-        ),
-        data: (requests) => _LeaveRequestsBody(
-          padding: padding,
-          searchController: _searchController,
-          selectedFilter: _selectedFilter,
-          onFilterSelected: (filter) => setState(() => _selectedFilter = filter),
-          summary: _LeaveSupervisorSummaryCard(
-            pendingCount:
-                requests.where((r) => r.status == LeaveStatus.pendingSupervisor).length,
-            managerCount:
-                requests.where((r) => r.status == LeaveStatus.pendingManager).length,
-          ),
-          list: _LeaveRequestsList(
-            requests: requests,
-            selectedFilter: _selectedFilter,
-            searchQuery: _searchQuery,
-          ),
+          backgroundColor: color.primary,
+          child: const Icon(Icons.add, size: 28),
         ),
       ),
-      floatingActionButton: canApplyLeave
-          ? FloatingActionButton(
-              onPressed: () => context.pushNamed(Routes.applyLeave),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-              ),
-              backgroundColor: color.primary,
-              child: const Icon(Icons.add, size: 28),
-            )
-          : null,
     );
   }
 }

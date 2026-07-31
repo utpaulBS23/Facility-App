@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
@@ -96,7 +97,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                err.toString(),
+                err.localizedMessage(context),
                 style: context.textStyle.bodyMedium.copyWith(
                   color: context.color.text.secondary,
                 ),
@@ -248,7 +249,7 @@ class _TaskDetailBody extends StatelessWidget {
             ],
             if (_canComplete)
               PermissionGate(
-                permission: AppPermission.taskComplete,
+                permissions: [UserPermission.taskComplete],
                 child: Padding(
                   padding: EdgeInsets.only(top: spacing.s24),
                   child: FilledButton(

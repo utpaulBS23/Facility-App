@@ -93,13 +93,25 @@ class _OutlinedButtonLightThemeData with ThemeExtensions {
   OutlinedButtonThemeData call() {
     return OutlinedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(lightColor.primary),
+        // WHY resolved, not a flat value: an unresolved brand foreground/border
+        // left disabled outlined buttons looking tappable.
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return lightColor.disabled;
+          }
+          return lightColor.primary;
+        }),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(dimensions.spacing.s12),
           ),
         ),
-        side: WidgetStateProperty.all(BorderSide(color: lightColor.primary)),
+        side: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return BorderSide(color: lightColor.disabled);
+          }
+          return BorderSide(color: lightColor.primary);
+        }),
         padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(horizontal: dimensions.spacing.s24),
         ),
@@ -124,13 +136,23 @@ class _OutlinedButtonDarkThemeData with ThemeExtensions {
   OutlinedButtonThemeData call() {
     return OutlinedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(darkColor.primary),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return darkColor.disabled;
+          }
+          return darkColor.primary;
+        }),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(dimensions.spacing.s12),
           ),
         ),
-        side: WidgetStateProperty.all(BorderSide(color: darkColor.primary)),
+        side: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return BorderSide(color: darkColor.disabled);
+          }
+          return BorderSide(color: darkColor.primary);
+        }),
         padding: WidgetStateProperty.all(
           EdgeInsets.symmetric(horizontal: dimensions.spacing.s24),
         ),

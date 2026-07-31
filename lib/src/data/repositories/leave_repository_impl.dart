@@ -34,7 +34,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
     int? leavePolicyId,
     int? attendantId,
     int? page,
-    int? perPage,
+    int? pageSize,
   }) {
     return asyncGuard(() async {
       final response = await remote.getLeaveBalances(
@@ -43,7 +43,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
         leavePolicyId: leavePolicyId,
         attendantId: attendantId,
         page: page,
-        perPage: perPage,
+        perPage: pageSize,
       );
       final responseModel =
           LeaveBalanceListResponseModel.fromJson(response.data);

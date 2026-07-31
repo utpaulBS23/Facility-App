@@ -9,7 +9,10 @@ CacheService cacheService(Ref ref) {
 
 @Riverpod(keepAlive: true)
 SessionService sessionService(Ref ref) {
-  return InMemorySessionService();
+  final service = InMemorySessionService();
+  ref.onDispose(service.dispose);
+
+  return service;
 }
 
 @riverpod

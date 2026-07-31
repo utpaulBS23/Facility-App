@@ -37,7 +37,7 @@ abstract base class LeaveRepository extends Repository {
     int? leavePolicyId,
     int? attendantId,
     int? page,
-    int? perPage,
+    int? pageSize,
   });
 
   Future<Result<LeaveRequestEntity, Failure>> requestLeave(

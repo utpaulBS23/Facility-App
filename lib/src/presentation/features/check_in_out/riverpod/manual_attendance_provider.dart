@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -22,18 +23,12 @@ class ManualAttendance extends _$ManualAttendance {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.attendanceCheckIn)) {
-      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+    if (!ref.hasPermission(UserPermission.attendanceCheckIn)) {
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 
     state = const AsyncValue.loading();
-
-    final partnerId = ref.activePartnerId;
-    if (partnerId == null) {
-      state = AsyncValue.error(partnerUnavailableMessage, StackTrace.current);
-      return;
-    }
 
     final request = ManualAttendanceRequestEntity(
       shiftId: shiftSlotId,
@@ -46,7 +41,7 @@ class ManualAttendance extends _$ManualAttendance {
 
     final result = await ref
         .read(submitManualAttendanceUseCaseProvider)
-        .call(partnerId: partnerId, request: request);
+        .call(request: request);
 
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data),
@@ -62,15 +57,12 @@ class RefreshAttendance extends _$RefreshAttendance {
   AsyncValue<ManualAttendanceResponseEntity?> build() =>
       const AsyncValue.data(null);
 
-  Future<void> refresh({
-    required int partnerId,
-    required int shiftId,
-  }) async {
+  Future<void> refresh({required int shiftId}) async {
     if (state.isLoading) return;
     state = const AsyncValue.loading();
     final result = await ref
         .read(refreshAttendanceUseCaseProvider)
-        .call(partnerId: partnerId, shiftId: shiftId);
+        .call(shiftId: shiftId);
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data),
       Error(:final error) => AsyncValue.error(error, StackTrace.current),
@@ -84,15 +76,12 @@ class WithdrawAttendance extends _$WithdrawAttendance {
   @override
   AsyncValue<bool?> build() => const AsyncValue.data(null);
 
-  Future<void> withdraw({
-    required int partnerId,
-    required int attendanceId,
-  }) async {
+  Future<void> withdraw({required int attendanceId}) async {
     if (state.isLoading) return;
     state = const AsyncValue.loading();
     final result = await ref
         .read(withdrawAttendanceUseCaseProvider)
-        .call(partnerId: partnerId, attendanceId: attendanceId);
+        .call(attendanceId: attendanceId);
     state = switch (result) {
       Success(:final data) => AsyncValue.data(data),
       Error(:final error) => AsyncValue.error(error, StackTrace.current),

@@ -228,6 +228,8 @@
     }
   },
   "slotLead": "Slot lead",
+  "attendantName": "Name",
+  "staffCode": "Staff Code",
   "slotStatusCompleted": "Completed",
   "slotStatusPartialMiss": "Partial miss",
   "slotFull": "Slot full",
@@ -275,6 +277,20 @@
     }
   },
   "assignmentUnavailable": "Assignment isn't available right now. Please try again later.",
+  "unassignStaff": "Remove Staff",
+  "unassignStaffMessage": "Remove {name} from this shift?",
+  "@unassignStaffMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Frank Rodriguez"
+      }
+    }
+  },
+  "remove": "Remove",
+  "staffUnassignedSuccessfully": "Staff removed from shift.",
+  "makeSlotLead": "Make Slot Lead",
+  "slotLeadUpdatedSuccessfully": "Slot lead updated.",
   "status": "Status",
   "approvedBy": "Approved By",
   "approve": "Approve",
@@ -365,6 +381,7 @@
   "rejected": "Rejected",
   "all": "All",
   "noAttendantsFound": "No attendants found",
+  "somethingWentWrong": "Something went wrong. Please try again.",
   "morningShift": "MORNING SHIFT",
   "eveningShift": "EVENING SHIFT",
   "nightShift": "NIGHT SHIFT",
@@ -403,6 +420,84 @@
   "endSessionAndSignOut": "End session and sign out",
   "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
   "noShiftsAvailableForDate": "No shifts available for the selected date",
+  "pendingManager": "Pending Manager",
+  "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sickLeave": "Sick Leave",
+  "casualLeave": "Casual Leave",
+  "maternityLeave": "Maternity Leave",
+  "annualLeave": "Annual Leave",
+  "unpaidLeave": "Unpaid Leave",
+  "other": "Other",
+  "leaveType": "Leave Type",
+  "reasonOptional": "Reason (optional)",
+  "rosters": "Rosters",
+  "noRostersFound": "No rosters found.",
+  "createRoster": "Create Roster",
+  "weekStartLabel": "Week start ({day})",
+  "@weekStartLabel": {
+    "placeholders": {
+      "day": {
+        "type": "String",
+        "example": "Sat"
+      }
+    }
+  },
+  "activeDaysThisWeek": "Active days this week",
+  "mon": "Mon",
+  "tue": "Tue",
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "sun": "Sun",
+  "rosterCoversMessage": "Roster covers {start} → {end}. Created as a draft with no slots — add slots from your shift templates, then publish once every slot meets its minimum attendants.",
+  "@rosterCoversMessage": {
+    "placeholders": {
+      "start": {
+        "type": "String",
+        "example": "2026-07-23"
+      },
+      "end": {
+        "type": "String",
+        "example": "2026-07-29"
+      }
+    }
+  },
+  "createDraftRoster": "Create draft roster",
+  "rosterCreatedSuccessfully": "Roster created successfully.",
+  "weekly": "Weekly",
+  "notes": "Notes",
+  "publishedBy": "Published by",
+  "publish": "Publish",
+  "rosterPublishedSuccessfully": "Roster published successfully.",
+  "rosterShifts": "Roster Shifts",
+  "unassigned": "Unassigned",
+  "totalShifts": "Total Shifts",
+  "noShiftsInRoster": "No shifts in this roster yet.",
+  "createShift": "Create Shift",
+  "shiftTemplate": "Shift Template",
+  "selectShiftTemplate": "Select a shift template",
+  "shiftDate": "Shift Date",
+  "minAttendants": "Min Attendants",
+  "maxAttendants": "Max Attendants",
+  "maxAttendantsError": "Max attendants must be at least min attendants.",
+  "shiftCreatedSuccessfully": "Shift created successfully.",
+  "errorPartnerUnavailable": "This area is not available for your account.",
+  "errorNoAccessibleFacility": "No facility is available for your account.",
+  "errorPermissionDenied": "You do not have permission to perform this action.",
+  "errorNoConnection": "Unable to connect. Please check your internet connection and try again.",
+  "errorTimeout": "The request took too long to complete. Please try again.",
+  "errorSessionExpired": "Your session has expired. Please sign in again.",
+  "errorNotFound": "We could not find what you were looking for.",
+  "errorGeneric": "Something went wrong. Please try again.",
   "pendingManager": "Pending Manager",
   "supplyRequests": "Supply Requests",
   "newRequest": "New Request",

@@ -25,16 +25,16 @@ class _LeaveRequestCardShimmer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const ShimmerBox(width: 140, height: 20),
+              ShimmerBox(width: spacing.s120, height: spacing.s20),
               ShimmerBox(
-                width: 76,
-                height: 22,
+                width: spacing.s80,
+                height: spacing.s24,
                 borderRadius: BorderRadius.circular(radius.r20),
               ),
             ],
           ),
           Gap(spacing.s8),
-          const ShimmerBox(width: 200, height: 18),
+          ShimmerBox(width: spacing.s200, height: spacing.s16),
           if (showActionButtons) ...[
             Gap(spacing.s12),
             Divider(color: color.borderSubtle, height: 1),

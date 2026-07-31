@@ -12,7 +12,7 @@ class _LeaveRequestsAppBar extends StatelessWidget implements PreferredSizeWidge
   Widget build(BuildContext context) {
     return AppBar(
       leading: BackLeading(onTap: onBack),
-      leadingWidth: 100,
+      leadingWidth: context.dimensions.spacing.s100,
       title: Headline2xlTinyText(context.locale.leaveRequests),
       centerTitle: true,
       backgroundColor: context.color.onPrimary,

@@ -3,14 +3,15 @@ import '../../../core/base/result.dart';
 import '../../entities/common/paginated_list_entity.dart';
 import '../../entities/supply/supply_request_entity.dart';
 import '../../entities/supply/supply_request_status.dart';
+import '../../repositories/authentication_repository.dart';
 import '../../repositories/supply_repository.dart';
 
 final class GetSupplyRequestsUseCase {
-  GetSupplyRequestsUseCase(this._repository);
+  GetSupplyRequestsUseCase(this._repository, this._authRepository);
   final SupplyRepository _repository;
+  final AuthenticationRepository _authRepository;
 
   Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> call({
-    required int partnerId,
     int? facilityId,
     SupplyRequestStatus? status,
     SupplyUrgency? urgency,
@@ -18,6 +19,9 @@ final class GetSupplyRequestsUseCase {
     int? page,
     int? perPage,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await _repository.getSupplyRequests(
       partnerId: partnerId,
       facilityId: facilityId,

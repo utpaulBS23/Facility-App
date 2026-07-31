@@ -1,7 +1,13 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _SelectAttendantCard extends StatelessWidget {
-  const _SelectAttendantCard({
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/leave_attendant_entity.dart';
+import '../../../core/theme/theme.dart';
+
+class SelectAttendantCard extends StatelessWidget {
+  const SelectAttendantCard({
+    super.key,
     required this.selectedAttendant,
     required this.onTap,
   });

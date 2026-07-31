@@ -5,255 +5,218 @@ import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
 import '../entities/leave/leave_status.dart';
+import '../repositories/authentication_repository.dart';
 import '../repositories/leave_repository.dart';
 
 final class GetLeavePoliciesUseCase {
-  GetLeavePoliciesUseCase(this.repository);
+  GetLeavePoliciesUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<List<LeavePolicyEntity>, Failure>> call(
-    int partnerId,
-  ) async {
+  Future<Result<List<LeavePolicyEntity>, Failure>> call() async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeavePolicies(partnerId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class GetLeaveBalancesUseCase {
-  GetLeaveBalancesUseCase(this.repository);
+  GetLeaveBalancesUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<List<LeaveBalanceEntity>, Failure>> call(
-    int partnerId, {
+  Future<Result<List<LeaveBalanceEntity>, Failure>> call({
     int? year,
     int? leavePolicyId,
     int? attendantId,
     int? page,
-    int? perPage,
+    int? pageSize,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveBalances(
       partnerId,
       year: year,
       leavePolicyId: leavePolicyId,
       attendantId: attendantId,
       page: page,
-      perPage: perPage,
+      pageSize: pageSize,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class RequestLeaveUseCase {
-  RequestLeaveUseCase(this.repository);
+  RequestLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
   Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
     RequestLeaveParams params,
   ) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.requestLeave(partnerId, params);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class GetMyLeavesUseCase {
-  GetMyLeavesUseCase(this.repository);
+  GetMyLeavesUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
-    int partnerId, {
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
     LeaveStatus? status,
     int? page,
     int? pageSize,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getMyLeaves(
       partnerId,
       status: status,
       page: page,
       pageSize: pageSize,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class GetLeaveRequestDetailsUseCase {
-  GetLeaveRequestDetailsUseCase(this.repository);
+  GetLeaveRequestDetailsUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
-    int leaveRequestId,
-  ) async {
+  Future<Result<LeaveRequestEntity, Failure>> call(int leaveRequestId) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveRequestDetails(
       partnerId,
       leaveRequestId,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class CancelLeaveUseCase {
-  CancelLeaveUseCase(this.repository);
+  CancelLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
-    int leaveRequestId,
-  ) async {
+  Future<Result<LeaveRequestEntity, Failure>> call(int leaveRequestId) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.cancelLeave(partnerId, leaveRequestId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class GetLeaveAttendantsUseCase {
-  GetLeaveAttendantsUseCase(this.repository);
+  GetLeaveAttendantsUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<List<LeaveAttendantEntity>, Failure>> call(
-    int partnerId,
-  ) async {
+  Future<Result<List<LeaveAttendantEntity>, Failure>> call() async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveAttendants(partnerId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class GetLeaveApprovalsUseCase {
-  GetLeaveApprovalsUseCase(this.repository);
+  GetLeaveApprovalsUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call(
-    int partnerId, {
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
     LeaveStatus? status,
     int? page,
     int? pageSize,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.getLeaveApprovals(
       partnerId,
       status: status,
       page: page,
       pageSize: pageSize,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class ApproveLeaveUseCase {
-  ApproveLeaveUseCase(this.repository);
+  ApproveLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
-  Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
-    int leaveRequestId,
-  ) async {
+  Future<Result<LeaveRequestEntity, Failure>> call(int leaveRequestId) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.approveLeave(partnerId, leaveRequestId);
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }
 
 final class RejectLeaveUseCase {
-  RejectLeaveUseCase(this.repository);
+  RejectLeaveUseCase(this.repository, this._authRepository);
   final LeaveRepository repository;
+  final AuthenticationRepository _authRepository;
 
   Future<Result<LeaveRequestEntity, Failure>> call(
-    int partnerId,
     int leaveRequestId, {
     String? reason,
   }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
     final result = await repository.rejectLeave(
       partnerId,
       leaveRequestId,
       reason: reason,
     );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      // WHY: Result's generated variants aren't exhaustiveness-checkable by
-      // the analyzer here, so this wildcard stays reachable-in-practice-never
-      // but required for compilation.
-      _ => const Error(
-          Failure(type: FailureType.unknown, message: 'Unexpected error'),
-        ),
-    };
+    return result.when(
+      success: (data) => Success(data: data),
+      error: (error) => Error(error),
+    );
   }
 }

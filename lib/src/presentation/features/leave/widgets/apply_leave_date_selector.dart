@@ -1,7 +1,13 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
-class _LeaveDateRangeCard extends StatelessWidget {
-  const _LeaveDateRangeCard({
+import '../../../../core/extensions/app_localization.dart';
+import '../../../core/theme/theme.dart';
+
+class LeaveDateRangeCard extends StatelessWidget {
+  const LeaveDateRangeCard({
+    super.key,
     required this.startDate,
     required this.endDate,
     required this.onStartDateTap,

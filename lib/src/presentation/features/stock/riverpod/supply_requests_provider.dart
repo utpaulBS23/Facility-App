@@ -14,13 +14,9 @@ class SupplyRequests extends _$SupplyRequests {
   Future<PaginatedListEntity<SupplyRequestEntity>> build({
     SupplyRequestStatus? status,
   }) async {
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const PaginatedListEntity.empty();
-
-    final result = await ref.read(getSupplyRequestsUseCaseProvider).call(
-          partnerId: partnerId,
-          status: status,
-        );
+    final result = await ref
+        .read(getSupplyRequestsUseCaseProvider)
+        .call(status: status);
 
     return switch (result) {
       Success(:final data) => data ?? const PaginatedListEntity.empty(),

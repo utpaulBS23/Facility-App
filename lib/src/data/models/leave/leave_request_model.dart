@@ -1,5 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
+
 import '../../../domain/entities/leave/leave_status.dart';
+import '../../../domain/entities/leave/leave_type.dart';
+import '../../../domain/entities/leave/shift_status.dart';
 import 'leave_policy_model.dart';
 
 part 'leave_request_model.mapper.dart';
@@ -18,6 +21,26 @@ class LeaveStatusHook extends MappingHook {
   @override
   Object? beforeEncode(Object? value) {
     if (value is LeaveStatus) {
+      return value.toWireString();
+    }
+    return value;
+  }
+}
+
+class ShiftStatusHook extends MappingHook {
+  const ShiftStatusHook();
+
+  @override
+  Object? beforeDecode(Object? value) {
+    if (value is String) {
+      return ShiftStatus.fromWireString(value);
+    }
+    return value;
+  }
+
+  @override
+  Object? beforeEncode(Object? value) {
+    if (value is ShiftStatus) {
       return value.toWireString();
     }
     return value;
@@ -94,7 +117,8 @@ class LeaveShiftDetailModel with LeaveShiftDetailModelMappable {
   final String startTime;
   @MappableField(key: 'end_time')
   final String endTime;
-  final String status;
+  @MappableField(hook: ShiftStatusHook())
+  final ShiftStatus status;
 
   static const fromJson = LeaveShiftDetailModelMapper.fromJson;
 }
@@ -134,8 +158,8 @@ class LeaveRequestModel with LeaveRequestModelMappable {
   final String endDate;
   @MappableField(key: 'days_count')
   final int daysCount;
-  @MappableField(key: 'leave_type')
-  final String leaveType;
+  @MappableField(key: 'leave_type', hook: LeaveTypeHook())
+  final LeaveType leaveType;
   @MappableField(hook: LeaveStatusHook())
   final LeaveStatus status;
   @MappableField(key: 'created_at')

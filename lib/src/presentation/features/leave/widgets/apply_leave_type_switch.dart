@@ -1,7 +1,12 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
 
-class _ApplicationTypeSwitch extends StatelessWidget {
-  const _ApplicationTypeSwitch({
+import '../../../../core/extensions/app_localization.dart';
+import '../../../core/theme/theme.dart';
+import '../riverpod/apply_leave_form_provider.dart';
+
+class ApplicationTypeSwitch extends StatelessWidget {
+  const ApplicationTypeSwitch({
+    super.key,
     required this.selectedType,
     required this.onTypeChanged,
   });
@@ -38,7 +43,9 @@ class _ApplicationTypeSwitch extends StatelessWidget {
         foregroundColor: color.text.secondary,
         textStyle: textStyle.labelLarge.copyWith(fontWeight: FontWeight.bold),
         side: BorderSide(color: color.borderSubtle),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.dimensions.radius.r12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+        ),
       ),
     );
   }

@@ -1,8 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/leave/leave_balance_entity.dart';
+import '../../../core/extensions/ref_extensions.dart';
+import 'apply_leave_provider.dart';
+import 'leave_request_action_provider.dart';
 
 part 'leave_balance_provider.g.dart';
 
@@ -10,18 +12,15 @@ part 'leave_balance_provider.g.dart';
 class LeaveBalance extends _$LeaveBalance {
   @override
   Future<List<LeaveBalanceEntity>> build({int? attendantId}) async {
-    final partnerId = ref.read(getActivePartnerUseCaseProvider).call();
-    if (partnerId == null) return const [];
+    // WHY: re-fetch leave balance quota when a new leave is submitted.
+    ref.invalidateProviderOnSuccess(applyLeaveActionProvider);
+    // WHY: re-fetch leave balance quota when a leave is approved or cancelled.
+    ref.invalidateProviderOnSuccess(leaveRequestActionProvider);
 
-    final result = await ref.read(getLeaveBalancesUseCaseProvider).call(
-          partnerId,
-          attendantId: attendantId,
-        );
+    final result = await ref
+        .read(getLeaveBalancesUseCaseProvider)
+        .call(attendantId: attendantId);
 
-    return switch (result) {
-      Success(:final data) => data ?? const [],
-      Error(:final error) => throw Exception(error.message),
-      _ => throw Exception('Failed to load leave balances'),
-    };
+    return result.getOrThrow() ?? const[];
   }
 }

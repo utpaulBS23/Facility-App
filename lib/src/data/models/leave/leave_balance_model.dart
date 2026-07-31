@@ -1,4 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
+
 import 'leave_policy_model.dart';
 
 part 'leave_balance_model.mapper.dart';

@@ -30,6 +30,7 @@ class _SelectableShiftCard extends StatelessWidget {
   final ShiftEntity shift;
   final VoidCallback onTap;
 
+  // need shift enum
   bool get _isInProgress => shift.status == 'in_progress';
 
   Color _dotColor(BuildContext context) =>
@@ -61,24 +62,9 @@ class _SelectableShiftCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: spacing.s10,
-                        height: spacing.s10,
-                        decoration: BoxDecoration(
-                          color: _dotColor(context),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      Gap(spacing.s4),
-                      Text(
-                        _statusLabel(context),
-                        style: context.textStyle.bodySmall.copyWith(
-                          color: context.color.text.secondary,
-                        ),
-                      ),
-                    ],
+                  StatusDotTag(
+                    label: _statusLabel(context),
+                    dotColor: _dotColor(context),
                   ),
                   Gap(spacing.s8),
                   Text(

@@ -53,7 +53,7 @@ class _ManualAttendanceBottomSheetState
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error.toString()),
+            content: Text(next.error!.localizedMessage(context)),
             backgroundColor: context.color.error,
           ),
         );

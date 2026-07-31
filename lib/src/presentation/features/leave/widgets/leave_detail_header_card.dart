@@ -18,6 +18,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
       LeaveStatus.approved => (context.locale.approved, color.success),
       LeaveStatus.rejected => (context.locale.rejected, color.error),
       LeaveStatus.cancelled => (context.locale.cancel, color.text.secondary),
+      LeaveStatus.unknown => (context.locale.notAvailable, color.text.secondary),
     };
 
     return Container(
@@ -35,7 +36,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
             child: Icon(
               Icons.person_rounded,
               color: color.text.primary,
-              size: 28,
+              size: spacing.s30,
             ),
           ),
           Gap(spacing.s16),

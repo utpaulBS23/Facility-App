@@ -15,9 +15,9 @@ extension LeavePolicyModelToEntity on LeavePolicyModel {
         id: id,
         name: name,
         leaveType: leaveType,
-        defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
-        requiresApproval: requiresApproval ?? true,
-        canCarryForward: canCarryForward ?? false,
+        defaultDaysPerYear: defaultDaysPerYear,
+        requiresApproval: requiresApproval,
+        canCarryForward: canCarryForward,
       );
 }
 
@@ -25,10 +25,10 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() => LeaveBalanceEntity(
         id: id,
         leavePolicy: leavePolicy?.toEntity(),
-        allocatedDays: allocatedDays ?? 0.0,
-        usedDays: usedDays ?? 0.0,
-        pendingDays: pendingDays ?? 0.0,
-        remainingDays: remainingDays ?? 0.0,
+        allocatedDays: allocatedDays,
+        usedDays: usedDays,
+        pendingDays: pendingDays,
+        remainingDays: remainingDays,
       );
 }
 
@@ -116,7 +116,13 @@ extension LeaveBalanceListResponseModelToEntity on LeaveBalanceListResponseModel
 }
 
 extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
-  LeaveRequestEntity toEntity() => data!.toEntity();
+  LeaveRequestEntity toEntity() {
+    final payload = data;
+    if (payload == null) {
+      throw const FormatException('Missing data payload in LeaveRequestResponse');
+    }
+    return payload.toEntity();
+  }
 }
 
 extension LeaveRequestListResponseModelToEntity on LeaveRequestListResponseModel {

@@ -1,7 +1,16 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
-class _LeaveSummaryCard extends ConsumerWidget {
-  const _LeaveSummaryCard({
+import '../../../../core/extensions/app_localization.dart';
+import '../../../core/theme/theme.dart';
+import '../riverpod/leave_balance_provider.dart';
+import 'shimmer/stat_tile_shimmer.dart';
+import 'stat_tile.dart';
+
+class LeaveSummaryCard extends ConsumerWidget {
+  const LeaveSummaryCard({
+    super.key,
     this.attendantId,
     this.selectedLeavePolicyId,
     this.isAttendantPending = false,
@@ -13,11 +22,6 @@ class _LeaveSummaryCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canViewBalance = ref.watch(
-      hasPermissionUseCaseProvider,
-    ).call(AppPermission.leaveBalanceView);
-
-    if (!canViewBalance) return const SizedBox.shrink();
 
     final spacing = context.dimensions.spacing;
 
@@ -50,19 +54,22 @@ class _LeaveSummaryCard extends ConsumerWidget {
 
     final (remainingStr, pendingStr) = balanceState.maybeWhen(
       data: (balances) {
-        if (balances.isEmpty) return ('0', '0');
+        if (balances.isEmpty) {
+          return (context.locale.notAvailable, context.locale.notAvailable);
+        }
         final b = selectedLeavePolicyId != null
             ? balances.firstWhere(
                 (element) => element.leavePolicy?.id == selectedLeavePolicyId,
                 orElse: () => balances.first,
               )
             : balances.first;
+            
         return (
-          b.remainingDays.toStringAsFixed(0),
-          b.pendingDays.toStringAsFixed(0)
+          b.remainingDays?.toStringAsFixed(0) ?? context.locale.notAvailable,
+          b.pendingDays?.toStringAsFixed(0) ?? context.locale.notAvailable,
         );
       },
-      orElse: () => ('0', '0'),
+      orElse: () => (context.locale.notAvailable, context.locale.notAvailable),
     );
 
     return Container(

@@ -97,7 +97,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     final allRequestsAsync = ref.watch(supplyRequestsProvider());
     final canCreateRequest = ref.watch(
       userSessionProvider.select(
-        (session) => session?.can(AppPermission.supplyRequestCreate) ?? false,
+        (session) => session?.can(UserPermission.supplyRequestCreate) ?? false,
       ),
     );
     final filteredRequestsAsync = ref.watch(

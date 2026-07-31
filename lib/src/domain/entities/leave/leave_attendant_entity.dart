@@ -1,3 +1,5 @@
+import 'shift_status.dart';
+
 class LeaveAttendantShiftEntity {
   const LeaveAttendantShiftEntity({
     required this.id,
@@ -11,7 +13,7 @@ class LeaveAttendantShiftEntity {
   final String shiftName;
   final String startTime;
   final String endTime;
-  final String status;
+  final ShiftStatus status;
 }
 
 class LeaveAttendantEntity {

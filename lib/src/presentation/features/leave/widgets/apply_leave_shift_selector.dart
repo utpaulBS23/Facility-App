@@ -1,7 +1,17 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _SelectShiftCard extends StatelessWidget {
-  const _SelectShiftCard({required this.selectedShift, required this.onTap});
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/shift_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
+
+class SelectShiftCard extends StatelessWidget {
+  const SelectShiftCard({
+    super.key,
+    required this.selectedShift,
+    required this.onTap,
+  });
 
   final ShiftEntity? selectedShift;
   final VoidCallback onTap;
@@ -52,7 +62,7 @@ class _SelectedShiftRow extends StatelessWidget {
         children: [
           Icon(
             Icons.location_city_outlined,
-            size: 28,
+            size: spacing.s30,
             color: context.color.icon,
           ),
           Gap(spacing.s8),
@@ -110,7 +120,7 @@ class _SelectedShiftRow extends StatelessWidget {
           ),
           Icon(
             Icons.chevron_right_rounded,
-            size: 28,
+            size: spacing.s30,
             color: context.color.primary,
           ),
         ],

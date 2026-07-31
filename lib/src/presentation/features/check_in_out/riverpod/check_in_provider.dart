@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
@@ -13,7 +14,6 @@ class CheckIn extends _$CheckIn {
   AsyncValue build() => const AsyncValue.data(null);
 
   Future<void> checkIn({
-    required int partnerId,
     required int shiftSlotId,
     required double lat,
     required double lng,
@@ -21,20 +21,21 @@ class CheckIn extends _$CheckIn {
   }) async {
     if (state.isLoading) return;
 
-    if (!ref.hasPermission(AppPermission.attendanceCheckIn)) {
-      state = AsyncValue.error(permissionDeniedMessage, StackTrace.current);
+    if (!ref.hasPermission(UserPermission.attendanceCheckIn)) {
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return;
     }
 
     state = const AsyncValue.loading();
 
-    final result = await ref.read(checkInUseCaseProvider).call(
-      partnerId: partnerId,
-      shiftSlotId: shiftSlotId,
-      lat: lat,
-      lng: lng,
-      selfieUrl: selfieUrl,
-    );
+    final result = await ref
+        .read(checkInUseCaseProvider)
+        .call(
+          shiftSlotId: shiftSlotId,
+          lat: lat,
+          lng: lng,
+          selfieUrl: selfieUrl,
+        );
 
     state = switch (result) {
       Success() => AsyncValue.data(result),
