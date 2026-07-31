@@ -8,6 +8,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/text/typography.dart';
 
 part '../widgets/logout_list_item.dart';
@@ -28,9 +29,9 @@ class _MenuPageState extends ConsumerState<MenuPage> {
         case AsyncData(:final value) when value == true:
           context.pushReplacementNamed(Routes.login);
         case AsyncError(:final error):
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(error.localizedMessage(context))));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.localizedMessage(context))),
+          );
       }
     });
   }
@@ -38,7 +39,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
   void _onLogoutTap() {
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => _LogoutConfirmDialog(
+      builder: (dialogContext) => LogoutConfirmDialog(
         onConfirm: () => ref.read(logoutProvider.notifier).call(),
       ),
     );
