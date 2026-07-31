@@ -153,4 +153,5 @@ class Endpoints {
   static const String deliveries = '/partners/{partnerId}/deliveries';
   static const String confirmDelivery =
       '/partners/{partnerId}/deliveries/{deliveryId}/confirm';
+  static const String itemCatalog = '/partners/{partnerId}/item-catalog';
 }

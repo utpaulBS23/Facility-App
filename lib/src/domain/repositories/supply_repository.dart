@@ -5,6 +5,18 @@ import '../entities/common/paginated_list_entity.dart';
 import '../entities/supply/supply_request_entity.dart';
 import '../entities/supply/supply_request_status.dart';
 
+class CreateSupplyRequestItemParams {
+  const CreateSupplyRequestItemParams({
+    required this.stockItemId,
+    required this.qtyRequested,
+    this.unitPrice,
+  });
+
+  final int stockItemId;
+  final double qtyRequested;
+  final double? unitPrice;
+}
+
 abstract base class SupplyRepository extends Repository {
   Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>>
       getSupplyRequests({
@@ -21,6 +33,14 @@ abstract base class SupplyRepository extends Repository {
     int partnerId,
     int supplyRequestId,
   );
+
+  Future<Result<SupplyRequestEntity, Failure>> createSupplyRequest({
+    required int partnerId,
+    required int facilityId,
+    SupplyUrgency? urgency,
+    String? notes,
+    required List<CreateSupplyRequestItemParams> items,
+  });
 
   Future<Result<SupplyRequestEntity, Failure>> approveSupplyRequest(
     int partnerId,

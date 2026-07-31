@@ -57,6 +57,35 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
+  Future<Result<SupplyRequestEntity, Failure>> createSupplyRequest({
+    required int partnerId,
+    required int facilityId,
+    SupplyUrgency? urgency,
+    String? notes,
+    required List<CreateSupplyRequestItemParams> items,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.createSupplyRequest(
+        partnerId: partnerId,
+        body: {
+          'facility_id': facilityId,
+          if (urgency != null) 'urgency': urgency.toWireString(),
+          if (notes != null && notes.isNotEmpty) 'notes': notes,
+          'items': items
+              .map((item) => {
+                    'stock_item_id': item.stockItemId,
+                    'qty_requested': item.qtyRequested,
+                    if (item.unitPrice != null) 'unit_price': item.unitPrice,
+                  })
+              .toList(),
+        },
+      );
+      final responseModel = SupplyRequestResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
   Future<Result<SupplyRequestEntity, Failure>> approveSupplyRequest(
     int partnerId,
     int supplyRequestId, {

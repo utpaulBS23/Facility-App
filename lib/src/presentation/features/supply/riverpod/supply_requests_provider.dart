@@ -6,6 +6,7 @@ import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/extensions/ref_extensions.dart';
 import 'confirm_delivery_provider.dart';
+import 'create_supply_request_provider.dart';
 import 'supply_request_action_provider.dart';
 
 part 'supply_requests_provider.g.dart';
@@ -18,6 +19,7 @@ class SupplyRequests extends _$SupplyRequests {
   }) async {
     ref.invalidateProviderOnSuccess(supplyRequestActionProvider);
     ref.invalidateProviderOnSuccess(confirmDeliveryProvider);
+    ref.invalidateProviderOnSuccess(createSupplyRequestProvider);
 
     final result = await ref
         .read(getSupplyRequestsUseCaseProvider)

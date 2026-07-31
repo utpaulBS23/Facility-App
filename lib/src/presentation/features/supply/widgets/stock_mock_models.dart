@@ -23,25 +23,25 @@ class MockReceivedItem {
 
 class RequestItemEntry {
   const RequestItemEntry({
-    this.itemId,
+    this.stockItemId,
     this.itemName,
     this.quantity = 1,
-    this.unit = 'Rolls',
+    this.unit = '',
   });
 
-  final String? itemId;
+  final int? stockItemId;
   final String? itemName;
   final int quantity;
   final String unit;
 
   RequestItemEntry copyWith({
-    String? itemId,
+    int? stockItemId,
     String? itemName,
     int? quantity,
     String? unit,
   }) {
     return RequestItemEntry(
-      itemId: itemId ?? this.itemId,
+      stockItemId: stockItemId ?? this.stockItemId,
       itemName: itemName ?? this.itemName,
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,

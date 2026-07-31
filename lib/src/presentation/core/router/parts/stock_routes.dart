@@ -35,13 +35,13 @@ List<RouteBase> _stockRoutes(Ref ref) => [
       //     child: ConfirmDeliveryPage(),
       //   ),
       // ),
-      // GoRoute(
-      //   path: Routes.newRequest,
-      //   name: Routes.newRequest,
-      //   pageBuilder: (context, state) => const MaterialPage(
-      //     child: NewRequestPage(),
-      //   ),
-      // ),
+      GoRoute(
+        path: Routes.newRequest,
+        name: Routes.newRequest,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: NewRequestPage(),
+        ),
+      ),
       // GoRoute(
       //   path: Routes.stock,
       //   name: Routes.stock,

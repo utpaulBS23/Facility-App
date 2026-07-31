@@ -363,6 +363,22 @@ abstract class RestClient {
     @Path('deliveryId') required int deliveryId,
     @Body() required Map<String, dynamic> body,
   });
+
+  @POST(Endpoints.supplyRequests)
+  Future<HttpResponse> createSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.itemCatalog)
+  Future<HttpResponse> getItemCatalog({
+    @Path('partnerId') required int partnerId,
+    @Query('search') String? search,
+    @Query('category') String? category,
+    @Query('is_active') bool? isActive,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
 }
 // Force regeneration
 

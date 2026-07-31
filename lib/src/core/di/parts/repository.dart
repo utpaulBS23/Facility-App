@@ -98,3 +98,8 @@ DeliveryRepository deliveryRepository(Ref ref) {
 SupplyRepository supplyRepository(Ref ref) {
   return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+ItemCatalogRepository itemCatalogRepository(Ref ref) {
+  return ItemCatalogRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}

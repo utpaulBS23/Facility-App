@@ -472,3 +472,19 @@ ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
     ref.read(authenticationRepositoryProvider),
   );
 }
+
+@riverpod
+CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
+  return CreateSupplyRequestUseCase(
+    ref.read(supplyRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
+  return GetItemCatalogUseCase(
+    ref.read(itemCatalogRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
