@@ -76,8 +76,8 @@ class AppNavigationDrawer extends ConsumerWidget {
               title: context.locale.leaveApproval,
               subtitle: context.locale.awaitingFinalApproval,
               onTap: () {
-                Navigator.of(context).pop();
-                context.pushNamed(Routes.leaveRequests);
+                context.pop();
+                context.goNamed(Routes.leaveRequests);
               },
             ),
           ),
