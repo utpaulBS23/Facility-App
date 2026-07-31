@@ -43,6 +43,7 @@ class ApplyLeaveBody extends ConsumerWidget {
           PermissionGate(
             permissions: const [UserPermission.leaveFileOnBehalf],
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ApplicationTypeSwitch(
                   selectedType: form.appType,
