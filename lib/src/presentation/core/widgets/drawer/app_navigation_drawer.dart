@@ -97,7 +97,7 @@ class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
               title: context.locale.supplyRequests,
               subtitle: context.locale.supplyRequestsSubtitle,
               onTap: () {
-                Navigator.of(context).pop(); // Close drawer
+                context.pop(); // Close drawer
                 context.pushNamed(Routes.supplyRequests);
               },
             ),
