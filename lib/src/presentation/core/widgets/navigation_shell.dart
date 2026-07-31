@@ -1,4 +1,3 @@
-import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,6 +5,7 @@ import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
+import '../theme/theme.dart';
 import 'drawer/app_navigation_drawer.dart';
 import 'permission_gate.dart';
 
@@ -16,20 +16,28 @@ class NavigationShell extends StatelessWidget {
 
   static const _menuBranchIndex = 4;
 
-  void _onTabSelected({
+  void _onTabSelected(
+    BuildContext scaffoldContext, {
     required List<ShellTabConfig> visibleTabs,
     required int index,
   }) {
-    statefulNavigationShell.goBranch(visibleTabs[index].branchIndex);
+    final tab = visibleTabs[index];
+    if (tab.branchIndex == _menuBranchIndex) {
+      Scaffold.of(scaffoldContext).openDrawer();
+
+      return;
+    }
+
+    statefulNavigationShell.goBranch(tab.branchIndex);
   }
 
   SvgGenImage _assetFor(int branchIndex) => switch (branchIndex) {
-    0 => Assets.icons.shift,
-    1 => Assets.icons.attendance,
-    2 => Assets.icons.visit,
-    3 => Assets.icons.task,
-    _ => Assets.icons.menu,
-  };
+        0 => Assets.icons.shift,
+        1 => Assets.icons.attendance,
+        2 => Assets.icons.visit,
+        3 => Assets.icons.task,
+        _ => Assets.icons.menu,
+      };
 
   String _labelFor(BuildContext context, int branchIndex) =>
       switch (branchIndex) {
@@ -88,12 +96,7 @@ class NavigationShell extends StatelessWidget {
 
     return Scaffold(
       body: statefulNavigationShell,
-      // WHY: the "Menu" tab (_menuBranchIndex) opens this Drawer as an
-      // overlay instead of navigating to a branch — it's a quick panel, not
-      // a destination, so the bottom nav's selection indicator shouldn't move.
       drawer: const AppNavigationDrawer(),
-      // WHY: BottomNavigationBar requires >=2 items; a user permitted a single
-      // tab gets no navbar at all.
       bottomNavigationBar: visibleTabs.length < 2
           ? null
           : Builder(
@@ -103,14 +106,11 @@ class NavigationShell extends StatelessWidget {
                 unselectedLabelStyle: context.textStyle.labelMedium12,
                 selectedLabelStyle: context.textStyle.labelMedium12,
                 currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
-                onTap: (index) {
-                  final tab = visibleTabs[index];
-                  if (tab.branchIndex == _menuBranchIndex) {
-                    Scaffold.of(scaffoldContext).openDrawer();
-                  } else {
-                    _onTabSelected(visibleTabs: visibleTabs, index: index);
-                  }
-                },
+                onTap: (index) => _onTabSelected(
+                  scaffoldContext,
+                  visibleTabs: visibleTabs,
+                  index: index,
+                ),
                 items: [
                   for (final tab in visibleTabs)
                     _navItem(
