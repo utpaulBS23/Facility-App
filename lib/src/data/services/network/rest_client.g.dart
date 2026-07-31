@@ -10,8 +10,7 @@ part of 'rest_client.dart';
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??=
-        'https://resort-gourmet-gdp-admissions.trycloudflare.com/api/backend';
+    baseUrl ??= 'http://3.108.132.91/api/backend';
   }
 
   final Dio _dio;

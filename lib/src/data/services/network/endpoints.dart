@@ -1,7 +1,7 @@
 class Endpoints {
   static const base = baseDev;
 
-  static const baseDev = 'https://resort-gourmet-gdp-admissions.trycloudflare.com/api/backend';
+  static const baseDev = 'http://3.108.132.91/api/backend';
   static const baseLocal =
       'https://tuning-realized-representing-cooked.trycloudflare.com/api/backend';
 
