@@ -65,11 +65,15 @@ class _LeaveRequestActionCardState
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: wasApprove
-                ? context.color.success
-                : context.color.error,
+            backgroundColor: switch (wasApprove) {
+              true => context.color.success,
+              false => context.color.error,
+            },
             content: Text(
-              wasApprove ? context.locale.approved : context.locale.rejection,
+              switch (wasApprove) {
+                true => context.locale.approved,
+                false => context.locale.rejection,
+              },
               style: TextStyle(color: context.color.onPrimary),
             ),
           ),
