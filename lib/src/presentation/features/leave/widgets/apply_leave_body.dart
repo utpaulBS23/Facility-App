@@ -1,10 +1,10 @@
-import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../domain/entities/app_permission.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/apply_leave_form_provider.dart';
 import 'apply_leave_attendant_selector.dart';
 import 'apply_leave_date_selector.dart';

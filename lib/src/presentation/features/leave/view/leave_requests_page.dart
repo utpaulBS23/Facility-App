@@ -1,4 +1,3 @@
-import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -18,6 +17,7 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/category_filter_chips.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/leave_type_extension.dart';

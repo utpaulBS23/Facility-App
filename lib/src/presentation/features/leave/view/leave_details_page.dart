@@ -1,17 +1,16 @@
-import 'package:facility_management_app/src/domain/entities/login_entity.dart';
-import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/leave_type_extension.dart';
