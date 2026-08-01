@@ -25,10 +25,11 @@ final class GetLeavePoliciesUseCase {
 
     final result = await leaveRepository.getLeavePolicies(partnerId);
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load leave policies')),
+    };
   }
 }
 
@@ -58,10 +59,11 @@ final class GetLeaveBalancesUseCase {
       attendantId: attendantId,
     );
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load leave balances')),
+    };
   }
 }
 
@@ -84,10 +86,11 @@ final class RequestLeaveUseCase {
 
     final result = await leaveRepository.requestLeave(partnerId, params);
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('request leave')),
+    };
   }
 }
 
@@ -110,10 +113,11 @@ final class GetMyLeavesUseCase {
 
     final result = await leaveRepository.getMyLeaves(partnerId, status: status);
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load my leaves')),
+    };
   }
 }
 
@@ -137,10 +141,11 @@ final class GetLeaveRequestDetailsUseCase {
       leaveRequestId,
     );
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load leave details')),
+    };
   }
 }
 
@@ -161,10 +166,11 @@ final class CancelLeaveUseCase {
 
     final result = await leaveRepository.cancelLeave(partnerId, leaveRequestId);
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('cancel leave')),
+    };
   }
 }
 
@@ -185,10 +191,11 @@ final class GetLeaveAttendantsUseCase {
 
     final result = await leaveRepository.getLeaveAttendants(partnerId);
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load leave attendants')),
+    };
   }
 }
 
@@ -214,10 +221,11 @@ final class GetLeaveApprovalsUseCase {
       status: status,
     );
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load leave approvals')),
+    };
   }
 }
 
@@ -238,10 +246,11 @@ final class ApproveLeaveUseCase {
 
     final result = await leaveRepository.approveLeave(partnerId, leaveRequestId);
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('approve leave')),
+    };
   }
 }
 
@@ -269,9 +278,10 @@ final class RejectLeaveUseCase {
       reason: reason,
     );
 
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('reject leave')),
+    };
   }
 }
