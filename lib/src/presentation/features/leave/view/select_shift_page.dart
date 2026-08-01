@@ -29,7 +29,7 @@ class SelectShiftPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = context.color;
-    final shiftsAsync = ref.watch(leaveShiftsProvider(date: date));
+    final shiftsAsync = ref.watch(leaveShiftsProvider(date));
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -45,7 +45,7 @@ class SelectShiftPage extends ConsumerWidget {
         loading: () => const _ShiftListShimmer(),
         error: (err, _) => AppErrorWidget(
           message: err.toString(),
-          onRetry: () => ref.invalidate(leaveShiftsProvider(date: date)),
+          onRetry: () => ref.invalidate(leaveShiftsProvider(date)),
         ),
         data: (shifts) => _SelectShiftBody(shifts: shifts),
       ),
