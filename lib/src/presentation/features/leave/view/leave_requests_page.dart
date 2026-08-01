@@ -20,6 +20,7 @@ import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/leave_filter_extension.dart';
 import '../extensions/leave_type_extension.dart';
 import '../riverpod/leave_approvals_provider.dart';
 import '../riverpod/leave_request_action_provider.dart';
