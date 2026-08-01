@@ -27,9 +27,14 @@ extension LeavePolicyModelToEntity on LeavePolicyModel {
 
 extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() {
+    final policyModel = leavePolicy;
+    if (policyModel == null) {
+      throw const FormatException('Missing leavePolicy in LeaveBalanceModel');
+    }
+
     return LeaveBalanceEntity(
       id: id,
-      leavePolicy: leavePolicy?.toEntity(),
+      leavePolicy: policyModel.toEntity(),
       allocatedDays: allocatedDays ?? 0.0,
       usedDays: usedDays ?? 0.0,
       pendingDays: pendingDays ?? 0.0,

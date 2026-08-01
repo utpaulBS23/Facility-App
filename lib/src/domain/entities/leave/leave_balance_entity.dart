@@ -3,7 +3,7 @@ import 'leave_policy_entity.dart';
 class LeaveBalanceEntity {
   const LeaveBalanceEntity({
     required this.id,
-    this.leavePolicy,
+    required this.leavePolicy,
     required this.allocatedDays,
     required this.usedDays,
     required this.pendingDays,
@@ -11,7 +11,7 @@ class LeaveBalanceEntity {
   });
 
   final int id;
-  final LeavePolicyEntity? leavePolicy;
+  final LeavePolicyEntity leavePolicy;
   final double allocatedDays;
   final double usedDays;
   final double pendingDays;
