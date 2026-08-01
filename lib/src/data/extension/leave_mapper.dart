@@ -1,4 +1,4 @@
-import '../../domain/entities/leave/apply_leave_params.dart';
+import '../../domain/entities/leave/create_leave_request.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -161,7 +161,7 @@ extension LeaveAttendantListResponseModelToEntity
       data.map((model) => model.toEntity()).toList();
 }
 
-extension ApplyLeaveParamsMapper on ApplyLeaveParams {
+extension ApplyLeaveParamsMapper on CreateLeaveRequest {
   Map<String, dynamic> toJson() {
     return {
       'leave_policy_id': leavePolicyId,

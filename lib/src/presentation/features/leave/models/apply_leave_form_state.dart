@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import '../../../../domain/entities/leave/apply_leave_params.dart';
+import '../../../../domain/entities/leave/create_leave_request.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 
@@ -15,8 +15,8 @@ class ApplyLeaveFormState {
     DateTime? startDate,
     DateTime? endDate,
     this.reason = '',
-  })  : startDate = startDate ?? DateTime.now(),
-        endDate = endDate ?? DateTime.now();
+  }) : startDate = startDate ?? DateTime.now(),
+       endDate = endDate ?? DateTime.now();
 
   final LeaveApplicationType appType;
   final int? leavePolicyId;
@@ -37,14 +37,14 @@ class ApplyLeaveFormState {
     };
   }
 
-  /// Converts current form inputs to domain [ApplyLeaveParams]
-  ApplyLeaveParams toParams() {
+  /// Converts current form inputs to domain [CreateLeaveRequest]
+  CreateLeaveRequest toParams() {
     final attendantId = appType == LeaveApplicationType.onBehalf
         ? selectedAttendant?.id
         : null;
     final formatter = DateFormat('yyyy-MM-dd');
 
-    return ApplyLeaveParams(
+    return CreateLeaveRequest(
       leavePolicyId: leavePolicyId!,
       startDate: formatter.format(startDate),
       endDate: formatter.format(endDate),

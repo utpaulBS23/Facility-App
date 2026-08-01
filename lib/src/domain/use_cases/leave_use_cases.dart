@@ -1,5 +1,5 @@
 import '../../core/base/base.dart';
-import '../entities/leave/apply_leave_params.dart';
+import '../entities/leave/create_leave_request.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
@@ -75,7 +75,7 @@ final class RequestLeaveUseCase {
   final AuthenticationRepository _authRepository;
 
   Future<Result<LeaveRequestEntity, Failure>> call(
-    ApplyLeaveParams params,
+    CreateLeaveRequest params,
   ) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) {
@@ -108,10 +108,7 @@ final class GetMyLeavesUseCase {
       return const Error(Failure.partnerUnavailable);
     }
 
-    final result = await repository.getMyLeaves(
-      partnerId,
-      status: status,
-    );
+    final result = await repository.getMyLeaves(partnerId, status: status);
 
     return result.when(
       success: (data) => Success(data: data),

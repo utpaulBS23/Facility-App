@@ -1,5 +1,5 @@
 import '../../core/base/base.dart';
-import '../../domain/entities/leave/apply_leave_params.dart';
+import '../../domain/entities/leave/create_leave_request.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -54,7 +54,7 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   @override
   Future<Result<LeaveRequestEntity, Failure>> requestLeave(
     int partnerId,
-    ApplyLeaveParams params,
+    CreateLeaveRequest params,
   ) {
     return asyncGuard(() async {
       final response = await remote.requestLeave(
