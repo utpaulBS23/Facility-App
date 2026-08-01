@@ -27,14 +27,9 @@ extension LeavePolicyModelToEntity on LeavePolicyModel {
 
 extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() {
-    final policyModel = leavePolicy;
-    if (policyModel == null) {
-      throw const FormatException('Missing leavePolicy in LeaveBalanceModel');
-    }
-
     return LeaveBalanceEntity(
       id: id,
-      leavePolicy: policyModel.toEntity(),
+      leavePolicy: leavePolicy!.toEntity(),
       allocatedDays: allocatedDays ?? 0.0,
       usedDays: usedDays ?? 0.0,
       pendingDays: pendingDays ?? 0.0,
@@ -82,9 +77,9 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
     return LeaveRequestEntity(
       id: id,
       referenceCode: referenceCode,
-      applicant: applicant?.toEntity(),
+      applicant: applicant!.toEntity(),
       createdBy: createdBy?.toEntity(),
-      leavePolicy: leavePolicy?.toEntity(),
+      leavePolicy: leavePolicy!.toEntity(),
       startDate: startDate,
       endDate: endDate,
       daysCount: daysCount,
@@ -140,14 +135,7 @@ extension LeaveBalanceListResponseModelToEntity
 
 extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
   LeaveRequestEntity toEntity() {
-    final payload = data;
-    if (payload == null) {
-      throw const FormatException(
-        'Missing data payload in LeaveRequestResponse',
-      );
-    }
-
-    return payload.toEntity();
+    return data!.toEntity();
   }
 }
 
