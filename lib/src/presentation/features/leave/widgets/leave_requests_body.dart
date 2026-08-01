@@ -50,7 +50,6 @@ class _LeaveRequestsBody extends StatelessWidget {
           child: CategoryFilterChips<LeaveFilter>(
             categories: LeaveFilter.values,
             selectedCategory: selectedFilter,
-            labelBuilder: (filter) => filter.localizedName(context),
             onSelected: onFilterSelected,
           ),
         ),

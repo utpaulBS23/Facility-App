@@ -16,4 +16,15 @@ enum LeaveFilter {
       LeaveFilter.rejected => status == LeaveStatus.rejected,
     };
   }
+
+  @override
+  String toString() {
+    return switch (this) {
+      LeaveFilter.all => 'All',
+      LeaveFilter.pendingSupervisor => 'Pending',
+      LeaveFilter.pendingManager => 'Manager Approval',
+      LeaveFilter.approved => 'Approved',
+      LeaveFilter.rejected => 'Rejected',
+    };
+  }
 }
