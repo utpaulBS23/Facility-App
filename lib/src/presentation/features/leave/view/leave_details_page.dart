@@ -33,35 +33,30 @@ class LeaveDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
-  ProviderSubscription<AsyncValue>? _actionSub;
   bool _lastActionWasApprove = true;
 
   @override
   void initState() {
     super.initState();
-    _actionSub = ref.listenManual(leaveRequestActionProvider, (_, next) {
-      next.whenOrNull(
-        data: (value) {
-          if (value == null || !mounted) return;
-          final msg = switch (_lastActionWasApprove) {
-            true => context.locale.approved,
-            false => context.locale.rejection,
-          };
-          AppSnackBar.showSuccess(context, msg);
-          context.pop();
-        },
-        error: (e, _) {
-          if (!mounted) return;
-          AppSnackBar.showError(context, context.locale.somethingWentWrong);
-        },
-      );
-    });
+    ref.listenManual(leaveRequestActionProvider, _onActionStateChanged);
   }
 
-  @override
-  void dispose() {
-    _actionSub?.close();
-    super.dispose();
+  void _onActionStateChanged(AsyncValue? previous, AsyncValue next) {
+    next.whenOrNull(
+      data: (value) {
+        if (value == null || !mounted) return;
+        final msg = switch (_lastActionWasApprove) {
+          true => context.locale.approved,
+          false => context.locale.rejection,
+        };
+        AppSnackBar.showSuccess(context, msg);
+        context.pop();
+      },
+      error: (e, _) {
+        if (!mounted) return;
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      },
+    );
   }
 
   @override
