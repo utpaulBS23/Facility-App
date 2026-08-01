@@ -161,18 +161,6 @@ extension LeaveAttendantListResponseModelToEntity
       data.map((model) => model.toEntity()).toList();
 }
 
-extension RejectLeaveReasonMapper on String? {
-  /// Wire body for `POST .../leave-requests/{id}/reject` — omits
-  /// `rejection_reason` entirely when no reason was given.
-  Map<String, dynamic> toRejectLeaveBody() {
-    final reason = this;
-
-    return reason != null && reason.isNotEmpty
-        ? {'rejection_reason': reason}
-        : <String, dynamic>{};
-  }
-}
-
 extension ApplyLeaveParamsMapper on ApplyLeaveParams {
   Map<String, dynamic> toJson() {
     return {

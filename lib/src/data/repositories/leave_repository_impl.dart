@@ -175,7 +175,9 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       final response = await remote.rejectLeave(
         partnerId: partnerId,
         leaveRequestId: leaveRequestId,
-        body: reason.toRejectLeaveBody(),
+        body: reason != null && reason.isNotEmpty
+            ? {'rejection_reason': reason}
+            : const <String, dynamic>{},
       );
       final responseModel = LeaveRequestResponseModel.fromJson(response.data);
 
