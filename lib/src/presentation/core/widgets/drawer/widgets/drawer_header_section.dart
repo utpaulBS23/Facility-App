@@ -17,7 +17,6 @@ class _DrawerHeaderSection extends StatelessWidget {
     final radius = context.dimensions.radius;
     final color = context.color;
     final textStyle = context.textStyle;
-    final partner = partnerName;
 
     return Container(
       color: color.primary,
@@ -66,7 +65,7 @@ class _DrawerHeaderSection extends StatelessWidget {
                   ),
                 ),
               ],
-              if (partner != null && partner.isNotEmpty) ...[
+              if (partnerName case final partner? when partner.isNotEmpty) ...[
                 Gap(spacing.s12),
                 Container(
                   padding: EdgeInsets.symmetric(
