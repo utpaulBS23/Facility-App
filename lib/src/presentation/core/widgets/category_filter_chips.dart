@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-class CategoryFilterChips<T> extends StatelessWidget {
+class CategoryFilterChips<T extends Enum> extends StatelessWidget {
   const CategoryFilterChips({
     super.key,
     required this.categories,
