@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/stock_item_entity.dart';
+import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../../domain/repositories/supply_repository.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/create_supply_request_provider.dart';
 import '../riverpod/item_catalog_provider.dart';
@@ -33,39 +35,40 @@ class NewRequestPage extends ConsumerStatefulWidget {
 class _NewRequestPageState extends ConsumerState<NewRequestPage> {
   final _notesController = TextEditingController();
 
-  ProviderSubscription<AsyncValue>? _createSub;
-
   int? _selectedFacilityId;
   SupplyUrgency _selectedUrgency = SupplyUrgency.normal;
   List<RequestItemEntry> _items = [const RequestItemEntry()];
-  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    _createSub = ref.listenManual(createSupplyRequestProvider, (_, next) {
-      next.whenOrNull(
-        data: (value) {
-          if (value == null || !mounted) return;
-          AppSnackBar.showSuccess(
-            context,
-            context.locale.requestSubmittedSuccessfully,
-          );
-          context.pop();
-        },
-        error: (e, _) {
-          if (!mounted) return;
-          AppSnackBar.showError(context, context.locale.somethingWentWrong);
-        },
-      );
-    });
+    ref.listenManual(createSupplyRequestProvider, _onCreateStateChanged);
   }
 
   @override
   void dispose() {
     _notesController.dispose();
-    _createSub?.close();
     super.dispose();
+  }
+
+  void _onCreateStateChanged(
+    AsyncValue<SupplyRequestEntity?>? previous,
+    AsyncValue<SupplyRequestEntity?> next,
+  ) {
+    next.whenOrNull(
+      data: (value) {
+        if (value == null || !mounted) return;
+        AppSnackBar.showSuccess(
+          context,
+          context.locale.requestSubmittedSuccessfully,
+        );
+        context.pop();
+      },
+      error: (e, _) {
+        if (!mounted) return;
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      },
+    );
   }
 
   void _onItemSelected(int index, StockItemEntity item) {
@@ -98,15 +101,12 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
     }
   }
 
-  Future<void> _onSubmit() async {
-    if (_isSubmitting) return;
+  void _onSubmit() {
     final facilityId = _selectedFacilityId;
     final selectedItems = _items.where((item) => item.stockItemId != null);
     if (facilityId == null || selectedItems.isEmpty) return;
 
-    setState(() => _isSubmitting = true);
-
-    await ref.read(createSupplyRequestProvider.notifier).create(
+    ref.read(createSupplyRequestProvider.notifier).create(
           facilityId: facilityId,
           urgency: _selectedUrgency,
           notes: _notesController.text.trim(),
@@ -117,14 +117,14 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
                   ))
               .toList(),
         );
-
-    if (mounted) setState(() => _isSubmitting = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
+
+    final createRequestState = ref.watch(createSupplyRequestProvider);
 
     final facilities = ref.watch(
       userSessionProvider.select((session) => session?.accessibleFacilities ?? const []),
@@ -133,18 +133,12 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
         ? (facilities.where((f) => f.isPrimary).firstOrNull ?? facilities.first).id
         : null;
 
-    final itemCatalogAsync = ref.watch(itemCatalogProvider(isActive: true));
+    final itemCatalogAsync = ref.watch(itemCatalogProvider(true));
     final availableItems = itemCatalogAsync.valueOrNull?.items ?? const <StockItemEntity>[];
 
-    final canCreate = ref.watch(
-      userSessionProvider.select(
-        (session) => session?.can(UserPermission.supplyRequestCreate) ?? false,
-      ),
-    );
-    final canSubmit = canCreate &&
-        _selectedFacilityId != null &&
+    final canSubmit = _selectedFacilityId != null &&
         _items.any((item) => item.stockItemId != null) &&
-        !_isSubmitting;
+        !createRequestState.isLoading;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -186,11 +180,14 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
           ],
         ),
       ),
-      bottomNavigationBar: _NewRequestFooterBar(
-        isSubmitting: _isSubmitting,
-        canSubmit: canSubmit,
-        onSubmit: _onSubmit,
-        onCancel: () => context.pop(),
+      bottomNavigationBar: PermissionGate(
+        permissions: const [UserPermission.supplyRequestCreate],
+        child: _NewRequestFooterBar(
+          isSubmitting: createRequestState.isLoading,
+          canSubmit: canSubmit,
+          onSubmit: _onSubmit,
+          onCancel: () => context.pop(),
+        ),
       ),
     );
   }

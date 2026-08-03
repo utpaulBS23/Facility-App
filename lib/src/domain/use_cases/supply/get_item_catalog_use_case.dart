@@ -2,14 +2,16 @@ import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
 import '../../entities/common/paginated_list_entity.dart';
 import '../../entities/supply/stock_item_entity.dart';
-import '../../repositories/authentication_repository.dart';
 import '../../repositories/item_catalog_repository.dart';
+import '../partner_use_case.dart';
 
-final class GetItemCatalogUseCase {
-  GetItemCatalogUseCase(this._repository, this._authRepository);
+final class GetItemCatalogUseCase extends PartnerUseCase {
+  GetItemCatalogUseCase({
+    required this.itemCatalogRepository,
+    required super.authRepository,
+  });
 
-  final ItemCatalogRepository _repository;
-  final AuthenticationRepository _authRepository;
+  final ItemCatalogRepository itemCatalogRepository;
 
   Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> call({
     String? search,
@@ -18,23 +20,21 @@ final class GetItemCatalogUseCase {
     int? page,
     int? perPage,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) {
-      return const Error(Failure.partnerUnavailable);
-    }
+    return withPartnerId((partnerId) async {
+      final result = await itemCatalogRepository.getItemCatalog(
+        partnerId: partnerId,
+        search: search,
+        category: category,
+        isActive: isActive,
+        page: page,
+        perPage: perPage,
+      );
 
-    final result = await _repository.getItemCatalog(
-      partnerId: partnerId,
-      search: search,
-      category: category,
-      isActive: isActive,
-      page: page,
-      perPage: perPage,
-    );
-
-    return result.when(
-      success: (data) => Success(data: data),
-      error: (error) => Error(error),
-    );
+      return switch (result) {
+        Success(:final data) => Success(data: data),
+        Error(:final error) => Error(error),
+        _ => Error(Failure.emptyResponse('get item catalog')),
+      };
+    });
   }
 }

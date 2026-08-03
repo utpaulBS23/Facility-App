@@ -476,15 +476,15 @@ ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
 @riverpod
 CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
   return CreateSupplyRequestUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
   return GetItemCatalogUseCase(
-    ref.read(itemCatalogRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    itemCatalogRepository: ref.read(itemCatalogRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
