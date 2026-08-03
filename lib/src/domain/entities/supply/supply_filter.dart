@@ -26,11 +26,6 @@ enum SupplyFilter {
     };
   }
 
-  @override
-  String toString() {
-    return name;
-  }
-
   bool matches(SupplyRequestStatus status) {
     return switch (this) {
       SupplyFilter.all => true,

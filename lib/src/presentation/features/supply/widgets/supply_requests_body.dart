@@ -66,6 +66,7 @@ class _SupplyRequestsBody extends StatelessWidget {
             categories: SupplyFilter.values,
             selectedCategory: selectedFilter,
             onSelected: onFilterSelected,
+            labelBuilder: (context, filter) => filter.localizedName(context),
           ),
           Gap(spacing.s16),
           _SupplyRequestsListSection(

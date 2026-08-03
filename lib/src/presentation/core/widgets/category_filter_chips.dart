@@ -8,11 +8,20 @@ class CategoryFilterChips<T extends Enum> extends StatelessWidget {
     required this.categories,
     required this.selectedCategory,
     required this.onSelected,
+    this.labelBuilder,
   });
 
   final List<T> categories;
   final T selectedCategory;
   final ValueChanged<T> onSelected;
+  final String Function(BuildContext context, T category)? labelBuilder;
+
+  String _getLabel(BuildContext context, T category) {
+    if (labelBuilder != null) {
+      return labelBuilder!(context, category);
+    }
+    return category.name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,7 @@ class CategoryFilterChips<T extends Enum> extends StatelessWidget {
         child: Row(
           children: categories.map((category) {
             final isSelected = category == selectedCategory;
-            final label = category.toString();
+            final label = _getLabel(context, category);
 
             final backgroundColor = switch (isSelected) {
               true => color.onPrimary,
