@@ -24,32 +24,26 @@ class ApplyLeavePage extends ConsumerStatefulWidget {
 }
 
 class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
-  ProviderSubscription<AsyncValue>? _actionSub;
-
   @override
   void initState() {
     super.initState();
-    _actionSub = ref.listenManual(applyLeaveActionProvider, (_, next) {
-      next.whenOrNull(
-        data: (value) {
-          if (value == null || !mounted) {
-            return;
-          }
-
-          ref.read(applyLeaveFormProvider.notifier).reset();
-          context.pushReplacementNamed(Routes.leaveSubmitted, extra: value);
-        },
-        error: (e, _) {
-          AppSnackBar.showError(context, context.locale.somethingWentWrong);
-        },
-      );
-    });
+    ref.listenManual(applyLeaveActionProvider, _onActionStateChanged);
   }
 
-  @override
-  void dispose() {
-    _actionSub?.close();
-    super.dispose();
+  void _onActionStateChanged(AsyncValue? previous, AsyncValue next) {
+    next.whenOrNull(
+      data: (value) {
+        if (value == null || !mounted) {
+          return;
+        }
+
+        ref.read(applyLeaveFormProvider.notifier).reset();
+        context.pushReplacementNamed(Routes.leaveSubmitted, extra: value);
+      },
+      error: (e, _) {
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      },
+    );
   }
 
   Future<void> _pickDate({

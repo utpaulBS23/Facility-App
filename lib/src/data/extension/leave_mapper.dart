@@ -1,4 +1,4 @@
-import '../../domain/entities/leave/apply_leave_params.dart';
+import '../../domain/entities/leave/create_leave_request.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
@@ -29,7 +29,7 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() {
     return LeaveBalanceEntity(
       id: id,
-      leavePolicy: leavePolicy?.toEntity(),
+      leavePolicy: leavePolicy!.toEntity(),
       allocatedDays: allocatedDays ?? 0.0,
       usedDays: usedDays ?? 0.0,
       pendingDays: pendingDays ?? 0.0,
@@ -77,9 +77,9 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
     return LeaveRequestEntity(
       id: id,
       referenceCode: referenceCode,
-      applicant: applicant?.toEntity(),
+      applicant: applicant!.toEntity(),
       createdBy: createdBy?.toEntity(),
-      leavePolicy: leavePolicy?.toEntity(),
+      leavePolicy: leavePolicy!.toEntity(),
       startDate: startDate,
       endDate: endDate,
       daysCount: daysCount,
@@ -135,14 +135,7 @@ extension LeaveBalanceListResponseModelToEntity
 
 extension LeaveRequestResponseModelToEntity on LeaveRequestResponseModel {
   LeaveRequestEntity toEntity() {
-    final payload = data;
-    if (payload == null) {
-      throw const FormatException(
-        'Missing data payload in LeaveRequestResponse',
-      );
-    }
-
-    return payload.toEntity();
+    return data!.toEntity();
   }
 }
 
@@ -161,19 +154,7 @@ extension LeaveAttendantListResponseModelToEntity
       data.map((model) => model.toEntity()).toList();
 }
 
-extension RejectLeaveReasonMapper on String? {
-  /// Wire body for `POST .../leave-requests/{id}/reject` — omits
-  /// `rejection_reason` entirely when no reason was given.
-  Map<String, dynamic> toRejectLeaveBody() {
-    final reason = this;
-
-    return reason != null && reason.isNotEmpty
-        ? {'rejection_reason': reason}
-        : <String, dynamic>{};
-  }
-}
-
-extension ApplyLeaveParamsMapper on ApplyLeaveParams {
+extension ApplyLeaveParamsMapper on CreateLeaveRequest {
   Map<String, dynamic> toJson() {
     return {
       'leave_policy_id': leavePolicyId,

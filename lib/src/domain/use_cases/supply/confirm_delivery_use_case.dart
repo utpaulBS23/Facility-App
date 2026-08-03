@@ -1,30 +1,32 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
+import '../../entities/supply/confirm_delivery_request.dart';
 import '../../entities/supply/delivery_entity.dart';
-import '../../repositories/authentication_repository.dart';
 import '../../repositories/delivery_repository.dart';
+import '../partner_use_case.dart';
 
-final class ConfirmDeliveryUseCase {
-  ConfirmDeliveryUseCase(this._repository, this._authRepository);
+/// Confirms delivery receipt for a supply request.
+///
+/// WHY: Accepts [ConfirmDeliveryRequest] write payload rather than [DeliveryEntity]
+/// to keep write parameters decoupled from read models.
+final class ConfirmDeliveryUseCase extends PartnerUseCase {
+  ConfirmDeliveryUseCase({
+    required this.deliveryRepository,
+    required super.authRepository,
+  });
 
-  final DeliveryRepository _repository;
-  final AuthenticationRepository _authRepository;
+  final DeliveryRepository deliveryRepository;
 
   Future<Result<DeliveryEntity, Failure>> call({
     required int deliveryId,
-    String? receiptPhotoUrl,
-    String? deliveryNotes,
+    required ConfirmDeliveryRequest request,
   }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) {
-      return const Error(Failure.partnerUnavailable);
-    }
-
-    return _repository.confirmDelivery(
-      partnerId: partnerId,
-      deliveryId: deliveryId,
-      receiptPhotoUrl: receiptPhotoUrl,
-      deliveryNotes: deliveryNotes,
-    );
+    return withPartnerId((partnerId) async {
+      return deliveryRepository.confirmDelivery(
+        partnerId: partnerId,
+        deliveryId: deliveryId,
+        request: request,
+      );
+    });
   }
 }

@@ -581,5 +581,15 @@
         "type": "String"
       }
     }
-  }
+  },
+  "requestSubmittedSuccessfully": "Request submitted successfully",
+  "newRequestTitle": "New Supply Request",
+  "itemsNeeded": "Items Needed",
+  "item": "Item",
+  "selectItem": "Select Item",
+  "quantityAbbrev": "Qty",
+  "addMoreItems": "Add More Items",
+  "submitRequest": "Submit Request",
+  "requestNotesHint": "Add any additional instructions or notes here...",
+  "urgency": "Urgency"
 }

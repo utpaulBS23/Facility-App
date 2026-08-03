@@ -1,24 +1,31 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
-import '../../../core/extensions/ref_extensions.dart';
 import 'confirm_delivery_provider.dart';
 import 'supply_request_action_provider.dart';
 
-part 'supply_request_details_provider.g.dart';
+final supplyRequestDetailsProvider = FutureProvider.family<
+    SupplyRequestEntity,
+    int>((ref, supplyRequestId) async {
+  ref.listen(supplyRequestActionProvider, (previous, next) {
+    if (next is AsyncData && next.value != null) {
+      ref.invalidateSelf();
+    }
+  });
+  ref.listen(confirmDeliveryProvider, (previous, next) {
+    if (next is AsyncData && next.value != null) {
+      ref.invalidateSelf();
+    }
+  });
 
-@riverpod
-class SupplyRequestDetails extends _$SupplyRequestDetails {
-  @override
-  Future<SupplyRequestEntity> build(int supplyRequestId) async {
-    ref.invalidateProviderOnSuccess(supplyRequestActionProvider);
-    ref.invalidateProviderOnSuccess(confirmDeliveryProvider);
+  final result = await ref
+      .read(getSupplyRequestDetailsUseCaseProvider)
+      .call(supplyRequestId);
 
-    final result = await ref
-        .read(getSupplyRequestDetailsUseCaseProvider)
-        .call(supplyRequestId);
-
-    return result.getOrThrow()!;
-  }
-}
+  return result.when(
+    success: (data) => data!,
+    error: (error) => throw Exception(error.message),
+  );
+});

@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
-import '../../../../domain/entities/leave/apply_leave_params.dart';
+import '../../../../domain/entities/leave/create_leave_request.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 
 part 'apply_leave_provider.g.dart';
@@ -12,7 +12,7 @@ class ApplyLeaveAction extends _$ApplyLeaveAction {
   @override
   AsyncValue<LeaveRequestEntity?> build() => const AsyncValue.data(null);
 
-  Future<void> submit(ApplyLeaveParams params) async {
+  Future<void> submit(CreateLeaveRequest params) async {
     if (state.isLoading) {
       return;
     }

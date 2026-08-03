@@ -348,7 +348,7 @@ SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
 @riverpod
 GetLeavePoliciesUseCase getLeavePoliciesUseCase(Ref ref) {
   return GetLeavePoliciesUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -356,7 +356,7 @@ GetLeavePoliciesUseCase getLeavePoliciesUseCase(Ref ref) {
 @riverpod
 GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
   return GetLeaveBalancesUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -364,7 +364,7 @@ GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
 @riverpod
 RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
   return RequestLeaveUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -372,7 +372,7 @@ RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
 @riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -380,7 +380,7 @@ GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
 @riverpod
 GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
   return GetLeaveRequestDetailsUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -388,7 +388,7 @@ GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
 @riverpod
 CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
   return CancelLeaveUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -396,7 +396,7 @@ CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
 @riverpod
 GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
   return GetLeaveAttendantsUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -404,7 +404,7 @@ GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
 @riverpod
 GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
   return GetLeaveApprovalsUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -412,7 +412,7 @@ GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
 @riverpod
 ApproveLeaveUseCase approveLeaveUseCase(Ref ref) {
   return ApproveLeaveUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -420,7 +420,7 @@ ApproveLeaveUseCase approveLeaveUseCase(Ref ref) {
 @riverpod
 RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
   return RejectLeaveUseCase(
-    repository: ref.read(leaveRepositoryProvider),
+    leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -428,63 +428,63 @@ RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
 @riverpod
 GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
   return GetSupplyRequestsUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
   return GetSupplyRequestDetailsUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 ApproveSupplyRequestUseCase approveSupplyRequestUseCase(Ref ref) {
   return ApproveSupplyRequestUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 RejectSupplyRequestUseCase rejectSupplyRequestUseCase(Ref ref) {
   return RejectSupplyRequestUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
   return GetDeliveryForSupplyRequestUseCase(
-    ref.read(deliveryRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    deliveryRepository: ref.read(deliveryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
   return ConfirmDeliveryUseCase(
-    ref.read(deliveryRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    deliveryRepository: ref.read(deliveryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
   return CreateSupplyRequestUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
   return GetItemCatalogUseCase(
-    ref.read(itemCatalogRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    itemCatalogRepository: ref.read(itemCatalogRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }

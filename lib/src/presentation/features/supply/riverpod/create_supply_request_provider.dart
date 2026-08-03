@@ -1,10 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../../domain/repositories/supply_repository.dart';
-import '../../../core/extensions/ref_extensions.dart';
 
 part 'create_supply_request_provider.g.dart';
 
@@ -19,7 +19,9 @@ class CreateSupplyRequest extends _$CreateSupplyRequest {
     String? notes,
     required List<CreateSupplyRequestItemParams> items,
   }) async {
-    if (state.isLoading) return;
+    if (state.isLoading) {
+      return;
+    }
 
     state = const AsyncValue.loading();
 
@@ -30,6 +32,9 @@ class CreateSupplyRequest extends _$CreateSupplyRequest {
           items: items,
         );
 
-    state = result.toAsyncValue();
+    state = result.when(
+      success: (data) => AsyncValue.data(data),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
+    );
   }
 }

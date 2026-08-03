@@ -1,4 +1,6 @@
+import '../../domain/entities/supply/confirm_delivery_request.dart';
 import '../../domain/entities/supply/delivery_entity.dart';
+import '../models/supply/confirm_delivery_request_model.dart';
 import '../models/supply/delivery_model.dart';
 import '../models/supply/delivery_response_models.dart';
 
@@ -48,4 +50,11 @@ extension DeliveryResponseModelToEntity on DeliveryResponseModel {
 extension DeliveryListResponseModelToEntity on DeliveryListResponseModel {
   List<DeliveryEntity> toEntityList() =>
       data.map((model) => model.toEntity()).toList();
+}
+
+extension ConfirmDeliveryRequestToModelMapper on ConfirmDeliveryRequest {
+  ConfirmDeliveryRequestModel toModel() => ConfirmDeliveryRequestModel(
+        receiptPhotoUrl: receiptPhotoUrl,
+        deliveryNotes: deliveryNotes,
+      );
 }

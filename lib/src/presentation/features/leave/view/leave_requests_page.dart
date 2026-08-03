@@ -1,4 +1,3 @@
-import 'package:facility_management_app/src/presentation/core/widgets/permission_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -18,8 +17,10 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/category_filter_chips.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/leave_filter_extension.dart';
 import '../extensions/leave_type_extension.dart';
 import '../riverpod/leave_approvals_provider.dart';
 import '../riverpod/leave_request_action_provider.dart';
@@ -44,23 +45,11 @@ class LeaveRequestsPage extends ConsumerStatefulWidget {
 class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
   final _searchController = TextEditingController();
   LeaveFilter _selectedFilter = LeaveFilter.all;
-  String _searchQuery = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchChanged);
-  }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _onSearchChanged() {
-    setState(() => _searchQuery = _searchController.text.toLowerCase());
   }
 
   void _onBack(BuildContext context) {
@@ -90,8 +79,8 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
         searchController: _searchController,
         selectedFilter: _selectedFilter,
         onFilterSelected: (filter) => setState(() => _selectedFilter = filter),
+        onSearchChanged: () => setState(() {}),
         approvalsState: approvalsState,
-        searchQuery: _searchQuery,
         onRetry: () => ref.invalidate(leaveApprovalsProvider),
       ),
       floatingActionButton: PermissionGate(

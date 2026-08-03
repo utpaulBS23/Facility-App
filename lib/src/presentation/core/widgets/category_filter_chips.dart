@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-class CategoryFilterChips<T> extends StatefulWidget {
+class CategoryFilterChips<T extends Enum> extends StatelessWidget {
   const CategoryFilterChips({
     super.key,
     required this.categories,
@@ -14,50 +14,13 @@ class CategoryFilterChips<T> extends StatefulWidget {
   final List<T> categories;
   final T selectedCategory;
   final ValueChanged<T> onSelected;
-  final String Function(T category)? labelBuilder;
+  final String Function(BuildContext context, T category)? labelBuilder;
 
-  @override
-  State<CategoryFilterChips<T>> createState() =>
-      _CategoryFilterChipsState<T>();
-}
-
-class _CategoryFilterChipsState<T> extends State<CategoryFilterChips<T>> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
-  }
-
-  @override
-  void didUpdateWidget(CategoryFilterChips<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedCategory != widget.selectedCategory) {
-      _scrollToSelected();
+  String _getLabel(BuildContext context, T category) {
+    if (labelBuilder != null) {
+      return labelBuilder!(context, category);
     }
-  }
-
-  void _scrollToSelected() {
-    if (!_scrollController.hasClients) return;
-    final index = widget.categories.indexOf(widget.selectedCategory);
-    if (index == -1) return;
-
-    final targetOffset = (index * 85.0).clamp(
-      0.0,
-      _scrollController.position.maxScrollExtent,
-    );
-    _scrollController.animateTo(
-      targetOffset,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+    return category.name;
   }
 
   @override
@@ -74,14 +37,11 @@ class _CategoryFilterChipsState<T> extends State<CategoryFilterChips<T>> {
         borderRadius: BorderRadius.circular(radius.r20),
       ),
       child: SingleChildScrollView(
-        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: widget.categories.map((category) {
-            final isSelected = category == widget.selectedCategory;
-            final label = widget.labelBuilder != null
-                ? widget.labelBuilder!(category)
-                : category.toString();
+          children: categories.map((category) {
+            final isSelected = category == selectedCategory;
+            final label = _getLabel(context, category);
 
             final backgroundColor = switch (isSelected) {
               true => color.onPrimary,
@@ -107,7 +67,7 @@ class _CategoryFilterChipsState<T> extends State<CategoryFilterChips<T>> {
             };
 
             return GestureDetector(
-              onTap: () => widget.onSelected(category),
+              onTap: () => onSelected(category),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(
