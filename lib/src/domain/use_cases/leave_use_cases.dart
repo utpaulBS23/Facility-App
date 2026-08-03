@@ -5,25 +5,8 @@ import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
 import '../entities/leave/leave_status.dart';
-import '../repositories/authentication_repository.dart';
 import '../repositories/leave_repository.dart';
-
-abstract base class PartnerUseCase {
-  PartnerUseCase({required this.authRepository});
-
-  final AuthenticationRepository authRepository;
-
-  Future<Result<T, Failure>> withPartnerId<T>(
-    Future<Result<T, Failure>> Function(int partnerId) action,
-  ) async {
-    final partnerId = authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) {
-      return const Error(Failure.partnerUnavailable);
-    }
-
-    return action(partnerId);
-  }
-}
+import 'partner_use_case.dart';
 
 final class GetLeavePoliciesUseCase extends PartnerUseCase {
   GetLeavePoliciesUseCase({
