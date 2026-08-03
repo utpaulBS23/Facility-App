@@ -130,6 +130,8 @@ extension SupplyRequestListCounts on Iterable<SupplyRequestEntity> {
           inDelivery++;
         case SupplyRequestStatus.delivered:
           delivered++;
+        case SupplyRequestStatus.completed:
+          delivered++;
         case SupplyRequestStatus.rejected:
           rejected++;
         case SupplyRequestStatus.operationManagerApproved:
