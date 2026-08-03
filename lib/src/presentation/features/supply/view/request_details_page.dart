@@ -16,6 +16,7 @@ import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/supply_display_extensions.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
@@ -140,15 +141,20 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
             _RequestUserCard(
               headerLabel: context.locale.requestedByLabel,
               userName: request.requestedByName,
-              userRole: _capitalizeRole(request.initiatedByRole),
-              timestampLabel: context.locale
-                  .submittedOn(_formatDateTime(request.createdAt)),
+              userRole: request.initiatedByRole.isNotEmpty
+                  ? '${request.initiatedByRole[0].toUpperCase()}${request.initiatedByRole.substring(1)}'
+                  : request.initiatedByRole,
+              timestampLabel: context.locale.submittedOn(
+                DateTime.tryParse(request.createdAt) != null
+                    ? DateFormatter.timestamp(
+                        DateTime.parse(request.createdAt).toLocal(),
+                      )
+                    : request.createdAt,
+              ),
             ),
             Gap(spacing.s12),
             _ReceivedItemsList(
-              items: delivery != null
-                  ? _itemsFromDelivery(delivery)
-                  : _itemsForDisplay(request),
+              items: delivery?.displayItems ?? request.displayItems,
               priority: request.urgency,
               isApprovedStage: request.isApprovedStage,
               isDelivered: request.isDelivered,
@@ -164,8 +170,13 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
                 headerLabel: context.locale.receivedBy,
                 userName: delivery!.receivedByName!,
                 userRole: '',
-                timestampLabel: context.locale
-                    .receivedOn(_formatDateTime(delivery.confirmedAt ?? '')),
+                timestampLabel: context.locale.receivedOn(
+                  DateTime.tryParse(delivery.confirmedAt ?? '') != null
+                      ? DateFormatter.timestamp(
+                          DateTime.parse(delivery.confirmedAt!).toLocal(),
+                        )
+                      : (delivery.confirmedAt ?? ''),
+                ),
               ),
             ],
             Gap(spacing.s12),
@@ -210,7 +221,6 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
                       width: double.infinity,
                       height: spacing.s44,
                       child: FilledButton(
-                        // Confirm-receipt flow gets its own page in a later branch.
                         onPressed: null,
                         child: Text(context.locale.confirmDeliveryReceipt),
                       ),
@@ -222,52 +232,4 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
           : null,
     );
   }
-}
-
-String _capitalizeRole(String role) {
-  if (role.isEmpty) {
-    return role;
-  }
-
-  return '${role[0].toUpperCase()}${role.substring(1)}';
-}
-
-String _formatDateTime(String iso) {
-  if (iso.isEmpty) {
-    return iso;
-  }
-
-  try {
-    return DateFormatter.timestamp(DateTime.parse(iso).toLocal());
-  } catch (_) {
-    return iso;
-  }
-}
-
-List<MockReceivedItem> _itemsFromDelivery(DeliveryEntity delivery) {
-  return delivery.items.map((item) {
-    return MockReceivedItem(
-      name: item.itemName,
-      code: item.itemCode,
-      expectedQuantity: item.qtyExpected.round(),
-      receivedQuantity: item.qtyReceived.round(),
-      unit: item.unit,
-      icon: Icons.inventory_2_outlined,
-    );
-  }).toList();
-}
-
-List<MockReceivedItem> _itemsForDisplay(SupplyRequestEntity request) {
-  return request.items.map((item) {
-    final qty = item.qtyRequested.round();
-
-    return MockReceivedItem(
-      name: item.itemName,
-      code: item.itemCode,
-      expectedQuantity: qty,
-      receivedQuantity: qty,
-      unit: item.unit,
-      icon: Icons.inventory_2_outlined,
-    );
-  }).toList();
 }
