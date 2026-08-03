@@ -28,7 +28,6 @@ class CategoryFilterChips<T extends Enum> extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius.r20),
       ),
       child: SingleChildScrollView(
-        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         child: Row(
           children: categories.map((category) {
@@ -59,7 +58,7 @@ class CategoryFilterChips<T extends Enum> extends StatelessWidget {
             };
 
             return GestureDetector(
-              onTap: () => widget.onSelected(category),
+              onTap: () => onSelected(category),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(
