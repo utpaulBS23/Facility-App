@@ -68,30 +68,33 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final allRequestsAsync = ref.watch(supplyRequestsProvider());
+    final allRequestsAsync = ref.watch(supplyRequestsProvider(null));
     final canCreateRequest = ref.watch(
       userSessionProvider.select(
         (session) => session?.can(UserPermission.supplyRequestCreate) ?? false,
       ),
     );
     final filteredRequestsAsync = ref.watch(
-      supplyRequestsProvider(
-        status: _selectedFilter.toRequestStatus(),
-      ),
+      supplyRequestsProvider(_selectedFilter.toRequestStatus()),
     );
 
     final allList = allRequestsAsync.valueOrNull?.items ?? [];
     final pendingCount = allList
-        .where((r) =>
-            r.status == SupplyRequestStatus.pendingSupervisor ||
-            r.status == SupplyRequestStatus.pendingOperationManager)
+        .where(
+          (r) =>
+              r.status == SupplyRequestStatus.pendingSupervisor ||
+              r.status == SupplyRequestStatus.pendingOperationManager,
+        )
         .length;
-    final inDeliveryCount =
-        allList.where((r) => r.status == SupplyRequestStatus.inDelivery).length;
-    final deliveredCount =
-        allList.where((r) => r.status == SupplyRequestStatus.delivered).length;
-    final rejectedCount =
-        allList.where((r) => r.status == SupplyRequestStatus.rejected).length;
+    final inDeliveryCount = allList
+        .where((r) => r.status == SupplyRequestStatus.inDelivery)
+        .length;
+    final deliveredCount = allList
+        .where((r) => r.status == SupplyRequestStatus.delivered)
+        .length;
+    final rejectedCount = allList
+        .where((r) => r.status == SupplyRequestStatus.rejected)
+        .length;
     final approvedCount = allList
         .where((r) => r.status == SupplyRequestStatus.operationManagerApproved)
         .length;
@@ -120,9 +123,8 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         pendingDeliveryAlert: approvedCount > 0
             ? PendingDeliveryAlert(
                 count: approvedCount,
-                onTap: () => _onFilterSelected(
-                  SupplyFilter.operationManagerApproved,
-                ),
+                onTap: () =>
+                    _onFilterSelected(SupplyFilter.operationManagerApproved),
               )
             : null,
         newRequestButton: canCreateRequest
@@ -140,13 +142,12 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
           categories: SupplyFilter.values,
           selectedCategory: _selectedFilter,
           onSelected: _onFilterSelected,
-          labelBuilder: (filter) => filter.localizedName(context),
         ),
         list: _SupplyRequestsListSection(
           requestsAsync: filteredRequestsAsync,
           onRequestTap: _onRequestTap,
           onRetry: () => ref.invalidate(
-            supplyRequestsProvider(status: _selectedFilter.toRequestStatus()),
+            supplyRequestsProvider(_selectedFilter.toRequestStatus()),
           ),
         ),
       ),

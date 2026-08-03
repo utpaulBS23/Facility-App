@@ -428,7 +428,7 @@ RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
 @riverpod
 GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
   return GetSupplyRequestsUseCase(
-    repository: ref.read(supplyRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
