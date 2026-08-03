@@ -1,5 +1,3 @@
-import 'package:facility_management_app/src/presentation/core/widgets/app_error_widget.dart';
-import 'package:facility_management_app/src/presentation/core/widgets/status_dot_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -11,6 +9,8 @@ import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/app_error_widget.dart';
+import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/leave_shifts_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
@@ -29,7 +29,7 @@ class SelectShiftPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = context.color;
-    final shiftsAsync = ref.watch(leaveShiftsProvider(date: date));
+    final shiftsAsync = ref.watch(leaveShiftsProvider(date));
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -45,7 +45,7 @@ class SelectShiftPage extends ConsumerWidget {
         loading: () => const _ShiftListShimmer(),
         error: (err, _) => AppErrorWidget(
           message: err.toString(),
-          onRetry: () => ref.invalidate(leaveShiftsProvider(date: date)),
+          onRetry: () => ref.invalidate(leaveShiftsProvider(date)),
         ),
         data: (shifts) => _SelectShiftBody(shifts: shifts),
       ),

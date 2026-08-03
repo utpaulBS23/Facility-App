@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-class CategoryFilterChips<T> extends StatelessWidget {
+class CategoryFilterChips<T extends Enum> extends StatelessWidget {
   const CategoryFilterChips({
     super.key,
     required this.categories,
     required this.selectedCategory,
     required this.onSelected,
-    this.labelBuilder,
   });
 
   final List<T> categories;
   final T selectedCategory;
   final ValueChanged<T> onSelected;
-  final String Function(T category)? labelBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +32,7 @@ class CategoryFilterChips<T> extends StatelessWidget {
         child: Row(
           children: categories.map((category) {
             final isSelected = category == selectedCategory;
-            final label = labelBuilder != null
-                ? labelBuilder!(category)
-                : category.toString();
+            final label = category.toString();
 
             final backgroundColor = switch (isSelected) {
               true => color.onPrimary,

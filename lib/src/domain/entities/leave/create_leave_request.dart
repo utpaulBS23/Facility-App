@@ -1,5 +1,5 @@
-class ApplyLeaveParams {
-  const ApplyLeaveParams({
+class CreateLeaveRequest {
+  const CreateLeaveRequest({
     required this.leavePolicyId,
     required this.startDate,
     required this.endDate,

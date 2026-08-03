@@ -81,7 +81,7 @@ class _LeaveRequestActionCardState
     final textStyle = context.textStyle;
     final color = context.color;
 
-    final applicantName = request.applicant?.name ?? context.locale.attendant;
+    final applicantName = request.applicant.name;
     final dateRange = '${request.startDate} → ${request.endDate}';
 
     final (statusLabel, dotColor) = switch (request.status) {
