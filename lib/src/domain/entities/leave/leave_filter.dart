@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-
-import '../../../core/extensions/app_localization.dart';
 import 'leave_status.dart';
 
 enum LeaveFilter {
@@ -9,16 +6,6 @@ enum LeaveFilter {
   pendingManager,
   approved,
   rejected;
-
-  String localizedName(BuildContext context) {
-    return switch (this) {
-      LeaveFilter.all => context.locale.all,
-      LeaveFilter.pendingSupervisor => context.locale.pending,
-      LeaveFilter.pendingManager => context.locale.managerApproval,
-      LeaveFilter.approved => context.locale.approved,
-      LeaveFilter.rejected => context.locale.rejected,
-    };
-  }
 
   bool matches(LeaveStatus status) {
     return switch (this) {

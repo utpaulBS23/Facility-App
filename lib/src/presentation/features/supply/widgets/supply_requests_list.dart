@@ -49,7 +49,7 @@ class _SupplyRequestsListSection extends StatelessWidget {
       },
       loading: () => const _SupplyRequestListShimmer(),
       error: (err, _) => AppErrorWidget(
-        message: context.locale.somethingWentWrong,
+        message: err.localizedMessage(context),
         onRetry: onRetry,
       ),
     );

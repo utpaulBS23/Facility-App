@@ -57,9 +57,9 @@ class LeaveRequestEntity {
   const LeaveRequestEntity({
     required this.id,
     required this.referenceCode,
-    this.applicant,
+    required this.applicant,
     this.createdBy,
-    this.leavePolicy,
+    required this.leavePolicy,
     required this.startDate,
     required this.endDate,
     required this.daysCount,
@@ -75,9 +75,9 @@ class LeaveRequestEntity {
 
   final int id;
   final String referenceCode;
-  final LeaveApplicantEntity? applicant;
+  final LeaveApplicantEntity applicant;
   final LeaveApplicantEntity? createdBy;
-  final LeavePolicyEntity? leavePolicy;
+  final LeavePolicyEntity leavePolicy;
   final String startDate;
   final String endDate;
   final int daysCount;
@@ -89,17 +89,4 @@ class LeaveRequestEntity {
   final List<LeaveShiftDetailEntity> shifts;
   final List<LeaveApprovalStepEntity> approvalSteps;
   final String createdAt;
-
-  /// Visible approval steps for display: stops after the first rejected step.
-  List<LeaveApprovalStepEntity> get visibleApprovalSteps {
-    final result = <LeaveApprovalStepEntity>[];
-    for (final step in approvalSteps) {
-      result.add(step);
-      if (step.status == LeaveStatus.rejected) {
-        break;
-      }
-    }
-
-    return result;
-  }
 }

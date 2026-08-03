@@ -1,5 +1,6 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
+import '../../domain/entities/supply/confirm_delivery_request.dart';
 import '../../domain/entities/supply/delivery_entity.dart';
 import '../../domain/repositories/delivery_repository.dart';
 import '../extension/delivery_mapper.dart';
@@ -34,17 +35,13 @@ final class DeliveryRepositoryImpl extends DeliveryRepository {
   Future<Result<DeliveryEntity, Failure>> confirmDelivery({
     required int partnerId,
     required int deliveryId,
-    String? receiptPhotoUrl,
-    String? deliveryNotes,
+    required ConfirmDeliveryRequest request,
   }) {
     return asyncGuard(() async {
       final response = await remote.confirmDelivery(
         partnerId: partnerId,
         deliveryId: deliveryId,
-        body: {
-          'receipt_photo_url': ?receiptPhotoUrl,
-          'delivery_notes': ?deliveryNotes,
-        },
+        body: request.toModel().toJson(),
       );
       final responseModel = DeliveryResponseModel.fromJson(response.data);
       return responseModel.toEntity();
