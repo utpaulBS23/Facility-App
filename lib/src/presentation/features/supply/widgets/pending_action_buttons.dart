@@ -1,23 +1,24 @@
 part of '../view/request_details_page.dart';
 
-class _PendingActionButtons extends StatelessWidget {
+class _PendingActionButtons extends ConsumerWidget {
   const _PendingActionButtons({
     required this.onReject,
     required this.onApprove,
-    this.isApproving = false,
-    this.isRejecting = false,
+    required this.isApproveAction,
   });
 
   final VoidCallback onReject;
   final VoidCallback onApprove;
-  final bool isApproving;
-  final bool isRejecting;
+  final bool isApproveAction;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final isBusy = isApproving || isRejecting;
+    final actionState = ref.watch(supplyRequestActionProvider);
+    final isBusy = actionState.isLoading;
+    final isApproving = isBusy && isApproveAction;
+    final isRejecting = isBusy && !isApproveAction;
 
     return Row(
       children: [

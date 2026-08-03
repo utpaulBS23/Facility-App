@@ -436,32 +436,32 @@ GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
 @riverpod
 GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
   return GetSupplyRequestDetailsUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 ApproveSupplyRequestUseCase approveSupplyRequestUseCase(Ref ref) {
   return ApproveSupplyRequestUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 RejectSupplyRequestUseCase rejectSupplyRequestUseCase(Ref ref) {
   return RejectSupplyRequestUseCase(
-    ref.read(supplyRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
 @riverpod
 GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
   return GetDeliveryForSupplyRequestUseCase(
-    ref.read(deliveryRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    deliveryRepository: ref.read(deliveryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 

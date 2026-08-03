@@ -5,9 +5,6 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
-import '../../../core/extensions/ref_extensions.dart';
-import 'confirm_delivery_provider.dart';
-import 'supply_request_action_provider.dart';
 
 final supplyRequestsProvider = FutureProvider.family<
     PaginatedListEntity<SupplyRequestEntity>,

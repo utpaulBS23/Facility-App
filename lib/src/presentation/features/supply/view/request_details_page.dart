@@ -8,12 +8,12 @@ import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/delivery_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
@@ -42,76 +42,48 @@ class RequestDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
-  ProviderSubscription<AsyncValue>? _actionSub;
-  bool _isApproving = false;
-  bool _isRejecting = false;
   bool _lastActionWasApprove = true;
 
   @override
   void initState() {
     super.initState();
-    _actionSub = ref.listenManual(supplyRequestActionProvider, (_, next) {
-      next.whenOrNull(
-        data: (value) {
-          if (value == null || !mounted) {
-            return;
-          }
-
-          final msg = _lastActionWasApprove
-              ? context.locale.approved
-              : context.locale.rejection;
-          AppSnackBar.showSuccess(context, msg);
-          context.pop();
-        },
-        error: (e, _) {
-          if (!mounted) {
-            return;
-          }
-
-          AppSnackBar.showError(context, context.locale.somethingWentWrong);
-        },
-      );
-    });
+    ref.listenManual(supplyRequestActionProvider, _onActionStateChanged);
   }
 
-  @override
-  void dispose() {
-    _actionSub?.close();
-    super.dispose();
+  void _onActionStateChanged(
+    AsyncValue<SupplyRequestEntity?>? previous,
+    AsyncValue<SupplyRequestEntity?> next,
+  ) {
+    next.whenOrNull(
+      data: (value) {
+        if (value == null || !mounted) {
+          return;
+        }
+
+        final msg = _lastActionWasApprove
+            ? context.locale.approved
+            : context.locale.rejection;
+        AppSnackBar.showSuccess(context, msg);
+        context.pop();
+      },
+      error: (e, _) {
+        if (!mounted) {
+          return;
+        }
+
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      },
+    );
   }
 
-  void _onApprove() async {
-    if (_isApproving || _isRejecting) {
-      return;
-    }
-
-    setState(() => _isApproving = true);
+  void _onApprove() {
     _lastActionWasApprove = true;
-
-    await ref
-        .read(supplyRequestActionProvider.notifier)
-        .approve(widget.request.id);
-
-    if (mounted) {
-      setState(() => _isApproving = false);
-    }
+    ref.read(supplyRequestActionProvider.notifier).approve(widget.request.id);
   }
 
-  void _onReject() async {
-    if (_isApproving || _isRejecting) {
-      return;
-    }
-
-    setState(() => _isRejecting = true);
+  void _onReject() {
     _lastActionWasApprove = false;
-
-    await ref
-        .read(supplyRequestActionProvider.notifier)
-        .reject(widget.request.id);
-
-    if (mounted) {
-      setState(() => _isRejecting = false);
-    }
+    ref.read(supplyRequestActionProvider.notifier).reject(widget.request.id);
   }
 
   void _onEvidenceReportTap(BuildContext context, MockReceivedItem item) {
@@ -133,33 +105,10 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     final request = requestAsync.valueOrNull ?? widget.request;
     final spacing = context.dimensions.spacing;
 
-    final isApprovedStage =
-        request.status == SupplyRequestStatus.operationManagerApproved ||
-            request.status == SupplyRequestStatus.inDelivery ||
-            request.status == SupplyRequestStatus.delivered;
-    final isDelivered = request.status == SupplyRequestStatus.delivered;
-
-    final hasDelivery = request.status == SupplyRequestStatus.inDelivery ||
-        request.status == SupplyRequestStatus.delivered;
-    final deliveryAsync = hasDelivery
+    final deliveryAsync = request.hasDelivery
         ? ref.watch(supplyRequestDeliveryProvider(request.requestCode))
         : const AsyncValue<DeliveryEntity?>.data(null);
     final delivery = deliveryAsync.valueOrNull;
-
-    final canApproveOrReject = ref.watch(
-      userSessionProvider.select(
-        (session) =>
-            (session?.can(UserPermission.supplyRequestApproveSupervisor) ??
-                false) ||
-            (session?.can(
-                  UserPermission.supplyRequestApproveOperationManager,
-                ) ??
-                false),
-      ),
-    );
-    final isActionable = canApproveOrReject &&
-        (request.status == SupplyRequestStatus.pendingSupervisor ||
-            request.status == SupplyRequestStatus.pendingOperationManager);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -176,7 +125,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
           spacing.s16,
           spacing.s16,
           spacing.s16,
-          isApprovedStage ? 160 : spacing.s24,
+          request.isApprovedStage ? spacing.s180 : spacing.s24,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -201,14 +150,14 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
                   ? _itemsFromDelivery(delivery)
                   : _itemsForDisplay(request),
               priority: request.urgency,
-              isApprovedStage: isApprovedStage,
-              isDelivered: isDelivered,
-              canEdit: isDelivered ||
+              isApprovedStage: request.isApprovedStage,
+              isDelivered: request.isDelivered,
+              canEdit: request.isDelivered ||
                   request.status == SupplyRequestStatus.pendingSupervisor,
               onEvidenceReportTap: (item) =>
                   _onEvidenceReportTap(context, item),
             ),
-            if (request.status == SupplyRequestStatus.delivered &&
+            if (request.isDelivered &&
                 delivery?.receivedByName != null) ...[
               Gap(spacing.s12),
               _RequestUserCard(
@@ -226,13 +175,20 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
                   ? request.notes!
                   : context.locale.noNotesProvided,
             ),
-            if (isActionable) ...[
-              Gap(spacing.s16),
-              _PendingActionButtons(
-                isApproving: _isApproving,
-                isRejecting: _isRejecting,
-                onReject: _onReject,
-                onApprove: _onApprove,
+            if (request.isPendingStage) ...[
+              PermissionGate(
+                permissions: const [
+                  UserPermission.supplyRequestApproveSupervisor,
+                  UserPermission.supplyRequestApproveOperationManager,
+                ],
+                child: Padding(
+                  padding: EdgeInsets.only(top: spacing.s16),
+                  child: _PendingActionButtons(
+                    isApproveAction: _lastActionWasApprove,
+                    onReject: _onReject,
+                    onApprove: _onApprove,
+                  ),
+                ),
               ),
             ],
           ],

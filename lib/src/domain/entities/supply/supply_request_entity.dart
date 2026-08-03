@@ -83,6 +83,25 @@ class SupplyRequestEntity {
   final String? allocationCode;
   final String createdAt;
   final String updatedAt;
+
+  bool get isApprovedStage =>
+      status == SupplyRequestStatus.operationManagerApproved ||
+      status == SupplyRequestStatus.inDelivery ||
+      status == SupplyRequestStatus.delivered ||
+      status == SupplyRequestStatus.completed;
+
+  bool get isDelivered =>
+      status == SupplyRequestStatus.delivered ||
+      status == SupplyRequestStatus.completed;
+
+  bool get hasDelivery =>
+      status == SupplyRequestStatus.inDelivery ||
+      status == SupplyRequestStatus.delivered ||
+      status == SupplyRequestStatus.completed;
+
+  bool get isPendingStage =>
+      status == SupplyRequestStatus.pendingSupervisor ||
+      status == SupplyRequestStatus.pendingOperationManager;
 }
 
 class SupplyRequestCounts {
