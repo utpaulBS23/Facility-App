@@ -1,5 +1,5 @@
 import '../../core/base/base.dart';
-import '../entities/leave/apply_leave_params.dart';
+import '../entities/leave/create_leave_request.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_policy_entity.dart';
@@ -20,7 +20,7 @@ abstract base class LeaveRepository extends Repository {
 
   Future<Result<LeaveRequestEntity, Failure>> requestLeave(
     int partnerId,
-    ApplyLeaveParams params,
+    CreateLeaveRequest params,
   );
 
   Future<Result<List<LeaveRequestEntity>, Failure>> getMyLeaves(

@@ -11,8 +11,8 @@ class _LeaveStatusTimeline extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final applicantName = request.applicant?.name ?? context.locale.attendant;
-    final steps = request.visibleApprovalSteps;
+    final applicantName = request.applicant.name;
+    final steps = request.approvalSteps;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),

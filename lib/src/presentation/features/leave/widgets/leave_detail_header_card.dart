@@ -11,7 +11,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final applicantName = request.applicant?.name ?? context.locale.attendant;
+    final applicantName = request.applicant.name;
     final (statusLabel, dotColor) = switch (request.status) {
       LeaveStatus.pendingSupervisor => (context.locale.pending, color.warning),
       LeaveStatus.pendingManager => (context.locale.managerApproval, color.info),
