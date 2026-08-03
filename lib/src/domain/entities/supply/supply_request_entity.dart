@@ -1,3 +1,4 @@
+import '../common/paginated_list_entity.dart';
 import 'supply_request_status.dart';
 
 class SupplyRequestItemEntity {
@@ -82,4 +83,68 @@ class SupplyRequestEntity {
   final String? allocationCode;
   final String createdAt;
   final String updatedAt;
+}
+
+class SupplyRequestCounts {
+  const SupplyRequestCounts({
+    required this.pendingCount,
+    required this.inDeliveryCount,
+    required this.deliveredCount,
+    required this.rejectedCount,
+    required this.approvedCount,
+  });
+
+  final int pendingCount;
+  final int inDeliveryCount;
+  final int deliveredCount;
+  final int rejectedCount;
+  final int approvedCount;
+
+  static SupplyRequestCounts getCount(PaginatedListEntity<SupplyRequestEntity>? response){
+    return switch(response?.items){
+      final items? => items.counts,
+      null => const SupplyRequestCounts
+      (pendingCount: 0, 
+      inDeliveryCount: 0, 
+      deliveredCount: 0, 
+      rejectedCount: 0, 
+      approvedCount: 0),
+    };
+  }
+}
+
+extension SupplyRequestListCounts on Iterable<SupplyRequestEntity> {
+  SupplyRequestCounts get counts {
+    int pending = 0;
+    int inDelivery = 0;
+    int delivered = 0;
+    int rejected = 0;
+    int approved = 0;
+
+    for (final r in this) {
+      switch (r.status) {
+        case SupplyRequestStatus.pendingSupervisor:
+        case SupplyRequestStatus.pendingOperationManager:
+          pending++;
+        case SupplyRequestStatus.inDelivery:
+          inDelivery++;
+        case SupplyRequestStatus.delivered:
+          delivered++;
+        case SupplyRequestStatus.rejected:
+          rejected++;
+        case SupplyRequestStatus.operationManagerApproved:
+          approved++;
+        case SupplyRequestStatus.unknown:
+          break;
+      }
+    }
+
+    return SupplyRequestCounts(
+      pendingCount: pending,
+      inDeliveryCount: inDelivery,
+      deliveredCount: delivered,
+      rejectedCount: rejected,
+      approvedCount: approved,
+    );
+  }
 }

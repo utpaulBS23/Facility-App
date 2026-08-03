@@ -10,13 +10,12 @@ import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_filter.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
-import '../../../../domain/entities/supply/supply_request_status.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
@@ -69,35 +68,11 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final allRequestsAsync = ref.watch(supplyRequestsProvider(null));
-    final canCreateRequest = ref.watch(
-      userSessionProvider.select(
-        (session) => session?.can(UserPermission.supplyRequestCreate) ?? false,
-      ),
-    );
     final filteredRequestsAsync = ref.watch(
       supplyRequestsProvider(_selectedFilter.toRequestStatus()),
     );
 
-    final allList = allRequestsAsync.valueOrNull?.items ?? [];
-    final pendingCount = allList
-        .where(
-          (r) =>
-              r.status == SupplyRequestStatus.pendingSupervisor ||
-              r.status == SupplyRequestStatus.pendingOperationManager,
-        )
-        .length;
-    final inDeliveryCount = allList
-        .where((r) => r.status == SupplyRequestStatus.inDelivery)
-        .length;
-    final deliveredCount = allList
-        .where((r) => r.status == SupplyRequestStatus.delivered)
-        .length;
-    final rejectedCount = allList
-        .where((r) => r.status == SupplyRequestStatus.rejected)
-        .length;
-    final approvedCount = allList
-        .where((r) => r.status == SupplyRequestStatus.operationManagerApproved)
-        .length;
+    final counts = SupplyRequestCounts.getCount(allRequestsAsync.valueOrNull);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -113,31 +88,33 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         padding: EdgeInsets.all(spacing.s16),
         summary: allRequestsAsync.maybeWhen(
           data: (_) => _SupplySummaryRow(
-            pendingCount: pendingCount,
-            inDeliveryCount: inDeliveryCount,
-            deliveredCount: deliveredCount,
-            rejectedCount: rejectedCount,
+            pendingCount: counts.pendingCount,
+            inDeliveryCount: counts.inDeliveryCount,
+            deliveredCount: counts.deliveredCount,
+            rejectedCount: counts.rejectedCount,
           ),
           orElse: () => const _SupplySummaryRowShimmer(),
         ),
-        pendingDeliveryAlert: approvedCount > 0
-            ? PendingDeliveryAlert(
-                count: approvedCount,
-                onTap: () =>
-                    _onFilterSelected(SupplyFilter.operationManagerApproved),
-              )
-            : null,
-        newRequestButton: canCreateRequest
-            ? SizedBox(
-                width: double.infinity,
-                height: spacing.s44,
-                child: FilledButton.icon(
-                  onPressed: _onNewRequest,
-                  icon: const Icon(Icons.add_rounded),
-                  label: Text(context.locale.newRequest),
-                ),
-              )
-            : null,
+        pendingDeliveryAlert: switch (counts.approvedCount > 0) {
+          true => PendingDeliveryAlert(
+              count: counts.approvedCount,
+              onTap: () =>
+                  _onFilterSelected(SupplyFilter.operationManagerApproved),
+            ),
+          false => null,
+        },
+        newRequestButton: PermissionGate(
+          permissions: const [UserPermission.supplyRequestCreate],
+          child: SizedBox(
+            width: double.infinity,
+            height: spacing.s44,
+            child: FilledButton.icon(
+              onPressed: _onNewRequest,
+              icon: const Icon(Icons.add_rounded),
+              label: Text(context.locale.newRequest),
+            ),
+          ),
+        ),
         filterBar: CategoryFilterChips<SupplyFilter>(
           categories: SupplyFilter.values,
           selectedCategory: _selectedFilter,
