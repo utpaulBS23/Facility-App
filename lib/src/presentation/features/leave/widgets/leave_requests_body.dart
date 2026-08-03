@@ -6,8 +6,8 @@ class _LeaveRequestsBody extends StatelessWidget {
     required this.searchController,
     required this.selectedFilter,
     required this.onFilterSelected,
+    required this.onSearchChanged,
     required this.approvalsState,
-    required this.searchQuery,
     required this.onRetry,
   });
 
@@ -15,8 +15,8 @@ class _LeaveRequestsBody extends StatelessWidget {
   final TextEditingController searchController;
   final LeaveFilter selectedFilter;
   final ValueChanged<LeaveFilter> onFilterSelected;
+  final VoidCallback onSearchChanged;
   final AsyncValue<List<LeaveRequestEntity>> approvalsState;
-  final String searchQuery;
   final VoidCallback onRetry;
 
   @override
@@ -43,6 +43,7 @@ class _LeaveRequestsBody extends StatelessWidget {
           child: AppTextField.search(
             controller: searchController,
             hint: context.locale.search,
+            onChanged: (_) => onSearchChanged(),
           ),
         ),
         Padding(
@@ -51,6 +52,7 @@ class _LeaveRequestsBody extends StatelessWidget {
             categories: LeaveFilter.values,
             selectedCategory: selectedFilter,
             onSelected: onFilterSelected,
+            labelBuilder: (context, filter) => filter.localizedName(context),
           ),
         ),
         Expanded(
@@ -66,7 +68,7 @@ class _LeaveRequestsBody extends StatelessWidget {
             data: (requests) => _LeaveRequestsList(
               requests: requests,
               selectedFilter: selectedFilter,
-              searchQuery: searchQuery,
+              searchQuery: searchController.text.trim().toLowerCase(),
             ),
           ),
         ),
