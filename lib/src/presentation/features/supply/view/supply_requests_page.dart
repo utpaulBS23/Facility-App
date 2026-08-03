@@ -66,7 +66,6 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final allRequestsAsync = ref.watch(supplyRequestsProvider(null));
     final filteredRequestsAsync = ref.watch(
       supplyRequestsProvider(_selectedFilter.toRequestStatus()),
@@ -85,47 +84,15 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: _SupplyRequestsBody(
-        padding: EdgeInsets.all(spacing.s16),
-        summary: allRequestsAsync.maybeWhen(
-          data: (_) => _SupplySummaryRow(
-            pendingCount: counts.pendingCount,
-            inDeliveryCount: counts.inDeliveryCount,
-            deliveredCount: counts.deliveredCount,
-            rejectedCount: counts.rejectedCount,
-          ),
-          orElse: () => const _SupplySummaryRowShimmer(),
-        ),
-        pendingDeliveryAlert: switch (counts.approvedCount > 0) {
-          true => PendingDeliveryAlert(
-              count: counts.approvedCount,
-              onTap: () =>
-                  _onFilterSelected(SupplyFilter.operationManagerApproved),
-            ),
-          false => null,
-        },
-        newRequestButton: PermissionGate(
-          permissions: const [UserPermission.supplyRequestCreate],
-          child: SizedBox(
-            width: double.infinity,
-            height: spacing.s44,
-            child: FilledButton.icon(
-              onPressed: _onNewRequest,
-              icon: const Icon(Icons.add_rounded),
-              label: Text(context.locale.newRequest),
-            ),
-          ),
-        ),
-        filterBar: CategoryFilterChips<SupplyFilter>(
-          categories: SupplyFilter.values,
-          selectedCategory: _selectedFilter,
-          onSelected: _onFilterSelected,
-        ),
-        list: _SupplyRequestsListSection(
-          requestsAsync: filteredRequestsAsync,
-          onRequestTap: _onRequestTap,
-          onRetry: () => ref.invalidate(
-            supplyRequestsProvider(_selectedFilter.toRequestStatus()),
-          ),
+        counts: counts,
+        isSummaryLoading: allRequestsAsync.isLoading,
+        selectedFilter: _selectedFilter,
+        filteredRequestsAsync: filteredRequestsAsync,
+        onFilterSelected: _onFilterSelected,
+        onNewRequest: _onNewRequest,
+        onRequestTap: _onRequestTap,
+        onRetry: () => ref.invalidate(
+          supplyRequestsProvider(_selectedFilter.toRequestStatus()),
         ),
       ),
     );
