@@ -27,23 +27,11 @@ class SelectAttendantPage extends ConsumerStatefulWidget {
 
 class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
   final _searchController = TextEditingController();
-  String _searchQuery = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchChanged);
-  }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _onSearchChanged() {
-    setState(() => _searchQuery = _searchController.text.toLowerCase());
   }
 
   @override
@@ -51,6 +39,7 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final attendantsState = ref.watch(leaveAttendantsProvider);
+    final searchQuery = _searchController.text.trim().toLowerCase();
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -72,6 +61,7 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
             child: AppTextField.search(
               controller: _searchController,
               hint: context.locale.search,
+              onChanged: (_) => setState(() {}),
             ),
           ),
           Expanded(
@@ -83,9 +73,9 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
               ),
               data: (attendants) {
                 final filtered = attendants.where((a) {
-                  if (_searchQuery.isEmpty) return true;
-                  return a.name.toLowerCase().contains(_searchQuery) ||
-                      a.uid.toLowerCase().contains(_searchQuery);
+                  if (searchQuery.isEmpty) return true;
+                  return a.name.toLowerCase().contains(searchQuery) ||
+                      a.uid.toLowerCase().contains(searchQuery);
                 }).toList();
 
                 if (filtered.isEmpty) {
