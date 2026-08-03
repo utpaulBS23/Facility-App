@@ -5,7 +5,34 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/supply/stock_item_entity.dart';
 import '../../../core/theme/theme.dart';
 import 'item_stepper_input.dart';
-import 'stock_mock_models.dart';
+
+class NewRequestItemFormEntry {
+  const NewRequestItemFormEntry({
+    this.stockItemId,
+    this.itemName,
+    this.quantity = 1,
+    this.unit = '',
+  });
+
+  final int? stockItemId;
+  final String? itemName;
+  final int quantity;
+  final String unit;
+
+  NewRequestItemFormEntry copyWith({
+    int? stockItemId,
+    String? itemName,
+    int? quantity,
+    String? unit,
+  }) {
+    return NewRequestItemFormEntry(
+      stockItemId: stockItemId ?? this.stockItemId,
+      itemName: itemName ?? this.itemName,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+    );
+  }
+}
 
 class ItemsNeededCard extends StatelessWidget {
   const ItemsNeededCard({
@@ -18,7 +45,7 @@ class ItemsNeededCard extends StatelessWidget {
     required this.onRemoveItem,
   });
 
-  final List<RequestItemEntry> items;
+  final List<NewRequestItemFormEntry> items;
   final List<StockItemEntity> availableItems;
   final void Function(int index, StockItemEntity item) onItemSelected;
   final void Function(int index, int quantity) onQuantityChanged;

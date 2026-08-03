@@ -9,7 +9,7 @@ class _NewItemEntryCard extends StatelessWidget {
     required this.onRemove,
   });
 
-  final RequestItemEntry item;
+  final NewRequestItemFormEntry item;
   final List<String> availableItemNames;
   final ValueChanged<String> onNameChanged;
   final ValueChanged<int> onQuantityChanged;

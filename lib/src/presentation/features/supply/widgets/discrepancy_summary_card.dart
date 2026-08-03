@@ -3,7 +3,7 @@ part of '../view/delivery_complaint_page.dart';
 class _DiscrepancySummaryCard extends StatelessWidget {
   const _DiscrepancySummaryCard({required this.item});
 
-  final MockReceivedItem item;
+  final ReceivedItemUiModel item;
 
   @override
   Widget build(BuildContext context) {

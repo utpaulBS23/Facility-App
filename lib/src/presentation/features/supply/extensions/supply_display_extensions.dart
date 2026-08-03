@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../domain/entities/supply/delivery_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
-import '../widgets/stock_mock_models.dart';
+import '../view/request_details_page.dart';
 
 extension DeliveryItemsDisplayExt on DeliveryEntity {
-  List<MockReceivedItem> get displayItems => items.map((item) {
-        return MockReceivedItem(
+  List<ReceivedItemUiModel> get displayItems => items.map((item) {
+        return ReceivedItemUiModel(
           name: item.itemName,
           code: item.itemCode,
           expectedQuantity: item.qtyExpected.round(),
@@ -18,10 +18,10 @@ extension DeliveryItemsDisplayExt on DeliveryEntity {
 }
 
 extension RequestItemsDisplayExt on SupplyRequestEntity {
-  List<MockReceivedItem> get displayItems => items.map((item) {
+  List<ReceivedItemUiModel> get displayItems => items.map((item) {
         final qty = item.qtyRequested.round();
 
-        return MockReceivedItem(
+        return ReceivedItemUiModel(
           name: item.itemName,
           code: item.itemCode,
           expectedQuantity: qty,

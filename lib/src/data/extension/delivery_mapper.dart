@@ -52,8 +52,17 @@ extension DeliveryListResponseModelToEntity on DeliveryListResponseModel {
       data.map((model) => model.toEntity()).toList();
 }
 
+extension ConfirmDeliveryItemToModelMapper on ConfirmDeliveryItem {
+  ConfirmDeliveryItemModel toModel() => ConfirmDeliveryItemModel(
+        stockItemId: stockItemId,
+        qtyReceived: qtyReceived,
+        isVerified: isVerified,
+      );
+}
+
 extension ConfirmDeliveryRequestToModelMapper on ConfirmDeliveryRequest {
   ConfirmDeliveryRequestModel toModel() => ConfirmDeliveryRequestModel(
+        items: items.map((i) => i.toModel()).toList(),
         receiptPhotoUrl: receiptPhotoUrl,
         deliveryNotes: deliveryNotes,
       );

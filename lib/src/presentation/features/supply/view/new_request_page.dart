@@ -20,7 +20,6 @@ import '../riverpod/item_catalog_provider.dart';
 import '../widgets/facility_dropdown_card.dart';
 import '../widgets/items_needed_card.dart';
 import '../widgets/request_notes_card.dart';
-import '../widgets/stock_mock_models.dart';
 import '../widgets/urgency_selector_card.dart';
 
 part '../widgets/new_request_footer_bar.dart';
@@ -37,7 +36,7 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
 
   int? _selectedFacilityId;
   SupplyUrgency _selectedUrgency = SupplyUrgency.normal;
-  List<RequestItemEntry> _items = [const RequestItemEntry()];
+  List<NewRequestItemFormEntry> _items = [const NewRequestItemFormEntry()];
 
   @override
   void initState() {
@@ -89,7 +88,7 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
 
   void _onAddItem() {
     setState(() {
-      _items = [..._items, const RequestItemEntry()];
+      _items = [..._items, const NewRequestItemFormEntry()];
     });
   }
 

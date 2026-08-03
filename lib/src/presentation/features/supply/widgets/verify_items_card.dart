@@ -4,11 +4,13 @@ class _VerifyItemsCard extends StatelessWidget {
   const _VerifyItemsCard({
     required this.items,
     required this.onItemToggled,
+    required this.onQuantityChanged,
     required this.onToggleAll,
   });
 
-  final List<VerifiableItem> items;
+  final List<ConfirmDeliveryItemUiState> items;
   final ValueChanged<int> onItemToggled;
+  final void Function(int index, int quantity) onQuantityChanged;
   final VoidCallback onToggleAll;
 
   @override
@@ -36,7 +38,7 @@ class _VerifyItemsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Items Ordered ($totalCount)',
+                '${context.locale.itemsNeeded} ($totalCount)',
                 style: context.textStyle.titleMedium.copyWith(
                   color: color.text.primary,
                   fontWeight: FontWeight.bold,
@@ -87,7 +89,7 @@ class _VerifyItemsCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(radius.r12),
                     ),
                     child: Icon(
-                      item.icon,
+                      Icons.inventory_2_outlined,
                       color: color.primary,
                       size: 20,
                     ),
@@ -98,7 +100,7 @@ class _VerifyItemsCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.name,
+                          item.itemName,
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -117,12 +119,22 @@ class _VerifyItemsCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        item.quantity.toString(),
-                        style: context.textStyle.titleMedium.copyWith(
-                          color: color.text.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ItemStepperInput(
+                            quantity: item.qtyReceived,
+                            onChanged: (qty) => onQuantityChanged(index, qty),
+                          ),
+                          Gap(spacing.s8),
+                          Text(
+                            '${item.qtyReceived}/${item.qtyExpected}',
+                            style: context.textStyle.titleMedium.copyWith(
+                              color: color.text.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       Gap(spacing.s2),
                       Text(

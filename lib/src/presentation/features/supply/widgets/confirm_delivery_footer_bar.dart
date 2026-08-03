@@ -2,10 +2,12 @@ part of '../view/confirm_delivery_page.dart';
 
 class _ConfirmDeliveryFooterBar extends StatelessWidget {
   const _ConfirmDeliveryFooterBar({
+    this.isSubmitting = false,
     required this.onConfirm,
     required this.onCancel,
   });
 
+  final bool isSubmitting;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
@@ -28,8 +30,17 @@ class _ConfirmDeliveryFooterBar extends StatelessWidget {
               width: double.infinity,
               height: 44,
               child: FilledButton(
-                onPressed: onConfirm,
-                child: const Text('Confirm Receipt'),
+                onPressed: isSubmitting ? null : onConfirm,
+                child: isSubmitting
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: color.onPrimary,
+                        ),
+                      )
+                    : Text(context.locale.confirmDeliveryReceipt),
               ),
             ),
             Gap(spacing.s12),

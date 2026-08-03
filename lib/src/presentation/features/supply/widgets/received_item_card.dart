@@ -8,7 +8,7 @@ class _ReceivedItemCard extends StatefulWidget {
     required this.onEvidenceReportTap,
   });
 
-  final MockReceivedItem item;
+  final ReceivedItemUiModel item;
   final bool isEditing;
   final bool isDelivered;
   final VoidCallback onEvidenceReportTap;

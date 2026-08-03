@@ -4,18 +4,18 @@ class _ReceivedItemsList extends StatefulWidget {
   const _ReceivedItemsList({
     required this.items,
     required this.priority,
-    this.isApprovedStage = false,
+    required this.isApprovedStage,
     this.isDelivered = false,
-    this.canEdit = false,
+    required this.canEdit,
     required this.onEvidenceReportTap,
   });
 
-  final List<MockReceivedItem> items;
+  final List<ReceivedItemUiModel> items;
   final SupplyUrgency priority;
   final bool isApprovedStage;
   final bool isDelivered;
   final bool canEdit;
-  final ValueChanged<MockReceivedItem> onEvidenceReportTap;
+  final void Function(ReceivedItemUiModel item) onEvidenceReportTap;
 
   @override
   State<_ReceivedItemsList> createState() => _ReceivedItemsListState();
@@ -31,12 +31,12 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
     'LED Desk Lamp',
   ];
 
-  final List<RequestItemEntry> _newItems = [];
+  final List<NewRequestItemFormEntry> _newItems = [];
 
   void _onAddItem() {
     setState(() {
       _newItems.add(
-        RequestItemEntry(
+        NewRequestItemFormEntry(
           itemName: _availableItems.first,
           quantity: 1,
           unit: 'Rolls',

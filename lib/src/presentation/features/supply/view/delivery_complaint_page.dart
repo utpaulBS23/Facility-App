@@ -4,9 +4,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/back_leading.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../widgets/stock_mock_models.dart';
+import 'request_details_page.dart';
 
 part '../widgets/additional_details_card.dart';
 part '../widgets/discrepancy_summary_card.dart';
@@ -15,7 +15,7 @@ part '../widgets/proof_photo_picker_card.dart';
 class DeliveryComplaintPage extends ConsumerStatefulWidget {
   const DeliveryComplaintPage({super.key, this.item});
 
-  final MockReceivedItem? item;
+  final ReceivedItemUiModel? item;
 
   @override
   ConsumerState<DeliveryComplaintPage> createState() => _DeliveryComplaintPageState();
@@ -55,7 +55,7 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
     final color = context.color;
 
     final itemData = widget.item ??
-        const MockReceivedItem(
+        const ReceivedItemUiModel(
           name: 'Hand soap',
           code: 'ST-001',
           expectedQuantity: 25,
@@ -67,8 +67,8 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: 100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: const Headline2xlTinyText('Delivery Complaint'),
         centerTitle: true,
         backgroundColor: color.onPrimary,

@@ -28,13 +28,16 @@ List<RouteBase> _stockRoutes(Ref ref) => [
       //     );
       //   },
       // ),
-      // GoRoute(
-      //   path: Routes.confirmDelivery,
-      //   name: Routes.confirmDelivery,
-      //   pageBuilder: (context, state) => const MaterialPage(
-      //     child: ConfirmDeliveryPage(),
-      //   ),
-      // ),
+      GoRoute(
+        path: Routes.confirmDelivery,
+        name: Routes.confirmDelivery,
+        pageBuilder: (context, state) {
+          final delivery = state.extra as DeliveryEntity?;
+          return MaterialPage(
+            child: ConfirmDeliveryPage(delivery: delivery),
+          );
+        },
+      ),
       GoRoute(
         path: Routes.newRequest,
         name: Routes.newRequest,

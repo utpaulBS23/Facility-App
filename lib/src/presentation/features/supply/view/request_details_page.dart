@@ -22,7 +22,7 @@ import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
 import '../widgets/item_stepper_input.dart';
-import '../widgets/stock_mock_models.dart';
+import '../widgets/items_needed_card.dart';
 
 part '../widgets/new_item_entry_card.dart';
 part '../widgets/pending_action_buttons.dart';
@@ -32,14 +32,34 @@ part '../widgets/request_info_card.dart';
 part '../widgets/request_status_timeline.dart';
 part '../widgets/request_user_card.dart';
 
+class ReceivedItemUiModel {
+  const ReceivedItemUiModel({
+    required this.name,
+    required this.code,
+    required this.expectedQuantity,
+    required this.receivedQuantity,
+    required this.unit,
+    required this.icon,
+  });
+
+  final String name;
+  final String code;
+  final int expectedQuantity;
+  final int receivedQuantity;
+  final String unit;
+  final IconData icon;
+
+  bool get hasDiscrepancy => expectedQuantity != receivedQuantity;
+  int get missingQuantity => expectedQuantity - receivedQuantity;
+}
+
 class RequestDetailsPage extends ConsumerStatefulWidget {
   const RequestDetailsPage({super.key, required this.request});
 
   final SupplyRequestEntity request;
 
   @override
-  ConsumerState<RequestDetailsPage> createState() =>
-      _RequestDetailsPageState();
+  ConsumerState<RequestDetailsPage> createState() => _RequestDetailsPageState();
 }
 
 class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
@@ -87,7 +107,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     ref.read(supplyRequestActionProvider.notifier).reject(widget.request.id);
   }
 
-  void _onEvidenceReportTap(BuildContext context, MockReceivedItem item) {
+  void _onEvidenceReportTap(BuildContext context, ReceivedItemUiModel item) {
     context.pushNamed(Routes.deliveryComplaint, extra: item);
   }
 
@@ -101,8 +121,9 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final requestAsync =
-        ref.watch(supplyRequestDetailsProvider(widget.request.id));
+    final requestAsync = ref.watch(
+      supplyRequestDetailsProvider(widget.request.id),
+    );
     final request = requestAsync.valueOrNull ?? widget.request;
     final spacing = context.dimensions.spacing;
 
@@ -163,8 +184,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
               onEvidenceReportTap: (item) =>
                   _onEvidenceReportTap(context, item),
             ),
-            if (request.isDelivered &&
-                delivery?.receivedByName != null) ...[
+            if (request.isDelivered && delivery?.receivedByName != null) ...[
               Gap(spacing.s12),
               _RequestUserCard(
                 headerLabel: context.locale.receivedBy,
@@ -205,27 +225,35 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
           ],
         ),
       ),
-      bottomNavigationBar: request.status == SupplyRequestStatus.delivered
-          ? Container(
-              padding: EdgeInsets.all(spacing.s16),
-              decoration: BoxDecoration(
-                color: context.color.onPrimary,
-                border:
-                    Border(top: BorderSide(color: context.color.borderSubtle)),
-              ),
-              child: SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: spacing.s44,
-                      child: FilledButton(
-                        onPressed: null,
-                        child: Text(context.locale.confirmDeliveryReceipt),
+      bottomNavigationBar: (request.status == SupplyRequestStatus.inDelivery ||
+              request.status == SupplyRequestStatus.operationManagerApproved)
+          ? PermissionGate(
+              permissions: const [UserPermission.deliveryConfirm],
+              child: Container(
+                padding: EdgeInsets.all(spacing.s16),
+                decoration: BoxDecoration(
+                  color: context.color.onPrimary,
+                  border: Border(
+                    top: BorderSide(color: context.color.borderSubtle),
+                  ),
+                ),
+                child: SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: spacing.s44,
+                        child: FilledButton(
+                          onPressed: () => context.pushNamed(
+                            Routes.confirmDelivery,
+                            extra: delivery,
+                          ),
+                          child: Text(context.locale.confirmDeliveryReceipt),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             )

@@ -1,8 +1,13 @@
 part of '../view/supply_requests_page.dart';
 
 class PendingDeliveryAlert extends StatelessWidget {
-  const PendingDeliveryAlert({super.key, this.onTap});
+  const PendingDeliveryAlert({
+    super.key,
+    this.count = 0,
+    this.onTap,
+  });
 
+  final int count;
   final VoidCallback? onTap;
 
   @override
