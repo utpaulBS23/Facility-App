@@ -1,9 +1,8 @@
 part of '../view/supply_requests_page.dart';
 
 class PendingDeliveryAlert extends StatelessWidget {
-  const PendingDeliveryAlert({super.key, required this.count, this.onTap});
+  const PendingDeliveryAlert({super.key, this.onTap});
 
-  final int count;
   final VoidCallback? onTap;
 
   @override
@@ -31,7 +30,7 @@ class PendingDeliveryAlert extends StatelessWidget {
               child: Icon(
                 Icons.local_shipping_outlined,
                 color: context.color.onPrimary,
-                size: spacing.s20,
+                size: 20,
               ),
             ),
             Gap(spacing.s12),
@@ -40,14 +39,14 @@ class PendingDeliveryAlert extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.locale.pendingDeliveries,
+                    'Pending Deliveries',
                     style: context.textStyle.labelLarge.copyWith(
                       color: context.color.text.primary,
                     ),
                   ),
                   Gap(spacing.s2),
                   Text(
-                    context.locale.pendingDeliveryAlertSubtitle(count),
+                    '1 approved request awaiting delivery',
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,
                     ),
