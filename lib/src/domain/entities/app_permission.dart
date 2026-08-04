@@ -101,6 +101,7 @@ enum UserPermission {
   facilityStockTargetView('facility_stock_target.view'),
   stockAllocationView('stock_allocation.view'),
   shiftStockCountView('shift_stock_count.view'),
+  shiftStockCountCreate('shift_stock_count.create'),
 
   // Supply request
   supplyRequestView('supply_request.view'),

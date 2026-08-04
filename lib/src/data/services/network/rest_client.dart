@@ -314,5 +314,25 @@ abstract class RestClient {
     @Path('leaveRequestId') required int leaveRequestId,
     @Body() required Map<String, dynamic> body,
   });
+
+  /// Stock Management
+  @GET(Endpoints.facilityStockTargets)
+  Future<HttpResponse> getFacilityStockTargets({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+  });
+
+  @GET(Endpoints.shiftStockCounts)
+  Future<HttpResponse> getShiftStockCounts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+  });
+
+  @POST(Endpoints.submitShiftStockCount)
+  Future<HttpResponse> submitShiftStockCount({
+    @Path('partnerId') required int partnerId,
+    @Path('shiftAssignmentId') required int shiftAssignmentId,
+    @Body() required Map<String, dynamic> body,
+  });
 }
 

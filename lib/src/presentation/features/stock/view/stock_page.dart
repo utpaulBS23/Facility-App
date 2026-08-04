@@ -2,18 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/shift_slot_entity.dart';
+import '../../../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/back_leading.dart';
-import '../../../core/widgets/category_filter_chips.dart';
-import '../../../core/widgets/status_dot_tag.dart';
+import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/app_error_widget.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../widgets/stock_mock_models.dart';
+import '../../shift/riverpod/shift_slots_provider.dart';
+import '../models/update_stock_page_args.dart';
+import '../riverpod/facility_stock_targets_provider.dart';
+import '../widgets/shimmer/shimmer_box.dart';
 
+part '../widgets/shimmer/stock_item_shimmer.dart';
+part '../widgets/stock_body.dart';
 part '../widgets/stock_footer_bar.dart';
 part '../widgets/stock_item_card.dart';
-part '../widgets/stock_summary_row.dart';
 
 class StockPage extends ConsumerStatefulWidget {
   const StockPage({super.key});
@@ -23,72 +33,108 @@ class StockPage extends ConsumerStatefulWidget {
 }
 
 class _StockPageState extends ConsumerState<StockPage> {
-  String _selectedFilter = 'All';
-
-  void _onUpdateStockBalances() {
-    context.pushNamed(Routes.updateStock);
-  }
-
-  void _onItemTap(MockStockItem item) {
-    context.pushNamed(Routes.updateStock);
-  }
-
   @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final color = context.color;
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchActiveShift());
+  }
 
-    final filteredItems = mockStockItems.where((item) {
-      if (_selectedFilter == 'All') return true;
-      return item.category.toLowerCase() == _selectedFilter.toLowerCase();
-    }).toList();
+  void _fetchActiveShift() {
+    ref
+        .read(shiftSlotsProvider.notifier)
+        .fetch(date: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+  }
+
+  int? _assignmentIdFor(ShiftSlotsEntity data) {
+    final activeSlot = data.activeSlot;
+    if (activeSlot == null) return null;
+
+    for (final slot in data.slots) {
+      if (slot.shiftSlotId == activeSlot.shiftSlotId) {
+        return slot.me?.assignmentId;
+      }
+    }
+
+    return null;
+  }
+
+  void _onBack(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(Routes.shift);
+    }
+  }
+
+  void _onUpdateStockBalances(int facilityId, int shiftAssignmentId) {
+    context.pushNamed(
+      Routes.updateStock,
+      extra: UpdateStockPageArgs(
+        facilityId: facilityId,
+        shiftAssignmentId: shiftAssignmentId,
+      ),
+    );
+  }
+
+  Scaffold _scaffold(
+    BuildContext context, {
+    required Widget body,
+    Widget? bottomNavigationBar,
+  }) {
+    final color = context.color;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: 100,
-        title: const Headline2xlTinyText('Stock'),
+        leading: AppBackButton(onTap: () => _onBack(context)),
+        leadingWidth: AppBackButton.width,
+        title: Headline2xlTinyText(context.locale.stock),
         centerTitle: true,
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const _StockSummaryRow(
-              totalItems: 10,
-              lowStockCount: 2,
-              criticalCount: 2,
-            ),
-            Gap(spacing.s16),
-            CategoryFilterChips(
-              categories: const ['All', 'Consumables', 'Cleaning', 'Equipment'],
-              selectedCategory: _selectedFilter,
-              onSelected: (filter) => setState(() => _selectedFilter = filter),
-            ),
-            Gap(spacing.s16),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: filteredItems.length,
-              separatorBuilder: (context, index) => Gap(spacing.s12),
-              itemBuilder: (context, index) {
-                final item = filteredItems[index];
-                return _StockItemCard(
-                  item: item,
-                  onTap: () => _onItemTap(item),
-                );
-              },
-            ),
-          ],
-        ),
+      body: body,
+      bottomNavigationBar: bottomNavigationBar,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final slotsAsync = ref.watch(shiftSlotsProvider);
+
+    return slotsAsync.when(
+      loading: () => _scaffold(context, body: const _StockListShimmer()),
+      error: (err, _) => _scaffold(
+        context,
+        body: AppErrorWidget(message: err.toString(), onRetry: _fetchActiveShift),
       ),
-      bottomNavigationBar: _StockFooterBar(
-        onUpdateStockBalances: _onUpdateStockBalances,
-      ),
+      data: (slots) {
+        final facilityId = slots?.facility?.id;
+        if (facilityId == null) {
+          return _scaffold(
+            context,
+            body: AppErrorWidget(message: context.locale.noActiveShift),
+          );
+        }
+
+        final shiftAssignmentId = _assignmentIdFor(slots!);
+
+        return _scaffold(
+          context,
+          body: _StockBody(facilityId: facilityId),
+          bottomNavigationBar: shiftAssignmentId == null
+              ? null
+              : PermissionGate(
+                  permissions: const [UserPermission.shiftStockCountCreate],
+                  child: _StockFooterBar(
+                    onUpdateStockBalances: () => _onUpdateStockBalances(
+                      facilityId,
+                      shiftAssignmentId,
+                    ),
+                  ),
+                ),
+        );
+      },
     );
   }
 }

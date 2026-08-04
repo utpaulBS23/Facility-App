@@ -88,3 +88,8 @@ VisitRepository visitRepository(Ref ref) {
 LeaveRepository leaveRepository(Ref ref) {
   return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+StockRepository stockRepository(Ref ref) {
+  return StockRepositoryImpl(ref.read(restClientServiceProvider));
+}

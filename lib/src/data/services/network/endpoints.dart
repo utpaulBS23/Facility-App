@@ -141,4 +141,12 @@ class Endpoints {
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/approve';
   static const String rejectLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
+
+  /// Stock Management
+  static const String facilityStockTargets =
+      '/partners/{partnerId}/stock-averaging';
+  static const String shiftStockCounts =
+      '/partners/{partnerId}/shift-stock-counts';
+  static const String submitShiftStockCount =
+      '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
 }

@@ -99,6 +99,21 @@ class _AppNavigationDrawerState extends ConsumerState<AppNavigationDrawer> {
               },
             ),
           ),
+          PermissionGate(
+            permissions: const [
+              UserPermission.stockItemView,
+              UserPermission.facilityStockTargetView,
+            ],
+            child: _DrawerMenuItem(
+              icon: Icons.inventory_2_outlined,
+              title: context.locale.stock,
+              subtitle: context.locale.stockDrawerSubtitle,
+              onTap: () {
+                context.pop();
+                context.goNamed(Routes.stock);
+              },
+            ),
+          ),
           const Spacer(),
           Padding(
             padding: EdgeInsets.fromLTRB(

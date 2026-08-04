@@ -22,12 +22,12 @@ class _InstructionAlertBanner extends StatelessWidget {
           Icon(
             Icons.warning_amber_rounded,
             color: color.warning,
-            size: 20,
+            size: spacing.s20,
           ),
           Gap(spacing.s10),
           Expanded(
             child: Text(
-              'Enter the current remaining balance for each item. Consumption will be calculated automatically.',
+              context.locale.updateStockInstructions,
               style: context.textStyle.bodyMedium.copyWith(
                 color: color.text.secondary,
               ),

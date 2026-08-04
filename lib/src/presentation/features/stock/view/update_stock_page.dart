@@ -2,93 +2,168 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
+import '../../../../core/base/base.dart';
+import '../../../../domain/entities/stock/facility_stock_target_entity.dart';
+import '../../../../domain/entities/stock/shift_stock_count_entity.dart';
+import '../../../../domain/entities/stock/submit_stock_count_request.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/back_leading.dart';
+import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../widgets/stock_mock_models.dart';
+import '../models/update_stock_page_args.dart';
+import '../riverpod/facility_stock_targets_provider.dart';
+import '../riverpod/shift_stock_counts_provider.dart';
+import '../riverpod/submit_shift_stock_count_provider.dart';
+import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/instruction_alert_banner.dart';
+part '../widgets/shimmer/update_stock_form_shimmer.dart';
 part '../widgets/update_stock_footer_bar.dart';
 part '../widgets/update_stock_form_card.dart';
 
 class UpdateStockPage extends ConsumerStatefulWidget {
-  const UpdateStockPage({super.key});
+  const UpdateStockPage({super.key, required this.args});
+
+  final UpdateStockPageArgs args;
 
   @override
   ConsumerState<UpdateStockPage> createState() => _UpdateStockPageState();
 }
 
 class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
-  final Map<int, TextEditingController> _balControllers = {};
-  final Map<int, TextEditingController> _notesControllers = {};
+  final Map<int, TextEditingController> _controllers = {};
+  bool _controllersReady = false;
+  ProviderSubscription<AsyncValue<List<ShiftStockCountEntity>?>>?
+  _submitSubscription;
 
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < mockStockItems.length; i++) {
-      _balControllers[i] = TextEditingController(
-        text: '${mockStockItems[i].quantity}',
-      );
-      _notesControllers[i] = TextEditingController();
-    }
+    _submitSubscription = ref.listenManual(
+      submitShiftStockCountProvider,
+      _onSubmitStateChanged,
+    );
   }
 
   @override
   void dispose() {
-    for (final controller in _balControllers.values) {
-      controller.dispose();
-    }
-    for (final controller in _notesControllers.values) {
+    _submitSubscription?.close();
+    for (final controller in _controllers.values) {
       controller.dispose();
     }
     super.dispose();
   }
 
-  void _onSave() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Stock balances saved successfully')),
+  void _onSubmitStateChanged(
+    AsyncValue<List<ShiftStockCountEntity>?>? previous,
+    AsyncValue<List<ShiftStockCountEntity>?> next,
+  ) {
+    next.when(
+      data: (data) {
+        if (data == null) return;
+        AppSnackBar.showSuccess(
+          context,
+          context.locale.stockBalancesSavedSuccessfully,
+        );
+        context.pop();
+      },
+      error: (error, _) {
+        if (error is Failure) {
+          AppSnackBar.showError(context, error.localizedMessage(context));
+        }
+      },
+      loading: () {},
     );
-    context.pop();
+  }
+
+  void _ensureControllers(
+    List<FacilityStockTargetEntity> targets,
+    List<ShiftStockCountEntity> counts,
+  ) {
+    if (_controllersReady) return;
+
+    final latestByItem = <int, ShiftStockCountEntity>{};
+    for (final count in counts) {
+      final existing = latestByItem[count.stockItemId];
+      if (existing == null) {
+        latestByItem[count.stockItemId] = count;
+        continue;
+      }
+      final existingAt = existing.reportedAt;
+      final currentAt = count.reportedAt;
+      if (currentAt != null &&
+          (existingAt == null ||
+              DateTime.parse(currentAt).isAfter(DateTime.parse(existingAt)))) {
+        latestByItem[count.stockItemId] = count;
+      }
+    }
+
+    for (final target in targets) {
+      final previousQty = latestByItem[target.stockItemId]?.qtyOnHand ?? 0;
+      _controllers[target.stockItemId] = TextEditingController(
+        text: previousQty.toStringAsFixed(0),
+      );
+    }
+
+    _controllersReady = true;
+  }
+
+  void _onSave() {
+    final items = [
+      for (final entry in _controllers.entries)
+        StockCountItemInput(
+          stockItemId: entry.key,
+          qtyOnHand: double.tryParse(entry.value.text) ?? 0,
+        ),
+    ];
+
+    ref
+        .read(submitShiftStockCountProvider.notifier)
+        .submit(
+          shiftAssignmentId: widget.args.shiftAssignmentId,
+          request: SubmitStockCountRequest(items: items),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final color = context.color;
+    final targetsAsync = ref.watch(
+      facilityStockTargetsProvider(widget.args.facilityId),
+    );
+    final countsAsync = ref.watch(
+      shiftStockCountsProvider(widget.args.facilityId),
+    );
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
-        leading: const BackLeading(),
-        leadingWidth: 100,
-        title: const Headline2xlTinyText('Update Stock'),
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
+        title: Headline2xlTinyText(context.locale.updateStock),
         centerTitle: true,
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const _InstructionAlertBanner(),
-            Gap(spacing.s16),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: mockStockItems.length,
-              separatorBuilder: (context, index) => Gap(spacing.s12),
-              itemBuilder: (context, index) {
-                final item = mockStockItems[index];
-                return _UpdateStockFormCard(
-                  item: item,
-                  currentBalController: _balControllers[index]!,
-                  notesController: _notesControllers[index]!,
-                );
-              },
-            ),
-          ],
+      body: targetsAsync.when(
+        loading: () => const _UpdateStockFormShimmer(),
+        error: (err, _) => AppErrorWidget(message: err.toString()),
+        data: (targets) => countsAsync.when(
+          loading: () => const _UpdateStockFormShimmer(),
+          error: (err, _) => AppErrorWidget(message: err.toString()),
+          data: (counts) {
+            _ensureControllers(targets, counts);
+
+            return _UpdateStockBody(
+              targets: targets,
+              controllers: _controllers,
+            );
+          },
         ),
       ),
       bottomNavigationBar: _UpdateStockFooterBar(onSave: _onSave),

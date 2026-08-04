@@ -19,10 +19,10 @@ class _StockFooterBar extends StatelessWidget {
       child: SafeArea(
         child: SizedBox(
           width: double.infinity,
-          height: 44,
+          height: spacing.s44,
           child: FilledButton(
             onPressed: onUpdateStockBalances,
-            child: const Text('Update Stock Balances'),
+            child: Text(context.locale.updateStockBalances),
           ),
         ),
       ),

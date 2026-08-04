@@ -410,6 +410,24 @@
   "justNow": "Just now",
   "leaveApproval": "Leave Approval",
   "awaitingFinalApproval": "Awaiting final approval",
+  "stock": "Stock",
+  "stockDrawerSubtitle": "View items and update balances",
+  "updateStock": "Update Stock",
+  "updateStockBalances": "Update Stock Balances",
+  "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",
+  "currentBalance": "Current Balance",
+  "itemCodeLabel": "Code: {code}",
+  "@itemCodeLabel": {
+    "description": "Item code shown under an item name",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "ST-005"
+      }
+    }
+  },
+  "noStockTargetsFound": "No stock targets found for this facility",
+  "stockBalancesSavedSuccessfully": "Stock balances saved successfully",
   "startDate": "Start Date",
   "endDate": "End Date",
   "own": "Own",
