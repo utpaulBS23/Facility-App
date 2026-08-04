@@ -71,6 +71,7 @@ class LeaveRequestEntity {
     this.shifts = const [],
     this.approvalSteps = const [],
     required this.createdAt,
+    required this.canAction,
   });
 
   final int id;
@@ -89,4 +90,9 @@ class LeaveRequestEntity {
   final List<LeaveShiftDetailEntity> shifts;
   final List<LeaveApprovalStepEntity> approvalSteps;
   final String createdAt;
+
+  /// Server-derived UX flag: true when the logged-in caller can approve or
+  /// reject this request right now. Treat as display-only — the server
+  /// re-checks authorization on the actual approve/reject endpoints.
+  final bool canAction;
 }
