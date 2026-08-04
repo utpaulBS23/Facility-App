@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/stock_item_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
@@ -22,6 +23,7 @@ import '../widgets/items_needed_card.dart';
 import '../widgets/request_notes_card.dart';
 import '../widgets/urgency_selector_card.dart';
 
+part '../widgets/new_request_body.dart';
 part '../widgets/new_request_footer_bar.dart';
 
 class NewRequestPage extends ConsumerStatefulWidget {
@@ -120,7 +122,6 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final color = context.color;
 
     final createRequestState = ref.watch(createSupplyRequestProvider);
@@ -149,35 +150,19 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FacilityDropdownCard(
-              selectedFacilityId: _selectedFacilityId,
-              facilities: facilities,
-              onChanged: (val) => setState(() => _selectedFacilityId = val),
-            ),
-            Gap(spacing.s16),
-            ItemsNeededCard(
-              items: _items,
-              availableItems: availableItems,
-              onItemSelected: _onItemSelected,
-              onQuantityChanged: _onQuantityChanged,
-              onAddItem: _onAddItem,
-              onRemoveItem: _onRemoveItem,
-            ),
-            Gap(spacing.s16),
-            UrgencySelectorCard(
-              selectedUrgency: _selectedUrgency,
-              onChanged: (val) => setState(() => _selectedUrgency = val),
-            ),
-            Gap(spacing.s16),
-            RequestNotesCard(controller: _notesController),
-            Gap(spacing.s24),
-          ],
-        ),
+      body: _NewRequestBody(
+        selectedFacilityId: _selectedFacilityId,
+        facilities: facilities,
+        onFacilityChanged: (val) => setState(() => _selectedFacilityId = val),
+        items: _items,
+        availableItems: availableItems,
+        onItemSelected: _onItemSelected,
+        onQuantityChanged: _onQuantityChanged,
+        onAddItem: _onAddItem,
+        onRemoveItem: _onRemoveItem,
+        selectedUrgency: _selectedUrgency,
+        onUrgencyChanged: (val) => setState(() => _selectedUrgency = val),
+        notesController: _notesController,
       ),
       bottomNavigationBar: PermissionGate(
         permissions: const [UserPermission.supplyRequestCreate],

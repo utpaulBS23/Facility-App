@@ -18,23 +18,27 @@ List<RouteBase> _stockRoutes(Ref ref) => [
           );
         },
       ),
-      // GoRoute(
-      //   path: Routes.deliveryComplaint,
-      //   name: Routes.deliveryComplaint,
-      //   pageBuilder: (context, state) {
-      //     final item = state.extra as MockReceivedItem?;
-      //     return MaterialPage(
-      //       child: DeliveryComplaintPage(item: item),
-      //     );
-      //   },
-      // ),
+      GoRoute(
+        path: Routes.deliveryComplaint,
+        name: Routes.deliveryComplaint,
+        pageBuilder: (context, state) {
+          final item = state.extra as ReceivedItemUiModel;
+          return MaterialPage(
+            child: DeliveryComplaintPage(item: item),
+          );
+        },
+      ),
       GoRoute(
         path: Routes.confirmDelivery,
         name: Routes.confirmDelivery,
         pageBuilder: (context, state) {
-          final delivery = state.extra as DeliveryEntity?;
+          final args = state.extra as ConfirmDeliveryPageArgs;
           return MaterialPage(
-            child: ConfirmDeliveryPage(delivery: delivery),
+            child: ConfirmDeliveryPage(
+              delivery: args.delivery,
+              urgency: args.urgency,
+              requestedByName: args.requestedByName,
+            ),
           );
         },
       ),

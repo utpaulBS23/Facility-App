@@ -45,7 +45,7 @@ class _VerifyItemsCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '$verifiedCount/$totalCount verified',
+                context.locale.verifiedCount(verifiedCount, totalCount),
                 style: context.textStyle.bodySmall.copyWith(
                   color: color.text.secondary,
                 ),
@@ -57,7 +57,7 @@ class _VerifyItemsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius.r10),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 8,
+              minHeight: spacing.s8,
               color: color.primary,
               backgroundColor: color.scaffoldBackground,
             ),
@@ -73,6 +73,7 @@ class _VerifyItemsCard extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final item = items[index];
+
               return Row(
                 children: [
                   Checkbox(
@@ -91,7 +92,7 @@ class _VerifyItemsCard extends StatelessWidget {
                     child: Icon(
                       Icons.inventory_2_outlined,
                       color: color.primary,
-                      size: 20,
+                      size: spacing.s20,
                     ),
                   ),
                   Gap(spacing.s12),
@@ -154,12 +155,18 @@ class _VerifyItemsCard extends StatelessWidget {
             child: TextButton.icon(
               onPressed: onToggleAll,
               icon: Icon(
-                allVerified ? Icons.clear_all_rounded : Icons.check_circle_outline_rounded,
+                switch (allVerified) {
+                  true => Icons.clear_all_rounded,
+                  false => Icons.check_circle_outline_rounded,
+                },
                 color: color.primary,
-                size: 18,
+                size: spacing.s20,
               ),
               label: Text(
-                allVerified ? 'Uncheck All' : 'Check All',
+                switch (allVerified) {
+                  true => context.locale.uncheckAll,
+                  false => context.locale.checkAll,
+                },
                 style: context.textStyle.labelLarge.copyWith(
                   color: color.primary,
                   fontWeight: FontWeight.bold,

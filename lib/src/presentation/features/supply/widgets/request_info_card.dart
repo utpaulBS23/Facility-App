@@ -51,7 +51,7 @@ class RequestInfoCard extends StatelessWidget {
                 if (icon != null) ...[
                   Icon(
                     icon,
-                    size: 14,
+                    size: spacing.s14,
                     color: context.color.text.secondary,
                   ),
                   Gap(spacing.s4),

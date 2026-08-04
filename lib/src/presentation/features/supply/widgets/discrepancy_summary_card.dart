@@ -17,7 +17,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: color.onPrimary,
-        border: Border.all(color: color.warning, width: 1.5),
+        border: Border.all(color: color.warning),
         borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
@@ -34,7 +34,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                 child: Icon(
                   item.icon,
                   color: color.primary,
-                  size: 20,
+                  size: spacing.s20,
                 ),
               ),
               Gap(spacing.s12),
@@ -51,7 +51,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                     ),
                     Gap(spacing.s2),
                     Text(
-                      'Item Code: ${item.code}',
+                      context.locale.itemCodeLabel(item.code),
                       style: context.textStyle.bodySmall.copyWith(
                         color: color.text.secondary,
                       ),
@@ -73,7 +73,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                     Icon(
                       Icons.warning_amber_rounded,
                       color: color.warning,
-                      size: 16,
+                      size: spacing.s16,
                     ),
                     Gap(spacing.s4),
                     Text(
@@ -93,21 +93,21 @@ class _DiscrepancySummaryCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _QtyBox(
-                  label: 'Expected',
+                  label: context.locale.expectedLabel,
                   value: '${item.expectedQuantity} ${item.unit}',
                 ),
               ),
               Gap(spacing.s8),
               Expanded(
                 child: _QtyBox(
-                  label: 'Received',
+                  label: context.locale.receivedLabel,
                   value: '${item.receivedQuantity} ${item.unit}',
                 ),
               ),
               Gap(spacing.s8),
               Expanded(
                 child: _QtyBox(
-                  label: 'Missing',
+                  label: context.locale.missingLabel,
                   value: '$missing ${item.unit}',
                   valueColor: color.warning,
                 ),

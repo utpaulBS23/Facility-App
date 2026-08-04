@@ -364,6 +364,13 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @POST(Endpoints.fileDeliveryComplaint)
+  Future<HttpResponse> fileDeliveryComplaint({
+    @Path('partnerId') required int partnerId,
+    @Path('deliveryId') required int deliveryId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @POST(Endpoints.supplyRequests)
   Future<HttpResponse> createSupplyRequest({
     @Path('partnerId') required int partnerId,

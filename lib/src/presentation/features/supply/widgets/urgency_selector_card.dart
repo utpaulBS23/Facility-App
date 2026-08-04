@@ -79,13 +79,14 @@ class _UrgencySegmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final color = context.color;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 38,
+        height: spacing.s40,
         decoration: BoxDecoration(
           color: isSelected ? color.onPrimary : Colors.transparent,
           borderRadius: BorderRadius.circular(radius.r12),

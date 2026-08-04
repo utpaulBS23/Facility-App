@@ -1,13 +1,8 @@
 part of '../view/confirm_delivery_page.dart';
 
+/// Receipt photo capture — always disabled, no upload endpoint exists yet.
 class _DeliveryPhotoCard extends StatelessWidget {
-  const _DeliveryPhotoCard({
-    required this.onCameraTap,
-    required this.onGalleryTap,
-  });
-
-  final VoidCallback onCameraTap;
-  final VoidCallback onGalleryTap;
+  const _DeliveryPhotoCard();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +21,7 @@ class _DeliveryPhotoCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Delivery Receipt Photo (Optional)',
+            context.locale.deliveryReceiptPhotoOptional,
             style: context.textStyle.labelLarge.copyWith(
               color: color.text.primary,
               fontWeight: FontWeight.bold,
@@ -37,22 +32,22 @@ class _DeliveryPhotoCard extends StatelessWidget {
             children: [
               Expanded(
                 child: SizedBox(
-                  height: 44,
+                  height: spacing.s44,
                   child: FilledButton.icon(
-                    onPressed: onCameraTap,
-                    icon: const Icon(Icons.camera_alt_outlined, size: 18),
-                    label: const Text('Camera'),
+                    onPressed: null,
+                    icon: Icon(Icons.camera_alt_outlined, size: spacing.s20),
+                    label: Text(context.locale.camera),
                   ),
                 ),
               ),
               Gap(spacing.s12),
               Expanded(
                 child: SizedBox(
-                  height: 44,
+                  height: spacing.s44,
                   child: OutlinedButton.icon(
-                    onPressed: onGalleryTap,
-                    icon: const Icon(Icons.image_outlined, size: 18),
-                    label: const Text('Gallery'),
+                    onPressed: null,
+                    icon: Icon(Icons.image_outlined, size: spacing.s20),
+                    label: Text(context.locale.gallery),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: color.primary),
                       foregroundColor: color.primary,

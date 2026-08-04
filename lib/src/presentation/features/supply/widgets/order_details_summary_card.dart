@@ -9,7 +9,7 @@ class _OrderDetailsSummaryCard extends StatelessWidget {
 
   final String requestId;
   final String requestedBy;
-  final String urgency;
+  final SupplyUrgency urgency;
 
   @override
   Widget build(BuildContext context) {
@@ -28,31 +28,32 @@ class _OrderDetailsSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Order Details',
+            context.locale.orderDetails,
             style: context.textStyle.titleMedium.copyWith(
               color: color.text.primary,
               fontWeight: FontWeight.bold,
             ),
           ),
           Gap(spacing.s12),
-          _DetailRow(label: 'Request ID', value: requestId),
+          _DetailRow(label: context.locale.requestIdLabel, value: requestId),
           Gap(spacing.s8),
-          _DetailRow(label: 'Requested by', value: requestedBy),
+          _DetailRow(
+            label: context.locale.requestedByLabel,
+            value: requestedBy,
+          ),
           Gap(spacing.s8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Urgency',
+                context.locale.urgency,
                 style: context.textStyle.bodySmall.copyWith(
                   color: color.text.secondary,
                 ),
               ),
               StatusDotTag(
-                dotColor: urgency.toLowerCase() == 'urgent'
-                    ? color.primary
-                    : color.warning,
-                label: urgency,
+                dotColor: urgency.urgencyColor(context),
+                label: urgency.localizedName(context),
               ),
             ],
           ),

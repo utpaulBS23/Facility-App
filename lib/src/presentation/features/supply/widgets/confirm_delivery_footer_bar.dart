@@ -28,15 +28,15 @@ class _ConfirmDeliveryFooterBar extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              height: 44,
+              height: spacing.s44,
               child: FilledButton(
                 onPressed: isSubmitting ? null : onConfirm,
                 child: isSubmitting
                     ? SizedBox(
-                        width: 20,
-                        height: 20,
+                        width: spacing.s20,
+                        height: spacing.s20,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
+                          strokeWidth: spacing.s2,
                           color: color.onPrimary,
                         ),
                       )
@@ -46,14 +46,14 @@ class _ConfirmDeliveryFooterBar extends StatelessWidget {
             Gap(spacing.s12),
             SizedBox(
               width: double.infinity,
-              height: 44,
+              height: spacing.s44,
               child: OutlinedButton(
                 onPressed: onCancel,
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: color.borderSubtle),
                   foregroundColor: color.text.primary,
                 ),
-                child: const Text('Cancel'),
+                child: Text(context.locale.cancel),
               ),
             ),
           ],

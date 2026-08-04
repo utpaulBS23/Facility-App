@@ -4,17 +4,23 @@ class _ReceivedItemsList extends StatefulWidget {
   const _ReceivedItemsList({
     required this.items,
     required this.priority,
-    required this.isApprovedStage,
-    this.isDelivered = false,
+    required this.hasDelivery,
+    required this.isConfirmed,
     required this.canEdit,
+    required this.editedQuantities,
+    required this.onQuantityChanged,
+    required this.onEditingCancelled,
     required this.onEvidenceReportTap,
   });
 
   final List<ReceivedItemUiModel> items;
   final SupplyUrgency priority;
-  final bool isApprovedStage;
-  final bool isDelivered;
+  final bool hasDelivery;
+  final bool isConfirmed;
   final bool canEdit;
+  final Map<int, int> editedQuantities;
+  final void Function(int stockItemId, int qty) onQuantityChanged;
+  final VoidCallback onEditingCancelled;
   final void Function(ReceivedItemUiModel item) onEvidenceReportTap;
 
   @override
@@ -24,55 +30,19 @@ class _ReceivedItemsList extends StatefulWidget {
 class _ReceivedItemsListState extends State<_ReceivedItemsList> {
   bool _isEditing = false;
 
-  final List<String> _availableItems = [
-    'Jumbo Toilet Roll',
-    'Liquid Hand Soap',
-    'Paper Towel Pack',
-    'LED Desk Lamp',
-  ];
-
-  final List<NewRequestItemFormEntry> _newItems = [];
-
-  void _onAddItem() {
-    setState(() {
-      _newItems.add(
-        NewRequestItemFormEntry(
-          itemName: _availableItems.first,
-          quantity: 1,
-          unit: 'Rolls',
-        ),
-      );
-    });
-  }
-
-  void _onRemoveNewItem(int index) {
-    setState(() {
-      _newItems.removeAt(index);
-    });
-  }
-
   void _onSave() {
-    setState(() {
-      _isEditing = false;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.locale.itemChangesSavedSuccessfully)),
-    );
+    setState(() => _isEditing = false);
   }
 
   void _onCancel() {
-    setState(() {
-      _isEditing = false;
-      _newItems.clear();
-    });
+    setState(() => _isEditing = false);
+    widget.onEditingCancelled();
   }
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-
-    final totalCount = widget.items.length + _newItems.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,9 +51,9 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              widget.isApprovedStage
-                  ? context.locale.receivedItemsCount(totalCount)
-                  : context.locale.requestedItemsCount(totalCount),
+              widget.hasDelivery
+                  ? context.locale.receivedItemsCount(widget.items.length)
+                  : context.locale.requestedItemsCount(widget.items.length),
               style: context.textStyle.titleMedium.copyWith(
                 color: color.text.primary,
                 fontWeight: FontWeight.bold,
@@ -123,7 +93,6 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
               ),
           ],
         ),
-        // Gap(spacing.s6),
         StatusDotTag(
           dotColor: widget.priority.urgencyColor(context),
           label: widget.priority.localizedName(context),
@@ -136,58 +105,19 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
           separatorBuilder: (context, index) => Gap(spacing.s12),
           itemBuilder: (context, index) {
             final item = widget.items[index];
+
             return _ReceivedItemCard(
               item: item,
               isEditing: _isEditing,
-              isDelivered: widget.isDelivered,
+              hasDelivery: widget.hasDelivery,
+              isConfirmed: widget.isConfirmed,
+              editedQuantity: widget.editedQuantities[item.stockItemId],
+              onQuantityChanged: (qty) =>
+                  widget.onQuantityChanged(item.stockItemId, qty),
               onEvidenceReportTap: () => widget.onEvidenceReportTap(item),
             );
           },
         ),
-        if (_isEditing && _newItems.isNotEmpty) ...[
-          Gap(spacing.s12),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _newItems.length,
-            separatorBuilder: (context, index) => Gap(spacing.s12),
-            itemBuilder: (context, index) {
-              final newItem = _newItems[index];
-              return _NewItemEntryCard(
-                item: newItem,
-                availableItemNames: _availableItems,
-                onNameChanged: (name) {
-                  setState(() {
-                    _newItems[index] = newItem.copyWith(itemName: name);
-                  });
-                },
-                onQuantityChanged: (qty) {
-                  setState(() {
-                    _newItems[index] = newItem.copyWith(quantity: qty);
-                  });
-                },
-                onRemove: () => _onRemoveNewItem(index),
-              );
-            },
-          ),
-        ],
-        if (_isEditing && !widget.isDelivered) ...[
-          Gap(spacing.s12),
-          SizedBox(
-            width: double.infinity,
-            height: 44,
-            child: OutlinedButton.icon(
-              onPressed: _onAddItem,
-              icon: const Icon(Icons.add_rounded, size: 18),
-              label: Text(context.locale.addItem),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: color.borderSubtle),
-                foregroundColor: color.text.primary,
-                backgroundColor: color.scaffoldBackground,
-              ),
-            ),
-          ),
-        ],
       ],
     );
   }

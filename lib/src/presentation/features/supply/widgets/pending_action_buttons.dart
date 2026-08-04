@@ -24,7 +24,7 @@ class _PendingActionButtons extends ConsumerWidget {
       children: [
         Expanded(
           child: SizedBox(
-            height: 44,
+            height: spacing.s44,
             child: OutlinedButton(
               onPressed: isBusy ? null : onReject,
               style: OutlinedButton.styleFrom(
@@ -36,7 +36,7 @@ class _PendingActionButtons extends ConsumerWidget {
                       width: spacing.s20,
                       height: spacing.s20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
+                        strokeWidth: spacing.s2,
                         color: color.primary,
                       ),
                     )
@@ -47,7 +47,7 @@ class _PendingActionButtons extends ConsumerWidget {
         Gap(spacing.s12),
         Expanded(
           child: SizedBox(
-            height: 44,
+            height: spacing.s44,
             child: FilledButton(
               onPressed: isBusy ? null : onApprove,
               child: isApproving
@@ -55,7 +55,7 @@ class _PendingActionButtons extends ConsumerWidget {
                       width: spacing.s20,
                       height: spacing.s20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
+                        strokeWidth: spacing.s2,
                         color: color.onPrimary,
                       ),
                     )

@@ -591,5 +591,43 @@
   "addMoreItems": "Add More Items",
   "submitRequest": "Submit Request",
   "requestNotesHint": "Add any additional instructions or notes here...",
-  "urgency": "Urgency"
+  "urgency": "Urgency",
+  "camera": "Camera",
+  "checkAll": "Check All",
+  "uncheckAll": "Uncheck All",
+  "orderDetails": "Order Details",
+  "requestIdLabel": "Request ID",
+  "deliveryReceiptPhotoOptional": "Delivery Receipt Photo (Optional)",
+  "itemCodeLabel": "Item Code: {code}",
+  "@itemCodeLabel": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedLabel": "Requested",
+  "expectedLabel": "Expected",
+  "receivedLabel": "Received",
+  "amountReceivedLabel": "Amount received",
+  "photoOfEvidenceReport": "Photo of the evidence report",
+  "deliveryNotesHint": "Add any notes about the delivery missing items, damaged goods, quantity discrepancies...",
+  "verifiedCount": "{verified}/{total} verified",
+  "@verifiedCount": {
+    "placeholders": {
+      "verified": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "deliveryComplaintTitle": "Delivery Complaint",
+  "complaintSubmittedSuccessfully": "Complaint submitted successfully",
+  "submitComplaint": "Submit a complaint",
+  "complaintReasonLabel": "Reason",
+  "complaintReasonHint": "Describe the discrepancy - missing items, damaged goods, quantity mismatch...",
+  "missingLabel": "Missing",
+  "proofPhoto": "Proof photo"
 }

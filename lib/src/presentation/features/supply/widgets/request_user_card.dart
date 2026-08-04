@@ -47,7 +47,7 @@ class _RequestUserCard extends StatelessWidget {
                 child: Icon(
                   Icons.person_outline_rounded,
                   color: context.color.primary,
-                  size: 20,
+                  size: spacing.s20,
                 ),
               ),
               Gap(spacing.s12),
@@ -77,7 +77,7 @@ class _RequestUserCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.calendar_month_outlined,
-                size: 14,
+                size: spacing.s14,
                 color: context.color.text.secondary,
               ),
               Gap(spacing.s4),

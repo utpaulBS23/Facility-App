@@ -35,7 +35,7 @@ class PendingDeliveryAlert extends StatelessWidget {
               child: Icon(
                 Icons.local_shipping_outlined,
                 color: context.color.onPrimary,
-                size: 20,
+                size: spacing.s20,
               ),
             ),
             Gap(spacing.s12),
@@ -44,14 +44,14 @@ class PendingDeliveryAlert extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Pending Deliveries',
+                    context.locale.pendingDeliveries,
                     style: context.textStyle.labelLarge.copyWith(
                       color: context.color.text.primary,
                     ),
                   ),
                   Gap(spacing.s2),
                   Text(
-                    '1 approved request awaiting delivery',
+                    context.locale.pendingDeliveryAlertSubtitle(count),
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,
                     ),

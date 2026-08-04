@@ -1,13 +1,8 @@
 part of '../view/delivery_complaint_page.dart';
 
+/// Proof photo capture — always disabled, no upload endpoint exists yet.
 class _ProofPhotoPickerCard extends StatelessWidget {
-  const _ProofPhotoPickerCard({
-    required this.onCameraTap,
-    required this.onGalleryTap,
-  });
-
-  final VoidCallback onCameraTap;
-  final VoidCallback onGalleryTap;
+  const _ProofPhotoPickerCard();
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +20,11 @@ class _ProofPhotoPickerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RichText(
-            text: TextSpan(
-              text: 'Proof photo ',
-              style: context.textStyle.labelLarge.copyWith(
-                color: color.text.primary,
-                fontWeight: FontWeight.bold,
-              ),
-              children: [
-                TextSpan(
-                  text: '*',
-                  style: TextStyle(color: color.primary),
-                ),
-              ],
+          Text(
+            context.locale.proofPhoto,
+            style: context.textStyle.labelLarge.copyWith(
+              color: color.text.primary,
+              fontWeight: FontWeight.bold,
             ),
           ),
           Gap(spacing.s12),
@@ -45,22 +32,22 @@ class _ProofPhotoPickerCard extends StatelessWidget {
             children: [
               Expanded(
                 child: SizedBox(
-                  height: 44,
+                  height: spacing.s44,
                   child: FilledButton.icon(
-                    onPressed: onCameraTap,
-                    icon: const Icon(Icons.camera_alt_outlined, size: 18),
-                    label: const Text('Camera'),
+                    onPressed: null,
+                    icon: Icon(Icons.camera_alt_outlined, size: spacing.s20),
+                    label: Text(context.locale.camera),
                   ),
                 ),
               ),
               Gap(spacing.s12),
               Expanded(
                 child: SizedBox(
-                  height: 44,
+                  height: spacing.s44,
                   child: OutlinedButton.icon(
-                    onPressed: onGalleryTap,
-                    icon: const Icon(Icons.image_outlined, size: 18),
-                    label: const Text('Gallery'),
+                    onPressed: null,
+                    icon: Icon(Icons.image_outlined, size: spacing.s20),
+                    label: Text(context.locale.gallery),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: color.primary),
                       foregroundColor: color.primary,

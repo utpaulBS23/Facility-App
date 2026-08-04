@@ -1,7 +1,7 @@
-part of '../view/new_request_page.dart';
+part of '../view/delivery_complaint_page.dart';
 
-class _NewRequestFooterBar extends StatelessWidget {
-  const _NewRequestFooterBar({
+class _DeliveryComplaintFooterBar extends StatelessWidget {
+  const _DeliveryComplaintFooterBar({
     required this.isSubmitting,
     required this.canSubmit,
     required this.onSubmit,
@@ -32,7 +32,7 @@ class _NewRequestFooterBar extends StatelessWidget {
               width: double.infinity,
               height: spacing.s44,
               child: FilledButton(
-                onPressed: canSubmit ? onSubmit : null,
+                onPressed: (isSubmitting || !canSubmit) ? null : onSubmit,
                 child: isSubmitting
                     ? SizedBox(
                         width: spacing.s20,
@@ -42,7 +42,7 @@ class _NewRequestFooterBar extends StatelessWidget {
                           color: color.onPrimary,
                         ),
                       )
-                    : Text(context.locale.submitRequest),
+                    : Text(context.locale.submitComplaint),
               ),
             ),
             Gap(spacing.s12),
@@ -50,7 +50,7 @@ class _NewRequestFooterBar extends StatelessWidget {
               width: double.infinity,
               height: spacing.s44,
               child: OutlinedButton(
-                onPressed: isSubmitting ? null : onCancel,
+                onPressed: onCancel,
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: color.borderSubtle),
                   foregroundColor: color.text.primary,

@@ -36,7 +36,7 @@ class ItemStepperInput extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s6),
               child: Icon(
                 Icons.remove_rounded,
-                size: 16,
+                size: spacing.s16,
                 color: quantity > 1 ? color.text.primary : color.text.secondary,
               ),
             ),
@@ -61,7 +61,7 @@ class ItemStepperInput extends StatelessWidget {
               padding: EdgeInsets.all(spacing.s6),
               child: Icon(
                 Icons.add_rounded,
-                size: 16,
+                size: spacing.s16,
                 color: color.text.primary,
               ),
             ),

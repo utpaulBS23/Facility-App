@@ -1,33 +1,23 @@
 part of '../view/request_details_page.dart';
 
-class _ReceivedItemCard extends StatefulWidget {
+class _ReceivedItemCard extends StatelessWidget {
   const _ReceivedItemCard({
     required this.item,
     required this.isEditing,
-    this.isDelivered = false,
+    required this.hasDelivery,
+    required this.isConfirmed,
+    required this.editedQuantity,
+    required this.onQuantityChanged,
     required this.onEvidenceReportTap,
   });
 
   final ReceivedItemUiModel item;
   final bool isEditing;
-  final bool isDelivered;
+  final bool hasDelivery;
+  final bool isConfirmed;
+  final int? editedQuantity;
+  final ValueChanged<int> onQuantityChanged;
   final VoidCallback onEvidenceReportTap;
-
-  @override
-  State<_ReceivedItemCard> createState() => _ReceivedItemCardState();
-}
-
-class _ReceivedItemCardState extends State<_ReceivedItemCard> {
-  late int _receivedQty;
-
-  @override
-  void initState() {
-    super.initState();
-    _receivedQty = widget.item.receivedQuantity;
-  }
-
-  bool get _hasDiscrepancy =>
-      widget.isDelivered && widget.item.expectedQuantity != _receivedQty;
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +25,20 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
     final radius = context.dimensions.radius;
     final color = context.color;
 
-    final borderColor = _hasDiscrepancy
-        ? color.warning
-        : (widget.isDelivered ? color.success : color.borderSubtle);
+    final receivedQty = editedQuantity ?? item.receivedQuantity;
+    final hasDiscrepancy = isConfirmed && item.expectedQuantity != receivedQty;
+
+    final borderColor = switch ((hasDiscrepancy, isConfirmed)) {
+      (true, _) => color.warning,
+      (false, true) => color.success,
+      (false, false) => color.borderSubtle,
+    };
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: color.onPrimary,
-        border: Border.all(
-          color: borderColor,
-          width: (widget.isDelivered || _hasDiscrepancy) ? 1.5 : 1.0,
-        ),
+        border: Border.all(color: borderColor),
         borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Column(
@@ -61,9 +53,9 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                   borderRadius: BorderRadius.circular(radius.r12),
                 ),
                 child: Icon(
-                  widget.item.icon,
+                  item.icon,
                   color: color.primary,
-                  size: 20,
+                  size: spacing.s20,
                 ),
               ),
               Gap(spacing.s12),
@@ -72,7 +64,7 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.item.name,
+                      item.name,
                       style: context.textStyle.labelLarge.copyWith(
                         color: color.text.primary,
                         fontWeight: FontWeight.bold,
@@ -80,7 +72,7 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                     ),
                     Gap(spacing.s2),
                     Text(
-                      'Item Code: ${widget.item.code}',
+                      context.locale.itemCodeLabel(item.code),
                       style: context.textStyle.bodySmall.copyWith(
                         color: color.text.secondary,
                       ),
@@ -88,8 +80,8 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                   ],
                 ),
               ),
-              if (widget.isDelivered)
-                if (!_hasDiscrepancy)
+              if (isConfirmed)
+                if (!hasDiscrepancy)
                   Container(
                     padding: EdgeInsets.all(spacing.s6),
                     decoration: BoxDecoration(
@@ -99,7 +91,7 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                     child: Icon(
                       Icons.check_rounded,
                       color: color.success,
-                      size: 16,
+                      size: spacing.s16,
                     ),
                   )
                 else
@@ -117,11 +109,11 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                         Icon(
                           Icons.warning_amber_rounded,
                           color: color.warning,
-                          size: 16,
+                          size: spacing.s16,
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '${_receivedQty - widget.item.expectedQuantity}',
+                          '${receivedQty - item.expectedQuantity}',
                           style: context.textStyle.labelSmall.copyWith(
                             color: color.warning,
                             fontWeight: FontWeight.bold,
@@ -133,7 +125,7 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
             ],
           ),
           Gap(spacing.s12),
-          if (!widget.isDelivered)
+          if (!hasDelivery)
             Row(
               children: [
                 Expanded(
@@ -147,14 +139,14 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Requested',
+                          context.locale.requestedLabel,
                           style: context.textStyle.bodySmall.copyWith(
                             color: color.text.secondary,
                           ),
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '${widget.item.expectedQuantity} ${widget.item.unit}',
+                          '${item.expectedQuantity} ${item.unit}',
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -180,14 +172,14 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Expected',
+                          context.locale.expectedLabel,
                           style: context.textStyle.bodySmall.copyWith(
                             color: color.text.secondary,
                           ),
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '${widget.item.expectedQuantity} ${widget.item.unit}',
+                          '${item.expectedQuantity} ${item.unit}',
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -209,14 +201,14 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Received',
+                          context.locale.receivedLabel,
                           style: context.textStyle.bodySmall.copyWith(
                             color: color.text.secondary,
                           ),
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '$_receivedQty ${widget.item.unit}',
+                          '$receivedQty ${item.unit}',
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -232,21 +224,21 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
             Row(
               children: [
                 Text(
-                  'Amount received',
+                  context.locale.amountReceivedLabel,
                   style: context.textStyle.labelLarge.copyWith(
                     color: color.text.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const Spacer(),
-                if (widget.isEditing)
+                if (isEditing)
                   ItemStepperInput(
-                    quantity: _receivedQty,
-                    onChanged: (qty) => setState(() => _receivedQty = qty),
+                    quantity: receivedQty,
+                    onChanged: onQuantityChanged,
                   )
                 else
                   Text(
-                    '$_receivedQty ${widget.item.unit}',
+                    '$receivedQty ${item.unit}',
                     style: context.textStyle.labelLarge.copyWith(
                       color: color.text.primary,
                       fontWeight: FontWeight.bold,
@@ -254,19 +246,25 @@ class _ReceivedItemCardState extends State<_ReceivedItemCard> {
                   ),
               ],
             ),
-            if (_hasDiscrepancy) ...[
+            if (hasDiscrepancy) ...[
               Gap(spacing.s12),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: widget.onEvidenceReportTap,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: color.warningAlt,
-                    foregroundColor: color.warning,
-                    elevation: 0,
+              PermissionGate(
+                permissions: const [UserPermission.deliveryComplaintCreate],
+                child: SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: onEvidenceReportTap,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: color.warningAlt,
+                      foregroundColor: color.warning,
+                      elevation: 0,
+                    ),
+                    icon: Icon(
+                      Icons.center_focus_weak_rounded,
+                      size: spacing.s20,
+                    ),
+                    label: Text(context.locale.photoOfEvidenceReport),
                   ),
-                  icon: const Icon(Icons.center_focus_weak_rounded, size: 18),
-                  label: const Text('Photo of the evidence report'),
                 ),
               ),
             ],

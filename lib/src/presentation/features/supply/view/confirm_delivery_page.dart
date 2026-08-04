@@ -7,78 +7,39 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/confirm_delivery_request.dart';
 import '../../../../domain/entities/supply/delivery_entity.dart';
+import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/supply_status_extension.dart';
 import '../riverpod/confirm_delivery_provider.dart';
 import '../widgets/item_stepper_input.dart';
+import '../models/confirm_delivery_item_ui_state.dart';
 import 'request_details_page.dart';
 
+export '../models/confirm_delivery_page_args.dart';
+
+part '../widgets/confirm_delivery_body.dart';
 part '../widgets/confirm_delivery_footer_bar.dart';
 part '../widgets/delivery_photo_card.dart';
 part '../widgets/notes_input_card.dart';
 part '../widgets/order_details_summary_card.dart';
 part '../widgets/verify_items_card.dart';
 
-class ConfirmDeliveryItemUiState {
-  const ConfirmDeliveryItemUiState({
-    required this.stockItemId,
-    required this.itemName,
-    required this.category,
-    required this.qtyExpected,
-    required this.qtyReceived,
-    required this.unit,
-    this.isVerified = true,
-  });
-
-  final int stockItemId;
-  final String itemName;
-  final String category;
-  final int qtyExpected;
-  final int qtyReceived;
-  final String unit;
-  final bool isVerified;
-
-  factory ConfirmDeliveryItemUiState.fromEntity(DeliveryItemEntity entity) {
-    return ConfirmDeliveryItemUiState(
-      stockItemId: entity.stockItemId,
-      itemName: entity.itemName,
-      category: entity.unit,
-      qtyExpected: entity.qtyExpected.round(),
-      qtyReceived: entity.qtyReceived > 0
-          ? entity.qtyReceived.round()
-          : entity.qtyExpected.round(),
-      unit: entity.unit,
-      isVerified: entity.isVerified,
-    );
-  }
-
-  ConfirmDeliveryItemUiState copyWith({
-    int? qtyReceived,
-    bool? isVerified,
-  }) {
-    return ConfirmDeliveryItemUiState(
-      stockItemId: stockItemId,
-      itemName: itemName,
-      category: category,
-      qtyExpected: qtyExpected,
-      qtyReceived: qtyReceived ?? this.qtyReceived,
-      unit: unit,
-      isVerified: isVerified ?? this.isVerified,
-    );
-  }
-}
-
 class ConfirmDeliveryPage extends ConsumerStatefulWidget {
   const ConfirmDeliveryPage({
     super.key,
-    this.delivery,
+    required this.delivery,
+    required this.urgency,
+    required this.requestedByName,
   });
 
-  final DeliveryEntity? delivery;
+  final DeliveryEntity delivery;
+  final SupplyUrgency urgency;
+  final String requestedByName;
 
   @override
   ConsumerState<ConfirmDeliveryPage> createState() =>
@@ -95,14 +56,9 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
     super.initState();
     ref.listenManual(confirmDeliveryProvider, _onConfirmStateChanged);
 
-    final deliveryItems = widget.delivery?.items;
-    if (deliveryItems != null && deliveryItems.isNotEmpty) {
-      _items = deliveryItems
-          .map((i) => ConfirmDeliveryItemUiState.fromEntity(i))
-          .toList();
-    } else {
-      _items = const [];
-    }
+    _items = widget.delivery.items
+        .map((i) => ConfirmDeliveryItemUiState.fromEntity(i))
+        .toList();
   }
 
   @override
@@ -155,22 +111,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
     });
   }
 
-  void _onCameraTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Camera option selected')),
-    );
-  }
-
-  void _onGalleryTap() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Gallery option selected')),
-    );
-  }
-
   void _onConfirmReceipt() {
-    final deliveryId = widget.delivery?.id;
-    if (deliveryId == null) return;
-
     final requestItems = _items
         .map(
           (i) => ConfirmDeliveryItem(
@@ -187,21 +128,15 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
     );
 
     ref.read(confirmDeliveryProvider.notifier).confirm(
-          deliveryId: deliveryId,
+          deliveryId: widget.delivery.id,
           request: request,
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final color = context.color;
     final confirmState = ref.watch(confirmDeliveryProvider);
-
-    final facilityName =
-        widget.delivery?.facilityName ?? 'Mirpur-10 Public Toilet Complex';
-    final requestCode = widget.delivery?.requestCode ?? 'SR-1';
-    final receivedByName = widget.delivery?.receivedByName ?? 'Shafiqul Alam';
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -213,40 +148,15 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            RequestInfoCard(
-              label: 'Facility',
-              title: facilityName,
-              subtitle: 'Mirpur-10, Dhaka',
-              icon: Icons.location_on_outlined,
-            ),
-            Gap(spacing.s16),
-            _OrderDetailsSummaryCard(
-              requestId: requestCode,
-              requestedBy: receivedByName,
-              urgency: 'Normal',
-            ),
-            Gap(spacing.s16),
-            _VerifyItemsCard(
-              items: _items,
-              onItemToggled: _onItemToggled,
-              onQuantityChanged: _onQuantityChanged,
-              onToggleAll: _onToggleAll,
-            ),
-            Gap(spacing.s16),
-            _NotesInputCard(controller: _notesController),
-            Gap(spacing.s16),
-            _DeliveryPhotoCard(
-              onCameraTap: _onCameraTap,
-              onGalleryTap: _onGalleryTap,
-            ),
-            Gap(spacing.s24),
-          ],
-        ),
+      body: _ConfirmDeliveryBody(
+        delivery: widget.delivery,
+        urgency: widget.urgency,
+        requestedByName: widget.requestedByName,
+        items: _items,
+        notesController: _notesController,
+        onItemToggled: _onItemToggled,
+        onQuantityChanged: _onQuantityChanged,
+        onToggleAll: _onToggleAll,
       ),
       bottomNavigationBar: PermissionGate(
         permissions: const [UserPermission.deliveryConfirm],

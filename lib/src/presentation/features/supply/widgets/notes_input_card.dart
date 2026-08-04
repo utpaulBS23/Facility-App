@@ -22,7 +22,7 @@ class _NotesInputCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Notes',
+            context.locale.notes,
             style: context.textStyle.bodySmall.copyWith(
               color: color.text.secondary,
             ),
@@ -32,7 +32,7 @@ class _NotesInputCard extends StatelessWidget {
             controller: controller,
             maxLines: 4,
             decoration: InputDecoration(
-              hintText: 'Add any notes about the delivery missing items, damaged goods, quantity discrepancies...',
+              hintText: context.locale.deliveryNotesHint,
               hintStyle: context.textStyle.bodyMedium.copyWith(
                 color: color.text.secondary,
               ),

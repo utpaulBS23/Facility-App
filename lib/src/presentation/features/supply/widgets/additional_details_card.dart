@@ -1,9 +1,13 @@
 part of '../view/delivery_complaint_page.dart';
 
 class _AdditionalDetailsCard extends StatelessWidget {
-  const _AdditionalDetailsCard({required this.controller});
+  const _AdditionalDetailsCard({
+    required this.controller,
+    required this.onChanged,
+  });
 
   final TextEditingController controller;
+  final VoidCallback onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class _AdditionalDetailsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Additional details',
+            context.locale.complaintReasonLabel,
             style: context.textStyle.bodySmall.copyWith(
               color: color.text.secondary,
             ),
@@ -31,8 +35,9 @@ class _AdditionalDetailsCard extends StatelessWidget {
           TextField(
             controller: controller,
             maxLines: 4,
+            onChanged: (_) => onChanged(),
             decoration: InputDecoration(
-              hintText: 'Enter any additional information about the missing item...',
+              hintText: context.locale.complaintReasonHint,
               hintStyle: context.textStyle.bodyMedium.copyWith(
                 color: color.text.secondary,
               ),

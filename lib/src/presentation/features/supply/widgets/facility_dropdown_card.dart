@@ -38,7 +38,7 @@ class FacilityDropdownCard extends StatelessWidget {
           Icon(
             Icons.location_on_outlined,
             color: color.text.secondary,
-            size: 20,
+            size: spacing.s20,
           ),
           Gap(spacing.s12),
           Expanded(

@@ -161,7 +161,7 @@ class ItemsNeededCard extends StatelessWidget {
                           icon: Icon(
                             Icons.delete_outline_rounded,
                             color: color.error,
-                            size: 20,
+                            size: spacing.s20,
                           ),
                         ),
                       ],
@@ -199,10 +199,10 @@ class ItemsNeededCard extends StatelessWidget {
           Gap(spacing.s16),
           SizedBox(
             width: double.infinity,
-            height: 44,
+            height: spacing.s44,
             child: OutlinedButton.icon(
               onPressed: onAddItem,
-              icon: const Icon(Icons.add_rounded, size: 18),
+              icon: Icon(Icons.add_rounded, size: spacing.s20),
               label: Text(context.locale.addMoreItems),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: color.borderSubtle),

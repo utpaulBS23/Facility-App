@@ -474,6 +474,14 @@ ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
 }
 
 @riverpod
+FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
+  return FileDeliveryComplaintUseCase(
+    deliveryRepository: ref.read(deliveryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
   return CreateSupplyRequestUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),

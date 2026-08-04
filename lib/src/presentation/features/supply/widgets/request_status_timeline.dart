@@ -119,7 +119,7 @@ class _RequestStatusTimeline extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final stepWidth = constraints.maxWidth / steps.length;
-        final sidePadding = (stepWidth / 2) - 18;
+        final sidePadding = (stepWidth / 2) - (spacing.s36 / 2);
 
         return Column(
           children: [
@@ -134,7 +134,7 @@ class _RequestStatusTimeline extends StatelessWidget {
                     if (i < steps.length - 1)
                       Expanded(
                         child: Container(
-                          height: 2,
+                          height: spacing.s2,
                           color: steps[i].isCompleted
                               ? color.success
                               : color.borderSubtle,
@@ -204,6 +204,7 @@ class _TimelineCircleNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
     final color = context.color;
 
     final IconData icon = switch (step) {
@@ -232,14 +233,14 @@ class _TimelineCircleNode extends StatelessWidget {
     };
 
     return Container(
-      width: 36,
-      height: 36,
+      width: spacing.s36,
+      height: spacing.s36,
       decoration: BoxDecoration(
         color: nodeBg,
         shape: BoxShape.circle,
-        border: Border.all(color: nodeBorder, width: 2),
+        border: Border.all(color: nodeBorder, width: spacing.s2),
       ),
-      child: Icon(icon, size: 18, color: iconColor),
+      child: Icon(icon, size: spacing.s16, color: iconColor),
     );
   }
 }

@@ -22,6 +22,23 @@ class DeliveryItemEntity {
   final double qtyReceived;
   final bool isVerified;
   final bool hasShortage;
+
+  DeliveryItemEntity copyWith({
+    double? qtyReceived,
+    bool? isVerified,
+  }) {
+    return DeliveryItemEntity(
+      id: id,
+      stockItemId: stockItemId,
+      itemCode: itemCode,
+      itemName: itemName,
+      unit: unit,
+      qtyExpected: qtyExpected,
+      qtyReceived: qtyReceived ?? this.qtyReceived,
+      isVerified: isVerified ?? this.isVerified,
+      hasShortage: hasShortage,
+    );
+  }
 }
 
 class DeliveryEntity {
@@ -56,4 +73,40 @@ class DeliveryEntity {
   final List<DeliveryItemEntity> items;
   final String? confirmedAt;
   final String createdAt;
+
+  DeliveryEntity copyWith({List<DeliveryItemEntity>? items}) {
+    return DeliveryEntity(
+      id: id,
+      supplyRequestId: supplyRequestId,
+      requestCode: requestCode,
+      facilityId: facilityId,
+      facilityName: facilityName,
+      receivedBy: receivedBy,
+      receivedByName: receivedByName,
+      receiptPhotoUrl: receiptPhotoUrl,
+      deliveryNotes: deliveryNotes,
+      status: status,
+      itemCount: itemCount,
+      items: items ?? this.items,
+      confirmedAt: confirmedAt,
+      createdAt: createdAt,
+    );
+  }
+
+  /// Applies user-edited received quantities, keyed by [DeliveryItemEntity.stockItemId].
+  DeliveryEntity withEditedQuantities(Map<int, int> editedQuantities) {
+    if (editedQuantities.isEmpty) {
+      return this;
+    }
+
+    return copyWith(
+      items: items.map((item) {
+        final editedQty = editedQuantities[item.stockItemId];
+
+        return editedQty == null
+            ? item
+            : item.copyWith(qtyReceived: editedQty.toDouble());
+      }).toList(),
+    );
+  }
 }
