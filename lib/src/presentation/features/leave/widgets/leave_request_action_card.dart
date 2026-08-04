@@ -93,7 +93,10 @@ class _LeaveRequestActionCardState
       LeaveStatus.approved => (context.locale.approved, color.success),
       LeaveStatus.rejected => (context.locale.rejected, color.error),
       LeaveStatus.cancelled => (context.locale.cancel, color.text.secondary),
-      LeaveStatus.unknown => (context.locale.notAvailable, color.text.secondary),
+      LeaveStatus.unknown => (
+        context.locale.notAvailable,
+        color.text.secondary,
+      ),
     };
 
     return InkWell(
@@ -128,75 +131,79 @@ class _LeaveRequestActionCardState
               style: textStyle.bodyMedium.copyWith(color: color.text.secondary),
             ),
             Gap(spacing.s12),
-            PermissionGate(
-              permissions: const [
-                UserPermission.leaveApproveSupervisor,
-                UserPermission.leaveApproveManager,
-              ],
-              child: Column(
-                children: [
-                  Divider(color: color.borderSubtle, height: 1),
-                  Gap(spacing.s12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: (_isApproving || _isRejecting)
-                              ? null
-                              : _onApprove,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: color.primary,
-                            foregroundColor: color.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                context.dimensions.radius.r10,
-                              ),
-                            ),
-                          ),
-                          child: _isApproving
-                              ? SizedBox(
-                                  width: spacing.s20,
-                                  height: spacing.s20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: color.onPrimary,
-                                  ),
-                                )
-                              : Text(context.locale.approved),
-                        ),
-                      ),
-                      Gap(spacing.s12),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: (_isApproving || _isRejecting)
-                              ? null
-                              : _onReject,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: color.primary,
-                            side: BorderSide(color: color.primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                context.dimensions.radius.r10,
-                              ),
-                            ),
-                          ),
-                          child: _isRejecting
-                              ? SizedBox(
-                                  width: spacing.s20,
-                                  height: spacing.s20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: color.primary,
-                                  ),
-                                )
-                              : Text(context.locale.rejection),
-                        ),
-                      ),
-                    ],
-                  ),
+            // Show approve/reject buttons only when server confirms caller can
+            // act on this specific request right now.
+            if (request.canAction) ...[
+              PermissionGate(
+                permissions: const [
+                  UserPermission.leaveApproveSupervisor,
+                  UserPermission.leaveApproveManager,
                 ],
+                child: Column(
+                  children: [
+                    Divider(color: color.borderSubtle, height: 1),
+                    Gap(spacing.s12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: (_isApproving || _isRejecting)
+                                ? null
+                                : _onApprove,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: color.primary,
+                              foregroundColor: color.onPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r10,
+                                ),
+                              ),
+                            ),
+                            child: _isApproving
+                                ? SizedBox(
+                                    width: spacing.s20,
+                                    height: spacing.s20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: color.onPrimary,
+                                    ),
+                                  )
+                                : Text(context.locale.approved),
+                          ),
+                        ),
+                        Gap(spacing.s12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: (_isApproving || _isRejecting)
+                                ? null
+                                : _onReject,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: color.primary,
+                              side: BorderSide(color: color.primary),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r10,
+                                ),
+                              ),
+                            ),
+                            child: _isRejecting
+                                ? SizedBox(
+                                    width: spacing.s20,
+                                    height: spacing.s20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: color.primary,
+                                    ),
+                                  )
+                                : Text(context.locale.rejection),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
