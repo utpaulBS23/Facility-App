@@ -94,17 +94,21 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
               ),
             ),
           ),
-          // Show action bar based on permission
-          PermissionGate(
-            permissions: const [
-              UserPermission.leaveApproveSupervisor,
-              UserPermission.leaveApproveManager,
-            ],
-            child: LeaveDetailsActionBar(
-              request: request,
-              onActionStarted: (isApprove) => _lastActionWasApprove = isApprove,
+          // Show action bar only when server confirms caller can act on this
+          // specific request right now (can_action is UX-only; server re-checks).
+          if (request.canAction) ...[
+            PermissionGate(
+              permissions: const [
+                UserPermission.leaveApproveSupervisor,
+                UserPermission.leaveApproveManager,
+              ],
+              child: LeaveDetailsActionBar(
+                request: request,
+                onActionStarted: (isApprove) =>
+                    _lastActionWasApprove = isApprove,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

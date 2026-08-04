@@ -91,9 +91,11 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
       shifts: shifts.map((s) => s.toEntity()).toList(),
       approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
       createdAt: createdAt,
+      canAction: canAction ?? false,
     );
   }
 }
+
 
 extension LeaveAttendantShiftModelToEntity on LeaveAttendantShiftModel {
   LeaveAttendantShiftEntity toEntity() {
