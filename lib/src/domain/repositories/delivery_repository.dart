@@ -12,6 +12,11 @@ abstract base class DeliveryRepository extends Repository {
     required String requestCode,
   });
 
+  Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest({
+    required int partnerId,
+    required int supplyRequestId,
+  });
+
   Future<Result<DeliveryEntity, Failure>> confirmDelivery({
     required int partnerId,
     required int deliveryId,

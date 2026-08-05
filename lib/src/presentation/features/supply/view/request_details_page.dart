@@ -23,10 +23,12 @@ import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
+import '../riverpod/supply_request_dispatch_provider.dart';
 import '../widgets/item_stepper_input.dart';
 import 'confirm_delivery_page.dart';
 import '../models/received_item_ui_model.dart';
 
+part '../widgets/dispatch_action_button.dart';
 part '../widgets/pending_action_buttons.dart';
 part '../widgets/received_item_card.dart';
 part '../widgets/received_items_list.dart';
@@ -53,6 +55,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
   void initState() {
     super.initState();
     ref.listenManual(supplyRequestActionProvider, _onActionStateChanged);
+    ref.listenManual(supplyRequestDispatchProvider, _onDispatchStateChanged);
   }
 
   void _onActionStateChanged(
@@ -77,6 +80,28 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
         AppSnackBar.showError(context, context.locale.somethingWentWrong);
       },
     );
+  }
+
+  void _onDispatchStateChanged(
+    AsyncValue<DeliveryEntity?>? previous,
+    AsyncValue<DeliveryEntity?> next,
+  ) {
+    next.whenOrNull(
+      data: (value) {
+        if (value == null || !mounted) return;
+
+        AppSnackBar.showSuccess(context, context.locale.dispatchSuccess);
+      },
+      error: (e, _) {
+        if (!mounted) return;
+
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      },
+    );
+  }
+
+  void _onDispatch() {
+    ref.read(supplyRequestDispatchProvider.notifier).dispatch(widget.request.id);
   }
 
   void _onApprove() {
@@ -152,16 +177,24 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
         onEvidenceReportTap: _onEvidenceReportTap,
         onRetryDelivery: () =>
             ref.invalidate(supplyRequestDeliveryProvider(request.requestCode)),
-        isApproveAction: _lastActionWasApprove,
-        onApprove: _onApprove,
-        onReject: _onReject,
       ),
-      bottomNavigationBar: request.status == SupplyRequestStatus.inDelivery
-          ? _RequestDetailsBottomBar(
-              delivery: delivery,
-              onConfirmTap: () => _onConfirmDeliveryTap(request, delivery!),
-            )
-          : null,
+      bottomNavigationBar: switch (request.status) {
+        SupplyRequestStatus.pendingSupervisor ||
+        SupplyRequestStatus.pendingOperationManager =>
+          _PendingActionButtons(
+            isApproveAction: _lastActionWasApprove,
+            onReject: _onReject,
+            onApprove: _onApprove,
+          ),
+        SupplyRequestStatus.operationManagerApproved => _DispatchActionButton(
+            onDispatch: _onDispatch,
+          ),
+        SupplyRequestStatus.inDelivery => _RequestDetailsBottomBar(
+            delivery: delivery,
+            onConfirmTap: () => _onConfirmDeliveryTap(request, delivery!),
+          ),
+        _ => null,
+      },
     );
   }
 }

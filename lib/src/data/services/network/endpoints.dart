@@ -150,6 +150,8 @@ class Endpoints {
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
   static const String rejectSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+  static const String dispatchSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/dispatch';
   static const String deliveries = '/partners/{partnerId}/deliveries';
   static const String confirmDelivery =
       '/partners/{partnerId}/deliveries/{deliveryId}/confirm';

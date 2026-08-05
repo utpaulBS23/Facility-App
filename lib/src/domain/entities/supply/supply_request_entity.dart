@@ -102,6 +102,12 @@ class SupplyRequestEntity {
   bool get isPendingStage =>
       status == SupplyRequestStatus.pendingSupervisor ||
       status == SupplyRequestStatus.pendingOperationManager;
+
+  bool get isDispatchStage =>
+      status == SupplyRequestStatus.operationManagerApproved;
+
+  bool get hasBottomActionBar =>
+      isPendingStage || isDispatchStage || status == SupplyRequestStatus.inDelivery;
 }
 
 class SupplyRequestCounts {

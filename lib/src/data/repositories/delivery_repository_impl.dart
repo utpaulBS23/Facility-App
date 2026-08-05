@@ -35,6 +35,21 @@ final class DeliveryRepositoryImpl extends DeliveryRepository {
   }
 
   @override
+  Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest({
+    required int partnerId,
+    required int supplyRequestId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.dispatchSupplyRequest(
+        partnerId: partnerId,
+        supplyRequestId: supplyRequestId,
+      );
+      final responseModel = DeliveryResponseModel.fromJson(response.data);
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
   Future<Result<DeliveryEntity, Failure>> confirmDelivery({
     required int partnerId,
     required int deliveryId,

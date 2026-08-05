@@ -112,6 +112,7 @@ enum UserPermission {
 
   // Delivery
   deliveryView('delivery.view'),
+  deliveryDispatch('delivery.dispatch'),
   deliveryConfirm('delivery.confirm'),
   deliveryComplaintView('delivery_complaint.view'),
   deliveryComplaintCreate('delivery_complaint.create'),

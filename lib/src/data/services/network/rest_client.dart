@@ -347,6 +347,12 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @POST(Endpoints.dispatchSupplyRequest)
+  Future<HttpResponse> dispatchSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+  });
+
   @GET(Endpoints.deliveries)
   Future<HttpResponse> getDeliveries({
     @Path('partnerId') required int partnerId,

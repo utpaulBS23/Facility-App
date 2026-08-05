@@ -297,6 +297,8 @@
   "reject": "প্রত্যাখ্যান করুন",
   "rejected": "প্রত্যাখ্যাত",
   "approved": "অনুমোদিত",
+  "dispatch": "প্রেরণ করুন",
+  "dispatchSuccess": "অনুরোধ প্রেরণ করা হয়েছে।",
   "facilityName": "সুবিধা",
   "shiftsCount": "{count} টি শিফট",
   "@shiftsCount": {

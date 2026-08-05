@@ -458,6 +458,14 @@ RejectSupplyRequestUseCase rejectSupplyRequestUseCase(Ref ref) {
 }
 
 @riverpod
+DispatchSupplyRequestUseCase dispatchSupplyRequestUseCase(Ref ref) {
+  return DispatchSupplyRequestUseCase(
+    deliveryRepository: ref.read(deliveryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
   return GetDeliveryForSupplyRequestUseCase(
     deliveryRepository: ref.read(deliveryRepositoryProvider),

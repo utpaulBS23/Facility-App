@@ -5,6 +5,7 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import 'confirm_delivery_provider.dart';
 import 'supply_request_action_provider.dart';
+import 'supply_request_dispatch_provider.dart';
 
 final supplyRequestDetailsProvider = FutureProvider.family<
     SupplyRequestEntity,
@@ -15,6 +16,11 @@ final supplyRequestDetailsProvider = FutureProvider.family<
     }
   });
   ref.listen(confirmDeliveryProvider, (previous, next) {
+    if (next is AsyncData && next.value != null) {
+      ref.invalidateSelf();
+    }
+  });
+  ref.listen(supplyRequestDispatchProvider, (previous, next) {
     if (next is AsyncData && next.value != null) {
       ref.invalidateSelf();
     }

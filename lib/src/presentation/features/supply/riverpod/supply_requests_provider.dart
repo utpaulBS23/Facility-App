@@ -7,6 +7,7 @@ import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import 'confirm_delivery_provider.dart';
 import 'supply_request_action_provider.dart';
+import 'supply_request_dispatch_provider.dart';
 
 final supplyRequestsProvider = FutureProvider.family<
     PaginatedListEntity<SupplyRequestEntity>,
@@ -17,6 +18,11 @@ final supplyRequestsProvider = FutureProvider.family<
     }
   });
   ref.listen(confirmDeliveryProvider, (previous, next) {
+    if (next is AsyncData && next.value != null) {
+      ref.invalidateSelf();
+    }
+  });
+  ref.listen(supplyRequestDispatchProvider, (previous, next) {
     if (next is AsyncData && next.value != null) {
       ref.invalidateSelf();
     }

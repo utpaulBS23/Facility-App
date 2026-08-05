@@ -10,9 +10,6 @@ class _RequestDetailsBody extends StatelessWidget {
     required this.onEditingCancelled,
     required this.onEvidenceReportTap,
     required this.onRetryDelivery,
-    required this.isApproveAction,
-    required this.onApprove,
-    required this.onReject,
   });
 
   final SupplyRequestEntity request;
@@ -23,9 +20,6 @@ class _RequestDetailsBody extends StatelessWidget {
   final VoidCallback onEditingCancelled;
   final void Function(ReceivedItemUiModel item) onEvidenceReportTap;
   final VoidCallback onRetryDelivery;
-  final bool isApproveAction;
-  final VoidCallback onApprove;
-  final VoidCallback onReject;
 
   Widget _buildReceivedItemsSection(BuildContext context) {
     if (!request.hasDelivery) {
@@ -71,7 +65,7 @@ class _RequestDetailsBody extends StatelessWidget {
         spacing.s16,
         spacing.s16,
         spacing.s16,
-        request.isApprovedStage ? spacing.s180 : spacing.s24,
+        request.hasBottomActionBar ? spacing.s180 : spacing.s24,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,22 +115,6 @@ class _RequestDetailsBody extends StatelessWidget {
                 ? request.notes!
                 : context.locale.noNotesProvided,
           ),
-          if (request.isPendingStage) ...[
-            PermissionGate(
-              permissions: const [
-                UserPermission.supplyRequestApproveSupervisor,
-                UserPermission.supplyRequestApproveOperationManager,
-              ],
-              child: Padding(
-                padding: EdgeInsets.only(top: spacing.s16),
-                child: _PendingActionButtons(
-                  isApproveAction: isApproveAction,
-                  onReject: onReject,
-                  onApprove: onApprove,
-                ),
-              ),
-            ),
-          ],
         ],
       ),
     );

@@ -297,6 +297,8 @@
   "reject": "Reject",
   "rejected": "Rejected",
   "approved": "Approved",
+  "dispatch": "Dispatch",
+  "dispatchSuccess": "Request dispatched.",
   "facilityName": "Facility",
   "shiftsCount": "{count} Shifts",
   "@shiftsCount": {
