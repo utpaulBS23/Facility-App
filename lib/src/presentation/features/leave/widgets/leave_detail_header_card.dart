@@ -18,6 +18,10 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
         context.locale.managerApproval,
         color.info,
       ),
+      LeaveStatus.pendingOwner => (
+        context.locale.pendingOwner,
+        color.info,
+      ),
       LeaveStatus.approved => (context.locale.approved, color.success),
       LeaveStatus.rejected => (context.locale.rejected, color.error),
       LeaveStatus.cancelled => (context.locale.cancel, color.text.secondary),
