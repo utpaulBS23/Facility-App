@@ -510,5 +510,6 @@
   "errorNotFound": "We could not find what you were looking for.",
   "errorGeneric": "Something went wrong. Please try again.",
   "manager": "Manager",
-  "owner": "Owner"
+  "owner": "Owner",
+  "pendingOwner": "Pending Owner"
 }
