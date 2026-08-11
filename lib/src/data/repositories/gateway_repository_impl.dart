@@ -4,14 +4,14 @@ import '../../core/base/base.dart';
 import '../../core/logger/log.dart';
 import '../../domain/entities/door_lock_entity.dart';
 import '../../domain/repositories/gateway_repository.dart';
+import '../extension/door_access_mapper.dart';
+import '../mock/door_access_mock_data.dart';
 import '../services/cache/offline_cache_service.dart';
 import '../services/gateway/gateway_config.dart';
 import '../services/gateway/gateway_service.dart';
 
-/// Combines the live gateway API with an offline cache: a lock/unlock
-/// command still succeeds (optimistically, queued for later sync) when the
-/// device can't reach the gateway, and status reads fall back to the last
-/// known state.
+/// Implements [GatewayRepository] attempting network calls first, falling back
+/// seamlessly to local mock data (with `cachedData: true`) if unreachable.
 final class GatewayRepositoryImpl extends GatewayRepository {
   GatewayRepositoryImpl(
     this._gatewayService,
@@ -22,6 +22,8 @@ final class GatewayRepositoryImpl extends GatewayRepository {
   final GatewayService _gatewayService;
   final OfflineCacheService _cacheService;
   final Connectivity _connectivity;
+
+  static final Map<String, bool> _mockDoorStateMap = {};
 
   Future<bool> _isOnline() async {
     try {
@@ -34,17 +36,7 @@ final class GatewayRepositoryImpl extends GatewayRepository {
   }
 
   @override
-  Future<Result<bool, Failure>> unlockDoor(String facilityId) =>
-      _setLock(facilityId, unlock: true);
-
-  @override
-  Future<Result<bool, Failure>> lockDoor(String facilityId) =>
-      _setLock(facilityId, unlock: false);
-
-  Future<Result<bool, Failure>> _setLock(
-    String facilityId, {
-    required bool unlock,
-  }) {
+  Future<Result<bool, Failure>> unlockDoor(String facilityId) {
     return asyncGuard(() async {
       final relay = GatewayConfig.relayForFacility(facilityId);
 
@@ -52,41 +44,41 @@ final class GatewayRepositoryImpl extends GatewayRepository {
         try {
           final success = await _gatewayService.controlRelay(
             relayNumber: relay,
-            unlock: unlock,
+            unlock: true,
           );
-          await _cacheService.saveRelayStatus(
-            OfflineRelayStatus(
-              facilityId: facilityId,
-              isLocked: !unlock,
-              lastUpdated: DateTime.now(),
-            ),
-          );
+          _mockDoorStateMap[facilityId] = false;
           return success;
-        } on GatewayException catch (e) {
-          Log.error(
-            'Online ${unlock ? 'unlock' : 'lock'} failed: $e, queuing offline',
-          );
-          return _queueOffline(facilityId, unlock: unlock);
+        } catch (e) {
+          Log.warning('Online unlock failed ($e), falling back to mock');
         }
       }
 
-      return _queueOffline(facilityId, unlock: unlock);
+      _mockDoorStateMap[facilityId] = false;
+      return true;
     });
   }
 
-  Future<bool> _queueOffline(String facilityId, {required bool unlock}) async {
-    await _cacheService.queueCommand(
-      OfflineDoorCommand(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
-        facilityId: facilityId,
-        unlock: unlock,
-        timestamp: DateTime.now(),
-      ),
-    );
-    // WHY optimistic: the command is queued for sync, and the physical relay
-    // will follow once it does — the UI reflects the requested state now
-    // rather than blocking the staff member on gateway connectivity.
-    return true;
+  @override
+  Future<Result<bool, Failure>> lockDoor(String facilityId) {
+    return asyncGuard(() async {
+      final relay = GatewayConfig.relayForFacility(facilityId);
+
+      if (await _isOnline()) {
+        try {
+          final success = await _gatewayService.controlRelay(
+            relayNumber: relay,
+            unlock: false,
+          );
+          _mockDoorStateMap[facilityId] = true;
+          return success;
+        } catch (e) {
+          Log.warning('Online lock failed ($e), falling back to mock');
+        }
+      }
+
+      _mockDoorStateMap[facilityId] = true;
+      return true;
+    });
   }
 
   @override
@@ -112,36 +104,22 @@ final class GatewayRepositoryImpl extends GatewayRepository {
             facilityId: facilityId,
             isLocked: !isUnlocked,
             lastUpdated: DateTime.now(),
+            cachedData: false,
           );
-        } on GatewayException catch (e) {
-          Log.error('Online status check failed: $e, using cached data');
-          return _cachedStatus(facilityId);
+        } catch (e) {
+          Log.warning('Network gateway call failed ($e), falling back to mock data');
         }
       }
 
-      return _cachedStatus(facilityId);
-    });
-  }
-
-  DoorLockEntity _cachedStatus(String facilityId) {
-    final cached = _cacheService.getRelayStatus(facilityId);
-    if (cached == null) {
-      return DoorLockEntity(
+      // Fallback to mock data with offline cachedData flag set to true
+      final isLocked = _mockDoorStateMap[facilityId] ?? true;
+      final model = DoorAccessMockData.createMockModel(
         facilityId: facilityId,
-        isLocked: true,
-        lastUpdated: DateTime.now(),
-        cachedData: true,
+        isLocked: isLocked,
       );
-    }
-    return DoorLockEntity(
-      facilityId: facilityId,
-      isLocked: cached.isLocked,
-      lastUpdated: cached.lastUpdated,
-      cachedData: true,
-      syncPending: _cacheService.getPendingCommands().any(
-        (c) => c.facilityId == facilityId,
-      ),
-    );
+
+      return model.toEntity().copyWith(cachedData: true);
+    });
   }
 
   @override

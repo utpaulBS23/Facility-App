@@ -9,7 +9,6 @@ class SecurityService {
   final FlutterSecureStorage _secureStorage;
   static const String _tokenKey = 'auth_token';
   static const String _refreshTokenKey = 'refresh_token';
-  static const String _deviceIdKey = 'device_id';
 
   SecurityService({FlutterSecureStorage? storage})
       : _secureStorage = storage ?? const FlutterSecureStorage();
@@ -18,9 +17,9 @@ class SecurityService {
   Future<void> saveToken(String token) async {
     try {
       await _secureStorage.write(key: _tokenKey, value: token);
-      log('Token saved securely');
+      Log.info('Token saved securely');
     } catch (e) {
-      log('Failed to save token: $e');
+      Log.error('Failed to save token: $e');
       rethrow;
     }
   }
@@ -30,7 +29,7 @@ class SecurityService {
     try {
       return await _secureStorage.read(key: _tokenKey);
     } catch (e) {
-      log('Failed to read token: $e');
+      Log.error('Failed to read token: $e');
       return null;
     }
   }
@@ -39,9 +38,9 @@ class SecurityService {
   Future<void> saveRefreshToken(String token) async {
     try {
       await _secureStorage.write(key: _refreshTokenKey, value: token);
-      log('Refresh token saved securely');
+      Log.info('Refresh token saved securely');
     } catch (e) {
-      log('Failed to save refresh token: $e');
+      Log.error('Failed to save refresh token: $e');
       rethrow;
     }
   }
@@ -51,7 +50,7 @@ class SecurityService {
     try {
       return await _secureStorage.read(key: _refreshTokenKey);
     } catch (e) {
-      log('Failed to read refresh token: $e');
+      Log.error('Failed to read refresh token: $e');
       return null;
     }
   }
@@ -63,9 +62,9 @@ class SecurityService {
         _secureStorage.delete(key: _tokenKey),
         _secureStorage.delete(key: _refreshTokenKey),
       ]);
-      log('All secure data cleared');
+      Log.info('All secure data cleared');
     } catch (e) {
-      log('Failed to clear secure data: $e');
+      Log.error('Failed to clear secure data: $e');
       rethrow;
     }
   }
@@ -90,10 +89,10 @@ class SecurityService {
           .convert(utf8.encode(payload))
           .toString();
 
-      log('Signature generated for $method $path');
+      Log.info('Signature generated for $method $path');
       return signature;
     } catch (e) {
-      log('Failed to generate signature: $e');
+      Log.error('Failed to generate signature: $e');
       rethrow;
     }
   }
@@ -115,7 +114,7 @@ class SecurityService {
 
       return signature == expectedSignature;
     } catch (e) {
-      log('Failed to verify signature: $e');
+      Log.error('Failed to verify signature: $e');
       return false;
     }
   }
@@ -127,7 +126,7 @@ class SecurityService {
       // For now, base64 encode (not secure, replace with real encryption)
       return base64.encode(utf8.encode(data));
     } catch (e) {
-      log('Failed to encrypt data: $e');
+      Log.error('Failed to encrypt data: $e');
       rethrow;
     }
   }
@@ -139,7 +138,7 @@ class SecurityService {
       // For now, base64 decode (not secure, replace with real decryption)
       return utf8.decode(base64.decode(encrypted));
     } catch (e) {
-      log('Failed to decrypt data: $e');
+      Log.error('Failed to decrypt data: $e');
       rethrow;
     }
   }
@@ -177,7 +176,7 @@ class SecurityService {
     // Add certificate pinning if provided
     if (certificatePins != null && certificatePins.isNotEmpty) {
       // TODO: Implement certificate pinning validation
-      log('Certificate pinning configured');
+      Log.info('Certificate pinning configured');
     }
 
     return dio;
@@ -227,7 +226,7 @@ class _SecurityHeaderInterceptor extends Interceptor {
 
       handler.next(options);
     } catch (e) {
-      log('Security header error: $e');
+      Log.error('Security header error: $e');
       handler.next(options);
     }
   }
@@ -251,7 +250,7 @@ class _SecurityHeaderInterceptor extends Interceptor {
         );
 
         if (!isValid) {
-          log('Response signature verification failed');
+          Log.error('Response signature verification failed');
           handler.reject(
             DioException(
               requestOptions: response.requestOptions,
@@ -266,7 +265,7 @@ class _SecurityHeaderInterceptor extends Interceptor {
 
       handler.next(response);
     } catch (e) {
-      log('Response verification error: $e');
+      Log.error('Response verification error: $e');
       handler.next(response);
     }
   }
@@ -290,7 +289,7 @@ class CertificatePinningInterceptor extends Interceptor {
     // 3. Compare with pinned hashes
     // 4. Reject if not matching
 
-    log('Certificate pinning check: ${options.uri.host}');
+    Log.info('Certificate pinning check: ${options.uri.host}');
     handler.next(options);
   }
 }

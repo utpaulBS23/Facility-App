@@ -872,6 +872,7 @@
   "purposeLabel": "Purpose",
   "office": "Office",
   "doorControl": "Door Control",
+  "offline": "Offline",
   "primaryDevice": "Primary Device",
   "currentDoorStatus": "Current Door Status",
   "doorStatusOpen": "OPEN",

@@ -159,7 +159,10 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _PrimaryDeviceCard(facility: widget.facility),
+                _PrimaryDeviceCard(
+                  facility: widget.facility,
+                  isOffline: status.cachedData,
+                ),
                 Gap(dimensions.spacing.s16),
                 _DoorStatusCard(isLocked: status.isLocked),
                 Gap(dimensions.spacing.s16),

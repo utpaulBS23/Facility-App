@@ -1,7 +1,7 @@
 part of '../view/menu_page.dart';
 
-class _DoorControlListItem extends StatelessWidget {
-  const _DoorControlListItem({required this.onTap});
+class _DoorControlTile extends StatelessWidget {
+  const _DoorControlTile({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -22,8 +22,8 @@ class _DoorControlListItem extends StatelessWidget {
           children: [
             Icon(
               Icons.sensor_door_outlined,
-              color: context.color.text.primary,
               size: context.spacing.s20,
+              color: context.color.text.secondary,
             ),
             Gap(context.spacing.s12),
             Expanded(
@@ -36,7 +36,7 @@ class _DoorControlListItem extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              color: context.color.text.secondary,
+              color: context.color.text.muted,
               size: context.spacing.s20,
             ),
           ],

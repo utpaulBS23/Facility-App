@@ -817,6 +817,8 @@
   "purposeLabel": "উদ্দেশ্য",
   "office": "অফিস",
   "doorControl": "দরজা নিয়ন্ত্রণ",
+  "offline": "অফলাইন",
+  "offline": "অফলাইন",
   "primaryDevice": "প্রাইমারি ডিভাইস",
   "currentDoorStatus": "বর্তমান দরজার অবস্থা",
   "doorStatusOpen": "খোলা",

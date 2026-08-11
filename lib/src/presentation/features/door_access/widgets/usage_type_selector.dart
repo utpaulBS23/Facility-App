@@ -28,7 +28,6 @@ class _OptionCard extends StatelessWidget {
     this.subtitle,
     required this.isSelected,
     required this.onTap,
-    this.badge,
   });
 
   final IconData icon;
@@ -36,13 +35,12 @@ class _OptionCard extends StatelessWidget {
   final String? subtitle;
   final bool isSelected;
   final VoidCallback? onTap;
-  final String? badge;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.color;
     final dimensions = context.dimensions;
-    final accent = isSelected ? colors.text.primary : colors.text.secondary;
+    final accent = isSelected ? colors.primary : colors.text.secondary;
 
     return GestureDetector(
       onTap: onTap,
@@ -52,74 +50,53 @@ class _OptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.onPrimary,
           border: Border.all(
-            color: isSelected ? colors.text.primary : colors.borderSubtle,
+            color: isSelected ? colors.primary : colors.borderSubtle,
             width: isSelected ? 1.5 : 1,
           ),
           borderRadius: BorderRadius.circular(dimensions.radius.r12),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: dimensions.spacing.s40,
-                  height: dimensions.spacing.s40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isSelected ? colors.text.primary : colors.subtle,
-                  ),
-                  child: Icon(
-                    icon,
-                    size: dimensions.spacing.s20,
-                    color: isSelected
-                        ? colors.onPrimary
-                        : colors.text.secondary,
-                  ),
-                ),
-                if (badge != null)
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: dimensions.spacing.s8,
-                      vertical: dimensions.spacing.s2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected ? colors.text.primary : colors.subtle,
-                      borderRadius: BorderRadius.circular(dimensions.radius.r6),
-                    ),
-                    child: Text(
-                      badge!,
-                      style: context.textStyle.bodySmall.copyWith(
-                        color: isSelected
-                            ? colors.onPrimary
-                            : colors.text.secondary,
-                        fontWeight: TextWeight.semibold,
-                      ),
-                    ),
-                  )
-                else if (isSelected)
-                  Icon(
-                    Icons.check_circle_rounded,
-                    size: dimensions.spacing.s20,
-                    color: accent,
-                  ),
-              ],
+            Container(
+              width: dimensions.spacing.s40,
+              height: dimensions.spacing.s40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? colors.primary : colors.subtle,
+              ),
+              child: Icon(
+                icon,
+                size: dimensions.spacing.s20,
+                color: isSelected ? colors.onPrimary : colors.text.secondary,
+              ),
             ),
-            Gap(dimensions.spacing.s12),
+            Gap(dimensions.spacing.s8),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: context.textStyle.labelLarge.copyWith(
                 color: colors.text.primary,
+                fontWeight: isSelected ? TextWeight.bold : TextWeight.medium,
               ),
             ),
             if (subtitle != null && subtitle!.isNotEmpty) ...[
               Gap(dimensions.spacing.s2),
               Text(
                 subtitle!,
+                textAlign: TextAlign.center,
                 style: context.textStyle.bodySmall.copyWith(
                   color: colors.text.secondary,
                 ),
+              ),
+            ],
+            if (isSelected) ...[
+              Gap(dimensions.spacing.s6),
+              Icon(
+                Icons.check_circle_rounded,
+                size: dimensions.spacing.s16,
+                color: accent,
               ),
             ],
           ],
@@ -151,33 +128,35 @@ class _UsageTypeSelector extends StatelessWidget {
           ),
         ),
         Gap(dimensions.spacing.s12),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: _OptionCard(
-                icon: Icons.person_outline,
-                title: context.locale.personal,
-                subtitle: context.locale.staffUse,
-                isSelected: selected == _UsageType.personal,
-                onTap: onSelect == null
-                    ? null
-                    : () => onSelect!(_UsageType.personal),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _OptionCard(
+                  icon: Icons.person_outline,
+                  title: context.locale.personal,
+                  subtitle: context.locale.staffUse,
+                  isSelected: selected == _UsageType.personal,
+                  onTap: onSelect == null
+                      ? null
+                      : () => onSelect!(_UsageType.personal),
+                ),
               ),
-            ),
-            Gap(dimensions.spacing.s12),
-            Expanded(
-              child: _OptionCard(
-                icon: Icons.groups_outlined,
-                title: context.locale.customer,
-                subtitle: context.locale.publicUse,
-                isSelected: selected == _UsageType.customer,
-                onTap: onSelect == null
-                    ? null
-                    : () => onSelect!(_UsageType.customer),
+              Gap(dimensions.spacing.s12),
+              Expanded(
+                child: _OptionCard(
+                  icon: Icons.groups_outlined,
+                  title: context.locale.customer,
+                  subtitle: context.locale.publicUse,
+                  isSelected: selected == _UsageType.customer,
+                  onTap: onSelect == null
+                      ? null
+                      : () => onSelect!(_UsageType.customer),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

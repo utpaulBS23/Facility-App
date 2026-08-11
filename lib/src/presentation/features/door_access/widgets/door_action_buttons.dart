@@ -19,84 +19,84 @@ class _DoorActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.color;
     final dimensions = context.dimensions;
 
+    // Use FilledButton for the primary action based on current lock state,
+    // and OutlinedButton for the secondary action.
     return Row(
       children: [
         Expanded(
-          child: _PillButton(
-            label: context.locale.unlockAction,
-            icon: Icons.lock_open_outlined,
-            color: colors.success,
-            enabled: canUnlock,
-            isLoading: isUnlockLoading,
-            onTap: onUnlock,
-          ),
+          child: canUnlock
+              ? FilledButton(
+                  onPressed: isUnlockLoading ? null : onUnlock,
+                  child: isUnlockLoading
+                      ? const LoadingIndicator()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lock_open_outlined,
+                              size: dimensions.spacing.s20,
+                            ),
+                            Gap(dimensions.spacing.s8),
+                            Text(context.locale.unlockAction),
+                          ],
+                        ),
+                )
+              : OutlinedButton(
+                  onPressed: canUnlock && !isUnlockLoading ? onUnlock : null,
+                  child: isUnlockLoading
+                      ? const LoadingIndicator()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lock_open_outlined,
+                              size: dimensions.spacing.s20,
+                            ),
+                            Gap(dimensions.spacing.s8),
+                            Text(context.locale.unlockAction),
+                          ],
+                        ),
+                ),
         ),
         Gap(dimensions.spacing.s12),
         Expanded(
-          child: _PillButton(
-            label: context.locale.lockAction,
-            icon: Icons.lock_outline,
-            color: colors.error,
-            enabled: canLock,
-            isLoading: isLockLoading,
-            onTap: onLock,
-          ),
+          child: canLock
+              ? FilledButton(
+                  onPressed: isLockLoading ? null : onLock,
+                  child: isLockLoading
+                      ? const LoadingIndicator()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lock_outline,
+                              size: dimensions.spacing.s20,
+                            ),
+                            Gap(dimensions.spacing.s8),
+                            Text(context.locale.lockAction),
+                          ],
+                        ),
+                )
+              : OutlinedButton(
+                  onPressed: canLock && !isLockLoading ? onLock : null,
+                  child: isLockLoading
+                      ? const LoadingIndicator()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lock_outline,
+                              size: dimensions.spacing.s20,
+                            ),
+                            Gap(dimensions.spacing.s8),
+                            Text(context.locale.lockAction),
+                          ],
+                        ),
+                ),
         ),
       ],
-    );
-  }
-}
-
-class _PillButton extends StatelessWidget {
-  const _PillButton({
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.enabled,
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final Color color;
-  final bool enabled;
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.color;
-    final dimensions = context.dimensions;
-
-    return FilledButton(
-      onPressed: enabled ? onTap : null,
-      style: FilledButton.styleFrom(
-        backgroundColor: color,
-        disabledBackgroundColor: colors.subtle,
-        foregroundColor: colors.onPrimary,
-        disabledForegroundColor: colors.disabled,
-        padding: EdgeInsets.symmetric(vertical: dimensions.padding.p16),
-        shape: const StadiumBorder(),
-      ),
-      child: isLoading
-          ? const LoadingIndicator()
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: dimensions.spacing.s20),
-                Gap(dimensions.spacing.s8),
-                Text(
-                  label,
-                  style: context.textStyle.labelLarge.copyWith(
-                    fontWeight: TextWeight.bold,
-                  ),
-                ),
-              ],
-            ),
     );
   }
 }
