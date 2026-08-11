@@ -49,3 +49,6 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin(Ref ref) {
 FirebaseMessaging firebaseMessaging(Ref ref) {
   return FirebaseMessaging.instance;
 }
+
+@Riverpod(keepAlive: true)
+Connectivity connectivity(Ref ref) => Connectivity();
