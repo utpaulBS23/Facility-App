@@ -776,4 +776,17 @@ UpdateProfileUseCase updateProfileUseCase(Ref ref) {
   return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
 }
 
+@riverpod
+UnlockDoorUseCase unlockDoorUseCase(Ref ref) {
+  return UnlockDoorUseCase(ref.read(gatewayRepositoryProvider));
+}
 
+@riverpod
+LockDoorUseCase lockDoorUseCase(Ref ref) {
+  return LockDoorUseCase(ref.read(gatewayRepositoryProvider));
+}
+
+@riverpod
+GetDoorStatusUseCase getDoorStatusUseCase(Ref ref) {
+  return GetDoorStatusUseCase(ref.read(gatewayRepositoryProvider));
+}

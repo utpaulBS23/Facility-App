@@ -74,4 +74,5 @@ class Routes {
   static const String changePassword = '/change-password';
   static const String passwordReset = '/password-reset';
   static const String otpVerification = '/otp-verification';
+  static const String doorControl = '/door-control';
 }
