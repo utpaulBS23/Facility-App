@@ -343,3 +343,78 @@ SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
     ref.read(authenticationRepositoryProvider),
   );
 }
+
+/// Leave Management UseCases
+
+@riverpod
+GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
+  return GetLeaveBalancesUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
+  return RequestLeaveUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
+  return GetMyLeavesUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
+  return GetLeaveRequestDetailsUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
+  return CancelLeaveUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
+  return GetLeaveAttendantsUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
+  return GetLeaveApprovalsUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+ApproveLeaveUseCase approveLeaveUseCase(Ref ref) {
+  return ApproveLeaveUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
+  return RejectLeaveUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+

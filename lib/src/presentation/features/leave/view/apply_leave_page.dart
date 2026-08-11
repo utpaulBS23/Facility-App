@@ -1,24 +1,25 @@
-import 'package:facility_management_app/src/presentation/core/widgets/app_text_field.dart';
+import '../../../../core/base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/base/result.dart';
-import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/create_leave_request_entity.dart';
+import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
-import '../../../core/utils/date_formatter.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/text/typography.dart';
-
-part '../widgets/apply_leave_body.dart';
-part '../widgets/apply_leave_shift_selector.dart';
-part '../widgets/apply_leave_summary_card.dart';
-part '../widgets/select_shift_body.dart';
-part 'select_shift_page.dart';
+import '../riverpod/apply_leave_provider/selected_leave_attendant_provider.dart';
+import '../riverpod/apply_leave_provider/selected_leave_policy_id_provider.dart';
+import '../riverpod/apply_leave_provider/selected_shift_provider.dart';
+import '../riverpod/apply_leave_provider/submit_leave_request_provider.dart';
+import '../widgets/apply_leave_body.dart';
+import '../widgets/apply_leave_submit_button.dart';
+import '../widgets/apply_leave_type_switch.dart';
 
 class ApplyLeavePage extends ConsumerStatefulWidget {
   const ApplyLeavePage({super.key});
@@ -28,9 +29,19 @@ class ApplyLeavePage extends ConsumerStatefulWidget {
 }
 
 class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
-  ShiftEntity? _selectedShift;
-  String? _selectedLeaveType;
   final _reasonController = TextEditingController();
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
+  LeaveApplicationType _leaveApplicationType = LeaveApplicationType.own;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(
+      submitLeaveRequestProvider,
+      _onLeaveSubmissionStateChanged,
+    );
+  }
 
   @override
   void dispose() {
@@ -38,33 +49,132 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
     super.dispose();
   }
 
-  Future<void> _onSelectShiftTap() async {
-    // WHY: leave owns its own fetch instead of reading the shift tab's
-    // provider. That provider is no longer populated for attendants (the tab
-    // moved to shift-slots), and reaching across features for cached state
-    // broke silently when the other feature changed.
-    final result = await ref
-        .read(getShiftsUseCaseProvider)
-        .call(date: DateFormat('yyyy-MM-dd').format(DateTime.now()));
-    final shifts = switch (result) {
-      Success(:final data) => data ?? const <ShiftEntity>[],
-      _ => const <ShiftEntity>[],
-    };
-    if (!mounted) return;
-    // WHY: go_router's pushNamed returns Future<T?> — pop(shift) on the
-    // destination page delivers the selected shift back here without needing
-    // a shared provider or a callback in extra.
-    final shift = await context.pushNamed<ShiftEntity>(
-      Routes.selectShift,
-      extra: shifts,
+  void _onLeaveApplicationTypeChanged(LeaveApplicationType type) {
+    setState(() {
+      _leaveApplicationType = type;
+      if (type == LeaveApplicationType.own) {
+        ref.read(selectedLeaveAttendantProvider.notifier).select(null);
+        ref.read(selectedShiftProvider.notifier).select(null);
+      }
+    });
+  }
+
+  void _onLeaveSubmissionStateChanged(AsyncValue? previous, AsyncValue next) {
+    next.whenOrNull(
+      data: (value) {
+        if (value == null || !mounted) {
+          return;
+        }
+
+        context.pushReplacementNamed(Routes.leaveSubmitted, extra: value);
+      },
+      error: (e, _) {
+        AppSnackBar.showError(
+          context,
+          switch (e) {
+            Failure(:final message) => message,
+            _ => context.locale.somethingWentWrong,
+          },
+        );
+      },
     );
-    if (shift != null && mounted) {
-      setState(() => _selectedShift = shift);
+  }
+
+  Future<void> _pickDate({
+    required DateTime initialDate,
+    required DateTime firstDate,
+    required ValueChanged<DateTime> onPicked,
+  }) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+
+    if (picked != null) {
+      onPicked(picked);
     }
   }
 
-  void _onSubmit() {
-    // TODO: submit leave request
+  Future<void> _onPickStartDate() async {
+    await _pickDate(
+      initialDate: _startDate,
+      firstDate: DateTime.now(),
+      onPicked: (picked) {
+        setState(() {
+          _startDate = picked;
+          if (_endDate.isBefore(picked)) {
+            _endDate = picked;
+          }
+        });
+        ref.read(selectedShiftProvider.notifier).select(null);
+      },
+    );
+  }
+
+  Future<void> _onPickEndDate() async {
+    final initialDate = _endDate.isBefore(_startDate) ? _startDate : _endDate;
+
+    await _pickDate(
+      initialDate: initialDate,
+      firstDate: _startDate,
+      onPicked: (picked) {
+        setState(() => _endDate = picked);
+        ref.read(selectedShiftProvider.notifier).select(null);
+      },
+    );
+  }
+
+  Future<void> _onSelectShift() async {
+    final date = DateFormat('yyyy-MM-dd').format(_startDate);
+    final selectedShift = await context.pushNamed<ShiftEntity>(
+      Routes.selectShift,
+      extra: date,
+    );
+
+    if (selectedShift != null) {
+      ref.read(selectedShiftProvider.notifier).select(selectedShift);
+    }
+  }
+
+  Future<void> _onSelectAttendant() async {
+    final selectedAttendant = await context.pushNamed<LeaveAttendantEntity>(
+      Routes.selectAttendant,
+    );
+
+    if (selectedAttendant != null) {
+      ref
+          .read(selectedLeaveAttendantProvider.notifier)
+          .select(selectedAttendant);
+    }
+  }
+
+  Future<void> _onSubmit() async {
+    final selectedLeavePolicyId = ref.read(selectedLeavePolicyIdProvider);
+
+    if (selectedLeavePolicyId == null) {
+      return;
+    }
+
+    final selectedAttendant = ref.read(selectedLeaveAttendantProvider);
+
+    final formatter = DateFormat('yyyy-MM-dd');
+    final reasonText = _reasonController.text.trim();
+    final createLeaveRequestParams = CreateLeaveRequestEntity(
+      leavePolicyId: selectedLeavePolicyId,
+      startDate: formatter.format(_startDate),
+      endDate: formatter.format(_endDate),
+      reason: reasonText.isNotEmpty ? reasonText : null,
+      attendantId: switch (_leaveApplicationType) {
+        LeaveApplicationType.onBehalf => selectedAttendant?.id,
+        LeaveApplicationType.own => null,
+      },
+    );
+
+    await ref
+        .read(submitLeaveRequestProvider.notifier)
+        .submit(createLeaveRequestParams);
   }
 
   @override
@@ -72,37 +182,27 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: context.pop,
-          child: Row(
-            children: [
-              Icon(
-                Icons.chevron_left_rounded,
-                color: context.color.primary,
-                size: 28,
-              ),
-              Text(
-                context.locale.back,
-                style: context.textStyle.labelXl.copyWith(
-                  color: context.color.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-        leadingWidth: 100,
+        leading: const AppBackButton(),
+        leadingWidth: AppBackButton.width,
         title: Headline2xlTinyText(context.locale.applyLeave),
         centerTitle: true,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: _ApplyLeaveBody(
-        selectedShift: _selectedShift,
-        selectedLeaveType: _selectedLeaveType,
+      body: ApplyLeaveBody(
+        leaveApplicationType: _leaveApplicationType,
+        onTypeChanged: _onLeaveApplicationTypeChanged,
+        onSelectAttendant: _onSelectAttendant,
+        startDate: _startDate,
+        endDate: _endDate,
+        onPickStartDate: _onPickStartDate,
+        onPickEndDate: _onPickEndDate,
+        onSelectShift: _onSelectShift,
         reasonController: _reasonController,
-        onSelectShiftTap: _onSelectShiftTap,
       ),
-      bottomNavigationBar: _SubmitBar(onTap: _onSubmit),
+      bottomNavigationBar: ApplyLeaveSubmitButton(
+        onTap: _onSubmit,
+      ),
     );
   }
 }

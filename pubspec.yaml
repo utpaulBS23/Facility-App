@@ -35,6 +35,8 @@ dependencies:
   dart_mappable:
   # Networking
   dio: ^5.8.0+1
+  #Shimmer
+  shimmer: ^3.0.0
   # Localization
   flutter_localizations:
     sdk: flutter
@@ -45,6 +47,8 @@ dependencies:
   pinput: ^6.0.2
   google_mlkit_face_detection: ^0.13.2
   device_info_plus: ^12.4.0
+
+  
 
 dev_dependencies:
   flutter_test:
