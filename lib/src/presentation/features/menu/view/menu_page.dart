@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/base/base.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
@@ -106,6 +107,13 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               },
             ),
           ),
+          Gap(spacing.s8),
+          _MenuItem(
+            icon: Icons.sensor_door_outlined,
+            title: context.locale.doorControl,
+            subtitle: context.locale.primaryDevice,
+            onTap: _onDoorControlTap,
+          ),
           const Spacer(),
           Padding(
             padding: EdgeInsets.fromLTRB(
@@ -128,7 +136,6 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               ),
             ),
           ),
-          Gap(spacing.s8),
         ],
       ),
     );

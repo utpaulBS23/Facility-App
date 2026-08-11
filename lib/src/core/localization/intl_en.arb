@@ -510,10 +510,10 @@
   "errorGeneric": "Something went wrong. Please try again.",
   "manager": "Manager",
   "owner": "Owner",
-  "pendingOwner": "Pending Owner"
-  "errorGeneric": "Something went wrong. Please try again.",
+  "pendingOwner": "Pending Owner",
 
   "doorControl": "Door Control",
+  "offline": "Offline",
   "primaryDevice": "Primary Device",
   "currentDoorStatus": "Current Door Status",
   "doorStatusOpen": "OPEN",

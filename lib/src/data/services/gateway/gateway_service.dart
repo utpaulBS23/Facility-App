@@ -11,7 +11,7 @@ class GatewayService {
   final String baseUrl;
   final Dio _dio;
 
-  static const int _timeoutSeconds = 10;
+  static const int _timeoutSeconds = 2;
 
   static Dio _createDio(String baseUrl) {
     final dio = Dio(
@@ -157,8 +157,7 @@ class _RetryInterceptor extends Interceptor {
   }
 
   bool _shouldRetry(DioException err) {
-    return err.type == DioExceptionType.connectionTimeout ||
-        err.type == DioExceptionType.receiveTimeout ||
+    return err.type == DioExceptionType.receiveTimeout ||
         err.type == DioExceptionType.sendTimeout ||
         err.response?.statusCode == 503 ||
         err.response?.statusCode == 504;
