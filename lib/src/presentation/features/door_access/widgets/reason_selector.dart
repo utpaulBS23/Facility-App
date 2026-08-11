@@ -35,7 +35,7 @@ class _ReasonSelector extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           crossAxisSpacing: dimensions.spacing.s12,
           mainAxisSpacing: dimensions.spacing.s12,
-          childAspectRatio: 1.7,
+          childAspectRatio: 1.35,
           children: [
             for (final reason in _Reason.values)
               _OptionCard(
