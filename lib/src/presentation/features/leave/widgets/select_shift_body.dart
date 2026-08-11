@@ -1,4 +1,4 @@
-part of '../view/apply_leave_page.dart';
+part of '../view/select_shift_page.dart';
 
 class _SelectShiftBody extends StatelessWidget {
   const _SelectShiftBody({required this.shifts});
@@ -25,14 +25,12 @@ class _SelectShiftBody extends StatelessWidget {
 }
 
 class _SelectableShiftCard extends StatelessWidget {
-  const _SelectableShiftCard({
-    required this.shift,
-    required this.onTap,
-  });
+  const _SelectableShiftCard({required this.shift, required this.onTap});
 
   final ShiftEntity shift;
   final VoidCallback onTap;
 
+  // need shift enum
   bool get _isInProgress => shift.status == 'in_progress';
 
   Color _dotColor(BuildContext context) =>
@@ -64,24 +62,9 @@ class _SelectableShiftCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: _dotColor(context),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      Gap(spacing.s4),
-                      Text(
-                        _statusLabel(context),
-                        style: context.textStyle.bodySmall.copyWith(
-                          color: context.color.text.secondary,
-                        ),
-                      ),
-                    ],
+                  StatusDotTag(
+                    label: _statusLabel(context),
+                    dotColor: _dotColor(context),
                   ),
                   Gap(spacing.s8),
                   Text(
@@ -95,7 +78,7 @@ class _SelectableShiftCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.calendar_today_outlined,
-                        size: 12,
+                        size: spacing.s12,
                         color: context.color.text.secondary,
                       ),
                       Gap(spacing.s4),
@@ -108,7 +91,7 @@ class _SelectableShiftCard extends StatelessWidget {
                       Gap(spacing.s8),
                       Icon(
                         Icons.access_time_outlined,
-                        size: 12,
+                        size: spacing.s12,
                         color: context.color.text.secondary,
                       ),
                       Gap(spacing.s4),
@@ -125,7 +108,7 @@ class _SelectableShiftCard extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              size: 24,
+              size: spacing.s24,
               color: context.color.primary,
             ),
           ],

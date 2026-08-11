@@ -124,4 +124,21 @@ class Endpoints {
   static const String completeIssue =
       '/partners/{partnerId}/issues/{issueId}/complete';
   static const String taskMedia = '/partners/{partnerId}/tasks/{taskId}/media';
+
+  /// Leave Management
+  static const String leavePolicies = '/partners/{partnerId}/leave-policies';
+  static const String leaveBalances = '/partners/{partnerId}/leave-balances';
+  static const String requestLeave = '/partners/{partnerId}/request-leave';
+  static const String myLeaves = '/partners/{partnerId}/my-leaves';
+  static const String leaveRequestDetails =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}';
+  static const String cancelLeave =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}/cancel';
+  static const String leaveAttendants =
+      '/partners/{partnerId}/leave-attendants';
+  static const String leaveApprovals = '/partners/{partnerId}/leave-approvals';
+  static const String approveLeave =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}/approve';
+  static const String rejectLeave =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
 }

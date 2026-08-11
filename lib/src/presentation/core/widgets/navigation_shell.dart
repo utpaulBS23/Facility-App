@@ -1,4 +1,4 @@
-import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
+import 'package:facility_management_app/src/presentation/features/menu/view/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,6 +6,7 @@ import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
+import '../theme/theme.dart';
 import 'permission_gate.dart';
 
 class NavigationShell extends StatelessWidget {
@@ -13,20 +14,30 @@ class NavigationShell extends StatelessWidget {
 
   final StatefulNavigationShell statefulNavigationShell;
 
-  void _onTabSelected({
+  static const _menuBranchIndex = 4;
+
+  void _onTabSelected(
+    BuildContext scaffoldContext, {
     required List<ShellTabConfig> visibleTabs,
     required int index,
   }) {
-    statefulNavigationShell.goBranch(visibleTabs[index].branchIndex);
+    final tab = visibleTabs[index];
+    if (tab.branchIndex == _menuBranchIndex) {
+      Scaffold.of(scaffoldContext).openDrawer();
+
+      return;
+    }
+
+    statefulNavigationShell.goBranch(tab.branchIndex);
   }
 
   SvgGenImage _assetFor(int branchIndex) => switch (branchIndex) {
-    0 => Assets.icons.shift,
-    1 => Assets.icons.attendance,
-    2 => Assets.icons.visit,
-    3 => Assets.icons.task,
-    _ => Assets.icons.menu,
-  };
+        0 => Assets.icons.shift,
+        1 => Assets.icons.attendance,
+        2 => Assets.icons.visit,
+        3 => Assets.icons.task,
+        _ => Assets.icons.menu,
+      };
 
   String _labelFor(BuildContext context, int branchIndex) =>
       switch (branchIndex) {
@@ -44,22 +55,23 @@ class NavigationShell extends StatelessWidget {
   }) {
     final muted = context.color.text.muted;
     final primary = context.color.primary;
+    final spacing = context.dimensions.spacing;
 
     return BottomNavigationBarItem(
       label: label,
       icon: Padding(
-        padding: const EdgeInsets.all(6.0),
+        padding: EdgeInsets.all(spacing.s6),
         child: asset.svg(
-          width: 28,
-          height: 28,
+          width: spacing.s30,
+          height: spacing.s30,
           colorFilter: ColorFilter.mode(muted, BlendMode.srcIn),
         ),
       ),
       activeIcon: Padding(
-        padding: const EdgeInsets.all(6.0),
+        padding: EdgeInsets.all(spacing.s6),
         child: asset.svg(
-          width: 28,
-          height: 28,
+          width: spacing.s30,
+          height: spacing.s30,
           colorFilter: ColorFilter.mode(primary, BlendMode.srcIn),
         ),
       ),
@@ -84,26 +96,30 @@ class NavigationShell extends StatelessWidget {
 
     return Scaffold(
       body: statefulNavigationShell,
-      // WHY: BottomNavigationBar requires >=2 items; a user permitted a single
-      // tab gets no navbar at all.
+      drawer: const MenuPage(),
       bottomNavigationBar: visibleTabs.length < 2
           ? null
-          : BottomNavigationBar(
-              selectedItemColor: context.color.primary,
-              unselectedItemColor: context.color.text.muted,
-              unselectedLabelStyle: context.textStyle.labelMedium12,
-              selectedLabelStyle: context.textStyle.labelMedium12,
-              currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
-              onTap: (index) =>
-                  _onTabSelected(visibleTabs: visibleTabs, index: index),
-              items: [
-                for (final tab in visibleTabs)
-                  _navItem(
-                    context,
-                    asset: _assetFor(tab.branchIndex),
-                    label: _labelFor(context, tab.branchIndex),
-                  ),
-              ],
+          : Builder(
+              builder: (scaffoldContext) => BottomNavigationBar(
+                selectedItemColor: context.color.primary,
+                unselectedItemColor: context.color.text.muted,
+                unselectedLabelStyle: context.textStyle.labelMedium12,
+                selectedLabelStyle: context.textStyle.labelMedium12,
+                currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
+                onTap: (index) => _onTabSelected(
+                  scaffoldContext,
+                  visibleTabs: visibleTabs,
+                  index: index,
+                ),
+                items: [
+                  for (final tab in visibleTabs)
+                    _navItem(
+                      context,
+                      asset: _assetFor(tab.branchIndex),
+                      label: _labelFor(context, tab.branchIndex),
+                    ),
+                ],
+              ),
             ),
     );
   }
