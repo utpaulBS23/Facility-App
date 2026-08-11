@@ -98,3 +98,12 @@ VisitRepository visitRepository(Ref ref) {
 LeaveRepository leaveRepository(Ref ref) {
   return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+GatewayRepository gatewayRepository(Ref ref) {
+  return GatewayRepositoryImpl(
+    ref.read(gatewayServiceProvider),
+    ref.read(offlineCacheServiceProvider),
+    ref.read(connectivityProvider),
+  );
+}

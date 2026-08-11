@@ -58,3 +58,13 @@ LocationSharingNotificationService locationSharingNotificationService(Ref ref) {
 DeviceInfoService deviceInfoService(Ref ref) {
   return DeviceInfoServiceImpl(DeviceInfoPlugin());
 }
+
+@Riverpod(keepAlive: true)
+GatewayService gatewayService(Ref ref) {
+  return GatewayService(baseUrl: GatewayConfig.baseUrl);
+}
+
+@Riverpod(keepAlive: true)
+OfflineCacheService offlineCacheService(Ref ref) {
+  return OfflineCacheService(ref.read(cacheServiceProvider));
+}

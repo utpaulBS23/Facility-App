@@ -7,6 +7,7 @@ import '../../../core/di/dependency_injection.dart';
 import '../../../core/extensions/riverpod_extensions.dart';
 import '../../../core/logger/log.dart';
 import '../../../domain/entities/attendance_entity.dart';
+import '../../../domain/entities/facility_entity.dart';
 import '../../../domain/entities/manual_attendance_entity.dart';
 import '../../../domain/entities/shift_entity.dart';
 import '../../../domain/entities/shift_slot_entity.dart';
@@ -20,6 +21,7 @@ import '../../features/authentication/forgot_password/view/reset_password_page.d
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
+import '../../features/door_access/view/door_control_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
 import '../../features/leave/view/leave_details_page.dart';
 import '../../features/leave/view/leave_requests_page.dart';
@@ -50,6 +52,7 @@ import 'shell_tab_config.dart';
 part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
 part 'parts/authentication_routes.dart';
+part 'parts/gateway_routes.dart';
 part 'parts/on_boarding_routes.dart';
 part 'parts/my_visits_routes.dart';
 part 'parts/task_routes.dart';
@@ -137,6 +140,7 @@ GoRouter goRouter(Ref ref) {
       ..._rosterRoutes(ref),
       ..._attendanceRoutes(ref),
       ..._myVisitsRoutes(ref),
+      ..._gatewayRoutes(ref),
       _shellRoutes(ref),
     ],
   );

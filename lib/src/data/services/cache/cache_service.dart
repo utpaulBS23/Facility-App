@@ -6,6 +6,8 @@ enum CacheKey {
   refreshToken,
   isOnBoardingCompleted,
   language,
+  doorLockStatusCache,
+  doorLockPendingCommands,
 }
 
 abstract class CacheService {

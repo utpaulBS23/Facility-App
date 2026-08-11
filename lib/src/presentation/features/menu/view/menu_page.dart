@@ -35,6 +35,27 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     );
   }
 
+  // WHY: staff have no facility picker yet — the door control screen is
+  // scoped to whichever facility this account can see first. Revisit once a
+  // real facility-assignment/gateway-directory concept exists.
+  Future<void> _onDoorControlTap() async {
+    final result = await ref.read(getFacilitiesUseCaseProvider).call();
+    if (!mounted) return;
+
+    switch (result) {
+      case Success(:final data) when data != null && data.facilities.isNotEmpty:
+        context.pushNamed(Routes.doorControl, extra: data.facilities.first);
+      case Error(:final error):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.localizedMessage(context))),
+        );
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.locale.noFacilityAssigned)),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(logoutProvider, (previous, next) {

@@ -35,3 +35,6 @@ Dio dio(Ref ref) {
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin(Ref ref) {
   return FlutterLocalNotificationsPlugin();
 }
+
+@Riverpod(keepAlive: true)
+Connectivity connectivity(Ref ref) => Connectivity();
