@@ -61,7 +61,7 @@ dev_dependencies:
     path: packages/flutter_guardian/
   riverpod_generator:
   riverpod_lint:
-  flutter_gen_runner:
+  # flutter_gen_runner:
   dart_mappable_builder:
   retrofit_generator: '>=8.0.0 <10.0.0'
   freezed: ^3.0.6
