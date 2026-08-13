@@ -48,14 +48,13 @@ class DeliveryEntity {
     required this.requestCode,
     required this.facilityId,
     required this.facilityName,
-    this.receivedBy,
-    this.receivedByName,
-    this.receiptPhotoUrl,
-    this.deliveryNotes,
+    required this.receivedByName,
+    required this.receiptPhotoUrl,
+    required this.deliveryNotes,
     required this.status,
     required this.itemCount,
     this.items = const [],
-    this.confirmedAt,
+    required this.confirmedAt,
     required this.createdAt,
   });
 
@@ -64,14 +63,13 @@ class DeliveryEntity {
   final String requestCode;
   final int facilityId;
   final String facilityName;
-  final int? receivedBy;
-  final String? receivedByName;
-  final String? receiptPhotoUrl;
-  final String? deliveryNotes;
+  final String receivedByName;
+  final String receiptPhotoUrl;
+  final String deliveryNotes;
   final DeliveryStatus status;
   final int itemCount;
   final List<DeliveryItemEntity> items;
-  final String? confirmedAt;
+  final String confirmedAt;
   final String createdAt;
 
   DeliveryEntity copyWith({List<DeliveryItemEntity>? items}) {
@@ -81,7 +79,6 @@ class DeliveryEntity {
       requestCode: requestCode,
       facilityId: facilityId,
       facilityName: facilityName,
-      receivedBy: receivedBy,
       receivedByName: receivedByName,
       receiptPhotoUrl: receiptPhotoUrl,
       deliveryNotes: deliveryNotes,
