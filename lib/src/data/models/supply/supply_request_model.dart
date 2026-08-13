@@ -71,7 +71,7 @@ class SupplyRequestModel with SupplyRequestModelMappable {
     required this.initiatedByRole,
     this.urgency,
     this.notes,
-    this.status,
+    required this.status,
     required this.itemCount,
     required this.totalValue,
     this.items = const [],
@@ -91,7 +91,7 @@ class SupplyRequestModel with SupplyRequestModelMappable {
   final String initiatedByRole;
   final String? urgency;
   final String? notes;
-  final String? status;
+  final String status;
   final int itemCount;
   final double totalValue;
   final List<SupplyRequestItemModel> items;
