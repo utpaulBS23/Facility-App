@@ -23,7 +23,7 @@ class DeliveryComplaintModel with DeliveryComplaintModelMappable {
     this.raisedBy,
     this.raisedByName,
     required this.reportedQtyReceived,
-    required this.reason,
+    this.reason,
     this.evidencePhotoUrl,
     required this.status,
     this.reviewedBySupervisor,
@@ -47,7 +47,7 @@ class DeliveryComplaintModel with DeliveryComplaintModelMappable {
   final int? raisedBy;
   final String? raisedByName;
   final double reportedQtyReceived;
-  final String reason;
+  final String? reason;
   final String? evidencePhotoUrl;
   final String status;
   final int? reviewedBySupervisor;
