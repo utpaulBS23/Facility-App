@@ -1,5 +1,6 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
+import '../../entities/supply/create_supply_request_item_entity.dart';
 import '../../entities/supply/supply_request_entity.dart';
 import '../../repositories/supply_repository.dart';
 import '../partner_use_case.dart';
@@ -15,7 +16,7 @@ final class ApproveSupplyRequestUseCase extends PartnerUseCase {
   Future<Result<SupplyRequestEntity, Failure>> call(
     int supplyRequestId, {
     String? notes,
-    List<SupplyRequestItemParams>? items,
+    List<CreateSupplyRequestItemEntity>? items,
   }) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.approveSupplyRequest(

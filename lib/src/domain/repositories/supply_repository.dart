@@ -3,6 +3,7 @@ import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
 import '../entities/common/paginated_list_entity.dart';
 import '../entities/supply/confirm_delivery_request_entity.dart';
+import '../entities/supply/create_supply_request_item_entity.dart';
 import '../entities/supply/delivery_complaint_entity.dart';
 import '../entities/supply/delivery_complaint_status.dart';
 import '../entities/supply/delivery_entity.dart';
@@ -12,18 +13,6 @@ import '../entities/supply/stock_allocation_entity.dart';
 import '../entities/supply/stock_item_entity.dart';
 import '../entities/supply/supply_request_entity.dart';
 import '../entities/supply/supply_request_status.dart';
-
-class SupplyRequestItemParams {
-  const SupplyRequestItemParams({
-    required this.stockItemId,
-    required this.qtyRequested,
-    this.unitPrice,
-  });
-
-  final int stockItemId;
-  final double qtyRequested;
-  final double? unitPrice;
-}
 
 abstract base class SupplyRepository extends Repository {
   Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> getItemCatalog({
@@ -56,14 +45,14 @@ abstract base class SupplyRepository extends Repository {
     required int facilityId,
     SupplyUrgency? urgency,
     String? notes,
-    required List<SupplyRequestItemParams> items,
+    required List<CreateSupplyRequestItemEntity> items,
   });
 
   Future<Result<SupplyRequestEntity, Failure>> approveSupplyRequest(
     int partnerId,
     int supplyRequestId, {
     String? notes,
-    List<SupplyRequestItemParams>? items,
+    List<CreateSupplyRequestItemEntity>? items,
   });
 
   Future<Result<SupplyRequestEntity, Failure>> rejectSupplyRequest(
