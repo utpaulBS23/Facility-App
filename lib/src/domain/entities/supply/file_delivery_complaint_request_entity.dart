@@ -4,11 +4,11 @@ class FileDeliveryComplaintRequestEntity {
     required this.deliveryItemId,
     required this.reportedQtyReceived,
     required this.reason,
-    this.evidencePhotoUrl,
+    required this.evidencePhotoUrl,
   });
 
   final int deliveryItemId;
   final double reportedQtyReceived;
   final String reason;
-  final String? evidencePhotoUrl;
+  final String evidencePhotoUrl;
 }

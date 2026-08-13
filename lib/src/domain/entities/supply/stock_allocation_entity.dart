@@ -4,13 +4,10 @@ class StockAllocationEntity {
     required this.allocationCode,
     required this.facilityId,
     required this.facilityName,
-    this.allocatedBy,
-    this.allocatedByName,
-    this.sourceRequestId,
-    this.sourceRequestCode,
-    this.notes,
+    required this.allocatedByName,
+    required this.sourceRequestCode,
+    required this.notes,
     required this.items,
-    required this.totalValue,
     required this.allocatedAt,
   });
 
@@ -18,13 +15,10 @@ class StockAllocationEntity {
   final String allocationCode;
   final int facilityId;
   final String facilityName;
-  final int? allocatedBy;
-  final String? allocatedByName;
-  final int? sourceRequestId;
-  final String? sourceRequestCode;
-  final String? notes;
+  final String allocatedByName;
+  final String sourceRequestCode;
+  final String notes;
   final List<StockAllocationItemEntity> items;
-  final double totalValue;
   final DateTime allocatedAt;
 }
 
@@ -36,8 +30,6 @@ class StockAllocationItemEntity {
     required this.itemName,
     required this.unit,
     required this.qty,
-    required this.unitPrice,
-    required this.lineTotal,
   });
 
   final int id;
@@ -46,6 +38,4 @@ class StockAllocationItemEntity {
   final String itemName;
   final String unit;
   final double qty;
-  final double unitPrice;
-  final double lineTotal;
 }

@@ -6,13 +6,13 @@
 class ConfirmDeliveryRequestEntity {
   const ConfirmDeliveryRequestEntity({
     required this.items,
-    this.receiptPhotoUrl,
-    this.deliveryNotes,
+    required this.receiptPhotoUrl,
+    required this.deliveryNotes,
   });
 
   final List<ConfirmDeliveryItem> items;
-  final String? receiptPhotoUrl;
-  final String? deliveryNotes;
+  final String receiptPhotoUrl;
+  final String deliveryNotes;
 }
 
 class ConfirmDeliveryItem {
