@@ -10,33 +10,33 @@ enum SupplyRequestStatus {
 
   static SupplyRequestStatus fromWireString(String? raw) {
     return switch (raw?.toLowerCase()) {
-      'pending_supervisor' || 'pending' => SupplyRequestStatus.pendingSupervisor,
+      'pending_supervisor' || 'pending' => .pendingSupervisor,
       'pending_operation_manager' ||
       'pending_manager' =>
-        SupplyRequestStatus.pendingOperationManager,
+        .pendingOperationManager,
       'operation_manager_approved' ||
       'approved' =>
-        SupplyRequestStatus.operationManagerApproved,
-      'in_delivery' || 'dispatched' => SupplyRequestStatus.inDelivery,
-      'delivered' => SupplyRequestStatus.delivered,
-      'rejected' => SupplyRequestStatus.rejected,
-      'completed' => SupplyRequestStatus.completed,
-      _ => SupplyRequestStatus.unknown,
+        .operationManagerApproved,
+      'in_delivery' || 'dispatched' => .inDelivery,
+      'delivered' => .delivered,
+      'rejected' => .rejected,
+      'completed' => .completed,
+      _ => .unknown,
     };
   }
 
   String toWireString() {
     return switch (this) {
-      SupplyRequestStatus.pendingSupervisor => 'pending_supervisor',
-      SupplyRequestStatus.pendingOperationManager =>
+      .pendingSupervisor => 'pending_supervisor',
+      .pendingOperationManager =>
         'pending_operation_manager',
-      SupplyRequestStatus.operationManagerApproved =>
+      .operationManagerApproved =>
         'operation_manager_approved',
-      SupplyRequestStatus.inDelivery => 'in_delivery',
-      SupplyRequestStatus.delivered => 'delivered',
-      SupplyRequestStatus.rejected => 'rejected',
-      SupplyRequestStatus.completed => 'completed',
-      SupplyRequestStatus.unknown => 'unknown',
+      .inDelivery => 'in_delivery',
+      .delivered => 'delivered',
+      .rejected => 'rejected',
+      .completed => 'completed',
+      .unknown => 'unknown',
     };
   }
 }
@@ -49,20 +49,20 @@ enum SupplyUrgency {
 
   static SupplyUrgency fromWireString(String? raw) {
     return switch (raw?.toLowerCase()) {
-      'low' => SupplyUrgency.low,
-      'normal' => SupplyUrgency.normal,
-      'high' => SupplyUrgency.high,
-      'urgent' => SupplyUrgency.urgent,
-      _ => SupplyUrgency.normal,
+      'low' => .low,
+      'normal' => .normal,
+      'high' => .high,
+      'urgent' => .urgent,
+      _ => .normal,
     };
   }
 
   String toWireString() {
     return switch (this) {
-      SupplyUrgency.low => 'low',
-      SupplyUrgency.normal => 'normal',
-      SupplyUrgency.high => 'high',
-      SupplyUrgency.urgent => 'urgent',
+      .low => 'low',
+      .normal => 'normal',
+      .high => 'high',
+      .urgent => 'urgent',
     };
   }
 }
