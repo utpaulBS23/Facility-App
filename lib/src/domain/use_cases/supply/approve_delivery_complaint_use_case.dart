@@ -1,14 +1,12 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
-import '../../entities/supply/approve_delivery_complaint_request_entity.dart';
 import '../../entities/supply/delivery_complaint_entity.dart';
+import '../../entities/supply/supply_request_payloads.dart';
 import '../../repositories/supply_repository.dart';
-import '../partner_use_case.dart';
 
-final class ApproveDeliveryComplaintUseCase extends PartnerUseCase {
+final class ApproveDeliveryComplaintUseCase {
   ApproveDeliveryComplaintUseCase({
     required this.supplyRepository,
-    required super.authRepository,
   });
 
   final SupplyRepository supplyRepository;
@@ -16,11 +14,7 @@ final class ApproveDeliveryComplaintUseCase extends PartnerUseCase {
   Future<Result<DeliveryComplaintEntity, Failure>> call(
     ApproveDeliveryComplaintRequestEntity request,
   ) async {
-    final partnerId = getPartnerId();
-    final result = await supplyRepository.approveDeliveryComplaint(
-      partnerId,
-      request,
-    );
+    final result = await supplyRepository.approveDeliveryComplaint(request);
 
     return switch (result) {
       Success(:final data) => Success(data: data),
