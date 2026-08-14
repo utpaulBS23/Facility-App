@@ -69,4 +69,18 @@ List<RouteBase> _stockRoutes(Ref ref) => [
           );
         },
       ),
+      GoRoute(
+        path: Routes.stockAveraging,
+        name: Routes.stockAveraging,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: StockAveragingPage(),
+        ),
+      ),
+      GoRoute(
+        path: Routes.stockAveragingDetails,
+        name: Routes.stockAveragingDetails,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: StockAveragingDetailsPage(),
+        ),
+      ),
     ];

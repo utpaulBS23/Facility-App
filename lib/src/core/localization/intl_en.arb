@@ -626,6 +626,8 @@
   "proofPhoto": "Proof photo",
   "stock": "Stock balances",
   "stockSubtitle": "View and update shift stock counts",
+  "stockAveraging": "Stock averaging",
+  "stockAveragingSubtitle": "View monthly average stock demand",
   "updateStock": "Update Stock",
   "updateStockBalances": "Update Stock Balances",
   "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",

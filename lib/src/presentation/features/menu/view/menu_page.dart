@@ -99,6 +99,22 @@ class _MenuPageState extends ConsumerState<MenuPage> {
             ),
           ),
           PermissionGate(
+            permissions: const [
+              UserPermission.stockAveragingView,
+              UserPermission.facilityStockTargetView,
+              UserPermission.shiftStockCountView,
+            ],
+            child: _MenuItem(
+              icon: Icons.analytics_outlined,
+              title: context.locale.stockAveraging,
+              subtitle: context.locale.stockAveragingSubtitle,
+              onTap: () {
+                context.pop();
+                context.goNamed(Routes.stockAveraging);
+              },
+            ),
+          ),
+          PermissionGate(
             permissions: const [UserPermission.supplyRequestView],
             child: _MenuItem(
               icon: Icons.local_shipping_outlined,
