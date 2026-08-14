@@ -70,6 +70,7 @@ import '../../domain/use_cases/router_use_case.dart';
 import '../../domain/use_cases/selfie_use_case.dart';
 import '../../domain/use_cases/partner_staff_use_case.dart';
 import '../../domain/use_cases/shift_use_case.dart';
+import '../../domain/use_cases/stock/get_facility_stock_balance_use_case.dart';
 import '../../domain/use_cases/stock/get_shift_stock_counts_use_case.dart';
 import '../../domain/use_cases/stock/submit_shift_stock_count_use_case.dart';
 import '../../domain/use_cases/task_use_case.dart';

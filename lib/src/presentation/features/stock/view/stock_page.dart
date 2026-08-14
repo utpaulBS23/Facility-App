@@ -6,21 +6,23 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/facility_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
-import '../../../../domain/entities/stock/shift_stock_count_entity.dart';
+import '../../../../domain/entities/stock/facility_stock_balance_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../riverpod/shift_stock_counts_provider.dart';
+import '../../roster/riverpod/facility_list_provider.dart';
+import '../riverpod/facility_stock_balance_provider.dart';
 import '../riverpod/stock_shift_slots_provider.dart';
-import '../utils/stock_count_utils.dart';
 import '../../shift/update_stock/view/update_stock_page.dart';
 
+part '../widgets/facility_balance_card.dart';
 part '../widgets/stock_footer_bar.dart';
-part '../widgets/stock_item_card.dart';
 part '../widgets/stock_summary_row.dart';
 
 class StockPageArgs {
@@ -33,10 +35,24 @@ class StockPageArgs {
   final int? shiftAssignmentId;
 }
 
-class StockPage extends ConsumerWidget {
+class StockPage extends ConsumerStatefulWidget {
   const StockPage({super.key, this.args});
 
   final StockPageArgs? args;
+
+  @override
+  ConsumerState<StockPage> createState() => _StockPageState();
+}
+
+class _StockPageState extends ConsumerState<StockPage> {
+  int? _selectedFacilityId;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedFacilityId = widget.args?.facilityId;
+    Future.microtask(() => ref.read(facilityListProvider.notifier).fetch());
+  }
 
   String get _today => DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -75,12 +91,72 @@ class StockPage extends ConsumerWidget {
     );
   }
 
-  Scaffold _scaffold(
-    BuildContext context, {
-    required Widget body,
-    Widget? bottomNavigationBar,
-  }) {
+  void _showFacilitySelector(BuildContext context, List<FacilityEntity> facilities) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (bottomSheetContext) {
+        final color = context.color;
+        final spacing = context.dimensions.spacing;
+
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(spacing.s16),
+                child: Headline2xlTinyText(context.locale.selectFacility),
+              ),
+              const Divider(height: 1),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: facilities.length,
+                  itemBuilder: (context, index) {
+                    final facility = facilities[index];
+                    final isSelected = facility.id == _selectedFacilityId;
+
+                    return ListTile(
+                      title: Text(facility.name),
+                      trailing: isSelected
+                          ? Icon(Icons.check_circle_rounded, color: color.primary)
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          _selectedFacilityId = facility.id;
+                        });
+                        Navigator.pop(bottomSheetContext);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final color = context.color;
+    final spacing = context.dimensions.spacing;
+    final facilitiesAsync = ref.watch(facilityListProvider);
+    final facilities = facilitiesAsync.valueOrNull ?? const [];
+
+    final activeSlotsAsync = ref.watch(stockShiftSlotsProvider(_today));
+    final activeShiftFacilityId = activeSlotsAsync.valueOrNull?.facility?.id;
+    final activeAssignmentId = activeSlotsAsync.valueOrNull != null
+        ? _assignmentIdFor(activeSlotsAsync.valueOrNull!)
+        : widget.args?.shiftAssignmentId;
+
+    _selectedFacilityId ??= _resolveInitialFacilityId(activeShiftFacilityId, facilities);
+
+    final selectedFacilityName = facilities
+            .where((f) => f.id == _selectedFacilityId)
+            .firstOrNull
+            ?.name ??
+        '';
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -92,105 +168,152 @@ class StockPage extends ConsumerWidget {
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: body,
-      bottomNavigationBar: bottomNavigationBar,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(spacing.s16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (facilities.isNotEmpty) ...[
+              _FacilitySelectorCard(
+                facilityName: selectedFacilityName.isEmpty
+                    ? context.locale.selectFacility
+                    : selectedFacilityName,
+                onTap: () => _showFacilitySelector(context, facilities),
+              ),
+              Gap(spacing.s16),
+            ],
+            _FacilityStockBalanceBody(facilityId: _selectedFacilityId),
+          ],
+        ),
+      ),
+      bottomNavigationBar: activeShiftFacilityId != null &&
+              activeAssignmentId != null &&
+              activeShiftFacilityId == _selectedFacilityId
+          ? PermissionGate(
+              permissions: const [UserPermission.shiftStockCountCreate],
+              child: _StockFooterBar(
+                onUpdateStockBalances: () => _onUpdateStockBalances(
+                  context,
+                  activeShiftFacilityId,
+                  activeAssignmentId,
+                ),
+              ),
+            )
+          : null,
     );
   }
 
+  int? _resolveInitialFacilityId(
+    int? activeShiftFacilityId,
+    List<FacilityEntity> facilities,
+  ) {
+    if (widget.args?.facilityId != null) return widget.args!.facilityId;
+    if (activeShiftFacilityId != null) return activeShiftFacilityId;
+    if (facilities.isNotEmpty) return facilities.first.id;
+    return null;
+  }
+}
+
+class _FacilitySelectorCard extends StatelessWidget {
+  const _FacilitySelectorCard({
+    required this.facilityName,
+    required this.onTap,
+  });
+
+  final String facilityName;
+  final VoidCallback onTap;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final explicitFacilityId = args?.facilityId;
-    final explicitAssignmentId = args?.shiftAssignmentId;
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+    final color = context.color;
 
-    if (explicitFacilityId != null) {
-      return _scaffold(
-        context,
-        body: _StockBody(facilityId: explicitFacilityId),
-        bottomNavigationBar: explicitAssignmentId == null
-            ? null
-            : PermissionGate(
-                permissions: const [UserPermission.shiftStockCountCreate],
-                child: _StockFooterBar(
-                  onUpdateStockBalances: () => _onUpdateStockBalances(
-                    context,
-                    explicitFacilityId,
-                    explicitAssignmentId,
-                  ),
-                ),
-              ),
-      );
-    }
-
-    final slotsAsync = ref.watch(stockShiftSlotsProvider(_today));
-
-    return slotsAsync.when(
-      loading: () => _scaffold(
-        context,
-        body: const Center(child: CircularProgressIndicator()),
-      ),
-      error: (err, _) => _scaffold(
-        context,
-        body: AppErrorWidget(
-          message: err.toString(),
-          onRetry: () => ref.invalidate(stockShiftSlotsProvider(_today)),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(radius.r12),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s16,
+          vertical: spacing.s12,
         ),
-      ),
-      data: (slots) {
-        final facilityId = slots.facility?.id;
-        if (facilityId == null) {
-          return _scaffold(
-            context,
-            body: AppErrorWidget(message: context.locale.noActiveShift),
-          );
-        }
-
-        final shiftAssignmentId = _assignmentIdFor(slots);
-
-        return _scaffold(
-          context,
-          body: _StockBody(facilityId: facilityId),
-          bottomNavigationBar: shiftAssignmentId == null
-              ? null
-              : PermissionGate(
-                  permissions: const [UserPermission.shiftStockCountCreate],
-                  child: _StockFooterBar(
-                    onUpdateStockBalances: () => _onUpdateStockBalances(
-                      context,
-                      facilityId,
-                      shiftAssignmentId,
+        decoration: BoxDecoration(
+          color: color.onPrimary,
+          borderRadius: BorderRadius.circular(radius.r12),
+          border: Border.all(color: color.borderSubtle),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.location_on_outlined,
+              color: color.primary,
+              size: spacing.s20,
+            ),
+            Gap(spacing.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.locale.selectFacility,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: color.text.secondary,
                     ),
                   ),
-                ),
-        );
-      },
+                  Gap(spacing.s2),
+                  Text(
+                    facilityName,
+                    style: context.textStyle.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: color.text.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: color.text.secondary,
+              size: spacing.s24,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _StockBody extends ConsumerWidget {
-  const _StockBody({required this.facilityId});
+class _FacilityStockBalanceBody extends ConsumerWidget {
+  const _FacilityStockBalanceBody({required this.facilityId});
 
-  final int facilityId;
+  final int? facilityId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final countsAsync = ref.watch(
-      shiftStockCountsProvider(facilityId: facilityId),
+
+    if (facilityId == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final balanceAsync = ref.watch(
+      facilityStockBalanceProvider(facilityId: facilityId),
     );
 
-    return countsAsync.when(
+    return balanceAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, _) => AppErrorWidget(
         message: err.toString(),
-        onRetry: () =>
-            ref.invalidate(shiftStockCountsProvider(facilityId: facilityId)),
+        onRetry: () => ref.invalidate(
+          facilityStockBalanceProvider(facilityId: facilityId),
+        ),
       ),
-      data: (history) {
-        final latestItems = latestStockCountPerItem(history);
+      data: (page) {
+        final items = page.items;
+        final summary = page.summary;
 
-        if (latestItems.isEmpty) {
+        if (items.isEmpty) {
           return Center(
             child: Text(
               context.locale.noStockCountRecorded,
@@ -201,26 +324,52 @@ class _StockBody extends ConsumerWidget {
           );
         }
 
-        return SingleChildScrollView(
-          padding: EdgeInsets.all(spacing.s16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (summary != null)
+              Row(
+                children: [
+                  Expanded(
+                    child: _StockStatTile(
+                      value: '${summary.okCount}',
+                      label: 'OK',
+                    ),
+                  ),
+                  Gap(spacing.s12),
+                  Expanded(
+                    child: _StockStatTile(
+                      value: '${summary.lowCount}',
+                      label: 'Low',
+                    ),
+                  ),
+                  Gap(spacing.s12),
+                  Expanded(
+                    child: _StockStatTile(
+                      value: '${summary.outCount}',
+                      label: 'Out of stock',
+                    ),
+                  ),
+                ],
+              )
+            else
               _StockSummaryRow(
-                totalItems: latestItems.length,
-                lastUpdated: latestItems.first.reportedDate,
+                totalItems: items.length,
+                lastUpdated: items.first.lastCountedAt != null &&
+                        items.first.lastCountedAt!.length >= 10
+                    ? items.first.lastCountedAt!.substring(0, 10)
+                    : 'N/A',
               ),
-              Gap(spacing.s16),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: latestItems.length,
-                separatorBuilder: (context, index) => Gap(spacing.s12),
-                itemBuilder: (context, index) =>
-                    _StockItemCard(item: latestItems[index]),
-              ),
-            ],
-          ),
+            Gap(spacing.s16),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: items.length,
+              separatorBuilder: (context, index) => Gap(spacing.s12),
+              itemBuilder: (context, index) =>
+                  _FacilityBalanceCard(item: items[index]),
+            ),
+          ],
         );
       },
     );

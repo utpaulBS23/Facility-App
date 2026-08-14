@@ -411,5 +411,15 @@ abstract class RestClient {
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
+
+  @GET(Endpoints.facilityStockBalance)
+  Future<HttpResponse> getFacilityStockBalance({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
 }
 

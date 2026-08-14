@@ -162,4 +162,6 @@ class Endpoints {
       '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
   static const String shiftStockCounts =
       '/partners/{partnerId}/shift-stock-counts';
+  static const String facilityStockBalance =
+      '/partners/{partnerId}/facility-stock-balance';
 }

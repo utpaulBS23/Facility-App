@@ -515,3 +515,11 @@ GetShiftStockCountsUseCase getShiftStockCountsUseCase(Ref ref) {
   );
 }
 
+@riverpod
+GetFacilityStockBalanceUseCase getFacilityStockBalanceUseCase(Ref ref) {
+  return GetFacilityStockBalanceUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+

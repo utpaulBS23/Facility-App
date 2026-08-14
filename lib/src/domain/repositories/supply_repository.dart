@@ -2,6 +2,8 @@ import '../../core/base/failure.dart';
 import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
 import '../entities/common/paginated_list_entity.dart';
+import '../entities/stock/facility_stock_balance_entity.dart';
+import '../entities/stock/facility_stock_balance_filter.dart';
 import '../entities/supply/supply_request_entity.dart';
 import '../entities/supply/supply_request_status.dart';
 
@@ -53,4 +55,9 @@ abstract base class SupplyRepository extends Repository {
     int supplyRequestId, {
     String? notes,
   });
+
+  Future<Result<FacilityStockBalancePageEntity, Failure>>
+      getFacilityStockBalance(
+    FacilityStockBalanceFilter filter,
+  );
 }
