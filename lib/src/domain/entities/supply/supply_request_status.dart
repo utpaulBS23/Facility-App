@@ -12,11 +12,8 @@ enum SupplyRequestStatus {
     return switch (raw?.toLowerCase()) {
       'pending_supervisor' || 'pending' => .pendingSupervisor,
       'pending_operation_manager' ||
-      'pending_manager' =>
-        .pendingOperationManager,
-      'operation_manager_approved' ||
-      'approved' =>
-        .operationManagerApproved,
+      'pending_manager' => .pendingOperationManager,
+      'operation_manager_approved' || 'approved' => .operationManagerApproved,
       'in_delivery' || 'dispatched' => .inDelivery,
       'delivered' => .delivered,
       'rejected' => .rejected,
@@ -28,10 +25,8 @@ enum SupplyRequestStatus {
   String toWireString() {
     return switch (this) {
       .pendingSupervisor => 'pending_supervisor',
-      .pendingOperationManager =>
-        'pending_operation_manager',
-      .operationManagerApproved =>
-        'operation_manager_approved',
+      .pendingOperationManager => 'pending_operation_manager',
+      .operationManagerApproved => 'operation_manager_approved',
       .inDelivery => 'in_delivery',
       .delivered => 'delivered',
       .rejected => 'rejected',
