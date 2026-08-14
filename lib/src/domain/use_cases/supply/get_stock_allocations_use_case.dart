@@ -4,18 +4,23 @@ import '../../entities/common/paginated_list_entity.dart';
 import '../../entities/supply/stock_allocation_entity.dart';
 import '../../entities/supply/supply_filters.dart';
 import '../../repositories/supply_repository.dart';
+import '../partner_use_case.dart';
 
-final class GetStockAllocationsUseCase {
+final class GetStockAllocationsUseCase extends PartnerUseCase {
   GetStockAllocationsUseCase({
     required this.supplyRepository,
+    required super.authRepository,
   });
 
   final SupplyRepository supplyRepository;
 
-  Future<Result<PaginatedListEntity<StockAllocationEntity>, Failure>> call(
-    StockAllocationFilter filter,
-  ) async {
-    final result = await supplyRepository.getStockAllocations(filter);
+  Future<Result<PaginatedListEntity<StockAllocationEntity>, Failure>> call([
+    StockAllocationFilter? filter,
+  ]) async {
+    final partnerId = getPartnerId();
+    final result = await supplyRepository.getStockAllocations(
+      (filter ?? const StockAllocationFilter()).copyWith(partnerId: partnerId),
+    );
 
     return switch (result) {
       Success(:final data) => Success(data: data),
