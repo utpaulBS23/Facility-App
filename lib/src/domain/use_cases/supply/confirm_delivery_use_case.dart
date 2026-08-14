@@ -14,13 +14,11 @@ final class ConfirmDeliveryUseCase extends PartnerUseCase {
   final SupplyRepository supplyRepository;
 
   Future<Result<DeliveryEntity, Failure>> call(
-    int deliveryId,
     ConfirmDeliveryRequestEntity request,
   ) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.confirmDelivery(
       partnerId,
-      deliveryId,
       request,
     );
 

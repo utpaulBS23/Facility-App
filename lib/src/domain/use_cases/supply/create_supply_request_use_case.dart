@@ -1,8 +1,7 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
-import '../../entities/supply/create_supply_request_item_entity.dart';
+import '../../entities/supply/create_supply_request_entity.dart';
 import '../../entities/supply/supply_request_entity.dart';
-import '../../entities/supply/supply_request_status.dart';
 import '../../repositories/supply_repository.dart';
 import '../partner_use_case.dart';
 
@@ -14,19 +13,13 @@ final class CreateSupplyRequestUseCase extends PartnerUseCase {
 
   final SupplyRepository supplyRepository;
 
-  Future<Result<SupplyRequestEntity, Failure>> call({
-    required int facilityId,
-    SupplyUrgency? urgency,
-    String? notes,
-    required List<CreateSupplyRequestItemEntity> items,
-  }) async {
+  Future<Result<SupplyRequestEntity, Failure>> call(
+    CreateSupplyRequestEntity request,
+  ) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.createSupplyRequest(
-      partnerId: partnerId,
-      facilityId: facilityId,
-      urgency: urgency,
-      notes: notes,
-      items: items,
+      partnerId,
+      request,
     );
 
     return switch (result) {

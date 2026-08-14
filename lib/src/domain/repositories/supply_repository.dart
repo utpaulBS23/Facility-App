@@ -2,78 +2,64 @@ import '../../core/base/failure.dart';
 import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
 import '../entities/common/paginated_list_entity.dart';
+import '../entities/supply/approve_delivery_complaint_request_entity.dart';
+import '../entities/supply/approve_supply_request_entity.dart';
 import '../entities/supply/confirm_delivery_request_entity.dart';
-import '../entities/supply/create_supply_request_item_entity.dart';
+import '../entities/supply/create_supply_request_entity.dart';
 import '../entities/supply/delivery_complaint_entity.dart';
-import '../entities/supply/delivery_complaint_status.dart';
+import '../entities/supply/delivery_complaint_filter.dart';
 import '../entities/supply/delivery_entity.dart';
-import '../entities/supply/delivery_status.dart';
+import '../entities/supply/delivery_filter.dart';
 import '../entities/supply/file_delivery_complaint_request_entity.dart';
+import '../entities/supply/item_catalog_filter.dart';
+import '../entities/supply/reject_supply_request_entity.dart';
 import '../entities/supply/stock_allocation_entity.dart';
+import '../entities/supply/stock_allocation_filter.dart';
 import '../entities/supply/stock_item_entity.dart';
 import '../entities/supply/supply_request_entity.dart';
-import '../entities/supply/supply_request_status.dart';
+import '../entities/supply/supply_request_filter.dart';
 
 abstract base class SupplyRepository extends Repository {
-  Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> getItemCatalog({
-    required int partnerId,
-    String? search,
-    String? category,
-    bool? isActive,
-    int? page,
-    int? pageSize,
-  });
+  Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> getItemCatalog(
+    int partnerId,
+    ItemCatalogFilter? filter,
+  );
 
   Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>>
-  getSupplyRequests({
-    required int partnerId,
-    int? facilityId,
-    SupplyRequestStatus? status,
-    SupplyUrgency? urgency,
-    String? search,
-    int? page,
-    int? pageSize,
-  });
+  getSupplyRequests(
+    int partnerId,
+    SupplyRequestQueryFilter? filter,
+  );
 
   Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails(
     int partnerId,
     int supplyRequestId,
   );
 
-  Future<Result<SupplyRequestEntity, Failure>> createSupplyRequest({
-    required int partnerId,
-    required int facilityId,
-    SupplyUrgency? urgency,
-    String? notes,
-    required List<CreateSupplyRequestItemEntity> items,
-  });
+  Future<Result<SupplyRequestEntity, Failure>> createSupplyRequest(
+    int partnerId,
+    CreateSupplyRequestEntity request,
+  );
 
   Future<Result<SupplyRequestEntity, Failure>> approveSupplyRequest(
     int partnerId,
-    int supplyRequestId, {
-    String? notes,
-    List<CreateSupplyRequestItemEntity>? items,
-  });
+    ApproveSupplyRequestEntity request,
+  );
 
   Future<Result<SupplyRequestEntity, Failure>> rejectSupplyRequest(
     int partnerId,
-    int supplyRequestId, {
-    String? notes,
-  });
+    RejectSupplyRequestEntity request,
+  );
 
   Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest(
     int partnerId,
     int supplyRequestId,
   );
 
-  Future<Result<PaginatedListEntity<DeliveryEntity>, Failure>> getDeliveries({
-    required int partnerId,
-    int? facilityId,
-    DeliveryStatus? status,
-    String? search,
-    int? page,
-    int? pageSize,
-  });
+  Future<Result<PaginatedListEntity<DeliveryEntity>, Failure>> getDeliveries(
+    int partnerId,
+    DeliveryFilter? filter,
+  );
 
   Future<Result<DeliveryEntity, Failure>> getDeliveryDetails(
     int partnerId,
@@ -82,19 +68,14 @@ abstract base class SupplyRepository extends Repository {
 
   Future<Result<DeliveryEntity, Failure>> confirmDelivery(
     int partnerId,
-    int deliveryId,
     ConfirmDeliveryRequestEntity request,
   );
 
   Future<Result<PaginatedListEntity<DeliveryComplaintEntity>, Failure>>
-  getDeliveryComplaints({
-    required int partnerId,
-    int? facilityId,
-    DeliveryComplaintStatus? status,
-    String? search,
-    int? page,
-    int? pageSize,
-  });
+  getDeliveryComplaints(
+    int partnerId,
+    DeliveryComplaintFilter? filter,
+  );
 
   Future<Result<DeliveryComplaintEntity, Failure>> getDeliveryComplaintDetails(
     int partnerId,
@@ -103,15 +84,13 @@ abstract base class SupplyRepository extends Repository {
 
   Future<Result<DeliveryComplaintEntity, Failure>> fileDeliveryComplaint(
     int partnerId,
-    int deliveryId,
     FileDeliveryComplaintRequestEntity request,
   );
 
   Future<Result<DeliveryComplaintEntity, Failure>> approveDeliveryComplaint(
     int partnerId,
-    int deliveryComplaintId, {
-    double? finalQtyReceived,
-  });
+    ApproveDeliveryComplaintRequestEntity request,
+  );
 
   Future<Result<DeliveryComplaintEntity, Failure>> rejectDeliveryComplaint(
     int partnerId,
@@ -119,13 +98,10 @@ abstract base class SupplyRepository extends Repository {
   );
 
   Future<Result<PaginatedListEntity<StockAllocationEntity>, Failure>>
-  getStockAllocations({
-    required int partnerId,
-    int? facilityId,
-    String? search,
-    int? page,
-    int? pageSize,
-  });
+  getStockAllocations(
+    int partnerId,
+    StockAllocationFilter? filter,
+  );
 
   Future<Result<StockAllocationEntity, Failure>> getStockAllocationDetails(
     int partnerId,
