@@ -1,5 +1,6 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
+import '../../entities/supply/reject_supply_request_entity.dart';
 import '../../entities/supply/supply_request_entity.dart';
 import '../../repositories/supply_repository.dart';
 import '../partner_use_case.dart';
@@ -13,14 +14,12 @@ final class RejectSupplyRequestUseCase extends PartnerUseCase {
   final SupplyRepository supplyRepository;
 
   Future<Result<SupplyRequestEntity, Failure>> call(
-    int supplyRequestId, {
-    String? notes,
-  }) async {
+    RejectSupplyRequestEntity request,
+  ) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.rejectSupplyRequest(
       partnerId,
-      supplyRequestId,
-      notes: notes,
+      request,
     );
 
     return switch (result) {

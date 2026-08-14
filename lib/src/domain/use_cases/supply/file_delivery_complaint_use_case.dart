@@ -14,13 +14,11 @@ final class FileDeliveryComplaintUseCase extends PartnerUseCase {
   final SupplyRepository supplyRepository;
 
   Future<Result<DeliveryComplaintEntity, Failure>> call(
-    int deliveryId,
     FileDeliveryComplaintRequestEntity request,
   ) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.fileDeliveryComplaint(
       partnerId,
-      deliveryId,
       request,
     );
 
