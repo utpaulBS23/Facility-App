@@ -1,14 +1,12 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
-import '../../entities/supply/reject_supply_request_entity.dart';
 import '../../entities/supply/supply_request_entity.dart';
+import '../../entities/supply/supply_request_payloads.dart';
 import '../../repositories/supply_repository.dart';
-import '../partner_use_case.dart';
 
-final class RejectSupplyRequestUseCase extends PartnerUseCase {
+final class RejectSupplyRequestUseCase {
   RejectSupplyRequestUseCase({
     required this.supplyRepository,
-    required super.authRepository,
   });
 
   final SupplyRepository supplyRepository;
@@ -16,11 +14,7 @@ final class RejectSupplyRequestUseCase extends PartnerUseCase {
   Future<Result<SupplyRequestEntity, Failure>> call(
     RejectSupplyRequestEntity request,
   ) async {
-    final partnerId = getPartnerId();
-    final result = await supplyRepository.rejectSupplyRequest(
-      partnerId,
-      request,
-    );
+    final result = await supplyRepository.rejectSupplyRequest(request);
 
     return switch (result) {
       Success(:final data) => Success(data: data),

@@ -19,7 +19,7 @@ class StockAllocationEntity {
   final String sourceRequestCode;
   final String notes;
   final List<StockAllocationItemEntity> items;
-  final DateTime allocatedAt;
+  final String allocatedAt;
 }
 
 class StockAllocationItemEntity {
