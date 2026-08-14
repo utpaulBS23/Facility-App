@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
@@ -12,10 +13,13 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/facility_stock_target_detail_provider.dart';
+import '../../supply/widgets/item_stepper_input.dart';
+import '../../supply/widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/average_demand_list_card.dart';
 part '../widgets/facility_metadata_card.dart';
 part '../widgets/monthly_total_summary_card.dart';
+part '../widgets/stock_target_detail_shimmer.dart';
 
 class StockAveragingDetailsPage extends ConsumerStatefulWidget {
   const StockAveragingDetailsPage({super.key, this.facilityId = 31});
@@ -84,7 +88,7 @@ class _StockAveragingDetailsPageState
         ],
       ),
       body: detailAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const _StockTargetDetailShimmer(),
         error: (err, _) => AppErrorWidget(
           message: err.toString(),
           onRetry: () => ref.invalidate(
