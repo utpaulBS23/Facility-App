@@ -67,6 +67,11 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
       data: (value) {
         if (value == null || !mounted) return;
 
+        // Invalidate stock list provider so StockPage refreshes immediately
+        ref.invalidate(
+          shiftStockCountsProvider(facilityId: widget.args.facilityId),
+        );
+
         AppSnackBar.showSuccess(
           context,
           context.locale.stockCountSubmittedSuccess,
@@ -131,7 +136,9 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, _) => AppErrorWidget(message: err.toString()),
           data: (history) {
-            final items = catalog.items;
+            final items = [...catalog.items]
+              ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
             if (items.isEmpty) {
               return Center(
                 child: Text(
