@@ -1,15 +1,23 @@
 part of '../view/stock_averaging_details_page.dart';
 
 class _MonthlyTotalSummaryCard extends StatelessWidget {
-  const _MonthlyTotalSummaryCard({required this.items});
+  const _MonthlyTotalSummaryCard({
+    required this.targets,
+    required this.monthlyTotalDemandQty,
+  });
 
-  final List<TotalSummaryItem> items;
+  final List<FacilityStockTargetEntity> targets;
+  final double monthlyTotalDemandQty;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
+
+    final totalStr = monthlyTotalDemandQty % 1 == 0
+        ? monthlyTotalDemandQty.toInt().toString()
+        : monthlyTotalDemandQty.toString();
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -39,22 +47,46 @@ class _MonthlyTotalSummaryCard extends StatelessWidget {
             ],
           ),
           Gap(spacing.s12),
-          for (var i = 0; i < items.length; i++) ...[
+          for (var i = 0; i < targets.length; i++) ...[
             if (i > 0) Divider(color: color.borderSubtle, height: spacing.s20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  items[i].category,
-                  style: textStyle.bodyMedium.copyWith(
-                    color: color.text.secondary,
+                Expanded(
+                  child: Text(
+                    targets[i].itemName,
+                    style: textStyle.bodyMedium.copyWith(
+                      color: color.text.secondary,
+                    ),
                   ),
                 ),
                 Text(
-                  items[i].totalValue,
+                  '${_fmtQty(targets[i].monthlyTargetQty)} ${targets[i].unit}',
                   style: textStyle.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color.text.primary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+          if (targets.isNotEmpty) ...[
+            Divider(color: color.borderSubtle, height: spacing.s20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total',
+                  style: textStyle.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: color.text.primary,
+                  ),
+                ),
+                Text(
+                  totalStr,
+                  style: textStyle.titleMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: color.primary,
                   ),
                 ),
               ],
@@ -64,4 +96,7 @@ class _MonthlyTotalSummaryCard extends StatelessWidget {
       ),
     );
   }
+
+  String _fmtQty(double qty) =>
+      qty % 1 == 0 ? qty.toInt().toString() : qty.toString();
 }

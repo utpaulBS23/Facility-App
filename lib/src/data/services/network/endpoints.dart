@@ -166,4 +166,8 @@ class Endpoints {
       '/partners/{partnerId}/facility-stock-balance';
   static const String stockAveraging =
       '/partners/{partnerId}/stock-averaging';
+  static const String updateStockTarget =
+      '/partners/{partnerId}/stock-averaging/{targetId}';
+  static const String importStockTargets =
+      '/partners/{partnerId}/stock-averaging/import';
 }

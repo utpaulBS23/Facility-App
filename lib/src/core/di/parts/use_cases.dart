@@ -531,3 +531,19 @@ GetStockAveragingUseCase getStockAveragingUseCase(Ref ref) {
   );
 }
 
+@riverpod
+GetFacilityStockTargetsUseCase getFacilityStockTargetsUseCase(Ref ref) {
+  return GetFacilityStockTargetsUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+UpdateStockTargetUseCase updateStockTargetUseCase(Ref ref) {
+  return UpdateStockTargetUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+

@@ -3,6 +3,8 @@ import '../../core/base/result.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/stock/facility_stock_balance_entity.dart';
 import '../../domain/entities/stock/facility_stock_balance_filter.dart';
+import '../../domain/entities/stock/facility_stock_target_detail_entity.dart';
+import '../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../domain/entities/stock/stock_averaging_filter.dart';
 import '../../domain/entities/stock/stock_averaging_page_entity.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
@@ -204,6 +206,70 @@ final class SupplyRepositoryImpl extends SupplyRepository {
         items: items,
         topDemandItems: topDemandItems,
       );
+    });
+  }
+
+  @override
+  Future<Result<FacilityStockTargetDetailEntity, Failure>>
+      getFacilityStockTargets({
+    required int partnerId,
+    required int facilityId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getStockAveraging(
+        partnerId: partnerId,
+        facilityId: facilityId,
+      );
+
+      final Map<String, dynamic> dataMap =
+          response.data is Map<String, dynamic>
+              ? response.data as Map<String, dynamic>
+              : {};
+      final List<dynamic> itemsList = dataMap['data'] as List<dynamic>? ?? [];
+
+      final targets = itemsList
+          .map((json) =>
+              FacilityStockTargetModel.fromJson(json as Map<String, dynamic>)
+                  .toEntity())
+          .toList();
+
+      final facilityName =
+          targets.isNotEmpty ? targets.first.facilityName : 'Facility #$facilityId';
+      final totalDemand = targets.fold<double>(
+        0.0,
+        (sum, item) => sum + item.monthlyTargetQty,
+      );
+
+      return FacilityStockTargetDetailEntity(
+        facilityId: facilityId,
+        facilityName: facilityName,
+        monthlyTotalDemandQty: totalDemand,
+        targets: targets,
+      );
+    });
+  }
+
+  @override
+  Future<Result<FacilityStockTargetEntity, Failure>> updateStockTarget({
+    required int partnerId,
+    required int targetId,
+    required double monthlyTargetQty,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.updateStockTarget(
+        partnerId: partnerId,
+        targetId: targetId,
+        body: {'monthly_target_qty': monthlyTargetQty},
+      );
+
+      final Map<String, dynamic> dataMap =
+          response.data is Map<String, dynamic>
+              ? response.data as Map<String, dynamic>
+              : {};
+      final payload = dataMap['data'] as Map<String, dynamic>? ?? {};
+
+      final model = FacilityStockTargetModel.fromJson(payload);
+      return model.toEntity();
     });
   }
 }

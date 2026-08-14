@@ -429,5 +429,18 @@ abstract class RestClient {
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
+
+  @PATCH(Endpoints.updateStockTarget)
+  Future<HttpResponse> updateStockTarget({
+    @Path('partnerId') required int partnerId,
+    @Path('targetId') required int targetId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.importStockTargets)
+  Future<HttpResponse> importStockTargets({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
 }
 

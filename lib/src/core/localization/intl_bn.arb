@@ -555,6 +555,7 @@
   "stockAveraging": "স্টক এভারেজিং",
   "stockAveragingSubtitle": "মাসিক গড় স্টক চাহিদা দেখুন",
   "updateStock": "স্টক আপডেট করুন",
+  "updateStockTarget": "স্টক টার্গেট আপডেট করুন",
   "updateStockBalances": "স্টক ব্যালেন্স আপডেট করুন",
   "updateStockInstructions": "প্রতিটি আইটেমের বর্তমান অবশিষ্ট ব্যালেন্স লিখুন। ব্যবহার স্বয়ংক্রিয়ভাবে গণনা করা হবে।",
   "totalItems": "মোট আইটেম",

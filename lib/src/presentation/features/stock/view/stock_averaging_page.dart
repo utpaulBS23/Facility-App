@@ -164,7 +164,10 @@ class _StockAveragingPageState extends ConsumerState<StockAveragingPage> {
                     return _FacilityAveragingListCard(
                       item: items[index],
                       onTap: () {
-                        context.pushNamed(Routes.stockAveragingDetails);
+                        context.pushNamed(
+                          Routes.stockAveragingDetails,
+                          extra: items[index].facilityId,
+                        );
                       },
                     );
                   },

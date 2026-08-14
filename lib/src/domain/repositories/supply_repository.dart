@@ -4,6 +4,8 @@ import '../../core/base/result.dart';
 import '../entities/common/paginated_list_entity.dart';
 import '../entities/stock/facility_stock_balance_entity.dart';
 import '../entities/stock/facility_stock_balance_filter.dart';
+import '../entities/stock/facility_stock_target_detail_entity.dart';
+import '../entities/stock/facility_stock_target_entity.dart';
 import '../entities/stock/stock_averaging_filter.dart';
 import '../entities/stock/stock_averaging_page_entity.dart';
 import '../entities/supply/supply_request_entity.dart';
@@ -66,4 +68,16 @@ abstract base class SupplyRepository extends Repository {
   Future<Result<StockAveragingPageEntity, Failure>> getStockAveraging(
     StockAveragingFilter filter,
   );
+
+  Future<Result<FacilityStockTargetDetailEntity, Failure>>
+      getFacilityStockTargets({
+    required int partnerId,
+    required int facilityId,
+  });
+
+  Future<Result<FacilityStockTargetEntity, Failure>> updateStockTarget({
+    required int partnerId,
+    required int targetId,
+    required double monthlyTargetQty,
+  });
 }

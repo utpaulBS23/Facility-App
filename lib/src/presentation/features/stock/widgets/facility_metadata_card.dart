@@ -1,13 +1,23 @@
 part of '../view/stock_averaging_details_page.dart';
 
 class _FacilityMetadataCard extends StatelessWidget {
-  const _FacilityMetadataCard();
+  const _FacilityMetadataCard({
+    required this.facilityName,
+    required this.updatedByName,
+    required this.updatedAt,
+  });
+
+  final String facilityName;
+  final String updatedByName;
+  final String updatedAt;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
+
+    final dateStr = updatedAt.length >= 10 ? updatedAt.substring(0, 10) : updatedAt;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -20,35 +30,18 @@ class _FacilityMetadataCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Facility',
+            context.locale.facility,
             style: textStyle.bodySmall.copyWith(
               color: color.text.secondary,
             ),
           ),
           Gap(spacing.s4),
           Text(
-            'Mirpur-10 Public Toilet Complex',
+            facilityName,
             style: textStyle.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: color.text.primary,
             ),
-          ),
-          Gap(spacing.s4),
-          Row(
-            children: [
-              Icon(
-                Icons.location_on_outlined,
-                size: 16,
-                color: color.text.secondary,
-              ),
-              Gap(spacing.s4),
-              Text(
-                'Mirpur-10, Dhaka',
-                style: textStyle.bodySmall.copyWith(
-                  color: color.text.secondary,
-                ),
-              ),
-            ],
           ),
           Divider(color: color.borderSubtle, height: spacing.s24),
           Row(
@@ -61,7 +54,7 @@ class _FacilityMetadataCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '05 March 2026',
+                dateStr.isEmpty ? 'N/A' : dateStr,
                 style: textStyle.bodySmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: color.text.primary,
@@ -80,7 +73,7 @@ class _FacilityMetadataCard extends StatelessWidget {
                 ),
               ),
               Text(
-                'Mohammad Rahim',
+                updatedByName.isEmpty ? 'N/A' : updatedByName,
                 style: textStyle.bodySmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: color.text.primary,
