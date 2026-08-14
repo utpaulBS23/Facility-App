@@ -624,7 +624,7 @@
   "complaintReasonHint": "Describe the discrepancy - missing items, damaged goods, quantity mismatch...",
   "missingLabel": "Missing",
   "proofPhoto": "Proof photo",
-  "stock": "Stock",
+  "stock": "Stock balances",
   "stockSubtitle": "View and update shift stock counts",
   "updateStock": "Update Stock",
   "updateStockBalances": "Update Stock Balances",

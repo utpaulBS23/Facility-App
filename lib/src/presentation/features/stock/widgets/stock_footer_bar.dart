@@ -20,9 +20,10 @@ class _StockFooterBar extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           height: spacing.s44,
-          child: FilledButton(
+          child: FilledButton.icon(
             onPressed: onUpdateStockBalances,
-            child: Text(context.locale.updateStockBalances),
+            icon: const Icon(Icons.edit_outlined),
+            label: Text(context.locale.updateStockBalances),
           ),
         ),
       ),

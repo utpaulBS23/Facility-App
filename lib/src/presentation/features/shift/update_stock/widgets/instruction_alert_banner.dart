@@ -12,24 +12,24 @@ class _InstructionAlertBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(spacing.s12),
       decoration: BoxDecoration(
-        color: color.warning.withValues(alpha: 0.05),
-        border: Border.all(color: color.warning),
+        color: color.primary.withValues(alpha: 0.05),
+        border: Border.all(color: color.primary.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            Icons.warning_amber_rounded,
-            color: color.warning,
+            Icons.info_outline_rounded,
+            color: color.primary,
             size: spacing.s20,
           ),
-          Gap(spacing.s10),
+          Gap(spacing.s8),
           Expanded(
             child: Text(
               context.locale.updateStockInstructions,
-              style: context.textStyle.bodyMedium.copyWith(
-                color: color.text.secondary,
+              style: context.textStyle.bodySmall.copyWith(
+                color: color.text.primary,
               ),
             ),
           ),

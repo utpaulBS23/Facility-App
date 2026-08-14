@@ -13,10 +13,10 @@ import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/widgets/app_error_widget.dart';
 import '../../../../core/widgets/permission_gate.dart';
 import '../../../../core/widgets/text/typography.dart';
+import '../../../stock/riverpod/shift_stock_counts_provider.dart';
+import '../../../stock/utils/stock_count_utils.dart';
 import '../../../supply/riverpod/item_catalog_provider.dart';
-import '../riverpod/shift_stock_counts_provider.dart';
 import '../riverpod/submit_shift_stock_count_provider.dart';
-import '../utils/stock_count_utils.dart';
 import '../widgets/update_stock_form_entry.dart';
 
 part '../widgets/instruction_alert_banner.dart';

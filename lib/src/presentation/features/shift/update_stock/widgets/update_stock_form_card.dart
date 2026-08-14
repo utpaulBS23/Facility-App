@@ -10,7 +10,7 @@ class _UpdateStockBody extends StatelessWidget {
   final List<StockItemEntity> items;
   final Map<int, double> latestByItem;
   final ShiftStockCountItemFormEntry Function(StockItemEntity item, double previousQty)
-  getOrCreateFormEntry;
+      getOrCreateFormEntry;
 
   @override
   Widget build(BuildContext context) {

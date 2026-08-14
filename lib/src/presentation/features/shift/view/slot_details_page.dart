@@ -26,10 +26,10 @@ class SlotDetailsPage extends ConsumerWidget {
     context.pushNamed(Routes.assignStaff, extra: currentSlot);
   }
 
-  void _onStock(BuildContext context, int facilityId, int? shiftAssignmentId) {
+  void _onUpdateStock(BuildContext context, int facilityId, int shiftAssignmentId) {
     context.pushNamed(
-      Routes.stock,
-      extra: StockPageArgs(
+      Routes.updateStock,
+      extra: UpdateStockPageArgs(
         facilityId: facilityId,
         shiftAssignmentId: shiftAssignmentId,
       ),
@@ -58,21 +58,21 @@ class SlotDetailsPage extends ConsumerWidget {
     );
     if (confirmed != true || !context.mounted) return;
 
-    await ref
+    ref
         .read(unassignShiftSlotProvider.notifier)
         .unassign(
-          facilityId: facilityId,
           rosterId: rosterId,
+          facilityId: facilityId,
           assignmentId: assignmentId,
         );
   }
 
-  Future<void> _onMakeLead(
+  void _onMakeLead(
     BuildContext context,
     WidgetRef ref,
     ShiftSlotEntity currentSlot,
     SlotAttendantEntity attendant,
-  ) async {
+  ) {
     final rosterId = currentSlot.weeklyRosterId;
     final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
     final assignmentId = attendant.assignmentId;
@@ -83,11 +83,11 @@ class SlotDetailsPage extends ConsumerWidget {
       return;
     }
 
-    await ref
+    ref
         .read(makeSlotLeadProvider.notifier)
         .makeLead(
-          facilityId: facilityId,
           rosterId: rosterId,
+          facilityId: facilityId,
           assignmentId: assignmentId,
         );
   }
@@ -116,6 +116,7 @@ class SlotDetailsPage extends ConsumerWidget {
     );
     final showCheckOut = me?.action == SlotAction.checkOut;
     final facilityId = facility?.id;
+    final shiftAssignmentId = me?.assignmentId;
 
     return _SlotDetailsActionListener(
       child: Scaffold(
@@ -134,9 +135,9 @@ class SlotDetailsPage extends ConsumerWidget {
                     _onMakeLead(context, ref, currentSlot, attendant),
               ),
             ),
-            if (facilityId != null)
+            if (facilityId != null && shiftAssignmentId != null)
               PermissionGate(
-                permissions: const [UserPermission.shiftStockCountView],
+                permissions: const [UserPermission.shiftStockCountCreate],
                 child: SafeArea(
                   top: false,
                   bottom: !showCheckOut,
@@ -151,10 +152,13 @@ class SlotDetailsPage extends ConsumerWidget {
                       width: double.infinity,
                       height: context.dimensions.spacing.s44,
                       child: OutlinedButton.icon(
-                        onPressed: () =>
-                            _onStock(context, facilityId, me?.assignmentId),
+                        onPressed: () => _onUpdateStock(
+                          context,
+                          facilityId,
+                          shiftAssignmentId,
+                        ),
                         icon: const Icon(Icons.inventory_2_outlined),
-                        label: Text(context.locale.stock),
+                        label: Text(context.locale.updateStockBalances),
                       ),
                     ),
                   ),

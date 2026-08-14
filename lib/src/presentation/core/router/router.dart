@@ -33,8 +33,8 @@ import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/new_request_page.dart';
 import '../../features/supply/view/request_details_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
-import '../../features/shift/stock/view/stock_page.dart';
-import '../../features/shift/stock/view/update_stock_page.dart';
+import '../../features/stock/view/stock_page.dart';
+import '../../features/shift/update_stock/view/update_stock_page.dart';
 
 import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
