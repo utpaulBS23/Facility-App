@@ -101,8 +101,6 @@ class _MenuPageState extends ConsumerState<MenuPage> {
           PermissionGate(
             permissions: const [
               UserPermission.stockAveragingView,
-              UserPermission.facilityStockTargetView,
-              UserPermission.shiftStockCountView,
             ],
             child: _MenuItem(
               icon: Icons.analytics_outlined,
