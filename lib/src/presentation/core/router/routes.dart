@@ -42,4 +42,12 @@ class Routes {
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
   static const String menu = '/menu';
+
+  static const String supplyRequests = '/supply-requests';
+  static const String requestDetails = '/request-details';
+  static const String deliveryComplaint = '/delivery-complaint';
+  static const String confirmDelivery = '/confirm-delivery';
+  static const String newRequest = '/new-request';
+  static const String stock = '/stock';
+  static const String updateStock = '/update-stock';
 }

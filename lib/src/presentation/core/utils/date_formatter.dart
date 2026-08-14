@@ -23,4 +23,7 @@ final class DateFormatter {
   static String timeOnly(DateTime dt) => DateFormat('h:mm a').format(dt);
 
   static String shiftDate(DateTime d) => DateFormat('EEE, MMM d').format(d);
+
+  /// Local [DateTime] → `yy-MM-dd`.
+  static String shortDate(DateTime d) => DateFormat('yy-MM-dd').format(d);
 }

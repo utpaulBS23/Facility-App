@@ -141,4 +141,25 @@ class Endpoints {
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/approve';
   static const String rejectLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
+
+  /// Stock & Supply Management
+  static const String supplyRequests = '/partners/{partnerId}/supply-requests';
+  static const String supplyRequestDetails =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}';
+  static const String approveSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
+  static const String rejectSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+  static const String dispatchSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/dispatch';
+  static const String deliveries = '/partners/{partnerId}/deliveries';
+  static const String confirmDelivery =
+      '/partners/{partnerId}/deliveries/{deliveryId}/confirm';
+  static const String fileDeliveryComplaint =
+      '/partners/{partnerId}/deliveries/{deliveryId}/complaints';
+  static const String itemCatalog = '/partners/{partnerId}/item-catalog';
+  static const String submitShiftStockCount =
+      '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
+  static const String shiftStockCounts =
+      '/partners/{partnerId}/shift-stock-counts';
 }

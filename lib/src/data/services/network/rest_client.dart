@@ -314,5 +314,102 @@ abstract class RestClient {
     @Path('leaveRequestId') required int leaveRequestId,
     @Body() required Map<String, dynamic> body,
   });
+
+  /// Stock & Supply Management
+  @GET(Endpoints.supplyRequests)
+  Future<HttpResponse> getSupplyRequests({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('urgency') String? urgency,
+    @Query('search') String? search,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.supplyRequestDetails)
+  Future<HttpResponse> getSupplyRequestDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+  });
+
+  @POST(Endpoints.approveSupplyRequest)
+  Future<HttpResponse> approveSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.rejectSupplyRequest)
+  Future<HttpResponse> rejectSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.dispatchSupplyRequest)
+  Future<HttpResponse> dispatchSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Path('supplyRequestId') required int supplyRequestId,
+  });
+
+  @GET(Endpoints.deliveries)
+  Future<HttpResponse> getDeliveries({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('search') String? search,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.confirmDelivery)
+  Future<HttpResponse> confirmDelivery({
+    @Path('partnerId') required int partnerId,
+    @Path('deliveryId') required int deliveryId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.fileDeliveryComplaint)
+  Future<HttpResponse> fileDeliveryComplaint({
+    @Path('partnerId') required int partnerId,
+    @Path('deliveryId') required int deliveryId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.supplyRequests)
+  Future<HttpResponse> createSupplyRequest({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.itemCatalog)
+  Future<HttpResponse> getItemCatalog({
+    @Path('partnerId') required int partnerId,
+    @Query('search') String? search,
+    @Query('category') String? category,
+    @Query('is_active') bool? isActive,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.submitShiftStockCount)
+  Future<HttpResponse> submitShiftStockCount({
+    @Path('partnerId') required int partnerId,
+    @Path('shiftAssignmentId') required int shiftAssignmentId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.shiftStockCounts)
+  Future<HttpResponse> getShiftStockCounts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('shift_assignment_id') int? shiftAssignmentId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('from') String? from,
+    @Query('to') String? to,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
 }
 

@@ -88,3 +88,23 @@ VisitRepository visitRepository(Ref ref) {
 LeaveRepository leaveRepository(Ref ref) {
   return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+DeliveryRepository deliveryRepository(Ref ref) {
+  return DeliveryRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+SupplyRepository supplyRepository(Ref ref) {
+  return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+ItemCatalogRepository itemCatalogRepository(Ref ref) {
+  return ItemCatalogRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+StockRepository stockRepository(Ref ref) {
+  return StockRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
