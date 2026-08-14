@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/base.dart';
-import '../../../../core/di/dependency_injection.dart';
-import '../../../../domain/entities/stock/shift_stock_count_entity.dart';
+import '../../../../../core/base/base.dart';
+import '../../../../../core/di/dependency_injection.dart';
+import '../../../../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../widgets/update_stock_form_entry.dart';
 
 part 'submit_shift_stock_count_provider.g.dart';

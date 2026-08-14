@@ -52,9 +52,12 @@ List<RouteBase> _stockRoutes(Ref ref) => [
       GoRoute(
         path: Routes.stock,
         name: Routes.stock,
-        pageBuilder: (context, state) => const MaterialPage(
-          child: StockPage(),
-        ),
+        pageBuilder: (context, state) {
+          final args = state.extra! as StockPageArgs;
+          return MaterialPage(
+            child: StockPage(args: args),
+          );
+        },
       ),
       GoRoute(
         path: Routes.updateStock,

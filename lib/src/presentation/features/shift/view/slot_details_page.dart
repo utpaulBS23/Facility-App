@@ -26,6 +26,16 @@ class SlotDetailsPage extends ConsumerWidget {
     context.pushNamed(Routes.assignStaff, extra: currentSlot);
   }
 
+  void _onStock(BuildContext context, int facilityId, int? shiftAssignmentId) {
+    context.pushNamed(
+      Routes.stock,
+      extra: StockPageArgs(
+        facilityId: facilityId,
+        shiftAssignmentId: shiftAssignmentId,
+      ),
+    );
+  }
+
   Future<void> _onUnassignStaff(
     BuildContext context,
     WidgetRef ref,
@@ -105,6 +115,7 @@ class SlotDetailsPage extends ConsumerWidget {
       shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
     );
     final showCheckOut = me?.action == SlotAction.checkOut;
+    final facilityId = facility?.id;
 
     return _SlotDetailsActionListener(
       child: Scaffold(
@@ -123,6 +134,32 @@ class SlotDetailsPage extends ConsumerWidget {
                     _onMakeLead(context, ref, currentSlot, attendant),
               ),
             ),
+            if (facilityId != null)
+              PermissionGate(
+                permissions: const [UserPermission.shiftStockCountView],
+                child: SafeArea(
+                  top: false,
+                  bottom: !showCheckOut,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      context.dimensions.padding.p16,
+                      context.dimensions.spacing.s16,
+                      context.dimensions.padding.p16,
+                      showCheckOut ? 0 : context.dimensions.spacing.s16,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: context.dimensions.spacing.s44,
+                      child: OutlinedButton.icon(
+                        onPressed: () =>
+                            _onStock(context, facilityId, me?.assignmentId),
+                        icon: const Icon(Icons.inventory_2_outlined),
+                        label: Text(context.locale.stock),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (showCheckOut)
               _SlotDetailsCheckOutBar(
                 onCheckOut: () => _onCheckOut(context, currentSlot),

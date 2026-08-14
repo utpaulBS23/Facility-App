@@ -1,4 +1,4 @@
-import '../../../../domain/entities/stock/shift_stock_count_entity.dart';
+import '../../../../../domain/entities/stock/shift_stock_count_entity.dart';
 
 /// Reduces a submission history to one row per item — the most recently
 /// reported one.

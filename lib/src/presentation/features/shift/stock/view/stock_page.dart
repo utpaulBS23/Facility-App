@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/app_permission.dart';
-import '../../../../domain/entities/shift_slot_entity.dart';
-import '../../../../domain/entities/stock/shift_stock_count_entity.dart';
-import '../../../core/router/routes.dart';
-import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
-import '../../../core/widgets/app_error_widget.dart';
-import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/text/typography.dart';
+import '../../../../../core/extensions/app_localization.dart';
+import '../../../../../domain/entities/app_permission.dart';
+import '../../../../../domain/entities/stock/shift_stock_count_entity.dart';
+import '../../../../core/router/routes.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_back_button.dart';
+import '../../../../core/widgets/app_error_widget.dart';
+import '../../../../core/widgets/permission_gate.dart';
+import '../../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_stock_counts_provider.dart';
-import '../riverpod/stock_shift_slots_provider.dart';
 import '../utils/stock_count_utils.dart';
 import 'update_stock_page.dart';
 
@@ -23,23 +20,22 @@ part '../widgets/stock_footer_bar.dart';
 part '../widgets/stock_item_card.dart';
 part '../widgets/stock_summary_row.dart';
 
+class StockPageArgs {
+  const StockPageArgs({
+    required this.facilityId,
+    this.shiftAssignmentId,
+  });
+
+  final int facilityId;
+
+  /// Null when the caller isn't on an active slot — the update button hides.
+  final int? shiftAssignmentId;
+}
+
 class StockPage extends ConsumerWidget {
-  const StockPage({super.key});
+  const StockPage({super.key, required this.args});
 
-  String get _today => DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-  int? _assignmentIdFor(ShiftSlotsEntity data) {
-    final activeSlot = data.activeSlot;
-    if (activeSlot == null) return null;
-
-    for (final slot in data.slots) {
-      if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-        return slot.me?.assignmentId;
-      }
-    }
-
-    return null;
-  }
+  final StockPageArgs args;
 
   void _onBack(BuildContext context) {
     if (context.canPop()) {
@@ -49,26 +45,20 @@ class StockPage extends ConsumerWidget {
     }
   }
 
-  void _onUpdateStockBalances(
-    BuildContext context,
-    int facilityId,
-    int shiftAssignmentId,
-  ) {
+  void _onUpdateStockBalances(BuildContext context, int shiftAssignmentId) {
     context.pushNamed(
       Routes.updateStock,
       extra: UpdateStockPageArgs(
-        facilityId: facilityId,
+        facilityId: args.facilityId,
         shiftAssignmentId: shiftAssignmentId,
       ),
     );
   }
 
-  Scaffold _scaffold(
-    BuildContext context, {
-    required Widget body,
-    Widget? bottomNavigationBar,
-  }) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final color = context.color;
+    final shiftAssignmentId = args.shiftAssignmentId;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -80,55 +70,16 @@ class StockPage extends ConsumerWidget {
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: body,
-      bottomNavigationBar: bottomNavigationBar,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final slotsAsync = ref.watch(stockShiftSlotsProvider(_today));
-
-    return slotsAsync.when(
-      loading: () => _scaffold(
-        context,
-        body: const Center(child: CircularProgressIndicator()),
-      ),
-      error: (err, _) => _scaffold(
-        context,
-        body: AppErrorWidget(
-          message: err.toString(),
-          onRetry: () => ref.invalidate(stockShiftSlotsProvider(_today)),
-        ),
-      ),
-      data: (slots) {
-        final facilityId = slots.facility?.id;
-        if (facilityId == null) {
-          return _scaffold(
-            context,
-            body: AppErrorWidget(message: context.locale.noActiveShift),
-          );
-        }
-
-        final shiftAssignmentId = _assignmentIdFor(slots);
-
-        return _scaffold(
-          context,
-          body: _StockBody(facilityId: facilityId),
-          bottomNavigationBar: shiftAssignmentId == null
-              ? null
-              : PermissionGate(
-                  permissions: const [UserPermission.shiftStockCountCreate],
-                  child: _StockFooterBar(
-                    onUpdateStockBalances: () => _onUpdateStockBalances(
-                      context,
-                      facilityId,
-                      shiftAssignmentId,
-                    ),
-                  ),
-                ),
-        );
-      },
+      body: _StockBody(facilityId: args.facilityId),
+      bottomNavigationBar: shiftAssignmentId == null
+          ? null
+          : PermissionGate(
+              permissions: const [UserPermission.shiftStockCountCreate],
+              child: _StockFooterBar(
+                onUpdateStockBalances: () =>
+                    _onUpdateStockBalances(context, shiftAssignmentId),
+              ),
+            ),
     );
   }
 }
