@@ -630,7 +630,7 @@
   "stockAveraging": "Stock averaging",
   "stockAveragingSubtitle": "View monthly average stock demand",
   "updateStock": "Update Stock",
-  "updateStockTarget": "Update stock target",
+  "updateStockTarget": "Update Stock Target",
   "updateStockBalances": "Update Stock Balances",
   "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",
   "totalItems": "Total Items",

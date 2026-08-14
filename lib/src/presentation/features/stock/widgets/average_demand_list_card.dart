@@ -20,7 +20,7 @@ class _ItemStepperCardsSection extends StatelessWidget {
       separatorBuilder: (context, index) => Gap(spacing.s12),
       itemBuilder: (context, index) {
         final item = targets[index];
-        return _StepperItemCard(
+        return _QtyItemCard(
           item: item,
           onQtyChanged: (newQty) => onQtyChanged(item.stockItemId, newQty),
         );
@@ -29,8 +29,8 @@ class _ItemStepperCardsSection extends StatelessWidget {
   }
 }
 
-class _StepperItemCard extends StatelessWidget {
-  const _StepperItemCard({
+class _QtyItemCard extends StatefulWidget {
+  const _QtyItemCard({
     required this.item,
     required this.onQtyChanged,
   });
@@ -39,13 +39,34 @@ class _StepperItemCard extends StatelessWidget {
   final ValueChanged<double> onQtyChanged;
 
   @override
+  State<_QtyItemCard> createState() => _QtyItemCardState();
+}
+
+class _QtyItemCardState extends State<_QtyItemCard> {
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.item.monthlyTargetQty.toInt().toString(),
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onChanged(String value) {
+    final qty = double.tryParse(value);
+    if (qty != null) {
+      widget.onQtyChanged(qty);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final item = widget.item;
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
     final radius = context.dimensions.radius;
-
-    final qty = item.monthlyTargetQty.toInt();
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -130,7 +151,7 @@ class _StepperItemCard extends StatelessWidget {
             ),
           ),
           Gap(spacing.s16),
-          // ── QTY stepper row ─────────────────────────────────────
+          // ── QTY input row ────────────────────────────────────────
           Row(
             children: [
               Text(
@@ -141,9 +162,39 @@ class _StepperItemCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              ItemStepperInput(
-                quantity: qty,
-                onChanged: (newQty) => onQtyChanged(newQty.toDouble()),
+              SizedBox(
+                width: spacing.s80,
+                child: TextField(
+                  controller: _controller,
+                  onChanged: _onChanged,
+                  textAlign: TextAlign.center,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  style: textStyle.bodyMedium.copyWith(
+                    color: color.text.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: spacing.s8,
+                      vertical: spacing.s8,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(radius.r10),
+                      borderSide: BorderSide(color: color.borderSubtle),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(radius.r10),
+                      borderSide: BorderSide(color: color.borderSubtle),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(radius.r10),
+                      borderSide: BorderSide(color: color.primary),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
