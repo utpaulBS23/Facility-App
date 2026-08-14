@@ -320,6 +320,19 @@ class _FacilityStockBalanceBody extends ConsumerWidget {
           );
         }
 
+        int statusPriority(FacilityStockStatus status) {
+          return switch (status) {
+            FacilityStockStatus.out => 0,
+            FacilityStockStatus.low => 1,
+            FacilityStockStatus.ok => 2,
+            FacilityStockStatus.unknown => 3,
+          };
+        }
+
+        final sortedItems = List<FacilityStockBalanceEntity>.from(items)
+          ..sort((a, b) =>
+              statusPriority(a.status).compareTo(statusPriority(b.status)));
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -328,8 +341,8 @@ class _FacilityStockBalanceBody extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _StockStatTile(
-                      value: '${summary.okCount}',
-                      label: 'OK',
+                      value: '${summary.outCount}',
+                      label: 'Out of stock',
                     ),
                   ),
                   Gap(spacing.s12),
@@ -342,28 +355,28 @@ class _FacilityStockBalanceBody extends ConsumerWidget {
                   Gap(spacing.s12),
                   Expanded(
                     child: _StockStatTile(
-                      value: '${summary.outCount}',
-                      label: 'Out of stock',
+                      value: '${summary.okCount}',
+                      label: 'Healthy',
                     ),
                   ),
                 ],
               )
             else
               _StockSummaryRow(
-                totalItems: items.length,
-                lastUpdated: items.first.lastCountedAt != null &&
-                        items.first.lastCountedAt!.length >= 10
-                    ? items.first.lastCountedAt!.substring(0, 10)
+                totalItems: sortedItems.length,
+                lastUpdated: sortedItems.first.lastCountedAt != null &&
+                        sortedItems.first.lastCountedAt!.length >= 10
+                    ? sortedItems.first.lastCountedAt!.substring(0, 10)
                     : 'N/A',
               ),
             Gap(spacing.s16),
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: items.length,
+              itemCount: sortedItems.length,
               separatorBuilder: (context, index) => Gap(spacing.s12),
               itemBuilder: (context, index) =>
-                  _FacilityBalanceCard(item: items[index]),
+                  _FacilityBalanceCard(item: sortedItems[index]),
             ),
           ],
         );

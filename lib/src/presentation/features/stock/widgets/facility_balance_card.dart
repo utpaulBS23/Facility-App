@@ -94,7 +94,7 @@ class _StockStatusPill extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (status) {
       FacilityStockStatus.ok => StatusPill(
-          label: 'OK',
+          label: 'Healthy',
           background: Colors.green.withValues(alpha: 0.1),
           foreground: Colors.green.shade700,
         ),
