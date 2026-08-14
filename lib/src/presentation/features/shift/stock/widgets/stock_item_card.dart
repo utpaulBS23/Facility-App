@@ -58,6 +58,7 @@ class _StockItemCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    Gap(spacing.s4),
                     Expanded(
                       child: Text(
                         context.locale.reportedByLabel(
