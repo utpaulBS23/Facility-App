@@ -523,3 +523,11 @@ GetFacilityStockBalanceUseCase getFacilityStockBalanceUseCase(Ref ref) {
   );
 }
 
+@riverpod
+GetStockAveragingUseCase getStockAveragingUseCase(Ref ref) {
+  return GetStockAveragingUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+

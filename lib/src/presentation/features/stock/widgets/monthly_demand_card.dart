@@ -1,15 +1,17 @@
 part of '../view/stock_averaging_page.dart';
 
 class _MonthlyDemandCard extends StatelessWidget {
-  const _MonthlyDemandCard({required this.stats});
+  const _MonthlyDemandCard({required this.items});
 
-  final List<MonthlyDemandStat> stats;
+  final List<TopDemandItemEntity> items;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
+
+    if (items.isEmpty) return const SizedBox.shrink();
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -32,7 +34,7 @@ class _MonthlyDemandCard extends StatelessWidget {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: stats.length,
+            itemCount: items.length.clamp(0, 4),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -40,7 +42,7 @@ class _MonthlyDemandCard extends StatelessWidget {
               childAspectRatio: 1.45,
             ),
             itemBuilder: (context, index) {
-              return _DemandStatTile(stat: stats[index]);
+              return _DemandStatTile(item: items[index]);
             },
           ),
         ],
@@ -50,15 +52,19 @@ class _MonthlyDemandCard extends StatelessWidget {
 }
 
 class _DemandStatTile extends StatelessWidget {
-  const _DemandStatTile({required this.stat});
+  const _DemandStatTile({required this.item});
 
-  final MonthlyDemandStat stat;
+  final TopDemandItemEntity item;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
+
+    final qtyStr = item.totalMonthlyDemandQty % 1 == 0
+        ? item.totalMonthlyDemandQty.toInt().toString()
+        : item.totalMonthlyDemandQty.toString();
 
     return Container(
       padding: EdgeInsets.all(spacing.s12),
@@ -73,11 +79,11 @@ class _DemandStatTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(stat.icon, size: 16, color: color.primary),
+              Icon(Icons.inventory_2_outlined, size: 16, color: color.primary),
               Gap(spacing.s4),
               Expanded(
                 child: Text(
-                  stat.title,
+                  item.itemName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: textStyle.bodySmall.copyWith(
@@ -89,14 +95,14 @@ class _DemandStatTile extends StatelessWidget {
           ),
           Gap(spacing.s6),
           Text(
-            stat.totalValue.toString(),
+            qtyStr,
             style: textStyle.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: color.text.primary,
             ),
           ),
           Text(
-            stat.unit,
+            item.unit,
             style: textStyle.bodySmall.copyWith(
               color: color.text.secondary,
               fontSize: 11,

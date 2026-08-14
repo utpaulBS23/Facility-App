@@ -1,8 +1,12 @@
 part of '../view/stock_averaging_page.dart';
 
 class _FacilityDropdownCard extends StatelessWidget {
-  const _FacilityDropdownCard({required this.onTap});
+  const _FacilityDropdownCard({
+    required this.facilityName,
+    required this.onTap,
+  });
 
+  final String facilityName;
   final VoidCallback onTap;
 
   @override
@@ -37,14 +41,14 @@ class _FacilityDropdownCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Facility',
+                    context.locale.selectFacility,
                     style: textStyle.bodySmall.copyWith(
                       color: color.text.secondary,
                     ),
                   ),
                   Gap(spacing.s2),
                   Text(
-                    'Select facility',
+                    facilityName,
                     style: textStyle.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       color: color.text.primary,

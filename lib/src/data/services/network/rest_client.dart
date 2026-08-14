@@ -421,5 +421,13 @@ abstract class RestClient {
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
+
+  @GET(Endpoints.stockAveraging)
+  Future<HttpResponse> getStockAveraging({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
 }
 

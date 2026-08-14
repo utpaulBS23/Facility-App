@@ -70,11 +70,7 @@ class _StockPageState extends ConsumerState<StockPage> {
   }
 
   void _onBack(BuildContext context) {
-    if (context.canPop()) {
-      context.pop();
-    } else {
-      context.goNamed(Routes.shift);
-    }
+    context.goNamed(Routes.shift);
   }
 
   void _onUpdateStockBalances(

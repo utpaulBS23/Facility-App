@@ -6,7 +6,7 @@ class _FacilityAveragingListCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final FacilityAveragingItem item;
+  final FacilityStockTargetEntity item;
   final VoidCallback onTap;
 
   @override
@@ -14,6 +14,11 @@ class _FacilityAveragingListCard extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final textStyle = context.textStyle;
+
+    final isSetUp = item.monthlyTargetQty > 0;
+    final dateStr = item.updatedAt.length >= 10
+        ? item.updatedAt.substring(0, 10)
+        : item.updatedAt;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -34,7 +39,7 @@ class _FacilityAveragingListCard extends StatelessWidget {
               ),
             ),
             child: Icon(
-              Icons.water_drop_outlined,
+              Icons.location_city_outlined,
               color: color.primary,
               size: 22,
             ),
@@ -44,15 +49,6 @@ class _FacilityAveragingListCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    StatusDotTag(
-                      label: item.statusText,
-                      dotColor: color.warning,
-                    ),
-                  ],
-                ),
-                Gap(spacing.s6),
                 Text(
                   item.facilityName,
                   style: textStyle.bodyLarge.copyWith(
@@ -69,10 +65,14 @@ class _FacilityAveragingListCard extends StatelessWidget {
                       color: color.text.secondary,
                     ),
                     Gap(spacing.s4),
-                    Text(
-                      item.managerName,
-                      style: textStyle.bodySmall.copyWith(
-                        color: color.text.secondary,
+                    Expanded(
+                      child: Text(
+                        item.updatedByName,
+                        style: textStyle.bodySmall.copyWith(
+                          color: color.text.secondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -81,7 +81,7 @@ class _FacilityAveragingListCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'Update: ${item.lastUpdate}  •  ',
+                      'Updated: $dateStr  •  ',
                       style: textStyle.bodySmall.copyWith(
                         color: color.text.secondary,
                         fontSize: 11,
@@ -91,15 +91,15 @@ class _FacilityAveragingListCard extends StatelessWidget {
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: color.success,
+                        color: isSetUp ? color.success : color.error,
                         shape: BoxShape.circle,
                       ),
                     ),
                     Gap(spacing.s4),
                     Text(
-                      item.setupStatus,
+                      isSetUp ? 'Set up' : 'Not set up',
                       style: textStyle.bodySmall.copyWith(
-                        color: color.success,
+                        color: isSetUp ? color.success : color.error,
                         fontWeight: FontWeight.bold,
                         fontSize: 11,
                       ),
