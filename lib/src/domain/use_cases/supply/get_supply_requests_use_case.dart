@@ -4,18 +4,23 @@ import '../../entities/common/paginated_list_entity.dart';
 import '../../entities/supply/supply_filters.dart';
 import '../../entities/supply/supply_request_entity.dart';
 import '../../repositories/supply_repository.dart';
+import '../partner_use_case.dart';
 
-final class GetSupplyRequestsUseCase {
+final class GetSupplyRequestsUseCase extends PartnerUseCase {
   GetSupplyRequestsUseCase({
     required this.supplyRepository,
+    required super.authRepository,
   });
 
   final SupplyRepository supplyRepository;
 
-  Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> call(
-    SupplyRequestQueryFilter filter,
-  ) async {
-    final result = await supplyRepository.getSupplyRequests(filter);
+  Future<Result<PaginatedListEntity<SupplyRequestEntity>, Failure>> call([
+    SupplyRequestQueryFilter? filter,
+  ]) async {
+    final partnerId = getPartnerId();
+    final result = await supplyRepository.getSupplyRequests(
+      (filter ?? const SupplyRequestQueryFilter()).copyWith(partnerId: partnerId),
+    );
 
     return switch (result) {
       Success(:final data) => Success(data: data),

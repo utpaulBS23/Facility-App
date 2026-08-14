@@ -3,10 +3,12 @@ import '../../../core/base/result.dart';
 import '../../entities/supply/supply_request_entity.dart';
 import '../../entities/supply/supply_request_payloads.dart';
 import '../../repositories/supply_repository.dart';
+import '../partner_use_case.dart';
 
-final class CreateSupplyRequestUseCase {
+final class CreateSupplyRequestUseCase extends PartnerUseCase {
   CreateSupplyRequestUseCase({
     required this.supplyRepository,
+    required super.authRepository,
   });
 
   final SupplyRepository supplyRepository;
@@ -14,7 +16,10 @@ final class CreateSupplyRequestUseCase {
   Future<Result<SupplyRequestEntity, Failure>> call(
     CreateSupplyRequestEntity request,
   ) async {
-    final result = await supplyRepository.createSupplyRequest(request);
+    final partnerId = getPartnerId();
+    final result = await supplyRepository.createSupplyRequest(
+      request.copyWith(partnerId: partnerId),
+    );
 
     return switch (result) {
       Success(:final data) => Success(data: data),
