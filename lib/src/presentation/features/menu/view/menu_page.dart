@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/base/base.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
@@ -33,6 +34,28 @@ class _MenuPageState extends ConsumerState<MenuPage> {
         onConfirm: () => ref.read(menuNotifierProvider.notifier).logout(),
       ),
     );
+  }
+
+  // WHY: staff have no facility picker yet — the door control screen is
+  // scoped to whichever facility this account can see first. Revisit once a
+  // real facility-assignment/gateway-directory concept exists.
+  Future<void> _onDoorControlTap() async {
+    final result = await ref.read(getFacilitiesUseCaseProvider).call();
+    if (!mounted) return;
+
+    switch (result) {
+      case Success(:final data)
+          when data != null && data.facilities.isNotEmpty:
+        context.pushNamed(Routes.doorControl, extra: data.facilities.first);
+      case Error(:final error):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.localizedMessage(context))),
+        );
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.locale.noFacilityAssigned)),
+        );
+    }
   }
 
   @override
@@ -123,6 +146,13 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                 context.goNamed(Routes.supplyRequests);
               },
             ),
+          ),
+          Gap(spacing.s8),
+          _MenuItem(
+            icon: Icons.sensor_door_outlined,
+            title: context.locale.doorControl,
+            subtitle: context.locale.primaryDevice,
+            onTap: _onDoorControlTap,
           ),
           const Spacer(),
           Padding(

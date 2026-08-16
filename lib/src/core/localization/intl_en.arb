@@ -1,655 +1,692 @@
 {
-  "english": "English",
-  "bangla": "বাংলা",
-  "arabic": "العربية",
-  "home": "Home",
-  "profile": "Profile",
-  "task": "Task ",
-  "issues": "Issues",
-  "login": "Login",
-  "createNewPassword": "Create New password",
-  "createNewPasswordHint": "Your new password must be different from previous used passwords.",
-  "resetPassword": "Reset Password",
-  "newPassword": "New Password",
-  "passwordChangeSuccess": "Password Changed Successfully",
-  "emailRequired": "Email is required",
-  "passwordRequired": "Password is required",
-  "isRequired": "This field is required",
-  "validEmail": "Please enter valid email address",
-  "enterAssociatedEmail": "Enter the email associated with your account and we’ll send an email with instructions to reset your password.",
-  "minLengthValidation": "This field must be at least {min} characters long",
-  "@minLengthValidation": {
-    "description": "Error message for minimum length validation",
-    "placeholders": {
-      "min": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "maxLengthValidation": "This field must be at most {max} characters long",
-  "@maxLengthValidation": {
-    "description": "Error message for maximum length validation",
-    "placeholders": {
-      "max": {
-        "type": "int",
-        "example": "20"
-      }
-    }
-  },
-  "yourPasswordChanged": "Your password has been changed successfully.",
-  "confirmPassword": "Confirm Password",
-  "logout": "Logout",
-  "getStarted": "Get Started",
-  "forgotPassword": "Forgot password?",
-  "backToLogin": "Back to login",
-  "continueAction": "Continue",
-  "signUp": "Sign up",
-  "signIn": "Sign in",
-  "email": "Email",
-  "emailAddress": "Email Address",
-  "password": "Password",
-  "firstName": "First Name",
-  "lastName": "Last Name",
-  "dontHaveAccount": "Don't have an account? ",
-  "alreadyHaveAccount": "Already have an account? ",
-  "checkYourMail": "Check your mail",
-  "enterVerificationCode": "Please enter 4 digit code sent to your mail hello**@gmail.com.",
-  "didntGetCode": "Didn't get a code? ",
-  "clickToResend": "Click to resend",
-  "didNotReceiveEmail": "Did not receive the email? Check your spam filter. or ",
-  "tryAnotherEmail": "try another email address",
-  "learnFlutterTitle": "Learn Flutter with comprehensive tutorials.",
-  "learnFlutterSubtitle": "Step-by-step guides for building Flutter apps.",
-  "learnFlutterDescription": "Get notifications for new tutorials and updates.",
-  "joinCommunityTitle": "Join the Flutter community.",
-  "joinCommunitySubtitle": "Connect with other Flutter developers.",
-  "joinCommunityDescription": "Participate in community events and discussions.",
-  "buildDeployTitle": "Build and deploy Flutter apps easily.",
-  "buildDeploySubtitle": "Access tools and resources for app development.",
-  "buildDeployDescription": "Deploy your apps to multiple platforms with ease.",
-  "passwordMinLengthValidation": "Password must be at least {minLength} characters",
-  "@passwordMinLengthValidation": {
-    "description": "Error message for password minimum length validation",
-    "placeholders": {
-      "minLength": {
-        "type": "String"
-      }
-    }
-  },
-  "passwordNumberValidation": "Password must contain at least one number",
-  "passwordLowerCaseValidation": "Password must contain at least one lowercase letter",
-  "passwordUpperCaseValidation": "Password must contain at least one uppercase letter",
-  "passwordSpecialCharValidation": "Password must contain at least one special character",
-  "passwordMismatchValidation": "Passwords do not match",
-  "pbilLogo": "Prime Bank Investment Limited logo",
-  "mipTitle": "PrimeInvest Monthly Investment Plan (MIP)",
-  "mipDescription": "Start with small monthly investments and watch your wealth grow steadily, securing your future with every contribution.",
-  "cpsTitle": "PrimeInvest Capital Protected Scheme",
-  "cpsDescription": "Secure your hard-earned money with guaranteed protection, ensuring steady growth even in uncertain markets.",
-  "selectCountryOfResidence": "Select Your Country of Residence",
-  "selectCountryOfResidenceHint": "This helps us choose the correct verification method for your account setup.",
-  "countryOfResidence": "Country of Residence",
-  "chooseYourCountry": "Choose your country",
-  "countryOfResidenceInfo": "If you are a resident of Bangladesh, your account will be created using phone number verification. For all other countries, an OTP will be sent to your email address.",
-  "welcomeToApp": "Welcome to Prime Bank Investment PLC.",
-  "registrationPhoneSubtitle": "Enter your phone number and we will send you a verification code",
-  "registrationEmailSubtitle": "Enter your email address and we will send you a verification code",
-  "phone": "Phone",
-  "enterPhoneNumber": "Enter your phone number",
-  "enterEmailAddress": "Enter your email address",
-  "or": "OR",
-  "continueWithGoogle": "Continue with Google",
-  "continueWithFacebook": "Continue with Facebook",
-  "continueWithApple": "Continue with Apple",
-  "appName": "Bhumijo",
-  "appSubtitle": "Toilet Facility Management System",
-  "loginSubtitle": "Enter your details below",
-  "userId": "User ID",
-  "enterYourId": "Enter your ID",
-  "shiftCheckIn": "Shift Check-in",
-  "toiletName": "Toilet Name",
-  "location": "Location",
-  "shiftTime": "Shift Time",
-  "checkIn": "Check In",
-  "checkOut": "Check Out",
-  "addPhoto": "Add Photo",
-  "takePhoto": "Take Photo",
-  "uploadFromGallery": "Upload from Gallery",
-  "cancel": "Cancel",
-  "submit": "Submit",
-  "save": "Save",
-  "photoRequired": "Please add a photo",
-  "noActiveShift": "No active shift found",
-  "selectShift": "Select Shift",
-  "morning": "Morning",
-  "afternoon": "Afternoon",
-  "evening": "Evening",
-  "night": "Night",
-  "autoDetectedInfo": "Auto-Detected Info",
-  "checkInTime": "Check-In Time",
-  "checkOutTime": "Check-Out Time",
-  "supervisorName": "Supervisor Name",
-  "shiftCheckInPhotoInstructions": "To open the camera, tap the 'Take Photo' button below. Ensure your face is centered within the circle",
-  "retake": "Retake",
-  "capture": "Capture",
-  "loading": "Loading...",
-  "locationUnavailable": "Location unavailable, please try again",
-  "photoCaptureFailed": "Photo capture failed",
-  "tryAgain": "Try Again",
-  "retry": "Retry",
-  "manualAttendance": "Manual Attendance",
-  "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
-  "manualAttendanceReasonHint": "Describe the issue (e.g., camera not working)",
-  "reasonRequired": "Reason is required",
-  "cantTakeSelfie": "Can't take selfie, ",
-  "requestSupervisor": "Request supervisor",
-  "toManuallyProcessCheckIn": "\nto manually process your check-in",
-  "cameraAccessRequiredMessage": "Camera access required or face not detected",
-  "requestSupervisorMessage": "If you're having trouble taking a selfie, please request your supervisor to assist you with the check-in process.",
-  "approvalRequest": "Approval Request",
-  "waitingForApproval": "Waiting for Approval",
-  "waitingForApprovalMessage": "Your request has been sent. Please wait until your supervisor reviews and approves your check-in.",
-  "withdraw": "Withdraw",
-  "refresh": "Refresh",
-  "supervisor": "Supervisor",
-  "approvalSuccess": "Check Out Successfully",
-  "approvalSuccessfulMessage": "Your checkout was successful",
-  "approvalFailed": "Check Out Failed",
-  "approvalFailedMessage": "Your checkout failed",
-  "faceVerificationRequired": "Face Verification Required",
-  "faceVerificationRequiredMessage": "Your request requires face verification. Please proceed to verify your identity with a selfie.",
-  "reasonLabel": "Reason*",
-  "reasonCameraNotWorking": "Camera is not working",
-  "reasonCameraUnavailable": "Camera is unavailable",
-  "reasonPhoneCameraBroken": "Phone camera broken",
-  "reasonNoCameraDevice": "Device does not have a camera",
-  "attendance": "Attendance",
-  "present": "Present",
-  "late": "Late",
-  "absent": "Absent",
-  "leave": "Leave",
-  "onLeave": "On Leave",
-  "applyLeave": "Apply Leave",
-  "today": "Today",
-  "attendanceDetails": "Attendance details",
-  "back": "Back",
-  "hoursWorked": "Hours Worked",
-  "shiftType": "Shift Type",
-  "selfieVerification": "Selfie Verification",
-  "supervisorApproved": "Supervisor Approved",
-  "logoutConfirmMessage": "Are you sure you want to logout?",
-  "confirm": "Confirm",
-  "menu": "Menu",
-  "shift": "Shift",
-  "inProgress": "In Progress",
-  "resolved": "Resolved",
-  "upcoming": "Upcoming",
-  "shiftDetails": "Shift details",
-  "assignedSupervisor": "Assigned Supervisor",
-  "shiftNotes": "Shift Notes",
-  "date": "Date",
-  "time": "Time",
-  "duration": "Duration",
-  "leaveBalance": "Leave Balance",
-  "pending": "Pending",
-  "leaveType": "Leave Type",
-  "sickLeave": "Sick Leave",
-  "casualLeave": "Casual Leave",
-  "maternityLeave": "Maternity Leave",
-  "reasonOptional": "Reason (optional)",
-  "submitLeaveRequest": "Submit Leave Request",
-  "reason": "Reason",
-  "optional": "Optional",
-  "shiftsUnavailable": "Shifts are not available for your account.",
-  "assigned": "Assigned",
-  "assignStaff": "Assign Staff",
-  "slotCapacity": "{assigned}/{max}",
-  "@slotCapacity": {
-    "placeholders": {
-      "assigned": {
-        "type": "int",
-        "example": "2"
-      },
-      "max": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "belowMinimumStaff": "Needs {min}",
-  "@belowMinimumStaff": {
-    "placeholders": {
-      "min": {
-        "type": "int",
-        "example": "1"
-      }
-    }
-  },
-  "slotLead": "Slot lead",
-  "attendantName": "Name",
-  "staffCode": "Staff Code",
-  "slotStatusCompleted": "Completed",
-  "slotStatusPartialMiss": "Partial miss",
-  "slotFull": "Slot full",
-  "slotStatusOpen": "Open",
-  "slotStatusFull": "Full",
-  "slotStatusMissed": "Missed",
-  "slotStatusCancelled": "Cancelled",
-  "checkedInCount": "{count} checked in",
-  "@checkedInCount": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "2"
-      }
-    }
-  },
-  "checkedOutCount": "{count} checked out",
-  "@checkedOutCount": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "1"
-      }
-    }
-  },
-  "employeeShortest": "Employee Shortest",
-  "notAvailable": "N/A",
-  "noShiftsFound": "No shifts scheduled for this date.",
-  "noShiftToday": "No Shift Today",
-  "noShiftTodayHelp": "Please contact your supervisor if you need assistance.",
-  "shiftNotYetAccessible": "Check-In Not Available Yet",
-  "shiftNotYetAccessibleHelp": "Check-in opens 15 minutes before your shift starts.",
-  "shiftWindowClosed": "Check-In Window Closed",
-  "shiftWindowClosedHelp": "Please contact your supervisor for assistance.",
-  "noAttendantsFound": "No attendants found",
-  "staffAssignedSuccessfully": "Staff assigned successfully.",
-  "assignAsSlotLead": "Assign as Slot Lead",
-  "assignAsSlotLeadMessage": "Assign {name} as the slot lead for this shift?",
-  "@assignAsSlotLeadMessage": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Frank Rodriguez"
-      }
-    }
-  },
-  "assignmentUnavailable": "Assignment isn't available right now. Please try again later.",
-  "unassignStaff": "Remove Staff",
-  "unassignStaffMessage": "Remove {name} from this shift?",
-  "@unassignStaffMessage": {
-    "placeholders": {
-      "name": {
-        "type": "String",
-        "example": "Frank Rodriguez"
-      }
-    }
-  },
-  "remove": "Remove",
-  "staffUnassignedSuccessfully": "Staff removed from shift.",
-  "makeSlotLead": "Make Slot Lead",
-  "slotLeadUpdatedSuccessfully": "Slot lead updated.",
-  "status": "Status",
-  "approvedBy": "Approved By",
-  "approve": "Approve",
-  "reject": "Reject",
-  "rejected": "Rejected",
-  "approved": "Approved",
-  "facilityName": "Facility",
-  "shiftsCount": "{count} Shifts",
-  "@shiftsCount": {
-    "description": "Label showing number of shifts for the selected date",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "3"
-      }
-    }
-  },
-  "myVisits": "My Visits",
-  "thisWeek": "This Week",
-  "completed": "Completed",
-  "scheduled": "Scheduled",
-  "routineInspection": "Routine Inspection",
-  "followUp": "Follow-up",
-  "noVisitsFound": "No visits found for this period.",
-  "visitDetails": "Visit Details",
-  "checkInToVisit": "Check In to Visit",
-  "purposeOfVisit": "Purpose of the visit",
-  "visitCheckIn": "Visit Check-in",
-  "confirmCheckIn": "Confirm Check-in",
-  "gpsLocationVerification": "GPS Location Verification",
-  "locationVerified": "Location Verified",
-  "withinRange": "You are within range of the facility",
-  "yourPosition": "Your Position",
-  "distance": "Distance",
-  "gettingLocation": "Getting your location...",
-  "locationPermissionDenied": "Location permission denied. Please enable in settings.",
-  "inspectionChecklist": "Inspection Checklist",
-  "inspectionProgress": "Inspection Progress",
-  "repairWork": "Repair Work",
-  "newIssue": "New Issue",
-  "totalScore": "Total Score",
-  "outOf": "Out of {max}",
-  "@outOf": {
-    "placeholders": {
-      "max": {
-        "type": "int"
-      }
-    }
-  },
-  "completeAllItemsWarning": "Please complete all items before submission",
-  "yes": "Yes",
-  "no": "No",
-  "reported": "Reported",
-  "photoAttached": "Photo attached",
-  "attachPhoto": "Attach photo",
-  "visit": "Visit",
-  "view": "View",
-  "start": "Start",
-  "taskDetails": "Task Details",
-  "startTask": "Start Task",
-  "completeTask": "Complete Task",
-  "noTasksFound": "No tasks found.",
-  "proofAltLabel": "Photo description",
-  "proofAltHint": "Example: Bulb replaced",
-  "uploadTaskMediaFailed": "Failed to upload proof photo",
-  "high": "High",
-  "medium": "Medium",
-  "low": "Low",
-  "due": "Due",
-  "gallery": "Gallery",
-  "proofRequired": "Proof Required",
-  "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion.",
-  "changePhoto": "Change Photo",
-  "submitProof": "Submit Proof",
-  "visitSubmittedSuccessfully": "Visit submitted successfully.",
-  "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
-  "submitChecklistFailed": "Failed to submit inspection checklist.",
-  "saveChecklistAnswerFailed": "Failed to save answer.",
-  "leaveRequests": "Leave Requests",
-  "managerApproval": "Manager Approval",
-  "noRequestsFound": "No requests found",
-  "selectAttendant": "Select attendant",
-  "change": "Change",
-  "add": "Add",
-  "close": "Close",
-  "attendant": "Attendant",
-  "leaveDetails": "Leave Details",
-  "rejection": "Rejection",
-  "all": "All",
-  "somethingWentWrong": "Something went wrong. Please try again.",
-  "morningShift": "MORNING SHIFT",
-  "eveningShift": "EVENING SHIFT",
-  "nightShift": "NIGHT SHIFT",
-  "search": "Search",
-  "dateRange": "Date Range",
-  "shiftInformation": "Shift Information",
-  "facility": "Facility",
-  "selectFacility": "Select Facility",
-  "dateTime": "Date & Time",
-  "statusTimeline": "Status Timeline",
-  "requestedBy": "Requested by {name}",
-  "@requestedBy": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "requestedOnBehalfBy": "{submitter} (on behalf of {applicant})",
-  "@requestedOnBehalfBy": {
-    "placeholders": {
-      "submitter": {
-        "type": "String"
-      },
-      "applicant": {
-        "type": "String"
-      }
-    }
-  },
-  "approvedBySupervisor": "Approved by Supervisor",
-  "rejectedBySupervisor": "Rejected by Supervisor",
-  "waitingForManagerApprovalTitle": "Waiting for Manager Approval",
-  "pendingSupervisorApproval": "Pending Supervisor Approval",
-  "assignedToSupervisor": "Assigned to Supervisor",
-  "assignedToManager": "Assigned to Manager",
-  "justNow": "Just now",
-  "leaveApproval": "Leave Approval",
-  "awaitingFinalApproval": "Awaiting final approval",
-  "startDate": "Start Date",
-  "endDate": "End Date",
-  "own": "Own",
-  "onBehalf": "On Behalf",
-  "leaveRequestSubmitted": "Leave Request Submitted",
-  "leaveSubmittedMessage": "Your leave request has been sent to your supervisor for approval. You'll be notified once it's reviewed.",
-  "backToShift": "Back to shift",
-  "endSessionAndSignOut": "End session and sign out",
-  "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
-  "noShiftsAvailableForDate": "No shifts available for the selected date",
-  "pendingManager": "Pending Manager",
-  "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
-  "@daysCount": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "1"
-      }
-    }
-  },
-  "annualLeave": "Annual Leave",
-  "unpaidLeave": "Unpaid Leave",
-  "other": "Other",
-  "rosters": "Rosters",
-  "noRostersFound": "No rosters found.",
-  "createRoster": "Create Roster",
-  "weekStartLabel": "Week start ({day})",
-  "@weekStartLabel": {
-    "placeholders": {
-      "day": {
-        "type": "String",
-        "example": "Sat"
-      }
-    }
-  },
-  "activeDaysThisWeek": "Active days this week",
-  "mon": "Mon",
-  "tue": "Tue",
-  "wed": "Wed",
-  "thu": "Thu",
-  "fri": "Fri",
-  "sat": "Sat",
-  "sun": "Sun",
-  "rosterCoversMessage": "Roster covers {start} → {end}. Created as a draft with no slots — add slots from your shift templates, then publish once every slot meets its minimum attendants.",
-  "@rosterCoversMessage": {
-    "placeholders": {
-      "start": {
-        "type": "String",
-        "example": "2026-07-23"
-      },
-      "end": {
-        "type": "String",
-        "example": "2026-07-29"
-      }
-    }
-  },
-  "createDraftRoster": "Create draft roster",
-  "rosterCreatedSuccessfully": "Roster created successfully.",
-  "weekly": "Weekly",
-  "notes": "Notes",
-  "publishedBy": "Published by",
-  "publish": "Publish",
-  "rosterPublishedSuccessfully": "Roster published successfully.",
-  "rosterShifts": "Roster Shifts",
-  "unassigned": "Unassigned",
-  "totalShifts": "Total Shifts",
-  "noShiftsInRoster": "No shifts in this roster yet.",
-  "createShift": "Create Shift",
-  "shiftTemplate": "Shift Template",
-  "selectShiftTemplate": "Select a shift template",
-  "shiftDate": "Shift Date",
-  "minAttendants": "Min Attendants",
-  "maxAttendants": "Max Attendants",
-  "maxAttendantsError": "Max attendants must be at least min attendants.",
-  "shiftCreatedSuccessfully": "Shift created successfully.",
-  "errorPartnerUnavailable": "This area is not available for your account.",
-  "errorNoAccessibleFacility": "No facility is available for your account.",
-  "errorPermissionDenied": "You do not have permission to perform this action.",
-  "errorNoConnection": "Unable to connect. Please check your internet connection and try again.",
-  "errorTimeout": "The request took too long to complete. Please try again.",
-  "errorSessionExpired": "Your session has expired. Please sign in again.",
-  "errorNotFound": "We could not find what you were looking for.",
-  "errorGeneric": "Something went wrong. Please try again.",
-  "manager": "Manager",
-  "owner": "Owner",
-  "pendingOwner": "Pending Owner",
-  "dispatch": "Dispatch",
-  "dispatchSuccess": "Request dispatched.",
-  "supplyRequests": "Supply Requests",
-  "newRequest": "New Request",
-  "noSupplyRequestsFound": "No supply requests found",
-  "supplyItemsCount": "{count} items",
-  "@supplyItemsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "pendingSupervisor": "Pending Supervisor",
-  "pendingOperationManager": "Pending Operation Manager",
-  "operationManagerApproved": "Operation Manager Approved",
-  "inDelivery": "In Delivery",
-  "delivered": "Delivered",
-  "pendingDeliveries": "Pending Deliveries",
-  "pendingDeliveryAlertSubtitle": "{count} approved request awaiting delivery",
-  "@pendingDeliveryAlertSubtitle": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "urgencyUrgent": "Urgent",
-  "urgencyHigh": "High Priority",
-  "urgencyNormal": "Normal",
-  "urgencyLow": "Low",
-  "supplyRequestsSubtitle": "Manage and request facility stock",
-  "urgency": "Urgency",
-  "itemsNeeded": "Items Needed",
-  "item": "Item",
-  "selectItem": "Select Item",
-  "quantityAbbrev": "Qty",
-  "addMoreItems": "Add More Items",
-  "newRequestTitle": "New Supply Request",
-  "submitRequest": "Submit Request",
-  "requestSubmittedSuccessfully": "Request submitted successfully",
-  "requestNotesHint": "Add any additional instructions or notes here...",
-  "edit": "Edit",
-  "addItem": "Add Item",
-  "itemChangesSavedSuccessfully": "Item changes saved successfully",
-  "requestDetailsTitle": "Request Details",
-  "requestedByLabel": "Requested by",
-  "submittedOn": "Submitted {date}",
-  "@submittedOn": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "noNotesProvided": "No notes provided",
-  "confirmDeliveryReceipt": "Confirm Delivery Receipt",
-  "deliveryStage": "Delivery",
-  "receivedItemsCount": "Received items ({count})",
-  "@receivedItemsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "requestedItemsCount": "Requested items ({count})",
-  "@requestedItemsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "receivedBy": "Received By",
-  "receivedOn": "Received {date}",
-  "@receivedOn": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "camera": "Camera",
-  "checkAll": "Check All",
-  "uncheckAll": "Uncheck All",
-  "orderDetails": "Order Details",
-  "requestIdLabel": "Request ID",
-  "deliveryReceiptPhotoOptional": "Delivery Receipt Photo (Optional)",
-  "itemCodeLabel": "Item Code: {code}",
-  "@itemCodeLabel": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "requestedLabel": "Requested",
-  "expectedLabel": "Expected",
-  "receivedLabel": "Received",
-  "amountReceivedLabel": "Amount received",
-  "photoOfEvidenceReport": "Photo of the evidence report",
-  "deliveryNotesHint": "Add any notes about the delivery missing items, damaged goods, quantity discrepancies...",
-  "verifiedCount": "{verified}/{total} verified",
-  "@verifiedCount": {
-    "placeholders": {
-      "verified": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "deliveryComplaintTitle": "Delivery Complaint",
-  "complaintSubmittedSuccessfully": "Complaint submitted successfully",
-  "submitComplaint": "Submit a complaint",
-  "complaintReasonLabel": "Reason",
-  "complaintReasonHint": "Describe the discrepancy - missing items, damaged goods, quantity mismatch...",
-  "missingLabel": "Missing",
-  "proofPhoto": "Proof photo",
-  "stock": "Facility Stock Balance",
-  "stockSubtitle": "View and update shift stock counts",
-  "stockAveraging": "Stock averaging",
-  "stockAveragingSubtitle": "View monthly average stock demand",
-  "updateStock": "Update Stock",
-  "updateStockTarget": "Update Stock Target",
-  "updateStockBalances": "Update Stock Balances",
-  "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",
-  "totalItems": "Total Items",
-  "lastUpdated": "Last Updated",
-  "noStockCountRecorded": "No stock count recorded yet.",
-  "stockCountSubmittedSuccess": "Stock count submitted successfully.",
-  "quantityOnHand": "Quantity On Hand",
-  "reportedByLabel": "{unit} • Reported by {name}",
-  "@reportedByLabel": {
-    "description": "Unit and reporter name shown under a stock item's on-hand quantity",
-    "placeholders": {
-      "unit": {
-        "type": "String",
-        "example": "roll"
-      },
-      "name": {
-        "type": "String",
-        "example": "Shahin Bashar"
-      }
-    }
-  }
+    "english": "English",
+    "bangla": "বাংলা",
+    "arabic": "العربية",
+    "home": "Home",
+    "profile": "Profile",
+    "task": "Task ",
+    "issues": "Issues",
+    "login": "Login",
+    "createNewPassword": "Create New password",
+    "createNewPasswordHint": "Your new password must be different from previous used passwords.",
+    "resetPassword": "Reset Password",
+    "newPassword": "New Password",
+    "passwordChangeSuccess": "Password Changed Successfully",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "isRequired": "This field is required",
+    "validEmail": "Please enter valid email address",
+    "enterAssociatedEmail": "Enter the email associated with your account and we’ll send an email with instructions to reset your password.",
+    "minLengthValidation": "This field must be at least {min} characters long",
+    "@minLengthValidation": {
+        "description": "Error message for minimum length validation",
+        "placeholders": {
+            "min": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "maxLengthValidation": "This field must be at most {max} characters long",
+    "@maxLengthValidation": {
+        "description": "Error message for maximum length validation",
+        "placeholders": {
+            "max": {
+                "type": "int",
+                "example": "20"
+            }
+        }
+    },
+    "yourPasswordChanged": "Your password has been changed successfully.",
+    "confirmPassword": "Confirm Password",
+    "logout": "Logout",
+    "getStarted": "Get Started",
+    "forgotPassword": "Forgot password?",
+    "backToLogin": "Back to login",
+    "continueAction": "Continue",
+    "signUp": "Sign up",
+    "signIn": "Sign in",
+    "email": "Email",
+    "emailAddress": "Email Address",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "dontHaveAccount": "Don't have an account? ",
+    "alreadyHaveAccount": "Already have an account? ",
+    "checkYourMail": "Check your mail",
+    "enterVerificationCode": "Please enter 4 digit code sent to your mail hello**@gmail.com.",
+    "didntGetCode": "Didn't get a code? ",
+    "clickToResend": "Click to resend",
+    "didNotReceiveEmail": "Did not receive the email? Check your spam filter. or ",
+    "tryAnotherEmail": "try another email address",
+    "learnFlutterTitle": "Learn Flutter with comprehensive tutorials.",
+    "learnFlutterSubtitle": "Step-by-step guides for building Flutter apps.",
+    "learnFlutterDescription": "Get notifications for new tutorials and updates.",
+    "joinCommunityTitle": "Join the Flutter community.",
+    "joinCommunitySubtitle": "Connect with other Flutter developers.",
+    "joinCommunityDescription": "Participate in community events and discussions.",
+    "buildDeployTitle": "Build and deploy Flutter apps easily.",
+    "buildDeploySubtitle": "Access tools and resources for app development.",
+    "buildDeployDescription": "Deploy your apps to multiple platforms with ease.",
+    "passwordMinLengthValidation": "Password must be at least {minLength} characters",
+    "@passwordMinLengthValidation": {
+        "description": "Error message for password minimum length validation",
+        "placeholders": {
+            "minLength": {
+                "type": "String"
+            }
+        }
+    },
+    "passwordNumberValidation": "Password must contain at least one number",
+    "passwordLowerCaseValidation": "Password must contain at least one lowercase letter",
+    "passwordUpperCaseValidation": "Password must contain at least one uppercase letter",
+    "passwordSpecialCharValidation": "Password must contain at least one special character",
+    "passwordMismatchValidation": "Passwords do not match",
+    "pbilLogo": "Prime Bank Investment Limited logo",
+    "mipTitle": "PrimeInvest Monthly Investment Plan (MIP)",
+    "mipDescription": "Start with small monthly investments and watch your wealth grow steadily, securing your future with every contribution.",
+    "cpsTitle": "PrimeInvest Capital Protected Scheme",
+    "cpsDescription": "Secure your hard-earned money with guaranteed protection, ensuring steady growth even in uncertain markets.",
+    "selectCountryOfResidence": "Select Your Country of Residence",
+    "selectCountryOfResidenceHint": "This helps us choose the correct verification method for your account setup.",
+    "countryOfResidence": "Country of Residence",
+    "chooseYourCountry": "Choose your country",
+    "countryOfResidenceInfo": "If you are a resident of Bangladesh, your account will be created using phone number verification. For all other countries, an OTP will be sent to your email address.",
+    "welcomeToApp": "Welcome to Prime Bank Investment PLC.",
+    "registrationPhoneSubtitle": "Enter your phone number and we will send you a verification code",
+    "registrationEmailSubtitle": "Enter your email address and we will send you a verification code",
+    "phone": "Phone",
+    "enterPhoneNumber": "Enter your phone number",
+    "enterEmailAddress": "Enter your email address",
+    "or": "OR",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithFacebook": "Continue with Facebook",
+    "continueWithApple": "Continue with Apple",
+    "appName": "Bhumijo",
+    "appSubtitle": "Toilet Facility Management System",
+    "loginSubtitle": "Enter your details below",
+    "userId": "User ID",
+    "enterYourId": "Enter your ID",
+    "shiftCheckIn": "Shift Check-in",
+    "toiletName": "Toilet Name",
+    "location": "Location",
+    "shiftTime": "Shift Time",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "addPhoto": "Add Photo",
+    "takePhoto": "Take Photo",
+    "uploadFromGallery": "Upload from Gallery",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "photoRequired": "Please add a photo",
+    "noActiveShift": "No active shift found",
+    "selectShift": "Select Shift",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night",
+    "autoDetectedInfo": "Auto-Detected Info",
+    "checkInTime": "Check-In Time",
+    "checkOutTime": "Check-Out Time",
+    "supervisorName": "Supervisor Name",
+    "shiftCheckInPhotoInstructions": "To open the camera, tap the 'Take Photo' button below. Ensure your face is centered within the circle",
+    "retake": "Retake",
+    "capture": "Capture",
+    "loading": "Loading...",
+    "locationUnavailable": "Location unavailable, please try again",
+    "photoCaptureFailed": "Photo capture failed",
+    "tryAgain": "Try Again",
+    "retry": "Retry",
+    "manualAttendance": "Manual Attendance",
+    "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
+    "manualAttendanceReasonHint": "Describe the issue (e.g., camera not working)",
+    "reasonRequired": "Reason is required",
+    "cantTakeSelfie": "Can't take selfie, ",
+    "requestSupervisor": "Request supervisor",
+    "toManuallyProcessCheckIn": "\nto manually process your check-in",
+    "cameraAccessRequiredMessage": "Camera access required or face not detected",
+    "requestSupervisorMessage": "If you're having trouble taking a selfie, please request your supervisor to assist you with the check-in process.",
+    "approvalRequest": "Approval Request",
+    "waitingForApproval": "Waiting for Approval",
+    "waitingForApprovalMessage": "Your request has been sent. Please wait until your supervisor reviews and approves your check-in.",
+    "withdraw": "Withdraw",
+    "refresh": "Refresh",
+    "supervisor": "Supervisor",
+    "approvalSuccess": "Check Out Successfully",
+    "approvalSuccessfulMessage": "Your checkout was successful",
+    "approvalFailed": "Check Out Failed",
+    "approvalFailedMessage": "Your checkout failed",
+    "faceVerificationRequired": "Face Verification Required",
+    "faceVerificationRequiredMessage": "Your request requires face verification. Please proceed to verify your identity with a selfie.",
+    "reasonLabel": "Reason*",
+    "reasonCameraNotWorking": "Camera is not working",
+    "reasonCameraUnavailable": "Camera is unavailable",
+    "reasonPhoneCameraBroken": "Phone camera broken",
+    "reasonNoCameraDevice": "Device does not have a camera",
+    "attendance": "Attendance",
+    "present": "Present",
+    "late": "Late",
+    "absent": "Absent",
+    "leave": "Leave",
+    "onLeave": "On Leave",
+    "applyLeave": "Apply Leave",
+    "today": "Today",
+    "attendanceDetails": "Attendance details",
+    "back": "Back",
+    "hoursWorked": "Hours Worked",
+    "shiftType": "Shift Type",
+    "selfieVerification": "Selfie Verification",
+    "supervisorApproved": "Supervisor Approved",
+    "logoutConfirmMessage": "Are you sure you want to logout?",
+    "confirm": "Confirm",
+    "menu": "Menu",
+    "shift": "Shift",
+    "inProgress": "In Progress",
+    "resolved": "Resolved",
+    "upcoming": "Upcoming",
+    "shiftDetails": "Shift details",
+    "assignedSupervisor": "Assigned Supervisor",
+    "shiftNotes": "Shift Notes",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "leaveBalance": "Leave Balance",
+    "pending": "Pending",
+    "leaveType": "Leave Type",
+    "sickLeave": "Sick Leave",
+    "casualLeave": "Casual Leave",
+    "maternityLeave": "Maternity Leave",
+    "reasonOptional": "Reason (optional)",
+    "submitLeaveRequest": "Submit Leave Request",
+    "reason": "Reason",
+    "optional": "Optional",
+    "shiftsUnavailable": "Shifts are not available for your account.",
+    "assigned": "Assigned",
+    "assignStaff": "Assign Staff",
+    "slotCapacity": "{assigned}/{max}",
+    "@slotCapacity": {
+        "placeholders": {
+            "assigned": {
+                "type": "int",
+                "example": "2"
+            },
+            "max": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "belowMinimumStaff": "Needs {min}",
+    "@belowMinimumStaff": {
+        "placeholders": {
+            "min": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "slotLead": "Slot lead",
+    "attendantName": "Name",
+    "staffCode": "Staff Code",
+    "slotStatusCompleted": "Completed",
+    "slotStatusPartialMiss": "Partial miss",
+    "slotFull": "Slot full",
+    "slotStatusOpen": "Open",
+    "slotStatusFull": "Full",
+    "slotStatusMissed": "Missed",
+    "slotStatusCancelled": "Cancelled",
+    "checkedInCount": "{count} checked in",
+    "@checkedInCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "2"
+            }
+        }
+    },
+    "checkedOutCount": "{count} checked out",
+    "@checkedOutCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "employeeShortest": "Employee Shortest",
+    "notAvailable": "N/A",
+    "noShiftsFound": "No shifts scheduled for this date.",
+    "noShiftToday": "No Shift Today",
+    "noShiftTodayHelp": "Please contact your supervisor if you need assistance.",
+    "shiftNotYetAccessible": "Check-In Not Available Yet",
+    "shiftNotYetAccessibleHelp": "Check-in opens 15 minutes before your shift starts.",
+    "shiftWindowClosed": "Check-In Window Closed",
+    "shiftWindowClosedHelp": "Please contact your supervisor for assistance.",
+    "noAttendantsFound": "No attendants found",
+    "staffAssignedSuccessfully": "Staff assigned successfully.",
+    "assignAsSlotLead": "Assign as Slot Lead",
+    "assignAsSlotLeadMessage": "Assign {name} as the slot lead for this shift?",
+    "@assignAsSlotLeadMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Frank Rodriguez"
+            }
+        }
+    },
+    "assignmentUnavailable": "Assignment isn't available right now. Please try again later.",
+    "unassignStaff": "Remove Staff",
+    "unassignStaffMessage": "Remove {name} from this shift?",
+    "@unassignStaffMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Frank Rodriguez"
+            }
+        }
+    },
+    "remove": "Remove",
+    "staffUnassignedSuccessfully": "Staff removed from shift.",
+    "makeSlotLead": "Make Slot Lead",
+    "slotLeadUpdatedSuccessfully": "Slot lead updated.",
+    "status": "Status",
+    "approvedBy": "Approved By",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejected": "Rejected",
+    "approved": "Approved",
+    "facilityName": "Facility",
+    "shiftsCount": "{count} Shifts",
+    "@shiftsCount": {
+        "description": "Label showing number of shifts for the selected date",
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "3"
+            }
+        }
+    },
+    "myVisits": "My Visits",
+    "thisWeek": "This Week",
+    "completed": "Completed",
+    "scheduled": "Scheduled",
+    "routineInspection": "Routine Inspection",
+    "followUp": "Follow-up",
+    "noVisitsFound": "No visits found for this period.",
+    "visitDetails": "Visit Details",
+    "checkInToVisit": "Check In to Visit",
+    "purposeOfVisit": "Purpose of the visit",
+    "visitCheckIn": "Visit Check-in",
+    "confirmCheckIn": "Confirm Check-in",
+    "gpsLocationVerification": "GPS Location Verification",
+    "locationVerified": "Location Verified",
+    "withinRange": "You are within range of the facility",
+    "yourPosition": "Your Position",
+    "distance": "Distance",
+    "gettingLocation": "Getting your location...",
+    "locationPermissionDenied": "Location permission denied. Please enable in settings.",
+    "inspectionChecklist": "Inspection Checklist",
+    "inspectionProgress": "Inspection Progress",
+    "repairWork": "Repair Work",
+    "newIssue": "New Issue",
+    "totalScore": "Total Score",
+    "outOf": "Out of {max}",
+    "@outOf": {
+        "placeholders": {
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "completeAllItemsWarning": "Please complete all items before submission",
+    "yes": "Yes",
+    "no": "No",
+    "reported": "Reported",
+    "photoAttached": "Photo attached",
+    "attachPhoto": "Attach photo",
+    "visit": "Visit",
+    "view": "View",
+    "start": "Start",
+    "taskDetails": "Task Details",
+    "startTask": "Start Task",
+    "completeTask": "Complete Task",
+    "noTasksFound": "No tasks found.",
+    "proofAltLabel": "Photo description",
+    "proofAltHint": "Example: Bulb replaced",
+    "uploadTaskMediaFailed": "Failed to upload proof photo",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "due": "Due",
+    "gallery": "Gallery",
+    "proofRequired": "Proof Required",
+    "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion.",
+    "changePhoto": "Change Photo",
+    "submitProof": "Submit Proof",
+    "visitSubmittedSuccessfully": "Visit submitted successfully.",
+    "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
+    "submitChecklistFailed": "Failed to submit inspection checklist.",
+    "saveChecklistAnswerFailed": "Failed to save answer.",
+    "leaveRequests": "Leave Requests",
+    "managerApproval": "Manager Approval",
+    "noRequestsFound": "No requests found",
+    "selectAttendant": "Select attendant",
+    "change": "Change",
+    "add": "Add",
+    "close": "Close",
+    "attendant": "Attendant",
+    "leaveDetails": "Leave Details",
+    "rejection": "Rejection",
+    "all": "All",
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "morningShift": "MORNING SHIFT",
+    "eveningShift": "EVENING SHIFT",
+    "nightShift": "NIGHT SHIFT",
+    "search": "Search",
+    "dateRange": "Date Range",
+    "shiftInformation": "Shift Information",
+    "facility": "Facility",
+    "selectFacility": "Select Facility",
+    "dateTime": "Date & Time",
+    "statusTimeline": "Status Timeline",
+    "requestedBy": "Requested by {name}",
+    "@requestedBy": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "requestedOnBehalfBy": "{submitter} (on behalf of {applicant})",
+    "@requestedOnBehalfBy": {
+        "placeholders": {
+            "submitter": {
+                "type": "String"
+            },
+            "applicant": {
+                "type": "String"
+            }
+        }
+    },
+    "approvedBySupervisor": "Approved by Supervisor",
+    "rejectedBySupervisor": "Rejected by Supervisor",
+    "waitingForManagerApprovalTitle": "Waiting for Manager Approval",
+    "pendingSupervisorApproval": "Pending Supervisor Approval",
+    "assignedToSupervisor": "Assigned to Supervisor",
+    "assignedToManager": "Assigned to Manager",
+    "justNow": "Just now",
+    "leaveApproval": "Leave Approval",
+    "awaitingFinalApproval": "Awaiting final approval",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "own": "Own",
+    "onBehalf": "On Behalf",
+    "leaveRequestSubmitted": "Leave Request Submitted",
+    "leaveSubmittedMessage": "Your leave request has been sent to your supervisor for approval. You'll be notified once it's reviewed.",
+    "backToShift": "Back to shift",
+    "endSessionAndSignOut": "End session and sign out",
+    "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
+    "noShiftsAvailableForDate": "No shifts available for the selected date",
+    "pendingManager": "Pending Manager",
+    "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+    "@daysCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "annualLeave": "Annual Leave",
+    "unpaidLeave": "Unpaid Leave",
+    "other": "Other",
+    "rosters": "Rosters",
+    "noRostersFound": "No rosters found.",
+    "createRoster": "Create Roster",
+    "weekStartLabel": "Week start ({day})",
+    "@weekStartLabel": {
+        "placeholders": {
+            "day": {
+                "type": "String",
+                "example": "Sat"
+            }
+        }
+    },
+    "activeDaysThisWeek": "Active days this week",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun",
+    "rosterCoversMessage": "Roster covers {start} → {end}. Created as a draft with no slots — add slots from your shift templates, then publish once every slot meets its minimum attendants.",
+    "@rosterCoversMessage": {
+        "placeholders": {
+            "start": {
+                "type": "String",
+                "example": "2026-07-23"
+            },
+            "end": {
+                "type": "String",
+                "example": "2026-07-29"
+            }
+        }
+    },
+    "createDraftRoster": "Create draft roster",
+    "rosterCreatedSuccessfully": "Roster created successfully.",
+    "weekly": "Weekly",
+    "notes": "Notes",
+    "publishedBy": "Published by",
+    "publish": "Publish",
+    "rosterPublishedSuccessfully": "Roster published successfully.",
+    "rosterShifts": "Roster Shifts",
+    "unassigned": "Unassigned",
+    "totalShifts": "Total Shifts",
+    "noShiftsInRoster": "No shifts in this roster yet.",
+    "createShift": "Create Shift",
+    "shiftTemplate": "Shift Template",
+    "selectShiftTemplate": "Select a shift template",
+    "shiftDate": "Shift Date",
+    "minAttendants": "Min Attendants",
+    "maxAttendants": "Max Attendants",
+    "maxAttendantsError": "Max attendants must be at least min attendants.",
+    "shiftCreatedSuccessfully": "Shift created successfully.",
+    "errorPartnerUnavailable": "This area is not available for your account.",
+    "errorNoAccessibleFacility": "No facility is available for your account.",
+    "errorPermissionDenied": "You do not have permission to perform this action.",
+    "errorNoConnection": "Unable to connect. Please check your internet connection and try again.",
+    "errorTimeout": "The request took too long to complete. Please try again.",
+    "errorSessionExpired": "Your session has expired. Please sign in again.",
+    "errorNotFound": "We could not find what you were looking for.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "manager": "Manager",
+    "owner": "Owner",
+    "pendingOwner": "Pending Owner",
+    "dispatch": "Dispatch",
+    "dispatchSuccess": "Request dispatched.",
+    "supplyRequests": "Supply Requests",
+    "newRequest": "New Request",
+    "noSupplyRequestsFound": "No supply requests found",
+    "supplyItemsCount": "{count} items",
+    "@supplyItemsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pendingSupervisor": "Pending Supervisor",
+    "pendingOperationManager": "Pending Operation Manager",
+    "operationManagerApproved": "Operation Manager Approved",
+    "inDelivery": "In Delivery",
+    "delivered": "Delivered",
+    "pendingDeliveries": "Pending Deliveries",
+    "pendingDeliveryAlertSubtitle": "{count} approved request awaiting delivery",
+    "@pendingDeliveryAlertSubtitle": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "urgencyUrgent": "Urgent",
+    "urgencyHigh": "High Priority",
+    "urgencyNormal": "Normal",
+    "urgencyLow": "Low",
+    "supplyRequestsSubtitle": "Manage and request facility stock",
+    "urgency": "Urgency",
+    "itemsNeeded": "Items Needed",
+    "item": "Item",
+    "selectItem": "Select Item",
+    "quantityAbbrev": "Qty",
+    "addMoreItems": "Add More Items",
+    "newRequestTitle": "New Supply Request",
+    "submitRequest": "Submit Request",
+    "requestSubmittedSuccessfully": "Request submitted successfully",
+    "requestNotesHint": "Add any additional instructions or notes here...",
+    "edit": "Edit",
+    "addItem": "Add Item",
+    "itemChangesSavedSuccessfully": "Item changes saved successfully",
+    "requestDetailsTitle": "Request Details",
+    "requestedByLabel": "Requested by",
+    "submittedOn": "Submitted {date}",
+    "@submittedOn": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "noNotesProvided": "No notes provided",
+    "confirmDeliveryReceipt": "Confirm Delivery Receipt",
+    "deliveryStage": "Delivery",
+    "receivedItemsCount": "Received items ({count})",
+    "@receivedItemsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "requestedItemsCount": "Requested items ({count})",
+    "@requestedItemsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "receivedBy": "Received By",
+    "receivedOn": "Received {date}",
+    "@receivedOn": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "camera": "Camera",
+    "checkAll": "Check All",
+    "uncheckAll": "Uncheck All",
+    "orderDetails": "Order Details",
+    "requestIdLabel": "Request ID",
+    "deliveryReceiptPhotoOptional": "Delivery Receipt Photo (Optional)",
+    "itemCodeLabel": "Item Code: {code}",
+    "@itemCodeLabel": {
+        "placeholders": {
+            "code": {
+                "type": "String"
+            }
+        }
+    },
+    "requestedLabel": "Requested",
+    "expectedLabel": "Expected",
+    "receivedLabel": "Received",
+    "amountReceivedLabel": "Amount received",
+    "photoOfEvidenceReport": "Photo of the evidence report",
+    "deliveryNotesHint": "Add any notes about the delivery missing items, damaged goods, quantity discrepancies...",
+    "verifiedCount": "{verified}/{total} verified",
+    "@verifiedCount": {
+        "placeholders": {
+            "verified": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "deliveryComplaintTitle": "Delivery Complaint",
+    "complaintSubmittedSuccessfully": "Complaint submitted successfully",
+    "submitComplaint": "Submit a complaint",
+    "complaintReasonLabel": "Reason",
+    "complaintReasonHint": "Describe the discrepancy - missing items, damaged goods, quantity mismatch...",
+    "missingLabel": "Missing",
+    "proofPhoto": "Proof photo",
+    "stock": "Facility Stock Balance",
+    "stockSubtitle": "View and update shift stock counts",
+    "stockAveraging": "Stock averaging",
+    "stockAveragingSubtitle": "View monthly average stock demand",
+    "updateStock": "Update Stock",
+    "updateStockTarget": "Update Stock Target",
+    "updateStockBalances": "Update Stock Balances",
+    "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",
+    "totalItems": "Total Items",
+    "lastUpdated": "Last Updated",
+    "noStockCountRecorded": "No stock count recorded yet.",
+    "stockCountSubmittedSuccess": "Stock count submitted successfully.",
+    "quantityOnHand": "Quantity On Hand",
+    "reportedByLabel": "{unit} • Reported by {name}",
+    "@reportedByLabel": {
+        "description": "Unit and reporter name shown under a stock item's on-hand quantity",
+        "placeholders": {
+            "unit": {
+                "type": "String",
+                "example": "roll"
+            },
+            "name": {
+                "type": "String",
+                "example": "Shahin Bashar"
+            }
+        }
+    },
+    "liveLocationSharing": "Live Location Sharing",
+    "sharingYourLocation": "Sharing Your Location",
+    "locationSharingSubtitle": "Your location is being shared with the facility for verification",
+    "doorControl": "Door Control",
+    "offline": "Offline",
+    "primaryDevice": "Primary Device",
+    "currentDoorStatus": "Current Door Status",
+    "doorStatusOpen": "OPEN",
+    "doorStatusClosed": "CLOSED",
+    "doorIsUnlocked": "Door is currently unlocked",
+    "doorIsLocked": "Door is currently locked",
+    "usageType": "Usage Type",
+    "selectWhoWillUse": "Select who will use the facility",
+    "personal": "Personal",
+    "staffUse": "Staff use",
+    "customer": "Customer",
+    "publicUse": "Public use",
+    "customerUse": "Customer use",
+    "serviceType": "Service Type",
+    "whatDoesCustomerNeed": "What does the customer need?",
+    "urine": "Urine",
+    "toilet": "Toilet",
+    "shower": "Shower",
+    "whyOpeningDoor": "Why are you opening the door?",
+    "reasonClean": "Clean",
+    "washroomCleaning": "Washroom cleaning",
+    "reasonToilet": "Toilet",
+    "personalUse": "Personal use",
+    "reasonRepair": "Repair",
+    "maintenanceWork": "Maintenance work",
+    "reasonInspect": "Inspect",
+    "facilityCheck": "Facility check",
+    "unlockAction": "UNLOCK",
+    "lockAction": "LOCK",
+    "doorUnlockedSuccessfully": "Door unlocked successfully",
+    "doorLockedSuccessfully": "Door locked successfully",
+    "noFacilityAssigned": "No facility is assigned to this device."
 }

@@ -79,6 +79,28 @@ GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
 }
 
 @riverpod
+StartLocationPingTrackingUseCase startLocationPingTrackingUseCase(Ref ref) {
+  return StartLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+StopLocationPingTrackingUseCase stopLocationPingTrackingUseCase(Ref ref) {
+  return StopLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+SyncCurrentLocationPingUseCase syncCurrentLocationPingUseCase(Ref ref) {
+  return SyncCurrentLocationPingUseCase(
+    ref.read(locationPingRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
   Ref ref,
 ) {
@@ -545,5 +567,20 @@ UpdateStockTargetUseCase updateStockTargetUseCase(Ref ref) {
     supplyRepository: ref.read(supplyRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
+}
+
+@riverpod
+UnlockDoorUseCase unlockDoorUseCase(Ref ref) {
+  return UnlockDoorUseCase(ref.read(gatewayRepositoryProvider));
+}
+
+@riverpod
+LockDoorUseCase lockDoorUseCase(Ref ref) {
+  return LockDoorUseCase(ref.read(gatewayRepositoryProvider));
+}
+
+@riverpod
+GetDoorStatusUseCase getDoorStatusUseCase(Ref ref) {
+  return GetDoorStatusUseCase(ref.read(gatewayRepositoryProvider));
 }
 

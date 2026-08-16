@@ -42,6 +42,7 @@ class Routes {
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
   static const String menu = '/menu';
+  static const String doorControl = '/door-control';
 
   static const String supplyRequests = '/supply-requests';
   static const String requestDetails = '/request-details';

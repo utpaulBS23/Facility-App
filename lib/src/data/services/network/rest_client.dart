@@ -221,6 +221,12 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
+  @POST(Endpoints.locationPingSync)
+  Future<HttpResponse> syncLocationPings({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> request,
+  });
+
   @GET(Endpoints.tasks)
   Future<HttpResponse> getTasks({
     @Path('partnerId') required int partnerId,

@@ -39,7 +39,32 @@ LocationService locationService(Ref ref) {
   return LocationServiceImpl();
 }
 
+@Riverpod(keepAlive: true)
+BackgroundLocationTrackingService backgroundLocationTrackingService(Ref ref) {
+  final service = BackgroundLocationTrackingServiceImpl();
+  ref.onDispose(service.stop);
+
+  return service;
+}
+
+@Riverpod(keepAlive: true)
+LocationSharingNotificationService locationSharingNotificationService(Ref ref) {
+  return LocationSharingNotificationServiceImpl(
+    ref.read(flutterLocalNotificationsPluginProvider),
+  );
+}
+
 @riverpod
 DeviceInfoService deviceInfoService(Ref ref) {
   return DeviceInfoServiceImpl(DeviceInfoPlugin());
+}
+
+@Riverpod(keepAlive: true)
+GatewayService gatewayService(Ref ref) {
+  return GatewayService(baseUrl: GatewayConfig.baseUrl);
+}
+
+@Riverpod(keepAlive: true)
+OfflineCacheService offlineCacheService(Ref ref) {
+  return OfflineCacheService(ref.read(cacheServiceProvider));
 }
