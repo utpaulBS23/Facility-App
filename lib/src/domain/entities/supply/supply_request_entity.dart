@@ -72,32 +72,69 @@ class SupplyRequestEntity {
   final String createdAt;
   final String updatedAt;
 
+  /// True when the request has cleared both approval levels and is now either
+  /// being dispatched, in transit, delivered, or fully completed.
+  ///
+  /// Used to gate UI sections that are only relevant after approval —
+  /// e.g. showing delivery details or received-item confirmation.
   bool get isApprovedStage =>
       status == SupplyRequestStatus.operationManagerApproved ||
       status == SupplyRequestStatus.inDelivery ||
       status == SupplyRequestStatus.delivered ||
       status == SupplyRequestStatus.completed;
 
+  /// True when goods have physically arrived at the facility.
+  ///
+  /// Both [SupplyRequestStatus.delivered] and [SupplyRequestStatus.completed]
+  /// represent a delivered state — `completed` means the delivery was also
+  /// confirmed/closed by the receiving party.
   bool get isDelivered =>
       status == SupplyRequestStatus.delivered ||
       status == SupplyRequestStatus.completed;
 
+  /// True when a delivery record exists for this request, regardless of
+  /// whether it has been fully confirmed yet.
+  ///
+  /// Covers the window from dispatch ([inDelivery]) through final closure
+  /// ([completed]). Used to decide whether to show received-item cards
+  /// and the delivery confirmation UI.
   bool get hasDelivery =>
       status == SupplyRequestStatus.inDelivery ||
       status == SupplyRequestStatus.delivered ||
       status == SupplyRequestStatus.completed;
 
+  /// True when the request is waiting for a supervisor or operation manager
+  /// to approve it.
+  ///
+  /// Both supervisor-level and operation-manager-level approvals are
+  /// grouped here because the same "Approve / Reject" action bar is shown
+  /// for both roles during this stage.
   bool get isPendingStage =>
       status == SupplyRequestStatus.pendingSupervisor ||
       status == SupplyRequestStatus.pendingOperationManager;
 
+  /// True when the request has been approved by the operation manager but
+  /// has not yet been dispatched (i.e. no delivery has been created).
+  ///
+  /// At this stage the dispatcher role can initiate a delivery ("Dispatch").
   bool get isDispatchStage =>
       status == SupplyRequestStatus.operationManagerApproved;
 
+  /// Whether to show the bottom action bar for this request.
+  ///
+  /// The bar surfaces the primary action for the current stage:
+  /// - [isPendingStage]  → Approve / Reject buttons
+  /// - [isDispatchStage] → Dispatch button
+  /// - [inDelivery]      → Confirm received quantities button
   bool get hasBottomActionBar =>
       isPendingStage || isDispatchStage || status == SupplyRequestStatus.inDelivery;
 }
 
+/// Aggregated status counts derived from a list of [SupplyRequestEntity].
+///
+/// Used to populate the summary badges/tabs on the supply request list screen
+/// so the user can see at a glance how many requests are in each stage
+/// without having to scroll through the full list.
 class SupplyRequestCounts {
   const SupplyRequestCounts({
     required this.pendingCount,
@@ -107,25 +144,47 @@ class SupplyRequestCounts {
     required this.approvedCount,
   });
 
+  /// Requests waiting for supervisor or operation-manager approval.
   final int pendingCount;
+
+  /// Requests that have been dispatched and are currently in transit.
   final int inDeliveryCount;
+
+  /// Requests whose goods have arrived (delivered + completed combined).
   final int deliveredCount;
+
+  /// Requests that were rejected at any approval stage.
   final int rejectedCount;
+
+  /// Requests approved by the operation manager but not yet dispatched.
   final int approvedCount;
 
-  static SupplyRequestCounts getCount(PaginatedListEntity<SupplyRequestEntity>? response){
-    return switch(response?.items){
+  /// Convenience factory — extracts counts from a paginated API response.
+  ///
+  /// Returns all-zero counts when [response] is null (e.g. before the first
+  /// fetch completes), so callers never have to null-check the result.
+  static SupplyRequestCounts getCount(PaginatedListEntity<SupplyRequestEntity>? response) {
+    return switch (response?.items) {
       final items? => items.counts,
-      null => const SupplyRequestCounts
-      (pendingCount: 0, 
-      inDeliveryCount: 0, 
-      deliveredCount: 0, 
-      rejectedCount: 0, 
-      approvedCount: 0),
+      null => const SupplyRequestCounts(
+          pendingCount: 0,
+          inDeliveryCount: 0,
+          deliveredCount: 0,
+          rejectedCount: 0,
+          approvedCount: 0,
+        ),
     };
   }
 }
 
+/// Adds a [counts] getter to any iterable of [SupplyRequestEntity].
+///
+/// Iterates the list once and buckets each request into the appropriate
+/// counter based on its current [SupplyRequestStatus].
+///
+/// Note: both [delivered] and [completed] increment [deliveredCount] because
+/// from the facility's perspective both statuses mean the goods have arrived —
+/// `completed` simply signals the delivery was also formally closed out.
 extension SupplyRequestListCounts on Iterable<SupplyRequestEntity> {
   SupplyRequestCounts get counts {
     int pending = 0;
@@ -143,6 +202,8 @@ extension SupplyRequestListCounts on Iterable<SupplyRequestEntity> {
           inDelivery++;
         case SupplyRequestStatus.delivered:
           delivered++;
+        // `completed` means the delivery was confirmed/closed — still counts
+        // as delivered from the summary perspective.
         case SupplyRequestStatus.completed:
           delivered++;
         case SupplyRequestStatus.rejected:
