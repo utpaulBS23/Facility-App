@@ -6,6 +6,7 @@ import '../../domain/entities/supply/delivery_status.dart';
 import '../../domain/entities/supply/stock_allocation_entity.dart';
 import '../../domain/entities/supply/stock_item_entity.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
+import '../../domain/entities/supply/supply_request_payloads.dart';
 import '../../domain/entities/supply/supply_request_status.dart';
 import '../models/supply/delivery_complaint_model.dart';
 import '../models/supply/delivery_model.dart';
@@ -25,8 +26,6 @@ extension SupplyRequestItemModelMapper on SupplyRequestItemModel {
       itemName: itemName,
       unit: unit,
       qtyRequested: qtyRequested,
-      unitPrice: unitPrice,
-      lineTotal: lineTotal,
     );
   }
 }
@@ -35,11 +34,10 @@ extension SupplyRequestApprovalModelMapper on SupplyRequestApprovalModel {
   SupplyRequestApprovalEntity toEntity() {
     return SupplyRequestApprovalEntity(
       id: id,
-      approverId: approverId,
       approverName: approverName,
       approverRole: approverRole,
       action: action,
-      notes: notes,
+      notes: notes ?? '',
       actedAt: actedAt,
     );
   }
@@ -52,18 +50,15 @@ extension SupplyRequestModelMapper on SupplyRequestModel {
       requestCode: requestCode,
       facilityId: facilityId,
       facilityName: facilityName,
-      requestedBy: requestedBy,
       requestedByName: requestedByName,
       initiatedByRole: initiatedByRole,
       urgency: SupplyUrgency.fromWireString(urgency),
-      notes: notes,
+      notes: notes ?? '',
       status: SupplyRequestStatus.fromWireString(status),
       itemCount: itemCount,
-      totalValue: totalValue,
       items: items.map((i) => i.toEntity()).toList(),
       approvals: approvals.map((a) => a.toEntity()).toList(),
-      linkedAllocationId: linkedAllocationId,
-      allocationCode: allocationCode,
+      allocationCode: allocationCode ?? '',
       createdAt: createdAt,
       updatedAt: updatedAt ?? createdAt,
     );
@@ -107,13 +102,10 @@ extension StockItemModelMapper on StockItemModel {
   StockItemEntity toEntity() {
     return StockItemEntity(
       id: id,
-      partnerId: partnerId,
-      partnerName: partnerName,
       itemCode: itemCode,
       name: name,
       category: category,
       unit: unit,
-      unitPrice: unitPrice,
       isActive: isActive,
     );
   }
@@ -163,14 +155,13 @@ extension DeliveryModelMapper on DeliveryModel {
       requestCode: requestCode,
       facilityId: facilityId,
       facilityName: facilityName,
-      receivedBy: receivedBy,
-      receivedByName: receivedByName,
-      receiptPhotoUrl: receiptPhotoUrl,
-      deliveryNotes: deliveryNotes,
+      receivedByName: receivedByName ?? '',
+      receiptPhotoUrl: receiptPhotoUrl ?? '',
+      deliveryNotes: deliveryNotes ?? '',
       status: DeliveryStatus.fromWireString(status),
       itemCount: itemCount,
       items: items.map((i) => i.toEntity()).toList(),
-      confirmedAt: confirmedAt,
+      confirmedAt: confirmedAt ?? '',
       createdAt: createdAt,
     );
   }
@@ -213,18 +204,15 @@ extension DeliveryComplaintModelMapper on DeliveryComplaintModel {
       itemName: itemName,
       expectedQty: expectedQty,
       currentQtyReceived: currentQtyReceived,
-      raisedBy: raisedBy,
-      raisedByName: raisedByName,
+      raisedByName: raisedByName ?? '',
       reportedQtyReceived: reportedQtyReceived,
-      reason: reason,
-      evidencePhotoUrl: evidencePhotoUrl,
+      reason: reason ?? '',
+      evidencePhotoUrl: evidencePhotoUrl ?? '',
       status: DeliveryComplaintStatus.fromWireString(status),
-      reviewedBySupervisor: reviewedBySupervisor,
-      reviewedBySupervisorName: reviewedBySupervisorName,
-      reviewedByOperationManager: reviewedByOperationManager,
-      reviewedByOperationManagerName: reviewedByOperationManagerName,
+      reviewedBySupervisorName: reviewedBySupervisorName ?? '',
+      reviewedByOperationManagerName: reviewedByOperationManagerName ?? '',
       createdAt: createdAt,
-      resolvedAt: resolvedAt,
+      resolvedAt: resolvedAt ?? '',
     );
   }
 }
@@ -269,8 +257,6 @@ extension StockAllocationItemModelMapper on StockAllocationItemModel {
       itemName: itemName,
       unit: unit,
       qty: qty,
-      unitPrice: unitPrice,
-      lineTotal: lineTotal,
     );
   }
 }
@@ -282,14 +268,11 @@ extension StockAllocationModelMapper on StockAllocationModel {
       allocationCode: allocationCode,
       facilityId: facilityId,
       facilityName: facilityName,
-      allocatedBy: allocatedBy,
-      allocatedByName: allocatedByName,
-      sourceRequestId: sourceRequestId,
-      sourceRequestCode: sourceRequestCode,
-      notes: notes,
+      allocatedByName: allocatedByName ?? '',
+      sourceRequestCode: sourceRequestCode ?? '',
+      notes: notes ?? '',
       items: items.map((i) => i.toEntity()).toList(),
-      totalValue: totalValue,
-      allocatedAt: DateTime.tryParse(allocatedAt) ?? DateTime.now(),
+      allocatedAt: allocatedAt,
     );
   }
 }
@@ -326,4 +309,62 @@ extension SupplyDecisionNotesMapper on String? {
         ? {'notes': notes}
         : <String, dynamic>{};
   }
+}
+
+extension CreateSupplyRequestEntityMapper on CreateSupplyRequestEntity {
+  Map<String, dynamic> toBody() => {
+    'facility_id': facilityId,
+    if (urgency != null) 'urgency': urgency!.toWireString(),
+    if (notes != null && notes!.isNotEmpty) 'notes': notes,
+    'items': items.map((item) => {
+      'stock_item_id': item.stockItemId,
+      'qty_requested': item.qtyRequested,
+      if (item.unitPrice != null) 'unit_price': item.unitPrice,
+    }).toList(),
+  };
+}
+
+extension ApproveSupplyRequestEntityMapper on ApproveSupplyRequestEntity {
+  Map<String, dynamic> toBody() {
+    final body = notes.toDecisionBody();
+    final itemList = items;
+    if (itemList != null && itemList.isNotEmpty) {
+      body['items'] = itemList.map((item) => {
+        'stock_item_id': item.stockItemId,
+        'qty_requested': item.qtyRequested,
+        if (item.unitPrice != null) 'unit_price': item.unitPrice,
+      }).toList();
+    }
+    return body;
+  }
+}
+
+extension ConfirmDeliveryRequestEntityMapper on ConfirmDeliveryRequestEntity {
+  Map<String, dynamic> toBody() => {
+    if (receiptPhotoUrl.isNotEmpty) 'receipt_photo_url': receiptPhotoUrl,
+    if (deliveryNotes.isNotEmpty) 'delivery_notes': deliveryNotes,
+    if (items.isNotEmpty)
+      'items': items.map((item) => {
+        'stock_item_id': item.stockItemId,
+        'qty_received': item.qtyReceived,
+        'is_verified': item.isVerified,
+      }).toList(),
+  };
+}
+
+extension FileDeliveryComplaintRequestEntityMapper
+    on FileDeliveryComplaintRequestEntity {
+  Map<String, dynamic> toBody() => {
+    'delivery_item_id': deliveryItemId,
+    'reported_qty_received': reportedQtyReceived,
+    'reason': reason,
+    if (evidencePhotoUrl.isNotEmpty) 'evidence_photo_url': evidencePhotoUrl,
+  };
+}
+
+extension ApproveDeliveryComplaintRequestEntityMapper
+    on ApproveDeliveryComplaintRequestEntity {
+  Map<String, dynamic> toBody() => finalQtyReceived != null
+      ? {'final_qty_received': finalQtyReceived}
+      : const {};
 }
