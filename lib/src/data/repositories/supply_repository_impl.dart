@@ -61,10 +61,10 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
-  Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails(
-    int partnerId,
-    int supplyRequestId,
-  ) {
+  Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails({
+    required int partnerId,
+    required int supplyRequestId,
+  }) {
     return asyncGuard(() async {
       final response = await remote.getSupplyRequestDetails(
         partnerId: partnerId,
@@ -120,10 +120,10 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
-  Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest(
-    int partnerId,
-    int supplyRequestId,
-  ) {
+  Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest({
+    required int partnerId,
+    required int supplyRequestId,
+  }) {
     return asyncGuard(() async {
       final response = await remote.dispatchSupplyRequest(
         partnerId: partnerId,
@@ -154,10 +154,10 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
-  Future<Result<DeliveryEntity, Failure>> getDeliveryDetails(
-    int partnerId,
-    int deliveryId,
-  ) {
+  Future<Result<DeliveryEntity, Failure>> getDeliveryDetails({
+    required int partnerId,
+    required int deliveryId,
+  }) {
     return asyncGuard(() async {
       final response = await remote.getDeliveryDetails(
         partnerId: partnerId,
@@ -203,10 +203,10 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
-  Future<Result<DeliveryComplaintEntity, Failure>> getDeliveryComplaintDetails(
-    int partnerId,
-    int deliveryComplaintId,
-  ) {
+  Future<Result<DeliveryComplaintEntity, Failure>> getDeliveryComplaintDetails({
+    required int partnerId,
+    required int deliveryComplaintId,
+  }) {
     return asyncGuard(() async {
       final response = await remote.getDeliveryComplaintDetails(
         partnerId: partnerId,
@@ -254,10 +254,10 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
-  Future<Result<DeliveryComplaintEntity, Failure>> rejectDeliveryComplaint(
-    int partnerId,
-    int deliveryComplaintId,
-  ) {
+  Future<Result<DeliveryComplaintEntity, Failure>> rejectDeliveryComplaint({
+    required int partnerId,
+    required int deliveryComplaintId,
+  }) {
     return asyncGuard(() async {
       final response = await remote.rejectDeliveryComplaint(
         partnerId: partnerId,
@@ -289,10 +289,10 @@ final class SupplyRepositoryImpl extends SupplyRepository {
   }
 
   @override
-  Future<Result<StockAllocationEntity, Failure>> getStockAllocationDetails(
-    int partnerId,
-    int stockAllocationId,
-  ) {
+  Future<Result<StockAllocationEntity, Failure>> getStockAllocationDetails({
+    required int partnerId,
+    required int stockAllocationId,
+  }) {
     return asyncGuard(() async {
       final response = await remote.getStockAllocationDetails(
         partnerId: partnerId,
