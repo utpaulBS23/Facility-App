@@ -493,3 +493,12 @@ DownloadApkUseCase downloadApkUseCase(Ref ref) {
 InstallApkUseCase installApkUseCase(Ref ref) {
   return InstallApkUseCase(ref.read(appUpdateRepositoryProvider));
 }
+
+@riverpod
+GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
+  return GetSupplyRequestsUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+

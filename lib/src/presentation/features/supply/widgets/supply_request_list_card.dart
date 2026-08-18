@@ -1,7 +1,10 @@
 part of '../view/supply_requests_page.dart';
 
 class _SupplyRequestListCard extends StatelessWidget {
-  const _SupplyRequestListCard({required this.request, required this.onTap});
+  const _SupplyRequestListCard({
+    required this.request,
+    required this.onTap,
+  });
 
   final SupplyRequestEntity request;
   final VoidCallback onTap;
@@ -123,45 +126,47 @@ class _SupplyRequestListCard extends StatelessWidget {
 
   String _getStatusLabel(BuildContext context, SupplyRequestStatus status) {
     return switch (status) {
-      .pendingSupervisor => context.locale.pendingSupervisor,
-      .pendingOperationManager => context.locale.pendingOperationManager,
-      .operationManagerApproved => context.locale.operationManagerApproved,
-      .inDelivery => context.locale.inDelivery,
-      .delivered => context.locale.delivered,
-      .rejected => context.locale.rejected,
-      .completed => context.locale.completed,
-      .unknown => context.locale.notAvailable,
+      SupplyRequestStatus.pendingSupervisor => context.locale.pendingSupervisor,
+      SupplyRequestStatus.pendingOperationManager =>
+        context.locale.pendingOperationManager,
+      SupplyRequestStatus.operationManagerApproved =>
+        context.locale.operationManagerApproved,
+      SupplyRequestStatus.inDelivery => context.locale.inDelivery,
+      SupplyRequestStatus.delivered => context.locale.delivered,
+      SupplyRequestStatus.rejected => context.locale.rejected,
+      SupplyRequestStatus.completed => context.locale.completed,
+      SupplyRequestStatus.unknown => context.locale.notAvailable,
     };
   }
 
   Color _getStatusColor(BuildContext context, SupplyRequestStatus status) {
     return switch (status) {
-      .pendingSupervisor => context.color.warning,
-      .pendingOperationManager => context.color.info,
-      .operationManagerApproved => context.color.primary,
-      .inDelivery => context.color.text.secondary,
-      .delivered => context.color.success,
-      .rejected => context.color.error,
-      .completed => context.color.success,
-      .unknown => context.color.text.secondary,
+      SupplyRequestStatus.pendingSupervisor => context.color.warning,
+      SupplyRequestStatus.pendingOperationManager => context.color.info,
+      SupplyRequestStatus.operationManagerApproved => context.color.primary,
+      SupplyRequestStatus.inDelivery => context.color.text.secondary,
+      SupplyRequestStatus.delivered => context.color.success,
+      SupplyRequestStatus.rejected => context.color.error,
+      SupplyRequestStatus.completed => context.color.success,
+      SupplyRequestStatus.unknown => context.color.text.secondary,
     };
   }
 
   String _getUrgencyLabel(BuildContext context, SupplyUrgency urgency) {
     return switch (urgency) {
-      .urgent => context.locale.urgencyUrgent,
-      .high => context.locale.urgencyHigh,
-      .normal => context.locale.urgencyNormal,
-      .low => context.locale.urgencyLow,
+      SupplyUrgency.urgent => context.locale.urgencyUrgent,
+      SupplyUrgency.high => context.locale.urgencyHigh,
+      SupplyUrgency.normal => context.locale.urgencyNormal,
+      SupplyUrgency.low => context.locale.urgencyLow,
     };
   }
 
   Color _getUrgencyColor(BuildContext context, SupplyUrgency urgency) {
     return switch (urgency) {
-      .urgent => context.color.primary,
-      .high => context.color.warning,
-      .normal => context.color.success,
-      .low => context.color.text.secondary,
+      SupplyUrgency.urgent => context.color.primary,
+      SupplyUrgency.high => context.color.warning,
+      SupplyUrgency.normal => context.color.success,
+      SupplyUrgency.low => context.color.text.secondary,
     };
   }
 }

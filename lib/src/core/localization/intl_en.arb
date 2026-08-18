@@ -148,11 +148,10 @@
   "retake": "Retake",
   "capture": "Capture",
   "loading": "Loading...",
-  "locationUnavailable": "Location unavailable",
+  "locationUnavailable": "Location unavailable, please try again",
   "photoCaptureFailed": "Photo capture failed",
   "tryAgain": "Try Again",
   "retry": "Retry",
-  "locationUnavailable": "Location unavailable, please try again",
   "manualAttendance": "Manual Attendance",
   "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
   "manualAttendanceReasonHint": "Describe the issue (e.g., camera not working)",
@@ -187,7 +186,6 @@
   "onLeave": "On Leave",
   "applyLeave": "Apply Leave",
   "today": "Today",
-  "all": "All",
   "attendanceDetails": "Attendance details",
   "back": "Back",
   "hoursWorked": "Hours Worked",
@@ -211,11 +209,11 @@
   "duration": "Duration",
   "leaveBalance": "Leave Balance",
   "pending": "Pending",
-  "leaveType": "Leave type",
+  "leaveType": "Leave Type",
   "sickLeave": "Sick Leave",
   "casualLeave": "Casual Leave",
   "maternityLeave": "Maternity Leave",
-  "reasonOptional": "Reason (Optional)",
+  "reasonOptional": "Reason (optional)",
   "submitLeaveRequest": "Submit Leave Request",
   "reason": "Reason",
   "optional": "Optional",
@@ -281,7 +279,7 @@
   "shiftNotYetAccessibleHelp": "Check-in opens 15 minutes before your shift starts.",
   "shiftWindowClosed": "Check-In Window Closed",
   "shiftWindowClosedHelp": "Please contact your supervisor for assistance.",
-  "noAttendantsFound": "No staff found for this partner.",
+  "noAttendantsFound": "No attendants found",
   "staffAssignedSuccessfully": "Staff assigned successfully.",
   "assignAsSlotLead": "Assign as Slot Lead",
   "assignAsSlotLeadMessage": "Assign {name} as the slot lead for this shift?",
@@ -337,9 +335,11 @@
   "purposeOfVisit": "Purpose of the visit",
   "visitCheckIn": "Visit Check-in",
   "confirmCheckIn": "Confirm Check-in",
-  "liveLocationSharing": "Live Location Sharing",
-  "sharingYourLocation": "Sharing Your Location",
-  "locationSharingSubtitle": "Your location is being shared with the facility for verification",
+  "gpsLocationVerification": "GPS Location Verification",
+  "locationVerified": "Location Verified",
+  "withinRange": "You are within range of the facility",
+  "yourPosition": "Your Position",
+  "distance": "Distance",
   "gettingLocation": "Getting your location...",
   "locationPermissionDenied": "Location permission denied. Please enable in settings.",
   "inspectionChecklist": "Inspection Checklist",
@@ -349,7 +349,11 @@
   "totalScore": "Total Score",
   "outOf": "Out of {max}",
   "@outOf": {
-    "placeholders": { "max": { "type": "int" } }
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
   },
   "completeAllItemsWarning": "Please complete all items before submission",
   "yes": "Yes",
@@ -381,7 +385,6 @@
   "submitChecklistFailed": "Failed to submit inspection checklist.",
   "saveChecklistAnswerFailed": "Failed to save answer.",
   "leaveRequests": "Leave Requests",
-  "waitingForApproval": "Waiting for Approval",
   "managerApproval": "Manager Approval",
   "noRequestsFound": "No requests found",
   "selectAttendant": "Select attendant",
@@ -390,22 +393,16 @@
   "close": "Close",
   "attendant": "Attendant",
   "leaveDetails": "Leave Details",
-  "approved": "Approved",
   "rejection": "Rejection",
-  "pending": "Pending",
-  "rejected": "Rejected",
   "all": "All",
-  "noAttendantsFound": "No attendants found",
   "somethingWentWrong": "Something went wrong. Please try again.",
   "morningShift": "MORNING SHIFT",
   "eveningShift": "EVENING SHIFT",
   "nightShift": "NIGHT SHIFT",
   "search": "Search",
   "dateRange": "Date Range",
-  "reason": "Reason",
   "shiftInformation": "Shift Information",
   "facility": "Facility",
-  "shift": "Shift",
   "dateTime": "Date & Time",
   "statusTimeline": "Status Timeline",
   "requestedBy": "Requested by {name}",
@@ -456,9 +453,6 @@
       }
     }
   },
-  "sickLeave": "Sick Leave",
-  "casualLeave": "Casual Leave",
-  "maternityLeave": "Maternity Leave",
   "annualLeave": "Annual Leave",
   "unpaidLeave": "Unpaid Leave",
   "other": "Other",
@@ -608,5 +602,116 @@
   "consumptionReportSubtitle": "Track stock usage and consumption",
   "facilityLocationsSubtitle": "View map of facility locations",
   "issueManagementSubtitle": "Report and track facility issues",
-  "gatewayManagementSubtitle": "Configure IoT gateways and devices"
+  "gatewayManagementSubtitle": "Configure IoT gateways and devices",
+  "supplyRequests": "Supply Requests",
+  "supplyRequestsSubtitle": "Manage and request facility stock",
+  "newRequest": "New Request",
+  "noSupplyRequestsFound": "No supply requests found",
+  "supplyItemsCount": "{count} items",
+  "@supplyItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "pendingSupervisor": "Pending Supervisor",
+  "pendingOperationManager": "Pending Operation Manager",
+  "operationManagerApproved": "Operation Manager Approved",
+  "inDelivery": "In Delivery",
+  "delivered": "Delivered",
+  "pendingDeliveries": "Pending Deliveries",
+  "pendingDeliveryAlertSubtitle": "{count} approved request awaiting delivery",
+  "@pendingDeliveryAlertSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "urgencyUrgent": "Urgent",
+  "urgencyHigh": "High Priority",
+  "urgencyNormal": "Normal",
+  "urgencyLow": "Low",
+  "requestDetailsTitle": "Request Details",
+  "edit": "Edit",
+  "requestedByLabel": "Requested by",
+  "submittedOn": "Submitted on {date}",
+  "@submittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "receivedBy": "Received by",
+  "receivedOn": "Received on {date}",
+  "@receivedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "noNotesProvided": "No notes provided",
+  "confirmDeliveryReceipt": "Confirm Delivery Receipt",
+  "deliveryStage": "Delivery",
+  "receivedItemsCount": "Received items ({count})",
+  "@receivedItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "requestedItemsCount": "Requested items ({count})",
+  "@requestedItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "requestNotesHint": "Add any notes about this supply request (optional)",
+  "dispatch": "Dispatch",
+  "itemsNeeded": "Items Needed",
+  "item": "Item",
+  "selectItem": "Select item",
+  "quantityAbbrev": "Qty",
+  "addMoreItems": "Add More Items",
+  "itemChangesSavedSuccessfully": "Item changes saved successfully",
+  "itemCodeLabel": "Item Code: {code}",
+  "@itemCodeLabel": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedLabel": "Requested",
+  "expectedLabel": "Expected",
+  "receivedLabel": "Received",
+  "amountReceivedLabel": "Amount Received",
+  "photoOfEvidenceReport": "Photo of evidence report",
+  "dispatchSuccess": "Supply request dispatched successfully",
+  "deliveryReceiptPhotoOptional": "Delivery receipt photo (Optional)",
+  "camera": "Camera",
+  "deliveryNotesHint": "Add notes about this delivery...",
+  "orderDetails": "Order details",
+  "requestIdLabel": "Request ID",
+  "urgency": "Urgency",
+  "verifiedCount": "{verified}/{total} items verified",
+  "@verifiedCount": {
+    "placeholders": {
+      "verified": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "uncheckAll": "Uncheck all",
+  "checkAll": "Check all"
 }
+

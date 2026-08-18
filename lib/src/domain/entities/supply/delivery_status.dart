@@ -6,6 +6,7 @@ enum DeliveryStatus {
   unknown;
 
   static DeliveryStatus fromWireString(String? raw) {
+
     return switch (raw?.toLowerCase()) {
       'pending' => DeliveryStatus.pending,
       'dispatched' || 'in_transit' => DeliveryStatus.dispatched,
@@ -16,6 +17,7 @@ enum DeliveryStatus {
   }
 
   String toWireString() {
+
     return switch (this) {
       DeliveryStatus.pending => 'pending',
       DeliveryStatus.dispatched => 'dispatched',

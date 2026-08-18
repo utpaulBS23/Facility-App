@@ -6,6 +6,7 @@ enum DeliveryComplaintStatus {
   unknown;
 
   static DeliveryComplaintStatus fromWireString(String? raw) {
+
     return switch (raw?.toLowerCase()) {
       'pending_supervisor' ||
       'pending' => DeliveryComplaintStatus.pendingSupervisor,
@@ -19,6 +20,7 @@ enum DeliveryComplaintStatus {
   }
 
   String toWireString() {
+
     return switch (this) {
       DeliveryComplaintStatus.pendingSupervisor => 'pending_supervisor',
       DeliveryComplaintStatus.pendingOperationManager =>

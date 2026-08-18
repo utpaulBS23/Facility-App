@@ -26,6 +26,7 @@ import '../../data/repositories/task_occurrence_repository_impl.dart';
 import '../../data/repositories/visit_repository_impl.dart';
 import '../../data/repositories/leave_repository_impl.dart';
 import '../../data/repositories/app_update_repository_impl.dart';
+import '../../data/repositories/supply_repository_impl.dart';
 import '../../data/services/cache/cache_service.dart';
 import '../../data/services/device/device_info_service.dart';
 import '../../data/services/location/location_service.dart';
@@ -55,6 +56,7 @@ import '../../domain/repositories/task_repository.dart';
 import '../../domain/repositories/task_occurrence_repository.dart';
 import '../../domain/repositories/visit_repository.dart';
 import '../../domain/repositories/leave_repository.dart';
+import '../../domain/repositories/supply_repository.dart';
 import '../../domain/use_cases/manual_attendance_use_case.dart';
 import '../../domain/use_cases/attendance_use_case.dart';
 import '../../domain/use_cases/authentication_use_case.dart';
@@ -73,9 +75,13 @@ import '../../domain/use_cases/task_use_case.dart';
 import '../../domain/use_cases/task_occurrence_use_case.dart';
 import '../../domain/use_cases/visit_use_case.dart';
 import '../../domain/use_cases/leave_use_cases.dart';
+import '../../domain/use_cases/supply/get_supply_requests_use_case.dart';
 
 part 'dependency_injection.g.dart';
 part 'parts/externals.dart';
 part 'parts/repository.dart';
 part 'parts/services.dart';
 part 'parts/use_cases.dart';
+
+// Trigger build_runner regeneration
+

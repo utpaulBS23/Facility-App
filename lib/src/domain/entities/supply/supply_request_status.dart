@@ -9,6 +9,7 @@ enum SupplyRequestStatus {
   unknown;
 
   static SupplyRequestStatus fromWireString(String? raw) {
+
     return switch (raw?.toLowerCase()) {
       'pending_supervisor' || 'pending' => SupplyRequestStatus.pendingSupervisor,
       'pending_operation_manager' ||
@@ -23,6 +24,7 @@ enum SupplyRequestStatus {
   }
 
   String toWireString() {
+
     return switch (this) {
       SupplyRequestStatus.pendingSupervisor => 'pending_supervisor',
       SupplyRequestStatus.pendingOperationManager => 'pending_operation_manager',
@@ -43,6 +45,7 @@ enum SupplyUrgency {
   urgent;
 
   static SupplyUrgency fromWireString(String? raw) {
+
     return switch (raw?.toLowerCase()) {
       'low' => SupplyUrgency.low,
       'normal' => SupplyUrgency.normal,
@@ -53,6 +56,7 @@ enum SupplyUrgency {
   }
 
   String toWireString() {
+
     return switch (this) {
       SupplyUrgency.low => 'low',
       SupplyUrgency.normal => 'normal',

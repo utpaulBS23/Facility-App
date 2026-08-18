@@ -106,3 +106,10 @@ AppUpdateRepository appUpdateRepository(Ref ref) {
     ref.read(dioProvider),
   );
 }
+
+@Riverpod(keepAlive: true)
+SupplyRepository supplyRepository(Ref ref) {
+  return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+}
