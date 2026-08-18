@@ -23,7 +23,7 @@ final class GetItemCatalogUseCase extends PartnerUseCase {
     );
 
     return switch (result) {
-      Success(:final data) => Success(data: data),
+      Success(:final data) when data != null => Success(data: data),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('get item catalog')),
     };
