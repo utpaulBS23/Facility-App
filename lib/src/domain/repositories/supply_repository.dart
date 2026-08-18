@@ -20,10 +20,10 @@ abstract base class SupplyRepository extends Repository {
     SupplyRequestQueryFilter filter,
   );
 
-  Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails(
-    int partnerId,
-    int supplyRequestId,
-  );
+  Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails({
+    required int partnerId,
+    required int supplyRequestId,
+  });
 
   Future<Result<SupplyRequestEntity, Failure>> createSupplyRequest(
     CreateSupplyRequestEntity request,
@@ -37,19 +37,19 @@ abstract base class SupplyRepository extends Repository {
     RejectSupplyRequestEntity request,
   );
 
-  Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest(
-    int partnerId,
-    int supplyRequestId,
-  );
+  Future<Result<DeliveryEntity, Failure>> dispatchSupplyRequest({
+    required int partnerId,
+    required int supplyRequestId,
+  });
 
   Future<Result<PaginatedListEntity<DeliveryEntity>, Failure>> getDeliveries(
     DeliveryFilter filter,
   );
 
-  Future<Result<DeliveryEntity, Failure>> getDeliveryDetails(
-    int partnerId,
-    int deliveryId,
-  );
+  Future<Result<DeliveryEntity, Failure>> getDeliveryDetails({
+    required int partnerId,
+    required int deliveryId,
+  });
 
   Future<Result<DeliveryEntity, Failure>> confirmDelivery(
     ConfirmDeliveryRequestEntity request,
@@ -60,10 +60,10 @@ abstract base class SupplyRepository extends Repository {
     DeliveryComplaintFilter filter,
   );
 
-  Future<Result<DeliveryComplaintEntity, Failure>> getDeliveryComplaintDetails(
-    int partnerId,
-    int deliveryComplaintId,
-  );
+  Future<Result<DeliveryComplaintEntity, Failure>> getDeliveryComplaintDetails({
+    required int partnerId,
+    required int deliveryComplaintId,
+  });
 
   Future<Result<DeliveryComplaintEntity, Failure>> fileDeliveryComplaint(
     FileDeliveryComplaintRequestEntity request,
@@ -73,18 +73,18 @@ abstract base class SupplyRepository extends Repository {
     ApproveDeliveryComplaintRequestEntity request,
   );
 
-  Future<Result<DeliveryComplaintEntity, Failure>> rejectDeliveryComplaint(
-    int partnerId,
-    int deliveryComplaintId,
-  );
+  Future<Result<DeliveryComplaintEntity, Failure>> rejectDeliveryComplaint({
+    required int partnerId,
+    required int deliveryComplaintId,
+  });
 
   Future<Result<PaginatedListEntity<StockAllocationEntity>, Failure>>
   getStockAllocations(
     StockAllocationFilter filter,
   );
 
-  Future<Result<StockAllocationEntity, Failure>> getStockAllocationDetails(
-    int partnerId,
-    int stockAllocationId,
-  );
+  Future<Result<StockAllocationEntity, Failure>> getStockAllocationDetails({
+    required int partnerId,
+    required int stockAllocationId,
+  });
 }

@@ -22,7 +22,6 @@ class DeliveryItemEntity {
   final double qtyReceived;
   final bool isVerified;
   final bool hasShortage;
-
 }
 
 class DeliveryEntity {
@@ -55,6 +54,4 @@ class DeliveryEntity {
   final List<DeliveryItemEntity> items;
   final String confirmedAt;
   final String createdAt;
-
-
 }
