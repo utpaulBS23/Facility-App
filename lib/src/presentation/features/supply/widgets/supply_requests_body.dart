@@ -15,8 +15,7 @@ class _SupplyRequestsBody extends StatelessWidget {
   final SupplyRequestCounts counts;
   final bool isSummaryLoading;
   final SupplyFilter selectedFilter;
-  final AsyncValue<PaginatedListEntity<SupplyRequestEntity>>
-  filteredRequestsAsync;
+  final AsyncValue<PaginatedListEntity<SupplyRequestEntity>> filteredRequestsAsync;
   final ValueChanged<SupplyFilter> onFilterSelected;
   final VoidCallback onNewRequest;
   final ValueChanged<SupplyRequestEntity> onRequestTap;
@@ -70,8 +69,7 @@ class _SupplyRequestsBody extends StatelessWidget {
               categories: SupplyFilter.values,
               selectedCategory: selectedFilter,
               onSelected: onFilterSelected,
-              labelBuilder: (context, filter) =>
-                  _getFilterLabel(context, filter),
+              labelBuilder: (context, filter) => _getFilterLabel(context, filter),
             ),
             Gap(spacing.s16),
             _SupplyRequestsListSection(
