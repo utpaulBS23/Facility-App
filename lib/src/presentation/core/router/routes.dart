@@ -43,7 +43,6 @@ class Routes {
   static const String issue = '/issue';
   static const String occurrenceChecklist = '/occurrence-checklist';
   static const String menu = '/menu';
-
   static const String dashboard = '/dashboard';
   static const String tracking = '/tracking';
   static const String profile = '/profile';
@@ -56,4 +55,9 @@ class Routes {
   static const String consumptionReport = '/consumption-report';
   static const String facilityMap = '/facility-map';
   static const String gatewayManagement = '/gateway-management';
+  static const String issueManagement = '/issue-management';
+  static const String supplyRequests = '/supply-requests';
+  static const String newRequest = '/new-request';
+  static const String requestDetails = '/request-details';
 }
+
