@@ -17,12 +17,12 @@ final class GetSupplyRequestDetailsUseCase extends PartnerUseCase {
   ) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.getSupplyRequestDetails(
-      partnerId,
-      supplyRequestId,
+      partnerId: partnerId,
+      supplyRequestId: supplyRequestId,
     );
 
     return switch (result) {
-      Success(:final data) => Success(data: data),
+      Success(:final data) when data != null => Success(data: data),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('get supply request details')),
     };

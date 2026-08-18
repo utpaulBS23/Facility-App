@@ -17,12 +17,12 @@ final class GetDeliveryComplaintDetailsUseCase extends PartnerUseCase {
   ) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.getDeliveryComplaintDetails(
-      partnerId,
-      deliveryComplaintId,
+      partnerId: partnerId,
+      deliveryComplaintId: deliveryComplaintId,
     );
 
     return switch (result) {
-      Success(:final data) => Success(data: data),
+      Success(:final data) when data != null => Success(data: data),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('get delivery complaint details')),
     };

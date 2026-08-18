@@ -15,12 +15,12 @@ final class GetDeliveryDetailsUseCase extends PartnerUseCase {
   Future<Result<DeliveryEntity, Failure>> call(int deliveryId) async {
     final partnerId = getPartnerId();
     final result = await supplyRepository.getDeliveryDetails(
-      partnerId,
-      deliveryId,
+      partnerId: partnerId,
+      deliveryId: deliveryId,
     );
 
     return switch (result) {
-      Success(:final data) => Success(data: data),
+      Success(:final data) when data != null => Success(data: data),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('get delivery details')),
     };
