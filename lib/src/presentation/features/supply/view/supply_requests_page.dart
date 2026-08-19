@@ -82,7 +82,8 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
       ),
       body: _SupplyRequestsBody(
         counts: counts,
-        isSummaryLoading: requestsAsync.isLoading,
+        isSummaryLoading:
+            requestsAsync.isLoading && _selectedFilter == SupplyFilter.all,
         selectedFilter: _selectedFilter,
         filteredRequestsAsync: requestsAsync,
         onFilterSelected: _onFilterSelected,
