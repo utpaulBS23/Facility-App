@@ -510,3 +510,42 @@ GetSupplyRequestSummaryUseCase getSupplyRequestSummaryUseCase(Ref ref) {
   );
 }
 
+@riverpod
+GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
+  return GetSupplyRequestDetailsUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+ApproveSupplyRequestUseCase approveSupplyRequestUseCase(Ref ref) {
+  return ApproveSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RejectSupplyRequestUseCase rejectSupplyRequestUseCase(Ref ref) {
+  return RejectSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+DispatchSupplyRequestUseCase dispatchSupplyRequestUseCase(Ref ref) {
+  return DispatchSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
+  return GetDeliveryForSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}

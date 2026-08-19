@@ -129,4 +129,108 @@ class SupplyRequestEntity {
       isPendingStage ||
       isDispatchStage ||
       status == SupplyRequestStatus.inDelivery;
+
+  /// Helper to find approval entry for a given role and action.
+  SupplyRequestApprovalEntity? _approvalFor(String role, String action) {
+    for (final approval in approvals) {
+      if (approval.approverRole == role &&
+          approval.action.toLowerCase() == action) {
+        return approval;
+      }
+    }
+    return null;
+  }
+
+  /// Helper to find the latest rejection approval entry.
+  SupplyRequestApprovalEntity? get _lastRejection {
+    for (final approval in approvals.reversed) {
+      if (approval.action.toLowerCase() == 'rejected') {
+        return approval;
+      }
+    }
+    return null;
+  }
+
+  /// Returns the complete list of timeline step entities for UI rendering.
+  ///
+  /// Encapsulates the domain logic for calculating step completion,
+  /// active stage, rejection state, and step timestamps based on status
+  /// and recorded approval audit logs.
+  List<SupplyTimelineStepEntity> get timelineSteps {
+    final rejectedApproval =
+        status == SupplyRequestStatus.rejected ? _lastRejection : null;
+    final rejectedIndex = switch (rejectedApproval?.approverRole) {
+      'supervisor' => 0,
+      'operation_manager' => 1,
+      _ => null,
+    };
+
+    final completedCount = switch (status) {
+      SupplyRequestStatus.pendingSupervisor => 0,
+      SupplyRequestStatus.pendingOperationManager => 1,
+      SupplyRequestStatus.operationManagerApproved => 3,
+      SupplyRequestStatus.inDelivery => 3,
+      SupplyRequestStatus.delivered => 4,
+      SupplyRequestStatus.rejected => 0,
+      SupplyRequestStatus.completed => 4,
+      SupplyRequestStatus.unknown => 0,
+    };
+
+    final activeIndex = switch (status) {
+      SupplyRequestStatus.pendingSupervisor => 0,
+      SupplyRequestStatus.pendingOperationManager => 1,
+      SupplyRequestStatus.inDelivery => 3,
+      _ => null,
+    };
+
+    final supervisorApproval = _approvalFor('supervisor', 'approved');
+    final operationManagerApproval =
+        _approvalFor('operation_manager', 'approved');
+
+    final stepKinds = SupplyRequestStepKind.values;
+    final dates = [
+      supervisorApproval?.actedAt ??
+          (rejectedIndex == 0 ? rejectedApproval?.actedAt : null) ??
+          '',
+      operationManagerApproval?.actedAt ??
+          (rejectedIndex == 1 ? rejectedApproval?.actedAt : null) ??
+          '',
+      completedCount > 2 ? updatedAt : '',
+      '',
+    ];
+
+    return List.generate(stepKinds.length, (i) {
+      final isRejected = rejectedIndex == i;
+      return SupplyTimelineStepEntity(
+        kind: stepKinds[i],
+        actedAt: dates[i],
+        isCompleted: !isRejected && i < completedCount,
+        isActive: !isRejected && activeIndex == i,
+        isRejected: isRejected,
+      );
+    });
+  }
+}
+
+enum SupplyRequestStepKind {
+  supervisor,
+  operationManager,
+  approved,
+  delivery,
+}
+
+class SupplyTimelineStepEntity {
+  const SupplyTimelineStepEntity({
+    required this.kind,
+    required this.actedAt,
+    required this.isCompleted,
+    required this.isActive,
+    required this.isRejected,
+  });
+
+  final SupplyRequestStepKind kind;
+  final String actedAt;
+  final bool isCompleted;
+  final bool isActive;
+  final bool isRejected;
 }
