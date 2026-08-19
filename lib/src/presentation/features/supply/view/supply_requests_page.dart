@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../core/utils/number_formatter.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_filters.dart';

@@ -87,7 +87,7 @@ class _SummaryTile extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              count.toString(),
+              NumberFormatter.format(context, count),
               style: context.textStyle.titleMedium.copyWith(color: textColor),
               textAlign: TextAlign.center,
             ),
