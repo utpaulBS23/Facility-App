@@ -86,7 +86,9 @@ class _SupplyRequestListCard extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        context.locale.supplyItemsCount(request.itemCount),
+                        context.locale.supplyItemsCount(
+                          NumberFormatter.format(context, request.itemCount),
+                        ),
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.text.secondary,
                         ),
