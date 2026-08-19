@@ -87,6 +87,7 @@ class SupplyRequestEntity {
   /// Both [SupplyRequestStatus.delivered] and [SupplyRequestStatus.completed]
   /// represent a delivered state — `completed` means the delivery was also
   /// confirmed/closed by the receiving party.
+<<<<<<< HEAD
   bool get isDelivered =>
       status == SupplyRequestStatus.delivered ||
       status == SupplyRequestStatus.completed;
@@ -118,6 +119,7 @@ class SupplyRequestEntity {
   /// At this stage the dispatcher role can initiate a delivery ("Dispatch").
   bool get isDispatchStage =>
       status == SupplyRequestStatus.operationManagerApproved;
+>>>>>>> dd4beb1 (fix: removed shorthand, added missing navigation)
 
   /// Whether to show the bottom action bar for this request.
   ///
