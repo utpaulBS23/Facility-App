@@ -5,6 +5,7 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_filters.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
+import 'supply_request_action_provider.dart';
 
 part 'supply_requests_list_provider.g.dart';
 
@@ -14,6 +15,12 @@ class SupplyRequestsList extends _$SupplyRequestsList {
 
   @override
   Future<PaginatedListEntity<SupplyRequestEntity>> build() async {
+    ref.listen(supplyRequestActionProvider, (previous, next) {
+      if (previous?.isLoading == true && next.hasValue && !next.hasError) {
+        ref.invalidateSelf();
+      }
+    });
+
     return fetch(filter: _selectedFilter);
   }
 
