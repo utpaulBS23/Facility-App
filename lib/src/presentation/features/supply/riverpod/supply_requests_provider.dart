@@ -10,7 +10,6 @@ part 'supply_requests_provider.g.dart';
 
 @riverpod
 class SupplyRequests extends _$SupplyRequests {
-  String _searchQuery = '';
   SupplyFilter _selectedFilter = SupplyFilter.all;
   SupplyRequestCounts _counts = const SupplyRequestCounts(
     pendingCount: 0,
@@ -24,14 +23,12 @@ class SupplyRequests extends _$SupplyRequests {
 
   @override
   Future<PaginatedListEntity<SupplyRequestEntity>> build() async {
-    return fetch(search: _searchQuery, filter: _selectedFilter);
+    return fetch(filter: _selectedFilter);
   }
 
   Future<PaginatedListEntity<SupplyRequestEntity>> fetch({
-    String search = '',
     SupplyFilter filter = SupplyFilter.all,
   }) async {
-    _searchQuery = search;
     _selectedFilter = filter;
 
     state = const AsyncValue.loading();
@@ -40,7 +37,6 @@ class SupplyRequests extends _$SupplyRequests {
         .read(getSupplyRequestsUseCaseProvider)
         .call(
           SupplyRequestQueryFilter(
-            search: search.isEmpty ? null : search,
             status: filter.toRequestStatus(),
           ),
         );
@@ -58,11 +54,7 @@ class SupplyRequests extends _$SupplyRequests {
     return paginated;
   }
 
-  void search(String query) {
-    fetch(search: query, filter: _selectedFilter);
-  }
-
   void filter(SupplyFilter filter) {
-    fetch(search: _searchQuery, filter: filter);
+    fetch(filter: filter);
   }
 }
