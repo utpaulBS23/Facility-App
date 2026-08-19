@@ -59,6 +59,7 @@ import '../../features/shift/widgets/shift_not_yet_accessible_widget.dart';
 import '../../features/shift/widgets/shift_window_closed_widget.dart';
 import '../../features/splash/view/splash_page.dart';
 import '../../features/supervisor_tracking/view/supervisor_tracking_page.dart';
+import '../../features/supply/view/supply_requests_page.dart';
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
 import 'router_state/router_state_provider.dart';
@@ -77,6 +78,7 @@ part 'parts/shell_routes.dart';
 part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
+part 'parts/stock_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -170,6 +172,7 @@ GoRouter goRouter(Ref ref) {
       ..._myVisitsRoutes(ref),
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
+      ..._stockRoutes(ref),
       _shellRoutes(ref),
     ],
   );
