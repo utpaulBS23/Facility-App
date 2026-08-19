@@ -12,6 +12,15 @@ part 'supply_requests_provider.g.dart';
 class SupplyRequests extends _$SupplyRequests {
   String _searchQuery = '';
   SupplyFilter _selectedFilter = SupplyFilter.all;
+  SupplyRequestCounts _counts = const SupplyRequestCounts(
+    pendingCount: 0,
+    inDeliveryCount: 0,
+    deliveredCount: 0,
+    rejectedCount: 0,
+    approvedCount: 0,
+  );
+
+  SupplyRequestCounts get counts => _counts;
 
   @override
   Future<PaginatedListEntity<SupplyRequestEntity>> build() async {
@@ -29,15 +38,21 @@ class SupplyRequests extends _$SupplyRequests {
 
     final result = await ref
         .read(getSupplyRequestsUseCaseProvider)
-        .call(SupplyRequestQueryFilter(
-          search: search.isEmpty ? null : search,
-          status: filter.toRequestStatus(),
-        ));
+        .call(
+          SupplyRequestQueryFilter(
+            search: search.isEmpty ? null : search,
+            status: filter.toRequestStatus(),
+          ),
+        );
 
     final paginated = result.when(
       success: (data) => data ?? const PaginatedListEntity.empty(),
       error: (error) => throw Exception(error.message),
     );
+
+    if (filter == SupplyFilter.all) {
+      _counts = SupplyRequestCounts.getCount(paginated);
+    }
 
     state = AsyncValue.data(paginated);
     return paginated;
