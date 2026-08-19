@@ -68,7 +68,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   @override
   Widget build(BuildContext context) {
     final requestsAsync = ref.watch(supplyRequestsProvider);
-    final counts = SupplyRequestCounts.getCount(requestsAsync.valueOrNull);
+    final counts = ref.read(supplyRequestsProvider.notifier).counts;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
