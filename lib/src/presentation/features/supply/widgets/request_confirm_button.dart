@@ -1,7 +1,7 @@
 part of '../view/request_details_page.dart';
 
-class _RequestDetailsBottomBar extends StatelessWidget {
-  const _RequestDetailsBottomBar({
+class _RequestConfirmButton extends StatelessWidget {
+  const _RequestConfirmButton({
     required this.delivery,
     required this.onConfirmTap,
   });
