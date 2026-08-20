@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/delivery_entity.dart';
+import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_payloads.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/theme/theme.dart';
@@ -17,10 +18,7 @@ import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/confirm_delivery_provider.dart';
 import '../widgets/item_stepper_input.dart';
-import '../models/confirm_delivery_item_ui_state.dart';
 import 'request_details_page.dart';
-
-export '../models/confirm_delivery_page_args.dart';
 
 part '../widgets/confirm_delivery_body.dart';
 part '../widgets/confirm_delivery_footer_bar.dart';
@@ -32,14 +30,12 @@ part '../widgets/verify_items_card.dart';
 class ConfirmDeliveryPage extends ConsumerStatefulWidget {
   const ConfirmDeliveryPage({
     super.key,
+    required this.request,
     required this.delivery,
-    required this.urgency,
-    required this.requestedByName,
   });
 
+  final SupplyRequestEntity request;
   final DeliveryEntity delivery;
-  final SupplyUrgency urgency;
-  final String requestedByName;
 
   @override
   ConsumerState<ConfirmDeliveryPage> createState() =>
@@ -49,16 +45,12 @@ class ConfirmDeliveryPage extends ConsumerStatefulWidget {
 class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
   final _notesController = TextEditingController();
 
-  late List<ConfirmDeliveryItemUiState> _items;
+  late List<DeliveryItemEntity> _items;
 
   @override
   void initState() {
     super.initState();
-    ref.listenManual(confirmDeliveryProvider, _onConfirmStateChanged);
-
-    _items = widget.delivery.items
-        .map((i) => ConfirmDeliveryItemUiState.fromEntity(i))
-        .toList();
+    _items = List.from(widget.delivery.items);
   }
 
   @override
@@ -98,7 +90,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
   void _onQuantityChanged(int index, int quantity) {
     setState(() {
       _items[index] = _items[index].copyWith(
-        qtyReceived: quantity,
+        qtyReceived: quantity.toDouble(),
       );
     });
   }
@@ -116,7 +108,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
         .map(
           (i) => ConfirmDeliveryItem(
             stockItemId: i.stockItemId,
-            qtyReceived: i.qtyReceived.toDouble(),
+            qtyReceived: i.qtyReceived,
             isVerified: i.isVerified,
           ),
         )
@@ -135,6 +127,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
   @override
   Widget build(BuildContext context) {
     final color = context.color;
+    ref.listen(confirmDeliveryProvider, _onConfirmStateChanged);
     final confirmState = ref.watch(confirmDeliveryProvider);
 
     return Scaffold(
@@ -148,9 +141,8 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: _ConfirmDeliveryBody(
+        request: widget.request,
         delivery: widget.delivery,
-        urgency: widget.urgency,
-        requestedByName: widget.requestedByName,
         items: _items,
         notesController: _notesController,
         onItemToggled: _onItemToggled,

@@ -8,7 +8,7 @@ class _VerifyItemsCard extends StatelessWidget {
     required this.onToggleAll,
   });
 
-  final List<ConfirmDeliveryItemUiState> items;
+  final List<DeliveryItemEntity> items;
   final ValueChanged<int> onItemToggled;
   final void Function(int index, int quantity) onQuantityChanged;
   final VoidCallback onToggleAll;
@@ -109,7 +109,7 @@ class _VerifyItemsCard extends StatelessWidget {
                         ),
                         Gap(spacing.s2),
                         Text(
-                          item.category,
+                          item.unit,
                           style: context.textStyle.bodySmall.copyWith(
                             color: color.text.secondary,
                           ),
@@ -124,12 +124,12 @@ class _VerifyItemsCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ItemStepperInput(
-                            quantity: item.qtyReceived,
+                            quantity: item.qtyReceived.toInt(),
                             onChanged: (qty) => onQuantityChanged(index, qty),
                           ),
                           Gap(spacing.s8),
                           Text(
-                            '${item.qtyReceived}/${item.qtyExpected}',
+                            '${item.qtyReceived.toInt()}/${item.qtyExpected.toInt()}',
                             style: context.textStyle.titleMedium.copyWith(
                               color: color.text.primary,
                               fontWeight: FontWeight.bold,
