@@ -2,9 +2,8 @@ part of '../view/confirm_delivery_page.dart';
 
 class _ConfirmDeliveryBody extends StatelessWidget {
   const _ConfirmDeliveryBody({
+    required this.request,
     required this.delivery,
-    required this.urgency,
-    required this.requestedByName,
     required this.items,
     required this.notesController,
     required this.onItemToggled,
@@ -12,10 +11,9 @@ class _ConfirmDeliveryBody extends StatelessWidget {
     required this.onToggleAll,
   });
 
+  final SupplyRequestEntity request;
   final DeliveryEntity delivery;
-  final SupplyUrgency urgency;
-  final String requestedByName;
-  final List<ConfirmDeliveryItemUiState> items;
+  final List<DeliveryItemEntity> items;
   final TextEditingController notesController;
   final ValueChanged<int> onItemToggled;
   final void Function(int index, int quantity) onQuantityChanged;
@@ -37,8 +35,8 @@ class _ConfirmDeliveryBody extends StatelessWidget {
           Gap(spacing.s16),
           _OrderDetailsSummaryCard(
             requestId: delivery.requestCode,
-            requestedBy: requestedByName,
-            urgency: urgency,
+            requestedBy: request.requestedByName,
+            urgency: request.urgency,
           ),
           Gap(spacing.s16),
           _VerifyItemsCard(
