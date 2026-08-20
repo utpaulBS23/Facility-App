@@ -15,5 +15,17 @@ List<GoRoute> _stockRoutes(Ref ref) {
         return RequestDetailsPage(requestId: id);
       },
     ),
+    GoRoute(
+      path: Routes.confirmDelivery,
+      name: Routes.confirmDelivery,
+      builder: (context, state) {
+        final args = state.extra as ConfirmDeliveryPageArgs;
+        return ConfirmDeliveryPage(
+          delivery: args.delivery,
+          urgency: args.urgency,
+          requestedByName: args.requestedByName,
+        );
+      },
+    ),
   ];
 }
