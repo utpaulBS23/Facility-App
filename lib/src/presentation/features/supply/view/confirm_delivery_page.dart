@@ -9,6 +9,7 @@ import '../../../../domain/entities/supply/delivery_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_payloads.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_back_button.dart';
@@ -16,7 +17,7 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
-import '../riverpod/confirm_delivery_provider.dart';
+import '../riverpod/supply_request_action_provider.dart';
 import '../widgets/item_stepper_input.dart';
 import 'request_details_page.dart';
 
@@ -60,23 +61,19 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
   }
 
   void _onConfirmStateChanged(
-    AsyncValue<DeliveryEntity?>? previous,
-    AsyncValue<DeliveryEntity?> next,
+    AsyncValue<void>? previous,
+    AsyncValue<void> next,
   ) {
-    next.whenOrNull(
-      data: (value) {
-        if (value == null || !mounted) return;
-        AppSnackBar.showSuccess(
-          context,
-          context.locale.confirmDeliveryReceipt,
-        );
-        context.pop(value);
-      },
-      error: (e, _) {
-        if (!mounted) return;
-        AppSnackBar.showError(context, context.locale.somethingWentWrong);
-      },
-    );
+    if (previous?.isLoading == true && next.hasValue && !next.hasError) {
+      if (!mounted) return;
+      AppSnackBar.showSuccess(
+        context,
+        context.locale.confirmDeliveryReceipt,
+      );
+      context.goNamed(Routes.supplyRequests);
+    } else if (next.hasError && mounted) {
+      AppSnackBar.showError(context, context.locale.somethingWentWrong);
+    }
   }
 
   void _onItemToggled(int index) {
@@ -121,14 +118,14 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
       deliveryNotes: _notesController.text.trim(),
     );
 
-    ref.read(confirmDeliveryProvider.notifier).confirm(request);
+    ref.read(supplyRequestActionProvider.notifier).confirmDelivery(request);
   }
 
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    ref.listen(confirmDeliveryProvider, _onConfirmStateChanged);
-    final confirmState = ref.watch(confirmDeliveryProvider);
+    ref.listen(supplyRequestActionProvider, _onConfirmStateChanged);
+    final actionState = ref.watch(supplyRequestActionProvider);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -152,7 +149,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
       bottomNavigationBar: PermissionGate(
         permissions: const [UserPermission.deliveryConfirm],
         child: _ConfirmDeliveryFooterBar(
-          isSubmitting: confirmState.isLoading,
+          isSubmitting: actionState.isLoading,
           onConfirm: _onConfirmReceipt,
           onCancel: () => context.pop(),
         ),
