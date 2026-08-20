@@ -4,6 +4,8 @@ class _RequestDetailsBody extends ConsumerWidget {
   const _RequestDetailsBody({
     required this.request,
     required this.lastAction,
+    required this.isEditing,
+    required this.onEditToggled,
     required this.editedQuantities,
     required this.onQuantityChanged,
     required this.onEditingCancelled,
@@ -17,6 +19,9 @@ class _RequestDetailsBody extends ConsumerWidget {
 
   final SupplyRequestEntity request;
   final _DetailsAction? lastAction;
+  final bool isEditing;
+  final ValueChanged<bool> onEditToggled;
+
   final Map<int, int> editedQuantities;
   final void Function(int stockItemId, int qty) onQuantityChanged;
   final VoidCallback onEditingCancelled;
@@ -125,6 +130,7 @@ class _RequestDetailsBody extends ConsumerWidget {
           ),
         SupplyRequestStatus.inDelivery => _RequestConfirmButton(
             delivery: delivery,
+            isEnabled: !isEditing,
             onConfirmTap: () {
               if (delivery != null) {
                 onConfirmDeliveryTap(request, delivery);
