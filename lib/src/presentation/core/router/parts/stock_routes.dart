@@ -19,11 +19,11 @@ List<GoRoute> _stockRoutes(Ref ref) {
       path: Routes.confirmDelivery,
       name: Routes.confirmDelivery,
       builder: (context, state) {
-        final args = state.extra as ConfirmDeliveryPageArgs;
+        final (request, delivery) =
+            state.extra as (SupplyRequestEntity, DeliveryEntity);
         return ConfirmDeliveryPage(
-          delivery: args.delivery,
-          urgency: args.urgency,
-          requestedByName: args.requestedByName,
+          request: request,
+          delivery: delivery,
         );
       },
     ),
