@@ -2,14 +2,24 @@ part of '../view/request_details_page.dart';
 
 class _PendingActionButtons extends ConsumerWidget {
   const _PendingActionButtons({
+    required this.status,
     required this.onReject,
     required this.onApprove,
     required this.isApproveAction,
   });
 
+  final SupplyRequestStatus status;
   final VoidCallback onReject;
   final VoidCallback onApprove;
   final bool isApproveAction;
+
+  UserPermission get _permission => switch (status) {
+        SupplyRequestStatus.pendingSupervisor =>
+          UserPermission.supplyRequestApproveSupervisor,
+        SupplyRequestStatus.pendingOperationManager =>
+          UserPermission.supplyRequestApproveOperationManager,
+        _ => UserPermission.supplyRequestApprove,
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,7 +31,7 @@ class _PendingActionButtons extends ConsumerWidget {
     final isRejecting = isBusy && !isApproveAction;
 
     return PermissionGate(
-      permissions: const [UserPermission.supplyRequestApprove],
+      permissions: [_permission],
       child: Container(
         padding: EdgeInsets.all(spacing.s16),
         decoration: BoxDecoration(

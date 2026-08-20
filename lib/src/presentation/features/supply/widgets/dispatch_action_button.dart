@@ -12,7 +12,7 @@ class _DispatchActionButton extends ConsumerWidget {
     final isBusy = ref.watch(supplyRequestActionProvider).isLoading;
 
     return PermissionGate(
-      permissions: const [UserPermission.deliveryConfirm],
+      permissions: const [UserPermission.deliveryDispatch],
       child: Container(
         padding: EdgeInsets.all(spacing.s16),
         decoration: BoxDecoration(

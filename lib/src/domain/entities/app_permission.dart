@@ -106,10 +106,13 @@ enum UserPermission {
   supplyRequestView('supply_request.view'),
   supplyRequestCreate('supply_request.create'),
   supplyRequestApprove('supply_request.approve'),
+  supplyRequestApproveSupervisor('supply_request.approve_supervisor'),
+  supplyRequestApproveOperationManager('supply_request.approve_operation_manager'),
 
   // Delivery
   deliveryView('delivery.view'),
   deliveryConfirm('delivery.confirm'),
+  deliveryDispatch('delivery.dispatch'),
   deliveryComplaintView('delivery_complaint.view'),
   deliveryComplaintCreate('delivery_complaint.create'),
   deliveryComplaintApprove('delivery_complaint.approve'),
