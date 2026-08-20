@@ -59,6 +59,7 @@ import '../../features/shift/widgets/shift_not_yet_accessible_widget.dart';
 import '../../features/shift/widgets/shift_window_closed_widget.dart';
 import '../../features/splash/view/splash_page.dart';
 import '../../features/supervisor_tracking/view/supervisor_tracking_page.dart';
+import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/request_details_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
 import '../widgets/app_startup/startup_widget.dart';
