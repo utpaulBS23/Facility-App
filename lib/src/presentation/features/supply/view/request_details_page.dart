@@ -55,6 +55,7 @@ enum _DetailsAction { approve, reject, dispatch }
 class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
   _DetailsAction? _lastAction;
   final Map<int, int> _editedQuantities = {};
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -146,6 +147,8 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
       AsyncData(value: final request) => _RequestDetailsBody(
           request: request,
           lastAction: _lastAction,
+          isEditing: _isEditing,
+          onEditToggled: (editing) => setState(() => _isEditing = editing),
           editedQuantities: _editedQuantities,
           onQuantityChanged: _onQuantityChanged,
           onEditingCancelled: _onEditingCancelled,
@@ -169,3 +172,4 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     };
   }
 }
+

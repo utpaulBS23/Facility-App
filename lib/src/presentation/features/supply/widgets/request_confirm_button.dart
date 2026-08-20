@@ -4,10 +4,12 @@ class _RequestConfirmButton extends StatelessWidget {
   const _RequestConfirmButton({
     required this.delivery,
     required this.onConfirmTap,
+    this.isEnabled = true,
   });
 
   final DeliveryEntity? delivery;
   final VoidCallback onConfirmTap;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class _RequestConfirmButton extends StatelessWidget {
                 width: double.infinity,
                 height: spacing.s44,
                 child: FilledButton(
-                  onPressed: delivery == null ? null : onConfirmTap,
+                  onPressed: (isEnabled && delivery != null) ? onConfirmTap : null,
                   child: Text(context.locale.confirmDeliveryReceipt),
                 ),
               ),

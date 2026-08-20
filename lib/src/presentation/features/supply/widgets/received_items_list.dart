@@ -8,6 +8,8 @@ class _ReceivedItemsList extends StatefulWidget {
     required this.hasDelivery,
     required this.isConfirmed,
     required this.canEdit,
+    required this.isEditing,
+    required this.onEditToggled,
     required this.editedQuantities,
     required this.onQuantityChanged,
     required this.onEditingCancelled,
@@ -20,6 +22,8 @@ class _ReceivedItemsList extends StatefulWidget {
   final bool hasDelivery;
   final bool isConfirmed;
   final bool canEdit;
+  final bool isEditing;
+  final ValueChanged<bool> onEditToggled;
   final Map<int, int> editedQuantities;
   final void Function(int stockItemId, int qty) onQuantityChanged;
   final VoidCallback onEditingCancelled;
@@ -30,14 +34,12 @@ class _ReceivedItemsList extends StatefulWidget {
 }
 
 class _ReceivedItemsListState extends State<_ReceivedItemsList> {
-  bool _isEditing = false;
-
   void _onSave() {
-    setState(() => _isEditing = false);
+    widget.onEditToggled(false);
   }
 
   void _onCancel() {
-    setState(() => _isEditing = false);
+    widget.onEditToggled(false);
     widget.onEditingCancelled();
   }
 
@@ -105,10 +107,10 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            if (!_isEditing) ...[
+            if (!widget.isEditing) ...[
               TextButton(
                 onPressed: widget.canEdit
-                    ? () => setState(() => _isEditing = true)
+                    ? () => widget.onEditToggled(true)
                     : null,
                 style: TextButton.styleFrom(
                   foregroundColor: color.primary,
@@ -161,7 +163,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
               receivedQuantity: receivedQty,
               unit: unit,
               stockItemId: stockItemId,
-              isEditing: _isEditing,
+              isEditing: widget.isEditing,
               hasDelivery: widget.hasDelivery,
               isConfirmed: widget.isConfirmed,
               editedQuantity: widget.editedQuantities[stockItemId],

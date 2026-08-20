@@ -3,6 +3,8 @@ part of '../view/request_details_page.dart';
 class _ReceivedItemsSection extends ConsumerWidget {
   const _ReceivedItemsSection({
     required this.request,
+    required this.isEditing,
+    required this.onEditToggled,
     required this.editedQuantities,
     required this.onQuantityChanged,
     required this.onEditingCancelled,
@@ -10,6 +12,8 @@ class _ReceivedItemsSection extends ConsumerWidget {
   });
 
   final SupplyRequestEntity request;
+  final bool isEditing;
+  final ValueChanged<bool> onEditToggled;
   final Map<int, int> editedQuantities;
   final void Function(int stockItemId, int qty) onQuantityChanged;
   final VoidCallback onEditingCancelled;
@@ -24,6 +28,8 @@ class _ReceivedItemsSection extends ConsumerWidget {
         hasDelivery: false,
         isConfirmed: false,
         canEdit: false,
+        isEditing: isEditing,
+        onEditToggled: onEditToggled,
         editedQuantities: editedQuantities,
         onQuantityChanged: onQuantityChanged,
         onEditingCancelled: onEditingCancelled,
@@ -50,6 +56,8 @@ class _ReceivedItemsSection extends ConsumerWidget {
         hasDelivery: true,
         isConfirmed: request.isDelivered,
         canEdit: request.status == SupplyRequestStatus.inDelivery,
+        isEditing: isEditing,
+        onEditToggled: onEditToggled,
         editedQuantities: editedQuantities,
         onQuantityChanged: onQuantityChanged,
         onEditingCancelled: onEditingCancelled,
