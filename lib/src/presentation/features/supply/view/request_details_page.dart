@@ -115,12 +115,20 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     SupplyRequestEntity request,
     DeliveryEntity delivery,
   ) {
+    final updatedItems = delivery.items.map((item) {
+      final editedQty = _editedQuantities[item.stockItemId];
+      if (editedQty == null) return item;
+      return item.copyWith(qtyReceived: editedQty.toDouble());
+    }).toList();
+
+    final updatedDelivery = delivery.copyWith(items: updatedItems);
+
     context.pushNamed(
       Routes.confirmDelivery,
       extra: ConfirmDeliveryPageArgs(
-        delivery: delivery,
+        delivery: updatedDelivery,
         urgency: request.urgency,
-        requestedByName: '',
+        requestedByName: request.requestedByName,
       ),
     );
   }
