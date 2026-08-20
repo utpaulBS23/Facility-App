@@ -24,6 +24,7 @@ import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
 import '../widgets/item_stepper_input.dart';
+import 'confirm_delivery_page.dart';
 
 part '../widgets/dispatch_action_button.dart';
 part '../widgets/pending_action_buttons.dart';
@@ -114,7 +115,14 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     SupplyRequestEntity request,
     DeliveryEntity delivery,
   ) {
-    // Confirm delivery route exists on feature/supply-confirm-delivery branch
+    context.pushNamed(
+      Routes.confirmDelivery,
+      extra: ConfirmDeliveryPageArgs(
+        delivery: delivery,
+        urgency: request.urgency,
+        requestedByName: '',
+      ),
+    );
   }
 
   void _onBack(BuildContext context) {

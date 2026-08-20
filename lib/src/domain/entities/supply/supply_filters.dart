@@ -66,15 +66,19 @@ enum SupplyFilter {
   SupplyRequestStatus? toRequestStatus() {
     return switch (this) {
       SupplyFilter.all => null,
-      SupplyFilter.pendingSupervisor => SupplyRequestStatus.pendingSupervisor,
-      SupplyFilter.pendingOperationManager => SupplyRequestStatus.pendingOperationManager,
-      SupplyFilter.operationManagerApproved => SupplyRequestStatus.operationManagerApproved,
+      SupplyFilter.pendingSupervisor =>
+        SupplyRequestStatus.pendingSupervisor,
+      SupplyFilter.pendingOperationManager =>
+        SupplyRequestStatus.pendingOperationManager,
+      SupplyFilter.operationManagerApproved =>
+        SupplyRequestStatus.operationManagerApproved,
       SupplyFilter.inDelivery => SupplyRequestStatus.inDelivery,
       SupplyFilter.delivered => SupplyRequestStatus.delivered,
       SupplyFilter.rejected => SupplyRequestStatus.rejected,
       SupplyFilter.completed => SupplyRequestStatus.completed,
     };
   }
+
 }
 
 /// Filter query parameters for supply request list (`GET /supply-requests`).
