@@ -28,7 +28,7 @@ part '../widgets/pending_action_buttons.dart';
 part '../widgets/received_item_card.dart';
 part '../widgets/received_items_list.dart';
 part '../widgets/request_details_body.dart';
-part '../widgets/request_details_bottom_bar.dart';
+part '../widgets/request_confirm_button.dart';
 part '../widgets/request_info_card.dart';
 part '../widgets/request_status_timeline.dart';
 part '../widgets/request_user_card.dart';
@@ -65,7 +65,6 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
         _DetailsAction.approve => context.locale.approved,
         _DetailsAction.reject => context.locale.rejection,
         _DetailsAction.dispatch => context.locale.dispatchSuccess,
-        
       };
 
       AppSnackBar.showSuccess(context, message);
@@ -103,7 +102,10 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     setState(() => _editedQuantities.clear());
   }
 
-  void _onConfirmDeliveryTap(SupplyRequestEntity request, DeliveryEntity delivery) {
+  void _onConfirmDeliveryTap(
+    SupplyRequestEntity request,
+    DeliveryEntity delivery,
+  ) {
     // Confirm delivery route exists on feature/supply-confirm-delivery branch
   }
 
@@ -150,19 +152,19 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
       ),
       bottomNavigationBar: switch (request.status) {
         SupplyRequestStatus.pendingSupervisor ||
-        SupplyRequestStatus.pendingOperationManager =>
-          _PendingActionButtons(
-            isApproveAction: _lastAction == _DetailsAction.approve,
-            onReject: _onReject,
-            onApprove: _onApprove,
-          ),
+        SupplyRequestStatus.pendingOperationManager => _PendingActionButtons(
+          status: request.status,
+          isApproveAction: _lastAction == _DetailsAction.approve,
+          onReject: _onReject,
+          onApprove: _onApprove,
+        ),
         SupplyRequestStatus.operationManagerApproved => _DispatchActionButton(
-            onDispatch: _onDispatch,
-          ),
-        SupplyRequestStatus.inDelivery => _RequestDetailsBottomBar(
-            delivery: delivery,
-            onConfirmTap: () => _onConfirmDeliveryTap(request, delivery!),
-          ),
+          onDispatch: _onDispatch,
+        ),
+        SupplyRequestStatus.inDelivery => _RequestConfirmButton(
+          delivery: delivery,
+          onConfirmTap: () => _onConfirmDeliveryTap(request, delivery!),
+        ),
         _ => null,
       },
     );
