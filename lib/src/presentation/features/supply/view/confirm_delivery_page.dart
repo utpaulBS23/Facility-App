@@ -126,6 +126,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
     final color = context.color;
     ref.listen(supplyRequestActionProvider, _onConfirmStateChanged);
     final actionState = ref.watch(supplyRequestActionProvider);
+    final hasAnyVerified = _items.any((item) => item.isVerified);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -150,6 +151,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
         permissions: const [UserPermission.deliveryConfirm],
         child: _ConfirmDeliveryFooterBar(
           isSubmitting: actionState.isLoading,
+          isEnabled: hasAnyVerified,
           onConfirm: _onConfirmReceipt,
           onCancel: () => context.pop(),
         ),
