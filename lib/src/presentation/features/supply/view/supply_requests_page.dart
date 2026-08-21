@@ -57,7 +57,10 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   }
 
   void _onRequestTap(SupplyRequestEntity req) {
-    context.pushNamed(Routes.requestDetails, extra: req);
+    context.pushNamed(
+      Routes.requestDetails,
+      pathParameters: {'id': req.id.toString()},
+    );
   }
 
   void _onBack(BuildContext context) {

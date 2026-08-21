@@ -27,16 +27,18 @@ part '../widgets/dispatch_action_button.dart';
 part '../widgets/pending_action_buttons.dart';
 part '../widgets/received_item_card.dart';
 part '../widgets/received_items_list.dart';
-part '../widgets/request_details_body.dart';
 part '../widgets/request_confirm_button.dart';
+part '../widgets/request_details_body.dart';
+part '../widgets/request_details_error.dart';
+part '../widgets/request_details_loading.dart';
 part '../widgets/request_info_card.dart';
 part '../widgets/request_status_timeline.dart';
 part '../widgets/request_user_card.dart';
 
 class RequestDetailsPage extends ConsumerStatefulWidget {
-  const RequestDetailsPage({super.key, required this.request});
+  const RequestDetailsPage({super.key, required this.requestId});
 
-  final SupplyRequestEntity request;
+  final int requestId;
 
   @override
   ConsumerState<RequestDetailsPage> createState() => _RequestDetailsPageState();
@@ -77,17 +79,17 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
 
   void _onDispatch() {
     _lastAction = _DetailsAction.dispatch;
-    ref.read(supplyRequestActionProvider.notifier).dispatch(widget.request.id);
+    ref.read(supplyRequestActionProvider.notifier).dispatch(widget.requestId);
   }
 
   void _onApprove() {
     _lastAction = _DetailsAction.approve;
-    ref.read(supplyRequestActionProvider.notifier).approve(widget.request.id);
+    ref.read(supplyRequestActionProvider.notifier).approve(widget.requestId);
   }
 
   void _onReject() {
     _lastAction = _DetailsAction.reject;
-    ref.read(supplyRequestActionProvider.notifier).reject(widget.request.id);
+    ref.read(supplyRequestActionProvider.notifier).reject(widget.requestId);
   }
 
   void _onEvidenceReportTap(int stockItemId) {
@@ -120,53 +122,33 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final requestAsync = ref.watch(
-      supplyRequestDetailsProvider(widget.request.id),
+      supplyRequestDetailsProvider(widget.requestId),
     );
-    final request = requestAsync.valueOrNull ?? widget.request;
 
-    final deliveryAsync = request.hasDelivery
-        ? ref.watch(supplyRequestDeliveryProvider(request.requestCode))
-        : const AsyncValue<DeliveryEntity?>.data(null);
-    final delivery = deliveryAsync.valueOrNull;
-
-    return Scaffold(
-      backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: () => _onBack(context)),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.requestDetailsTitle),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
-      body: _RequestDetailsBody(
-        request: request,
-        deliveryAsync: deliveryAsync,
-        delivery: delivery,
-        editedQuantities: _editedQuantities,
-        onQuantityChanged: _onQuantityChanged,
-        onEditingCancelled: _onEditingCancelled,
-        onEvidenceReportTap: _onEvidenceReportTap,
-        onRetryDelivery: () =>
-            ref.invalidate(supplyRequestDeliveryProvider(request.requestCode)),
-      ),
-      bottomNavigationBar: switch (request.status) {
-        SupplyRequestStatus.pendingSupervisor ||
-        SupplyRequestStatus.pendingOperationManager => _PendingActionButtons(
-          status: request.status,
-          isApproveAction: _lastAction == _DetailsAction.approve,
-          onReject: _onReject,
+    return switch (requestAsync) {
+      AsyncData(value: final request) => _RequestDetailsBody(
+          request: request,
+          lastAction: _lastAction,
+          editedQuantities: _editedQuantities,
+          onQuantityChanged: _onQuantityChanged,
+          onEditingCancelled: _onEditingCancelled,
+          onEvidenceReportTap: _onEvidenceReportTap,
+          onConfirmDeliveryTap: _onConfirmDeliveryTap,
           onApprove: _onApprove,
-        ),
-        SupplyRequestStatus.operationManagerApproved => _DispatchActionButton(
+          onReject: _onReject,
           onDispatch: _onDispatch,
+          onBack: () => _onBack(context),
         ),
-        SupplyRequestStatus.inDelivery => _RequestConfirmButton(
-          delivery: delivery,
-          onConfirmTap: () => _onConfirmDeliveryTap(request, delivery!),
+      AsyncError(:final error) => _RequestDetailsError(
+          error: error,
+          onRetry: () => ref.invalidate(
+            supplyRequestDetailsProvider(widget.requestId),
+          ),
+          onBack: () => _onBack(context),
         ),
-        _ => null,
-      },
-    );
+      _ => _RequestDetailsLoading(
+          onBack: () => _onBack(context),
+        ),
+    };
   }
 }
