@@ -23,6 +23,7 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
+import '../models/received_item_ui_model.dart';
 import '../widgets/item_stepper_input.dart';
 
 part '../widgets/dispatch_action_button.dart';
@@ -100,7 +101,31 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
   }
 
   void _onEvidenceReportTap(int stockItemId) {
-    // Delivery complaint route exists on feature/supply-confirm-delivery branch
+    final request = ref.read(supplyRequestDetailsProvider(widget.request.id)).valueOrNull ?? widget.request;
+    final delivery = request.hasDelivery
+        ? ref.read(supplyRequestDeliveryProvider(request.requestCode)).valueOrNull
+        : null;
+
+    if (delivery == null) return;
+
+    final deliveryItem = delivery.items.firstWhere(
+      (item) => item.stockItemId == stockItemId,
+      orElse: () => delivery.items.first,
+    );
+
+    final itemModel = ReceivedItemUiModel(
+      stockItemId: stockItemId,
+      name: deliveryItem.itemName,
+      code: deliveryItem.itemCode,
+      expectedQuantity: deliveryItem.qtyExpected.toInt(),
+      receivedQuantity: (_editedQuantities[stockItemId] ?? deliveryItem.qtyReceived.toInt()),
+      unit: deliveryItem.unit,
+      icon: Icons.inventory_2_outlined,
+      deliveryId: delivery.id,
+      deliveryItemId: deliveryItem.id,
+    );
+
+    context.pushNamed(Routes.deliveryComplaint, extra: itemModel);
   }
 
   void _onQuantityChanged(int stockItemId, int qty) {
