@@ -31,8 +31,12 @@ List<GoRoute> _stockRoutes(Ref ref) {
       path: Routes.deliveryComplaint,
       name: Routes.deliveryComplaint,
       builder: (context, state) {
-        final item = state.extra as ReceivedItemUiModel;
-        return DeliveryComplaintPage(item: item);
+        final (delivery, item) =
+            state.extra as (DeliveryEntity, DeliveryItemEntity);
+        return DeliveryComplaintPage(
+          delivery: delivery,
+          item: item,
+        );
       },
     ),
   ];
