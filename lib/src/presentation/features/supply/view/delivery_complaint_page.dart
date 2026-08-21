@@ -5,13 +5,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/supply/delivery_entity.dart';
 import '../../../../domain/entities/supply/supply_request_payloads.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../models/received_item_ui_model.dart';
 import '../riverpod/supply_request_action_provider.dart';
 
 part '../widgets/additional_details_card.dart';
@@ -21,9 +21,14 @@ part '../widgets/discrepancy_summary_card.dart';
 part '../widgets/proof_photo_picker_card.dart';
 
 class DeliveryComplaintPage extends ConsumerStatefulWidget {
-  const DeliveryComplaintPage({super.key, required this.item});
+  const DeliveryComplaintPage({
+    super.key,
+    required this.delivery,
+    required this.item,
+  });
 
-  final ReceivedItemUiModel item;
+  final DeliveryEntity delivery;
+  final DeliveryItemEntity item;
 
   @override
   ConsumerState<DeliveryComplaintPage> createState() =>
@@ -56,14 +61,10 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
   }
 
   void _onSubmitComplaint() {
-    final deliveryId = widget.item.deliveryId;
-    final deliveryItemId = widget.item.deliveryItemId;
-    if (deliveryId == null || deliveryItemId == null) return;
-
     final request = FileDeliveryComplaintRequestEntity(
-      deliveryId: deliveryId,
-      deliveryItemId: deliveryItemId,
-      reportedQtyReceived: widget.item.receivedQuantity.toDouble(),
+      deliveryId: widget.delivery.id,
+      deliveryItemId: widget.item.id,
+      reportedQtyReceived: widget.item.qtyReceived,
       reason: _reasonController.text.trim(),
       evidencePhotoUrl: '',
     );

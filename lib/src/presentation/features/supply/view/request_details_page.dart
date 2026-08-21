@@ -23,7 +23,6 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
-import '../models/received_item_ui_model.dart';
 import '../widgets/item_stepper_input.dart';
 
 part '../widgets/dispatch_action_button.dart';
@@ -113,19 +112,16 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
       orElse: () => delivery.items.first,
     );
 
-    final itemModel = ReceivedItemUiModel(
-      stockItemId: stockItemId,
-      name: deliveryItem.itemName,
-      code: deliveryItem.itemCode,
-      expectedQuantity: deliveryItem.qtyExpected.toInt(),
-      receivedQuantity: (_editedQuantities[stockItemId] ?? deliveryItem.qtyReceived.toInt()),
-      unit: deliveryItem.unit,
-      icon: Icons.inventory_2_outlined,
-      deliveryId: delivery.id,
-      deliveryItemId: deliveryItem.id,
-    );
+    final itemToPass = _editedQuantities.containsKey(stockItemId)
+        ? deliveryItem.copyWith(
+            qtyReceived: _editedQuantities[stockItemId]!.toDouble(),
+          )
+        : deliveryItem;
 
-    context.pushNamed(Routes.deliveryComplaint, extra: itemModel);
+    context.pushNamed(
+      Routes.deliveryComplaint,
+      extra: (delivery, itemToPass),
+    );
   }
 
   void _onQuantityChanged(int stockItemId, int qty) {

@@ -3,7 +3,7 @@ part of '../view/delivery_complaint_page.dart';
 class _DiscrepancySummaryCard extends StatelessWidget {
   const _DiscrepancySummaryCard({required this.item});
 
-  final ReceivedItemUiModel item;
+  final DeliveryItemEntity item;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,9 @@ class _DiscrepancySummaryCard extends StatelessWidget {
     final radius = context.dimensions.radius;
     final color = context.color;
 
-    final missing = item.expectedQuantity - item.receivedQuantity;
+    final expected = item.qtyExpected.toInt();
+    final received = item.qtyReceived.toInt();
+    final missing = expected - received;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -32,7 +34,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(radius.r12),
                 ),
                 child: Icon(
-                  item.icon,
+                  Icons.inventory_2_outlined,
                   color: color.primary,
                   size: spacing.s20,
                 ),
@@ -43,7 +45,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.name,
+                      item.itemName,
                       style: context.textStyle.labelLarge.copyWith(
                         color: color.text.primary,
                         fontWeight: FontWeight.bold,
@@ -51,7 +53,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                     ),
                     Gap(spacing.s2),
                     Text(
-                      context.locale.itemCodeLabel(item.code),
+                      context.locale.itemCodeLabel(item.itemCode),
                       style: context.textStyle.bodySmall.copyWith(
                         color: color.text.secondary,
                       ),
@@ -94,14 +96,14 @@ class _DiscrepancySummaryCard extends StatelessWidget {
               Expanded(
                 child: _QtyBox(
                   label: context.locale.expectedLabel,
-                  value: '${item.expectedQuantity} ${item.unit}',
+                  value: '$expected ${item.unit}',
                 ),
               ),
               Gap(spacing.s8),
               Expanded(
                 child: _QtyBox(
                   label: context.locale.receivedLabel,
-                  value: '${item.receivedQuantity} ${item.unit}',
+                  value: '$received ${item.unit}',
                 ),
               ),
               Gap(spacing.s8),
