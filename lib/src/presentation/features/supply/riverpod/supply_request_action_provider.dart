@@ -79,4 +79,20 @@ class SupplyRequestAction extends _$SupplyRequestAction {
       error: (error) => AsyncValue.error(error.message, StackTrace.current),
     );
   }
+
+  Future<void> fileDeliveryComplaint(
+    FileDeliveryComplaintRequestEntity request,
+  ) async {
+    if (state.isLoading) return;
+
+    state = const AsyncValue.loading();
+
+    final result =
+        await ref.read(fileDeliveryComplaintUseCaseProvider).call(request);
+
+    state = result.when(
+      success: (_) => const AsyncValue.data(null),
+      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+    );
+  }
 }

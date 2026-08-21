@@ -60,5 +60,6 @@ class Routes {
   static const String newRequest = '/new-request';
   static const String requestDetails = '/request-details/:id';
   static const String confirmDelivery = '/confirm-delivery';
+  static const String deliveryComplaint = '/delivery-complaint';
 }
 
