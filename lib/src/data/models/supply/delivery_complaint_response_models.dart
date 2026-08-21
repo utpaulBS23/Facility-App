@@ -1,7 +1,13 @@
-import 'delivery_complaint_status.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 
-class DeliveryComplaintEntity {
-  const DeliveryComplaintEntity({
+part 'delivery_complaint_response_models.mapper.dart';
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class DeliveryComplaintModel with DeliveryComplaintModelMappable {
+  const DeliveryComplaintModel({
     required this.id,
     required this.deliveryId,
     required this.requestCode,
@@ -13,17 +19,15 @@ class DeliveryComplaintEntity {
     required this.expectedQty,
     required this.currentQtyReceived,
     this.raisedBy,
-    this.raisedByName = '',
+    this.raisedByName,
     required this.reportedQtyReceived,
     required this.reason,
-    this.evidencePhotoUrl = '',
-    required this.status,
+    this.evidencePhotoUrl,
+    this.status,
     this.reviewedBySupervisor,
-    this.reviewedBySupervisorName = '',
     this.reviewedByOperationManager,
-    this.reviewedByOperationManagerName = '',
     required this.createdAt,
-    this.resolvedAt = '',
+    this.resolvedAt,
   });
 
   final int id;
@@ -37,15 +41,28 @@ class DeliveryComplaintEntity {
   final double expectedQty;
   final double currentQtyReceived;
   final int? raisedBy;
-  final String raisedByName;
+  final String? raisedByName;
   final double reportedQtyReceived;
   final String reason;
-  final String evidencePhotoUrl;
-  final DeliveryComplaintStatus status;
+  final String? evidencePhotoUrl;
+  final String? status;
   final int? reviewedBySupervisor;
-  final String reviewedBySupervisorName;
   final int? reviewedByOperationManager;
-  final String reviewedByOperationManagerName;
   final String createdAt;
-  final String resolvedAt;
+  final String? resolvedAt;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class DeliveryComplaintResponseModel with DeliveryComplaintResponseModelMappable {
+  const DeliveryComplaintResponseModel({
+    this.success,
+    this.message,
+    this.data,
+  });
+
+  final bool? success;
+  final String? message;
+  final DeliveryComplaintModel? data;
+
+  static const fromJson = DeliveryComplaintResponseModelMapper.fromJson;
 }

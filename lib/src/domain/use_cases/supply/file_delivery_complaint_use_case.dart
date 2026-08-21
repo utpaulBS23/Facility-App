@@ -17,14 +17,8 @@ final class FileDeliveryComplaintUseCase extends PartnerUseCase {
     FileDeliveryComplaintRequestEntity request,
   ) async {
     final partnerId = getPartnerId();
-    final result = await supplyRepository.fileDeliveryComplaint(
+    return supplyRepository.fileDeliveryComplaint(
       request.copyWith(partnerId: partnerId),
     );
-
-    return switch (result) {
-      Success(:final data) when data != null => Success(data: data),
-      Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('file delivery complaint')),
-    };
   }
 }

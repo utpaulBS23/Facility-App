@@ -83,6 +83,7 @@ import '../../domain/use_cases/supply/reject_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/dispatch_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/get_delivery_for_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/confirm_delivery_use_case.dart';
+import '../../domain/use_cases/supply/file_delivery_complaint_use_case.dart';
 import '../../presentation/core/router/router.dart';
 
 part 'dependency_injection.g.dart';

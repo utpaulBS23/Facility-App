@@ -27,5 +27,13 @@ List<GoRoute> _stockRoutes(Ref ref) {
         );
       },
     ),
+    GoRoute(
+      path: Routes.deliveryComplaint,
+      name: Routes.deliveryComplaint,
+      builder: (context, state) {
+        final item = state.extra as ReceivedItemUiModel;
+        return DeliveryComplaintPage(item: item);
+      },
+    ),
   ];
 }

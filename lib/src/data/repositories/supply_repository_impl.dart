@@ -1,3 +1,4 @@
+import '../../core/base/exceptions.dart';
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
@@ -242,8 +243,15 @@ final class SupplyRepositoryImpl extends SupplyRepository {
     FileDeliveryComplaintRequestEntity request,
   ) {
     return asyncGuard(() async {
+      final partnerId = request.partnerId;
+      if (partnerId == null) {
+        throw const ValidationException(
+          message: 'Partner ID is required',
+          field: 'partnerId',
+        );
+      }
       final response = await remote.fileDeliveryComplaint(
-        partnerId: request.partnerId!,
+        partnerId: partnerId,
         deliveryId: request.deliveryId,
         body: request.toBody(),
       );

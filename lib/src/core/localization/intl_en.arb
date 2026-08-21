@@ -715,6 +715,16 @@
     }
   },
   "uncheckAll": "Uncheck all",
-  "checkAll": "Check all"
+  "checkAll": "Check all",
+  "deliveryComplaintTitle": "File Delivery Complaint",
+  "submitComplaint": "Submit Complaint",
+  "complaintSubmittedSuccessfully": "Complaint submitted successfully",
+  "discrepancySummary": "Discrepancy Summary",
+  "reasonForComplaintHint": "Describe the issue or reason for complaint...",
+  "proofPhotoOptional": "Proof Photo (Optional)",
+  "missingLabel": "Missing",
+  "complaintReasonLabel": "Reason for Complaint",
+  "complaintReasonHint": "Describe the issue or reason for complaint...",
+  "proofPhoto": "Proof Photo (Optional)"
 }
 

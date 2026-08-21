@@ -1,35 +1,21 @@
 enum DeliveryComplaintStatus {
-  pendingSupervisor,
-  pendingOperationManager,
-  operationManagerApproved,
-  rejected,
-  unknown;
+  pendingSupervisor('pending_supervisor'),
+  pendingOperationManager('pending_operation_manager'),
+  operationManagerApproved('operation_manager_approved'),
+  rejected('rejected'),
+  unknown('unknown');
 
-  static DeliveryComplaintStatus fromWireString(String? raw) {
+  const DeliveryComplaintStatus(this.wireName);
+  final String wireName;
 
-    return switch (raw?.toLowerCase()) {
-      'pending_supervisor' ||
-      'pending' => DeliveryComplaintStatus.pendingSupervisor,
-      'pending_operation_manager' ||
-      'pending_manager' => DeliveryComplaintStatus.pendingOperationManager,
-      'operation_manager_approved' ||
-      'approved' => DeliveryComplaintStatus.operationManagerApproved,
-      'rejected' => DeliveryComplaintStatus.rejected,
-      _ => DeliveryComplaintStatus.unknown,
-    };
+  static final Map<String, DeliveryComplaintStatus> _byWireName = {
+    for (final status in values) status.wireName: status,
+  };
+
+  static DeliveryComplaintStatus fromWireString(String? wire) {
+    return _byWireName[wire] ?? DeliveryComplaintStatus.unknown;
   }
 
-  String toWireString() {
-
-    return switch (this) {
-      DeliveryComplaintStatus.pendingSupervisor => 'pending_supervisor',
-      DeliveryComplaintStatus.pendingOperationManager =>
-        'pending_operation_manager',
-      DeliveryComplaintStatus.operationManagerApproved =>
-        'operation_manager_approved',
-      DeliveryComplaintStatus.rejected => 'rejected',
-      DeliveryComplaintStatus.unknown => 'unknown',
-    };
-  }
+  String toWireString() => wireName;
 }
 

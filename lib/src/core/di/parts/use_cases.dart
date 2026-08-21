@@ -557,3 +557,10 @@ ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
   );
 }
 
+@riverpod
+FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
+  return FileDeliveryComplaintUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
