@@ -7,7 +7,7 @@ class _DeliveryComplaintBody extends StatelessWidget {
     required this.onReasonChanged,
   });
 
-  final ReceivedItemUiModel item;
+  final DeliveryItemEntity item;
   final TextEditingController reasonController;
   final VoidCallback onReasonChanged;
 

@@ -12,18 +12,15 @@ class DeliveryComplaintEntity {
     required this.itemName,
     required this.expectedQty,
     required this.currentQtyReceived,
-    this.raisedBy,
-    this.raisedByName = '',
+    required this.raisedByName,
     required this.reportedQtyReceived,
     required this.reason,
-    this.evidencePhotoUrl = '',
+    required this.evidencePhotoUrl,
     required this.status,
-    this.reviewedBySupervisor,
-    this.reviewedBySupervisorName = '',
-    this.reviewedByOperationManager,
-    this.reviewedByOperationManagerName = '',
+    required this.reviewedBySupervisorName,
+    required this.reviewedByOperationManagerName,
     required this.createdAt,
-    this.resolvedAt = '',
+    required this.resolvedAt,
   });
 
   final int id;
@@ -36,15 +33,12 @@ class DeliveryComplaintEntity {
   final String itemName;
   final double expectedQty;
   final double currentQtyReceived;
-  final int? raisedBy;
   final String raisedByName;
   final double reportedQtyReceived;
   final String reason;
   final String evidencePhotoUrl;
   final DeliveryComplaintStatus status;
-  final int? reviewedBySupervisor;
   final String reviewedBySupervisorName;
-  final int? reviewedByOperationManager;
   final String reviewedByOperationManagerName;
   final String createdAt;
   final String resolvedAt;
