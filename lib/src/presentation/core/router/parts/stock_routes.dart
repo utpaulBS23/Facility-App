@@ -11,8 +11,8 @@ List<GoRoute> _stockRoutes(Ref ref) {
       path: Routes.requestDetails,
       name: Routes.requestDetails,
       builder: (context, state) {
-        final request = state.extra as SupplyRequestEntity;
-        return RequestDetailsPage(request: request);
+        final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return RequestDetailsPage(requestId: id);
       },
     ),
   ];

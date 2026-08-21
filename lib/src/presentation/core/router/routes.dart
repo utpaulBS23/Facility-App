@@ -58,6 +58,6 @@ class Routes {
   static const String issueManagement = '/issue-management';
   static const String supplyRequests = '/supply-requests';
   static const String newRequest = '/new-request';
-  static const String requestDetails = '/request-details';
+  static const String requestDetails = '/request-details/:id';
 }
 
