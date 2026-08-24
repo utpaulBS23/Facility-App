@@ -104,17 +104,15 @@ class Endpoints {
   static const String visitDetail = '/partners/{partnerId}/visits/{visitId}';
   static const String visitCheckIn =
       '/partners/{partnerId}/visits/{visitId}/check-in/confirm';
-  static const String visitCheckInCapture =
-      '/partners/{partnerId}/visits/{visitId}/check-in/capture';
   static const String visitChecklist =
       '/partners/{partnerId}/visits/{visitId}/checklist';
-  static const String visitChecklistSubmit =
-      '/partners/{partnerId}/visits/{visitId}/checklist/submit';
   static const String visitSubmit =
       '/partners/{partnerId}/visits/{visitId}/submit';
   static const String visitChecklistItemResponse =
       '/partners/{partnerId}/visits/{visitId}/checklist-items/{itemId}/response';
   static const String reportIssue = '/partners/{partnerId}/issues';
+  static const String locationPingSync =
+      '/partners/{partnerId}/location-pings/sync';
 
   /// Tasks
   static const String tasks = '/partners/{partnerId}/tasks';

@@ -8,7 +8,7 @@ ChecklistAnswerType _parseAnswerType(String? raw) => switch (raw) {
 };
 
 ChecklistProofPolicy _parseProofPolicy(String? raw) => switch (raw) {
-  'always' => ChecklistProofPolicy.always,
+  'always' || 'required' => ChecklistProofPolicy.always,
   'optional' => ChecklistProofPolicy.optional,
   _ => ChecklistProofPolicy.none,
 };
@@ -61,16 +61,3 @@ extension ChecklistModelToEntity on ChecklistModel {
   );
 }
 
-extension ChecklistSubmitRequestEntityToJson on ChecklistSubmitRequestEntity {
-  Map<String, dynamic> toJson() => {
-    'answers': answers.map((a) => a.toJson()).toList(),
-  };
-}
-
-extension ChecklistAnswerRequestEntityToJson on ChecklistAnswerRequestEntity {
-  Map<String, dynamic> toJson() => {
-    'item_id': itemId,
-    if (starRating != null) 'star_rating': starRating,
-    if (yesNoAnswer != null) 'yes_no_answer': yesNoAnswer,
-  };
-}

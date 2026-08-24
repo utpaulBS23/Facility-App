@@ -75,32 +75,6 @@ final class CheckInVisitUseCase {
   }
 }
 
-final class CaptureCheckInUseCase {
-  CaptureCheckInUseCase(this._repository, this._authRepository);
-
-  final VisitRepository _repository;
-  final AuthenticationRepository _authRepository;
-
-  Future<Result<VisitCheckInCaptureEntity, Failure>> call({
-    required int visitId,
-    required VisitCheckInRequestEntity request,
-  }) async {
-    final partnerId = _authRepository.currentSession?.activePartnerId;
-    if (partnerId == null) return const Error(Failure.partnerUnavailable);
-
-    final result = await _repository.captureCheckIn(
-      partnerId: partnerId,
-      visitId: visitId,
-      request: request,
-    );
-    return switch (result) {
-      Success(:final data) => Success(data: data),
-      Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('capture check-in')),
-    };
-  }
-}
-
 final class GetChecklistUseCase {
   GetChecklistUseCase(this._repository, this._authRepository);
 
@@ -123,28 +97,24 @@ final class GetChecklistUseCase {
   }
 }
 
-final class SubmitChecklistUseCase {
-  SubmitChecklistUseCase(this._repository, this._authRepository);
+final class SubmitVisitUseCase {
+  SubmitVisitUseCase(this._repository, this._authRepository);
 
   final VisitRepository _repository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<void, Failure>> call({
-    required int visitId,
-    required ChecklistSubmitRequestEntity request,
-  }) async {
+  Future<Result<void, Failure>> call({required int visitId}) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
-    final result = await _repository.submitChecklist(
+    final result = await _repository.submitVisit(
       partnerId: partnerId,
       visitId: visitId,
-      request: request,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('submit checklist')),
+      _ => Error(Failure.emptyResponse('submit visit')),
     };
   }
 }
