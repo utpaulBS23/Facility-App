@@ -351,6 +351,12 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
+  @GET(Endpoints.supplyRequestSummary)
+  Future<HttpResponse> getSupplyRequestSummary({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+  });
+
   @GET(Endpoints.supplyRequestDetails)
   Future<HttpResponse> getSupplyRequestDetails({
     @Path('partnerId') required int partnerId,
