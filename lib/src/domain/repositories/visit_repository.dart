@@ -20,12 +20,6 @@ abstract base class VisitRepository extends Repository {
     required VisitCheckInRequestEntity request,
   });
 
-  Future<Result<VisitCheckInCaptureEntity, Failure>> captureCheckIn({
-    required int partnerId,
-    required int visitId,
-    required VisitCheckInRequestEntity request,
-  });
-
   Future<Result<ChecklistEntity, Failure>> getChecklist({
     required int partnerId,
     required int visitId,
@@ -43,12 +37,6 @@ abstract base class VisitRepository extends Repository {
     int? ratingValue,
     bool? booleanValue,
     String? photoPath,
-  });
-
-  Future<Result<void, Failure>> submitChecklist({
-    required int partnerId,
-    required int visitId,
-    required ChecklistSubmitRequestEntity request,
   });
 
   Future<Result<ReportIssueResponseEntity, Failure>> reportIssue({

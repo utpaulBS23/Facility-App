@@ -6,42 +6,44 @@ part 'visit_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class VisitListResponseModel with VisitListResponseModelMappable {
-  VisitListResponseModel({required this.data, required this.meta});
+  VisitListResponseModel({required this.data, required this.stats});
 
   final List<VisitSummaryModel> data;
-  final VisitMetaModel meta;
+  final VisitStatsModel stats;
 
   static const fromJson = VisitListResponseModelMapper.fromJson;
 
   VisitListEntity toEntity() => VisitListEntity(
-        stats: meta.toEntity(),
+        stats: stats.toEntity(),
         visits: data.map((e) => e.toEntity()).toList(),
       );
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
-class VisitMetaModel with VisitMetaModelMappable {
-  VisitMetaModel({
-    required this.todayCount,
-    required this.thisWeekCount,
-    required this.completedCount,
+class VisitStatsModel with VisitStatsModelMappable {
+  VisitStatsModel({
+    required this.total,
+    required this.pending,
+    required this.inProgress,
+    required this.completed,
   });
 
-  @MappableField(key: 'today_count')
-  final int todayCount;
+  final int total;
 
-  @MappableField(key: 'this_week_count')
-  final int thisWeekCount;
+  final int pending;
 
-  @MappableField(key: 'completed_count')
-  final int completedCount;
+  @MappableField(key: 'in_progress')
+  final int inProgress;
 
-  static const fromJson = VisitMetaModelMapper.fromJson;
+  final int completed;
+
+  static const fromJson = VisitStatsModelMapper.fromJson;
 
   VisitStatsSummaryEntity toEntity() => VisitStatsSummaryEntity(
-        todayCount: todayCount,
-        thisWeekCount: thisWeekCount,
-        completedCount: completedCount,
+        total: total,
+        pending: pending,
+        inProgress: inProgress,
+        completed: completed,
       );
 }
 
@@ -222,58 +224,6 @@ class VisitDetailModel with VisitDetailModelMappable {
                 role: createdByRole ?? '',
               )
             : null,
-      );
-}
-
-@MappableClass(generateMethods: GenerateMethods.decode)
-class VisitCheckInCaptureResponseModel with VisitCheckInCaptureResponseModelMappable {
-  VisitCheckInCaptureResponseModel({required this.data});
-
-  final VisitCheckInCaptureDataModel data;
-
-  static const fromJson = VisitCheckInCaptureResponseModelMapper.fromJson;
-
-  VisitCheckInCaptureEntity toEntity() => data.toEntity();
-}
-
-@MappableClass(generateMethods: GenerateMethods.decode)
-class VisitCheckInCaptureDataModel with VisitCheckInCaptureDataModelMappable {
-  VisitCheckInCaptureDataModel({
-    required this.distanceMeters,
-    required this.locationVerified,
-    required this.facilityLat,
-    required this.facilityLng,
-    required this.yourLat,
-    required this.yourLng,
-  });
-
-  @MappableField(key: 'distance_meters')
-  final int distanceMeters;
-
-  @MappableField(key: 'location_verified')
-  final bool locationVerified;
-
-  @MappableField(key: 'facility_lat')
-  final double facilityLat;
-
-  @MappableField(key: 'facility_lng')
-  final double facilityLng;
-
-  @MappableField(key: 'your_lat')
-  final double yourLat;
-
-  @MappableField(key: 'your_lng')
-  final double yourLng;
-
-  static const fromJson = VisitCheckInCaptureDataModelMapper.fromJson;
-
-  VisitCheckInCaptureEntity toEntity() => VisitCheckInCaptureEntity(
-        distanceMeters: distanceMeters,
-        locationVerified: locationVerified,
-        facilityLat: facilityLat,
-        facilityLng: facilityLng,
-        yourLat: yourLat,
-        yourLng: yourLng,
       );
 }
 

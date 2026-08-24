@@ -95,25 +95,3 @@ class ChecklistItemSaveResponseEntity {
   final bool? booleanValue;
 }
 
-class ChecklistAnswerRequestEntity {
-  const ChecklistAnswerRequestEntity({
-    required this.itemId,
-    this.starRating,
-    this.yesNoAnswer,
-  });
-
-  final int itemId;
-  final int? starRating;
-  final bool? yesNoAnswer;
-}
-
-class ChecklistSubmitRequestEntity {
-  const ChecklistSubmitRequestEntity({
-    required this.answers,
-    this.proofImagePaths = const {},
-  });
-
-  final List<ChecklistAnswerRequestEntity> answers;
-  // itemId → list of local file paths for proof images
-  final Map<int, List<String>> proofImagePaths;
-}

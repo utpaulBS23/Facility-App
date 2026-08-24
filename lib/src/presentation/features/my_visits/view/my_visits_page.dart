@@ -17,7 +17,7 @@ part '../widgets/visit_card.dart';
 part '../widgets/visit_empty_state.dart';
 part '../widgets/visit_stats_tabs.dart';
 
-enum _VisitTab { today, week, completed }
+enum _VisitTab { all, pending, inProgress, completed }
 
 class MyVisitsPage extends ConsumerStatefulWidget {
   const MyVisitsPage({super.key});
@@ -28,7 +28,7 @@ class MyVisitsPage extends ConsumerStatefulWidget {
 
 class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   late DateTime _selectedDate;
-  _VisitTab _selectedTab = _VisitTab.today;
+  _VisitTab _selectedTab = _VisitTab.all;
 
   @override
   void initState() {
@@ -55,10 +55,12 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   }
 
   List<VisitSummaryEntity> _filteredVisits(List<VisitSummaryEntity> all) {
-    final selectedDateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
     return switch (_selectedTab) {
-      _VisitTab.today => all.where((v) => v.date == selectedDateStr).toList(),
-      _VisitTab.week => all,
+      _VisitTab.all => all,
+      _VisitTab.pending =>
+        all.where((v) => v.status == VisitStatus.pending).toList(),
+      _VisitTab.inProgress =>
+        all.where((v) => v.status == VisitStatus.inProgress).toList(),
       _VisitTab.completed =>
         all
             .where(

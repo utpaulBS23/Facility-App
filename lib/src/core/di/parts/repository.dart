@@ -27,6 +27,16 @@ LocationRepository locationRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+LocationPingRepository locationPingRepository(Ref ref) {
+  return LocationPingRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+    trackingService: ref.read(backgroundLocationTrackingServiceProvider),
+    notificationService: ref.read(locationSharingNotificationServiceProvider),
+    authenticationRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 SelfieRepository selfieRepository(Ref ref) {
   return SelfieRepositoryImpl(
     ref.read(imagePickerServiceProvider),

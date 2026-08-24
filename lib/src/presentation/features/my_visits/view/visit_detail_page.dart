@@ -45,7 +45,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
   Future<void> _onCheckIn() async {
     await ref
         .read(visitCheckInProvider.notifier)
-        .captureCheckIn(visitId: widget.visitId);
+        .startLocationSharing(visitId: widget.visitId);
   }
 
   Future<void> _onConfirm(VisitDetailEntity detail) async {
@@ -66,7 +66,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
     final detailState = ref.watch(visitDetailProvider);
     final checkInState = ref.watch(visitCheckInProvider);
 
-    final isCheckInPhase = checkInState.hasCaptureResult;
+    final isCheckInPhase = checkInState.isSharingLocation;
     final appBarTitle = isCheckInPhase
         ? context.locale.visitCheckIn
         : context.locale.visitDetails;
@@ -110,11 +110,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
                 ? _CheckInBody(
                     detail: detail,
                     checkInState: checkInState,
-                    captureResult: checkInState.captureResult!,
                     onConfirm: () => _onConfirm(detail),
-                    onRetry: () => ref
-                        .read(visitCheckInProvider.notifier)
-                        .retryCapture(visitId: widget.visitId),
                   )
                 : _DetailBody(
                     detail: detail,
@@ -171,11 +167,9 @@ class _DetailBody extends StatelessWidget {
             ),
           )
         else ...[
-          if (checkInState.captureError != null ||
-              checkInState.locationError != null) ...[
+          if (checkInState.shareError != null) ...[
             Text(
-              checkInState.captureError?.localized(context) ??
-                  checkInState.locationError!,
+              checkInState.shareError!.localized(context),
               style: context.textStyle.bodySmall.copyWith(
                 color: context.color.error,
               ),
@@ -209,16 +203,12 @@ class _CheckInBody extends StatelessWidget {
   const _CheckInBody({
     required this.detail,
     required this.checkInState,
-    required this.captureResult,
     required this.onConfirm,
-    required this.onRetry,
   });
 
   final VisitDetailEntity detail;
   final VisitCheckInState checkInState;
-  final VisitCheckInCaptureEntity captureResult;
   final VoidCallback onConfirm;
-  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -229,11 +219,7 @@ class _CheckInBody extends StatelessWidget {
       children: [
         _VisitCheckInFacilityCard(detail: detail),
         Gap(spacing.s12),
-        _VisitCheckInLocationCard(
-          state: checkInState,
-          captureResult: captureResult,
-          onRetry: onRetry,
-        ),
+        _VisitCheckInLocationCard(state: checkInState),
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
           Text(

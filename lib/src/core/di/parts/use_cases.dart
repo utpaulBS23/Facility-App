@@ -79,6 +79,28 @@ GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
 }
 
 @riverpod
+StartLocationPingTrackingUseCase startLocationPingTrackingUseCase(Ref ref) {
+  return StartLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+StopLocationPingTrackingUseCase stopLocationPingTrackingUseCase(Ref ref) {
+  return StopLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+SyncCurrentLocationPingUseCase syncCurrentLocationPingUseCase(Ref ref) {
+  return SyncCurrentLocationPingUseCase(
+    ref.read(locationPingRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
   Ref ref,
 ) {
@@ -313,14 +335,6 @@ CheckInVisitUseCase checkInVisitUseCase(Ref ref) {
 }
 
 @riverpod
-CaptureCheckInUseCase captureCheckInUseCase(Ref ref) {
-  return CaptureCheckInUseCase(
-    ref.read(visitRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
-  );
-}
-
-@riverpod
 GetChecklistUseCase getChecklistUseCase(Ref ref) {
   return GetChecklistUseCase(
     ref.read(visitRepositoryProvider),
@@ -329,8 +343,8 @@ GetChecklistUseCase getChecklistUseCase(Ref ref) {
 }
 
 @riverpod
-SubmitChecklistUseCase submitChecklistUseCase(Ref ref) {
-  return SubmitChecklistUseCase(
+SubmitVisitUseCase submitVisitUseCase(Ref ref) {
+  return SubmitVisitUseCase(
     ref.read(visitRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );
