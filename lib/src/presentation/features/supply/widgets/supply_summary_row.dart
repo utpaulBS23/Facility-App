@@ -21,28 +21,28 @@ class _SupplySummaryRow extends StatelessWidget {
       child: Row(
         children: [
           _SummaryTile(
-            countText: summary.pending,
+            countText: NumberFormatter.format(summary.pending),
             label: context.locale.pending,
             background: context.color.warningAlt,
             textColor: context.color.warning,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            countText: summary.approved,
+            countText: NumberFormatter.format(summary.approved),
             label: context.locale.approved,
             background: context.color.successAlt,
             textColor: context.color.success,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            countText: summary.rejected,
+            countText: NumberFormatter.format(summary.rejected),
             label: context.locale.rejected,
             background: context.color.errorAlt,
             textColor: context.color.error,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            countText: summary.completed,
+            countText: NumberFormatter.format(summary.completed),
             label: context.locale.completed,
             background: context.color.scaffoldBackground,
             textColor: context.color.text.primary,
