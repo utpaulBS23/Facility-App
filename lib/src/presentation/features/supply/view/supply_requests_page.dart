@@ -22,7 +22,7 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/supply_request_summary_provider.dart';
-import '../riverpod/supply_requests_provider.dart';
+import '../riverpod/supply_requests_list_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/pending_delivery_alert.dart';
@@ -49,7 +49,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
     }
 
     setState(() => _selectedFilter = filter);
-    ref.read(supplyRequestsProvider.notifier).filter(filter);
+    ref.read(supplyRequestsListProvider.notifier).filter(filter);
   }
 
   void _onNewRequest() {
@@ -70,8 +70,8 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final requestsAsync = ref.watch(supplyRequestsProvider);
-    final summaryAsync = ref.watch(supplyRequestSummaryProvider());
+    final requestsAsync = ref.watch(supplyRequestsListProvider);
+    final summaryAsync = ref.watch(supplyRequestSummaryProvider);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -92,7 +92,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         onRequestTap: _onRequestTap,
         onRetry: () {
           ref.invalidate(supplyRequestSummaryProvider);
-          ref.read(supplyRequestsProvider.notifier).fetch(filter: _selectedFilter);
+          ref.read(supplyRequestsListProvider.notifier).fetch(filter: _selectedFilter);
         },
       ),
     );
