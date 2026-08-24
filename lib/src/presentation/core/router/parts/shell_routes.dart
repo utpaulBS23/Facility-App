@@ -51,17 +51,20 @@ StatefulShellRoute _shellRoutes(Ref ref) {
           ),
         ],
       ),
-      StatefulShellBranch(
-        routes: [
-          GoRoute(
-            path: Routes.menu,
-            name: Routes.menu,
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: MenuPage());
-            },
-          ),
-        ],
-      ),
+      // WHY: menu navigates to the drawer now (NavigationShell opens
+      // AppNavigationDrawer on tap) instead of a branch page — MenuPage is
+      // unused, kept commented in case it's needed again.
+      // StatefulShellBranch(
+      //   routes: [
+      //     GoRoute(
+      //       path: Routes.menu,
+      //       name: Routes.menu,
+      //       pageBuilder: (context, state) {
+      //         return const MaterialPage(child: MenuPage());
+      //       },
+      //     ),
+      //   ],
+      // ),
     ],
   );
 }

@@ -122,4 +122,52 @@ class Endpoints {
   static const String completeIssue =
       '/partners/{partnerId}/issues/{issueId}/complete';
   static const String taskMedia = '/partners/{partnerId}/tasks/{taskId}/media';
+
+  /// Leave Management
+  static const String leavePolicies = '/partners/{partnerId}/leave-policies';
+  static const String leaveBalances = '/partners/{partnerId}/leave-balances';
+  static const String requestLeave = '/partners/{partnerId}/request-leave';
+  static const String myLeaves = '/partners/{partnerId}/my-leaves';
+  static const String leaveRequestDetails =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}';
+  static const String cancelLeave =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}/cancel';
+  static const String leaveAttendants =
+      '/partners/{partnerId}/leave-attendants';
+  static const String leaveApprovals = '/partners/{partnerId}/leave-approvals';
+  static const String approveLeave =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}/approve';
+  static const String rejectLeave =
+      '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
+
+  /// Supply & Stock Management
+  static const String itemCatalog = '/partners/{partnerId}/item-catalog';
+  static const String supplyRequests = '/partners/{partnerId}/supply-requests';
+  static const String supplyRequestDetails =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}';
+  static const String approveSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
+  static const String rejectSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+  static const String dispatchSupplyRequest =
+      '/partners/{partnerId}/supply-requests/{supplyRequestId}/dispatch';
+  static const String deliveries = '/partners/{partnerId}/deliveries';
+  static const String deliveryDetails =
+      '/partners/{partnerId}/deliveries/{deliveryId}';
+  static const String confirmDelivery =
+      '/partners/{partnerId}/deliveries/{deliveryId}/confirm';
+  static const String deliveryComplaints =
+      '/partners/{partnerId}/delivery-complaints';
+  static const String deliveryComplaintDetails =
+      '/partners/{partnerId}/delivery-complaints/{deliveryComplaintId}';
+  static const String fileDeliveryComplaint =
+      '/partners/{partnerId}/deliveries/{deliveryId}/complaints';
+  static const String approveDeliveryComplaint =
+      '/partners/{partnerId}/delivery-complaints/{deliveryComplaintId}/approve';
+  static const String rejectDeliveryComplaint =
+      '/partners/{partnerId}/delivery-complaints/{deliveryComplaintId}/reject';
+  static const String stockAllocations =
+      '/partners/{partnerId}/stock-allocations';
+  static const String stockAllocationDetails =
+      '/partners/{partnerId}/stock-allocations/{stockAllocationId}';
 }

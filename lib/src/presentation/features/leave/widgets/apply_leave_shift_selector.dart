@@ -1,19 +1,36 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _SelectShiftCard extends StatelessWidget {
-  const _SelectShiftCard({required this.selectedShift, required this.onTap});
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/shift_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 
-  final ShiftEntity? selectedShift;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../riverpod/apply_leave_provider/selected_shift_provider.dart';
+
+class SelectShiftCard extends ConsumerWidget {
+  const SelectShiftCard({
+    super.key,
+    required this.onTap,
+    this.enabled = true,
+  });
+
   final VoidCallback onTap;
+  final bool enabled;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedShift = ref.watch(selectedShiftProvider);
     final spacing = context.dimensions.spacing;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
-        color: context.color.onPrimary,
+        color: enabled
+            ? context.color.onPrimary
+            : context.color.borderSubtle.withValues(alpha: 0.1),
         border: Border.all(color: context.color.borderSubtle),
         borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
       ),
@@ -27,7 +44,10 @@ class _SelectShiftCard extends StatelessWidget {
             ),
           ),
           Gap(spacing.s12),
-          _SelectedShiftRow(selectedShift: selectedShift, onTap: onTap),
+          _SelectedShiftRow(
+            selectedShift: selectedShift,
+            onTap: enabled ? onTap : null,
+          ),
         ],
       ),
     );
@@ -38,7 +58,7 @@ class _SelectedShiftRow extends StatelessWidget {
   const _SelectedShiftRow({required this.selectedShift, required this.onTap});
 
   final ShiftEntity? selectedShift;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +72,7 @@ class _SelectedShiftRow extends StatelessWidget {
         children: [
           Icon(
             Icons.location_city_outlined,
-            size: 28,
+            size: spacing.s30,
             color: context.color.icon,
           ),
           Gap(spacing.s8),
@@ -78,7 +98,7 @@ class _SelectedShiftRow extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.calendar_today_outlined,
-                            size: 12,
+                            size: spacing.s12,
                             color: context.color.text.secondary,
                           ),
                           Gap(spacing.s4),
@@ -93,7 +113,7 @@ class _SelectedShiftRow extends StatelessWidget {
                           Gap(spacing.s8),
                           Icon(
                             Icons.access_time_outlined,
-                            size: 12,
+                            size: spacing.s12,
                             color: context.color.text.secondary,
                           ),
                           Gap(spacing.s4),
@@ -110,7 +130,7 @@ class _SelectedShiftRow extends StatelessWidget {
           ),
           Icon(
             Icons.chevron_right_rounded,
-            size: 28,
+            size: spacing.s30,
             color: context.color.primary,
           ),
         ],

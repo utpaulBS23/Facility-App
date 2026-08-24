@@ -1,122 +1,115 @@
-part of '../view/apply_leave_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
-class _ApplyLeaveBody extends StatelessWidget {
-  const _ApplyLeaveBody({
-    required this.selectedShift,
-    required this.selectedLeaveType,
+import '../../../../domain/entities/app_permission.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
+import '../riverpod/apply_leave_provider/selected_leave_attendant_provider.dart';
+import '../riverpod/apply_leave_provider/selected_leave_policy_id_provider.dart';
+import 'apply_leave_attendant_selector.dart';
+import 'apply_leave_date_selector.dart';
+import 'apply_leave_reason_input.dart';
+import 'apply_leave_shift_selector.dart';
+import 'apply_leave_summary_card.dart';
+import 'apply_leave_type_input.dart';
+import 'apply_leave_type_switch.dart';
+
+class ApplyLeaveBody extends ConsumerWidget {
+  const ApplyLeaveBody({
+    super.key,
+    required this.leaveApplicationType,
+    required this.onTypeChanged,
+    required this.onSelectAttendant,
+    required this.startDate,
+    required this.endDate,
+    required this.onPickStartDate,
+    required this.onPickEndDate,
+    required this.onSelectShift,
     required this.reasonController,
-    required this.onSelectShiftTap,
   });
 
-  final ShiftEntity? selectedShift;
-  final String? selectedLeaveType;
+  final LeaveApplicationType leaveApplicationType;
+  final ValueChanged<LeaveApplicationType> onTypeChanged;
+  final VoidCallback onSelectAttendant;
+  final DateTime startDate;
+  final DateTime endDate;
+  final VoidCallback onPickStartDate;
+  final VoidCallback onPickEndDate;
+  final VoidCallback onSelectShift;
   final TextEditingController reasonController;
-  final VoidCallback onSelectShiftTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedAttendant = ref.watch(selectedLeaveAttendantProvider);
+    final selectedLeavePolicyId = ref.watch(selectedLeavePolicyIdProvider);
+
     final spacing = context.dimensions.spacing;
+    final isBehalf = leaveApplicationType == LeaveApplicationType.onBehalf;
+
+    final isShiftEnabled = switch (leaveApplicationType) {
+      LeaveApplicationType.own => true,
+      LeaveApplicationType.onBehalf => selectedAttendant != null,
+    };
+    final isLeavePolicyEnabled = switch (leaveApplicationType) {
+      LeaveApplicationType.own => true,
+      LeaveApplicationType.onBehalf => selectedAttendant != null,
+    };
+    final isReasonEnabled = selectedLeavePolicyId != null;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(spacing.s16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LeaveSummaryCard(),
-          Gap(spacing.s8),
-          _SelectShiftCard(
-            selectedShift: selectedShift,
-            onTap: onSelectShiftTap,
+          PermissionGate(
+            permissions: const [UserPermission.leaveFileOnBehalf],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ApplicationTypeSwitch(
+                  selectedType: leaveApplicationType,
+                  onTypeChanged: onTypeChanged,
+                ),
+                Gap(spacing.s12),
+                if (isBehalf) ...[
+                  SelectAttendantCard(
+                    onTap: onSelectAttendant,
+                  ),
+                  Gap(spacing.s8),
+                ],
+              ],
+            ),
+          ),
+          PermissionGate(
+            permissions: const [UserPermission.leaveBalanceView],
+            child: LeaveSummaryCard(
+              isBehalf: isBehalf,
+            ),
           ),
           Gap(spacing.s8),
-          _LeaveTypeInput(selectedLeaveType: selectedLeaveType),
+          LeaveDateRangeCard(
+            startDate: startDate,
+            endDate: endDate,
+            onStartDateTap: onPickStartDate,
+            onEndDateTap: onPickEndDate,
+          ),
           Gap(spacing.s8),
-          _ReasonInput(controller: reasonController),
-        ],
-      ),
-    );
-  }
-}
-
-class _LeaveTypeInput extends StatelessWidget {
-  const _LeaveTypeInput({required this.selectedLeaveType});
-
-  final String? selectedLeaveType;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownMenuFormField(
-      width: double.infinity,
-      hintText: context.locale.leaveType,
-      dropdownMenuEntries: [
-            context.locale.sickLeave,
-            context.locale.casualLeave,
-            context.locale.maternityLeave,
-          ]
-              .map((type) => DropdownMenuEntry(value: type, label: type))
-              .toList(),
-      onSelected: (value) {},
-      initialSelection: selectedLeaveType,
-      menuStyle: MenuStyle(
-        padding: WidgetStatePropertyAll(
-          EdgeInsets.all(context.dimensions.spacing.s16),
-        ),
-      ),
-    );
-  }
-}
-
-class _ReasonInput extends StatelessWidget {
-  const _ReasonInput({required this.controller});
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppTextField.description(
-      controller: controller,
-      hint: '${context.locale.reason} (${context.locale.optional})',
-      textInputAction: TextInputAction.done,
-    );
-  }
-}
-
-class _SubmitBar extends StatelessWidget {
-  const _SubmitBar({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        spacing.s16,
-        spacing.s12,
-        spacing.s16,
-        spacing.s20,
-      ),
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        boxShadow: [
-          BoxShadow(
-            color: context.color.shadow,
-            offset: const Offset(0, 2),
-            blurRadius: 14,
+          SelectShiftCard(
+            onTap: onSelectShift,
+            enabled: isShiftEnabled,
+          ),
+          Gap(spacing.s8),
+          LeaveTypeInput(
+            attendantId: isBehalf ? selectedAttendant?.id : null,
+            isEnabled: isLeavePolicyEnabled,
+          ),
+          Gap(spacing.s8),
+          LeaveReasonInput(
+            controller: reasonController,
+            enabled: isReasonEnabled,
           ),
         ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: spacing.s44,
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: onTap,
-            child: Text(context.locale.submitLeaveRequest),
-          ),
-        ),
       ),
     );
   }
