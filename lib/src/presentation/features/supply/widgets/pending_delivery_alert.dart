@@ -52,7 +52,7 @@ class PendingDeliveryAlert extends StatelessWidget {
                   Gap(spacing.s2),
                   Text(
                     context.locale.pendingDeliveryAlertSubtitle(
-                      NumberFormatter.format(context, count),
+                      NumberFormatter.format(count),
                     ),
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,

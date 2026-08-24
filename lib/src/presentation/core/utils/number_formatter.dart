@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-final class NumberFormatter {
-  const NumberFormatter._();
-
-  /// Converts any number (`num`, `int`, `double`) or numeric string into a
-  /// localized number string based on the active locale in [BuildContext].
+abstract final class NumberFormatter {
+  /// Converts any number (`num`, `int`, `double`) or numeric `String` into a
+  /// localized number string based on the active global locale.
   ///
   /// Examples:
-  /// - `NumberFormatter.format(context, 5)` → `"5"` (EN) / `"৫"` (BN)
-  /// - `NumberFormatter.format(context, 1234)` → `"1,234"` (EN) / `"১,২৩৪"` (BN)
-  static String format(BuildContext context, Object? value) {
-    if (value == null) return '';
-    final num? number = value is num ? value : num.tryParse(value.toString());
-    if (number == null) return value.toString();
-    final languageCode = Localizations.localeOf(context).languageCode;
-    return NumberFormat.decimalPattern(languageCode).format(number);
+  /// - `NumberFormatter.format(5)` → `"5"` (EN) / `"৫"` (BN)
+  /// - `NumberFormatter.format("1234")` → `"1,234"` (EN) / `"১,২৩৪"` (BN)
+  static String format(Object? value, [String? locale]) {
+    final number = switch (value) {
+      final num n => n,
+      final String s => num.tryParse(s),
+      _ => null,
+    };
+
+    if (number == null) return value?.toString() ?? '';
+    return NumberFormat.decimalPattern(locale).format(number);
   }
 }

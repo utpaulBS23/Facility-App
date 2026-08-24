@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/di/dependency_injection.dart';
@@ -10,6 +11,7 @@ part 'localization_provider.g.dart';
 class Localization extends _$Localization {
   @override
   Locale build() {
+    Intl.defaultLocale = 'en';
     return const Locale('en');
   }
 
@@ -17,6 +19,7 @@ class Localization extends _$Localization {
     final useCase = ref.read(setCurrentLocaleUseCaseProvider);
     await useCase(locale.languageCode);
 
+    Intl.defaultLocale = locale.languageCode;
     state = locale;
   }
 
@@ -24,6 +27,7 @@ class Localization extends _$Localization {
     final useCase = ref.read(getCurrentLocaleUseCaseProvider);
     final language = await useCase();
 
+    Intl.defaultLocale = language;
     state = Locale(language);
   }
 }
