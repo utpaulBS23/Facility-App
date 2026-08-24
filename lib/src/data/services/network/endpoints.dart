@@ -151,6 +151,8 @@ class Endpoints {
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';
+  static const String supplyRequestSummary =
+      '/partners/{partnerId}/supply-requests/summary';
   static const String supplyRequestDetails =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}';
   static const String approveSupplyRequest =
