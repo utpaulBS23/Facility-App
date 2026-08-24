@@ -72,8 +72,12 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
           children: [
             Text(
               widget.hasDelivery
-                  ? context.locale.receivedItemsCount(itemCount)
-                  : context.locale.requestedItemsCount(itemCount),
+                  ? context.locale.receivedItemsCount(
+                      NumberFormatter.format(itemCount),
+                    )
+                  : context.locale.requestedItemsCount(
+                      NumberFormatter.format(itemCount),
+                    ),
               style: context.textStyle.titleMedium.copyWith(
                 color: color.text.primary,
                 fontWeight: FontWeight.bold,
