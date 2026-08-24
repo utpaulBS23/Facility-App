@@ -3,6 +3,8 @@ import 'package:gap/gap.dart';
 
 import '../../../core/theme/theme.dart';
 
+import '../../../core/utils/number_formatter.dart';
+
 class ItemStepperInput extends StatelessWidget {
   const ItemStepperInput({
     super.key,
@@ -45,7 +47,7 @@ class ItemStepperInput extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius.r12),
           ),
           child: Text(
-            '$quantity',
+            NumberFormatter.format(quantity),
             style: context.textStyle.bodyMedium.copyWith(
               color: color.text.primary,
               fontWeight: FontWeight.bold,
