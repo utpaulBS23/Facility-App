@@ -148,11 +148,10 @@
   "retake": "পুনরায় নিন",
   "capture": "ক্যাপচার করুন",
   "loading": "লোড হচ্ছে...",
-  "locationUnavailable": "অবস্থান পাওয়া যায়নি",
+  "locationUnavailable": "অবস্থান অনুপলব্ধ, অনুগ্রহ করে আবার চেষ্টা করুন",
   "photoCaptureFailed": "ছবি ক্যাপচার ব্যর্থ",
   "tryAgain": "আবার চেষ্টা করুন",
   "retry": "পুনরায় চেষ্টা করুণ",
-  "locationUnavailable": "অবস্থান অনুপলব্ধ, অনুগ্রহ করে আবার চেষ্টা করুন",
   "manualAttendance": "ম্যানুয়াল উপস্থিতি",
   "manualAttendanceDescription": "ক্যামেরা অনুপলব্ধ হলে ম্যানুয়ালি উপস্থিতি জমা দিন",
   "manualAttendanceReasonHint": "সমস্যাটি বর্ণনা করুন (যেমন, ক্যামেরা কাজ করছে না)",
@@ -163,7 +162,7 @@
   "cameraAccessRequiredMessage": "ক্যামেরা অ্যাক্সেস প্রয়োজন অথবা মুখ শনাক্ত করা যাচ্ছে না।",
   "requestSupervisorMessage": "সেলফি তুলতে অসুবিধা হলে, চেক-ইন প্রক্রিয়ায় সাহায্যের জন্য অনুগ্রহ করে আপনার সুপারভাইজারকে অনুরোধ করুন।\n",
   "approvalRequest": "অনুমোদনের অনুরোধ",
-  "waitingForApproval": "অনুমোদনের অপেক্ষায়",
+  "waitingForApproval": "অনুমোদনের জন্য অপেক্ষা করছে",
   "waitingForApprovalMessage": "আপনার অনুরোধ পাঠানো হয়েছে। অনুগ্রহ করে আপনার সুপারভাইজার পর্যালোচনা করে আপনার চেক-ইন অনুমোদন না করা পর্যন্ত অপেক্ষা করুন।",
   "withdraw": "প্রত্যাহার",
   "refresh": "রিফ্রেশ",
@@ -212,7 +211,7 @@
   "leaveBalance": "ছুটির ব্যালেন্স",
   "pending": "অপেক্ষমান",
   "leaveType": "ছুটির ধরন",
-  "sickLeave": "অসুস্থতার ছুটি",
+  "sickLeave": "চিকিৎসা সংক্রান্ত ছুটি",
   "casualLeave": "নৈমিত্তিক ছুটি",
   "maternityLeave": "মাতৃত্বকালীন ছুটি",
   "reasonOptional": "কারণ (ঐচ্ছিক)",
@@ -281,7 +280,7 @@
   "shiftNotYetAccessibleHelp": "শিফট শুরুর ১৫ মিনিট আগে চেক-ইন উপলব্ধ হবে।",
   "shiftWindowClosed": "চেক-ইন উইন্ডো বন্ধ",
   "shiftWindowClosedHelp": "সহায়তার জন্য আপনার সুপারভাইজারের সাথে যোগাযোগ করুন।",
-  "noAttendantsFound": "এই পার্টনারের জন্য কোনো স্টাফ পাওয়া যায়নি।",
+  "noAttendantsFound": "কোনো কর্মী পাওয়া যায়নি",
   "staffAssignedSuccessfully": "স্টাফ সফলভাবে নিযুক্ত হয়েছে।",
   "assignAsSlotLead": "স্লট লিড হিসেবে নিয়োগ করুন",
   "assignAsSlotLeadMessage": "{name} কে কি এই শিফটের স্লট লিড হিসেবে নিয়োগ করা হবে?",
@@ -349,7 +348,11 @@
   "totalScore": "মোট স্কোর",
   "outOf": "{max} এর মধ্যে",
   "@outOf": {
-    "placeholders": { "max": { "type": "int" } }
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
   },
   "completeAllItemsWarning": "জমা দেওয়ার আগে সব আইটেম সম্পন্ন করুন",
   "yes": "হ্যাঁ",
@@ -379,9 +382,8 @@
   "visitSubmittedSuccessfully": "ভিজিট সফলভাবে জমা দেওয়া হয়েছে।",
   "inspectionChecklistLoadFailed": "পরিদর্শন তালিকা লোড করা যায়নি।",
   "submitChecklistFailed": "পরিদর্শন তালিকা জমা দেওয়া যায়নি।",
-  "saveChecklistAnswerFailed": "উত্তর সংরক্ষণ করা যায়নি.",
+  "saveChecklistAnswerFailed": "উত্তর সংরক্ষণ করা যায়নি।",
   "leaveRequests": "ছুটি আবেদনসমূহ",
-  "waitingForApproval": "অনুমোদনের জন্য অপেক্ষা করছে",
   "managerApproval": "ম্যানেজার অনুমোদন",
   "noRequestsFound": "কোনো আবেদন পাওয়া যায়নি",
   "selectAttendant": "কর্মী নির্বাচন করুন",
@@ -390,22 +392,15 @@
   "close": "বন্ধ করুন",
   "attendant": "কর্মী",
   "leaveDetails": "ছুটির বিবরণ",
-  "approved": "অনুমোদিত",
   "rejection": "প্রত্যাখ্যান",
-  "pending": "অপেক্ষমান",
-  "rejected": "প্রত্যাখ্যাত",
-  "all": "সব",
-  "noAttendantsFound": "কোনো কর্মী পাওয়া যায়নি",
   "somethingWentWrong": "কিছু ভুল হয়েছে। আবার চেষ্টা করুন।",
   "morningShift": "সকালের শিফট",
   "eveningShift": "বিয়ালের শিফট",
   "nightShift": "রাতের শিফট",
   "search": "অনুসন্ধান",
   "dateRange": "তারিখের সীমা",
-  "reason": "কারণ",
   "shiftInformation": "শিফটের তথ্য",
   "facility": "সুবিধা",
-  "shift": "শিফট",
   "dateTime": "তারিখ ও সময়",
   "statusTimeline": "অবস্থার টাইমলাইন",
   "requestedBy": "{name} কর্তৃক আবেদনকৃত",
@@ -456,9 +451,6 @@
       }
     }
   },
-  "sickLeave": "চিকিৎসা সংক্রান্ত ছুটি",
-  "casualLeave": "নৈমিত্তিক ছুটি",
-  "maternityLeave": "মাতৃত্বকালীন ছুটি",
   "annualLeave": "বার্ষিক ছুটি",
   "unpaidLeave": "বিনা বেতনে ছুটি",
   "other": "অন্যান্য",
@@ -545,6 +537,7 @@
   "downloadFailed": "ডাউনলোড ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
   "retry": "আবার চেষ্টা করুন",
   "currentVersion": "বর্তমান সংস্করণ",
+
   "latestVersion": "সর্বশেষ সংস্করণ",
   "build": "বিল্ড",
   "occurrenceStatusPending": "মুলতুবি",
@@ -590,5 +583,123 @@
   "consumptionReportSubtitle": "স্টক ব্যবহার এবং খরচ ট্র্যাক করুন",
   "facilityLocationsSubtitle": "সুবিধার অবস্থানের মানচিত্র দেখুন",
   "issueManagementSubtitle": "সুবিধার সমস্যা রিপোর্ট এবং ট্র্যাক করুন",
-  "gatewayManagementSubtitle": "আইওটি গেটওয়ে এবং ডিভাইস কনফিগার করুন"
+  "gatewayManagementSubtitle": "আইওটি গেটওয়ে এবং ডিভাইস কনফিগার করুন",
+  "gpsLocationVerification": "জিপিএস অবস্থান যাচাই",
+  "locationVerified": "অবস্থান যাচাই হয়েছে",
+  "withinRange": "আপনি সুবিধার কাছাকাছি আছেন",
+  "yourPosition": "আপনার অবস্থান",
+  "distance": "দূরত্ব",
+  "selectAttendantToViewBalance": "কর্মীর ছুটির ব্যালেন্স দেখতে তাকে নির্বাচন করুন",
+  "noShiftsAvailableForDate": "নির্বাচিত তারিখের জন্য কোনো শিফট উপলব্ধ নেই",
+  "pendingManager": "ম্যানেজার অপেক্ষমান",
+  "supplyRequests": "সরবরাহ অনুরোধ",
+  "supplyRequestsSubtitle": "সুবিধার স্টক পরিচালনা ও অনুরোধ করুন",
+  "newRequest": "নতুন অনুরোধ",
+  "noSupplyRequestsFound": "কোনো সরবরাহ অনুরোধ পাওয়া যায়নি",
+  "supplyItemsCount": "{count} টি আইটেম",
+  "@supplyItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "pendingSupervisor": "সুপারভাইজার অপেক্ষমান",
+  "pendingOperationManager": "অপারেশন ম্যানেজার অপেক্ষমান",
+  "operationManagerApproved": "অপারেশন ম্যানেজার অনুমোদিত",
+  "inDelivery": "ডেলিভারি চলছে",
+  "delivered": "ডেলিভার করা হয়েছে",
+  "pendingDeliveries": "মুলতুবি ডেলিভারি",
+  "pendingDeliveryAlertSubtitle": "{count} টি অনুমোদিত অনুরোধ ডেলিভারির অপেক্ষায়",
+  "@pendingDeliveryAlertSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "urgencyUrgent": "জরুরি",
+  "urgencyHigh": "উচ্চ অগ্রাধিকার",
+  "urgencyNormal": "স্বাভাবিক",
+  "urgencyLow": "কম",
+  "requestDetailsTitle": "অনুরোধের বিবরণ",
+  "edit": "সম্পাদনা",
+  "requestedByLabel": "অনুরোধকারী",
+  "submittedOn": "{date} তারিখে জমা দেওয়া হয়েছে",
+  "@submittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "receivedBy": "গ্রহণকারী",
+  "receivedOn": "{date} তারিখে গ্রহণ করা হয়েছে",
+  "@receivedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "noNotesProvided": "কোনো নোট প্রদান করা হয়নি",
+  "confirmDeliveryReceipt": "ডেলিভারি প্রাপ্তি নিশ্চিত করুন",
+  "deliveryStage": "ডেলিভারি",
+  "receivedItemsCount": "প্রাপ্ত আইটেম ({count})",
+  "@receivedItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "requestedItemsCount": "অনুরোধকৃত আইটেম ({count})",
+  "@requestedItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "requestNotesHint": "এই সরবরাহ অনুরোধ সম্পর্কে কোনো নোট যোগ করুন (ঐচ্ছিক)",
+  "dispatch": "প্রেরণ করুন",
+  "itemsNeeded": "প্রয়োজনীয় আইটেম",
+  "item": "আইটেম",
+  "selectItem": "আইটেম নির্বাচন করুন",
+  "quantityAbbrev": "পরিমাণ",
+  "addMoreItems": "আরও আইটেম যোগ করুন",
+  "itemChangesSavedSuccessfully": "আইটেম পরিবর্তন সফলভাবে সংরক্ষিত হয়েছে",
+  "itemCodeLabel": "আইটেম কোড: {code}",
+  "@itemCodeLabel": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedLabel": "অনুরোধকৃত",
+  "expectedLabel": "প্রত্যাশিত",
+  "receivedLabel": "প্রাপ্ত",
+  "amountReceivedLabel": "প্রাপ্ত পরিমাণ",
+  "photoOfEvidenceReport": "প্রমাণ প্রতিবেদনের ছবি",
+  "dispatchSuccess": "সরবরাহ অনুরোধ সফলভাবে প্রেরণ করা হয়েছে",
+  "deliveryReceiptPhotoOptional": "ডেলিভারি রসিদের ছবি (ঐচ্ছিক)",
+  "camera": "ক্যামেরা",
+  "deliveryNotesHint": "এই ডেলিভারি সম্পর্কে নোট যোগ করুন...",
+  "orderDetails": "অর্ডারের বিবরণ",
+  "requestIdLabel": "অনুরোধ আইডি",
+  "urgency": "জরুরত্ব",
+  "verifiedCount": "{verified}/{total} টি আইটেম যাচাইকৃত",
+  "@verifiedCount": {
+    "placeholders": {
+      "verified": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "uncheckAll": "সব নির্বাচন বাতিল করুন",
+  "checkAll": "সব নির্বাচন করুন"
 }
