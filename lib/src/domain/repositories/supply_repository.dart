@@ -9,6 +9,7 @@ import '../entities/supply/stock_item_entity.dart';
 import '../entities/supply/supply_filters.dart';
 import '../entities/supply/supply_request_entity.dart';
 import '../entities/supply/supply_request_payloads.dart';
+import '../entities/supply/supply_request_summary_entity.dart';
 
 abstract base class SupplyRepository extends Repository {
   Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> getItemCatalog(
@@ -19,6 +20,11 @@ abstract base class SupplyRepository extends Repository {
   getSupplyRequests(
     SupplyRequestQueryFilter filter,
   );
+
+  Future<Result<SupplyRequestSummaryEntity, Failure>> getSupplyRequestSummary({
+    required int partnerId,
+    int? facilityId,
+  });
 
   Future<Result<SupplyRequestEntity, Failure>> getSupplyRequestDetails({
     required int partnerId,
