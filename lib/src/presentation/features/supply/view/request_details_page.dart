@@ -13,6 +13,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/permission_gate.dart';

@@ -114,7 +114,7 @@ class _ReceivedItemCard extends StatelessWidget {
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '$expectedQuantity $unit',
+                          '${NumberFormatter.format(expectedQuantity)} $unit',
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -147,7 +147,7 @@ class _ReceivedItemCard extends StatelessWidget {
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '$expectedQuantity $unit',
+                          '${NumberFormatter.format(expectedQuantity)} $unit',
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -176,7 +176,7 @@ class _ReceivedItemCard extends StatelessWidget {
                         ),
                         Gap(spacing.s4),
                         Text(
-                          '$receivedQty $unit',
+                          '${NumberFormatter.format(receivedQty)} $unit',
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
                             fontWeight: FontWeight.bold,
@@ -206,7 +206,7 @@ class _ReceivedItemCard extends StatelessWidget {
                   )
                 else
                   Text(
-                    '$receivedQty $unit',
+                    '${NumberFormatter.format(receivedQty)} $unit',
                     style: context.textStyle.labelLarge.copyWith(
                       color: color.text.primary,
                       fontWeight: FontWeight.bold,
