@@ -12,6 +12,7 @@ import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_filters.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
+import '../../../../domain/entities/supply/supply_request_summary_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_back_button.dart';
@@ -20,6 +21,7 @@ import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/supply_request_summary_provider.dart';
 import '../riverpod/supply_requests_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
@@ -69,7 +71,7 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   @override
   Widget build(BuildContext context) {
     final requestsAsync = ref.watch(supplyRequestsProvider);
-    final counts = ref.read(supplyRequestsProvider.notifier).counts;
+    final summaryAsync = ref.watch(supplyRequestSummaryProvider());
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -82,17 +84,16 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         surfaceTintColor: Colors.transparent,
       ),
       body: _SupplyRequestsBody(
-        counts: counts,
-        isSummaryLoading:
-            requestsAsync.isLoading && _selectedFilter == SupplyFilter.all,
+        summaryAsync: summaryAsync,
         selectedFilter: _selectedFilter,
         filteredRequestsAsync: requestsAsync,
         onFilterSelected: _onFilterSelected,
         onNewRequest: _onNewRequest,
         onRequestTap: _onRequestTap,
-        onRetry: () => ref
-            .read(supplyRequestsProvider.notifier)
-            .fetch(filter: _selectedFilter),
+        onRetry: () {
+          ref.invalidate(supplyRequestSummaryProvider);
+          ref.read(supplyRequestsProvider.notifier).fetch(filter: _selectedFilter);
+        },
       ),
     );
   }
