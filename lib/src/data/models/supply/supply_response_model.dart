@@ -27,18 +27,40 @@ class SupplyRequestResponseModel with SupplyRequestResponseModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
+class SupplyRequestSummaryModel with SupplyRequestSummaryModelMappable {
+  const SupplyRequestSummaryModel({
+    this.pending,
+    this.approved,
+    this.rejected,
+    this.completed,
+  });
+
+  final int? pending;
+  final int? approved;
+  final int? rejected;
+  final int? completed;
+
+  static const fromJson = SupplyRequestSummaryModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class SupplyRequestListResponseModel with SupplyRequestListResponseModelMappable {
   const SupplyRequestListResponseModel({
     this.success,
     this.message,
     this.data = const [],
     this.meta,
+    this.summary,
   });
 
   final bool? success;
   final String? message;
   final List<SupplyRequestModel> data;
   final SupplyPaginationMetaModel? meta;
+  final SupplyRequestSummaryModel? summary;
 
   static const fromJson = SupplyRequestListResponseModelMapper.fromJson;
 }
