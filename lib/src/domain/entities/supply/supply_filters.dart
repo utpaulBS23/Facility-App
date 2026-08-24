@@ -51,25 +51,25 @@ enum SupplyFilter {
 
   bool matches(SupplyRequestStatus status) {
     return switch (this) {
-      .all => true,
-      .pendingSupervisor => status == .pendingSupervisor,
-      .pendingOperationManager => status == .pendingOperationManager,
-      .operationManagerApproved => status == .operationManagerApproved,
-      .inDelivery => status == .inDelivery,
-      .delivered => status == .delivered,
-      .rejected => status == .rejected,
+      SupplyFilter.all => true,
+      SupplyFilter.pendingSupervisor => status == SupplyRequestStatus.pendingSupervisor,
+      SupplyFilter.pendingOperationManager => status == SupplyRequestStatus.pendingOperationManager,
+      SupplyFilter.operationManagerApproved => status == SupplyRequestStatus.operationManagerApproved,
+      SupplyFilter.inDelivery => status == SupplyRequestStatus.inDelivery,
+      SupplyFilter.delivered => status == SupplyRequestStatus.delivered,
+      SupplyFilter.rejected => status == SupplyRequestStatus.rejected,
     };
   }
 
   SupplyRequestStatus? toRequestStatus() {
     return switch (this) {
-      .all => null,
-      .pendingSupervisor => .pendingSupervisor,
-      .pendingOperationManager => .pendingOperationManager,
-      .operationManagerApproved => .operationManagerApproved,
-      .inDelivery => .inDelivery,
-      .delivered => .delivered,
-      .rejected => .rejected,
+      SupplyFilter.all => null,
+      SupplyFilter.pendingSupervisor => SupplyRequestStatus.pendingSupervisor,
+      SupplyFilter.pendingOperationManager => SupplyRequestStatus.pendingOperationManager,
+      SupplyFilter.operationManagerApproved => SupplyRequestStatus.operationManagerApproved,
+      SupplyFilter.inDelivery => SupplyRequestStatus.inDelivery,
+      SupplyFilter.delivered => SupplyRequestStatus.delivered,
+      SupplyFilter.rejected => SupplyRequestStatus.rejected,
     };
   }
 }
