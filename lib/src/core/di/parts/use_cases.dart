@@ -502,3 +502,11 @@ GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
   );
 }
 
+@riverpod
+GetSupplyRequestSummaryUseCase getSupplyRequestSummaryUseCase(Ref ref) {
+  return GetSupplyRequestSummaryUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+

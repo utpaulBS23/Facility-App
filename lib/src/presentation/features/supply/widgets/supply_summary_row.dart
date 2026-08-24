@@ -2,16 +2,10 @@ part of '../view/supply_requests_page.dart';
 
 class _SupplySummaryRow extends StatelessWidget {
   const _SupplySummaryRow({
-    required this.pendingCount,
-    required this.inDeliveryCount,
-    required this.deliveredCount,
-    required this.rejectedCount,
+    required this.summary,
   });
 
-  final int pendingCount;
-  final int inDeliveryCount;
-  final int deliveredCount;
-  final int rejectedCount;
+  final SupplyRequestSummaryEntity summary;
 
   @override
   Widget build(BuildContext context) {
@@ -27,29 +21,29 @@ class _SupplySummaryRow extends StatelessWidget {
       child: Row(
         children: [
           _SummaryTile(
-            count: pendingCount,
+            countText: summary.pending,
             label: context.locale.pending,
             background: context.color.warningAlt,
             textColor: context.color.warning,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            count: inDeliveryCount,
-            label: context.locale.inDelivery,
+            countText: summary.approved,
+            label: context.locale.approved,
             background: context.color.successAlt,
             textColor: context.color.success,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            count: rejectedCount,
+            countText: summary.rejected,
             label: context.locale.rejected,
             background: context.color.errorAlt,
             textColor: context.color.error,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            count: deliveredCount,
-            label: context.locale.delivered,
+            countText: summary.completed,
+            label: context.locale.completed,
             background: context.color.scaffoldBackground,
             textColor: context.color.text.primary,
           ),
@@ -61,13 +55,13 @@ class _SupplySummaryRow extends StatelessWidget {
 
 class _SummaryTile extends StatelessWidget {
   const _SummaryTile({
-    required this.count,
+    required this.countText,
     required this.label,
     required this.background,
     required this.textColor,
   });
 
-  final int count;
+  final String countText;
   final String label;
   final Color background;
   final Color textColor;
@@ -87,7 +81,7 @@ class _SummaryTile extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              NumberFormatter.format(context, count),
+              countText,
               style: context.textStyle.titleMedium.copyWith(color: textColor),
               textAlign: TextAlign.center,
             ),
