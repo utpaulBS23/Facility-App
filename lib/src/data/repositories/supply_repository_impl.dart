@@ -8,6 +8,7 @@ import '../../domain/entities/supply/stock_item_entity.dart';
 import '../../domain/entities/supply/supply_filters.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
 import '../../domain/entities/supply/supply_request_payloads.dart';
+import '../../domain/entities/supply/supply_request_summary_entity.dart';
 import '../../domain/repositories/supply_repository.dart';
 import '../extension/supply_request_mapper.dart';
 import '../models/supply/delivery_complaint_model.dart';
@@ -54,6 +55,23 @@ final class SupplyRepositoryImpl extends SupplyRepository {
         perPage: filter.pageSize,
       );
       final responseModel = SupplyRequestListResponseModel.fromJson(
+        response.data,
+      );
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<SupplyRequestSummaryEntity, Failure>> getSupplyRequestSummary({
+    required int partnerId,
+    int? facilityId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getSupplyRequestSummary(
+        partnerId: partnerId,
+        facilityId: facilityId,
+      );
+      final responseModel = SupplyRequestSummaryResponseModel.fromJson(
         response.data,
       );
       return responseModel.toEntity();

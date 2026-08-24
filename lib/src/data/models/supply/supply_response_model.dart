@@ -64,3 +64,21 @@ class SupplyRequestListResponseModel with SupplyRequestListResponseModelMappable
 
   static const fromJson = SupplyRequestListResponseModelMapper.fromJson;
 }
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class SupplyRequestSummaryResponseModel with SupplyRequestSummaryResponseModelMappable {
+  const SupplyRequestSummaryResponseModel({
+    this.success,
+    this.message,
+    this.summary,
+  });
+
+  final bool? success;
+  final String? message;
+  final SupplyRequestSummaryModel? summary;
+
+  static const fromJson = SupplyRequestSummaryResponseModelMapper.fromJson;
+}

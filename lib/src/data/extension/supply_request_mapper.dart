@@ -8,6 +8,7 @@ import '../../domain/entities/supply/stock_item_entity.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
 import '../../domain/entities/supply/supply_request_payloads.dart';
 import '../../domain/entities/supply/supply_request_status.dart';
+import '../../domain/entities/supply/supply_request_summary_entity.dart';
 import '../models/supply/delivery_complaint_model.dart';
 import '../models/supply/delivery_model.dart';
 import '../models/supply/delivery_response_model.dart';
@@ -95,6 +96,30 @@ extension SupplyRequestListResponseModelToEntity on SupplyRequestListResponseMod
       totalRecords: total,
       hasMore: hasMore,
     );
+  }
+}
+
+extension SupplyRequestSummaryModelMapper on SupplyRequestSummaryModel {
+  SupplyRequestSummaryEntity toEntity() {
+    return SupplyRequestSummaryEntity(
+      pending: pending != null ? pending.toString() : 'N/A',
+      approved: approved != null ? approved.toString() : 'N/A',
+      rejected: rejected != null ? rejected.toString() : 'N/A',
+      completed: completed != null ? completed.toString() : 'N/A',
+    );
+  }
+}
+
+extension SupplyRequestSummaryResponseModelToEntity
+    on SupplyRequestSummaryResponseModel {
+  SupplyRequestSummaryEntity toEntity() {
+    final payload = summary;
+    if (payload == null) {
+      throw const FormatException(
+        'Missing summary payload in SupplyRequestSummaryResponseModel',
+      );
+    }
+    return payload.toEntity();
   }
 }
 
