@@ -6,10 +6,10 @@ import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_filters.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 
-part 'supply_requests_provider.g.dart';
+part 'supply_requests_list_provider.g.dart';
 
 @riverpod
-class SupplyRequests extends _$SupplyRequests {
+class SupplyRequestsList extends _$SupplyRequestsList {
   SupplyFilter _selectedFilter = SupplyFilter.all;
 
   @override
