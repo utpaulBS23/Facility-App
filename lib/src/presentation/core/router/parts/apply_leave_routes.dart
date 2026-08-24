@@ -1,21 +1,42 @@
 part of '../router.dart';
 
 List<GoRoute> _applyLeaveRoutes(Ref ref) {
+  
   return [
     GoRoute(
       path: Routes.applyLeave,
       name: Routes.applyLeave,
-      pageBuilder: (context, state) {
-        return const MaterialPage(child: ApplyLeavePage());
-      },
+      builder: (context, state) => const ApplyLeavePage(),
+    ),
+    GoRoute(
+      path: Routes.leaveRequests,
+      name: Routes.leaveRequests,
+      builder: (context, state) => const LeaveRequestsPage(),
+    ),
+    GoRoute(
+      path: Routes.leaveDetails,
+      name: Routes.leaveDetails,
+      builder: (context, state) =>
+          LeaveDetailsPage(request: state.extra! as LeaveRequestEntity),
     ),
     GoRoute(
       path: Routes.selectShift,
       name: Routes.selectShift,
-      pageBuilder: (context, state) {
-        final shifts = state.extra as List<ShiftEntity>;
-        return MaterialPage(child: SelectShiftPage(shifts: shifts));
+      builder: (context, state) {
+        final date = state.extra! as String;
+        return SelectShiftPage(date: date);
       },
+    ),
+    GoRoute(
+      path: Routes.selectAttendant,
+      name: Routes.selectAttendant,
+      builder: (context, state) => const SelectAttendantPage(),
+    ),
+    GoRoute(
+      path: Routes.leaveSubmitted,
+      name: Routes.leaveSubmitted,
+      builder: (context, state) =>
+          LeaveSubmittedPage(request: state.extra! as LeaveRequestEntity),
     ),
   ];
 }

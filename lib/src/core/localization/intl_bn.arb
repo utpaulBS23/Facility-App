@@ -363,6 +363,88 @@
   "visitSubmittedSuccessfully": "ভিজিট সফলভাবে জমা দেওয়া হয়েছে।",
   "inspectionChecklistLoadFailed": "পরিদর্শন তালিকা লোড করা যায়নি।",
   "submitChecklistFailed": "পরিদর্শন তালিকা জমা দেওয়া যায়নি।",
+  "saveChecklistAnswerFailed": "উত্তর সংরক্ষণ করা যায়নি.",
+  "leaveRequests": "ছুটি আবেদনসমূহ",
+  "waitingForApproval": "অনুমোদনের জন্য অপেক্ষা করছে",
+  "managerApproval": "ম্যানেজার অনুমোদন",
+  "noRequestsFound": "কোনো আবেদন পাওয়া যায়নি",
+  "selectAttendant": "কর্মী নির্বাচন করুন",
+  "change": "পরিবর্তন",
+  "add": "যোগ করুন",
+  "close": "বন্ধ করুন",
+  "attendant": "কর্মী",
+  "leaveDetails": "ছুটির বিবরণ",
+  "approved": "অনুমোদিত",
+  "rejection": "প্রত্যাখ্যান",
+  "pending": "অপেক্ষমান",
+  "rejected": "প্রত্যাখ্যাত",
+  "all": "সব",
+  "noAttendantsFound": "কোনো কর্মী পাওয়া যায়নি",
+  "somethingWentWrong": "কিছু ভুল হয়েছে। আবার চেষ্টা করুন।",
+  "morningShift": "সকালের শিফট",
+  "eveningShift": "বিয়ালের শিফট",
+  "nightShift": "রাতের শিফট",
+  "search": "অনুসন্ধান",
+  "dateRange": "তারিখের সীমা",
+  "reason": "কারণ",
+  "shiftInformation": "শিফটের তথ্য",
+  "facility": "সুবিধা",
+  "shift": "শিফট",
+  "dateTime": "তারিখ ও সময়",
+  "statusTimeline": "অবস্থার টাইমলাইন",
+  "requestedBy": "{name} কর্তৃক আবেদনকৃত",
+  "@requestedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedOnBehalfBy": "{submitter} ({applicant}-এর পক্ষে)",
+  "@requestedOnBehalfBy": {
+    "placeholders": {
+      "submitter": {
+        "type": "String"
+      },
+      "applicant": {
+        "type": "String"
+      }
+    }
+  },
+  "approvedBySupervisor": "সুপারভাইজার কর্তৃক অনুমোদিত",
+  "rejectedBySupervisor": "সুপারভাইজার কর্তৃক প্রত্যাখ্যাত",
+  "waitingForManagerApprovalTitle": "ম্যানেজার অনুমোদনের জন্য অপেক্ষা করছে",
+  "pendingSupervisorApproval": "সুপারভাইজার অনুমোদনের জন্য অপেক্ষমান",
+  "assignedToSupervisor": "সুপারভাইজারকে অর্পিত",
+  "assignedToManager": "ম্যানেজারকে অর্পিত",
+  "justNow": "এইমাত্র",
+  "leaveApproval": "ছুটি অনুমোদন",
+  "awaitingFinalApproval": "চূড়ান্ত অনুমোদনের অপেক্ষায়",
+  "startDate": "শুরুর তারিখ",
+  "endDate": "শেষের তারিখ",
+  "own": "নিজের",
+  "onBehalf": "অন্যের পক্ষে",
+  "leaveRequestSubmitted": "ছুটি আবেদন জমা দেয়া হয়েছে",
+  "leaveSubmittedMessage": "আপনার ছুটির আবেদন অনুমোদনের জন্য আপনার সুপারভাইজারের কাছে পাঠানো হয়েছে। এটি পর্যালোচনা করা হলে আপনাকে জানানো হবে।",
+  "backToShift": "শিফটে ফিরে যান",
+  "endSessionAndSignOut": "সেশন শেষ করুন এবং সাইন আউট করুন",
+  "daysCount": "{count, plural, =1{{count} দিন} other{{count} দিন}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sickLeave": "চিকিৎসা সংক্রান্ত ছুটি",
+  "casualLeave": "নৈমিত্তিক ছুটি",
+  "maternityLeave": "মাতৃত্বকালীন ছুটি",
+  "annualLeave": "বার্ষিক ছুটি",
+  "unpaidLeave": "বিনা বেতনে ছুটি",
+  "other": "অন্যান্য",
+  "leaveType": "ছুটির ধরন",
+  "reasonOptional": "কারণ (ঐচ্ছিক)",
   "saveChecklistAnswerFailed": "উত্তর সংরক্ষণ করা যায়নি।",
   "rosters": "রোস্টার",
   "noRostersFound": "কোনো রোস্টার পাওয়া যায়নি।",
@@ -403,5 +485,8 @@
   "errorTimeout": "অনুরোধটি সম্পন্ন হতে অনেক সময় নিয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
   "errorSessionExpired": "আপনার সেশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে আবার সাইন ইন করুন।",
   "errorNotFound": "আপনি যা খুঁজছিলেন তা আমরা খুঁজে পাইনি।",
-  "errorGeneric": "কিছু একটা ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
+  "errorGeneric": "কিছু একটা ভুল হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+  "manager": "ম্যানেজার",
+  "owner": "মালিক",
+  "pendingOwner": "মালিকের অনুমোদনের অপেক্ষায়"
 }

@@ -364,6 +364,90 @@
   "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
   "submitChecklistFailed": "Failed to submit inspection checklist.",
   "saveChecklistAnswerFailed": "Failed to save answer.",
+  "leaveRequests": "Leave Requests",
+  "waitingForApproval": "Waiting for Approval",
+  "managerApproval": "Manager Approval",
+  "noRequestsFound": "No requests found",
+  "selectAttendant": "Select attendant",
+  "change": "Change",
+  "add": "Add",
+  "close": "Close",
+  "attendant": "Attendant",
+  "leaveDetails": "Leave Details",
+  "approved": "Approved",
+  "rejection": "Rejection",
+  "pending": "Pending",
+  "rejected": "Rejected",
+  "all": "All",
+  "noAttendantsFound": "No attendants found",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "morningShift": "MORNING SHIFT",
+  "eveningShift": "EVENING SHIFT",
+  "nightShift": "NIGHT SHIFT",
+  "search": "Search",
+  "dateRange": "Date Range",
+  "reason": "Reason",
+  "shiftInformation": "Shift Information",
+  "facility": "Facility",
+  "shift": "Shift",
+  "dateTime": "Date & Time",
+  "statusTimeline": "Status Timeline",
+  "requestedBy": "Requested by {name}",
+  "@requestedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "requestedOnBehalfBy": "{submitter} (on behalf of {applicant})",
+  "@requestedOnBehalfBy": {
+    "placeholders": {
+      "submitter": {
+        "type": "String"
+      },
+      "applicant": {
+        "type": "String"
+      }
+    }
+  },
+  "approvedBySupervisor": "Approved by Supervisor",
+  "rejectedBySupervisor": "Rejected by Supervisor",
+  "waitingForManagerApprovalTitle": "Waiting for Manager Approval",
+  "pendingSupervisorApproval": "Pending Supervisor Approval",
+  "assignedToSupervisor": "Assigned to Supervisor",
+  "assignedToManager": "Assigned to Manager",
+  "justNow": "Just now",
+  "leaveApproval": "Leave Approval",
+  "awaitingFinalApproval": "Awaiting final approval",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "own": "Own",
+  "onBehalf": "On Behalf",
+  "leaveRequestSubmitted": "Leave Request Submitted",
+  "leaveSubmittedMessage": "Your leave request has been sent to your supervisor for approval. You'll be notified once it's reviewed.",
+  "backToShift": "Back to shift",
+  "endSessionAndSignOut": "End session and sign out",
+  "selectAttendantToViewBalance": "Select an attendant to view their leave balance",
+  "noShiftsAvailableForDate": "No shifts available for the selected date",
+  "pendingManager": "Pending Manager",
+  "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sickLeave": "Sick Leave",
+  "casualLeave": "Casual Leave",
+  "maternityLeave": "Maternity Leave",
+  "annualLeave": "Annual Leave",
+  "unpaidLeave": "Unpaid Leave",
+  "other": "Other",
+  "leaveType": "Leave Type",
+  "reasonOptional": "Reason (optional)",
   "rosters": "Rosters",
   "noRostersFound": "No rosters found.",
   "createRoster": "Create Roster",
@@ -423,5 +507,8 @@
   "errorTimeout": "The request took too long to complete. Please try again.",
   "errorSessionExpired": "Your session has expired. Please sign in again.",
   "errorNotFound": "We could not find what you were looking for.",
-  "errorGeneric": "Something went wrong. Please try again."
+  "errorGeneric": "Something went wrong. Please try again.",
+  "manager": "Manager",
+  "owner": "Owner",
+  "pendingOwner": "Pending Owner"
 }
