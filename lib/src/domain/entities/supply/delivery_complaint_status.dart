@@ -7,25 +7,25 @@ enum DeliveryComplaintStatus {
 
   static DeliveryComplaintStatus fromWireString(String? raw) {
     return switch (raw?.toLowerCase()) {
-      'pending_supervisor' || 'pending' => .pendingSupervisor,
+      'pending_supervisor' || 'pending' => DeliveryComplaintStatus.pendingSupervisor,
       'pending_operation_manager' ||
       'pending_manager' =>
-        .pendingOperationManager,
+        DeliveryComplaintStatus.pendingOperationManager,
       'operation_manager_approved' ||
       'approved' =>
-        .operationManagerApproved,
-      'rejected' => .rejected,
-      _ => .unknown,
+        DeliveryComplaintStatus.operationManagerApproved,
+      'rejected' => DeliveryComplaintStatus.rejected,
+      _ => DeliveryComplaintStatus.unknown,
     };
   }
 
   String toWireString() {
     return switch (this) {
-      .pendingSupervisor => 'pending_supervisor',
-      .pendingOperationManager => 'pending_operation_manager',
-      .operationManagerApproved => 'operation_manager_approved',
-      .rejected => 'rejected',
-      .unknown => 'unknown',
+      DeliveryComplaintStatus.pendingSupervisor => 'pending_supervisor',
+      DeliveryComplaintStatus.pendingOperationManager => 'pending_operation_manager',
+      DeliveryComplaintStatus.operationManagerApproved => 'operation_manager_approved',
+      DeliveryComplaintStatus.rejected => 'rejected',
+      DeliveryComplaintStatus.unknown => 'unknown',
     };
   }
 }

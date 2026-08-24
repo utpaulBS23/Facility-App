@@ -7,21 +7,21 @@ enum DeliveryStatus {
 
   static DeliveryStatus fromWireString(String? raw) {
     return switch (raw?.toLowerCase()) {
-      'pending' => .pending,
-      'dispatched' || 'in_transit' => .dispatched,
-      'delivered' => .delivered,
-      'confirmed' => .confirmed,
-      _ => .unknown,
+      'pending' => DeliveryStatus.pending,
+      'dispatched' || 'in_transit' => DeliveryStatus.dispatched,
+      'delivered' => DeliveryStatus.delivered,
+      'confirmed' => DeliveryStatus.confirmed,
+      _ => DeliveryStatus.unknown,
     };
   }
 
   String toWireString() {
     return switch (this) {
-      .pending => 'pending',
-      .dispatched => 'dispatched',
-      .delivered => 'delivered',
-      .confirmed => 'confirmed',
-      .unknown => 'unknown',
+      DeliveryStatus.pending => 'pending',
+      DeliveryStatus.dispatched => 'dispatched',
+      DeliveryStatus.delivered => 'delivered',
+      DeliveryStatus.confirmed => 'confirmed',
+      DeliveryStatus.unknown => 'unknown',
     };
   }
 }
