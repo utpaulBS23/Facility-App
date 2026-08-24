@@ -2,8 +2,7 @@ part of '../view/supply_requests_page.dart';
 
 class _SupplyRequestsBody extends StatelessWidget {
   const _SupplyRequestsBody({
-    required this.counts,
-    required this.isSummaryLoading,
+    required this.summaryAsync,
     required this.selectedFilter,
     required this.filteredRequestsAsync,
     required this.onFilterSelected,
@@ -12,8 +11,7 @@ class _SupplyRequestsBody extends StatelessWidget {
     required this.onRetry,
   });
 
-  final SupplyRequestCounts counts;
-  final bool isSummaryLoading;
+  final AsyncValue<SupplyRequestSummaryEntity> summaryAsync;
   final SupplyFilter selectedFilter;
   final AsyncValue<PaginatedListEntity<SupplyRequestEntity>> filteredRequestsAsync;
   final ValueChanged<SupplyFilter> onFilterSelected;
@@ -24,6 +22,7 @@ class _SupplyRequestsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final approvedCount = int.tryParse(summaryAsync.valueOrNull?.approved ?? '') ?? 0;
 
     return RefreshIndicator(
       onRefresh: () async => onRetry(),
@@ -33,18 +32,14 @@ class _SupplyRequestsBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            isSummaryLoading
-                ? const _SupplySummaryRowShimmer()
-                : _SupplySummaryRow(
-                    pendingCount: counts.pendingCount,
-                    inDeliveryCount: counts.inDeliveryCount,
-                    deliveredCount: counts.deliveredCount,
-                    rejectedCount: counts.rejectedCount,
-                  ),
+            switch (summaryAsync) {
+              AsyncData(:final value) => _SupplySummaryRow(summary: value),
+              _ => const _SupplySummaryRowShimmer(),
+            },
             Gap(spacing.s16),
-            if (counts.approvedCount > 0) ...[
+            if (approvedCount > 0) ...[
               PendingDeliveryAlert(
-                count: counts.approvedCount,
+                count: approvedCount,
                 onTap: () =>
                     onFilterSelected(SupplyFilter.operationManagerApproved),
               ),

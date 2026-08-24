@@ -76,6 +76,7 @@ import '../../domain/use_cases/task_occurrence_use_case.dart';
 import '../../domain/use_cases/visit_use_case.dart';
 import '../../domain/use_cases/leave_use_cases.dart';
 import '../../domain/use_cases/supply/get_supply_requests_use_case.dart';
+import '../../domain/use_cases/supply/get_supply_request_summary_use_case.dart';
 
 part 'dependency_injection.g.dart';
 part 'parts/externals.dart';
