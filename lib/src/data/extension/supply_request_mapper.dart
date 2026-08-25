@@ -5,6 +5,7 @@ import '../../domain/entities/supply/delivery_entity.dart';
 import '../../domain/entities/supply/delivery_status.dart';
 import '../../domain/entities/supply/stock_allocation_entity.dart';
 import '../../domain/entities/supply/stock_item_entity.dart';
+import '../../domain/entities/supply/supply_approval_enums.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
 import '../../domain/entities/supply/supply_request_payloads.dart';
 import '../../domain/entities/supply/supply_request_status.dart';
@@ -36,8 +37,8 @@ extension SupplyRequestApprovalModelMapper on SupplyRequestApprovalModel {
     return SupplyRequestApprovalEntity(
       id: id,
       approverName: approverName,
-      approverRole: approverRole,
-      action: action,
+      approverRole: ApproverRole.fromWireString(approverRole),
+      action: ApprovalAction.fromWireString(action),
       notes: notes ?? '',
       actedAt: actedAt,
     );
