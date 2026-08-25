@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../presentation/core/router/routes.dart';
 import '../../session/session_service.dart';
 
 class TokenManager extends Interceptor {
@@ -10,14 +7,12 @@ class TokenManager extends Interceptor {
     required this.baseUrl,
     required this.refreshTokenEndpoint,
     required this.sessionService,
-    required this.navigatorKey,
     required this.dio,
   });
 
   final String baseUrl;
   final String refreshTokenEndpoint;
   final SessionService sessionService;
-  final GlobalKey<NavigatorState> navigatorKey;
   final Dio dio;
 
   bool _isRefreshing = false;
@@ -138,14 +133,7 @@ class TokenManager extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     sessionService.clear();
-    _navigateToLoginScreen();
     handler.reject(originalError);
-  }
-
-  void _navigateToLoginScreen() {
-    if (navigatorKey.currentState?.mounted == true) {
-      navigatorKey.currentState?.context.goNamed(Routes.login, extra: true);
-    }
   }
 }
 

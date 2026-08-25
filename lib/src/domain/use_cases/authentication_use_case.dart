@@ -12,11 +12,17 @@ final class LoginUseCase {
     required String uid,
     required String password,
     required String deviceName,
+    String? deviceId,
+    String? deviceModel,
+    String? osVersion,
   }) async {
     final request = LoginRequestEntity(
       uid: uid,
       password: password,
       deviceName: deviceName,
+      deviceId: deviceId,
+      deviceModel: deviceModel,
+      osVersion: osVersion,
     );
 
     final result = await repository.login(request);

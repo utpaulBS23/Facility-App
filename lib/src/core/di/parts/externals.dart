@@ -4,7 +4,7 @@ part of '../dependency_injection.dart';
 Future<SharedPreferences> sharedPreferences(Ref ref) =>
     SharedPreferences.getInstance();
 
-@riverpod
+@Riverpod(keepAlive: true)
 Dio dio(Ref ref) {
   final dio = Dio();
 
@@ -13,7 +13,6 @@ Dio dio(Ref ref) {
       baseUrl: Endpoints.base,
       refreshTokenEndpoint: Endpoints.refreshToken,
       sessionService: ref.read(sessionServiceProvider),
-      navigatorKey: ref.read(goRouterProvider).routerDelegate.navigatorKey,
       dio: Dio(
         BaseOptions(
           baseUrl: Endpoints.base,

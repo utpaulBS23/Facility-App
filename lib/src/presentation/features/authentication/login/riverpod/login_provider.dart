@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../core/base/result.dart';
 import '../../../../../core/di/dependency_injection.dart';
+import '../../../../../domain/entities/app_update_entity.dart';
 
 part 'login_provider.g.dart';
 
@@ -18,12 +19,15 @@ class Login extends _$Login {
 
     state = const AsyncValue.loading();
 
-    final deviceName = await _resolveDeviceName();
+    final deviceInfo = await _resolveDeviceInfo();
 
     final result = await ref.read(loginUseCaseProvider).call(
       uid: uid,
       password: password,
-      deviceName: deviceName,
+      deviceName: deviceInfo?.deviceModel ?? 'Mobile',
+      deviceId: deviceInfo?.deviceId,
+      deviceModel: deviceInfo?.deviceModel,
+      osVersion: deviceInfo?.osVersion,
     );
 
     state = switch (result) {
@@ -33,11 +37,11 @@ class Login extends _$Login {
     };
   }
 
-  Future<String> _resolveDeviceName() async {
-    final result = await ref.read(getDeviceNameUseCaseProvider).call();
+  Future<DeviceInfoEntity?> _resolveDeviceInfo() async {
+    final result = await ref.read(getDeviceInfoUseCaseProvider).call();
     return switch (result) {
-      Success(:final data) => data ?? 'Mobile',
-      _ => 'Mobile',
+      Success(:final data) => data,
+      _ => null,
     };
   }
 }

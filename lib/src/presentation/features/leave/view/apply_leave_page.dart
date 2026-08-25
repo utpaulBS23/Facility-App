@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/leave/create_leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
@@ -72,7 +73,7 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         AppSnackBar.showError(
           context,
           switch (e) {
-            Failure(:final message) => message,
+            Failure() => e.localizedMessage(context),
             _ => context.locale.somethingWentWrong,
           },
         );

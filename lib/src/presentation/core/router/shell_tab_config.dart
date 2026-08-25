@@ -98,10 +98,17 @@ final List<ShellTabConfig> shellTabConfigs = [
     label: _issuesLabel,
     permissions: [UserPermission.issueView],
   ),
+  ShellTabConfig(
+    branchIndex: 7,
+    route: Routes.occurrence,
+    icon: Assets.icons.success,
+    label: _occurrencesLabel,
+    permissions: [UserPermission.taskOccurrenceView],
+  ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
   // gated individually.
   ShellTabConfig(
-    branchIndex: 7,
+    branchIndex: 8,
     route: Routes.menu,
     icon: Assets.icons.menu,
     label: _menuLabel,
@@ -115,6 +122,7 @@ String _visitLabel(BuildContext context) => context.locale.visit;
 String _taskLabel(BuildContext context) => context.locale.task;
 String _trackingLabel(BuildContext context) => context.locale.tracking;
 String _issuesLabel(BuildContext context) => context.locale.issues;
+String _occurrencesLabel(BuildContext context) => context.locale.occurrences;
 String _menuLabel(BuildContext context) => context.locale.menu;
 
 List<ShellTabConfig> permittedShellTabs(Set<UserPermission> permissions) => [
