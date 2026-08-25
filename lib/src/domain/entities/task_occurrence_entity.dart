@@ -57,6 +57,15 @@ class TaskOccurrenceChecklistItemEntity {
   final ChecklistItemAnswerEntity? response;
 
   bool get isAnswered => response != null;
+
+  TaskOccurrenceChecklistItemEntity copyWith({
+    ChecklistItemAnswerEntity? response,
+  }) => TaskOccurrenceChecklistItemEntity(
+    id: id,
+    label: label,
+    responseType: responseType,
+    response: response ?? this.response,
+  );
 }
 
 /// One generated slot for a facility on a day. Occurrences are never

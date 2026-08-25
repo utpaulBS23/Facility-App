@@ -12,7 +12,7 @@ class _OccurrenceReassignSheet extends ConsumerWidget {
   Future<void> _onPick(BuildContext context, WidgetRef ref, int attendantId) async {
     Navigator.of(context).pop();
     final result = await ref
-        .read(taskOccurrencesProvider.notifier)
+        .read(taskOccurrenceReassignProvider.notifier)
         .reassign(taskOccurrenceId: occurrence.id, assignedTo: attendantId);
     if (!context.mounted) return;
     result.when(

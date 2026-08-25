@@ -13,6 +13,8 @@ import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/task_occurrence_answer_provider.dart';
+import '../riverpod/task_occurrence_submit_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
 part '../widgets/occurrence_checklist_item_form.dart';
@@ -42,7 +44,7 @@ class _OccurrenceChecklistPageState
   Future<void> _submit(TaskOccurrenceEntity current) async {
     setState(() => _isSubmitting = true);
     final result = await ref
-        .read(taskOccurrencesProvider.notifier)
+        .read(taskOccurrenceSubmitProvider.notifier)
         .submit(taskOccurrenceId: current.id);
     if (!mounted) return;
     setState(() => _isSubmitting = false);
