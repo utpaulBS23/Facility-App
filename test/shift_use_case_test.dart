@@ -26,27 +26,28 @@ final class FakeAuthenticationRepository extends AuthenticationRepository {
   }
 
   @override
-  Future<SignUpResponseEntity> register(SignUpRequestEntity data) =>
-      throw UnimplementedError();
+  Future<Result<SignUpResponseEntity, Failure>> register(
+    SignUpRequestEntity data,
+  ) => throw UnimplementedError();
 
   @override
   Future<Result<LoginResponseEntity, Failure>> login(LoginRequestEntity data) =>
       throw UnimplementedError();
 
   @override
-  Future<String> forgotPassword(Map<String, dynamic> data) =>
+  Future<Result<String, Failure>> forgotPassword(Map<String, dynamic> data) =>
       throw UnimplementedError();
 
   @override
-  Future<String> resetPassword(Map<String, dynamic> data) =>
+  Future<Result<String, Failure>> resetPassword(Map<String, dynamic> data) =>
       throw UnimplementedError();
 
   @override
-  Future<String> verifyOTP(Map<String, dynamic> data) =>
+  Future<Result<String, Failure>> verifyOTP(Map<String, dynamic> data) =>
       throw UnimplementedError();
 
   @override
-  Future<String> resendOTP(Map<String, dynamic> data) =>
+  Future<Result<String, Failure>> resendOTP(Map<String, dynamic> data) =>
       throw UnimplementedError();
 
   @override
