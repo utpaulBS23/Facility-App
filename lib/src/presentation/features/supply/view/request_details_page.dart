@@ -7,6 +7,7 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/delivery_entity.dart';
+import '../../../../domain/entities/supply/supply_approval_enums.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/router/routes.dart';
@@ -35,6 +36,7 @@ part '../widgets/request_details_loading.dart';
 part '../widgets/request_info_card.dart';
 part '../widgets/request_status_timeline.dart';
 part '../widgets/request_user_card.dart';
+part '../widgets/timeline_circle_node.dart';
 
 class RequestDetailsPage extends ConsumerStatefulWidget {
   const RequestDetailsPage({super.key, required this.requestId});
