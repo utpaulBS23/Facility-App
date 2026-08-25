@@ -49,7 +49,10 @@ final List<MenuItemConfig> menuItemConfigs = [
     icon: Assets.icons.route,
     label: _supplyRequestLabel,
     subtitle: _supplyRequestSubtitle,
-    route: Routes.supplyRequest,
+    route: Routes.supplyRequests,
+    // WHY 3 keys: SupplyRequestPage folds delivery tracking and delivery
+    // complaints into the same screen as sections (see that page's own WHY
+    // comment) — any one of the three should be enough to reach it.
     permissions: [
       UserPermission.supplyRequestView,
       UserPermission.deliveryTrackingView,
