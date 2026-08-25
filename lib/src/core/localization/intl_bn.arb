@@ -7,6 +7,7 @@
   "task": "টাস্ক",
   "issues": "ইস্যু",
   "occurrences": "ঘটনা",
+  "board": "বোর্ড",
   "dashboard": "ড্যাশবোর্ড",
   "tracking": "ট্র্যাকিং",
   "extraCollection": "অতিরিক্ত সংগ্রহ",
@@ -543,5 +544,37 @@
   "retry": "আবার চেষ্টা করুন",
   "currentVersion": "বর্তমান সংস্করণ",
   "latestVersion": "সর্বশেষ সংস্করণ",
-  "build": "বিল্ড"
+  "build": "বিল্ড",
+  "occurrenceStatusPending": "মুলতুবি",
+  "occurrenceStatusOnTime": "সময়মতো",
+  "occurrenceStatusLate": "বিলম্বিত",
+  "occurrenceStatusMissed": "মিস হয়েছে",
+  "occurrenceEmptyBoard": "এই দিনে এই ফ্যাসিলিটির জন্য কোনো স্লট তৈরি হয়নি।",
+  "occurrenceLoadFailed": "আজকের কাজ লোড করতে ব্যর্থ হয়েছে।",
+  "occurrenceStatsTotal": "মোট",
+  "occurrenceStatsOnTime": "সময়মতো",
+  "occurrenceStatsLate": "বিলম্বিত",
+  "occurrenceStatsMissed": "মিস হয়েছে",
+  "occurrenceStatsPending": "মুলতুবি",
+  "occurrenceReassign": "পুনঃবরাদ্দ",
+  "occurrenceReassignSuccess": "স্লট পুনঃবরাদ্দ করা হয়েছে।",
+  "occurrenceChecklist": "চেকলিস্ট",
+  "occurrenceChecklistItemsCompleted": "{answered}/{total} উত্তর দেওয়া হয়েছে",
+  "@occurrenceChecklistItemsCompleted": {
+    "placeholders": {
+      "answered": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "occurrenceAnswerSaved": "উত্তর সংরক্ষিত হয়েছে।",
+  "occurrenceRatingLabel": "রেটিং",
+  "occurrenceYesNoLabel": "হ্যাঁ / না",
+  "occurrenceYes": "হ্যাঁ",
+  "occurrenceNo": "না",
+  "occurrenceTextAnswerLabel": "নোট",
+  "occurrenceSaveAnswer": "উত্তর সংরক্ষণ করুন",
+  "occurrenceSubmitSlot": "জমা দিন",
+  "occurrenceSubmitSuccess": "স্লট জমা দেওয়া হয়েছে।",
+  "occurrenceNoAccessibleFacility": "আপনাকে কোনো ফ্যাসিলিটিতে নিয়োগ করা হয়নি।",
+  "occurrenceAttendantPickerEmpty": "কোনো কর্মী উপলব্ধ নেই।"
 }

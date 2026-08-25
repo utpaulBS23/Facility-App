@@ -22,7 +22,7 @@ class MyVisits extends _$MyVisits {
     state = result.when(
       success: (data) => data != null
           ? AsyncValue.data(data)
-          : AsyncValue.error('No data', StackTrace.current),
+          : AsyncValue.error(Failure.emptyResponse('load visits'), StackTrace.current),
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }

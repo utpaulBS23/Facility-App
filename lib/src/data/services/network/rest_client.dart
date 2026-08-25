@@ -458,5 +458,35 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('stockAllocationId') required int stockAllocationId,
   });
+
+  /// Task Occurrences
+  @GET(Endpoints.taskOccurrences)
+  Future<HttpResponse> getTaskOccurrences({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('date') String? date,
+  });
+
+  @PATCH(Endpoints.taskOccurrenceReassign)
+  Future<HttpResponse> reassignTaskOccurrence({
+    @Path('partnerId') required int partnerId,
+    @Path('taskOccurrenceId') required int taskOccurrenceId,
+    @Body() required Map<String, dynamic> request,
+  });
+
+  @POST(Endpoints.taskOccurrenceChecklistItemResponse)
+  Future<HttpResponse> answerTaskOccurrenceChecklistItem({
+    @Path('partnerId') required int partnerId,
+    @Path('taskOccurrenceId') required int taskOccurrenceId,
+    @Path('itemId') required int itemId,
+    @Body() required FormData formData,
+  });
+
+  @PATCH(Endpoints.taskOccurrenceSubmit)
+  Future<HttpResponse> submitTaskOccurrence({
+    @Path('partnerId') required int partnerId,
+    @Path('taskOccurrenceId') required int taskOccurrenceId,
+    @Body() Map<String, dynamic> request = const {},
+  });
 }
 
