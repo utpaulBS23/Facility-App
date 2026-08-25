@@ -11,10 +11,18 @@ extension SignUpRequestModel on SignUpRequestEntity {
   }
 }
 
-class SignUpResponseModel extends SignUpResponseEntity {
-  SignUpResponseModel({required super.accessToken});
+class SignUpResponseModel {
+  SignUpResponseModel({required this.accessToken});
 
   factory SignUpResponseModel.fromJson(Map<String, dynamic> json) {
     return SignUpResponseModel(accessToken: json['access_token']);
+  }
+
+  final String accessToken;
+}
+
+extension SignUpResponseMapper on SignUpResponseModel {
+  SignUpResponseEntity toEntity() {
+    return SignUpResponseEntity(accessToken: accessToken);
   }
 }

@@ -35,9 +35,11 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       StreamController<UserSessionEntity?>.broadcast();
 
   @override
-  Future<SignUpResponseEntity> register(SignUpRequestEntity data) async {
+  Future<Result<SignUpResponseEntity, Failure>> register(
+    SignUpRequestEntity data,
+  ) {
     // TODO: implement register
-    throw UnimplementedError();
+    return asyncGuard(() async => throw Exception('register not implemented'));
   }
 
   @override
@@ -68,27 +70,31 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
   }
 
   @override
-  Future<String> forgotPassword(Map<String, dynamic> data) {
+  Future<Result<String, Failure>> forgotPassword(Map<String, dynamic> data) {
     // TODO: implement forgotPassword
-    throw UnimplementedError();
+    return asyncGuard(
+      () async => throw Exception('forgotPassword not implemented'),
+    );
   }
 
   @override
-  Future<String> resetPassword(Map<String, dynamic> data) {
+  Future<Result<String, Failure>> resetPassword(Map<String, dynamic> data) {
     // TODO: implement resetPassword
-    throw UnimplementedError();
+    return asyncGuard(
+      () async => throw Exception('resetPassword not implemented'),
+    );
   }
 
   @override
-  Future<String> verifyOTP(Map<String, dynamic> data) {
+  Future<Result<String, Failure>> verifyOTP(Map<String, dynamic> data) {
     // TODO: implement verifyOTP
-    throw UnimplementedError();
+    return asyncGuard(() async => throw Exception('verifyOTP not implemented'));
   }
 
   @override
-  Future<String> resendOTP(Map<String, dynamic> data) {
+  Future<Result<String, Failure>> resendOTP(Map<String, dynamic> data) {
     // TODO: implement resendOTP
-    throw UnimplementedError();
+    return asyncGuard(() async => throw Exception('resendOTP not implemented'));
   }
 
   // WHY: teardown is not duplicated here — clearing the token emits on

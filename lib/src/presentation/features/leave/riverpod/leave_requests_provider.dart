@@ -37,13 +37,21 @@ class LeaveRequests extends _$LeaveRequests {
         .read(getLeaveApprovalsUseCaseProvider)
         .call(status: filter.status);
 
-    final list = result.when(
-      success: (data) => data ?? const [],
-      error: (error) => throw Exception(error.message),
-    );
+    return switch (result) {
+      Success(:final data) => _onFetchSuccess(data ?? const []),
+      Error(:final error) => _onFetchError(error),
+      _ => _onFetchError(Failure.emptyResponse('get leave approvals')),
+    };
+  }
 
+  List<LeaveRequestEntity> _onFetchSuccess(List<LeaveRequestEntity> list) {
     state = AsyncValue.data(list);
     return list;
+  }
+
+  List<LeaveRequestEntity> _onFetchError(Failure error) {
+    state = AsyncValue.error(error, StackTrace.current);
+    return const [];
   }
 
   void search(String query) {
@@ -55,8 +63,10 @@ class LeaveRequests extends _$LeaveRequests {
   }
 
   Future<void> approve(int leaveRequestId) async {
-    final result =
-        await ref.read(approveLeaveUseCaseProvider).call(leaveRequestId);
+    state = const AsyncValue.loading();
+    final result = await ref
+        .read(approveLeaveUseCaseProvider)
+        .call(leaveRequestId);
     result.when(
       success: (_) => ref.invalidateSelf(),
       error: (error) => state = AsyncValue.error(error, StackTrace.current),
@@ -64,6 +74,7 @@ class LeaveRequests extends _$LeaveRequests {
   }
 
   Future<void> reject(int leaveRequestId, {String? reason}) async {
+    state = const AsyncValue.loading();
     final result = await ref
         .read(rejectLeaveUseCaseProvider)
         .call(leaveRequestId, reason: reason);
@@ -74,8 +85,10 @@ class LeaveRequests extends _$LeaveRequests {
   }
 
   Future<void> cancel(int leaveRequestId) async {
-    final result =
-        await ref.read(cancelLeaveUseCaseProvider).call(leaveRequestId);
+    state = const AsyncValue.loading();
+    final result = await ref
+        .read(cancelLeaveUseCaseProvider)
+        .call(leaveRequestId);
     result.when(
       success: (_) => ref.invalidateSelf(),
       error: (error) => state = AsyncValue.error(error, StackTrace.current),
