@@ -66,8 +66,8 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _leaveLabel,
     route: Routes.leaveRequests,
     permissions: [
-      UserPermission.leaveRequestView,
-      UserPermission.leaveRequestCreateOwn,
+      UserPermission.leaveApproveSupervisor,
+      UserPermission.leaveApproveManager,
     ],
   ),
   MenuItemConfig(
