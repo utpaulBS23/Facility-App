@@ -1,0 +1,111 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../../core/base/result.dart';
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/task_occurrence_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/text/typography.dart';
+import '../riverpod/task_occurrences_provider.dart';
+
+part '../widgets/occurrence_checklist_item_form.dart';
+part '../widgets/occurrence_checklist_submit_bar.dart';
+
+class OccurrenceChecklistPage extends ConsumerStatefulWidget {
+  const OccurrenceChecklistPage({super.key, required this.occurrence});
+
+  final TaskOccurrenceEntity occurrence;
+
+  @override
+  ConsumerState<OccurrenceChecklistPage> createState() =>
+      _OccurrenceChecklistPageState();
+}
+
+class _OccurrenceChecklistPageState
+    extends ConsumerState<OccurrenceChecklistPage> {
+  bool _isSubmitting = false;
+
+  TaskOccurrenceEntity _current(List<TaskOccurrenceEntity> occurrences) {
+    for (final o in occurrences) {
+      if (o.id == widget.occurrence.id) return o;
+    }
+    return widget.occurrence;
+  }
+
+  Future<void> _submit(TaskOccurrenceEntity current) async {
+    setState(() => _isSubmitting = true);
+    final result = await ref
+        .read(taskOccurrencesProvider.notifier)
+        .submit(taskOccurrenceId: current.id);
+    if (!mounted) return;
+    setState(() => _isSubmitting = false);
+    result.when(
+      success: (_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.locale.occurrenceSubmitSuccess)),
+        );
+        Navigator.of(context).pop();
+      },
+      error: (error) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.localized(context))),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final current = _current(
+      ref.watch(taskOccurrencesProvider).valueOrNull?.occurrences ??
+          [widget.occurrence],
+    );
+    final items = current.checklistItems ?? const <TaskOccurrenceChecklistItemEntity>[];
+
+    return Scaffold(
+      backgroundColor: context.color.scaffoldBackground,
+      appBar: AppBar(
+        title: LabelLargeText(context.locale.occurrenceChecklist),
+        titleSpacing: spacing.s16,
+        backgroundColor: context.color.onPrimary,
+        surfaceTintColor: Colors.transparent,
+      ),
+      body: items.isEmpty
+          ? Center(
+              child: Padding(
+                padding: EdgeInsets.all(spacing.s24),
+                child: BodySmallText(
+                  context.locale.noTasksFound,
+                  color: context.color.text.secondary,
+                ),
+              ),
+            )
+          : ListView.separated(
+              padding: EdgeInsets.all(spacing.s16),
+              itemCount: items.length,
+              separatorBuilder: (_, _) => Gap(spacing.s12),
+              itemBuilder: (_, i) => _ChecklistItemForm(
+                key: ValueKey(items[i].id),
+                occurrenceId: current.id,
+                item: items[i],
+              ),
+            ),
+      bottomNavigationBar: current.status == TaskOccurrenceStatus.pending
+          ? PermissionGate(
+              permissions: const [UserPermission.taskOccurrenceSubmit],
+              child: _OccurrenceChecklistSubmitBar(
+                isComplete: current.isChecklistComplete,
+                isSubmitting: _isSubmitting,
+                onSubmit: () => _submit(current),
+              ),
+            )
+          : null,
+    );
+  }
+}

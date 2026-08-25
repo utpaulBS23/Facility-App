@@ -7,6 +7,7 @@
   "task": "Task ",
   "issues": "Issues",
   "occurrences": "Occurrences",
+  "board": "Board",
   "dashboard": "Dashboard",
   "tracking": "Tracking",
   "extraCollection": "Extra Collection",
@@ -561,5 +562,37 @@
   "retry": "Retry",
   "currentVersion": "Current Version",
   "latestVersion": "Latest Version",
-  "build": "Build"
+  "build": "Build",
+  "occurrenceStatusPending": "Pending",
+  "occurrenceStatusOnTime": "On time",
+  "occurrenceStatusLate": "Late",
+  "occurrenceStatusMissed": "Missed",
+  "occurrenceEmptyBoard": "No slots generated for this facility on this day.",
+  "occurrenceLoadFailed": "Failed to load today's tasks.",
+  "occurrenceStatsTotal": "Total",
+  "occurrenceStatsOnTime": "On time",
+  "occurrenceStatsLate": "Late",
+  "occurrenceStatsMissed": "Missed",
+  "occurrenceStatsPending": "Pending",
+  "occurrenceReassign": "Reassign",
+  "occurrenceReassignSuccess": "Slot reassigned.",
+  "occurrenceChecklist": "Checklist",
+  "occurrenceChecklistItemsCompleted": "{answered}/{total} answered",
+  "@occurrenceChecklistItemsCompleted": {
+    "placeholders": {
+      "answered": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "occurrenceAnswerSaved": "Answer saved.",
+  "occurrenceRatingLabel": "Rating",
+  "occurrenceYesNoLabel": "Yes / No",
+  "occurrenceYes": "Yes",
+  "occurrenceNo": "No",
+  "occurrenceTextAnswerLabel": "Note",
+  "occurrenceSaveAnswer": "Save Answer",
+  "occurrenceSubmitSlot": "Submit",
+  "occurrenceSubmitSuccess": "Slot submitted.",
+  "occurrenceNoAccessibleFacility": "You are not assigned to a facility.",
+  "occurrenceAttendantPickerEmpty": "No staff available."
 }

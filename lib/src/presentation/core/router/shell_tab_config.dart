@@ -122,7 +122,7 @@ String _visitLabel(BuildContext context) => context.locale.visit;
 String _taskLabel(BuildContext context) => context.locale.task;
 String _trackingLabel(BuildContext context) => context.locale.tracking;
 String _issuesLabel(BuildContext context) => context.locale.issues;
-String _occurrencesLabel(BuildContext context) => context.locale.occurrences;
+String _occurrencesLabel(BuildContext context) => context.locale.board;
 String _menuLabel(BuildContext context) => context.locale.menu;
 
 List<ShellTabConfig> permittedShellTabs(Set<UserPermission> permissions) => [
