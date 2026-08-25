@@ -2,12 +2,10 @@ part of '../view/inspection_checklist_page.dart';
 
 class _InspectionRepairWorkSection extends StatelessWidget {
   const _InspectionRepairWorkSection({
-    required this.item,
     required this.issues,
     required this.onNewIssue,
   });
 
-  final ChecklistItemEntity item;
   final List<ChecklistIssueEntity> issues;
   final VoidCallback onNewIssue;
 
@@ -22,8 +20,6 @@ class _InspectionRepairWorkSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              _ItemOrderBadge(order: item.order),
-              SizedBox(width: spacing.s12),
               Expanded(
                 child: LabelLargeText(
                   context.locale.repairWork,

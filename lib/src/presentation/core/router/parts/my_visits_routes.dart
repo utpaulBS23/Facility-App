@@ -18,5 +18,20 @@ List<GoRoute> _myVisitsRoutes(Ref ref) {
         return MaterialPage(child: InspectionChecklistPage(detail: detail));
       },
     ),
+    GoRoute(
+      path: Routes.problemReport,
+      name: Routes.problemReport,
+      pageBuilder: (context, state) {
+        final extra =
+            state.extra as ({int visitId, int facilityId, String facilityName});
+        return MaterialPage(
+          child: CreateIssuePage(
+            visitId: extra.visitId,
+            facilityId: extra.facilityId,
+            facilityName: extra.facilityName,
+          ),
+        );
+      },
+    ),
   ];
 }

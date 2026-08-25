@@ -9,6 +9,17 @@ StatefulShellRoute _shellRoutes(Ref ref) {
       StatefulShellBranch(
         routes: [
           GoRoute(
+            path: Routes.dashboard,
+            name: Routes.dashboard,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: DashboardPage());
+            },
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
             path: Routes.shift,
             name: Routes.shift,
             pageBuilder: (context, state) {
@@ -51,20 +62,39 @@ StatefulShellRoute _shellRoutes(Ref ref) {
           ),
         ],
       ),
-      // WHY: menu navigates to the drawer now (NavigationShell opens
-      // AppNavigationDrawer on tap) instead of a branch page — MenuPage is
-      // unused, kept commented in case it's needed again.
-      // StatefulShellBranch(
-      //   routes: [
-      //     GoRoute(
-      //       path: Routes.menu,
-      //       name: Routes.menu,
-      //       pageBuilder: (context, state) {
-      //         return const MaterialPage(child: MenuPage());
-      //       },
-      //     ),
-      //   ],
-      // ),
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: Routes.tracking,
+            name: Routes.tracking,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: SupervisorTrackingPage());
+            },
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: Routes.issue,
+            name: Routes.issue,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: IssuesPage());
+            },
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: Routes.menu,
+            name: Routes.menu,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: MenuPage());
+            },
+          ),
+        ],
+      ),
     ],
   );
 }

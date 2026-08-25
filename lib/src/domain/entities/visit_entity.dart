@@ -62,6 +62,7 @@ class VisitDetailEntity {
   const VisitDetailEntity({
     required this.id,
     required this.facilityName,
+    this.facilityId,
     required this.status,
     required this.type,
     required this.date,
@@ -77,6 +78,7 @@ class VisitDetailEntity {
 
   final int id;
   final String facilityName;
+  final int? facilityId;
   final String? facilityAddress;
   final double? facilityLatitude;
   final double? facilityLongitude;

@@ -1,4 +1,6 @@
 import '../entities/checklist_entity.dart';
+import '../entities/problem_category_entity.dart';
+import '../entities/report_issue_entity.dart';
 import '../entities/visit_entity.dart';
 import '../repositories/authentication_repository.dart';
 import '../repositories/visit_repository.dart';
@@ -33,7 +35,9 @@ final class GetVisitDetailUseCase {
   final VisitRepository _repository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<VisitDetailEntity, Failure>> call({required int visitId}) async {
+  Future<Result<VisitDetailEntity, Failure>> call({
+    required int visitId,
+  }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
@@ -147,6 +151,46 @@ final class SaveChecklistItemResponseUseCase {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('save answer')),
+    };
+  }
+}
+
+final class ReportIssueUseCase {
+  ReportIssueUseCase(this._repository);
+
+  final VisitRepository _repository;
+
+  Future<Result<ReportIssueResponseEntity, Failure>> call({
+    required int partnerId,
+    required int visitId,
+    required ReportIssueRequestEntity request,
+  }) async {
+    final result = await _repository.reportIssue(
+      partnerId: partnerId,
+      visitId: visitId,
+      request: request,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('submit issue report')),
+    };
+  }
+}
+
+final class GetProblemCategoriesUseCase {
+  const GetProblemCategoriesUseCase(this._repository);
+
+  final VisitRepository _repository;
+
+  Future<Result<List<ProblemCategoryEntity>, String>> call({
+    required int partnerId,
+  }) async {
+    final result = await _repository.getProblemCategories(partnerId: partnerId);
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error.message),
+      _ => const Error('Failed to load problem categories'),
     };
   }
 }

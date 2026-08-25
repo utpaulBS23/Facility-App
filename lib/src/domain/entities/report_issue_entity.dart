@@ -3,28 +3,35 @@ enum IssuePriority { high, medium, normal, low }
 class ReportIssueRequestEntity {
   const ReportIssueRequestEntity({
     required this.visitId,
-    required this.department,
-    required this.specificProblem,
-    required this.location,
+    required this.categoryId,
+    required this.title,
     required this.priority,
-    this.notes,
-    this.photoPath,
+    this.description,
     this.assignedTo,
+    this.dueAt,
+    this.photoPath,
   });
 
   final int visitId;
-  final String department;
-  final String specificProblem;
-  final String location;
+  final int categoryId;
+  final String title;
   final IssuePriority priority;
-  final String? notes;
+  final String? description;
+  final int? assignedTo;
+  final String? dueAt;
   final String? photoPath;
-  final String? assignedTo;
 }
 
 class ReportIssueResponseEntity {
-  const ReportIssueResponseEntity({required this.id, required this.message});
+  const ReportIssueResponseEntity({
+    required this.id,
+    required this.title,
+    required this.priority,
+    required this.status,
+  });
 
   final int id;
-  final String message;
+  final String title;
+  final String priority;
+  final String status;
 }

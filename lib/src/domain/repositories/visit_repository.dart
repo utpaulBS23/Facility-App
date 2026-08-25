@@ -1,5 +1,6 @@
 import '../../core/base/base.dart';
 import '../entities/checklist_entity.dart';
+import '../entities/problem_category_entity.dart';
 import '../entities/report_issue_entity.dart';
 import '../entities/visit_entity.dart';
 
@@ -41,6 +42,11 @@ abstract base class VisitRepository extends Repository {
 
   Future<Result<ReportIssueResponseEntity, Failure>> reportIssue({
     required int partnerId,
+    required int visitId,
     required ReportIssueRequestEntity request,
+  });
+
+  Future<Result<List<ProblemCategoryEntity>, Failure>> getProblemCategories({
+    required int partnerId,
   });
 }

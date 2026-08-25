@@ -24,6 +24,7 @@ class InspectionChecklistState {
     this.isSubmitting = false,
     this.submitError,
     this.submitSuccess = false,
+    this.localIssues = const [],
   });
 
   final ChecklistEntity? checklist;
@@ -39,6 +40,7 @@ class InspectionChecklistState {
   final bool isSubmitting;
   final Failure? submitError;
   final bool submitSuccess;
+  final List<ChecklistIssueEntity> localIssues;
 
   int get totalAnswerableCount =>
       checklist?.items
@@ -82,6 +84,7 @@ class InspectionChecklistState {
     bool? submitSuccess,
     bool clearChecklistError = false,
     bool clearSubmitError = false,
+    List<ChecklistIssueEntity>? localIssues,
   }) {
     return InspectionChecklistState(
       checklist: checklist ?? this.checklist,
@@ -98,6 +101,7 @@ class InspectionChecklistState {
       isSubmitting: isSubmitting ?? this.isSubmitting,
       submitError: clearSubmitError ? null : (submitError ?? this.submitError),
       submitSuccess: submitSuccess ?? this.submitSuccess,
+      localIssues: localIssues ?? this.localIssues,
     );
   }
 }
@@ -356,6 +360,12 @@ class InspectionChecklist extends _$InspectionChecklist {
     final updated = Map<int, List<XFile>>.from(state.proofImages);
     updated[itemId] = [image];
     state = state.copyWith(proofImages: updated);
+  }
+
+  void addLocalIssue(ChecklistIssueEntity issue) {
+    state = state.copyWith(
+      localIssues: [...state.localIssues, issue],
+    );
   }
 
   void removeProofImage({required int itemId}) {

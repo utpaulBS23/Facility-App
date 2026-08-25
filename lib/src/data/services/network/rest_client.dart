@@ -204,7 +204,8 @@ abstract class RestClient {
   @POST(Endpoints.reportIssue)
   Future<HttpResponse> reportIssue({
     @Path('partnerId') required int partnerId,
-    @Body() required Map<String, dynamic> request,
+    @Path('visitId') required int visitId,
+    @Body() required FormData request,
   });
 
   @POST(Endpoints.locationPingSync)
@@ -224,6 +225,11 @@ abstract class RestClient {
   Future<HttpResponse> getTaskDetail({
     @Path('partnerId') required int partnerId,
     @Path('taskId') required int taskId,
+  });
+
+  @GET(Endpoints.problemCategories)
+  Future<HttpResponse> getProblemCategories({
+    @Path('partnerId') required int partnerId,
   });
 
   @POST(Endpoints.startIssue)

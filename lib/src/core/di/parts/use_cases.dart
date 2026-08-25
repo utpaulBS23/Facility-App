@@ -432,3 +432,12 @@ RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
   );
 }
 
+@riverpod
+ReportIssueUseCase reportIssueUseCase(Ref ref) {
+  return ReportIssueUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
+  return GetProblemCategoriesUseCase(ref.read(visitRepositoryProvider));
+}
