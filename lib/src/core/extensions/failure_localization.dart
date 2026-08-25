@@ -19,8 +19,11 @@ extension FailureLocalization on Failure {
       FailureType.shiftsUnavailable => locale.shiftsUnavailable,
       FailureType.noAccessibleFacility => locale.errorNoAccessibleFacility,
 
-      // Authorization.
-      FailureType.forbidden => locale.errorPermissionDenied,
+      // Authorization. WHY: forbidden's backend message is usually specific
+      // and actionable ("not assigned to this occurrence") — same rule as
+      // badResponse below, it wins over the generic string when populated.
+      FailureType.forbidden =>
+        message.isNotEmpty ? message : locale.errorPermissionDenied,
       FailureType.unauthorized => locale.errorSessionExpired,
 
       // Transport.

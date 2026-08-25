@@ -353,6 +353,41 @@ SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
   );
 }
 
+/// Task Occurrence UseCases
+
+@riverpod
+GetTaskOccurrencesUseCase getTaskOccurrencesUseCase(Ref ref) {
+  return GetTaskOccurrencesUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+ReassignTaskOccurrenceUseCase reassignTaskOccurrenceUseCase(Ref ref) {
+  return ReassignTaskOccurrenceUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+AnswerTaskOccurrenceChecklistItemUseCase
+answerTaskOccurrenceChecklistItemUseCase(Ref ref) {
+  return AnswerTaskOccurrenceChecklistItemUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+SubmitTaskOccurrenceUseCase submitTaskOccurrenceUseCase(Ref ref) {
+  return SubmitTaskOccurrenceUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
 /// Leave Management UseCases
 
 @riverpod

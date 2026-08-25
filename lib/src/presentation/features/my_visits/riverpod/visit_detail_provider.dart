@@ -22,7 +22,7 @@ class VisitDetail extends _$VisitDetail {
     state = result.when(
       success: (data) => data != null
           ? AsyncValue.data(data)
-          : AsyncValue.error('Not found', StackTrace.current),
+          : AsyncValue.error(Failure.emptyResponse('load visit detail'), StackTrace.current),
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }

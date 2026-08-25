@@ -95,6 +95,11 @@ VisitRepository visitRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+TaskOccurrenceRepository taskOccurrenceRepository(Ref ref) {
+  return TaskOccurrenceRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 LeaveRepository leaveRepository(Ref ref) {
   return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
 }

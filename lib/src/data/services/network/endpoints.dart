@@ -177,4 +177,15 @@ class Endpoints {
       '/partners/{partnerId}/stock-allocations';
   static const String stockAllocationDetails =
       '/partners/{partnerId}/stock-allocations/{stockAllocationId}';
+
+  /// Task Occurrences — generated slots from `task_schedules`, never
+  /// created/deleted via the API (nightly cron only).
+  static const String taskOccurrences =
+      '/partners/{partnerId}/task-occurrences';
+  static const String taskOccurrenceReassign =
+      '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/reassign';
+  static const String taskOccurrenceChecklistItemResponse =
+      '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/checklist-items/{itemId}/response';
+  static const String taskOccurrenceSubmit =
+      '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/submit';
 }
