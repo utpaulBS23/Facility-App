@@ -13,6 +13,19 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
+  @GET(Endpoints.versionCheck)
+  Future<HttpResponse> checkVersion({
+    @Query('device_id') required String deviceId,
+    @Query('device_model') String? deviceModel,
+    @Query('os_version') String? osVersion,
+    @Query('current_version_code') required int currentVersionCode,
+  });
+
+  @PATCH(Endpoints.updateAction)
+  Future<HttpResponse> reportUpdateAction({
+    @Body() required Map<String, dynamic> request,
+  });
+
   @POST(Endpoints.checkIn)
   Future<HttpResponse> checkIn(
     @Path('partnerId') int partnerId,

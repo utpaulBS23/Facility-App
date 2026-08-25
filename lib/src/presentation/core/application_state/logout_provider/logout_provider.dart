@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/di/dependency_injection.dart';
+import '../reset_repositories.dart';
 
 part 'logout_provider.g.dart';
 
@@ -22,7 +23,7 @@ class Logout extends _$Logout {
     try {
       await ref.read(logoutUseCaseProvider).call();
       // Invalidate all repository providers to remove cached data
-      ref.read(resetRepositoryUseCaseProvider).call(ref);
+      resetRepositories(ref);
 
       state = const AsyncValue.data(true);
     } catch (e) {

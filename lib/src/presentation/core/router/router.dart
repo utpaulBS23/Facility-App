@@ -19,6 +19,7 @@ import '../../features/authentication/forgot_password/view/email_verification_pa
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
+import '../../features/app_update/view/app_update_checker.dart';
 import '../../features/additional_income/view/additional_income_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
@@ -37,6 +38,7 @@ import '../../features/menu/view/menu_page.dart';
 import '../../features/menu/widgets/menu_item_config.dart';
 import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/notification/view/notification_page.dart';
+import '../../features/occurrence/view/occurrence_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
@@ -93,7 +95,10 @@ GoRouter goRouter(Ref ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
-    refreshListenable: ref.asListenable(routerStateProvider),
+    refreshListenable: Listenable.merge([
+      ref.asListenable(routerStateProvider),
+      ref.watch(sessionClearedListenableProvider),
+    ]),
     initialLocation: Routes.initial,
     redirect: (context, state) {
       Log.info('Redirecting to ${state.uri}');

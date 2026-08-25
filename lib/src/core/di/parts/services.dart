@@ -15,17 +15,17 @@ SessionService sessionService(Ref ref) {
   return service;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 RestClient restClientService(Ref ref) {
   return RestClient(ref.read(dioProvider));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 ImagePickerService imagePickerService(Ref ref) {
   return ImagePickerServiceImpl(ImagePicker());
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 FaceDetectionService faceDetectionService(Ref ref) {
   // ignore: invalid_service_name
   final service = FaceDetectionServiceImpl();
@@ -34,7 +34,7 @@ FaceDetectionService faceDetectionService(Ref ref) {
   return service;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 LocationService locationService(Ref ref) {
   return LocationServiceImpl();
 }
@@ -54,7 +54,7 @@ LocationSharingNotificationService locationSharingNotificationService(Ref ref) {
   );
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 DeviceInfoService deviceInfoService(Ref ref) {
   return DeviceInfoServiceImpl(DeviceInfoPlugin());
 }
