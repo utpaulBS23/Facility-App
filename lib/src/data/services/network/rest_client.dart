@@ -13,6 +13,9 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
+  @DELETE(Endpoints.logout)
+  Future<HttpResponse> logout();
+
   @GET(Endpoints.versionCheck)
   Future<HttpResponse> checkVersion({
     @Query('device_id') required String deviceId,
