@@ -154,3 +154,5 @@ app.*.symbols
 !README.md
 # Local Flutter devtools socket handle (machine-specific)
 .flutter_skill_uri
+/my-git-logs-2026-07-01-to-2026-07-31.txt
+/my-git-logs-2026-08-01-to-2026-08-13.txt

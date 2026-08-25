@@ -116,7 +116,70 @@ enum UserPermission {
 
   // User
   userView('user.view'),
-  userViewProfile('user.view_profile');
+  userViewProfile('user.view_profile'),
+
+  // Insights
+  insightsDashboardView('insights.dashboard.view'),
+
+  // Shift slot
+  shiftSlotView('shift_slot.view'),
+  shiftSlotCheckIn('shift_slot.check_in'),
+  shiftSlotCheckOut('shift_slot.check_out'),
+  shiftSlotAssign('shift_slot.assign'),
+
+  // Visit task
+  visitTaskView('visit_task.view'),
+  visitTaskCreate('visit_task.create'),
+
+  // Profile
+  profileUpdate('profile.update'),
+
+  // Additional income
+  additionalIncomeCreate('additional_income.create'),
+  additionalIncomeApprove('additional_income.approve'),
+  additionalIncomeView('additional_income.view'),
+
+  // Leave request
+  leaveRequestView('leave_request.view'),
+  leaveRequestCreateOwn('leave_request.create_own'),
+  leaveRequestCreateForOthers('leave_request.create_for_others'),
+  leaveRequestApprove('leave_request.approve'),
+
+  // Door lock
+  doorLockControl('door_lock.control'),
+
+  // Facility expense
+  facilityExpenseCreate('facility_expense.create'),
+  facilityExpenseApprove('facility_expense.approve'),
+
+  // Notification
+  notificationView('notification.view'),
+
+  // Reports
+  reportFacilityWiseView('report.facility_wise.view'),
+  reportStockConsumptionView('report.stock_consumption.view'),
+
+  // Facility map
+  facilityMapView('facility_map.view'),
+
+  // Supervisor tracking
+  supervisorTrackingView('supervisor_tracking.view'),
+
+  // Delivery tracking
+  deliveryTrackingView('delivery_tracking.view'),
+
+  // Issue management
+  issueManage('issue.manage'),
+
+  // IoT gateway
+  iotGatewayConfigure('iot_gateway.configure'),
+
+  // Facility sensors
+  odourMonitoringView('odour_monitoring.view'),
+  cameraView('camera.view'),
+
+  // Ticket-scoped access
+  ticketFacilityAccess('ticket_facility_access');
 
   const UserPermission(this.key);
 

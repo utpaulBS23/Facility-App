@@ -68,8 +68,18 @@ class _InspectionChecklistPageState
     }
   }
 
-  void _onNewIssue() {
-    context.pushNamed(Routes.problemReport, extra: widget.detail.id);
+  Future<void> _onNewIssue() async {
+    final result = await context.pushNamed<ChecklistIssueEntity>(
+      Routes.problemReport,
+      extra: (
+        visitId: widget.detail.id,
+        facilityId: widget.detail.facilityId ?? 0,
+        facilityName: widget.detail.facilityName,
+      ),
+    );
+    if (result != null) {
+      ref.read(inspectionChecklistProvider.notifier).addLocalIssue(result);
+    }
   }
 
   @override
@@ -153,27 +163,21 @@ class _ChecklistBody extends StatelessWidget {
               Gap(spacing.s16),
               _InspectionProgressHeader(state: checklistState),
               Gap(spacing.s8),
-              ...checklist.items.expand((item) {
-                if (item.answerType == ChecklistAnswerType.repairWork) {
-                  return [
-                    _InspectionRepairWorkSection(
+              ...checklist.items
+                  .where((item) => item.answerType != ChecklistAnswerType.repairWork)
+                  .expand((item) => [
+                    _InspectionItemTile(
                       item: item,
-                      issues: checklist.issues,
-                      onNewIssue: onNewIssue,
+                      state: checklistState,
+                      visitId: detail.id,
+                      isResolved: isResolved,
                     ),
                     Divider(color: context.color.borderSubtle, height: 1),
-                  ];
-                }
-                return [
-                  _InspectionItemTile(
-                    item: item,
-                    state: checklistState,
-                    visitId: detail.id,
-                    isResolved: isResolved,
-                  ),
-                  Divider(color: context.color.borderSubtle, height: 1),
-                ];
-              }),
+                  ]),
+              _InspectionRepairWorkSection(
+                issues: [...checklist.issues, ...checklistState.localIssues],
+                onNewIssue: onNewIssue,
+              ),
               Gap(spacing.s8),
             ],
           ),

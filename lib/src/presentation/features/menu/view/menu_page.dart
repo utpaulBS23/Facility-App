@@ -14,9 +14,11 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/menu_provider.dart';
+import '../widgets/menu_item_config.dart';
 
 part '../widgets/menu_header_section.dart';
 part '../widgets/menu_item.dart';
+part '../widgets/menu_item_tile.dart';
 
 class MenuPage extends ConsumerStatefulWidget {
   const MenuPage({super.key});
@@ -70,22 +72,38 @@ class _MenuPageState extends ConsumerState<MenuPage> {
             partnerName: menuState.partnerName,
           ),
           Gap(spacing.s16),
-          PermissionGate(
-            permissions: const [
-              UserPermission.leaveApproveSupervisor,
-              UserPermission.leaveApproveManager,
-            ],
-            child: _MenuItem(
-              icon: Icons.shield_outlined,
-              title: context.locale.leaveApproval,
-              subtitle: context.locale.awaitingFinalApproval,
-              onTap: () {
-                context.pop();
-                context.goNamed(Routes.leaveRequests);
+          Expanded(
+            child: PermissionSetScope(
+              builder: (context, permissions) {
+                final visibleItems = [
+                  for (final item in menuItemConfigs)
+                    if (hasAnyPermission(item.permissions, permissions)) item,
+                ];
+
+                return ListView(
+                  children: [
+                    for (final item in visibleItems)
+                      _MenuItemTile(config: item),
+                    PermissionGate(
+                      permissions: const [
+                        UserPermission.leaveApproveSupervisor,
+                        UserPermission.leaveApproveManager,
+                      ],
+                      child: _MenuItem(
+                        icon: Icons.shield_outlined,
+                        title: context.locale.leaveApproval,
+                        subtitle: context.locale.awaitingFinalApproval,
+                        onTap: () {
+                          context.pop();
+                          context.goNamed(Routes.leaveRequests);
+                        },
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
           ),
-          const Spacer(),
           Padding(
             padding: EdgeInsets.fromLTRB(
               spacing.s16,

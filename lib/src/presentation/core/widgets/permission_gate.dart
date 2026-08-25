@@ -77,6 +77,14 @@ class PermissionGate extends ConsumerWidget {
   }
 }
 
+/// Answers "does [held] satisfy [required]?" — empty [required] means always
+/// satisfied, otherwise any one match is enough. Shared by every table-driven
+/// gate (shell tabs, menu items) so the OR-semantics live in one place.
+bool hasAnyPermission(
+  List<UserPermission> required,
+  Set<UserPermission> held,
+) => required.isEmpty || required.any(held.contains);
+
 /// Builds against the user's whole permission set.
 typedef PermissionSetBuilder =
     Widget Function(BuildContext context, Set<UserPermission> permissions);

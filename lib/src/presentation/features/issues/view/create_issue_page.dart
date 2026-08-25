@@ -1,0 +1,856 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/utiliity/validation/required_validation.dart';
+import '../../../../domain/entities/partner_staff_entity.dart';
+import '../../../../domain/entities/problem_category_entity.dart';
+import '../../../../domain/entities/report_issue_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/text/typography.dart';
+import '../riverpod/create_issue_provider.dart';
+
+class CreateIssuePage extends ConsumerStatefulWidget {
+  const CreateIssuePage({
+    super.key,
+    required this.visitId,
+    required this.facilityId,
+    required this.facilityName,
+  });
+
+  final int visitId;
+  final int facilityId;
+  final String facilityName;
+
+  @override
+  ConsumerState<CreateIssuePage> createState() => _CreateIssuePageState();
+}
+
+class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _locationController;
+  late final TextEditingController _titleController;
+
+  ProblemCategoryEntity? _selectedCategory;
+  bool _categoryError = false;
+  IssuePriority _priority = IssuePriority.medium;
+  XFile? _photo;
+  PartnerStaffEntity? _selectedAttendant;
+
+  @override
+  void initState() {
+    super.initState();
+    _locationController = TextEditingController(text: widget.facilityName);
+    _titleController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose();
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onPickCamera() async {
+    final file = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (file != null) setState(() => _photo = file);
+  }
+
+  Future<void> _onPickGallery() async {
+    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (file != null) setState(() => _photo = file);
+  }
+
+  void _onRemovePhoto() => setState(() => _photo = null);
+
+  Future<void> _onPickAttendant() async {
+    final result = await showModalBottomSheet<PartnerStaffEntity>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AttendantPickerSheet(facilityId: widget.facilityId),
+    );
+    if (result != null) setState(() => _selectedAttendant = result);
+  }
+
+  void _onClearAttendant() => setState(() => _selectedAttendant = null);
+
+  Future<void> _onSubmit() async {
+    final categoryOk = _selectedCategory != null;
+    setState(() => _categoryError = !categoryOk);
+    if (!_formKey.currentState!.validate() || !categoryOk) return;
+
+    await ref
+        .read(createIssueProvider.notifier)
+        .submit(
+          request: ReportIssueRequestEntity(
+            visitId: widget.visitId,
+            categoryId: _selectedCategory!.id,
+            title: _titleController.text.trim(),
+            priority: _priority,
+            photoPath: _photo?.path,
+            assignedTo: _selectedAttendant?.id,
+          ),
+          categoryName: _selectedCategory!.name,
+          facilityName: widget.facilityName,
+        );
+
+    if (!mounted) return;
+    final issueState = ref.read(createIssueProvider);
+    if (issueState.createdIssue != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.locale.issueReportedSuccessfully),
+          backgroundColor: context.color.success,
+        ),
+      );
+      context.pop(issueState.createdIssue);
+    } else if (issueState.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(issueState.error!),
+          backgroundColor: context.color.error,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final submitState = ref.watch(createIssueProvider);
+    final partnerId = ref.watch(createIssueProvider.notifier).partnerId;
+    final categoriesAsync = ref.watch(problemCategoriesProvider(partnerId));
+
+    return Scaffold(
+      backgroundColor: context.color.scaffoldBackground,
+      appBar: AppBar(
+        title: LabelLargeText(context.locale.createIssue),
+        backgroundColor: context.color.onPrimary,
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.symmetric(
+            horizontal: spacing.s16,
+            vertical: spacing.s20,
+          ),
+          children: [
+            _SectionLabel(context.locale.issueTitle),
+            Gap(spacing.s8),
+            AppTextField.text(
+              controller: _titleController,
+              hint: context.locale.issueTitleHint,
+              extraValidations: [RequiredValidation()],
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            ),
+            Gap(spacing.s16),
+            _SectionLabel(context.locale.specificProblem),
+            Gap(spacing.s8),
+            _CategoryDropdown(
+              categoriesAsync: categoriesAsync,
+              selected: _selectedCategory,
+              hasError: _categoryError,
+              onChanged: (cat) => setState(() {
+                _selectedCategory = cat;
+                _categoryError = false;
+              }),
+            ),
+            Gap(spacing.s16),
+            _SectionLabel(context.locale.location),
+            Gap(spacing.s8),
+            IgnorePointer(
+              child: AppTextField.text(
+                controller: _locationController,
+                hint: context.locale.location,
+                prefixIcon: Icon(
+                  Icons.location_on_outlined,
+                  color: context.color.text.secondary,
+                ),
+              ),
+            ),
+            Gap(spacing.s16),
+            _SectionLabel(context.locale.priority),
+            Gap(spacing.s8),
+            _PrioritySelector(
+              selected: _priority,
+              onChanged: (p) => setState(() => _priority = p),
+            ),
+            Gap(spacing.s16),
+            _PhotoPickerSection(
+              photo: _photo,
+              onCamera: _onPickCamera,
+              onGallery: _onPickGallery,
+              onRemove: _onRemovePhoto,
+            ),
+            Gap(spacing.s16),
+            _AssignResponsibilitySection(
+              selected: _selectedAttendant,
+              onTap: _onPickAttendant,
+              onClear: _onClearAttendant,
+            ),
+            Gap(spacing.s24),
+            FilledButton(
+              onPressed: submitState.isSubmitting ? null : _onSubmit,
+              style: FilledButton.styleFrom(
+                backgroundColor: context.color.primary,
+                disabledBackgroundColor: context.color.primary.withValues(
+                  alpha: 0.4,
+                ),
+                minimumSize: const Size.fromHeight(52),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    context.dimensions.radius.r12,
+                  ),
+                ),
+              ),
+              child: submitState.isSubmitting
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                    )
+                  : Text(
+                      context.locale.submitRequest,
+                      style: context.textStyle.labelLarge.copyWith(
+                        color: context.color.onPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+            ),
+            Gap(spacing.s12),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: TextButton(
+                onPressed: () => context.pop(),
+                style: TextButton.styleFrom(
+                  backgroundColor: context.color.subtle,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  context.locale.cancel,
+                  style: context.textStyle.labelLarge.copyWith(
+                    color: context.color.text.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            Gap(spacing.s16),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryDropdown extends StatelessWidget {
+  const _CategoryDropdown({
+    required this.categoriesAsync,
+    required this.selected,
+    required this.hasError,
+    required this.onChanged,
+  });
+
+  final AsyncValue<List<ProblemCategoryEntity>> categoriesAsync;
+  final ProblemCategoryEntity? selected;
+  final bool hasError;
+  final ValueChanged<ProblemCategoryEntity?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = context.dimensions.radius;
+    final spacing = context.dimensions.spacing;
+
+    return categoriesAsync.when(
+      loading: () => Container(
+        height: 52,
+        decoration: BoxDecoration(
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: BorderRadius.circular(radius.r6),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+        child: SizedBox(
+          width: 16,
+          height: 16,
+          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+        ),
+      ),
+      error: (_, _) => Container(
+        height: 52,
+        decoration: BoxDecoration(
+          border: Border.all(color: context.color.error),
+          borderRadius: BorderRadius.circular(radius.r6),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+        child: BodySmallText(
+          context.locale.reportIssueFailed,
+          color: context.color.error,
+        ),
+      ),
+      data: (categories) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: hasError
+                    ? context.color.error
+                    : context.color.borderSubtle,
+              ),
+              borderRadius: BorderRadius.circular(radius.r6),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<ProblemCategoryEntity>(
+                value: selected,
+                isExpanded: true,
+                hint: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+                  child: BodyRegularText(
+                    context.locale.specificProblemHint,
+                    color: context.color.text.secondary,
+                  ),
+                ),
+                icon: Padding(
+                  padding: EdgeInsets.only(right: spacing.s12),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: context.color.text.secondary,
+                  ),
+                ),
+                borderRadius: BorderRadius.circular(radius.r12),
+                onChanged: onChanged,
+                items: categories.map((cat) {
+                  return DropdownMenuItem(
+                    value: cat,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+                      child: BodyRegularText(
+                        cat.name,
+                        color: context.color.text.primary,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          if (hasError) ...[
+            Gap(spacing.s4),
+            Padding(
+              padding: EdgeInsets.only(left: spacing.s4),
+              child: BodySmallText(
+                context.locale.fieldRequired,
+                color: context.color.error,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) =>
+      LabelLargeText(text, color: context.color.text.primary);
+}
+
+class _PrioritySelector extends StatelessWidget {
+  const _PrioritySelector({required this.selected, required this.onChanged});
+
+  final IssuePriority selected;
+  final ValueChanged<IssuePriority> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Row(
+      children: IssuePriority.values.map((p) {
+        final isLast = p == IssuePriority.values.last;
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: isLast ? 0 : spacing.s8),
+            child: _PriorityChip(
+              label: _label(context, p),
+              isSelected: p == selected,
+              onTap: () => onChanged(p),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  String _label(BuildContext context, IssuePriority p) => switch (p) {
+    IssuePriority.high => context.locale.priorityHigh,
+    IssuePriority.medium => context.locale.priorityMedium,
+    IssuePriority.normal => context.locale.priorityNormal,
+    IssuePriority.low => context.locale.priorityLow,
+  };
+}
+
+class _PriorityChip extends StatelessWidget {
+  const _PriorityChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = context.dimensions.radius;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        height: 40,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? context.color.primary.withValues(alpha: 0.08)
+              : context.color.onPrimary,
+          borderRadius: BorderRadius.circular(radius.r6),
+          border: Border.all(
+            color: isSelected
+                ? context.color.primary
+                : context.color.borderSubtle,
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: BodySmallText(
+          label,
+          color: isSelected
+              ? context.color.primary
+              : context.color.text.secondary,
+        ),
+      ),
+    );
+  }
+}
+
+class _PhotoPickerSection extends StatelessWidget {
+  const _PhotoPickerSection({
+    required this.photo,
+    required this.onCamera,
+    required this.onGallery,
+    required this.onRemove,
+  });
+
+  final XFile? photo;
+  final VoidCallback onCamera;
+  final VoidCallback onGallery;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
+    return Container(
+      padding: EdgeInsets.all(spacing.s16),
+      decoration: BoxDecoration(
+        color: context.color.onPrimary,
+        borderRadius: BorderRadius.circular(radius.r12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LabelLargeText(context.locale.photoOptional),
+          Gap(spacing.s12),
+          if (photo != null) ...[
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(radius.r6),
+                  child: Image.file(
+                    File(photo!.path),
+                    height: 140,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: spacing.s8,
+                  right: spacing.s8,
+                  child: GestureDetector(
+                    onTap: onRemove,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: context.color.onPrimary,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: context.color.error),
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 14,
+                        color: context.color.error,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ] else ...[
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: onCamera,
+                    icon: const Icon(Icons.camera_alt_outlined, size: 20),
+                    label: Text(context.locale.camera),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: context.color.primary,
+                      foregroundColor: context.color.onPrimary,
+                      minimumSize: const Size.fromHeight(52),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius.r12),
+                      ),
+                      textStyle: context.textStyle.labelLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                Gap(spacing.s12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onGallery,
+                    icon: Icon(
+                      Icons.image_outlined,
+                      size: 20,
+                      color: context.color.primary,
+                    ),
+                    label: Text(context.locale.gallery),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: context.color.primary,
+                      side: BorderSide(
+                        color: context.color.primary,
+                        width: 1.5,
+                      ),
+                      minimumSize: const Size.fromHeight(52),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius.r12),
+                      ),
+                      textStyle: context.textStyle.labelLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AssignResponsibilitySection extends StatelessWidget {
+  const _AssignResponsibilitySection({
+    required this.selected,
+    required this.onTap,
+    required this.onClear,
+  });
+
+  final PartnerStaffEntity? selected;
+  final VoidCallback onTap;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(spacing.s16),
+        decoration: BoxDecoration(
+          color: context.color.onPrimary,
+          borderRadius: BorderRadius.circular(radius.r12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (selected == null)
+              BodySmallText(
+                context.locale.noResponsibilityAdded,
+                color: context.color.text.secondary,
+              )
+            else
+              BodySmallText(
+                context.locale.assignResponsibility,
+                color: context.color.text.secondary,
+              ),
+            Gap(spacing.s12),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 18,
+                  backgroundColor: selected != null
+                      ? context.color.primary
+                      : context.color.brandAccent,
+                  child: Icon(
+                    selected != null
+                        ? Icons.check_rounded
+                        : Icons.person_outline_rounded,
+                    size: 18,
+                    color: selected != null
+                        ? context.color.onPrimary
+                        : context.color.text.primary,
+                  ),
+                ),
+                Gap(spacing.s8),
+                Expanded(
+                  child: selected != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            LabelLargeText(selected!.name),
+                            Gap(spacing.s2),
+                            BodySmallText(
+                              selected!.phoneNumber ?? selected!.email,
+                              color: context.color.text.secondary,
+                            ),
+                          ],
+                        )
+                      : LabelLargeText(context.locale.assignResponsibility),
+                ),
+                if (selected != null)
+                  GestureDetector(
+                    onTap: onClear,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: context.color.error),
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 14,
+                        color: context.color.error,
+                      ),
+                    ),
+                  )
+                else
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: context.color.primary,
+                            width: 1.5,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.add_rounded,
+                          size: 18,
+                          color: context.color.primary,
+                        ),
+                      ),
+                      Gap(spacing.s6),
+                      LabelLargeText(
+                        context.locale.add,
+                        color: context.color.primary,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AttendantPickerSheet extends ConsumerWidget {
+  const _AttendantPickerSheet({required this.facilityId});
+
+  final int facilityId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+    final attendantsAsync = ref.watch(issueAttendantsProvider(facilityId));
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+      ),
+      decoration: BoxDecoration(
+        color: context.color.scaffoldBackground,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(radius.r12)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gap(spacing.s12),
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: context.color.borderSubtle,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Gap(spacing.s16),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+            child: LabelLargeText(context.locale.assignResponsibility),
+          ),
+          Gap(spacing.s16),
+          Flexible(
+            child: attendantsAsync.when(
+              loading: () =>
+                  const Center(child: CircularProgressIndicator.adaptive()),
+              error: (err, _) => Center(
+                child: BodySmallText(
+                  err.toString(),
+                  color: context.color.error,
+                ),
+              ),
+              data: (attendants) {
+                if (attendants.isEmpty) {
+                  return Center(
+                    child: BodySmallText(
+                      context.locale.noAttendantsFound,
+                      color: context.color.text.secondary,
+                    ),
+                  );
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.fromLTRB(
+                    spacing.s16,
+                    0,
+                    spacing.s16,
+                    spacing.s16,
+                  ),
+                  itemCount: attendants.length,
+                  separatorBuilder: (_, _) => Gap(spacing.s12),
+                  itemBuilder: (context, index) {
+                    final attendant = attendants[index];
+                    return _AttendantPickerTile(
+                      attendant: attendant,
+                      onTap: () => Navigator.of(context).pop(attendant),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AttendantPickerTile extends StatelessWidget {
+  const _AttendantPickerTile({required this.attendant, required this.onTap});
+
+  final PartnerStaffEntity attendant;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(spacing.s16),
+        decoration: BoxDecoration(
+          color: context.color.onPrimary,
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: BorderRadius.circular(radius.r12),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: context.color.brandAccent,
+              child: Icon(
+                Icons.person_outline_rounded,
+                color: context.color.text.primary,
+                size: 22,
+              ),
+            ),
+            Gap(spacing.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  LabelLargeText(attendant.name),
+                  Gap(spacing.s2),
+                  BodySmallText(
+                    attendant.phoneNumber ?? attendant.email,
+                    color: context.color.text.secondary,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s8,
+                vertical: spacing.s4,
+              ),
+              decoration: BoxDecoration(
+                color: attendant.isActive
+                    ? context.color.successAlt
+                    : context.color.warningAlt,
+                borderRadius: BorderRadius.circular(radius.r4),
+              ),
+              child: BodySmallText(
+                attendant.userRole ?? context.locale.status,
+                color: attendant.isActive
+                    ? context.color.success
+                    : context.color.warning,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

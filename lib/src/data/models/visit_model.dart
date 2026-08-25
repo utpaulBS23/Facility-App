@@ -138,6 +138,7 @@ class VisitDetailModel with VisitDetailModelMappable {
   VisitDetailModel({
     required this.id,
     required this.facilityName,
+    this.facilityId,
     required this.status,
     this.visitType,
     required this.scheduledDate,
@@ -160,6 +161,9 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'facility_name')
   final String facilityName;
+
+  @MappableField(key: 'facility_id')
+  final int? facilityId;
 
   final String status;
 
@@ -212,6 +216,7 @@ class VisitDetailModel with VisitDetailModelMappable {
   VisitDetailEntity toEntity() => VisitDetailEntity(
         id: id,
         facilityName: facilityName,
+        facilityId: facilityId,
         status: _parseStatus(status),
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,

@@ -19,18 +19,32 @@ import '../../features/authentication/forgot_password/view/email_verification_pa
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
+import '../../features/additional_income/view/additional_income_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
+import '../../features/dashboard/view/dashboard_page.dart';
+import '../../features/door_lock/view/door_lock_page.dart';
+import '../../features/facility_expense/view/facility_expense_page.dart';
+import '../../features/facility_map/view/facility_map_page.dart';
+import '../../features/gateway_management/view/gateway_management_page.dart';
+import '../../features/issues/view/issues_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
 import '../../features/leave/view/leave_details_page.dart';
 import '../../features/leave/view/leave_requests_page.dart';
 import '../../features/leave/view/leave_submitted_page.dart';
 import '../../features/leave/view/select_attendant_page.dart';
 import '../../features/leave/view/select_shift_page.dart';
-
+import '../../features/menu/view/menu_page.dart';
+import '../../features/menu/widgets/menu_item_config.dart';
 import '../../features/my_visits/view/my_visits_page.dart';
+import '../../features/notification/view/notification_page.dart';
+import '../../features/profile/view/profile_page.dart';
+import '../../features/report/view/consumption_report_page.dart';
+import '../../features/report/view/profit_report_page.dart';
+import '../../features/supply_request/view/supply_request_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
 import '../../features/inspection_checklist/view/inspection_checklist_page.dart';
+import '../../features/issues/view/create_issue_page.dart';
 import '../../features/my_visits/view/visit_detail_page.dart';
 import '../../features/roster/view/roster_assign_staff_page.dart';
 import '../../features/roster/view/roster_list_page.dart';
@@ -41,6 +55,7 @@ import '../../features/shift/widgets/no_shift_today_widget.dart';
 import '../../features/shift/widgets/shift_not_yet_accessible_widget.dart';
 import '../../features/shift/widgets/shift_window_closed_widget.dart';
 import '../../features/splash/view/splash_page.dart';
+import '../../features/supervisor_tracking/view/supervisor_tracking_page.dart';
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
 import 'router_state/router_state_provider.dart';
@@ -51,6 +66,7 @@ part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
 part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
+part 'parts/menu_item_routes.dart';
 part 'parts/my_visits_routes.dart';
 part 'parts/task_routes.dart';
 part 'parts/shell_routes.dart';
@@ -101,15 +117,23 @@ GoRouter goRouter(Ref ref) {
         return Routes.login;
       }
 
-      // WHY: hiding a navbar item is cosmetic — deep links and programmatic
-      // navigation can still target a shell branch the user lacks permission
-      // for. Redirect those to the first permitted tab.
+      // WHY: hiding a navbar item or menu row is cosmetic — deep links and
+      // programmatic navigation can still target a shell branch or a
+      // menu-pushed route the user lacks permission for. Redirect those to
+      // the first permitted tab. Both tables share the same {route,
+      // permissions} shape, so one loop covers both.
       if (session != null) {
         for (final tab in shellTabConfigs) {
-          final required = tab.permission;
           if (tab.route == state.uri.path &&
-              required != null &&
-              !session.can(required)) {
+              tab.permissions.isNotEmpty &&
+              !session.canAny(tab.permissions)) {
+            return firstPermittedShellRoute(session.permissions);
+          }
+        }
+        for (final item in menuItemConfigs) {
+          if (item.route == state.uri.path &&
+              item.permissions.isNotEmpty &&
+              !session.canAny(item.permissions)) {
             return firstPermittedShellRoute(session.permissions);
           }
         }
@@ -137,6 +161,7 @@ GoRouter goRouter(Ref ref) {
       ..._rosterRoutes(ref),
       ..._attendanceRoutes(ref),
       ..._myVisitsRoutes(ref),
+      ..._menuItemRoutes(ref),
       _shellRoutes(ref),
     ],
   );

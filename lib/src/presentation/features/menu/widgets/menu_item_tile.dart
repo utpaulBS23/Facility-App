@@ -1,0 +1,53 @@
+part of '../view/menu_page.dart';
+
+class _MenuItemTile extends StatelessWidget {
+  const _MenuItemTile({required this.config});
+
+  final MenuItemConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.pop();
+        context.pushNamed(config.route);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: context.padding.p16,
+          vertical: context.spacing.s16,
+        ),
+        decoration: BoxDecoration(
+          color: context.color.onPrimary,
+          border: Border(bottom: BorderSide(color: context.color.borderSubtle)),
+        ),
+        child: Row(
+          children: [
+            config.icon.svg(
+              width: context.spacing.s20,
+              height: context.spacing.s20,
+              colorFilter: ColorFilter.mode(
+                context.color.text.secondary,
+                BlendMode.srcIn,
+              ),
+            ),
+            Gap(context.spacing.s12),
+            Expanded(
+              child: Text(
+                config.label(context),
+                style: context.textStyle.bodyLarge.copyWith(
+                  color: context.color.text.primary,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: context.color.text.muted,
+              size: context.spacing.s20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

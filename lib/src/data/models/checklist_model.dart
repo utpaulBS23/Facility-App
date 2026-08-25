@@ -87,18 +87,21 @@ class ChecklistItemModel with ChecklistItemModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ChecklistIssueModel with ChecklistIssueModelMappable {
   ChecklistIssueModel({
-    required this.id,
+    required this.taskId,
     this.title,
-    this.category,
-    this.location,
+    this.facilityName,
+    this.assignedToName,
     this.priority,
     this.status,
   });
 
-  final int id;
+  @MappableField(key: 'task_id')
+  final int taskId;
   final String? title;
-  final String? category;
-  final String? location;
+  @MappableField(key: 'facility_name')
+  final String? facilityName;
+  @MappableField(key: 'assigned_to_name')
+  final String? assignedToName;
   final String? priority;
   final String? status;
 

@@ -110,9 +110,12 @@ class Endpoints {
       '/partners/{partnerId}/visits/{visitId}/submit';
   static const String visitChecklistItemResponse =
       '/partners/{partnerId}/visits/{visitId}/checklist-items/{itemId}/response';
-  static const String reportIssue = '/partners/{partnerId}/issues';
+  static const String reportIssue =
+      '/partners/{partnerId}/visits/{visitId}/issues';
   static const String locationPingSync =
       '/partners/{partnerId}/location-pings/sync';
+  static const String problemCategories =
+      '/partners/{partnerId}/problem-categories';
 
   /// Tasks
   static const String tasks = '/partners/{partnerId}/tasks';

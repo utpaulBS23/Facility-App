@@ -42,4 +42,18 @@ class Routes {
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
   static const String menu = '/menu';
+
+  static const String dashboard = '/dashboard';
+  static const String tracking = '/tracking';
+  static const String profile = '/profile';
+  static const String doorLock = '/door-lock';
+  static const String additionalIncome = '/additional-income';
+  static const String facilityExpense = '/facility-expense';
+  static const String notification = '/notification';
+  static const String supplyRequest = '/supply-request';
+  static const String report = '/report';
+  static const String consumptionReport = '/consumption-report';
+  static const String facilityMap = '/facility-map';
+  static const String gatewayManagement = '/gateway-management';
+  static const String issueManagement = '/issue-management';
 }

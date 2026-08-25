@@ -4,10 +4,12 @@ import 'package:dio/dio.dart';
 
 import '../../core/base/base.dart';
 import '../../domain/entities/checklist_entity.dart';
+import '../../domain/entities/problem_category_entity.dart';
 import '../../domain/entities/report_issue_entity.dart';
 import '../../domain/entities/visit_entity.dart';
 import '../../domain/repositories/visit_repository.dart';
 import '../extension/checklist_mapper.dart';
+import '../models/problem_category_model.dart';
 import '../models/checklist_model.dart';
 import '../models/visit_model.dart';
 import '../services/network/rest_client.dart';
@@ -117,26 +119,55 @@ final class VisitRepositoryImpl extends VisitRepository {
   @override
   Future<Result<ReportIssueResponseEntity, Failure>> reportIssue({
     required int partnerId,
+    required int visitId,
     required ReportIssueRequestEntity request,
   }) => asyncGuard(() async {
-    final body = <String, dynamic>{
-      'visit_id': request.visitId,
-      'department': request.department,
-      'specific_problem': request.specificProblem,
-      'location': request.location,
-      'priority': request.priority.name,
-      if (request.notes != null) 'notes': request.notes,
-      if (request.assignedTo != null) 'assigned_to': request.assignedTo,
-    };
+    final fields = <MapEntry<String, dynamic>>[
+      MapEntry('problem_category_id', request.categoryId.toString()),
+      MapEntry('title', request.title),
+      MapEntry('priority', request.priority.name),
+      if (request.description != null)
+        MapEntry('description', request.description!),
+      if (request.assignedTo != null)
+        MapEntry('assigned_to', request.assignedTo.toString()),
+      if (request.dueAt != null) MapEntry('due_at', request.dueAt!),
+    ];
+    final formData = FormData.fromMap({
+      for (final e in fields) e.key: e.value,
+      if (request.photoPath != null)
+        'photo': await MultipartFile.fromFile(
+          request.photoPath!,
+          filename: request.photoPath!.split('/').last,
+        ),
+    });
     final response = await _client.reportIssue(
       partnerId: partnerId,
-      request: body,
+      visitId: visitId,
+      request: formData,
     );
     final raw = response.data['data'] ?? response.data;
     final data = raw as Map<String, dynamic>;
     return ReportIssueResponseEntity(
       id: data['id'] as int,
-      message: data['message'] as String? ?? 'Issue reported successfully.',
+      title: data['title'] as String? ?? '',
+      priority: data['priority'] as String? ?? '',
+      status: data['status'] as String? ?? '',
     );
+  });
+
+  @override
+  Future<Result<List<ProblemCategoryEntity>, Failure>> getProblemCategories({
+    required int partnerId,
+  }) => asyncGuard(() async {
+    final response = await _client.getProblemCategories(partnerId: partnerId);
+    final list = ProblemCategoryListModel.fromJson(response.data);
+    return (list.data ?? [])
+        .where((m) => m.isActive != false)
+        .map((m) => ProblemCategoryEntity(
+              id: m.id,
+              name: m.name ?? '',
+              description: m.description ?? '',
+            ))
+        .toList();
   });
 }

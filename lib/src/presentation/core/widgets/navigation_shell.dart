@@ -2,7 +2,6 @@ import 'package:facility_management_app/src/presentation/features/menu/view/menu
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
@@ -14,7 +13,7 @@ class NavigationShell extends StatelessWidget {
 
   final StatefulNavigationShell statefulNavigationShell;
 
-  static const _menuBranchIndex = 4;
+  static const _menuBranchIndex = 7;
 
   void _onTabSelected(
     BuildContext scaffoldContext, {
@@ -30,23 +29,6 @@ class NavigationShell extends StatelessWidget {
 
     statefulNavigationShell.goBranch(tab.branchIndex);
   }
-
-  SvgGenImage _assetFor(int branchIndex) => switch (branchIndex) {
-        0 => Assets.icons.shift,
-        1 => Assets.icons.attendance,
-        2 => Assets.icons.visit,
-        3 => Assets.icons.task,
-        _ => Assets.icons.menu,
-      };
-
-  String _labelFor(BuildContext context, int branchIndex) =>
-      switch (branchIndex) {
-        0 => context.locale.shift,
-        1 => context.locale.attendance,
-        2 => context.locale.visit,
-        3 => context.locale.task,
-        _ => context.locale.menu,
-      };
 
   BottomNavigationBarItem _navItem(
     BuildContext context, {
@@ -115,8 +97,8 @@ class NavigationShell extends StatelessWidget {
                   for (final tab in visibleTabs)
                     _navItem(
                       context,
-                      asset: _assetFor(tab.branchIndex),
-                      label: _labelFor(context, tab.branchIndex),
+                      asset: tab.icon,
+                      label: tab.label(context),
                     ),
                 ],
               ),

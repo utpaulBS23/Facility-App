@@ -44,10 +44,10 @@ extension ChecklistItemSaveResponseModelToEntity
 
 extension ChecklistIssueModelToEntity on ChecklistIssueModel {
   ChecklistIssueEntity toEntity() => ChecklistIssueEntity(
-    id: id,
+    id: taskId,
     title: title ?? '',
-    category: category ?? '',
-    location: location ?? '',
+    category: assignedToName ?? '',
+    location: facilityName ?? '',
     priority: priority ?? '',
     status: status ?? '',
   );
