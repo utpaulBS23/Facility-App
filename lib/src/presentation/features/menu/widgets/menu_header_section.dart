@@ -27,26 +27,14 @@ class _MenuHeaderSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    radius: spacing.s24,
-                    backgroundColor: color.onPrimary.withValues(alpha: 0.2),
-                    child: Icon(
-                      Icons.person,
-                      color: color.onPrimary,
-                      size: spacing.s24,
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: color.onPrimary,
-                    ),
-                    onPressed: () => context.pop(),
-                  ),
-                ],
+              CircleAvatar(
+                radius: spacing.s24,
+                backgroundColor: color.onPrimary.withValues(alpha: 0.2),
+                child: Icon(
+                  Icons.person,
+                  color: color.onPrimary,
+                  size: spacing.s24,
+                ),
               ),
               Gap(spacing.s12),
               Text(
@@ -60,9 +48,7 @@ class _MenuHeaderSection extends StatelessWidget {
                 Gap(spacing.s4),
                 Text(
                   email,
-                  style: textStyle.bodyMedium.copyWith(
-                    color: color.onPrimary,
-                  ),
+                  style: textStyle.bodyMedium.copyWith(color: color.onPrimary),
                 ),
               ],
               if (partnerName case final partner? when partner.isNotEmpty) ...[

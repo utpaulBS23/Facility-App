@@ -1,4 +1,3 @@
-import 'package:facility_management_app/src/presentation/features/menu/view/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,20 +12,11 @@ class NavigationShell extends StatelessWidget {
 
   final StatefulNavigationShell statefulNavigationShell;
 
-  static const _menuBranchIndex = 7;
-
-  void _onTabSelected(
-    BuildContext scaffoldContext, {
+  void _onTabSelected({
     required List<ShellTabConfig> visibleTabs,
     required int index,
   }) {
     final tab = visibleTabs[index];
-    if (tab.branchIndex == _menuBranchIndex) {
-      Scaffold.of(scaffoldContext).openDrawer();
-
-      return;
-    }
-
     statefulNavigationShell.goBranch(tab.branchIndex);
   }
 
@@ -78,30 +68,20 @@ class NavigationShell extends StatelessWidget {
 
     return Scaffold(
       body: statefulNavigationShell,
-      drawer: const MenuPage(),
       bottomNavigationBar: visibleTabs.length < 2
           ? null
-          : Builder(
-              builder: (scaffoldContext) => BottomNavigationBar(
-                selectedItemColor: context.color.primary,
-                unselectedItemColor: context.color.text.muted,
-                unselectedLabelStyle: context.textStyle.labelMedium12,
-                selectedLabelStyle: context.textStyle.labelMedium12,
-                currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
-                onTap: (index) => _onTabSelected(
-                  scaffoldContext,
-                  visibleTabs: visibleTabs,
-                  index: index,
-                ),
-                items: [
-                  for (final tab in visibleTabs)
-                    _navItem(
-                      context,
-                      asset: tab.icon,
-                      label: tab.label(context),
-                    ),
-                ],
-              ),
+          : BottomNavigationBar(
+              selectedItemColor: context.color.primary,
+              unselectedItemColor: context.color.text.muted,
+              unselectedLabelStyle: context.textStyle.labelMedium12,
+              selectedLabelStyle: context.textStyle.labelMedium12,
+              currentIndex: selectedIndex < 0 ? 0 : selectedIndex,
+              onTap: (index) =>
+                  _onTabSelected(visibleTabs: visibleTabs, index: index),
+              items: [
+                for (final tab in visibleTabs)
+                  _navItem(context, asset: tab.icon, label: tab.label(context)),
+              ],
             ),
     );
   }
