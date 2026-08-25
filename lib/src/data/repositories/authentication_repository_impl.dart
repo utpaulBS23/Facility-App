@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
+import '../../core/logger/log.dart';
 import '../../domain/entities/login_entity.dart';
 import '../../domain/entities/sign_up_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
@@ -99,9 +100,19 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   // WHY: teardown is not duplicated here — clearing the token emits on
   // [SessionService.onCleared] and [_dropSession] does the rest. One path, so
-  // an explicit logout and an expired-token logout cannot diverge.
+  // an explicit logout and an expired-token logout cannot diverge. The
+  // backend call is best-effort: the token may already be invalid or the
+  // device offline, and the local session must clear either way.
   @override
-  Future<void> logout() async => session.clear();
+  Future<void> logout() async {
+    try {
+      await remote.logout();
+    } on Exception catch (e, stackTrace) {
+      Log.error(e.toString());
+      Log.error(stackTrace.toString());
+    }
+    session.clear();
+  }
 
   void _dropSession() {
     _currentUser = null;
