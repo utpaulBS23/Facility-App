@@ -85,13 +85,6 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
-      path: Routes.leaveRequests,
-      name: Routes.leaveRequests,
-      pageBuilder: (context, state) {
-        return const MaterialPage(child: LeaveRequestsPage());
-      },
-    ),
-    GoRoute(
       path: Routes.gatewayManagement,
       name: Routes.gatewayManagement,
       pageBuilder: (context, state) {

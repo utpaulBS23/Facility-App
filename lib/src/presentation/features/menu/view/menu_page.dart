@@ -60,73 +60,71 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     final color = context.color;
     final menuState = ref.watch(menuNotifierProvider);
 
-    return Drawer(
-      backgroundColor: color.onPrimary,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _MenuHeaderSection(
-            name: menuState.name,
-            email: menuState.email,
-            partnerName: menuState.partnerName,
-          ),
-          Gap(spacing.s16),
-          Expanded(
-            child: PermissionSetScope(
-              builder: (context, permissions) {
-                final visibleItems = [
-                  for (final item in menuItemConfigs)
-                    if (hasAnyPermission(item.permissions, permissions)) item,
-                ];
+    return ColoredBox(
+      color: color.onPrimary,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _MenuHeaderSection(
+              name: menuState.name,
+              email: menuState.email,
+              partnerName: menuState.partnerName,
+            ),
+            Gap(spacing.s16),
+            Expanded(
+              child: PermissionSetScope(
+                builder: (context, permissions) {
+                  final visibleItems = [
+                    for (final item in menuItemConfigs)
+                      if (hasAnyPermission(item.permissions, permissions)) item,
+                  ];
 
-                return ListView(
-                  children: [
-                    for (final item in visibleItems)
-                      _MenuItemTile(config: item),
-                    PermissionGate(
-                      permissions: const [
-                        UserPermission.leaveApproveSupervisor,
-                        UserPermission.leaveApproveManager,
-                      ],
-                      child: _MenuItem(
-                        icon: Icons.shield_outlined,
-                        title: context.locale.leaveApproval,
-                        subtitle: context.locale.awaitingFinalApproval,
-                        onTap: () {
-                          context.pop();
-                          context.goNamed(Routes.leaveRequests);
-                        },
+                  return ListView(
+                    children: [
+                      for (final item in visibleItems)
+                        _MenuItemTile(config: item),
+                      PermissionGate(
+                        permissions: const [
+                          UserPermission.leaveApproveSupervisor,
+                          UserPermission.leaveApproveManager,
+                        ],
+                        child: _MenuItem(
+                          icon: Icons.shield_outlined,
+                          title: context.locale.leaveApproval,
+                          subtitle: context.locale.awaitingFinalApproval,
+                          onTap: () => context.goNamed(Routes.leaveRequests),
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              spacing.s16,
-              spacing.s12,
-              spacing.s16,
-              spacing.s20,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: color.borderSubtle),
-                borderRadius: BorderRadius.circular(radius.r16),
-              ),
-              child: _MenuItem(
-                icon: Icons.logout_rounded,
-                title: context.locale.logout,
-                subtitle: context.locale.endSessionAndSignOut,
-                showTrailing: false,
-                onTap: _onLogoutTap,
+                    ],
+                  );
+                },
               ),
             ),
-          ),
-          Gap(spacing.s8),
-        ],
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                spacing.s16,
+                spacing.s12,
+                spacing.s16,
+                spacing.s20,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: color.borderSubtle),
+                  borderRadius: BorderRadius.circular(radius.r16),
+                ),
+                child: _MenuItem(
+                  icon: Icons.logout_rounded,
+                  title: context.locale.logout,
+                  subtitle: context.locale.endSessionAndSignOut,
+                  showTrailing: false,
+                  onTap: _onLogoutTap,
+                ),
+              ),
+            ),
+            Gap(spacing.s8),
+          ],
+        ),
       ),
     );
   }

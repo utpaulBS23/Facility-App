@@ -8,10 +8,7 @@ class _MenuItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        context.pop();
-        context.pushNamed(config.route);
-      },
+      onTap: () => context.pushNamed(config.route),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: context.padding.p16,
