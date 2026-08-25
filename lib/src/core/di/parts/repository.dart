@@ -98,3 +98,11 @@ VisitRepository visitRepository(Ref ref) {
 LeaveRepository leaveRepository(Ref ref) {
   return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+AppUpdateRepository appUpdateRepository(Ref ref) {
+  return AppUpdateRepositoryImpl(
+    ref.read(restClientServiceProvider),
+    ref.read(dioProvider),
+  );
+}

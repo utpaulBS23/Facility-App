@@ -65,9 +65,17 @@ final List<MenuItemConfig> menuItemConfigs = [
     icon: Assets.icons.pinIcon,
     label: _leaveLabel,
     route: Routes.leaveRequests,
+    // WHY both key families: `leave_request.*` is the matrix's new resource,
+    // `leave.approve_*` is the pre-existing gate for this item — kept as an
+    // OR so a session carrying either still sees Leave (see similar note on
+    // shift/visit branches in shell_tab_config.dart).
     permissions: [
       UserPermission.leaveApproveSupervisor,
       UserPermission.leaveApproveManager,
+      UserPermission.leaveRequestView,
+      UserPermission.leaveRequestCreateOwn,
+      UserPermission.leaveRequestCreateForOthers,
+      UserPermission.leaveRequestApprove,
     ],
   ),
   MenuItemConfig(

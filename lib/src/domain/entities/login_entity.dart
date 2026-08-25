@@ -111,11 +111,17 @@ class LoginRequestEntity extends LoginEntity {
     required this.uid,
     required this.password,
     required this.deviceName,
+    this.deviceId,
+    this.deviceModel,
+    this.osVersion,
   });
 
   final String uid;
   final String password;
   final String deviceName;
+  final String? deviceId;
+  final String? deviceModel;
+  final String? osVersion;
 }
 
 class LoginResponseEntity extends LoginEntity {

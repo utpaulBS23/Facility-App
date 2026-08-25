@@ -54,11 +54,6 @@ SetCurrentLocaleUseCase setCurrentLocaleUseCase(Ref ref) {
 }
 
 @riverpod
-ResetRepositoryUseCase resetRepositoryUseCase(Ref ref) {
-  return const ResetRepositoryUseCase();
-}
-
-@riverpod
 GetOnboardingStatusUseCase getOnboardingStatusUseCase(Ref ref) {
   return GetOnboardingStatusUseCase(ref.read(routerRepositoryProvider));
 }
@@ -440,4 +435,29 @@ ReportIssueUseCase reportIssueUseCase(Ref ref) {
 @riverpod
 GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
   return GetProblemCategoriesUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+GetDeviceInfoUseCase getDeviceInfoUseCase(Ref ref) {
+  return GetDeviceInfoUseCase(ref.read(deviceInfoRepositoryProvider));
+}
+
+@riverpod
+CheckAppVersionUseCase checkAppVersionUseCase(Ref ref) {
+  return CheckAppVersionUseCase(ref.read(appUpdateRepositoryProvider));
+}
+
+@riverpod
+ReportAppUpdateActionUseCase reportAppUpdateActionUseCase(Ref ref) {
+  return ReportAppUpdateActionUseCase(ref.read(appUpdateRepositoryProvider));
+}
+
+@riverpod
+DownloadApkUseCase downloadApkUseCase(Ref ref) {
+  return DownloadApkUseCase(ref.read(appUpdateRepositoryProvider));
+}
+
+@riverpod
+InstallApkUseCase installApkUseCase(Ref ref) {
+  return InstallApkUseCase(ref.read(appUpdateRepositoryProvider));
 }

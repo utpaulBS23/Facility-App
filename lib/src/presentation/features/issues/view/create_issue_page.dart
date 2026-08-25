@@ -730,7 +730,7 @@ class _AttendantPickerSheet extends ConsumerWidget {
             height: 4,
             decoration: BoxDecoration(
               color: context.color.borderSubtle,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
             ),
           ),
           Gap(spacing.s16),

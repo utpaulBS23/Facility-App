@@ -47,6 +47,12 @@ extension LoginResponseModelToEntity on LoginResponseModel {
 }
 
 extension LoginRequestEntityToModel on LoginRequestEntity {
-  LoginRequestModel toModel() =>
-      LoginRequestModel(uid: uid, password: password, deviceName: deviceName);
+  LoginRequestModel toModel() => LoginRequestModel(
+    uid: uid,
+    password: password,
+    deviceName: deviceName,
+    deviceId: deviceId,
+    deviceModel: deviceModel,
+    osVersion: osVersion,
+  );
 }

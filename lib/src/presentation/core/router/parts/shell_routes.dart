@@ -3,7 +3,9 @@ part of '../router.dart';
 StatefulShellRoute _shellRoutes(Ref ref) {
   return StatefulShellRoute.indexedStack(
     builder: (context, state, navigationShell) {
-      return NavigationShell(statefulNavigationShell: navigationShell);
+      return AppUpdateChecker(
+        child: NavigationShell(statefulNavigationShell: navigationShell),
+      );
     },
     branches: [
       StatefulShellBranch(
@@ -80,6 +82,17 @@ StatefulShellRoute _shellRoutes(Ref ref) {
             name: Routes.issue,
             pageBuilder: (context, state) {
               return const MaterialPage(child: IssuesPage());
+            },
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: [
+          GoRoute(
+            path: Routes.occurrence,
+            name: Routes.occurrence,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: OccurrencePage());
             },
           ),
         ],

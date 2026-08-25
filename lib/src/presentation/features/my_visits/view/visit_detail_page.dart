@@ -155,13 +155,13 @@ class _DetailBody extends StatelessWidget {
                 context.dimensions.radius.r12,
               ),
             ),
-            child: const Center(
+            child: Center(
               child: SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator.adaptive(
                   strokeWidth: 2,
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.color.onPrimary,
                 ),
               ),
             ),
@@ -244,12 +244,12 @@ class _CheckInBody extends StatelessWidget {
             ),
           ),
           child: checkInState.isCheckingIn
-              ? const SizedBox(
+              ? SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator.adaptive(
                     strokeWidth: 2,
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.color.onPrimary,
                   ),
                 )
               : LabelLargeText(

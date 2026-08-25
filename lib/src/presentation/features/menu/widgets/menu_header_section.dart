@@ -5,11 +5,15 @@ class _MenuHeaderSection extends StatelessWidget {
     required this.name,
     required this.email,
     this.partnerName,
+    this.appVersion,
+    this.buildNumber,
   });
 
   final String name;
   final String email;
   final String? partnerName;
+  final String? appVersion;
+  final String? buildNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +31,38 @@ class _MenuHeaderSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: spacing.s24,
-                backgroundColor: color.onPrimary.withValues(alpha: 0.2),
-                child: Icon(
-                  Icons.person,
-                  color: color.onPrimary,
-                  size: spacing.s24,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: spacing.s24,
+                    backgroundColor: color.onPrimary.withValues(alpha: 0.2),
+                    child: Icon(
+                      Icons.person,
+                      color: color.onPrimary,
+                      size: spacing.s24,
+                    ),
+                  ),
+                  if (appVersion != null && appVersion!.isNotEmpty)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: spacing.s12,
+                        vertical: spacing.s4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: color.onPrimary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(radius.r16),
+                      ),
+                      child: Text(
+                        'v$appVersion${buildNumber != null && buildNumber!.isNotEmpty ? ' ($buildNumber)' : ''}',
+                        style: textStyle.labelSmall.copyWith(
+                          color: color.onPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               Gap(spacing.s12),
               Text(

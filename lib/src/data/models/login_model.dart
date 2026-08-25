@@ -106,10 +106,19 @@ class LoginRequestModel with LoginRequestModelMappable {
     required this.uid,
     required this.password,
     required this.deviceName,
+    this.deviceId,
+    this.deviceModel,
+    this.osVersion,
   });
 
   final String uid;
   final String password;
   @MappableField(key: 'device_name')
   final String deviceName;
+  @MappableField(key: 'device_id')
+  final String? deviceId;
+  @MappableField(key: 'device_model')
+  final String? deviceModel;
+  @MappableField(key: 'os_version')
+  final String? osVersion;
 }

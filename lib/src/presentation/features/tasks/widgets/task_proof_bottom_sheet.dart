@@ -83,7 +83,9 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
     return Container(
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(context.dimensions.radius.r12),
+        ),
       ),
       padding: EdgeInsets.fromLTRB(
         spacing.s24,
@@ -99,7 +101,7 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
             height: 4,
             decoration: BoxDecoration(
               color: context.color.border,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
             ),
           ),
           Gap(spacing.s24),

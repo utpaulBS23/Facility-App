@@ -9,6 +9,10 @@ class Endpoints {
   static const String register = '/auth/register/';
   static const String login = '/auth/login';
 
+  /// App Update
+  static const String versionCheck = '/version-check';
+  static const String updateAction = '/../app/update-action';
+
   /// Attendance
   static const String checkIn = '/partners/{partnerId}/attendances/check-in';
 

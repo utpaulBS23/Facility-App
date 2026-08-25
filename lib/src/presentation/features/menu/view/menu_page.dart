@@ -67,6 +67,8 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               name: menuState.name,
               email: menuState.email,
               partnerName: menuState.partnerName,
+              appVersion: menuState.appVersion,
+              buildNumber: menuState.buildNumber,
             ),
             Gap(spacing.s16),
             Expanded(

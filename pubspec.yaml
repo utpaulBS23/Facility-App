@@ -48,9 +48,11 @@ dependencies:
   google_mlkit_face_detection: ^0.13.2
   device_info_plus: ^12.4.0
   flutter_local_notifications: ^22.2.0
-
-  
-
+  package_info_plus: ^9.0.1
+  url_launcher: ^6.3.1
+  open_filex: ^4.7.0
+  path_provider: ^2.1.6
+  crypto: ^3.0.7
 dev_dependencies:
   flutter_test:
     sdk: flutter

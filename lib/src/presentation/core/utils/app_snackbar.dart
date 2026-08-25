@@ -11,7 +11,9 @@ abstract final class AppSnackBar {
         backgroundColor: context.color.success,
         content: Text(
           message,
-          style: TextStyle(color: context.color.onPrimary),
+          style: context.textStyle.bodyMedium.copyWith(
+            color: context.color.onPrimary,
+          ),
         ),
       ),
     );
@@ -25,7 +27,9 @@ abstract final class AppSnackBar {
         backgroundColor: context.color.error,
         content: Text(
           message,
-          style: TextStyle(color: context.color.onPrimary),
+          style: context.textStyle.bodyMedium.copyWith(
+            color: context.color.onPrimary,
+          ),
         ),
       ),
     );
