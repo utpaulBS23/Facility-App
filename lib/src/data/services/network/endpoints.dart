@@ -8,6 +8,7 @@ class Endpoints {
   /// Authentication
   static const String register = '/auth/register/';
   static const String login = '/auth/login';
+  static const String logout = '/auth/logout';
 
   /// App Update
   static const String versionCheck = '/version-check';
