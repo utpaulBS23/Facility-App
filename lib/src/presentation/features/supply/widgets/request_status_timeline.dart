@@ -5,29 +5,27 @@ class _RequestStatusTimeline extends StatelessWidget {
 
   final SupplyRequestEntity request;
 
-  String _titleFor(BuildContext context, SupplyRequestStepKind kind) =>
-      switch (kind) {
-        SupplyRequestStepKind.supervisor => context.locale.pendingSupervisor,
-        SupplyRequestStepKind.operationManager =>
-          context.locale.pendingOperationManager,
-        SupplyRequestStepKind.approved =>
-          context.locale.operationManagerApproved,
-        SupplyRequestStepKind.delivery => context.locale.deliveryStage,
-      };
-
-  String _subtitleFor(BuildContext context, SupplyTimelineStepEntity step) {
-    if (step.kind == SupplyRequestStepKind.delivery) {
-      return switch (request.status) {
-        SupplyRequestStatus.inDelivery => context.locale.inDelivery,
-        SupplyRequestStatus.delivered => context.locale.delivered,
-        _ => '-',
-      };
+  SupplyRequestApprovalEntity? _approvalFor(
+    ApproverRole role,
+    ApprovalAction action,
+  ) {
+    for (final approval in request.approvals) {
+      if (approval.approverRole == role && approval.action == action) return approval;
     }
+    return null;
+  }
 
-    final iso = step.actedAt;
-    if (iso.isEmpty) return '-';
+  ApproverRole? get _rejectedBy {
+    for (final approval in request.approvals.reversed) {
+      if (approval.action == ApprovalAction.rejected) return approval.approverRole;
+    }
+    return null;
+  }
+
+  String _dateSubtitle(String? actedAt) {
+    if (actedAt == null || actedAt.isEmpty) return '-';
     try {
-      return DateFormatter.shortDate(DateTime.parse(iso).toLocal());
+      return DateFormatter.shortDate(DateTime.parse(actedAt).toLocal());
     } catch (_) {
       return '-';
     }
@@ -35,10 +33,78 @@ class _RequestStatusTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final status = request.status;
     final spacing = context.dimensions.spacing;
     final color = context.color;
 
-    final steps = request.timelineSteps;
+    final supervisorApproval =
+        _approvalFor(ApproverRole.supervisor, ApprovalAction.approved);
+    final opManagerApproval =
+        _approvalFor(ApproverRole.operationManager, ApprovalAction.approved);
+
+
+    final steps = [
+      (
+        title: context.locale.pendingSupervisor,
+        subtitle: _dateSubtitle(supervisorApproval?.actedAt),
+        isCompleted: switch (status) {
+          SupplyRequestStatus.pendingSupervisor || SupplyRequestStatus.rejected =>
+            false,
+          _ => _rejectedBy != ApproverRole.supervisor,
+        },
+        isActive: status == SupplyRequestStatus.pendingSupervisor,
+        isRejected: _rejectedBy == ApproverRole.supervisor,
+      ),
+      (
+        title: context.locale.pendingOperationManager,
+        subtitle: _dateSubtitle(opManagerApproval?.actedAt),
+        isCompleted: switch (status) {
+          SupplyRequestStatus.operationManagerApproved ||
+          SupplyRequestStatus.inDelivery ||
+          SupplyRequestStatus.delivered ||
+          SupplyRequestStatus.completed =>
+            _rejectedBy != ApproverRole.operationManager,
+          _ => false,
+        },
+        isActive: status == SupplyRequestStatus.pendingOperationManager,
+        isRejected: _rejectedBy == ApproverRole.operationManager,
+      ),
+      (
+        title: context.locale.operationManagerApproved,
+        subtitle: switch (status) {
+          SupplyRequestStatus.inDelivery ||
+          SupplyRequestStatus.delivered ||
+          SupplyRequestStatus.completed =>
+            _dateSubtitle(request.updatedAt),
+          _ => '-',
+        },
+        isCompleted: switch (status) {
+          SupplyRequestStatus.inDelivery ||
+          SupplyRequestStatus.delivered ||
+          SupplyRequestStatus.completed =>
+            true,
+          _ => false,
+        },
+        isActive: false,
+        isRejected: false,
+      ),
+      (
+        title: context.locale.deliveryStage,
+        subtitle: switch (status) {
+          SupplyRequestStatus.inDelivery => context.locale.inDelivery,
+          SupplyRequestStatus.delivered ||
+          SupplyRequestStatus.completed =>
+            context.locale.delivered,
+          _ => '-',
+        },
+        isCompleted: switch (status) {
+          SupplyRequestStatus.delivered || SupplyRequestStatus.completed => true,
+          _ => false,
+        },
+        isActive: status == SupplyRequestStatus.inDelivery,
+        isRejected: false,
+      ),
+    ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -54,7 +120,11 @@ class _RequestStatusTimeline extends StatelessWidget {
               child: Row(
                 children: [
                   for (int i = 0; i < steps.length; i++) ...[
-                    _TimelineCircleNode(step: steps[i]),
+                    _TimelineCircleNode(
+                      isCompleted: steps[i].isCompleted,
+                      isActive: steps[i].isActive,
+                      isRejected: steps[i].isRejected,
+                    ),
                     if (i < steps.length - 1)
                       Expanded(
                         child: Container(
@@ -77,7 +147,7 @@ class _RequestStatusTimeline extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          _titleFor(context, step.kind),
+                          step.title,
                           textAlign: TextAlign.center,
                           style: context.textStyle.labelLarge.copyWith(
                             color: color.text.primary,
@@ -86,7 +156,7 @@ class _RequestStatusTimeline extends StatelessWidget {
                         ),
                         Gap(spacing.s2),
                         Text(
-                          _subtitleFor(context, step),
+                          step.subtitle,
                           textAlign: TextAlign.center,
                           style: context.textStyle.bodySmall.copyWith(
                             color: color.text.secondary,
@@ -105,50 +175,3 @@ class _RequestStatusTimeline extends StatelessWidget {
   }
 }
 
-class _TimelineCircleNode extends StatelessWidget {
-  const _TimelineCircleNode({required this.step});
-
-  final SupplyTimelineStepEntity step;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final color = context.color;
-
-    final IconData icon = switch (step) {
-      _ when step.isRejected => Icons.close_rounded,
-      _ when step.isCompleted => Icons.check_rounded,
-      _ => Icons.access_time_rounded,
-    };
-
-    final Color nodeBg = switch (step) {
-      _ when step.isRejected => color.error,
-      _ when step.isCompleted => color.success,
-      _ => color.onPrimary,
-    };
-
-    final Color nodeBorder = switch (step) {
-      _ when step.isRejected => color.error,
-      _ when step.isCompleted => color.success,
-      _ when step.isActive => color.warning,
-      _ => color.borderSubtle,
-    };
-
-    final Color iconColor = switch (step) {
-      _ when step.isRejected || step.isCompleted => color.onPrimary,
-      _ when step.isActive => color.warning,
-      _ => color.text.secondary,
-    };
-
-    return Container(
-      width: spacing.s36,
-      height: spacing.s36,
-      decoration: BoxDecoration(
-        color: nodeBg,
-        shape: BoxShape.circle,
-        border: Border.all(color: nodeBorder, width: spacing.s2),
-      ),
-      child: Icon(icon, size: spacing.s16, color: iconColor),
-    );
-  }
-}
