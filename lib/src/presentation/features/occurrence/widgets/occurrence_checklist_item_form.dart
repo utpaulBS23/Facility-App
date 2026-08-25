@@ -67,8 +67,8 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
     setState(() => _isSaving = true);
 
     final result = await ref
-        .read(taskOccurrencesProvider.notifier)
-        .answerChecklistItem(
+        .read(taskOccurrenceChecklistAnswerProvider.notifier)
+        .answer(
           taskOccurrenceId: widget.occurrenceId,
           itemId: widget.item.id,
           ratingValue: widget.item.responseType == TaskOccurrenceChecklistResponseType.rating

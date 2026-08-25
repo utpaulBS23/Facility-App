@@ -18,6 +18,7 @@ import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../riverpod/task_occurrence_reassign_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
 part '../widgets/occurrence_stats_header.dart';
