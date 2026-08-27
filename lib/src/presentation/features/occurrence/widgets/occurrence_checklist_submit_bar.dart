@@ -23,7 +23,7 @@ class _OccurrenceChecklistSubmitBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: EdgeInsets.all(spacing.s16),
+          padding: .all(spacing.s16),
           child: FilledButton(
             onPressed: isComplete && !isSubmitting ? onSubmit : null,
             child: isSubmitting

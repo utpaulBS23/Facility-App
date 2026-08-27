@@ -18,21 +18,21 @@ class _OccurrenceSlotCard extends StatelessWidget {
     final answered = items?.where((i) => i.isAnswered).length ?? 0;
 
     return Container(
-      padding: EdgeInsets.all(spacing.s16),
+      padding: .all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+        borderRadius: .circular(context.dimensions.radius.r12),
         border: Border.all(color: context.color.borderSubtle),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     LabelLargeText(occurrence.scheduleTitle),
                     Gap(spacing.s4),
