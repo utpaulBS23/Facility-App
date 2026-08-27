@@ -2,14 +2,14 @@ part of '../view/roster_list_page.dart';
 
 class _RosterListBody extends StatelessWidget {
   const _RosterListBody({
-    required this.facilitiesState,
+    required this.facilities,
     required this.rosterState,
     required this.selectedFacilityId,
     required this.onFacilitySelected,
     required this.onRosterTap,
   });
 
-  final AsyncValue<List<FacilityEntity>> facilitiesState;
+  final List<AccessibleFacilityEntity> facilities;
   final AsyncValue<RosterListEntity?> rosterState;
   final int? selectedFacilityId;
   final ValueChanged<int> onFacilitySelected;
@@ -28,34 +28,23 @@ class _RosterListBody extends StatelessWidget {
             spacing.s16,
             spacing.s4,
           ),
-          child: facilitiesState.when(
-            loading: () => const LinearProgressIndicator(),
-            error: (err, _) => _ErrorText(err.localizedMessage(context)),
-            data: (facilities) => _FacilityDropdown(
-              facilities: facilities,
-              selectedFacilityId: selectedFacilityId,
-              onChanged: onFacilitySelected,
-            ),
+          child: _FacilityDropdown(
+            facilities: facilities,
+            selectedFacilityId: selectedFacilityId,
+            onChanged: onFacilitySelected,
           ),
         ),
         Expanded(
-          // WHY: rosterState's initial value is AsyncData(null) —
-          // indistinguishable from "fetched, no rosters" — so while
-          // facilities are still loading (and no fetch has started yet) this
-          // would otherwise flash "No rosters found" under the dropdown's
-          // own loading spinner.
-          child: facilitiesState.isLoading
-              ? const Center(child: CircularProgressIndicator.adaptive())
-              : rosterState.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator.adaptive()),
-                  error: (err, _) =>
-                      Center(child: _ErrorText(err.localizedMessage(context))),
-                  data: (data) => _RosterList(
-                    rosters: data?.rosters ?? const [],
-                    onTap: onRosterTap,
-                  ),
-                ),
+          child: rosterState.when(
+            loading: () =>
+                const Center(child: CircularProgressIndicator.adaptive()),
+            error: (err, _) =>
+                Center(child: _ErrorText(err.localizedMessage(context))),
+            data: (data) => _RosterList(
+              rosters: data?.rosters ?? const [],
+              onTap: onRosterTap,
+            ),
+          ),
         ),
       ],
     );
@@ -123,7 +112,7 @@ class _FacilityDropdown extends StatelessWidget {
     required this.onChanged,
   });
 
-  final List<FacilityEntity> facilities;
+  final List<AccessibleFacilityEntity> facilities;
   final int? selectedFacilityId;
   final ValueChanged<int> onChanged;
 

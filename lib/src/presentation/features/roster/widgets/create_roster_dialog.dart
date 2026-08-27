@@ -38,14 +38,6 @@ class _CreateRosterDialogState extends ConsumerState<CreateRosterDialog> {
     super.initState();
     _facilityId = widget.initialFacilityId;
     _weekStart = _nextOrCurrentWeekStart(DateTime.now(), widget.weekStartDay);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadFacilities());
-  }
-
-  void _loadFacilities() {
-    final facilities = ref.read(facilityListProvider).valueOrNull;
-    if (facilities == null || facilities.isEmpty) {
-      ref.read(facilityListProvider.notifier).fetch();
-    }
   }
 
   static DateTime _nextOrCurrentWeekStart(DateTime date, int weekStartDay) {
@@ -111,7 +103,9 @@ class _CreateRosterDialogState extends ConsumerState<CreateRosterDialog> {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final facilitiesState = ref.watch(facilityListProvider);
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
     final createState = ref.watch(createRosterProvider);
 
     ref.listen(createRosterProvider, (previous, next) {
@@ -134,7 +128,7 @@ class _CreateRosterDialogState extends ConsumerState<CreateRosterDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _FacilityField(
-            facilitiesState: facilitiesState,
+            facilities: facilities,
             selectedFacilityId: _facilityId,
             onChanged: _onFacilityChanged,
           ),

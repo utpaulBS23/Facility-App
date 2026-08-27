@@ -24,7 +24,6 @@ class Endpoints {
   static const String partnerUsers = '/partners/{partnerId}/users';
 
   /// Facilities
-  static const String facilities = '/partners/{partnerId}/facilities';
 
   /// Assigns an attendant to an existing shift slot within a roster. The
   /// slot must already exist — created via [shiftSlots]'s parent flow.

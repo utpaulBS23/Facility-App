@@ -46,6 +46,12 @@ class AppDropdownButtonFormField<T> extends StatelessWidget {
             : null;
 
         return FormField<T>(
+          // WHY: FormField only reads `initialValue` on first build — it does
+          // not resync on rebuild, so a caller-driven selection change (e.g.
+          // programmatically picking the active facility) was silently
+          // ignored after the first frame. Keying on the value forces a fresh
+          // FormField whenever it changes from outside.
+          key: ValueKey(initialValue),
           initialValue: initialValue,
           validator: validator,
           builder: (field) {
