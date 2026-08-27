@@ -594,5 +594,17 @@
   "occurrenceSubmitSlot": "Submit",
   "occurrenceSubmitSuccess": "Slot submitted.",
   "occurrenceNoAccessibleFacility": "You are not assigned to a facility.",
-  "occurrenceAttendantPickerEmpty": "No staff available."
+  "occurrenceAttendantPickerEmpty": "No staff available.",
+  "profileSubtitle": "Manage your profile and personal details",
+  "extraCollectionSubtitle": "Record and manage facility extra income",
+  "supplyRequestSubtitle": "Manage and request facility stock",
+  "leaveSubtitle": "Request leave and view balances",
+  "doorLockSubtitle": "Control smart door locks",
+  "expenseEntrySubtitle": "Record facility operational expenses",
+  "notificationSubtitle": "View facility alerts and updates",
+  "profitReportSubtitle": "View facility profit and financial reports",
+  "consumptionReportSubtitle": "Track stock usage and consumption",
+  "facilityLocationsSubtitle": "View map of facility locations",
+  "issueManagementSubtitle": "Report and track facility issues",
+  "gatewayManagementSubtitle": "Configure IoT gateways and devices"
 }

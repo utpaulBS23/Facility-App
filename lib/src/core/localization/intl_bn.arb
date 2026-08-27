@@ -576,5 +576,17 @@
   "occurrenceSubmitSlot": "জমা দিন",
   "occurrenceSubmitSuccess": "স্লট জমা দেওয়া হয়েছে।",
   "occurrenceNoAccessibleFacility": "আপনাকে কোনো ফ্যাসিলিটিতে নিয়োগ করা হয়নি।",
-  "occurrenceAttendantPickerEmpty": "কোনো কর্মী উপলব্ধ নেই।"
+  "occurrenceAttendantPickerEmpty": "কোনো কর্মী উপলব্ধ নেই।",
+  "profileSubtitle": "আপনার প্রোফাইল এবং ব্যক্তিগত তথ্য পরিচালনা করুন",
+  "extraCollectionSubtitle": "সুবিধার অতিরিক্ত আয় রেকর্ড এবং পরিচালনা করুন",
+  "supplyRequestSubtitle": "সুবিধার স্টক পরিচালনা ও অনুরোধ করুন",
+  "leaveSubtitle": "ছুটির আবেদন করুন এবং ব্যালেন্স দেখুন",
+  "doorLockSubtitle": "স্মার্ট ডোর লক নিয়ন্ত্রণ করুন",
+  "expenseEntrySubtitle": "সুবিধার পরিচালনা সংক্রান্ত খরচ রেকর্ড করুন",
+  "notificationSubtitle": "সুবিধার নোটিফিকেশন এবং আপডেট দেখুন",
+  "profitReportSubtitle": "সুবিধার মুনাফা এবং আর্থিক রিপোর্ট দেখুন",
+  "consumptionReportSubtitle": "স্টক ব্যবহার এবং খরচ ট্র্যাক করুন",
+  "facilityLocationsSubtitle": "সুবিধার অবস্থানের মানচিত্র দেখুন",
+  "issueManagementSubtitle": "সুবিধার সমস্যা রিপোর্ট এবং ট্র্যাক করুন",
+  "gatewayManagementSubtitle": "আইওটি গেটওয়ে এবং ডিভাইস কনফিগার করুন"
 }
