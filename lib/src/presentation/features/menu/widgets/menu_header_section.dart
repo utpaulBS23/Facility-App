@@ -22,15 +22,23 @@ class _MenuHeaderSection extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final headerHeight = MediaQuery.sizeOf(context).height * 0.25;
+    final headerHeight = MediaQuery.sizeOf(context).height * 0.20;
 
     return Container(
       height: headerHeight,
       decoration: BoxDecoration(
-        color: color.primary,
-        borderRadius: BorderRadius.all(
-          Radius.circular(radius.r20),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            color.primary,
+            Color.alphaBlend(
+              Colors.black.withValues(alpha: 0.40),
+              color.primary,
+            ),
+          ],
         ),
+        borderRadius: BorderRadius.all(Radius.circular(radius.r20)),
       ),
       child: SafeArea(
         bottom: false,
@@ -38,7 +46,7 @@ class _MenuHeaderSection extends StatelessWidget {
           children: [
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+                padding: EdgeInsets.only(top: spacing.s24, left: spacing.s16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -65,7 +73,7 @@ class _MenuHeaderSection extends StatelessWidget {
                             ),
                           ),
                           if (email.isNotEmpty) ...[
-                            Gap(spacing.s2),
+                            Gap(spacing.s4),
                             Text(
                               email,
                               style: textStyle.bodyMedium.copyWith(
@@ -73,8 +81,9 @@ class _MenuHeaderSection extends StatelessWidget {
                               ),
                             ),
                           ],
-                          if (partnerName case final partner? when partner.isNotEmpty) ...[
-                            Gap(spacing.s4),
+                          if (partnerName case final partner?
+                              when partner.isNotEmpty) ...[
+                            Gap(spacing.s8),
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: spacing.s12,
