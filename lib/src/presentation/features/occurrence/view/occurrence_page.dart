@@ -13,7 +13,6 @@ import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_dropdown_button_form_field.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/staff_tile.dart';
@@ -22,30 +21,40 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_reassign_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
-part '../widgets/occurrence_facility_dropdown.dart';
+part '../widgets/occurrence_facility_picker_sheet.dart';
 part '../widgets/occurrence_stats_header.dart';
 part '../widgets/occurrence_slot_card.dart';
 part '../widgets/occurrence_status_chip.dart';
+part '../widgets/occurrence_status_filter_sheet.dart';
 part '../widgets/occurrence_reassign_sheet.dart';
 
-enum _OccurrenceTab { all, pending, onTime, late, missed }
+enum _OccurrenceStatusFilter { all, pending, onTime, late, missed }
 
 List<TaskOccurrenceEntity> _filterOccurrences(
   List<TaskOccurrenceEntity> occurrences,
-  _OccurrenceTab tab,
+  _OccurrenceStatusFilter filter,
 ) {
-  return switch (tab) {
-    _OccurrenceTab.all => occurrences,
-    _OccurrenceTab.pending =>
+  return switch (filter) {
+    _OccurrenceStatusFilter.all => occurrences,
+    _OccurrenceStatusFilter.pending =>
       occurrences.where((o) => o.status == TaskOccurrenceStatus.pending).toList(),
-    _OccurrenceTab.onTime =>
+    _OccurrenceStatusFilter.onTime =>
       occurrences.where((o) => o.status == TaskOccurrenceStatus.onTime).toList(),
-    _OccurrenceTab.late =>
+    _OccurrenceStatusFilter.late =>
       occurrences.where((o) => o.status == TaskOccurrenceStatus.late).toList(),
-    _OccurrenceTab.missed =>
+    _OccurrenceStatusFilter.missed =>
       occurrences.where((o) => o.status == TaskOccurrenceStatus.missed).toList(),
   };
 }
+
+String _occurrenceStatusFilterLabel(BuildContext context, _OccurrenceStatusFilter filter) =>
+    switch (filter) {
+      _OccurrenceStatusFilter.all => context.locale.all,
+      _OccurrenceStatusFilter.pending => context.locale.occurrenceStatsPending,
+      _OccurrenceStatusFilter.onTime => context.locale.occurrenceStatsOnTime,
+      _OccurrenceStatusFilter.late => context.locale.occurrenceStatsLate,
+      _OccurrenceStatusFilter.missed => context.locale.occurrenceStatsMissed,
+    };
 
 class OccurrencePage extends ConsumerStatefulWidget {
   const OccurrencePage({super.key});
@@ -57,7 +66,7 @@ class OccurrencePage extends ConsumerStatefulWidget {
 class _OccurrencePageState extends ConsumerState<OccurrencePage> {
   late DateTime _selectedDate;
   int? _selectedFacilityId;
-  _OccurrenceTab _selectedTab = _OccurrenceTab.all;
+  _OccurrenceStatusFilter _selectedFilter = _OccurrenceStatusFilter.all;
 
   @override
   void initState() {
@@ -95,10 +104,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     _fetch(_selectedDate);
   }
 
-  void _onTabChanged(_OccurrenceTab tab) {
-    setState(() => _selectedTab = tab);
-  }
-
   void _openReassignSheet(BuildContext context, TaskOccurrenceEntity occurrence) {
     if (_selectedFacilityId == null) return;
     showModalBottomSheet<void>(
@@ -113,12 +118,42 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     context.pushNamed(Routes.occurrenceChecklist, extra: occurrence);
   }
 
+  Future<void> _pickFacility(
+    BuildContext context,
+    List<AccessibleFacilityEntity> facilities,
+  ) async {
+    final facilityId = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _OccurrenceFacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: _selectedFacilityId,
+      ),
+    );
+    if (facilityId != null) _onFacilityChanged(facilityId);
+  }
+
+  Future<void> _pickStatusFilter(BuildContext context) async {
+    final filter = await showModalBottomSheet<_OccurrenceStatusFilter>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _OccurrenceStatusFilterSheet(selectedFilter: _selectedFilter),
+    );
+    if (filter != null) setState(() => _selectedFilter = filter);
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
+    final selectedFacilityName = facilities
+        .cast<AccessibleFacilityEntity?>()
+        .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
+        ?.name;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -127,6 +162,40 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
         titleSpacing: spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (facilities.length > 1)
+            TextButton.icon(
+              onPressed: () => _pickFacility(context, facilities),
+              icon: const Icon(Icons.apartment_outlined, size: 18),
+              label: Text(
+                selectedFacilityName ?? context.locale.facilityName,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              IconButton(
+                onPressed: () => _pickStatusFilter(context),
+                icon: const Icon(Icons.filter_list_rounded),
+              ),
+              if (_selectedFilter != _OccurrenceStatusFilter.all)
+                Positioned(
+                  top: spacing.s8,
+                  right: spacing.s8,
+                  child: Container(
+                    width: spacing.s8,
+                    height: spacing.s8,
+                    decoration: BoxDecoration(
+                      color: context.color.primary,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          Gap(spacing.s8),
+        ],
       ),
       body: facilities.isEmpty
           ? Center(
@@ -142,13 +211,9 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
               ),
             )
           : _OccurrenceBoard(
-              facilities: facilities,
-              selectedFacilityId: _selectedFacilityId,
               selectedDate: _selectedDate,
-              selectedTab: _selectedTab,
+              selectedFilter: _selectedFilter,
               onDateChanged: _onDateChanged,
-              onFacilityChanged: _onFacilityChanged,
-              onTabChanged: _onTabChanged,
               onRetry: () => _fetch(_selectedDate),
               onReassign: (occurrence) => _openReassignSheet(context, occurrence),
               onChecklist: (occurrence) => _openChecklist(context, occurrence),
@@ -159,25 +224,17 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
 
 class _OccurrenceBoard extends ConsumerWidget {
   const _OccurrenceBoard({
-    required this.facilities,
-    required this.selectedFacilityId,
     required this.selectedDate,
-    required this.selectedTab,
+    required this.selectedFilter,
     required this.onDateChanged,
-    required this.onFacilityChanged,
-    required this.onTabChanged,
     required this.onRetry,
     required this.onReassign,
     required this.onChecklist,
   });
 
-  final List<AccessibleFacilityEntity> facilities;
-  final int? selectedFacilityId;
   final DateTime selectedDate;
-  final _OccurrenceTab selectedTab;
+  final _OccurrenceStatusFilter selectedFilter;
   final void Function(DateTime) onDateChanged;
-  final void Function(int) onFacilityChanged;
-  final void Function(_OccurrenceTab) onTabChanged;
   final VoidCallback onRetry;
   final void Function(TaskOccurrenceEntity) onReassign;
   final void Function(TaskOccurrenceEntity) onChecklist;
@@ -190,20 +247,11 @@ class _OccurrenceBoard extends ConsumerWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        _OccurrenceFacilityDropdown(
-          facilities: facilities,
-          selectedFacilityId: selectedFacilityId,
-          onChanged: onFacilityChanged,
-        ),
         HorizontalDatePicker.fortnight(onDateSelected: onDateChanged),
         state.when(
           loading: () => const SizedBox.shrink(),
           error: (e, s) => const SizedBox.shrink(),
-          data: (entity) => _OccurrenceStatsHeader(
-            stats: entity.stats,
-            selectedTab: selectedTab,
-            onTabChanged: onTabChanged,
-          ),
+          data: (entity) => _OccurrenceStatsHeader(stats: entity.stats),
         ),
         Expanded(
           child: state.when(
@@ -225,7 +273,7 @@ class _OccurrenceBoard extends ConsumerWidget {
               ),
             ),
             data: (entity) {
-              final occurrences = _filterOccurrences(entity.occurrences, selectedTab);
+              final occurrences = _filterOccurrences(entity.occurrences, selectedFilter);
               if (occurrences.isEmpty) {
                 return Center(
                   child: Padding(
