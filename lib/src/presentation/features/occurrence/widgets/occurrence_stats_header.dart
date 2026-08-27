@@ -9,89 +9,106 @@ class _OccurrenceStatsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return Container(
+    return ColoredBox(
       color: context.color.onPrimary,
-      padding: .symmetric(horizontal: spacing.s16, vertical: spacing.s8),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(context.dimensions.radius.r12),
-        ),
-        child: Row(
-          children: [
-            _OccurrenceStatItem(
-              count: stats.totalSlots,
-              label: context.locale.occurrenceStatsTotal,
-              color: context.color.text.primary,
-            ),
-            _OccurrenceStatDivider(),
-            _OccurrenceStatItem(
-              count: stats.pending,
-              label: context.locale.occurrenceStatsPending,
-              color: context.color.primary,
-            ),
-            _OccurrenceStatDivider(),
-            _OccurrenceStatItem(
-              count: stats.onTime,
-              label: context.locale.occurrenceStatsOnTime,
-              color: context.color.success,
-            ),
-            _OccurrenceStatDivider(),
-            _OccurrenceStatItem(
-              count: stats.late,
-              label: context.locale.occurrenceStatsLate,
-              color: context.color.warning,
-            ),
-            _OccurrenceStatDivider(),
-            _OccurrenceStatItem(
-              count: stats.missed,
-              label: context.locale.occurrenceStatsMissed,
-              color: context.color.error,
-            ),
-          ],
+      child: Padding(
+        padding: .symmetric(horizontal: spacing.s16, vertical: spacing.s12),
+        child: SingleChildScrollView(
+          scrollDirection: .horizontal,
+          child: Row(
+            children: [
+              _OccurrenceStatCard(
+                count: stats.totalSlots,
+                label: context.locale.occurrenceStatsTotal,
+                icon: Icons.grid_view_rounded,
+                foreground: context.color.text.primary,
+                background: context.color.subtle,
+              ),
+              Gap(spacing.s8),
+              _OccurrenceStatCard(
+                count: stats.pending,
+                label: context.locale.occurrenceStatsPending,
+                icon: Icons.hourglass_top_rounded,
+                foreground: context.color.primary,
+                background: context.color.brandSubtle,
+              ),
+              Gap(spacing.s8),
+              _OccurrenceStatCard(
+                count: stats.onTime,
+                label: context.locale.occurrenceStatsOnTime,
+                icon: Icons.check_circle_rounded,
+                foreground: context.color.success,
+                background: context.color.successAlt,
+              ),
+              Gap(spacing.s8),
+              _OccurrenceStatCard(
+                count: stats.late,
+                label: context.locale.occurrenceStatsLate,
+                icon: Icons.schedule_rounded,
+                foreground: context.color.warning,
+                background: context.color.warningAlt,
+              ),
+              Gap(spacing.s8),
+              _OccurrenceStatCard(
+                count: stats.missed,
+                label: context.locale.occurrenceStatsMissed,
+                icon: Icons.cancel_rounded,
+                foreground: context.color.error,
+                background: context.color.errorAlt,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _OccurrenceStatDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(width: 1, height: 56, color: context.color.borderSubtle);
-  }
-}
-
-class _OccurrenceStatItem extends StatelessWidget {
-  const _OccurrenceStatItem({
+class _OccurrenceStatCard extends StatelessWidget {
+  const _OccurrenceStatCard({
     required this.count,
     required this.label,
-    required this.color,
+    required this.icon,
+    required this.foreground,
+    required this.background,
   });
 
   final int count;
   final String label;
-  final Color color;
+  final IconData icon;
+  final Color foreground;
+  final Color background;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
-    return Expanded(
-      child: Padding(
-        padding: .symmetric(vertical: spacing.s8),
-        child: Column(
-          mainAxisSize: .min,
-          children: [
-            Text('$count', style: context.textStyle.titleMedium.copyWith(color: color)),
-            Gap(spacing.s4),
-            Text(
-              label,
-              style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+    return Container(
+      width: spacing.s96,
+      padding: .all(spacing.s12),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: .circular(radius.r12),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        mainAxisSize: .min,
+        children: [
+          Icon(icon, size: spacing.s20, color: foreground),
+          Gap(spacing.s8),
+          Text(
+            '$count',
+            style: context.textStyle.titleMedium.copyWith(color: foreground),
+          ),
+          Gap(spacing.s2),
+          Text(
+            label,
+            style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+        ],
       ),
     );
   }

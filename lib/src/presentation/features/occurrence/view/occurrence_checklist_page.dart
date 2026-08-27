@@ -18,6 +18,7 @@ import '../riverpod/task_occurrence_submit_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
 part '../widgets/occurrence_checklist_item_form.dart';
+part '../widgets/occurrence_checklist_progress_header.dart';
 part '../widgets/occurrence_checklist_submit_bar.dart';
 
 class OccurrenceChecklistPage extends ConsumerStatefulWidget {
@@ -70,6 +71,7 @@ class _OccurrenceChecklistPageState
     );
     final items = current.checklistItems ?? const <TaskOccurrenceChecklistItemEntity>[];
     final isRefreshing = occurrencesAsync.isLoading && occurrencesAsync.hasValue;
+    final answered = items.where((i) => i.isAnswered).length;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -93,13 +95,19 @@ class _OccurrenceChecklistPageState
                 )
               : ListView.separated(
                   padding: .all(spacing.s16),
-                  itemCount: items.length,
+                  itemCount: items.length + 1,
                   separatorBuilder: (_, _) => Gap(spacing.s12),
-                  itemBuilder: (_, i) => _ChecklistItemForm(
-                    key: ValueKey(items[i].id),
-                    occurrenceId: current.id,
-                    item: items[i],
-                  ),
+                  itemBuilder: (_, i) => i == 0
+                      ? _OccurrenceChecklistProgressHeader(
+                          answered: answered,
+                          total: items.length,
+                        )
+                      : _ChecklistItemForm(
+                          key: ValueKey(items[i - 1].id),
+                          occurrenceId: current.id,
+                          item: items[i - 1],
+                          order: i,
+                        ),
                 ),
           if (isRefreshing)
             Positioned.fill(
