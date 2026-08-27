@@ -52,15 +52,17 @@ StatefulShellRoute _shellRoutes(Ref ref) {
           ),
         ],
       ),
+      // WHY: this branch keeps the Task tab's slot (path/name/icon/label) but
+      // now renders the board content that used to live at Routes.occurrence
+      // — that branch was removed and its content reassigned here.
       StatefulShellBranch(
         routes: [
           GoRoute(
             path: Routes.task,
             name: Routes.task,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: TaskPage());
+              return const MaterialPage(child: OccurrencePage());
             },
-            routes: _taskRoutes(ref),
           ),
         ],
       ),
@@ -75,25 +77,18 @@ StatefulShellRoute _shellRoutes(Ref ref) {
           ),
         ],
       ),
+      // WHY: this branch keeps the Issue tab's slot but now renders the task
+      // list that used to live at Routes.task — taskDetail's nested route
+      // moves here with it since it's pushed from within this page.
       StatefulShellBranch(
         routes: [
           GoRoute(
             path: Routes.issue,
             name: Routes.issue,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: IssuesPage());
+              return const MaterialPage(child: TaskPage());
             },
-          ),
-        ],
-      ),
-      StatefulShellBranch(
-        routes: [
-          GoRoute(
-            path: Routes.occurrence,
-            name: Routes.occurrence,
-            pageBuilder: (context, state) {
-              return const MaterialPage(child: OccurrencePage());
-            },
+            routes: _taskRoutes(ref),
           ),
         ],
       ),

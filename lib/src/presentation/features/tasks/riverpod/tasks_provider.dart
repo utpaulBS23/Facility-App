@@ -14,12 +14,12 @@ class Tasks extends _$Tasks {
   @override
   AsyncValue<List<TaskEntity>> build() => const AsyncValue.loading();
 
-  Future<void> fetch({required String bucket}) async {
+  Future<void> fetch({String? status}) async {
     state = const AsyncValue.loading();
 
     final Result<List<TaskEntity>, Failure> result = await ref
-        .read(getTasksUseCaseProvider)
-        .call(bucket: bucket);
+        .read(getIssuesUseCaseProvider)
+        .call(status: status);
 
     state = result.when(
       success: (data) => data != null

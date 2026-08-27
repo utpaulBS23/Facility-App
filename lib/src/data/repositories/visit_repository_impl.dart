@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -18,6 +19,12 @@ final class VisitRepositoryImpl extends VisitRepository {
   VisitRepositoryImpl(this._client);
 
   final RestClient _client;
+
+  final StreamController<int> _visitSubmittedController =
+      StreamController<int>.broadcast();
+
+  @override
+  Stream<int> get onVisitSubmitted => _visitSubmittedController.stream;
 
   @override
   Future<Result<VisitListEntity, Failure>> getMyVisits({
@@ -74,6 +81,7 @@ final class VisitRepositoryImpl extends VisitRepository {
     required int visitId,
   }) => asyncGuard(() async {
     await _client.submitVisit(partnerId: partnerId, visitId: visitId);
+    _visitSubmittedController.add(visitId);
   });
 
   @override
@@ -123,7 +131,7 @@ final class VisitRepositoryImpl extends VisitRepository {
     required ReportIssueRequestEntity request,
   }) => asyncGuard(() async {
     final fields = <MapEntry<String, dynamic>>[
-      MapEntry('problem_category_id', request.categoryId.toString()),
+      MapEntry('problem_category', request.categoryValue),
       MapEntry('title', request.title),
       MapEntry('priority', request.priority.name),
       if (request.description != null)
@@ -164,9 +172,10 @@ final class VisitRepositoryImpl extends VisitRepository {
     return (list.data ?? [])
         .where((m) => m.isActive != false)
         .map((m) => ProblemCategoryEntity(
-              id: m.id,
-              name: m.name ?? '',
-              description: m.description ?? '',
+              value: m.value,
+              name: m.label ?? m.value,
+              color: m.color,
+              proofRequiredOnComplete: m.proofRequiredOnComplete ?? false,
             ))
         .toList();
   });

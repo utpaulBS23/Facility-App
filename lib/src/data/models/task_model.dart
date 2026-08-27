@@ -21,12 +21,13 @@ TaskPriority _mapPriority(String raw) => switch (raw.toLowerCase()) {
   _ => TaskPriority.low,
 };
 
-TaskStatus _mapStatus(String raw) => switch (raw.toLowerCase()) {
-  'completed' => TaskStatus.completed,
-  'resolved' => TaskStatus.completed,
+// WHY: task_issues.status vocabulary (open/in_progress/resolved/closed) —
+// the Issue List/Show API's `issue_status` field, not `tasks.status`.
+TaskStatus _mapIssueStatus(String raw) => switch (raw.toLowerCase()) {
   'in_progress' => TaskStatus.inProgress,
-  'pending' => TaskStatus.pending,
-  _ => TaskStatus.today,
+  'resolved' => TaskStatus.resolved,
+  'closed' => TaskStatus.closed,
+  _ => TaskStatus.open,
 };
 
 // ─── List response ─────────────────────────────────────────────────────────
@@ -39,8 +40,7 @@ class TaskListResponseModel with TaskListResponseModelMappable {
 
   static const fromJson = TaskListResponseModelMapper.fromJson;
 
-  List<TaskEntity> toEntities(TaskStatus status) =>
-      data.map((e) => e.toEntity(status)).toList();
+  List<TaskEntity> toEntities() => data.map((e) => e.toEntity()).toList();
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
@@ -51,7 +51,7 @@ class TaskModel with TaskModelMappable {
     this.description,
     this.facilityName,
     this.dueAt,
-    required this.status,
+    required this.issueStatus,
     required this.priority,
     this.issue,
     this.media,
@@ -67,21 +67,23 @@ class TaskModel with TaskModelMappable {
   @MappableField(key: 'due_at')
   final String? dueAt;
 
-  final String status;
+  @MappableField(key: 'issue_status')
+  final String issueStatus;
+
   final String priority;
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
   static const fromJson = TaskModelMapper.fromJson;
 
-  TaskEntity toEntity(TaskStatus bucketStatus) => TaskEntity(
+  TaskEntity toEntity() => TaskEntity(
     id: id,
     title: title,
     description: description ?? '',
     location: facilityName ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),
-    status: status.isEmpty ? bucketStatus : _mapStatus(status),
+    status: _mapIssueStatus(issueStatus),
     proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
     media:
         media
@@ -128,7 +130,7 @@ class TaskDetailModel with TaskDetailModelMappable {
     this.description,
     this.facilityName,
     this.dueAt,
-    required this.status,
+    required this.issueStatus,
     required this.priority,
     this.proofRequiredOnComplete = false,
     this.issue,
@@ -145,7 +147,9 @@ class TaskDetailModel with TaskDetailModelMappable {
   @MappableField(key: 'due_at')
   final String? dueAt;
 
-  final String status;
+  @MappableField(key: 'issue_status')
+  final String issueStatus;
+
   final String priority;
 
   @MappableField(key: 'proof_required_on_complete')
@@ -163,7 +167,7 @@ class TaskDetailModel with TaskDetailModelMappable {
     location: facilityName ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),
-    status: _mapStatus(status),
+    status: _mapIssueStatus(issueStatus),
     proofRequiredOnComplete:
         proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
     media:

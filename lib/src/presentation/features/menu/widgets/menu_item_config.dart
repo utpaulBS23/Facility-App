@@ -116,13 +116,6 @@ final List<MenuItemConfig> menuItemConfigs = [
     permissions: [UserPermission.facilityMapView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.issue,
-    label: _issueManagementLabel,
-    subtitle: _issueManagementSubtitle,
-    route: Routes.issueManagement,
-    permissions: [UserPermission.issueView, UserPermission.issueManage],
-  ),
-  MenuItemConfig(
     icon: Assets.icons.moreIcon,
     label: _gatewayManagementLabel,
     subtitle: _gatewayManagementSubtitle,
@@ -176,11 +169,6 @@ String _facilityLocationsLabel(BuildContext context) =>
     context.locale.facilityLocations;
 String _facilityLocationsSubtitle(BuildContext context) =>
     context.locale.facilityLocationsSubtitle;
-
-String _issueManagementLabel(BuildContext context) =>
-    context.locale.issueManagement;
-String _issueManagementSubtitle(BuildContext context) =>
-    context.locale.issueManagementSubtitle;
 
 String _gatewayManagementLabel(BuildContext context) =>
     context.locale.gatewayManagement;

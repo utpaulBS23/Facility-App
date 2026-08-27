@@ -2,13 +2,13 @@ import '../../core/base/base.dart';
 import '../entities/task_entity.dart';
 
 abstract base class TaskRepository extends Repository {
-  Future<Result<List<TaskEntity>, Failure>> getTasks({
+  Future<Result<List<TaskEntity>, Failure>> getIssues({
     required int partnerId,
-    required String bucket,
-    required String taskType,
+    String? status,
+    int? facilityId,
   });
 
-  Future<Result<TaskEntity, Failure>> getTaskDetail({
+  Future<Result<TaskEntity, Failure>> getIssueDetail({
     required int partnerId,
     required int id,
   });

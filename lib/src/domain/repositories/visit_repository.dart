@@ -49,4 +49,6 @@ abstract base class VisitRepository extends Repository {
   Future<Result<List<ProblemCategoryEntity>, Failure>> getProblemCategories({
     required int partnerId,
   });
+
+  Stream<int> get onVisitSubmitted;
 }
