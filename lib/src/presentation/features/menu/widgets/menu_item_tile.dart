@@ -1,9 +1,13 @@
 part of '../view/menu_page.dart';
 
 class _MenuItemTile extends StatelessWidget {
-  const _MenuItemTile({required this.config});
+  const _MenuItemTile({
+    required this.config,
+    this.showDivider = true,
+  });
 
   final MenuItemConfig config;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,9 @@ class _MenuItemTile extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: context.color.onPrimary,
-          border: Border(bottom: BorderSide(color: context.color.borderSubtle)),
+          border: showDivider
+              ? Border(bottom: BorderSide(color: context.color.borderSubtle))
+              : null,
         ),
         child: Row(
           children: [
