@@ -1,114 +1,138 @@
 part of '../view/occurrence_page.dart';
 
 class _OccurrenceStatsHeader extends StatelessWidget {
-  const _OccurrenceStatsHeader({required this.stats});
+  const _OccurrenceStatsHeader({
+    required this.stats,
+    required this.selectedTab,
+    required this.onTabChanged,
+  });
 
   final TaskOccurrenceStatsEntity stats;
+  final _OccurrenceTab selectedTab;
+  final void Function(_OccurrenceTab) onTabChanged;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return ColoredBox(
+    return Container(
       color: context.color.onPrimary,
-      child: Padding(
-        padding: .symmetric(horizontal: spacing.s16, vertical: spacing.s12),
-        child: SingleChildScrollView(
-          scrollDirection: .horizontal,
-          child: Row(
-            children: [
-              _OccurrenceStatCard(
-                count: stats.totalSlots,
-                label: context.locale.occurrenceStatsTotal,
-                icon: Icons.grid_view_rounded,
-                foreground: context.color.text.primary,
-                background: context.color.subtle,
-              ),
-              Gap(spacing.s8),
-              _OccurrenceStatCard(
-                count: stats.pending,
-                label: context.locale.occurrenceStatsPending,
-                icon: Icons.hourglass_top_rounded,
-                foreground: context.color.primary,
-                background: context.color.brandSubtle,
-              ),
-              Gap(spacing.s8),
-              _OccurrenceStatCard(
-                count: stats.onTime,
-                label: context.locale.occurrenceStatsOnTime,
-                icon: Icons.check_circle_rounded,
-                foreground: context.color.success,
-                background: context.color.successAlt,
-              ),
-              Gap(spacing.s8),
-              _OccurrenceStatCard(
-                count: stats.late,
-                label: context.locale.occurrenceStatsLate,
-                icon: Icons.schedule_rounded,
-                foreground: context.color.warning,
-                background: context.color.warningAlt,
-              ),
-              Gap(spacing.s8),
-              _OccurrenceStatCard(
-                count: stats.missed,
-                label: context.locale.occurrenceStatsMissed,
-                icon: Icons.cancel_rounded,
-                foreground: context.color.error,
-                background: context.color.errorAlt,
-              ),
-            ],
-          ),
+      padding: EdgeInsets.symmetric(horizontal: spacing.s16, vertical: spacing.s8),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+        ),
+        child: Row(
+          children: [
+            _OccurrenceStatTab(
+              count: stats.totalSlots,
+              label: context.locale.all,
+              isSelected: selectedTab == _OccurrenceTab.all,
+              onTap: () => onTabChanged(_OccurrenceTab.all),
+            ),
+            _OccurrenceStatDivider(),
+            _OccurrenceStatTab(
+              count: stats.pending,
+              label: context.locale.occurrenceStatsPending,
+              isSelected: selectedTab == _OccurrenceTab.pending,
+              activeBackground: context.color.brandSubtle,
+              activeColor: context.color.primary,
+              onTap: () => onTabChanged(_OccurrenceTab.pending),
+            ),
+            _OccurrenceStatDivider(),
+            _OccurrenceStatTab(
+              count: stats.onTime,
+              label: context.locale.occurrenceStatsOnTime,
+              isSelected: selectedTab == _OccurrenceTab.onTime,
+              activeBackground: context.color.successAlt,
+              activeColor: context.color.success,
+              onTap: () => onTabChanged(_OccurrenceTab.onTime),
+            ),
+            _OccurrenceStatDivider(),
+            _OccurrenceStatTab(
+              count: stats.late,
+              label: context.locale.occurrenceStatsLate,
+              isSelected: selectedTab == _OccurrenceTab.late,
+              activeBackground: context.color.warningAlt,
+              activeColor: context.color.warning,
+              onTap: () => onTabChanged(_OccurrenceTab.late),
+            ),
+            _OccurrenceStatDivider(),
+            _OccurrenceStatTab(
+              count: stats.missed,
+              label: context.locale.occurrenceStatsMissed,
+              isSelected: selectedTab == _OccurrenceTab.missed,
+              activeBackground: context.color.errorAlt,
+              activeColor: context.color.error,
+              onTap: () => onTabChanged(_OccurrenceTab.missed),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _OccurrenceStatCard extends StatelessWidget {
-  const _OccurrenceStatCard({
+class _OccurrenceStatDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: 1, height: 56, color: context.color.borderSubtle);
+  }
+}
+
+class _OccurrenceStatTab extends StatelessWidget {
+  const _OccurrenceStatTab({
     required this.count,
     required this.label,
-    required this.icon,
-    required this.foreground,
-    required this.background,
+    required this.isSelected,
+    required this.onTap,
+    this.activeBackground,
+    this.activeColor,
   });
 
   final int count;
   final String label;
-  final IconData icon;
-  final Color foreground;
-  final Color background;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final Color? activeBackground;
+  final Color? activeColor;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
+    final backgroundColor = isSelected
+        ? (activeBackground ?? context.color.subtle)
+        : Colors.transparent;
+    final countColor = isSelected
+        ? (activeColor ?? context.color.text.primary)
+        : context.color.text.primary;
 
-    return Container(
-      width: spacing.s96,
-      padding: .all(spacing.s12),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: .circular(radius.r12),
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        mainAxisSize: .min,
-        children: [
-          Icon(icon, size: spacing.s20, color: foreground),
-          Gap(spacing.s8),
-          Text(
-            '$count',
-            style: context.textStyle.titleMedium.copyWith(color: foreground),
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
           ),
-          Gap(spacing.s2),
-          Text(
-            label,
-            style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary),
-            maxLines: 1,
-            overflow: .ellipsis,
+          padding: EdgeInsets.symmetric(vertical: spacing.s8),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('$count', style: context.textStyle.titleMedium.copyWith(color: countColor)),
+              Gap(spacing.s4),
+              Text(
+                label,
+                style: context.textStyle.bodySmall.copyWith(
+                  color: context.color.text.secondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
