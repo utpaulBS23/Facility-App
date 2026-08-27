@@ -30,11 +30,24 @@ class _MenuItemTile extends StatelessWidget {
             ),
             Gap(context.spacing.s12),
             Expanded(
-              child: Text(
-                config.label(context),
-                style: context.textStyle.bodyLarge.copyWith(
-                  color: context.color.text.primary,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    config.label(context),
+                    style: context.textStyle.bodyLarge.copyWith(
+                      color: context.color.text.primary,
+                    ),
+                  ),
+                  Gap(context.spacing.s4),
+                  Text(
+                    config.subtitle(context),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                ],
               ),
             ),
             Icon(
