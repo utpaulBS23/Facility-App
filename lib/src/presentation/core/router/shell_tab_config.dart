@@ -77,12 +77,15 @@ final List<ShellTabConfig> shellTabConfigs = [
       UserPermission.checklistResponseView,
     ],
   ),
+  // WHY permission: this slot now renders the board/occurrence content (see
+  // shell_routes.dart) — gated on that content's permission, not the old
+  // task-list one, even though the tab keeps the Task label/icon.
   ShellTabConfig(
     branchIndex: 4,
     route: Routes.task,
     icon: Assets.icons.task,
     label: _taskLabel,
-    permissions: [UserPermission.taskView],
+    permissions: [UserPermission.taskOccurrenceView],
   ),
   ShellTabConfig(
     branchIndex: 5,
@@ -91,24 +94,21 @@ final List<ShellTabConfig> shellTabConfigs = [
     label: _trackingLabel,
     permissions: [UserPermission.supervisorTrackingView],
   ),
+  // WHY permission: this slot now renders the task-list content that used
+  // to live at Routes.task (see shell_routes.dart) — gated on that content's
+  // permission, not the old issue-list one, even though the tab keeps the
+  // Issue label/icon.
   ShellTabConfig(
     branchIndex: 6,
     route: Routes.issue,
     icon: Assets.icons.issue,
     label: _issuesLabel,
-    permissions: [UserPermission.issueView],
-  ),
-  ShellTabConfig(
-    branchIndex: 7,
-    route: Routes.occurrence,
-    icon: Assets.icons.success,
-    label: _occurrencesLabel,
-    permissions: [UserPermission.taskOccurrenceView],
+    permissions: [UserPermission.taskView],
   ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
   // gated individually.
   ShellTabConfig(
-    branchIndex: 8,
+    branchIndex: 7,
     route: Routes.menu,
     icon: Assets.icons.menu,
     label: _menuLabel,
@@ -122,7 +122,6 @@ String _visitLabel(BuildContext context) => context.locale.visit;
 String _taskLabel(BuildContext context) => context.locale.task;
 String _trackingLabel(BuildContext context) => context.locale.tracking;
 String _issuesLabel(BuildContext context) => context.locale.issues;
-String _occurrencesLabel(BuildContext context) => context.locale.board;
 String _menuLabel(BuildContext context) => context.locale.menu;
 
 List<ShellTabConfig> permittedShellTabs(Set<UserPermission> permissions) => [

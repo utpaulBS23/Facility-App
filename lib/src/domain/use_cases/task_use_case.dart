@@ -4,34 +4,34 @@ import '../repositories/task_repository.dart';
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 
-final class GetTasksUseCase {
-  GetTasksUseCase(this._repository, this._authRepository);
+final class GetIssuesUseCase {
+  GetIssuesUseCase(this._repository, this._authRepository);
 
   final TaskRepository _repository;
   final AuthenticationRepository _authRepository;
 
   Future<Result<List<TaskEntity>, Failure>> call({
-    required String bucket,
-    String taskType = 'issue',
+    String? status,
+    int? facilityId,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
-    final result = await _repository.getTasks(
+    final result = await _repository.getIssues(
       partnerId: partnerId,
-      bucket: bucket,
-      taskType: taskType,
+      status: status,
+      facilityId: facilityId,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('load tasks')),
+      _ => Error(Failure.emptyResponse('load issues')),
     };
   }
 }
 
-final class GetTaskDetailUseCase {
-  GetTaskDetailUseCase(this._repository, this._authRepository);
+final class GetIssueDetailUseCase {
+  GetIssueDetailUseCase(this._repository, this._authRepository);
 
   final TaskRepository _repository;
   final AuthenticationRepository _authRepository;
@@ -40,14 +40,14 @@ final class GetTaskDetailUseCase {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
-    final result = await _repository.getTaskDetail(
+    final result = await _repository.getIssueDetail(
       partnerId: partnerId,
       id: id,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('load the task')),
+      _ => Error(Failure.emptyResponse('load the issue')),
     };
   }
 }

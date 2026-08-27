@@ -13,9 +13,9 @@ class _TaskCard extends StatelessWidget {
   final VoidCallback onStartTap;
   final VoidCallback onCompleteTap;
 
-  bool get _isCompleted => task.status == TaskStatus.completed;
-  bool get _canStart =>
-      task.status == TaskStatus.today || task.status == TaskStatus.pending;
+  bool get _isCompleted =>
+      task.status == TaskStatus.resolved || task.status == TaskStatus.closed;
+  bool get _canStart => task.status == TaskStatus.open;
   bool get _canComplete => task.status == TaskStatus.inProgress;
 
   Color _priorityColor(BuildContext context) => switch (task.priority) {
@@ -31,35 +31,35 @@ class _TaskCard extends StatelessWidget {
   };
 
   Color _statusBorderColor(BuildContext context) => switch (task.status) {
-    TaskStatus.today => context.color.primary,
-    TaskStatus.pending => context.color.warning,
+    TaskStatus.open => context.color.warning,
     TaskStatus.inProgress => context.color.primary,
-    TaskStatus.completed => context.color.success,
+    TaskStatus.resolved => context.color.success,
+    TaskStatus.closed => context.color.success,
   };
 
   Color _statusChipBg(BuildContext context) => switch (task.status) {
-    TaskStatus.today => context.color.brandSubtle,
-    TaskStatus.pending => context.color.warningAlt,
+    TaskStatus.open => context.color.warningAlt,
     TaskStatus.inProgress => context.color.brandSubtle,
-    TaskStatus.completed => context.color.successAlt,
+    TaskStatus.resolved => context.color.successAlt,
+    TaskStatus.closed => context.color.successAlt,
   };
 
   Color _statusChipText(BuildContext context) => switch (task.status) {
-    TaskStatus.today => context.color.primary,
-    TaskStatus.pending => context.color.warning,
+    TaskStatus.open => context.color.warning,
     TaskStatus.inProgress => context.color.primary,
-    TaskStatus.completed => context.color.success,
+    TaskStatus.resolved => context.color.success,
+    TaskStatus.closed => context.color.success,
   };
 
   String _statusLabel(BuildContext context) => switch (task.status) {
-    TaskStatus.today => context.locale.today,
-    TaskStatus.pending => context.locale.pending,
+    TaskStatus.open => context.locale.open,
     TaskStatus.inProgress => context.locale.inProgress,
-    TaskStatus.completed => context.locale.completed,
+    TaskStatus.resolved => context.locale.resolved,
+    TaskStatus.closed => context.locale.closed,
   };
 
   Color _startButtonColor(BuildContext context) => switch (task.status) {
-    TaskStatus.pending => context.color.warning,
+    TaskStatus.open => context.color.warning,
     _ => context.color.primary,
   };
 

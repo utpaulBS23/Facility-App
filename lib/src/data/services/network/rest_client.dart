@@ -224,22 +224,27 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> request,
   });
 
-  @GET(Endpoints.tasks)
-  Future<HttpResponse> getTasks({
+  @GET(Endpoints.issues)
+  Future<HttpResponse> getIssues({
     @Path('partnerId') required int partnerId,
-    @Query('bucket') required String bucket,
-    @Query('task_type') required String taskType,
+    @Query('status') String? status,
+    @Query('search') String? search,
+    @Query('facility_id') int? facilityId,
+    @Query('assigned_to') int? assignedTo,
+    @Query('per_page') int? perPage,
+    @Query('page') int? page,
   });
 
-  @GET(Endpoints.taskDetail)
-  Future<HttpResponse> getTaskDetail({
+  @GET(Endpoints.issueDetail)
+  Future<HttpResponse> getIssueDetail({
     @Path('partnerId') required int partnerId,
-    @Path('taskId') required int taskId,
+    @Path('issueId') required int issueId,
   });
 
   @GET(Endpoints.problemCategories)
   Future<HttpResponse> getProblemCategories({
     @Path('partnerId') required int partnerId,
+    @Query('category') String category = 'issueProblemCategory',
   });
 
   @POST(Endpoints.startIssue)

@@ -14,28 +14,27 @@ final class TaskRepositoryImpl extends TaskRepository {
   final RestClient _client;
 
   @override
-  Future<Result<List<TaskEntity>, Failure>> getTasks({
+  Future<Result<List<TaskEntity>, Failure>> getIssues({
     required int partnerId,
-    required String bucket,
-    required String taskType,
+    String? status,
+    int? facilityId,
   }) => asyncGuard(() async {
-    final response = await _client.getTasks(
+    final response = await _client.getIssues(
       partnerId: partnerId,
-      bucket: bucket,
-      taskType: taskType,
+      status: status,
+      facilityId: facilityId,
     );
-    final status = _bucketToStatus(bucket);
-    return TaskListResponseModel.fromJson(response.data).toEntities(status);
+    return TaskListResponseModel.fromJson(response.data).toEntities();
   });
 
   @override
-  Future<Result<TaskEntity, Failure>> getTaskDetail({
+  Future<Result<TaskEntity, Failure>> getIssueDetail({
     required int partnerId,
     required int id,
   }) => asyncGuard(() async {
-    final response = await _client.getTaskDetail(
+    final response = await _client.getIssueDetail(
       partnerId: partnerId,
-      taskId: id,
+      issueId: id,
     );
     return TaskDetailResponseModel.fromJson(response.data).toEntity();
   });
@@ -83,10 +82,4 @@ final class TaskRepositoryImpl extends TaskRepository {
     );
     return TaskMediaResponseModel.fromJson(response.data).toEntity();
   });
-
-  static TaskStatus _bucketToStatus(String bucket) => switch (bucket) {
-    'completed' => TaskStatus.completed,
-    'pending' => TaskStatus.pending,
-    _ => TaskStatus.today,
-  };
 }

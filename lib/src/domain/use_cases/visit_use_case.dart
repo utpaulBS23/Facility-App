@@ -178,6 +178,14 @@ final class ReportIssueUseCase {
   }
 }
 
+final class WatchVisitSubmittedUseCase {
+  const WatchVisitSubmittedUseCase(this._repository);
+
+  final VisitRepository _repository;
+
+  Stream<int> call() => _repository.onVisitSubmitted;
+}
+
 final class GetProblemCategoriesUseCase {
   const GetProblemCategoriesUseCase(this._repository);
 

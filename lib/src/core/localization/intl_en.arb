@@ -200,6 +200,8 @@
   "shift": "Shift",
   "inProgress": "In Progress",
   "resolved": "Resolved",
+  "open": "Open",
+  "closed": "Closed",
   "upcoming": "Upcoming",
   "shiftDetails": "Shift details",
   "assignedSupervisor": "Assigned Supervisor",

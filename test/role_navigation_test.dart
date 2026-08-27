@@ -97,15 +97,21 @@ Set<String> _menuRoutes(Set<UserPermission> permissions) => {
 
 void main() {
   group('permittedShellTabs per role', () {
-    test('Attendant sees exactly Dashboard, Shift, Task, Issues, Menu', () {
-      expect(_tabRoutes(_attendant), {
-        Routes.dashboard,
-        Routes.shift,
-        Routes.task,
-        Routes.issue,
-        Routes.menu,
-      });
-    });
+    test(
+      'Attendant sees exactly Dashboard, Shift, Issue, Menu '
+      '(Task tab slot now requires taskOccurrenceView — the board content it '
+      'shows post-reshuffle — which Attendant does not hold; Attendant\'s '
+      'taskView instead unlocks the Issue tab slot, which now shows the task '
+      'list)',
+      () {
+        expect(_tabRoutes(_attendant), {
+          Routes.dashboard,
+          Routes.shift,
+          Routes.issue,
+          Routes.menu,
+        });
+      },
+    );
 
     test(
       'Supervisor sees Dashboard, Shift, Attendance, Visit, Menu '
@@ -124,63 +130,58 @@ void main() {
     );
 
     test(
-      'Operation Manager sees Dashboard, Shift, Tracking, Issues, Menu '
-      '(Issues tab leaks in — issueView is shared between the Attendant Issues '
-      'tab and the Menu "Issue management" item; a role needing the Menu item '
-      'necessarily also unlocks the tab under a permission-only model. New '
-      'finding, not yet in plan Open Items — flag to product/backend before '
-      'treating this as resolved)',
+      'Operation Manager sees Dashboard, Shift, Tracking, Menu '
+      '(the old Issues-tab leak — issueView shared with the Menu "Issue '
+      'management" item — no longer applies: the Issue tab slot is now gated '
+      'on taskView, which Operation Manager does not hold)',
       () {
         expect(_tabRoutes(_operationManager), {
           Routes.dashboard,
           Routes.shift,
           Routes.tracking,
-          Routes.issue,
           Routes.menu,
         });
       },
     );
 
     test(
-      'Partner Owner sees Dashboard, Tracking, Issues, Menu '
-      '(same Issues-tab leak as Operation Manager, see above)',
+      'Partner Owner sees Dashboard, Tracking, Menu '
+      '(same resolved Issues-tab leak as Operation Manager, see above)',
       () {
         expect(_tabRoutes(_partnerOwner), {
           Routes.dashboard,
           Routes.tracking,
-          Routes.issue,
           Routes.menu,
         });
       },
     );
 
-    test('Technician sees exactly Dashboard, Task, Menu', () {
-      expect(_tabRoutes(_technician), {
-        Routes.dashboard,
-        Routes.task,
-        Routes.menu,
-      });
-    });
-  });
-
-  group('menuItemConfigs per role', () {
     test(
-      'Attendant menu matches matrix '
-      '(plus Issue management — issueView alone satisfies that item\'s gate, '
-      'same sharing as the Issues-tab leak above)',
+      'Technician sees exactly Dashboard, Issue, Menu '
+      '(Task tab slot now requires taskOccurrenceView, which Technician does '
+      'not hold; taskView instead unlocks the Issue tab slot)',
       () {
-        expect(_menuRoutes(_attendant), {
-          Routes.profile,
-          Routes.additionalIncome,
-          Routes.supplyRequest,
-          Routes.leaveRequests,
-          Routes.doorLock,
-          Routes.facilityExpense,
-          Routes.notification,
-          Routes.issueManagement,
+        expect(_tabRoutes(_technician), {
+          Routes.dashboard,
+          Routes.issue,
+          Routes.menu,
         });
       },
     );
+  });
+
+  group('menuItemConfigs per role', () {
+    test('Attendant menu matches matrix', () {
+      expect(_menuRoutes(_attendant), {
+        Routes.profile,
+        Routes.additionalIncome,
+        Routes.supplyRequest,
+        Routes.leaveRequests,
+        Routes.doorLock,
+        Routes.facilityExpense,
+        Routes.notification,
+      });
+    });
 
     test('Supervisor menu matches matrix', () {
       expect(_menuRoutes(_supervisor), {
@@ -202,7 +203,6 @@ void main() {
         Routes.supplyRequest,
         Routes.leaveRequests,
         Routes.report,
-        Routes.issueManagement,
         Routes.gatewayManagement,
         Routes.notification,
       });
@@ -217,7 +217,6 @@ void main() {
           Routes.profile,
           Routes.consumptionReport,
           Routes.leaveRequests,
-          Routes.issueManagement,
           Routes.notification,
           Routes.report,
         });

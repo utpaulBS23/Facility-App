@@ -3,7 +3,7 @@ enum IssuePriority { high, medium, normal, low }
 class ReportIssueRequestEntity {
   const ReportIssueRequestEntity({
     required this.visitId,
-    required this.categoryId,
+    required this.categoryValue,
     required this.title,
     required this.priority,
     this.description,
@@ -13,7 +13,7 @@ class ReportIssueRequestEntity {
   });
 
   final int visitId;
-  final int categoryId;
+  final String categoryValue;
   final String title;
   final IssuePriority priority;
   final String? description;

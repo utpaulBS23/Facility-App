@@ -200,6 +200,8 @@
   "shift": "শিফট",
   "inProgress": "চলমান",
   "resolved": "সমাধান হয়েছে",
+  "open": "খোলা",
+  "closed": "বন্ধ",
   "upcoming": "আসন্ন",
   "shiftDetails": "শিফটের বিবরণ",
   "assignedSupervisor": "নিযুক্ত সুপারভাইজার",

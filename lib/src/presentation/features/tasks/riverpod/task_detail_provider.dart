@@ -18,7 +18,7 @@ class TaskDetail extends _$TaskDetail {
     state = const AsyncValue.loading();
 
     final Result<TaskEntity, Failure> result = await ref
-        .read(getTaskDetailUseCaseProvider)
+        .read(getIssueDetailUseCaseProvider)
         .call(id: taskId);
 
     state = result.when(

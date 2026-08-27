@@ -895,23 +895,32 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> getTasks({
+  Future<HttpResponse<dynamic>> getIssues({
     required int partnerId,
-    required String bucket,
-    required String taskType,
+    String? status,
+    String? search,
+    int? facilityId,
+    int? assignedTo,
+    int? perPage,
+    int? page,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'bucket': bucket,
-      r'task_type': taskType,
+      r'status': status,
+      r'search': search,
+      r'facility_id': facilityId,
+      r'assigned_to': assignedTo,
+      r'per_page': perPage,
+      r'page': page,
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/tasks',
+            '/partners/${partnerId}/issues',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -924,9 +933,9 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> getTaskDetail({
+  Future<HttpResponse<dynamic>> getIssueDetail({
     required int partnerId,
-    required int taskId,
+    required int issueId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -936,7 +945,7 @@ class _RestClient implements RestClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/tasks/${taskId}',
+            '/partners/${partnerId}/issues/${issueId}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -951,16 +960,17 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> getProblemCategories({
     required int partnerId,
+    String category = 'issueProblemCategory',
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'category': category};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/problem-categories',
+            '/partners/${partnerId}/master-data/items',
             queryParameters: queryParameters,
             data: _data,
           )
