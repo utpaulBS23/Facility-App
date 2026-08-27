@@ -65,7 +65,7 @@ class _MenuHeaderSection extends StatelessWidget {
                             ),
                           ),
                           if (email.isNotEmpty) ...[
-                            Gap(spacing.s4),
+                            Gap(spacing.s2),
                             Text(
                               email,
                               style: textStyle.bodyMedium.copyWith(
@@ -74,7 +74,7 @@ class _MenuHeaderSection extends StatelessWidget {
                             ),
                           ],
                           if (partnerName case final partner? when partner.isNotEmpty) ...[
-                            Gap(spacing.s8),
+                            Gap(spacing.s4),
                             Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: spacing.s12,
