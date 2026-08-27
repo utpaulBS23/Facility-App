@@ -19,10 +19,12 @@ extension FailureLocalization on Failure {
       FailureType.shiftsUnavailable => locale.shiftsUnavailable,
       FailureType.noAccessibleFacility => locale.errorNoAccessibleFacility,
 
-      // Authorization. WHY: `Failure.permissionDenied` (the client-side gate)
-      // carries a hardcoded dev string here on purpose — same sentence either
-      // way, the distinction only matters in logs. See failure.dart.
-      FailureType.forbidden => locale.errorPermissionDenied,
+      // Authorization. WHY: a real server 403's message is backend copy and
+      // wins when populated; `Failure.permissionDenied` (the client-side
+      // gate) carries a dev string that must never reach the UI.
+      FailureType.forbidden => !isClientGate && message.isNotEmpty
+          ? message
+          : locale.errorPermissionDenied,
       FailureType.unauthorized => locale.errorSessionExpired,
 
       // Transport.
