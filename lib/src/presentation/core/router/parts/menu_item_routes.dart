@@ -7,20 +7,6 @@ part of '../router.dart';
 /// pattern).
 List<GoRoute> _menuItemRoutes(Ref ref) {
   return [
-    // WHY a distinct route/path from Routes.issue: that constant already
-    // names the Issues *shell branch* (a StatefulShellBranch route). Pushing
-    // a shell-branch route name from outside the shell (here, from the Menu
-    // tab) lands the page on the root navigator without the bottom nav bar
-    // and with back-stack behavior inconsistent with every other tab. This
-    // menu item reuses IssuesPage's content under its own top-level route
-    // instead of reaching into the shell.
-    GoRoute(
-      path: Routes.issueManagement,
-      name: Routes.issueManagement,
-      pageBuilder: (context, state) {
-        return const MaterialPage(child: IssuesPage());
-      },
-    ),
     GoRoute(
       path: Routes.profile,
       name: Routes.profile,

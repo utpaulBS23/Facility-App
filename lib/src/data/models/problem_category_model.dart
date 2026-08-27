@@ -5,18 +5,22 @@ part 'problem_category_model.mapper.dart';
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ProblemCategoryModel with ProblemCategoryModelMappable {
   ProblemCategoryModel({
-    required this.id,
-    this.name,
-    this.description,
+    required this.value,
+    this.label,
+    this.color,
     this.isActive,
+    this.proofRequiredOnComplete,
   });
 
-  final int id;
-  final String? name;
-  final String? description;
+  final String value;
+  final String? label;
+  final String? color;
 
   @MappableField(key: 'is_active')
   final bool? isActive;
+
+  @MappableField(key: 'proof_required_on_complete')
+  final bool? proofRequiredOnComplete;
 
   static const fromJson = ProblemCategoryModelMapper.fromJson;
 }

@@ -119,11 +119,11 @@ class Endpoints {
   static const String locationPingSync =
       '/partners/{partnerId}/location-pings/sync';
   static const String problemCategories =
-      '/partners/{partnerId}/problem-categories';
+      '/partners/{partnerId}/master-data/items';
 
   /// Tasks
-  static const String tasks = '/partners/{partnerId}/tasks';
-  static const String taskDetail = '/partners/{partnerId}/tasks/{taskId}';
+  static const String issues = '/partners/{partnerId}/issues';
+  static const String issueDetail = '/partners/{partnerId}/issues/{issueId}';
   static const String startIssue =
       '/partners/{partnerId}/issues/{issueId}/start';
   static const String completeIssue =

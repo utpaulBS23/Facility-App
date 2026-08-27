@@ -1,6 +1,8 @@
 enum TaskPriority { high, medium, low }
 
-enum TaskStatus { today, pending, inProgress, completed }
+// WHY: mirrors task_issues.status (the Issue List/Show API's own vocabulary),
+// not tasks.status — see Issue List/Show/Start/Complete API testing notes.
+enum TaskStatus { open, inProgress, resolved, closed }
 
 class TaskMediaEntity {
   const TaskMediaEntity({required this.id, required this.url, this.alt});

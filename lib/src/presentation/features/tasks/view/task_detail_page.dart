@@ -132,8 +132,7 @@ class _TaskDetailBody extends StatelessWidget {
   final ValueChanged<TaskEntity> onStartTap;
   final Future<void> Function(TaskEntity task) onCompleteTap;
 
-  bool get _canStart =>
-      task.status == TaskStatus.today || task.status == TaskStatus.pending;
+  bool get _canStart => task.status == TaskStatus.open;
   bool get _canComplete => task.status == TaskStatus.inProgress;
 
   Color _priorityColor(BuildContext context) => switch (task.priority) {

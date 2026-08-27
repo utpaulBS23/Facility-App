@@ -28,7 +28,7 @@ class _RosterListBody extends StatelessWidget {
             spacing.s16,
             spacing.s4,
           ),
-          child: _FacilityDropdown(
+          child: FacilityDropdown(
             facilities: facilities,
             selectedFacilityId: selectedFacilityId,
             onChanged: onFacilitySelected,
@@ -101,40 +101,6 @@ class _ErrorText extends StatelessWidget {
         color: context.color.text.secondary,
       ),
       textAlign: TextAlign.center,
-    );
-  }
-}
-
-class _FacilityDropdown extends StatelessWidget {
-  const _FacilityDropdown({
-    required this.facilities,
-    required this.selectedFacilityId,
-    required this.onChanged,
-  });
-
-  final List<AccessibleFacilityEntity> facilities;
-  final int? selectedFacilityId;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    if (facilities.isEmpty) return const SizedBox.shrink();
-
-    return AppDropdownButtonFormField<int>(
-      initialValue: selectedFacilityId,
-      decoration: InputDecoration(
-        labelText: context.locale.facilityName,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r6),
-        ),
-      ),
-      items: [
-        for (final facility in facilities)
-          DropdownMenuItem(value: facility.id, child: Text(facility.name)),
-      ],
-      onChanged: (value) {
-        if (value != null) onChanged(value);
-      },
     );
   }
 }

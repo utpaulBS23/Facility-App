@@ -78,8 +78,9 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
   static String? _$dueAt(TaskModel v) => v.dueAt;
   static const Field<TaskModel, String> _f$dueAt =
       Field('dueAt', _$dueAt, key: r'due_at', opt: true);
-  static String _$status(TaskModel v) => v.status;
-  static const Field<TaskModel, String> _f$status = Field('status', _$status);
+  static String _$issueStatus(TaskModel v) => v.issueStatus;
+  static const Field<TaskModel, String> _f$issueStatus =
+      Field('issueStatus', _$issueStatus, key: r'issue_status');
   static String _$priority(TaskModel v) => v.priority;
   static const Field<TaskModel, String> _f$priority =
       Field('priority', _$priority);
@@ -97,7 +98,7 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
     #description: _f$description,
     #facilityName: _f$facilityName,
     #dueAt: _f$dueAt,
-    #status: _f$status,
+    #issueStatus: _f$issueStatus,
     #priority: _f$priority,
     #issue: _f$issue,
     #media: _f$media,
@@ -110,7 +111,7 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
         description: data.dec(_f$description),
         facilityName: data.dec(_f$facilityName),
         dueAt: data.dec(_f$dueAt),
-        status: data.dec(_f$status),
+        issueStatus: data.dec(_f$issueStatus),
         priority: data.dec(_f$priority),
         issue: data.dec(_f$issue),
         media: data.dec(_f$media));
@@ -303,9 +304,9 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static String? _$dueAt(TaskDetailModel v) => v.dueAt;
   static const Field<TaskDetailModel, String> _f$dueAt =
       Field('dueAt', _$dueAt, key: r'due_at', opt: true);
-  static String _$status(TaskDetailModel v) => v.status;
-  static const Field<TaskDetailModel, String> _f$status =
-      Field('status', _$status);
+  static String _$issueStatus(TaskDetailModel v) => v.issueStatus;
+  static const Field<TaskDetailModel, String> _f$issueStatus =
+      Field('issueStatus', _$issueStatus, key: r'issue_status');
   static String _$priority(TaskDetailModel v) => v.priority;
   static const Field<TaskDetailModel, String> _f$priority =
       Field('priority', _$priority);
@@ -328,7 +329,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
     #description: _f$description,
     #facilityName: _f$facilityName,
     #dueAt: _f$dueAt,
-    #status: _f$status,
+    #issueStatus: _f$issueStatus,
     #priority: _f$priority,
     #proofRequiredOnComplete: _f$proofRequiredOnComplete,
     #issue: _f$issue,
@@ -342,7 +343,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
         description: data.dec(_f$description),
         facilityName: data.dec(_f$facilityName),
         dueAt: data.dec(_f$dueAt),
-        status: data.dec(_f$status),
+        issueStatus: data.dec(_f$issueStatus),
         priority: data.dec(_f$priority),
         proofRequiredOnComplete: data.dec(_f$proofRequiredOnComplete),
         issue: data.dec(_f$issue),

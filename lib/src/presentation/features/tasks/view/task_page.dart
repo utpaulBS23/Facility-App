@@ -16,7 +16,16 @@ import '../widgets/task_proof_bottom_sheet.dart';
 
 part '../widgets/task_card.dart';
 
-enum _TaskTab { today, pending, completed }
+enum _TaskTab { open, inProgress, resolved }
+
+// WHY: task_issues.status query values — see Issue List API testing notes.
+extension on _TaskTab {
+  String get apiStatus => switch (this) {
+    _TaskTab.open => 'open',
+    _TaskTab.inProgress => 'in_progress',
+    _TaskTab.resolved => 'resolved',
+  };
+}
 
 class TaskPage extends ConsumerStatefulWidget {
   const TaskPage({super.key});
@@ -26,23 +35,24 @@ class TaskPage extends ConsumerStatefulWidget {
 }
 
 class _TaskPageState extends ConsumerState<TaskPage> {
-  _TaskTab _selectedTab = _TaskTab.today;
+  _TaskTab _selectedTab = _TaskTab.open;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(tasksProvider.notifier).fetch(bucket: 'today'),
+      (_) =>
+          ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus),
     );
   }
 
   void _onTabChanged(_TaskTab tab) {
     setState(() => _selectedTab = tab);
-    ref.read(tasksProvider.notifier).fetch(bucket: tab.name);
+    ref.read(tasksProvider.notifier).fetch(status: tab.apiStatus);
   }
 
   void _onRetry() {
-    ref.read(tasksProvider.notifier).fetch(bucket: _selectedTab.name);
+    ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus);
   }
 
   void _onViewTap(TaskEntity task) =>
@@ -60,7 +70,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
           .then(
             (_) => ref
                 .read(tasksProvider.notifier)
-                .fetch(bucket: _selectedTab.name),
+                .fetch(status: _selectedTab.apiStatus),
           )
           // WHY: error already surfaced via AsyncValue.error on tasksProvider; suppress unhandled Future
           .catchError((_) {});
@@ -74,7 +84,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
             .read(tasksProvider.notifier)
             .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
         await ref.read(tasksProvider.notifier).completeIssue(issueId: task.id);
-        await ref.read(tasksProvider.notifier).fetch(bucket: _selectedTab.name);
+        await ref
+            .read(tasksProvider.notifier)
+            .fetch(status: _selectedTab.apiStatus);
       },
     );
   }
@@ -189,21 +201,21 @@ class _TaskTabBar extends StatelessWidget {
         child: Row(
           children: [
             _Tab(
-              label: context.locale.today,
-              isSelected: selectedTab == _TaskTab.today,
-              onTap: () => onTabChanged(_TaskTab.today),
+              label: context.locale.open,
+              isSelected: selectedTab == _TaskTab.open,
+              onTap: () => onTabChanged(_TaskTab.open),
             ),
             Container(width: 1, height: 44, color: context.color.borderSubtle),
             _Tab(
-              label: context.locale.pending,
-              isSelected: selectedTab == _TaskTab.pending,
-              onTap: () => onTabChanged(_TaskTab.pending),
+              label: context.locale.inProgress,
+              isSelected: selectedTab == _TaskTab.inProgress,
+              onTap: () => onTabChanged(_TaskTab.inProgress),
             ),
             Container(width: 1, height: 44, color: context.color.borderSubtle),
             _Tab(
-              label: context.locale.completed,
-              isSelected: selectedTab == _TaskTab.completed,
-              onTap: () => onTabChanged(_TaskTab.completed),
+              label: context.locale.resolved,
+              isSelected: selectedTab == _TaskTab.resolved,
+              onTap: () => onTabChanged(_TaskTab.resolved),
             ),
           ],
         ),

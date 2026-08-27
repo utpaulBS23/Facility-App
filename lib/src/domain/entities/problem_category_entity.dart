@@ -1,11 +1,13 @@
 class ProblemCategoryEntity {
   const ProblemCategoryEntity({
-    required this.id,
+    required this.value,
     required this.name,
-    this.description = '',
+    this.color,
+    this.proofRequiredOnComplete = false,
   });
 
-  final int id;
+  final String value;
   final String name;
-  final String description;
+  final String? color;
+  final bool proofRequiredOnComplete;
 }

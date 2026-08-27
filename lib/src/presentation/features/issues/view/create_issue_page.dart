@@ -91,7 +91,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
         .submit(
           request: ReportIssueRequestEntity(
             visitId: widget.visitId,
-            categoryId: _selectedCategory!.id,
+            categoryValue: _selectedCategory!.value,
             title: _titleController.text.trim(),
             priority: _priority,
             photoPath: _photo?.path,
