@@ -157,6 +157,8 @@ abstract class RestClient {
   Future<HttpResponse> getMonthlyAttendanceOverview({
     @Path('partnerId') required int partnerId,
     @Query('month') required String month,
+    @Query('facility_id') int? facilityId,
+    @Query('user_id') int? userId,
   });
 
   @POST(Endpoints.approveAttendance)

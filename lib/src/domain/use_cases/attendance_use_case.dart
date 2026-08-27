@@ -12,6 +12,8 @@ final class GetMonthlyAttendanceOverviewUseCase {
 
   Future<Result<MonthlyAttendanceSummaryEntity, Failure>> call({
     required String month,
+    int? facilityId,
+    int? userId,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -19,6 +21,8 @@ final class GetMonthlyAttendanceOverviewUseCase {
     final result = await _repository.getMonthlyAttendanceOverview(
       partnerId: partnerId,
       month: month,
+      facilityId: facilityId,
+      userId: userId,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
