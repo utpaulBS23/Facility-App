@@ -42,7 +42,12 @@ class TaskOccurrences extends _$TaskOccurrences {
   Future<void> fetch({required int facilityId, String? date}) async {
     _facilityId = facilityId;
     _date = date;
-    state = const AsyncValue.loading();
+    // WHY: keep the previous list visible during a refetch — dropping it
+    // (bare AsyncValue.loading()) made the checklist page fall back to its
+    // stale route-arg occurrence and show no loading affordance at all.
+    state = AsyncValue<TaskOccurrenceListEntity>.loading().copyWithPrevious(
+      state,
+    );
 
     final result = await ref
         .read(getTaskOccurrencesUseCaseProvider)
