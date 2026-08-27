@@ -11,11 +11,11 @@ class _OccurrenceStatsHeader extends StatelessWidget {
 
     return Container(
       color: context.color.onPrimary,
-      padding: EdgeInsets.symmetric(horizontal: spacing.s16, vertical: spacing.s8),
+      padding: .symmetric(horizontal: spacing.s16, vertical: spacing.s8),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+          borderRadius: .circular(context.dimensions.radius.r12),
         ),
         child: Row(
           children: [
@@ -79,9 +79,9 @@ class _OccurrenceStatItem extends StatelessWidget {
 
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: spacing.s8),
+        padding: .symmetric(vertical: spacing.s8),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Text('$count', style: context.textStyle.titleMedium.copyWith(color: color)),
             Gap(spacing.s4),

@@ -25,6 +25,9 @@ class TaskOccurrences extends _$TaskOccurrences {
     // of being patched locally.
     void refetchOnSuccess(AsyncValue? previous, AsyncValue next) {
       if (next case AsyncData(value: != null)) {
+        // WHY: _facilityId is only ever null before the first fetch() —
+        // a mutation can't succeed before the board that offers it has
+        // loaded, so this guard never actually skips a real refetch.
         final facilityId = _facilityId;
         if (facilityId != null) fetch(facilityId: facilityId, date: _date);
       }
@@ -58,11 +61,10 @@ class TaskOccurrences extends _$TaskOccurrences {
 
 }
 
+// WHY: GetPartnerStaffUseCase has no facility scoping — same partner-wide
+// staff list every other assign flow uses (see partnerStaffProvider).
 @riverpod
-Future<List<PartnerStaffEntity>> occurrenceFacilityStaff(
-  Ref ref,
-  int facilityId,
-) async {
+Future<List<PartnerStaffEntity>> occurrenceFacilityStaff(Ref ref) async {
   final result = await ref.read(getPartnerStaffUseCaseProvider).call();
   return switch (result) {
     Success(:final data) => data ?? [],

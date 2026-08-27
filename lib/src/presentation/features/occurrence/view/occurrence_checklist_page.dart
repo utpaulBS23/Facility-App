@@ -81,7 +81,7 @@ class _OccurrenceChecklistPageState
       body: items.isEmpty
           ? Center(
               child: Padding(
-                padding: EdgeInsets.all(spacing.s24),
+                padding: .all(spacing.s24),
                 child: BodySmallText(
                   context.locale.noTasksFound,
                   color: context.color.text.secondary,
@@ -89,7 +89,7 @@ class _OccurrenceChecklistPageState
               ),
             )
           : ListView.separated(
-              padding: EdgeInsets.all(spacing.s16),
+              padding: .all(spacing.s16),
               itemCount: items.length,
               separatorBuilder: (_, _) => Gap(spacing.s12),
               itemBuilder: (_, i) => _ChecklistItemForm(

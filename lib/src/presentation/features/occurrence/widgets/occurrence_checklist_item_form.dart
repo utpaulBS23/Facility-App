@@ -119,20 +119,20 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
 
     final mediaUrl = widget.item.response?.mediaUrl;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(radius.r6),
+      borderRadius: .circular(radius.r6),
       child: _photo != null
           ? Image.file(
               File(_photo!.path),
               width: spacing.s56,
               height: spacing.s56,
-              fit: BoxFit.cover,
+              fit: .cover,
             )
           : mediaUrl != null
           ? Image.network(
               mediaUrl,
               width: spacing.s56,
               height: spacing.s56,
-              fit: BoxFit.cover,
+              fit: .cover,
               errorBuilder: (_, _, _) => _lockedPhotoChip(context),
             )
           : _lockedPhotoChip(context),
@@ -145,7 +145,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
       width: spacing.s56,
       height: spacing.s56,
       color: context.color.subtle,
-      alignment: Alignment.center,
+      alignment: .center,
       child: Icon(Icons.check_circle_outline, color: context.color.success),
     );
   }
@@ -161,7 +161,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
             onTap: _isSaving ? null : () => setState(() => _ratingValue = value),
             behavior: HitTestBehavior.opaque,
             child: Padding(
-              padding: EdgeInsets.only(right: spacing.s8),
+              padding: .only(right: spacing.s8),
               child: Icon(
                 isFilled ? Icons.star_rounded : Icons.star_border_rounded,
                 size: 32,
@@ -214,15 +214,15 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
     final isAnswered = widget.item.isAnswered;
 
     return Container(
-      padding: EdgeInsets.all(spacing.s16),
+      padding: .all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
         border: Border.all(color: context.color.borderSubtle),
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+        borderRadius: .circular(context.dimensions.radius.r12),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
         children: [
           Row(
             children: [
