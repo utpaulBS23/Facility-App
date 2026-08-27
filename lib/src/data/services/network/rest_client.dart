@@ -68,12 +68,6 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
   });
 
-  @GET(Endpoints.facilities)
-  Future<HttpResponse> getFacilities({
-    @Path('partnerId') required int partnerId,
-    @Query('page') int? page,
-  });
-
   @POST(Endpoints.assignShiftSlot)
   Future<HttpResponse> assignShiftSlot({
     @Path('partnerId') required int partnerId,

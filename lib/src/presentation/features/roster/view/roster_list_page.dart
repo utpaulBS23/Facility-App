@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../../domain/entities/app_permission.dart';
-import '../../../../domain/entities/facility_entity.dart';
+import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_back_button.dart';
@@ -17,7 +17,6 @@ import '../../../core/widgets/form_dialog_shell.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/create_roster_provider.dart';
-import '../riverpod/facility_list_provider.dart';
 import '../riverpod/publish_roster_provider.dart';
 import '../riverpod/roster_list_provider.dart';
 import '../riverpod/shift_global_config_provider.dart';
@@ -52,16 +51,21 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
   }
 
   Future<void> _loadInitialData() async {
-    await Future.wait([
-      _loadFacilities(),
-      ref.read(shiftGlobalConfigProvider.notifier).fetch(),
-    ]);
+    _selectInitialFacility();
+    await ref.read(shiftGlobalConfigProvider.notifier).fetch();
   }
 
-  Future<void> _loadFacilities() async {
-    await ref.read(facilityListProvider.notifier).fetch();
-    final facilities = ref.read(facilityListProvider).valueOrNull;
+  // WHY: accessible_facilities comes from the login response, cached on the
+  // keepAlive session repository — no network call needed here.
+  void _selectInitialFacility() {
+    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
     if (facilities == null || facilities.isEmpty || !mounted) return;
+    for (final facility in facilities) {
+      if (facility.isPrimary) {
+        _onFacilitySelected(facility.id);
+        return;
+      }
+    }
     _onFacilitySelected(facilities.first.id);
   }
 
@@ -129,7 +133,9 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final facilitiesState = ref.watch(facilityListProvider);
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
     final rosterState = ref.watch(rosterListProvider);
     final shiftGlobalConfigState = ref.watch(shiftGlobalConfigProvider);
 
@@ -170,7 +176,7 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         ),
       ),
       body: _RosterListBody(
-        facilitiesState: facilitiesState,
+        facilities: facilities,
         rosterState: rosterState,
         selectedFacilityId: _selectedFacilityId,
         onFacilitySelected: _onFacilitySelected,
