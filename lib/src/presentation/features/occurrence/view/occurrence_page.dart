@@ -9,13 +9,13 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../domain/entities/login_entity.dart';
-import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/staff_tile.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_reassign_provider.dart';
@@ -66,16 +66,12 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
   }
 
   void _openReassignSheet(BuildContext context, TaskOccurrenceEntity occurrence) {
-    final facilityId = _facilityId;
-    if (facilityId == null) return;
+    if (_facilityId == null) return;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _OccurrenceReassignSheet(
-        occurrence: occurrence,
-        facilityId: facilityId,
-      ),
+      builder: (_) => _OccurrenceReassignSheet(occurrence: occurrence),
     );
   }
 
@@ -91,7 +87,7 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        title: DisplaySmallText(context.locale.occurrences),
+        title: DisplaySmallText(context.locale.board),
         titleSpacing: spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,

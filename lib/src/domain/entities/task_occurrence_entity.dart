@@ -39,6 +39,21 @@ class ChecklistItemAnswerEntity {
   final String? textValue;
   final bool hasProof;
   final String? mediaUrl;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChecklistItemAnswerEntity &&
+          id == other.id &&
+          ratingValue == other.ratingValue &&
+          booleanValue == other.booleanValue &&
+          textValue == other.textValue &&
+          hasProof == other.hasProof &&
+          mediaUrl == other.mediaUrl;
+
+  @override
+  int get hashCode =>
+      Object.hash(id, ratingValue, booleanValue, textValue, hasProof, mediaUrl);
 }
 
 /// One checklist item on a [TaskOccurrenceEntity] — `response` is `null`
@@ -66,6 +81,18 @@ class TaskOccurrenceChecklistItemEntity {
     responseType: responseType,
     response: response ?? this.response,
   );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TaskOccurrenceChecklistItemEntity &&
+          id == other.id &&
+          label == other.label &&
+          responseType == other.responseType &&
+          response == other.response;
+
+  @override
+  int get hashCode => Object.hash(id, label, responseType, response);
 }
 
 /// One generated slot for a facility on a day. Occurrences are never
