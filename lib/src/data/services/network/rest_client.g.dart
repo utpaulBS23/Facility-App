@@ -617,9 +617,16 @@ class _RestClient implements RestClient {
   Future<HttpResponse<dynamic>> getMonthlyAttendanceOverview({
     required int partnerId,
     required String month,
+    int? facilityId,
+    int? userId,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'month': month};
+    final queryParameters = <String, dynamic>{
+      r'month': month,
+      r'facility_id': facilityId,
+      r'user_id': userId,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(

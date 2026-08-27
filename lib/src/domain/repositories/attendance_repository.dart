@@ -6,6 +6,8 @@ abstract base class AttendanceRepository extends Repository {
   Future<Result<MonthlyAttendanceSummaryEntity, Failure>> getMonthlyAttendanceOverview({
     required int partnerId,
     required String month,
+    int? facilityId,
+    int? userId,
   });
 
   Future<Result<AttendanceItemEntity, Failure>> approveAttendance({

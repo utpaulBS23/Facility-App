@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/task_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/filter_dropdown.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
@@ -36,24 +38,31 @@ class TaskPage extends ConsumerStatefulWidget {
 
 class _TaskPageState extends ConsumerState<TaskPage> {
   _TaskTab _selectedTab = _TaskTab.open;
+  int? _selectedFacilityId;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) =>
-          ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+  }
+
+  void _fetch() {
+    ref
+        .read(tasksProvider.notifier)
+        .fetch(status: _selectedTab.apiStatus, facilityId: _selectedFacilityId);
   }
 
   void _onTabChanged(_TaskTab tab) {
     setState(() => _selectedTab = tab);
-    ref.read(tasksProvider.notifier).fetch(status: tab.apiStatus);
+    _fetch();
   }
 
-  void _onRetry() {
-    ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus);
+  void _onFacilityChanged(int? facilityId) {
+    setState(() => _selectedFacilityId = facilityId);
+    _fetch();
   }
+
+  void _onRetry() => _fetch();
 
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
@@ -63,15 +72,11 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   }
 
   void _onCompleteTap(TaskEntity task) {
-    if (task.media.isNotEmpty) {
+    if (!task.proofRequiredOnComplete || task.media.isNotEmpty) {
       ref
           .read(tasksProvider.notifier)
           .completeIssue(issueId: task.id)
-          .then(
-            (_) => ref
-                .read(tasksProvider.notifier)
-                .fetch(status: _selectedTab.apiStatus),
-          )
+          .then((_) => _fetch())
           // WHY: error already surfaced via AsyncValue.error on tasksProvider; suppress unhandled Future
           .catchError((_) {});
       return;
@@ -84,9 +89,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
             .read(tasksProvider.notifier)
             .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
         await ref.read(tasksProvider.notifier).completeIssue(issueId: task.id);
-        await ref
-            .read(tasksProvider.notifier)
-            .fetch(status: _selectedTab.apiStatus);
+        _fetch();
       },
     );
   }
@@ -95,6 +98,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final taskState = ref.watch(tasksProvider);
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -107,6 +113,27 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (facilities.length > 1)
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                spacing.s16,
+                spacing.s12,
+                spacing.s16,
+                0,
+              ),
+              child: FilterDropdown(
+                label: context.locale.facilityName,
+                value: _selectedFacilityId,
+                items: [
+                  for (final facility in facilities)
+                    DropdownMenuItem(
+                      value: facility.id,
+                      child: Text(facility.name),
+                    ),
+                ],
+                onChanged: _onFacilityChanged,
+              ),
+            ),
           _TaskTabBar(selectedTab: _selectedTab, onTabChanged: _onTabChanged),
           Expanded(
             child: taskState.when(
