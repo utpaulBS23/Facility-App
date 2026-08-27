@@ -85,8 +85,11 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                     thickness: spacing.s4,
                     child: ListView(
                       children: [
-                        for (final item in visibleItems)
-                          _MenuItemTile(config: item),
+                        for (var i = 0; i < visibleItems.length; i++)
+                          _MenuItemTile(
+                            config: visibleItems[i],
+                            showDivider: i < visibleItems.length - 1,
+                          ),
                         _LogoutTile(onTap: _onLogoutTap),
                       ],
                     ),
@@ -109,39 +112,40 @@ class _LogoutTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: context.padding.p16,
-          vertical: context.spacing.s16,
-        ),
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          border: Border(bottom: BorderSide(color: context.color.borderSubtle)),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.logout_rounded,
-              size: context.spacing.s20,
-              color: context.color.text.secondary,
-            ),
-            Gap(context.spacing.s12),
-            Expanded(
-              child: Text(
-                context.locale.logout,
-                style: context.textStyle.bodyLarge.copyWith(
-                  color: context.color.text.primary,
+    return Padding(
+      padding: EdgeInsets.all(context.spacing.s4),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.padding.p16,
+            vertical: context.spacing.s16,
+          ),
+          decoration: BoxDecoration(
+            color: context.color.onPrimary,
+            border: Border.all(color: context.color.primary),
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.logout_rounded,
+                size: context.spacing.s20,
+                color: context.color.primary,
+              ),
+              Gap(context.spacing.s12),
+              Expanded(
+                child: Text(
+                  context.locale.logout,
+                  style: context.textStyle.bodyLarge.copyWith(
+                    color: context.color.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: context.color.text.muted,
-              size: context.spacing.s20,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
