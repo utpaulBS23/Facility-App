@@ -44,6 +44,10 @@ abstract class Failure with _$Failure {
     required String message,
     String? code,
     StackTrace? stackTrace,
+    // WHY: distinguishes the client-side permission gate (message is a dev
+    // string, never UI copy) from a real server 403 (message is backend
+    // copy, safe to show). See FailureLocalization.forbidden.
+    @Default(false) bool isClientGate,
   }) = _Failure;
 
   const Failure._();
@@ -75,6 +79,7 @@ abstract class Failure with _$Failure {
   static const Failure permissionDenied = Failure(
     type: FailureType.forbidden,
     message: 'Client-side permission gate rejected the action.',
+    isClientGate: true,
   );
 
   /// [operation] is a developer hint (e.g. `'get rosters'`) — logged, never shown.
