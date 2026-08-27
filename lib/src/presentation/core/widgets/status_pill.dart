@@ -14,11 +14,13 @@ class StatusPill extends StatelessWidget {
     required this.label,
     required this.background,
     required this.foreground,
+    this.icon,
   });
 
   final String label;
   final Color background;
   final Color foreground;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +35,18 @@ class StatusPill extends StatelessWidget {
         color: background,
         borderRadius: BorderRadius.circular(dimensions.radius.r6),
       ),
-      child: Text(
-        label,
-        style: context.textStyle.bodySmall.copyWith(color: foreground),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 12, color: foreground),
+            SizedBox(width: dimensions.spacing.s4),
+          ],
+          Text(
+            label,
+            style: context.textStyle.bodySmall.copyWith(color: foreground),
+          ),
+        ],
       ),
     );
   }

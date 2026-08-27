@@ -24,6 +24,13 @@ Color _occurrenceStatusBackground(BuildContext context, TaskOccurrenceStatus sta
       TaskOccurrenceStatus.missed => context.color.errorAlt,
     };
 
+IconData _occurrenceStatusIcon(TaskOccurrenceStatus status) => switch (status) {
+  TaskOccurrenceStatus.pending => Icons.hourglass_top_rounded,
+  TaskOccurrenceStatus.onTime => Icons.check_circle_rounded,
+  TaskOccurrenceStatus.late => Icons.schedule_rounded,
+  TaskOccurrenceStatus.missed => Icons.cancel_rounded,
+};
+
 class _OccurrenceStatusChip extends StatelessWidget {
   const _OccurrenceStatusChip({required this.status});
 
@@ -33,6 +40,7 @@ class _OccurrenceStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return StatusPill(
       label: _occurrenceStatusLabel(context, status),
+      icon: _occurrenceStatusIcon(status),
       background: _occurrenceStatusBackground(context, status),
       foreground: _occurrenceStatusForeground(context, status),
     );
