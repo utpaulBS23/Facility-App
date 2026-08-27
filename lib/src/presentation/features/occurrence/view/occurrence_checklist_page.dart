@@ -64,11 +64,12 @@ class _OccurrenceChecklistPageState
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final occurrencesAsync = ref.watch(taskOccurrencesProvider);
     final current = _current(
-      ref.watch(taskOccurrencesProvider).valueOrNull?.occurrences ??
-          [widget.occurrence],
+      occurrencesAsync.valueOrNull?.occurrences ?? [widget.occurrence],
     );
     final items = current.checklistItems ?? const <TaskOccurrenceChecklistItemEntity>[];
+    final isRefreshing = occurrencesAsync.isLoading && occurrencesAsync.hasValue;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -78,26 +79,37 @@ class _OccurrenceChecklistPageState
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: items.isEmpty
-          ? Center(
-              child: Padding(
-                padding: .all(spacing.s24),
-                child: BodySmallText(
-                  context.locale.noTasksFound,
-                  color: context.color.text.secondary,
+      body: Stack(
+        children: [
+          items.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: .all(spacing.s24),
+                    child: BodySmallText(
+                      context.locale.noTasksFound,
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                )
+              : ListView.separated(
+                  padding: .all(spacing.s16),
+                  itemCount: items.length,
+                  separatorBuilder: (_, _) => Gap(spacing.s12),
+                  itemBuilder: (_, i) => _ChecklistItemForm(
+                    key: ValueKey(items[i].id),
+                    occurrenceId: current.id,
+                    item: items[i],
+                  ),
                 ),
-              ),
-            )
-          : ListView.separated(
-              padding: .all(spacing.s16),
-              itemCount: items.length,
-              separatorBuilder: (_, _) => Gap(spacing.s12),
-              itemBuilder: (_, i) => _ChecklistItemForm(
-                key: ValueKey(items[i].id),
-                occurrenceId: current.id,
-                item: items[i],
+          if (isRefreshing)
+            Positioned.fill(
+              child: ColoredBox(
+                color: context.color.scaffoldBackground.withValues(alpha: 0.6),
+                child: const Center(child: CircularProgressIndicator.adaptive()),
               ),
             ),
+        ],
+      ),
       bottomNavigationBar: current.status == TaskOccurrenceStatus.pending
           ? PermissionGate(
               permissions: const [UserPermission.taskOccurrenceSubmit],
