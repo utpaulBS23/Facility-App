@@ -8,6 +8,9 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/partner_staff_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
+import '../../../core/widgets/filter_dropdown.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -19,6 +22,7 @@ import '../riverpod/attendance_provider.dart';
 
 part '../widgets/attendance_approve_reject_bar.dart';
 part '../widgets/attendance_body.dart';
+part '../widgets/attendance_filter_bar.dart';
 part '../widgets/attendance_detail_check_card.dart';
 part '../widgets/attendance_detail_info_card.dart';
 part '../widgets/attendance_detail_main_card.dart';
@@ -40,6 +44,8 @@ class AttendancePage extends ConsumerStatefulWidget {
 
 class _AttendancePageState extends ConsumerState<AttendancePage> {
   late String _selectedMonth;
+  int? _selectedFacilityId;
+  int? _selectedUserId;
 
   @override
   void initState() {
@@ -54,6 +60,14 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
 
   void _onApplyLeave() {
     context.pushNamed(Routes.applyLeave);
+  }
+
+  void _onFacilityChanged(int? facilityId) {
+    setState(() => _selectedFacilityId = facilityId);
+  }
+
+  void _onUserChanged(int? userId) {
+    setState(() => _selectedUserId = userId);
   }
 
   Future<void> _pickMonth() async {
@@ -78,7 +92,17 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(monthlyAttendanceOverviewProvider(_selectedMonth));
+    final state = ref.watch(
+      monthlyAttendanceOverviewProvider(
+        _selectedMonth,
+        facilityId: _selectedFacilityId,
+        userId: _selectedUserId,
+      ),
+    );
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
+    final staffAsync = ref.watch(attendanceStaffOptionsProvider);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -95,18 +119,35 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
           ),
         ],
       ),
-      body: state.when(
-        data: (summary) => PermissionGate(
-          permissions: [UserPermission.leaveRequest],
-          builder: (context, isGranted) => _AttendanceBody(
-            summary: summary,
-            onItemTap: _onItemTap,
-            onApplyLeave: _onApplyLeave,
-            showApplyLeave: isGranted,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _AttendanceFilterBar(
+            facilities: facilities,
+            selectedFacilityId: _selectedFacilityId,
+            onFacilityChanged: _onFacilityChanged,
+            staffAsync: staffAsync,
+            selectedUserId: _selectedUserId,
+            onUserChanged: _onUserChanged,
           ),
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text(err.localizedMessage(context))),
+          Expanded(
+            child: state.when(
+              data: (summary) => PermissionGate(
+                permissions: [UserPermission.leaveRequest],
+                builder: (context, isGranted) => _AttendanceBody(
+                  summary: summary,
+                  onItemTap: _onItemTap,
+                  onApplyLeave: _onApplyLeave,
+                  showApplyLeave: isGranted,
+                ),
+              ),
+              loading: () =>
+                  const Center(child: CircularProgressIndicator()),
+              error: (err, _) =>
+                  Center(child: Text(err.localizedMessage(context))),
+            ),
+          ),
+        ],
       ),
     );
   }

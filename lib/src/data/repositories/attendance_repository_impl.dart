@@ -28,11 +28,15 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
   Future<Result<MonthlyAttendanceSummaryEntity, Failure>> getMonthlyAttendanceOverview({
     required int partnerId,
     required String month,
+    int? facilityId,
+    int? userId,
   }) {
     return asyncGuard(() async {
       final response = await _client.getMonthlyAttendanceOverview(
         partnerId: partnerId,
         month: month,
+        facilityId: facilityId,
+        userId: userId,
       );
       final body = response.data as Map<String, dynamic>;
       final success = body['success'] as bool? ?? false;
