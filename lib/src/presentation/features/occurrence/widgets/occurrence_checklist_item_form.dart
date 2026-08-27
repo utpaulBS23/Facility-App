@@ -5,10 +5,12 @@ class _ChecklistItemForm extends ConsumerStatefulWidget {
     super.key,
     required this.occurrenceId,
     required this.item,
+    required this.order,
   });
 
   final int occurrenceId;
   final TaskOccurrenceChecklistItemEntity item;
+  final int order;
 
   @override
   ConsumerState<_ChecklistItemForm> createState() => _ChecklistItemFormState();
@@ -103,15 +105,33 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
 
     if (!hasSavedPhoto) {
       return Expanded(
-        child: OutlinedButton.icon(
-          onPressed: _isSaving ? null : _pickPhoto,
-          icon: Icon(
-            _photo != null ? Icons.check_circle_outline : Icons.camera_alt_outlined,
-            size: 18,
-          ),
-          label: Text(
-            _photo != null ? context.locale.changePhoto : context.locale.takePhoto,
-            overflow: TextOverflow.ellipsis,
+        child: GestureDetector(
+          onTap: _isSaving ? null : _pickPhoto,
+          child: Container(
+            padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
+            decoration: BoxDecoration(
+              border: Border.all(color: context.color.borderSubtle),
+              borderRadius: .circular(radius.r10),
+            ),
+            child: Row(
+              mainAxisAlignment: .center,
+              children: [
+                Icon(
+                  _photo != null
+                      ? Icons.check_circle_outline
+                      : Icons.camera_alt_outlined,
+                  size: 16,
+                  color: _photo != null ? context.color.success : context.color.text.secondary,
+                ),
+                Gap(spacing.s8),
+                Flexible(
+                  child: BodySmallText(
+                    _photo != null ? context.locale.changePhoto : context.locale.takePhoto,
+                    color: context.color.text.secondary,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -174,26 +194,22 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
       TaskOccurrenceChecklistResponseType.boolean => Row(
         children: [
           Expanded(
-            child: OutlinedButton(
-              onPressed: _isSaving ? null : () => setState(() => _booleanValue = true),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: _booleanValue == true ? context.color.successAlt : null,
-                foregroundColor: context.color.success,
-                side: BorderSide(color: context.color.success),
-              ),
-              child: Text(context.locale.occurrenceYes),
+            child: _BooleanChoiceChip(
+              label: context.locale.occurrenceYes,
+              icon: Icons.check_rounded,
+              isSelected: _booleanValue == true,
+              color: context.color.success,
+              onTap: _isSaving ? null : () => setState(() => _booleanValue = true),
             ),
           ),
           Gap(spacing.s8),
           Expanded(
-            child: OutlinedButton(
-              onPressed: _isSaving ? null : () => setState(() => _booleanValue = false),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: _booleanValue == false ? context.color.errorAlt : null,
-                foregroundColor: context.color.error,
-                side: BorderSide(color: context.color.error),
-              ),
-              child: Text(context.locale.occurrenceNo),
+            child: _BooleanChoiceChip(
+              label: context.locale.occurrenceNo,
+              icon: Icons.close_rounded,
+              isSelected: _booleanValue == false,
+              color: context.color.error,
+              onTap: _isSaving ? null : () => setState(() => _booleanValue = false),
             ),
           ),
         ],
@@ -211,21 +227,29 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
     final isAnswered = widget.item.isAnswered;
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
       padding: .all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        border: Border.all(color: context.color.borderSubtle),
-        borderRadius: .circular(context.dimensions.radius.r12),
+        border: Border.all(
+          color: isAnswered ? context.color.success : context.color.borderSubtle,
+          width: isAnswered ? 1.5 : 1,
+        ),
+        borderRadius: .circular(radius.r12),
       ),
       child: Column(
         mainAxisSize: .min,
         crossAxisAlignment: .start,
         children: [
           Row(
+            crossAxisAlignment: .start,
             children: [
+              _ItemOrderBadge(order: widget.order),
+              Gap(spacing.s12),
               Expanded(child: LabelLargeText(widget.item.label)),
               if (isAnswered)
                 Icon(Icons.check_circle_rounded, size: 18, color: context.color.success),
@@ -256,6 +280,83 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ItemOrderBadge extends StatelessWidget {
+  const _ItemOrderBadge({required this.order});
+
+  final int order;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = context.dimensions.radius;
+
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        color: context.color.subtle,
+        borderRadius: .circular(radius.r6),
+      ),
+      alignment: .center,
+      child: Text(
+        '$order',
+        style: context.textStyle.bodySmall.copyWith(color: context.color.text.primary),
+      ),
+    );
+  }
+}
+
+class _BooleanChoiceChip extends StatelessWidget {
+  const _BooleanChoiceChip({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
+        decoration: BoxDecoration(
+          color: isSelected ? color.withValues(alpha: 0.08) : context.color.onPrimary,
+          borderRadius: .circular(radius.r10),
+          border: Border.all(
+            color: isSelected ? color : context.color.borderSubtle,
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: .center,
+          mainAxisSize: .min,
+          children: [
+            Icon(icon, size: 16, color: isSelected ? color : context.color.text.secondary),
+            Gap(spacing.s8),
+            Text(
+              label,
+              style: context.textStyle.bodyMedium.copyWith(
+                color: isSelected ? color : context.color.text.primary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
