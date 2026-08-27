@@ -79,12 +79,17 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       if (hasAnyPermission(item.permissions, permissions)) item,
                   ];
 
-                  return ListView(
-                    children: [
-                      for (final item in visibleItems)
-                        _MenuItemTile(config: item),
-                      _LogoutTile(onTap: _onLogoutTap),
-                    ],
+                  return RawScrollbar(
+                    thumbColor: color.primary,
+                    radius: Radius.circular(context.dimensions.radius.r4),
+                    thickness: spacing.s4,
+                    child: ListView(
+                      children: [
+                        for (final item in visibleItems)
+                          _MenuItemTile(config: item),
+                        _LogoutTile(onTap: _onLogoutTap),
+                      ],
+                    ),
                   );
                 },
               ),
