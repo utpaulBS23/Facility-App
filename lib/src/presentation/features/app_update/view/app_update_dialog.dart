@@ -13,7 +13,7 @@ part '../widgets/update_changelog.dart';
 part '../widgets/update_download_progress.dart';
 part '../widgets/update_header.dart';
 
-class AppUpdateDialog extends ConsumerWidget {
+class AppUpdateDialog extends ConsumerStatefulWidget {
   const AppUpdateDialog({
     super.key,
     required this.update,
@@ -33,7 +33,24 @@ class AppUpdateDialog extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppUpdateDialog> createState() => _AppUpdateDialogState();
+}
+
+class _AppUpdateDialogState extends ConsumerState<AppUpdateDialog> {
+  // WHY: barrier taps and the "Later" button both pop the dialog through
+  // PopScope, but only one of them should report the dismiss action.
+  bool _dismissReported = false;
+
+  AppUpdateCheckResponseEntity get update => widget.update;
+
+  void _reportDismissOnce() {
+    if (_dismissReported) return;
+    _dismissReported = true;
+    ref.read(appUpdateNotifierProvider.notifier).onDismissTap(update);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final downloadState = ref.watch(appUpdateDownloadProvider);
     final isBusy = downloadState.isDownloading ||
         downloadState.isVerifying ||
@@ -41,6 +58,9 @@ class AppUpdateDialog extends ConsumerWidget {
 
     return PopScope(
       canPop: !update.isHardUpdate && !isBusy,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) _reportDismissOnce();
+      },
       child: Dialog(
         backgroundColor: context.color.onPrimary,
         shape: RoundedRectangleBorder(
@@ -87,7 +107,8 @@ class AppUpdateDialog extends ConsumerWidget {
   }
 
   void _handleLater(BuildContext context, WidgetRef ref) {
+    // WHY: pop routes through PopScope's onPopInvokedWithResult, which
+    // reports the dismiss action — same path as a barrier tap.
     context.pop();
-    ref.read(appUpdateNotifierProvider.notifier).onDismissTap(update);
   }
 }
