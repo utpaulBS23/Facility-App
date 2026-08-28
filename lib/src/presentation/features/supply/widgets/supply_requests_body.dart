@@ -22,7 +22,7 @@ class _SupplyRequestsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final approvedCount = int.tryParse(summaryAsync.valueOrNull?.approved ?? '') ?? 0;
+    final approvedCount = summaryAsync.valueOrNull?.approved ?? 0;
 
     return RefreshIndicator(
       onRefresh: () async => onRetry(),
@@ -89,6 +89,7 @@ class _SupplyRequestsBody extends StatelessWidget {
       SupplyFilter.inDelivery => context.locale.inDelivery,
       SupplyFilter.delivered => context.locale.delivered,
       SupplyFilter.rejected => context.locale.rejected,
+      SupplyFilter.completed => context.locale.completed,
     };
   }
 }
