@@ -472,6 +472,23 @@ abstract class RestClient {
     @Path('stockAllocationId') required int stockAllocationId,
   });
 
+  @POST(Endpoints.submitShiftStockCount)
+  Future<HttpResponse> submitShiftStockCount({
+    @Path('partnerId') required int partnerId,
+    @Path('shiftAssignmentId') required int shiftAssignmentId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.shiftStockCounts)
+  Future<HttpResponse> getShiftStockCounts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('shift_assignment_id') int? shiftAssignmentId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('from') String? from,
+    @Query('to') String? to,
+  });
+
   /// Task Occurrences
   @GET(Endpoints.taskOccurrences)
   Future<HttpResponse> getTaskOccurrences({
