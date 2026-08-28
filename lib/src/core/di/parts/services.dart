@@ -58,3 +58,11 @@ LocationSharingNotificationService locationSharingNotificationService(Ref ref) {
 DeviceInfoService deviceInfoService(Ref ref) {
   return DeviceInfoServiceImpl(DeviceInfoPlugin());
 }
+
+@Riverpod(keepAlive: true)
+PushNotificationService pushNotificationService(Ref ref) {
+  return PushNotificationServiceImpl(
+    ref.read(firebaseMessagingProvider),
+    ref.read(flutterLocalNotificationsPluginProvider),
+  );
+}

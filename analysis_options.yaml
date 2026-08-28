@@ -30,6 +30,8 @@ linter:
 analyzer:
   enable-experiment:
     - dot-shorthands
+  exclude:
+    - build/**
   plugins:
     - custom_lint
 custom_lint:

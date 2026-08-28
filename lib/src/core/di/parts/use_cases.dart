@@ -564,3 +564,34 @@ FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
+
+@riverpod
+InitializePushNotificationUseCase initializePushNotificationUseCase(Ref ref) {
+  return InitializePushNotificationUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetInitialPushNotificationMessageUseCase
+getInitialPushNotificationMessageUseCase(Ref ref) {
+  return GetInitialPushNotificationMessageUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetNotificationPayloadUseCase getNotificationPayloadUseCase(Ref ref) {
+  return GetNotificationPayloadUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetNotificationPayloadStreamUseCase getNotificationPayloadStreamUseCase(
+  Ref ref,
+) {
+  return GetNotificationPayloadStreamUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}

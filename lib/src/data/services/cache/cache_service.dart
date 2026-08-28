@@ -6,6 +6,7 @@ enum CacheKey {
   refreshToken,
   isOnBoardingCompleted,
   language,
+  fcmToken,
 }
 
 abstract class CacheService {
