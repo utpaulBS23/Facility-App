@@ -36,13 +36,9 @@ class SubmitShiftStockCount extends _$SubmitShiftStockCount {
       items: params,
     );
 
-    state = switch (result) {
-      Success(:final data) => AsyncValue.data(data),
-      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
-      _ => AsyncValue.error(
-          Failure.emptyResponse('submit shift stock count').message,
-          StackTrace.current,
-        ),
-    };
+    state = result.when(
+      success: (data) => AsyncValue.data(data),
+      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+    );
   }
 }

@@ -65,9 +65,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
         if (value == null || !mounted) return;
 
         // Invalidate stock list provider so StockPage refreshes immediately
-        ref.invalidate(
-          shiftStockCountsProvider(facilityId: widget.facilityId),
-        );
+        ref.invalidate(shiftStockCountsProvider);
 
         AppSnackBar.showSuccess(
           context,
@@ -116,9 +114,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
   Widget build(BuildContext context) {
     final color = context.color;
     final catalogAsync = ref.watch(itemCatalogProvider(true));
-    final countsAsync = ref.watch(
-      shiftStockCountsProvider(facilityId: widget.facilityId),
-    );
+    final countsAsync = ref.watch(shiftStockCountsProvider);
     final isLoading = ref.watch(submitShiftStockCountProvider).isLoading;
 
     return Scaffold(
@@ -141,9 +137,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, _) => AppErrorWidget(
             message: err.localizedMessage(context),
-            onRetry: () => ref.invalidate(
-              shiftStockCountsProvider(facilityId: widget.facilityId),
-            ),
+            onRetry: () => ref.invalidate(shiftStockCountsProvider),
           ),
           data: (history) {
             final items = [...catalog.items]
