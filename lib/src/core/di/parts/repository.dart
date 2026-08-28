@@ -90,6 +90,11 @@ VisitRepository visitRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+TravelRouteRepository travelRouteRepository(Ref ref) {
+  return TravelRouteRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 TaskOccurrenceRepository taskOccurrenceRepository(Ref ref) {
   return TaskOccurrenceRepositoryImpl(ref.read(restClientServiceProvider));
 }

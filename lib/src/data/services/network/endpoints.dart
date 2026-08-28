@@ -118,6 +118,12 @@ class Endpoints {
       '/partners/{partnerId}/visits/{visitId}/issues';
   static const String locationPingSync =
       '/partners/{partnerId}/location-pings/sync';
+
+  /// Called when a supervisor starts traveling toward a facility, before
+  /// [visitCheckIn]. `travel_tracking_excluded: true` in the response means
+  /// this is the day's first visit — fall back to [locationPingSync] instead.
+  static const String travelRouteCheckIn =
+      '/partners/{partnerId}/travel-routes/check-in';
   static const String problemCategories =
       '/partners/{partnerId}/master-data/items';
 

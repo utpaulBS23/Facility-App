@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/travel_route_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 
 part 'visit_check_in_provider.g.dart';
@@ -55,19 +56,61 @@ class VisitCheckIn extends _$VisitCheckIn {
   @override
   VisitCheckInState build() => const VisitCheckInState();
 
-  Future<void> startLocationSharing({required int visitId}) async {
+  Future<void> startLocationSharing({
+    required int visitId,
+    required int facilityId,
+  }) async {
     state = state.copyWith(isStartingShare: true, clearShareError: true);
 
-    final result = await ref
-        .read(startLocationPingTrackingUseCaseProvider)
-        .call(taskId: visitId);
+    final Position position;
+    try {
+      position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isStartingShare: false,
+        shareError: Failure.mapExceptionToFailure(e),
+      );
+      return;
+    }
 
-    state = result.when(
-      success: (_) =>
-          state.copyWith(isStartingShare: false, isSharingLocation: true),
-      error: (err) =>
-          state.copyWith(isStartingShare: false, shareError: err),
-    );
+    final travelRouteResult = await ref
+        .read(travelRouteCheckInUseCaseProvider)
+        .call(
+          request: TravelRouteCheckInRequestEntity(
+            taskId: visitId,
+            facilityId: facilityId,
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
+
+    switch (travelRouteResult) {
+      case Success(:final data):
+        // WHY: `travel_tracking_excluded` true means the backend skipped the
+        // Barikoi route calc (e.g. first visit of the day) — fall back to
+        // continuous ping tracking for this leg. Otherwise the route call
+        // already covers it, so no background tracking is started.
+        final result = data!.travelTrackingExcluded
+            ? await ref
+                .read(startLocationPingTrackingUseCaseProvider)
+                .call(taskId: visitId)
+            : const Success<void, Failure>();
+
+        state = result.when(
+          success: (_) => state.copyWith(
+            isStartingShare: false,
+            isSharingLocation: true,
+          ),
+          error: (err) =>
+              state.copyWith(isStartingShare: false, shareError: err),
+        );
+      case Error(:final error):
+        state = state.copyWith(isStartingShare: false, shareError: error);
+    }
   }
 
   Future<void> confirmCheckIn({required int visitId}) async {

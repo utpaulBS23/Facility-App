@@ -42,10 +42,13 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
     });
   }
 
-  Future<void> _onCheckIn() async {
+  Future<void> _onCheckIn(VisitDetailEntity detail) async {
+    final facilityId = detail.facilityId;
+    if (facilityId == null) return;
+
     await ref
         .read(visitCheckInProvider.notifier)
-        .startLocationSharing(visitId: widget.visitId);
+        .startLocationSharing(visitId: widget.visitId, facilityId: facilityId);
   }
 
   Future<void> _onConfirm(VisitDetailEntity detail) async {
@@ -115,7 +118,7 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
                 : _DetailBody(
                     detail: detail,
                     checkInState: checkInState,
-                    onCheckIn: _onCheckIn,
+                    onCheckIn: () => _onCheckIn(detail),
                   ),
           ),
         ),
