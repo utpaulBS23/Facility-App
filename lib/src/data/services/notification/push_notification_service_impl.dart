@@ -7,15 +7,22 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../../firebase_options.dart';
 import '../../../core/logger/log.dart';
+import '../../../domain/entities/notification_channel_entity.dart';
 import '../../../domain/entities/notification_payload_entity.dart';
 import 'push_notification_service.dart';
 
 class PushNotificationServiceImpl implements PushNotificationService {
   PushNotificationServiceImpl(this._messaging, this._notifications);
 
-  static const _channelId = 'push_notifications';
-  static const _channelName = 'Notifications';
   static const _channelDescription = 'General push notifications.';
+
+  static const _channelNames = {
+    NotificationChannelType.general: 'General',
+    NotificationChannelType.task: 'Tasks',
+    NotificationChannelType.attendanceLeave: 'Attendance & Leave',
+    NotificationChannelType.issue: 'Issue Reports',
+    NotificationChannelType.supply: 'Supply & Delivery',
+  };
 
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _notifications;
@@ -25,6 +32,7 @@ class PushNotificationServiceImpl implements PushNotificationService {
       StreamController<NotificationPayloadEntity>.broadcast();
 
   bool _notificationsEnabled = true;
+  Set<NotificationChannelType> _disabledChannels = {};
 
   @override
   Future<void> initialize() async {
@@ -69,17 +77,24 @@ class PushNotificationServiceImpl implements PushNotificationService {
     Log.info('Foreground push received: ${message.data}');
 
     final notification = message.notification;
-    if (notification == null || !_notificationsEnabled) return;
+    final channel = NotificationChannelType.fromKey(
+      message.data['type'] as String?,
+    );
+    if (notification == null ||
+        !_notificationsEnabled ||
+        _disabledChannels.contains(channel)) {
+      return;
+    }
 
-    const details = NotificationDetails(
+    final details = NotificationDetails(
       android: AndroidNotificationDetails(
-        _channelId,
-        _channelName,
+        'push_notifications_${channel.key}',
+        _channelNames[channel] ?? _channelNames[NotificationChannelType.general]!,
         channelDescription: _channelDescription,
         importance: Importance.high,
         priority: Priority.high,
       ),
-      iOS: DarwinNotificationDetails(),
+      iOS: const DarwinNotificationDetails(),
     );
 
     await _notifications.show(
@@ -148,6 +163,11 @@ class PushNotificationServiceImpl implements PushNotificationService {
   @override
   void setNotificationsEnabled(bool enabled) {
     _notificationsEnabled = enabled;
+  }
+
+  @override
+  void setDisabledChannels(Set<NotificationChannelType> channels) {
+    _disabledChannels = channels;
   }
 }
 
