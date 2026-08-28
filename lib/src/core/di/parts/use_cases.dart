@@ -322,6 +322,14 @@ CheckInVisitUseCase checkInVisitUseCase(Ref ref) {
 }
 
 @riverpod
+TravelRouteCheckInUseCase travelRouteCheckInUseCase(Ref ref) {
+  return TravelRouteCheckInUseCase(
+    ref.read(travelRouteRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetChecklistUseCase getChecklistUseCase(Ref ref) {
   return GetChecklistUseCase(
     ref.read(visitRepositoryProvider),
