@@ -128,10 +128,13 @@ extension StockItemModelMapper on StockItemModel {
   StockItemEntity toEntity() {
     return StockItemEntity(
       id: id,
+      partnerId: partnerId,
+      partnerName: partnerName,
       itemCode: itemCode,
       name: name,
       category: category,
       unit: unit,
+      unitPrice: unitPrice,
       isActive: isActive,
     );
   }

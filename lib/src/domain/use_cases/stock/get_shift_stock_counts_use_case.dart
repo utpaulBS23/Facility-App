@@ -19,15 +19,14 @@ final class GetShiftStockCountsUseCase extends PartnerUseCase {
     String? from,
     String? to,
   }) async {
-    return withPartnerId((partnerId) async {
-      return stockRepository.getShiftStockCounts(
-        partnerId: partnerId,
-        facilityId: facilityId,
-        shiftAssignmentId: shiftAssignmentId,
-        stockItemId: stockItemId,
-        from: from,
-        to: to,
-      );
-    });
+    final partnerId = getPartnerId();
+    return stockRepository.getShiftStockCounts(
+      partnerId: partnerId,
+      facilityId: facilityId,
+      shiftAssignmentId: shiftAssignmentId,
+      stockItemId: stockItemId,
+      from: from,
+      to: to,
+    );
   }
 }

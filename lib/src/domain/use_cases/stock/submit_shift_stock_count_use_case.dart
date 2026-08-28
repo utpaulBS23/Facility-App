@@ -16,12 +16,11 @@ final class SubmitShiftStockCountUseCase extends PartnerUseCase {
     required int shiftAssignmentId,
     required List<SubmitStockCountItemParams> items,
   }) async {
-    return withPartnerId((partnerId) async {
-      return stockRepository.submitShiftStockCount(
-        partnerId: partnerId,
-        shiftAssignmentId: shiftAssignmentId,
-        items: items,
-      );
-    });
+    final partnerId = getPartnerId();
+    return stockRepository.submitShiftStockCount(
+      partnerId: partnerId,
+      shiftAssignmentId: shiftAssignmentId,
+      items: items,
+    );
   }
 }
