@@ -38,6 +38,8 @@ part '../widgets/request_info_card.dart';
 part '../widgets/request_status_timeline.dart';
 part '../widgets/request_user_card.dart';
 part '../widgets/timeline_circle_node.dart';
+part '../widgets/timeline_labels_row.dart';
+part '../widgets/timeline_nodes_row.dart';
 
 class RequestDetailsPage extends ConsumerStatefulWidget {
   const RequestDetailsPage({super.key, required this.requestId});
