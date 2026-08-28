@@ -106,7 +106,7 @@ class _NotificationToggleTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.color.onPrimary,
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+          borderRadius: .circular(context.dimensions.radius.r12),
         ),
         child: Row(
           children: [
