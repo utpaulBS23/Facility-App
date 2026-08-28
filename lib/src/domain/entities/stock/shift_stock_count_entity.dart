@@ -38,8 +38,8 @@ class ShiftStockCountEntity {
       reportedAt.length >= 10 ? reportedAt.substring(0, 10) : reportedAt;
 }
 
-class SubmitStockCountItemParams {
-  const SubmitStockCountItemParams({
+class SubmitStockCountItemEntity {
+  const SubmitStockCountItemEntity({
     required this.stockItemId,
     required this.qtyOnHand,
     this.photoUrl,

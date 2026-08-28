@@ -14,13 +14,18 @@ final class SubmitShiftStockCountUseCase extends PartnerUseCase {
 
   Future<Result<List<ShiftStockCountEntity>, Failure>> call({
     required int shiftAssignmentId,
-    required List<SubmitStockCountItemParams> items,
+    required List<SubmitStockCountItemEntity> items,
   }) async {
     final partnerId = getPartnerId();
-    return stockRepository.submitShiftStockCount(
+    final result = await stockRepository.submitShiftStockCount(
       partnerId: partnerId,
       shiftAssignmentId: shiftAssignmentId,
       items: items,
     );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('submit shift stock count')),
+    };
   }
 }

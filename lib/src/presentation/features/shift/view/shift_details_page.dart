@@ -15,10 +15,7 @@ class ShiftDetailsPage extends StatelessWidget {
   void _onUpdateStock(BuildContext context) {
     context.pushNamed(
       Routes.updateStock,
-      extra: UpdateStockPageArgs(
-        facilityId: entity.facility.id,
-        shiftAssignmentId: entity.id,
-      ),
+      extra: (entity.facility.id, entity.id),
     );
   }
 

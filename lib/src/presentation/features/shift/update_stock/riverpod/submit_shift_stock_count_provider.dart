@@ -18,11 +18,13 @@ class SubmitShiftStockCount extends _$SubmitShiftStockCount {
     required int shiftAssignmentId,
     required List<ShiftStockCountItemFormEntry> items,
   }) async {
+    if (state.isLoading) return;
+
     state = const AsyncLoading();
 
     final params = items.map((entry) {
       final qty = double.tryParse(entry.qtyController.text) ?? 0.0;
-      return SubmitStockCountItemParams(
+      return SubmitStockCountItemEntity(
         stockItemId: entry.stockItemId,
         qtyOnHand: qty,
       );
@@ -34,16 +36,13 @@ class SubmitShiftStockCount extends _$SubmitShiftStockCount {
       items: params,
     );
 
-    switch (result) {
-      case Success(:final data):
-        state = AsyncData(data);
-      case Error(:final error):
-        state = AsyncError(error, StackTrace.current);
-      default:
-        state = AsyncError(
-          Failure.emptyResponse('submit shift stock count'),
+    state = switch (result) {
+      Success(:final data) => AsyncValue.data(data),
+      Error(:final error) => AsyncValue.error(error.message, StackTrace.current),
+      _ => AsyncValue.error(
+          Failure.emptyResponse('submit shift stock count').message,
           StackTrace.current,
-        );
-    }
+        ),
+    };
   }
 }

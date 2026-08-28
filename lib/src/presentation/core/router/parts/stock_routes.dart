@@ -43,8 +43,11 @@ List<GoRoute> _stockRoutes(Ref ref) {
       path: Routes.updateStock,
       name: Routes.updateStock,
       builder: (context, state) {
-        final args = state.extra as UpdateStockPageArgs;
-        return UpdateStockPage(args: args);
+        final (facilityId, shiftAssignmentId) = state.extra as (int, int);
+        return UpdateStockPage(
+          facilityId: facilityId,
+          shiftAssignmentId: shiftAssignmentId,
+        );
       },
     ),
   ];

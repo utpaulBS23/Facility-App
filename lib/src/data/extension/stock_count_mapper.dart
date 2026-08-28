@@ -27,7 +27,7 @@ extension ShiftStockCountListResponseModelToEntity
       data.map((model) => model.toEntity()).toList();
 }
 
-extension SubmitStockCountItemParamsToModel on SubmitStockCountItemParams {
+extension SubmitStockCountItemEntityToModel on SubmitStockCountItemEntity {
   StockCountItemModel toModel() => StockCountItemModel(
         stockItemId: stockItemId,
         qtyOnHand: qtyOnHand,
@@ -35,7 +35,7 @@ extension SubmitStockCountItemParamsToModel on SubmitStockCountItemParams {
       );
 }
 
-extension SubmitStockCountItemParamsListToModel on List<SubmitStockCountItemParams> {
+extension SubmitStockCountItemEntityListToModel on List<SubmitStockCountItemEntity> {
   SubmitStockCountRequestModel toRequestModel() =>
       SubmitStockCountRequestModel(items: map((item) => item.toModel()).toList());
 }
