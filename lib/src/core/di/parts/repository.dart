@@ -124,3 +124,8 @@ PushNotificationRepository pushNotificationRepository(Ref ref) {
     cacheService: ref.read(cacheServiceProvider),
   );
 }
+
+@Riverpod(keepAlive: true)
+ItemCatalogRepository itemCatalogRepository(Ref ref) {
+  return ItemCatalogRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
