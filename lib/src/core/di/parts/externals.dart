@@ -34,3 +34,8 @@ Dio dio(Ref ref) {
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin(Ref ref) {
   return FlutterLocalNotificationsPlugin();
 }
+
+@Riverpod(keepAlive: true)
+FirebaseMessaging firebaseMessaging(Ref ref) {
+  return FirebaseMessaging.instance;
+}

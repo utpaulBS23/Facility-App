@@ -52,6 +52,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
+		<string>remote-notification</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is required to take your check-in selfie.</string>
