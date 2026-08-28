@@ -102,10 +102,10 @@ extension SupplyRequestListResponseModelToEntity on SupplyRequestListResponseMod
 extension SupplyRequestSummaryModelMapper on SupplyRequestSummaryModel {
   SupplyRequestSummaryEntity toEntity() {
     return SupplyRequestSummaryEntity(
-      pending: pending != null ? pending.toString() : 'N/A',
-      approved: approved != null ? approved.toString() : 'N/A',
-      rejected: rejected != null ? rejected.toString() : 'N/A',
-      completed: completed != null ? completed.toString() : 'N/A',
+      pending: pending,
+      approved: approved,
+      rejected: rejected,
+      completed: completed,
     );
   }
 }

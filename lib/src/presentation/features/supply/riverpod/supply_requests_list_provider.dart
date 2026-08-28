@@ -34,7 +34,7 @@ class SupplyRequestsList extends _$SupplyRequestsList {
 
     final paginated = result.when(
       success: (data) => data ?? const PaginatedListEntity.empty(),
-      error: (error) => throw Exception(error.message),
+      error: (error) => throw error,
     );
 
     state = AsyncValue.data(paginated);

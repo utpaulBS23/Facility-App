@@ -47,7 +47,8 @@ enum SupplyFilter {
   operationManagerApproved,
   inDelivery,
   delivered,
-  rejected;
+  rejected,
+  completed;
 
   bool matches(SupplyRequestStatus status) {
     return switch (this) {
@@ -58,6 +59,7 @@ enum SupplyFilter {
       SupplyFilter.inDelivery => status == SupplyRequestStatus.inDelivery,
       SupplyFilter.delivered => status == SupplyRequestStatus.delivered,
       SupplyFilter.rejected => status == SupplyRequestStatus.rejected,
+      SupplyFilter.completed => status == SupplyRequestStatus.completed,
     };
   }
 
@@ -70,6 +72,7 @@ enum SupplyFilter {
       SupplyFilter.inDelivery => SupplyRequestStatus.inDelivery,
       SupplyFilter.delivered => SupplyRequestStatus.delivered,
       SupplyFilter.rejected => SupplyRequestStatus.rejected,
+      SupplyFilter.completed => SupplyRequestStatus.completed,
     };
   }
 }
