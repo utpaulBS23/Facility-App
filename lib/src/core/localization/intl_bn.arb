@@ -700,10 +700,6 @@
       }
     }
   },
-<<<<<<< HEAD
-  "uncheckAll": "সব নির্বাচন বাতিল করুন",
-  "checkAll": "সব নির্বাচন করুন"
-=======
   "uncheckAll": "সব আনচেক করুন",
   "checkAll": "সব চেক করুন",
   "deliveryComplaintTitle": "ডেলিভারি সংক্রান্ত অভিযোগ করুন",
@@ -716,6 +712,5 @@
   "complaintReasonLabel": "অভিযোগের কারণ",
   "complaintReasonHint": "সমস্যা বা অভিযোগের কারণ বর্ণনা করুন...",
   "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)"
->>>>>>> 5803fc6 (feat: delivery complain initial implementation)
 }
 
