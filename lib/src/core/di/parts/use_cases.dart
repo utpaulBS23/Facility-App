@@ -609,3 +609,21 @@ SetNotificationsEnabledUseCase setNotificationsEnabledUseCase(Ref ref) {
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+GetDisabledNotificationChannelsUseCase getDisabledNotificationChannelsUseCase(
+  Ref ref,
+) {
+  return GetDisabledNotificationChannelsUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
+  Ref ref,
+) {
+  return SetNotificationChannelEnabledUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
