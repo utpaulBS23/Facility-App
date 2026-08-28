@@ -560,6 +560,8 @@ GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
 @riverpod
 ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
   return ConfirmDeliveryUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 

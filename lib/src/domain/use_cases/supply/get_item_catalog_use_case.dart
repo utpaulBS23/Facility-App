@@ -20,21 +20,20 @@ final class GetItemCatalogUseCase extends PartnerUseCase {
     int? page,
     int? perPage,
   }) async {
-    return withPartnerId((partnerId) async {
-      final result = await itemCatalogRepository.getItemCatalog(
-        partnerId: partnerId,
-        search: search,
-        category: category,
-        isActive: isActive,
-        page: page,
-        perPage: perPage,
-      );
+    final partnerId = getPartnerId();
+    final result = await itemCatalogRepository.getItemCatalog(
+      partnerId: partnerId,
+      search: search,
+      category: category,
+      isActive: isActive,
+      page: page,
+      perPage: perPage,
+    );
 
-      return switch (result) {
-        Success(:final data) => Success(data: data),
-        Error(:final error) => Error(error),
-        _ => Error(Failure.emptyResponse('get item catalog')),
-      };
-    });
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get item catalog')),
+    };
   }
 }
