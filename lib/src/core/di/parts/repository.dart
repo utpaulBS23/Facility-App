@@ -112,3 +112,10 @@ SupplyRepository supplyRepository(Ref ref) {
   return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
 
+@Riverpod(keepAlive: true)
+PushNotificationRepository pushNotificationRepository(Ref ref) {
+  return PushNotificationRepositoryImpl(
+    notificationService: ref.read(pushNotificationServiceProvider),
+    cacheService: ref.read(cacheServiceProvider),
+  );
+}
