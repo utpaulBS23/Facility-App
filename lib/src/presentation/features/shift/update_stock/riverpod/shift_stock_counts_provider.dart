@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/base.dart';
-import '../../../../core/di/dependency_injection.dart';
-import '../../../../domain/entities/stock/shift_stock_count_entity.dart';
+import '../../../../../core/base/base.dart';
+import '../../../../../core/di/dependency_injection.dart';
+import '../../../../../domain/entities/stock/shift_stock_count_entity.dart';
 
 part 'shift_stock_counts_provider.g.dart';
 
