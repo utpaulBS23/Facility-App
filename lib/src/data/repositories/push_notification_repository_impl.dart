@@ -17,6 +17,7 @@ class PushNotificationRepositoryImpl extends PushNotificationRepository {
   @override
   Future<void> initialize() async {
     await _notificationService.initialize();
+    _notificationService.setNotificationsEnabled(notificationsEnabled);
     await _cacheDeviceToken();
   }
 
@@ -46,5 +47,15 @@ class PushNotificationRepositoryImpl extends PushNotificationRepository {
   @override
   void clearPayload() {
     _notificationService.clearPayload();
+  }
+
+  @override
+  bool get notificationsEnabled =>
+      _cacheService.get<bool>(CacheKey.pushNotificationsEnabled) ?? true;
+
+  @override
+  Future<void> setNotificationsEnabled(bool enabled) async {
+    await _cacheService.save(CacheKey.pushNotificationsEnabled, enabled);
+    _notificationService.setNotificationsEnabled(enabled);
   }
 }

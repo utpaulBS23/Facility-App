@@ -80,19 +80,28 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       if (hasAnyPermission(item.permissions, permissions)) item,
                   ];
 
-                  return RawScrollbar(
-                    thumbColor: color.primary,
-                    radius: Radius.circular(context.dimensions.radius.r4),
-                    thickness: spacing.s4,
-                    child: ListView(
-                      children: [
-                        for (var i = 0; i < visibleItems.length; i++)
+                  return Padding(
+                    padding:  .symmetric(horizontal: context.dimensions.padding.p16),
+                    child: RawScrollbar(
+                      thumbColor: color.primary,
+                      radius: Radius.circular(context.dimensions.radius.r4),
+                      thickness: spacing.s4,
+                      child: ListView(
+                        children: [
+                          for (var i = 0; i < visibleItems.length; i++)
+                            _MenuItemTile(
+                              config: visibleItems[i],
+                              showDivider: i < visibleItems.length - 1,
+                            ),
+                          // WHY: notificationView permission not yet granted by
+                          // backend — show unconditionally until it is.
                           _MenuItemTile(
-                            config: visibleItems[i],
-                            showDivider: i < visibleItems.length - 1,
+                            config: notificationMenuItemConfig,
+                            showDivider: false,
                           ),
-                        _LogoutTile(onTap: _onLogoutTap),
-                      ],
+                          _LogoutTile(onTap: _onLogoutTap),
+                        ],
+                      ),
                     ),
                   );
                 },

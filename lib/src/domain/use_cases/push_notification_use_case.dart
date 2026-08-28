@@ -39,3 +39,19 @@ class GetNotificationPayloadStreamUseCase {
     return _repository.notificationPayloadStream;
   }
 }
+
+class GetNotificationsEnabledUseCase {
+  GetNotificationsEnabledUseCase(this._repository);
+  final PushNotificationRepository _repository;
+
+  bool call() => _repository.notificationsEnabled;
+}
+
+class SetNotificationsEnabledUseCase {
+  SetNotificationsEnabledUseCase(this._repository);
+  final PushNotificationRepository _repository;
+
+  Future<void> call(bool enabled) {
+    return _repository.setNotificationsEnabled(enabled);
+  }
+}

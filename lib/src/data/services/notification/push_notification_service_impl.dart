@@ -24,6 +24,8 @@ class PushNotificationServiceImpl implements PushNotificationService {
   final _payloadController =
       StreamController<NotificationPayloadEntity>.broadcast();
 
+  bool _notificationsEnabled = true;
+
   @override
   Future<void> initialize() async {
     const initializationSettings = InitializationSettings(
@@ -67,7 +69,7 @@ class PushNotificationServiceImpl implements PushNotificationService {
     Log.info('Foreground push received: ${message.data}');
 
     final notification = message.notification;
-    if (notification == null) return;
+    if (notification == null || !_notificationsEnabled) return;
 
     const details = NotificationDetails(
       android: AndroidNotificationDetails(
@@ -138,6 +140,14 @@ class PushNotificationServiceImpl implements PushNotificationService {
   @override
   void clearPayload() {
     _payload = null;
+  }
+
+  @override
+  bool get notificationsEnabled => _notificationsEnabled;
+
+  @override
+  void setNotificationsEnabled(bool enabled) {
+    _notificationsEnabled = enabled;
   }
 }
 
