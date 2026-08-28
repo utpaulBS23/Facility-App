@@ -1,0 +1,188 @@
+{
+  "project_info": {
+    "project_number": "507611260353",
+    "firebase_url": "https://bhumijoauth-default-rtdb.firebaseio.com",
+    "project_id": "bhumijoauth",
+    "storage_bucket": "bhumijoauth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:f8efa02d11c2cf80d33b40",
+        "android_client_info": {
+          "package_name": "com.bhumijo.facilityapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:d7f48478a91d3c74d33b40",
+        "android_client_info": {
+          "package_name": "com.bhumijo.manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:be95bf2062ab1f80d33b40",
+        "android_client_info": {
+          "package_name": "com.bhumijo.manager.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:cbe453e15ae5f42bd33b40",
+        "android_client_info": {
+          "package_name": "com.bhumijo.manager.prod"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:2faeef6f4281cde6d33b40",
+        "android_client_info": {
+          "package_name": "com.bhumijo.manager.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:53a5386069ab9149d33b40",
+        "android_client_info": {
+          "package_name": "com.bhumijo.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507611260353-0b0012g2956qia3cpvha8jok7uqi04pu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhumijo.user",
+            "certificate_hash": "3353bf127ddddf0aed2382bb070dc26611f1814c"
+          }
+        },
+        {
+          "client_id": "507611260353-8as94lc4iqub09avrl3iiva36btqgce3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhumijo.user",
+            "certificate_hash": "c60cc0db8021a6136237287855512c6a3d824e51"
+          }
+        },
+        {
+          "client_id": "507611260353-c4a3frapo28nljl5vj3nj9geotdgu1l8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhumijo.user",
+            "certificate_hash": "32a732de8d4362221268fcefbcfd74e9547e6702"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:e8b08ad890f8103ed33b40",
+        "android_client_info": {
+          "package_name": "com.example.bhumijo_user_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507611260353:android:fbae3e30c7be56c1d33b40",
+        "android_client_info": {
+          "package_name": "com.example.flutter_firebase_otp_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_nnnltORg_jOtAeltGB9um_VCvRfDJSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
