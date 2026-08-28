@@ -22,7 +22,7 @@ class _MenuHeaderSection extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final headerHeight = MediaQuery.sizeOf(context).height * 0.20;
+    final headerHeight = MediaQuery.sizeOf(context).height * 0.22;
 
     return Container(
       height: headerHeight,
@@ -38,10 +38,9 @@ class _MenuHeaderSection extends StatelessWidget {
             ),
           ],
         ),
-        borderRadius: BorderRadius.all(Radius.circular(radius.r20)),
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radius.r20), bottomRight: Radius.circular(radius.r20)),
       ),
       child: SafeArea(
-        bottom: false,
         child: Stack(
           children: [
             Center(
