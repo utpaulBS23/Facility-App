@@ -93,6 +93,11 @@ import '../../domain/use_cases/supply/dispatch_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/get_delivery_for_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/confirm_delivery_use_case.dart';
 import '../../domain/use_cases/supply/file_delivery_complaint_use_case.dart';
+import '../../domain/repositories/stock_repository.dart';
+import '../../domain/use_cases/stock/get_shift_stock_counts_use_case.dart';
+import '../../domain/use_cases/stock/submit_shift_stock_count_use_case.dart';
+import '../../domain/repositories/item_catalog_repository.dart';
+import '../../domain/use_cases/supply/get_item_catalog_use_case.dart';
 import '../../presentation/core/router/router.dart';
 
 part 'dependency_injection.g.dart';

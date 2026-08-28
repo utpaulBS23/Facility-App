@@ -57,6 +57,7 @@ import '../../features/shift/view/shift_tab.dart';
 import '../../features/shift/widgets/no_shift_today_widget.dart';
 import '../../features/shift/widgets/shift_not_yet_accessible_widget.dart';
 import '../../features/shift/widgets/shift_window_closed_widget.dart';
+import '../../features/shift/update_stock/view/update_stock_page.dart';
 import '../../features/splash/view/splash_page.dart';
 import '../../features/supervisor_tracking/view/supervisor_tracking_page.dart';
 import '../../../domain/entities/supply/delivery_entity.dart';

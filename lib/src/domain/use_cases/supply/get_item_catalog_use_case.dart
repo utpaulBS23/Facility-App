@@ -2,30 +2,39 @@ import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
 import '../../entities/common/paginated_list_entity.dart';
 import '../../entities/supply/stock_item_entity.dart';
-import '../../entities/supply/supply_filters.dart';
-import '../../repositories/supply_repository.dart';
+import '../../repositories/item_catalog_repository.dart';
 import '../partner_use_case.dart';
 
 final class GetItemCatalogUseCase extends PartnerUseCase {
   GetItemCatalogUseCase({
-    required this.supplyRepository,
+    required this.itemCatalogRepository,
     required super.authRepository,
   });
 
-  final SupplyRepository supplyRepository;
+  final ItemCatalogRepository itemCatalogRepository;
 
-  Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> call([
-    ItemCatalogFilter? filter,
-  ]) async {
-    final partnerId = getPartnerId();
-    final result = await supplyRepository.getItemCatalog(
-      (filter ?? const ItemCatalogFilter()).copyWith(partnerId: partnerId),
-    );
+  Future<Result<PaginatedListEntity<StockItemEntity>, Failure>> call({
+    String? search,
+    String? category,
+    bool? isActive,
+    int? page,
+    int? perPage,
+  }) async {
+    return withPartnerId((partnerId) async {
+      final result = await itemCatalogRepository.getItemCatalog(
+        partnerId: partnerId,
+        search: search,
+        category: category,
+        isActive: isActive,
+        page: page,
+        perPage: perPage,
+      );
 
-    return switch (result) {
-      Success(:final data) when data != null => Success(data: data),
-      Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('get item catalog')),
-    };
+      return switch (result) {
+        Success(:final data) => Success(data: data),
+        Error(:final error) => Error(error),
+        _ => Error(Failure.emptyResponse('get item catalog')),
+      };
+    });
   }
 }

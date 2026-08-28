@@ -39,5 +39,13 @@ List<GoRoute> _stockRoutes(Ref ref) {
         );
       },
     ),
+    GoRoute(
+      path: Routes.updateStock,
+      name: Routes.updateStock,
+      builder: (context, state) {
+        final args = state.extra as UpdateStockPageArgs;
+        return UpdateStockPage(args: args);
+      },
+    ),
   ];
 }

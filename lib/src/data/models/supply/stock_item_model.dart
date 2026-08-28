@@ -2,10 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'stock_item_model.mapper.dart';
 
-@MappableClass(
-  caseStyle: CaseStyle.snakeCase,
-  generateMethods: GenerateMethods.decode,
-)
+@MappableClass(generateMethods: GenerateMethods.decode)
 class StockItemModel with StockItemModelMappable {
   const StockItemModel({
     required this.id,
@@ -20,13 +17,18 @@ class StockItemModel with StockItemModelMappable {
   });
 
   final int id;
+  @MappableField(key: 'partner_id')
   final int? partnerId;
+  @MappableField(key: 'partner_name')
   final String? partnerName;
+  @MappableField(key: 'item_code')
   final String itemCode;
   final String name;
   final String category;
   final String unit;
+  @MappableField(key: 'unit_price')
   final double unitPrice;
+  @MappableField(key: 'is_active')
   final bool isActive;
 
   static const fromJson = StockItemModelMapper.fromJson;
