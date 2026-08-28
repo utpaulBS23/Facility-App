@@ -103,7 +103,7 @@ LeaveRepository leaveRepository(Ref ref) {
 AppUpdateRepository appUpdateRepository(Ref ref) {
   return AppUpdateRepositoryImpl(
     ref.read(restClientServiceProvider),
-    ref.read(dioProvider),
+    ref.read(downloadDioProvider),
   );
 }
 
