@@ -90,6 +90,8 @@ class _RequestDetailsBody extends ConsumerWidget {
             Gap(spacing.s12),
             _ReceivedItemsSection(
               request: request,
+              isEditing: isEditing,
+              onEditToggled: onEditToggled,
               editedQuantities: editedQuantities,
               onQuantityChanged: onQuantityChanged,
               onEditingCancelled: onEditingCancelled,
