@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../firebase_options.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../localization_provider/localization_provider.dart';
 
@@ -11,6 +14,10 @@ Future<void> appStartup(Ref ref) async {
   ref.onDispose(() {
     ref.invalidate(sharedPreferencesProvider);
   });
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await ref.watch(sharedPreferencesProvider.future);
 
