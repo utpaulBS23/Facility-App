@@ -28,46 +28,15 @@ class _RequestDetailsBody extends ConsumerWidget {
   final VoidCallback onDispatch;
   final VoidCallback onBack;
 
-  Widget _buildReceivedItemsSection(
-    BuildContext context,
-    WidgetRef ref,
-    AsyncValue<DeliveryEntity?> deliveryAsync,
-  ) {
-    if (!request.hasDelivery) {
-      return _ReceivedItemsList(
-        requestItems: request.items,
-        priority: request.urgency,
-        hasDelivery: false,
-        isConfirmed: false,
-        canEdit: false,
-        editedQuantities: editedQuantities,
-        onQuantityChanged: onQuantityChanged,
-        onEditingCancelled: onEditingCancelled,
-        onEvidenceReportTap: onEvidenceReportTap,
-      );
-    }
+  String _formatDate(String rawDate) {
+    final parsed = DateTime.tryParse(rawDate);
+    if (parsed == null) return rawDate;
+    return DateFormatter.timestamp(parsed.toLocal());
+  }
 
-    return deliveryAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, _) => AppErrorWidget(
-        message: err.localizedMessage(context),
-        onRetry: () => ref.invalidate(
-          supplyRequestDeliveryProvider(request.requestCode),
-        ),
-      ),
-      data: (delivery) => _ReceivedItemsList(
-        requestItems: request.items,
-        deliveryItems: delivery?.items,
-        priority: request.urgency,
-        hasDelivery: true,
-        isConfirmed: request.isDelivered,
-        canEdit: request.status == SupplyRequestStatus.inDelivery,
-        editedQuantities: editedQuantities,
-        onQuantityChanged: onQuantityChanged,
-        onEditingCancelled: onEditingCancelled,
-        onEvidenceReportTap: onEvidenceReportTap,
-      ),
-    );
+  String _capitalizeRole(String role) {
+    if (role.isEmpty) return role;
+    return '${role[0].toUpperCase()}${role.substring(1)}';
   }
 
   @override
@@ -108,38 +77,28 @@ class _RequestDetailsBody extends ConsumerWidget {
             _RequestUserCard(
               headerLabel: context.locale.requestedByLabel,
               userName: request.requestedByName,
-              userRole: request.initiatedByRole.isNotEmpty
-                  ? '${request.initiatedByRole[0].toUpperCase()}${request.initiatedByRole.substring(1)}'
-                  : request.initiatedByRole,
+              userRole: _capitalizeRole(request.initiatedByRole),
               timestampLabel: context.locale.submittedOn(
-                DateTime.tryParse(request.createdAt) != null
-                    ? DateFormatter.timestamp(
-                        DateTime.parse(request.createdAt).toLocal(),
-                      )
-                    : request.createdAt,
+                _formatDate(request.createdAt),
               ),
             ),
             Gap(spacing.s12),
-            _buildReceivedItemsSection(context, ref, deliveryAsync),
+            _ReceivedItemsSection(
+              request: request,
+              editedQuantities: editedQuantities,
+              onQuantityChanged: onQuantityChanged,
+              onEditingCancelled: onEditingCancelled,
+              onEvidenceReportTap: onEvidenceReportTap,
+            ),
             if (request.isDelivered && delivery != null) ...[
               Gap(spacing.s12),
-              Builder(
-                builder: (context) {
-                  final d = delivery;
-                  final rawName = d.receivedByName;
-                  final confirmedAt = d.confirmedAt;
-                  final formattedTime = DateTime.tryParse(confirmedAt) != null
-                      ? DateFormatter.timestamp(
-                          DateTime.parse(confirmedAt).toLocal(),
-                        )
-                      : confirmedAt;
-                  return _RequestUserCard(
-                    headerLabel: context.locale.receivedBy,
-                    userName: rawName,
-                    userRole: '',
-                    timestampLabel: context.locale.receivedOn(formattedTime),
-                  );
-                },
+              _RequestUserCard(
+                headerLabel: context.locale.receivedBy,
+                userName: delivery.receivedByName,
+                userRole: '',
+                timestampLabel: context.locale.receivedOn(
+                  _formatDate(delivery.confirmedAt),
+                ),
               ),
             ],
             Gap(spacing.s12),
