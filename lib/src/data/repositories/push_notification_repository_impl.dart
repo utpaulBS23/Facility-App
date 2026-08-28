@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import '../../core/logger/log.dart';
+import '../../domain/entities/notification_channel_entity.dart';
 import '../../domain/entities/notification_payload_entity.dart';
 import '../../domain/repositories/push_notification_repository.dart';
 import '../services/cache/cache_service.dart';
@@ -18,6 +21,7 @@ class PushNotificationRepositoryImpl extends PushNotificationRepository {
   Future<void> initialize() async {
     await _notificationService.initialize();
     _notificationService.setNotificationsEnabled(notificationsEnabled);
+    _notificationService.setDisabledChannels(disabledChannels);
     await _cacheDeviceToken();
   }
 
@@ -57,5 +61,35 @@ class PushNotificationRepositoryImpl extends PushNotificationRepository {
   Future<void> setNotificationsEnabled(bool enabled) async {
     await _cacheService.save(CacheKey.pushNotificationsEnabled, enabled);
     _notificationService.setNotificationsEnabled(enabled);
+  }
+
+  @override
+  Set<NotificationChannelType> get disabledChannels {
+    final cached = _cacheService.get<String>(
+      CacheKey.disabledNotificationChannels,
+    );
+    if (cached == null || cached.isEmpty) return {};
+
+    final keys = (jsonDecode(cached) as List).cast<String>();
+    return keys.map(NotificationChannelType.fromKey).toSet();
+  }
+
+  @override
+  Future<void> setChannelEnabled(
+    NotificationChannelType channel,
+    bool enabled,
+  ) async {
+    final updated = {...disabledChannels};
+    if (enabled) {
+      updated.remove(channel);
+    } else {
+      updated.add(channel);
+    }
+
+    await _cacheService.save(
+      CacheKey.disabledNotificationChannels,
+      jsonEncode(updated.map((c) => c.key).toList()),
+    );
+    _notificationService.setDisabledChannels(updated);
   }
 }

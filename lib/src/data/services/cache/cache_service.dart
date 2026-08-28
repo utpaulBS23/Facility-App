@@ -8,6 +8,7 @@ enum CacheKey {
   language,
   fcmToken,
   pushNotificationsEnabled,
+  disabledNotificationChannels,
 }
 
 abstract class CacheService {

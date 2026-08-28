@@ -1,3 +1,4 @@
+import '../entities/notification_channel_entity.dart';
 import '../entities/notification_payload_entity.dart';
 
 abstract class PushNotificationRepository {
@@ -14,4 +15,8 @@ abstract class PushNotificationRepository {
   bool get notificationsEnabled;
 
   Future<void> setNotificationsEnabled(bool enabled);
+
+  Set<NotificationChannelType> get disabledChannels;
+
+  Future<void> setChannelEnabled(NotificationChannelType channel, bool enabled);
 }

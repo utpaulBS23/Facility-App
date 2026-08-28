@@ -1,3 +1,4 @@
+import '../entities/notification_channel_entity.dart';
 import '../entities/notification_payload_entity.dart';
 import '../repositories/push_notification_repository.dart';
 
@@ -53,5 +54,21 @@ class SetNotificationsEnabledUseCase {
 
   Future<void> call(bool enabled) {
     return _repository.setNotificationsEnabled(enabled);
+  }
+}
+
+class GetDisabledNotificationChannelsUseCase {
+  GetDisabledNotificationChannelsUseCase(this._repository);
+  final PushNotificationRepository _repository;
+
+  Set<NotificationChannelType> call() => _repository.disabledChannels;
+}
+
+class SetNotificationChannelEnabledUseCase {
+  SetNotificationChannelEnabledUseCase(this._repository);
+  final PushNotificationRepository _repository;
+
+  Future<void> call(NotificationChannelType channel, bool enabled) {
+    return _repository.setChannelEnabled(channel, enabled);
   }
 }

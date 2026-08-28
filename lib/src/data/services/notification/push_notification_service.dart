@@ -1,3 +1,4 @@
+import '../../../domain/entities/notification_channel_entity.dart';
 import '../../../domain/entities/notification_payload_entity.dart';
 
 abstract class PushNotificationService {
@@ -18,4 +19,6 @@ abstract class PushNotificationService {
   bool get notificationsEnabled;
 
   void setNotificationsEnabled(bool enabled);
+
+  void setDisabledChannels(Set<NotificationChannelType> channels);
 }
