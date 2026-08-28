@@ -133,11 +133,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
                 return StaffTile(
                   staff: person,
                   isSelected: isSelected,
-                  onAssign: isAssigning || isSelected
-                      ? null
-                      : () {
-                          _onStaffTap(person);
-                        },
+                  onAssign: isAssigning ? null : () => _onStaffTap(person),
                 );
               },
             );

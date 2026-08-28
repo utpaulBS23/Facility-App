@@ -60,6 +60,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     return ColoredBox(
       color: color.onPrimary,
       child: SafeArea(
+        top: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

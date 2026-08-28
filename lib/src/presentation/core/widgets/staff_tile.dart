@@ -9,7 +9,8 @@ import '../theme/theme.dart';
 ///
 /// Shows [staff]'s avatar, name, and phone/email, with an "Assigned" badge
 /// when [isSelected] is true. Tapping calls [onAssign] — pass `null` to
-/// disable the row (e.g. while a request is in flight, or already assigned).
+/// disable the row (e.g. while a request is in flight). An already-assigned
+/// row stays tappable so re-tapping can update it (e.g. toggle slot lead).
 class StaffTile extends StatelessWidget {
   /// Creates a [StaffTile].
   const StaffTile({
