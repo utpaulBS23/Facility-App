@@ -29,6 +29,7 @@ part '../widgets/dispatch_action_button.dart';
 part '../widgets/pending_action_buttons.dart';
 part '../widgets/received_item_card.dart';
 part '../widgets/received_items_list.dart';
+part '../widgets/received_items_section.dart';
 part '../widgets/request_confirm_button.dart';
 part '../widgets/request_details_body.dart';
 part '../widgets/request_details_error.dart';
