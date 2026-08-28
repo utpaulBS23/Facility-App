@@ -595,3 +595,17 @@ GetNotificationPayloadStreamUseCase getNotificationPayloadStreamUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+GetNotificationsEnabledUseCase getNotificationsEnabledUseCase(Ref ref) {
+  return GetNotificationsEnabledUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+SetNotificationsEnabledUseCase setNotificationsEnabledUseCase(Ref ref) {
+  return SetNotificationsEnabledUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}

@@ -12,4 +12,10 @@ abstract class PushNotificationService {
   Stream<NotificationPayloadEntity> get payloadStream;
 
   void clearPayload();
+
+  /// Whether a foreground push shows a local notification banner. Purely
+  /// client-side — the FCM subscription itself stays live either way.
+  bool get notificationsEnabled;
+
+  void setNotificationsEnabled(bool enabled);
 }

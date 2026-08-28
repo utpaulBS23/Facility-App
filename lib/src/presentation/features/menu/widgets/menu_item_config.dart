@@ -91,13 +91,6 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
-    icon: Assets.icons.notificationIcon,
-    label: _notificationLabel,
-    subtitle: _notificationSubtitle,
-    route: Routes.notification,
-    permissions: [UserPermission.notificationView],
-  ),
-  MenuItemConfig(
     icon: Assets.icons.viewIcon,
     label: _profitReportLabel,
     subtitle: _profitReportSubtitle,
@@ -126,6 +119,16 @@ final List<MenuItemConfig> menuItemConfigs = [
     permissions: [UserPermission.iotGatewayConfigure],
   ),
 ];
+
+/// Pinned above the logout tile — kept out of [menuItemConfigs] so it stays
+/// fixed regardless of the permission-filtered list order.
+final notificationMenuItemConfig = MenuItemConfig(
+  icon: Assets.icons.notificationIcon,
+  label: _notificationLabel,
+  subtitle: _notificationSubtitle,
+  route: Routes.notification,
+  permissions: [UserPermission.notificationView],
+);
 
 String _profileLabel(BuildContext context) => context.locale.profile;
 String _profileSubtitle(BuildContext context) =>
