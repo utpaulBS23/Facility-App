@@ -30,6 +30,12 @@ Dio dio(Ref ref) {
   return dio;
 }
 
+// WHY: a bare Dio, no auth/json interceptors or headers — APK downloads hit
+// a plain S3 URL, and the API dio's Authorization/Content-Type headers make
+// S3 reject the request with 400 Bad Request.
+@Riverpod(keepAlive: true)
+Dio downloadDio(Ref ref) => Dio();
+
 @Riverpod(keepAlive: true)
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin(Ref ref) {
   return FlutterLocalNotificationsPlugin();
