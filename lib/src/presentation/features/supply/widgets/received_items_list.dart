@@ -57,6 +57,28 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
         SupplyUrgency.low => context.locale.urgencyLow,
       };
 
+  (String name, String code, int expectedQty, int receivedQty, String unit, int stockItemId)
+      _getItemData(int index) =>
+          switch ((widget.deliveryItems, widget.requestItems)) {
+            (final deliveryItems?, _) when index < deliveryItems.length => (
+                deliveryItems[index].itemName,
+                deliveryItems[index].itemCode,
+                deliveryItems[index].qtyExpected.round(),
+                deliveryItems[index].qtyReceived.round(),
+                deliveryItems[index].unit,
+                deliveryItems[index].stockItemId,
+              ),
+            (_, final requestItems) when index < requestItems.length => (
+                requestItems[index].itemName,
+                requestItems[index].itemCode,
+                requestItems[index].qtyRequested.round(),
+                requestItems[index].qtyRequested.round(),
+                requestItems[index].unit,
+                requestItems[index].stockItemId,
+              ),
+            _ => ('', '', 0, 0, '', 0),
+          };
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -83,7 +105,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            if (!_isEditing)
+            if (!_isEditing) ...[
               TextButton(
                 onPressed: widget.canEdit
                     ? () => setState(() => _isEditing = true)
@@ -93,8 +115,8 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                   disabledForegroundColor: color.text.secondary,
                 ),
                 child: Text(context.locale.edit),
-              )
-            else
+              ),
+            ] else ...[
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -115,6 +137,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                   ),
                 ],
               ),
+            ],
           ],
         ),
         StatusDotTag(
@@ -128,30 +151,8 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
           itemCount: itemCount,
           separatorBuilder: (context, index) => Gap(spacing.s12),
           itemBuilder: (context, index) {
-            final String name;
-            final String code;
-            final int expectedQty;
-            final int receivedQty;
-            final String unit;
-            final int stockItemId;
-
-            if (widget.deliveryItems != null && index < widget.deliveryItems!.length) {
-              final dItem = widget.deliveryItems![index];
-              name = dItem.itemName;
-              code = dItem.itemCode;
-              expectedQty = dItem.qtyExpected.round();
-              receivedQty = dItem.qtyReceived.round();
-              unit = dItem.unit;
-              stockItemId = dItem.stockItemId;
-            } else {
-              final rItem = widget.requestItems[index];
-              name = rItem.itemName;
-              code = rItem.itemCode;
-              expectedQty = rItem.qtyRequested.round();
-              receivedQty = rItem.qtyRequested.round();
-              unit = rItem.unit;
-              stockItemId = rItem.stockItemId;
-            }
+            final (name, code, expectedQty, receivedQty, unit, stockItemId) =
+                _getItemData(index);
 
             return _ReceivedItemCard(
               name: name,
