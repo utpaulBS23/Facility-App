@@ -1,94 +1,105 @@
 part of '../view/request_details_page.dart';
 
+class _TimelineStep {
+  const _TimelineStep({
+    required this.title,
+    required this.subtitle,
+    required this.isCompleted,
+    required this.isActive,
+    required this.isRejected,
+  });
+
+  final String title;
+  final String subtitle;
+  final bool isCompleted;
+  final bool isActive;
+  final bool isRejected;
+}
+
 class _RequestStatusTimeline extends StatelessWidget {
   const _RequestStatusTimeline({required this.request});
 
   final SupplyRequestEntity request;
 
-  SupplyRequestApprovalEntity? _approvalFor(
+  SupplyRequestApprovalEntity? _findApproval(
     ApproverRole role,
     ApprovalAction action,
   ) {
     for (final approval in request.approvals) {
-      if (approval.approverRole == role && approval.action == action) return approval;
+      if (approval.approverRole == role && approval.action == action) {
+        return approval;
+      }
     }
     return null;
   }
 
-  ApproverRole? get _rejectedBy {
+  ApproverRole? get _rejectedByRole {
     for (final approval in request.approvals.reversed) {
-      if (approval.action == ApprovalAction.rejected) return approval.approverRole;
+      if (approval.action == ApprovalAction.rejected) {
+        return approval.approverRole;
+      }
     }
     return null;
   }
 
-  String _dateSubtitle(String? actedAt) {
-    if (actedAt == null || actedAt.isEmpty) return '-';
-    try {
-      return DateFormatter.shortDate(DateTime.parse(actedAt).toLocal());
-    } catch (_) {
-      return '-';
-    }
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '-';
+    final parsed = DateTime.tryParse(dateStr);
+    if (parsed == null) return '-';
+    return DateFormatter.shortDate(parsed.toLocal());
   }
 
-  @override
-  Widget build(BuildContext context) {
+  List<_TimelineStep> _buildSteps(BuildContext context) {
     final status = request.status;
-    final spacing = context.dimensions.spacing;
-    final color = context.color;
+    final supervisorApproval = _findApproval(
+      ApproverRole.supervisor,
+      ApprovalAction.approved,
+    );
+    final opManagerApproval = _findApproval(
+      ApproverRole.operationManager,
+      ApprovalAction.approved,
+    );
+    final rejectedBy = _rejectedByRole;
 
-    final supervisorApproval =
-        _approvalFor(ApproverRole.supervisor, ApprovalAction.approved);
-    final opManagerApproval =
-        _approvalFor(ApproverRole.operationManager, ApprovalAction.approved);
+    final isSupCompleted = status != SupplyRequestStatus.pendingSupervisor &&
+        status != SupplyRequestStatus.rejected &&
+        rejectedBy != ApproverRole.supervisor;
 
+    final isOpCompleted = (status == SupplyRequestStatus.operationManagerApproved ||
+            status == SupplyRequestStatus.inDelivery ||
+            status == SupplyRequestStatus.delivered ||
+            status == SupplyRequestStatus.completed) &&
+        rejectedBy != ApproverRole.operationManager;
+    final isApproved = status == SupplyRequestStatus.operationManagerApproved ||
+        status == SupplyRequestStatus.inDelivery ||
+        status == SupplyRequestStatus.delivered ||
+        status == SupplyRequestStatus.completed;
+    final isDelivered = status == SupplyRequestStatus.delivered ||
+        status == SupplyRequestStatus.completed;
 
-    final steps = [
-      (
+    return [
+      _TimelineStep(
         title: context.locale.pendingSupervisor,
-        subtitle: _dateSubtitle(supervisorApproval?.actedAt),
-        isCompleted: switch (status) {
-          SupplyRequestStatus.pendingSupervisor || SupplyRequestStatus.rejected =>
-            false,
-          _ => _rejectedBy != ApproverRole.supervisor,
-        },
+        subtitle: _formatDate(supervisorApproval?.actedAt),
+        isCompleted: isSupCompleted,
         isActive: status == SupplyRequestStatus.pendingSupervisor,
-        isRejected: _rejectedBy == ApproverRole.supervisor,
+        isRejected: rejectedBy == ApproverRole.supervisor,
       ),
-      (
+      _TimelineStep(
         title: context.locale.pendingOperationManager,
-        subtitle: _dateSubtitle(opManagerApproval?.actedAt),
-        isCompleted: switch (status) {
-          SupplyRequestStatus.operationManagerApproved ||
-          SupplyRequestStatus.inDelivery ||
-          SupplyRequestStatus.delivered ||
-          SupplyRequestStatus.completed =>
-            _rejectedBy != ApproverRole.operationManager,
-          _ => false,
-        },
+        subtitle: _formatDate(opManagerApproval?.actedAt),
+        isCompleted: isOpCompleted,
         isActive: status == SupplyRequestStatus.pendingOperationManager,
-        isRejected: _rejectedBy == ApproverRole.operationManager,
+        isRejected: rejectedBy == ApproverRole.operationManager,
       ),
-      (
+      _TimelineStep(
         title: context.locale.operationManagerApproved,
-        subtitle: switch (status) {
-          SupplyRequestStatus.inDelivery ||
-          SupplyRequestStatus.delivered ||
-          SupplyRequestStatus.completed =>
-            _dateSubtitle(request.updatedAt),
-          _ => '-',
-        },
-        isCompleted: switch (status) {
-          SupplyRequestStatus.inDelivery ||
-          SupplyRequestStatus.delivered ||
-          SupplyRequestStatus.completed =>
-            true,
-          _ => false,
-        },
-        isActive: false,
+        subtitle: isApproved ? _formatDate(request.updatedAt) : '-',
+        isCompleted: isApproved,
+        isActive: status == SupplyRequestStatus.operationManagerApproved,
         isRejected: false,
       ),
-      (
+      _TimelineStep(
         title: context.locale.deliveryStage,
         subtitle: switch (status) {
           SupplyRequestStatus.inDelivery => context.locale.inDelivery,
@@ -97,14 +108,17 @@ class _RequestStatusTimeline extends StatelessWidget {
             context.locale.delivered,
           _ => '-',
         },
-        isCompleted: switch (status) {
-          SupplyRequestStatus.delivered || SupplyRequestStatus.completed => true,
-          _ => false,
-        },
+        isCompleted: isDelivered,
         isActive: status == SupplyRequestStatus.inDelivery,
         isRejected: false,
       ),
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final steps = _buildSteps(context);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -113,65 +127,15 @@ class _RequestStatusTimeline extends StatelessWidget {
 
         return Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: sidePadding > 0 ? sidePadding : 0,
-              ),
-              child: Row(
-                children: [
-                  for (int i = 0; i < steps.length; i++) ...[
-                    _TimelineCircleNode(
-                      isCompleted: steps[i].isCompleted,
-                      isActive: steps[i].isActive,
-                      isRejected: steps[i].isRejected,
-                    ),
-                    if (i < steps.length - 1)
-                      Expanded(
-                        child: Container(
-                          height: spacing.s2,
-                          color: steps[i].isCompleted
-                              ? color.success
-                              : color.borderSubtle,
-                        ),
-                      ),
-                  ],
-                ],
-              ),
+            _TimelineNodesRow(
+              steps: steps,
+              sidePadding: sidePadding > 0 ? sidePadding : 0,
             ),
             Gap(spacing.s8),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final step in steps)
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          step.title,
-                          textAlign: TextAlign.center,
-                          style: context.textStyle.labelLarge.copyWith(
-                            color: color.text.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Gap(spacing.s2),
-                        Text(
-                          step.subtitle,
-                          textAlign: TextAlign.center,
-                          style: context.textStyle.bodySmall.copyWith(
-                            color: color.text.secondary,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            _TimelineLabelsRow(steps: steps),
           ],
         );
       },
     );
   }
 }
-
