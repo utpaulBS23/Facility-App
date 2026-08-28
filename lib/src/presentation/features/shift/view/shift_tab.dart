@@ -23,6 +23,7 @@ import '../../../core/widgets/unassign_staff_confirm_dialog.dart';
 import '../riverpod/make_slot_lead_provider.dart';
 import '../riverpod/shift_slots_provider.dart';
 import '../riverpod/unassign_shift_slot_provider.dart';
+import '../update_stock/view/update_stock_page.dart';
 
 part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_card_helpers.dart';
