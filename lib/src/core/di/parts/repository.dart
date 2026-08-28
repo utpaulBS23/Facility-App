@@ -112,4 +112,3 @@ SupplyRepository supplyRepository(Ref ref) {
   return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
 
-}
