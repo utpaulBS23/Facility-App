@@ -12,7 +12,11 @@ import '../../../domain/entities/notification_payload_entity.dart';
 import 'push_notification_service.dart';
 
 class PushNotificationServiceImpl implements PushNotificationService {
-  PushNotificationServiceImpl(this._messaging, this._notifications);
+  PushNotificationServiceImpl({
+    required FirebaseMessaging messaging,
+    required FlutterLocalNotificationsPlugin notifications,
+  }) : _messaging = messaging,
+       _notifications = notifications;
 
   static const _channelDescription = 'General push notifications.';
 

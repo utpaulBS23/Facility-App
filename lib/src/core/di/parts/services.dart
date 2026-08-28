@@ -62,7 +62,7 @@ DeviceInfoService deviceInfoService(Ref ref) {
 @Riverpod(keepAlive: true)
 PushNotificationService pushNotificationService(Ref ref) {
   return PushNotificationServiceImpl(
-    ref.read(firebaseMessagingProvider),
-    ref.read(flutterLocalNotificationsPluginProvider),
+    messaging: ref.read(firebaseMessagingProvider),
+    notifications: ref.read(flutterLocalNotificationsPluginProvider),
   );
 }
