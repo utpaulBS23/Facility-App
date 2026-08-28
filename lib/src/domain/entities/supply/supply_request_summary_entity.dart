@@ -1,13 +1,14 @@
 class SupplyRequestSummaryEntity {
   const SupplyRequestSummaryEntity({
-    required this.pending,
-    required this.approved,
-    required this.rejected,
-    required this.completed,
+    this.pending,
+    this.approved,
+    this.rejected,
+    this.completed,
   });
 
-  final String pending;
-  final String approved;
-  final String rejected;
-  final String completed;
+  final int? pending;
+  final int? approved;
+  final int? rejected;
+  final int? completed;
 }
+
