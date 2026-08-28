@@ -61,7 +61,6 @@ import '../../features/splash/view/splash_page.dart';
 import '../../features/supervisor_tracking/view/supervisor_tracking_page.dart';
 import '../../../domain/entities/supply/delivery_entity.dart';
 import '../../../domain/entities/supply/supply_request_entity.dart';
-import '../../features/supply/models/received_item_ui_model.dart';
 import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/request_details_page.dart';
