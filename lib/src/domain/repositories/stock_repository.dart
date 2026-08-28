@@ -7,7 +7,7 @@ abstract base class StockRepository extends Repository {
   Future<Result<List<ShiftStockCountEntity>, Failure>> submitShiftStockCount({
     required int partnerId,
     required int shiftAssignmentId,
-    required List<SubmitStockCountItemParams> items,
+    required List<SubmitStockCountItemEntity> items,
   });
 
   Future<Result<List<ShiftStockCountEntity>, Failure>> getShiftStockCounts({

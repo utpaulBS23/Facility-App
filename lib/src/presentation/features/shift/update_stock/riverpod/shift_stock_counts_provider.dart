@@ -21,7 +21,7 @@ FutureOr<List<ShiftStockCountEntity>> shiftStockCounts(
 
   return switch (result) {
     Success(:final data) => data ?? const [],
-    Error(:final error) => throw error,
+    Error(:final error) => throw Exception(error.message),
     _ => const [],
   };
 }

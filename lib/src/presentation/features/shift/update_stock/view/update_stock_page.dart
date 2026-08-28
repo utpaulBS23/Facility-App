@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/app_localization.dart';
+import '../../../../../core/extensions/failure_localization.dart';
 import '../../../../../domain/entities/app_permission.dart';
 import '../../../../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../../../../../domain/entities/supply/stock_item_entity.dart';
@@ -20,23 +21,19 @@ import '../riverpod/submit_shift_stock_count_provider.dart';
 import '../widgets/update_stock_form_entry.dart';
 
 part '../widgets/instruction_alert_banner.dart';
+part '../widgets/update_stock_body.dart';
 part '../widgets/update_stock_footer_bar.dart';
 part '../widgets/update_stock_form_card.dart';
 
-class UpdateStockPageArgs {
-  const UpdateStockPageArgs({
+class UpdateStockPage extends ConsumerStatefulWidget {
+  const UpdateStockPage({
+    super.key,
     required this.facilityId,
     required this.shiftAssignmentId,
   });
 
   final int facilityId;
   final int shiftAssignmentId;
-}
-
-class UpdateStockPage extends ConsumerStatefulWidget {
-  const UpdateStockPage({super.key, required this.args});
-
-  final UpdateStockPageArgs args;
 
   @override
   ConsumerState<UpdateStockPage> createState() => _UpdateStockPageState();
@@ -69,19 +66,24 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
 
         // Invalidate stock list provider so StockPage refreshes immediately
         ref.invalidate(
-          shiftStockCountsProvider(facilityId: widget.args.facilityId),
+          shiftStockCountsProvider(facilityId: widget.facilityId),
         );
 
         AppSnackBar.showSuccess(
           context,
           context.locale.stockCountSubmittedSuccess,
         );
-        context.pop();
+        if (context.canPop()) {
+          context.pop();
+        }
       },
       error: (error, _) {
         if (!mounted) return;
 
-        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+        AppSnackBar.showError(
+          context,
+          error.localizedMessage(context),
+        );
       },
     );
   }
@@ -92,7 +94,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
 
     ref
         .read(submitShiftStockCountProvider.notifier)
-        .submit(shiftAssignmentId: widget.args.shiftAssignmentId, items: entries);
+        .submit(shiftAssignmentId: widget.shiftAssignmentId, items: entries);
   }
 
   ShiftStockCountItemFormEntry _getOrCreateFormEntry(
@@ -115,7 +117,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
     final color = context.color;
     final catalogAsync = ref.watch(itemCatalogProvider(true));
     final countsAsync = ref.watch(
-      shiftStockCountsProvider(facilityId: widget.args.facilityId),
+      shiftStockCountsProvider(facilityId: widget.facilityId),
     );
     final isLoading = ref.watch(submitShiftStockCountProvider).isLoading;
 
@@ -131,10 +133,18 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
       ),
       body: catalogAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => AppErrorWidget(message: err.toString()),
+        error: (err, _) => AppErrorWidget(
+          message: err.localizedMessage(context),
+          onRetry: () => ref.invalidate(itemCatalogProvider(true)),
+        ),
         data: (catalog) => countsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => AppErrorWidget(message: err.toString()),
+          error: (err, _) => AppErrorWidget(
+            message: err.localizedMessage(context),
+            onRetry: () => ref.invalidate(
+              shiftStockCountsProvider(facilityId: widget.facilityId),
+            ),
+          ),
           data: (history) {
             final items = [...catalog.items]
               ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));

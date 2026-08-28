@@ -15,7 +15,7 @@ final class StockRepositoryImpl extends StockRepository {
   Future<Result<List<ShiftStockCountEntity>, Failure>> submitShiftStockCount({
     required int partnerId,
     required int shiftAssignmentId,
-    required List<SubmitStockCountItemParams> items,
+    required List<SubmitStockCountItemEntity> items,
   }) {
     return asyncGuard(() async {
       final response = await remote.submitShiftStockCount(

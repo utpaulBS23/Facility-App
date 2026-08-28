@@ -85,10 +85,7 @@ class SlotDetailsPage extends ConsumerWidget {
   void _onUpdateStock(BuildContext context, int facilityId, int shiftAssignmentId) {
     context.pushNamed(
       Routes.updateStock,
-      extra: UpdateStockPageArgs(
-        facilityId: facilityId,
-        shiftAssignmentId: shiftAssignmentId,
-      ),
+      extra: (facilityId, shiftAssignmentId),
     );
   }
 

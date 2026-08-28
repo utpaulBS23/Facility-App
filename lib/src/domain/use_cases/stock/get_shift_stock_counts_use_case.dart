@@ -20,7 +20,7 @@ final class GetShiftStockCountsUseCase extends PartnerUseCase {
     String? to,
   }) async {
     final partnerId = getPartnerId();
-    return stockRepository.getShiftStockCounts(
+    final result = await stockRepository.getShiftStockCounts(
       partnerId: partnerId,
       facilityId: facilityId,
       shiftAssignmentId: shiftAssignmentId,
@@ -28,5 +28,10 @@ final class GetShiftStockCountsUseCase extends PartnerUseCase {
       from: from,
       to: to,
     );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get shift stock counts')),
+    };
   }
 }
