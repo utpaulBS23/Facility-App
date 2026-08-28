@@ -100,7 +100,9 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
   }
 
   void _onEvidenceReportTap(int stockItemId) {
-    final request = ref.read(supplyRequestDetailsProvider(widget.request.id)).valueOrNull ?? widget.request;
+    final request = ref.read(supplyRequestDetailsProvider(widget.requestId)).valueOrNull;
+    if (request == null) return;
+
     final delivery = request.hasDelivery
         ? ref.read(supplyRequestDeliveryProvider(request.requestCode)).valueOrNull
         : null;
