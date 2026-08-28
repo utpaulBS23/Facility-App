@@ -579,6 +579,8 @@
   "doorLockSubtitle": "স্মার্ট ডোর লক নিয়ন্ত্রণ করুন",
   "expenseEntrySubtitle": "সুবিধার পরিচালনা সংক্রান্ত খরচ রেকর্ড করুন",
   "notificationSubtitle": "সুবিধার নোটিফিকেশন এবং আপডেট দেখুন",
+  "pushNotifications": "পুশ নোটিফিকেশন",
+  "pushNotificationsSubtitle": "সুবিধার কার্যক্রম সম্পর্কে সতর্কতা পান",
   "profitReportSubtitle": "সুবিধার মুনাফা এবং আর্থিক রিপোর্ট দেখুন",
   "consumptionReportSubtitle": "স্টক ব্যবহার এবং খরচ ট্র্যাক করুন",
   "facilityLocationsSubtitle": "সুবিধার অবস্থানের মানচিত্র দেখুন",

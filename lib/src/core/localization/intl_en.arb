@@ -598,6 +598,8 @@
   "doorLockSubtitle": "Control smart door locks",
   "expenseEntrySubtitle": "Record facility operational expenses",
   "notificationSubtitle": "View facility alerts and updates",
+  "pushNotifications": "Push notifications",
+  "pushNotificationsSubtitle": "Get alerted about facility activity",
   "profitReportSubtitle": "View facility profit and financial reports",
   "consumptionReportSubtitle": "Track stock usage and consumption",
   "facilityLocationsSubtitle": "View map of facility locations",

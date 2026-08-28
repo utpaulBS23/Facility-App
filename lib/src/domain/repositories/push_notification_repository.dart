@@ -10,4 +10,8 @@ abstract class PushNotificationRepository {
   Stream<NotificationPayloadEntity> get notificationPayloadStream;
 
   void clearPayload();
+
+  bool get notificationsEnabled;
+
+  Future<void> setNotificationsEnabled(bool enabled);
 }

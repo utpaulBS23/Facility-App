@@ -7,6 +7,7 @@ enum CacheKey {
   isOnBoardingCompleted,
   language,
   fcmToken,
+  pushNotificationsEnabled,
 }
 
 abstract class CacheService {
