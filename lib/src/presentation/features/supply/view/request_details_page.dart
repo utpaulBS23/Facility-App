@@ -20,6 +20,7 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';

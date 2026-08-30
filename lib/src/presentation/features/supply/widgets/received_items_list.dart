@@ -43,22 +43,6 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
     widget.onEditingCancelled();
   }
 
-  Color _urgencyColor(BuildContext context, SupplyUrgency urgency) =>
-      switch (urgency) {
-        SupplyUrgency.urgent => context.color.primary,
-        SupplyUrgency.high => context.color.warning,
-        SupplyUrgency.normal => context.color.success,
-        SupplyUrgency.low => context.color.text.secondary,
-      };
-
-  String _urgencyLabel(BuildContext context, SupplyUrgency urgency) =>
-      switch (urgency) {
-        SupplyUrgency.urgent => context.locale.urgencyUrgent,
-        SupplyUrgency.high => context.locale.urgencyHigh,
-        SupplyUrgency.normal => context.locale.urgencyNormal,
-        SupplyUrgency.low => context.locale.urgencyLow,
-      };
-
   (String name, String code, int expectedQty, int receivedQty, String unit, int stockItemId)
       _getItemData(int index) =>
           switch ((widget.deliveryItems, widget.requestItems)) {
@@ -143,8 +127,8 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
           ],
         ),
         StatusDotTag(
-          dotColor: _urgencyColor(context, widget.priority),
-          label: _urgencyLabel(context, widget.priority),
+          dotColor: widget.priority.urgencyColor(context),
+          label: widget.priority.localizedName(context),
         ),
         Gap(spacing.s12),
         ListView.separated(
