@@ -7,7 +7,7 @@ import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../../../domain/entities/leave/leave_type.dart';
+import '../extensions/leave_presentation_extension.dart';
 
 class LeaveSubmittedPage extends StatelessWidget {
   const LeaveSubmittedPage({super.key, required this.request});
@@ -33,14 +33,7 @@ class LeaveSubmittedPage extends StatelessWidget {
     final dateRange = '${request.startDate} → ${request.endDate}';
     final daysCountText = context.locale.daysCount(request.daysCount);
 
-    final typeLabel = switch (request.leaveType) {
-      LeaveType.sickLeave => context.locale.sickLeave,
-      LeaveType.casualLeave => context.locale.casualLeave,
-      LeaveType.maternityLeave => context.locale.maternityLeave,
-      LeaveType.annualLeave => context.locale.annualLeave,
-      LeaveType.unpaidLeave => context.locale.unpaidLeave,
-      LeaveType.other => context.locale.other,
-    };
+    final typeLabel = request.leaveType.localizedLabel(context);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,

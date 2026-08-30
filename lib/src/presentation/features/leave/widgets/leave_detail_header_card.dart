@@ -12,24 +12,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
     final textStyle = context.textStyle;
 
     final applicantName = leaveRequest.applicant.name;
-    final (statusLabel, dotColor) = switch (leaveRequest.status) {
-      LeaveStatus.pendingSupervisor => (context.locale.pending, color.warning),
-      LeaveStatus.pendingManager => (
-        context.locale.managerApproval,
-        color.info,
-      ),
-      LeaveStatus.pendingOwner => (
-        context.locale.pendingOwner,
-        color.info,
-      ),
-      LeaveStatus.approved => (context.locale.approved, color.success),
-      LeaveStatus.rejected => (context.locale.rejected, color.error),
-      LeaveStatus.cancelled => (context.locale.cancel, color.text.secondary),
-      LeaveStatus.unknown => (
-        context.locale.notAvailable,
-        color.text.secondary,
-      ),
-    };
+    final (statusLabel, dotColor) = leaveRequest.status.labelAndDotColor(context);
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),

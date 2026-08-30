@@ -20,7 +20,7 @@ import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../../../domain/entities/leave/leave_type.dart';
+import '../extensions/leave_presentation_extension.dart';
 import '../riverpod/leave_requests_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 import '../widgets/shimmer/stat_tile_shimmer.dart';
