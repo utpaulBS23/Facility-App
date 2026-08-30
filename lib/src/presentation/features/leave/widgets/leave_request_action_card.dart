@@ -70,24 +70,8 @@ class _LeaveRequestActionCardState
     final applicantName = leaveRequest.applicant.name;
     final dateRange = '${leaveRequest.startDate} → ${leaveRequest.endDate}';
 
-    final (statusLabel, dotColor) = switch (leaveRequest.status) {
-      LeaveStatus.pendingSupervisor => (context.locale.pending, color.warning),
-      LeaveStatus.pendingManager => (context.locale.managerApproval, color.info),
-      LeaveStatus.pendingOwner => (context.locale.pendingOwner, color.info),
-      LeaveStatus.approved => (context.locale.approved, color.success),
-      LeaveStatus.rejected => (context.locale.rejected, color.error),
-      LeaveStatus.cancelled => (context.locale.cancel, color.text.secondary),
-      LeaveStatus.unknown => (context.locale.notAvailable, color.text.secondary),
-    };
-
-    final typeLabel = switch (leaveRequest.leaveType) {
-      LeaveType.sickLeave => context.locale.sickLeave,
-      LeaveType.casualLeave => context.locale.casualLeave,
-      LeaveType.maternityLeave => context.locale.maternityLeave,
-      LeaveType.annualLeave => context.locale.annualLeave,
-      LeaveType.unpaidLeave => context.locale.unpaidLeave,
-      LeaveType.other => context.locale.other,
-    };
+    final (statusLabel, dotColor) = leaveRequest.status.labelAndDotColor(context);
+    final typeLabel = leaveRequest.leaveType.localizedLabel(context);
 
     return InkWell(
       onTap: widget.onTap,

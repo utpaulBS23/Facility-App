@@ -7,7 +7,6 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
-import '../../../../domain/entities/leave/leave_type.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
@@ -15,6 +14,7 @@ import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../extensions/leave_presentation_extension.dart';
 import '../riverpod/leave_requests_provider.dart';
 import '../widgets/leave_details_action_bar.dart';
 

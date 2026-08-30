@@ -14,14 +14,7 @@ class _LeaveDetailInfoSection extends StatelessWidget {
     final dateRange = '${leaveRequest.startDate} → ${leaveRequest.endDate}';
     final reasonText = leaveRequest.reason ?? context.locale.optional;
 
-    final typeLabel = switch (leaveRequest.leaveType) {
-      LeaveType.sickLeave => context.locale.sickLeave,
-      LeaveType.casualLeave => context.locale.casualLeave,
-      LeaveType.maternityLeave => context.locale.maternityLeave,
-      LeaveType.annualLeave => context.locale.annualLeave,
-      LeaveType.unpaidLeave => context.locale.unpaidLeave,
-      LeaveType.other => context.locale.other,
-    };
+    final typeLabel = leaveRequest.leaveType.localizedLabel(context);
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
