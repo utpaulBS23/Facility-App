@@ -54,6 +54,11 @@ class _LoginCard extends StatelessWidget {
             hint: context.locale.enterYourId,
             textInputAction: TextInputAction.next,
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            prefixIcon: SizedBox(
+              width: dimensions.spacing.s20,
+              height: dimensions.spacing.s20,
+              child: Icon(Icons.person_outline, color: colors.icon),
+            ),
           ),
           Gap(dimensions.spacing.s16),
           AppTextField.password(
