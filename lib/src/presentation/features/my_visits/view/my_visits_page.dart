@@ -92,7 +92,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
+          HorizontalDatePicker.week(onDateSelected: _onDateChanged),
           visitState.when(
             loading: () => const SizedBox.shrink(),
             error: (e, s) => const SizedBox.shrink(),
