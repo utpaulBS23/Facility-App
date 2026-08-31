@@ -733,6 +733,10 @@
   "noStockCountRecorded": "কোন স্টক হিসাবের তথ্য পাওয়া যায়নি",
   "selectFacility": "ফ্যাসিলিটি নির্বাচন করুন",
   "totalItems": "মোট আইটেম",
-  "lastUpdated": "সর্বশেষ আপডেট"
+  "lastUpdated": "সর্বশেষ আপডেট",
+  "healthy": "পর্যাপ্ত",
+  "lowStock": "কম",
+  "outOfStock": "স্টক শেষ",
+  "threshold": "সীমা"
 }
 

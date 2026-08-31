@@ -68,7 +68,7 @@ class _FacilityBalanceCard extends StatelessWidget {
                     if (item.thresholdQty != null) ...[
                       Gap(spacing.s8),
                       Text(
-                        '• Threshold: ${item.thresholdQty!.toInt()} ${item.unit}',
+                        '• ${context.locale.threshold}: ${item.thresholdQty!.toInt()} ${item.unit}',
                         style: context.textStyle.bodySmall.copyWith(
                           color: color.text.secondary,
                         ),
@@ -92,21 +92,23 @@ class _StockStatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.color;
+
     return switch (status) {
       FacilityStockStatus.ok => StatusPill(
-          label: 'Healthy',
-          background: Colors.green.withValues(alpha: 0.1),
-          foreground: Colors.green.shade700,
+          label: context.locale.healthy,
+          background: color.successAlt,
+          foreground: color.success,
         ),
       FacilityStockStatus.low => StatusPill(
-          label: 'Low',
-          background: Colors.orange.withValues(alpha: 0.1),
-          foreground: Colors.orange.shade800,
+          label: context.locale.lowStock,
+          background: color.warningAlt,
+          foreground: color.warning,
         ),
       FacilityStockStatus.out => StatusPill(
-          label: 'Out of stock',
-          background: Colors.red.withValues(alpha: 0.1),
-          foreground: Colors.red.shade700,
+          label: context.locale.outOfStock,
+          background: color.errorAlt,
+          foreground: color.error,
         ),
       _ => const SizedBox.shrink(),
     };
