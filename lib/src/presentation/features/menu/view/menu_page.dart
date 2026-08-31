@@ -10,6 +10,7 @@ import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/menu_provider.dart';
@@ -56,61 +57,70 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final menuState = ref.watch(menuNotifierProvider);
+    final isLoggingOut = ref.watch(logoutProvider).isLoading;
 
-    return ColoredBox(
-      color: color.onPrimary,
-      child: SafeArea(
-        top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _MenuHeaderSection(
-              name: menuState.name,
-              email: menuState.email,
-              partnerName: menuState.partnerName,
-              appVersion: menuState.appVersion,
-              buildNumber: menuState.buildNumber,
-            ),
-            Gap(spacing.s16),
-            Expanded(
-              child: PermissionSetScope(
-                builder: (context, permissions) {
-                  final visibleItems = [
-                    for (final item in menuItemConfigs)
-                      if (hasAnyPermission(item.permissions, permissions)) item,
-                  ];
+    return Stack(
+      children: [
+        ColoredBox(
+          color: color.onPrimary,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _MenuHeaderSection(
+                  name: menuState.name,
+                  email: menuState.email,
+                  partnerName: menuState.partnerName,
+                  appVersion: menuState.appVersion,
+                  buildNumber: menuState.buildNumber,
+                ),
+                Gap(spacing.s16),
+                Expanded(
+                  child: PermissionSetScope(
+                    builder: (context, permissions) {
+                      final visibleItems = [
+                        for (final item in menuItemConfigs)
+                          if (hasAnyPermission(item.permissions, permissions))
+                            item,
+                      ];
 
-                  return Padding(
-                    padding:  .symmetric(horizontal: context.dimensions.padding.p16),
-                    child: RawScrollbar(
-                      thumbColor: color.primary,
-                      radius: Radius.circular(context.dimensions.radius.r4),
-                      thickness: spacing.s4,
-                      child: ListView(
-                        children: [
-                          for (var i = 0; i < visibleItems.length; i++)
-                            _MenuItemTile(
-                              config: visibleItems[i],
-                              showDivider: i < visibleItems.length - 1,
-                            ),
-                          // WHY: notificationView permission not yet granted by
-                          // backend — show unconditionally until it is.
-                          _MenuItemTile(
-                            config: notificationMenuItemConfig,
-                            showDivider: false,
+                      return Padding(
+                        padding: .symmetric(
+                          horizontal: context.dimensions.padding.p16,
+                        ),
+                        child: RawScrollbar(
+                          thumbColor: color.primary,
+                          radius: Radius.circular(context.dimensions.radius.r4),
+                          thickness: spacing.s4,
+                          child: ListView(
+                            children: [
+                              for (var i = 0; i < visibleItems.length; i++)
+                                _MenuItemTile(
+                                  config: visibleItems[i],
+                                  showDivider: i < visibleItems.length - 1,
+                                ),
+                              // WHY: notificationView permission not yet granted by
+                              // backend — show unconditionally until it is.
+                              _MenuItemTile(
+                                config: notificationMenuItemConfig,
+                                showDivider: false,
+                              ),
+                              _LogoutTile(onTap: _onLogoutTap),
+                            ],
                           ),
-                          _LogoutTile(onTap: _onLogoutTap),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Gap(spacing.s8),
+              ],
             ),
-            Gap(spacing.s8),
-          ],
+          ),
         ),
-      ),
+        if (isLoggingOut) const LoadingOverlay(),
+      ],
     );
   }
 }
