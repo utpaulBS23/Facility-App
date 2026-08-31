@@ -607,7 +607,6 @@ GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
 }
 
 @riverpod
-<<<<<<< HEAD
 GetInitialPushNotificationMessageUseCase
 getInitialPushNotificationMessageUseCase(Ref ref) {
   return GetInitialPushNotificationMessageUseCase(
