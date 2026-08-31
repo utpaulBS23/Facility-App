@@ -86,23 +86,26 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                             item,
                       ];
 
+                      // WHY SingleChildScrollView, not a bare Column: the
+                      // menu list has grown past what fits on smaller
+                      // screens (My Attendance, Claim Expense, etc.) —
+                      // without scrolling, the trailing items (notification,
+                      // logout) overflow off-screen.
                       return Padding(
                         padding: .symmetric(
                           horizontal: context.dimensions.padding.p16,
                         ),
-                        child: RawScrollbar(
-                          thumbColor: color.primary,
-                          radius: Radius.circular(context.dimensions.radius.r4),
-                          thickness: spacing.s4,
-                          child: ListView(
+                        child: SingleChildScrollView(
+                          child: Column(
                             children: [
                               for (var i = 0; i < visibleItems.length; i++)
                                 _MenuItemTile(
                                   config: visibleItems[i],
                                   showDivider: i < visibleItems.length - 1,
                                 ),
-                              // WHY: notificationView permission not yet granted by
-                              // backend — show unconditionally until it is.
+                              // WHY: notificationView permission not yet
+                              // granted by backend — show unconditionally
+                              // until it is.
                               _MenuItemTile(
                                 config: notificationMenuItemConfig,
                                 showDivider: false,
