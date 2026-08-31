@@ -97,14 +97,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Headline2xlTinyText(context.locale.checkOut),
-        ),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.checkOut),
       body: _ShiftCheckOutBody(
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,

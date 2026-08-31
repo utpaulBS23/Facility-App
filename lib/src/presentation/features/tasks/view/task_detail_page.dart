@@ -7,8 +7,8 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_detail_provider.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
@@ -80,15 +80,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: TitleMediumText(context.locale.taskDetails),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.chevron_left, color: context.color.primary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      appBar: DetailAppBar(title: context.locale.taskDetails),
       body: detailState.when(
         loading: () =>
             const Center(child: CircularProgressIndicator.adaptive()),

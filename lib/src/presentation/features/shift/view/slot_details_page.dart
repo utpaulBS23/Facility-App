@@ -114,7 +114,7 @@ class SlotDetailsPage extends ConsumerWidget {
     return _SlotDetailsActionListener(
       child: Scaffold(
         backgroundColor: context.color.scaffoldBackground,
-        appBar: const _SlotDetailsAppBar(),
+        appBar: DetailAppBar(title: context.locale.shiftDetails),
         body: Column(
           children: [
             Expanded(

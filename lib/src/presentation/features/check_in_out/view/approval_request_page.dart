@@ -100,14 +100,7 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Headline2xlTinyText(context.locale.approvalRequest),
-        ),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.approvalRequest),
       body: Column(
         children: [
           Expanded(

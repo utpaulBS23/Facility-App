@@ -10,10 +10,9 @@ import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../extensions/leave_presentation_extension.dart';
 import '../riverpod/leave_requests_provider.dart';
 import '../widgets/leave_details_action_bar.dart';
@@ -70,14 +69,7 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.leaveDetails),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.leaveDetails),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

@@ -11,6 +11,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_answer_provider.dart';
@@ -56,9 +57,9 @@ class _OccurrenceChecklistPageState
         );
         Navigator.of(context).pop();
       },
-      error: (error) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.localized(context))),
-      ),
+      error: (error) => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.localized(context)))),
     );
   }
 
@@ -69,18 +70,15 @@ class _OccurrenceChecklistPageState
     final current = _current(
       occurrencesAsync.valueOrNull?.occurrences ?? [widget.occurrence],
     );
-    final items = current.checklistItems ?? const <TaskOccurrenceChecklistItemEntity>[];
-    final isRefreshing = occurrencesAsync.isLoading && occurrencesAsync.hasValue;
+    final items =
+        current.checklistItems ?? const <TaskOccurrenceChecklistItemEntity>[];
+    final isRefreshing =
+        occurrencesAsync.isLoading && occurrencesAsync.hasValue;
     final answered = items.where((i) => i.isAnswered).length;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: LabelLargeText(context.locale.occurrenceChecklist),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.occurrenceChecklist),
       body: Stack(
         children: [
           items.isEmpty
@@ -113,7 +111,9 @@ class _OccurrenceChecklistPageState
             Positioned.fill(
               child: ColoredBox(
                 color: context.color.scaffoldBackground.withValues(alpha: 0.6),
-                child: const Center(child: CircularProgressIndicator.adaptive()),
+                child: const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               ),
             ),
         ],

@@ -15,13 +15,9 @@ class _RequestDetailsError extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: onBack),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.requestDetailsTitle),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: DetailAppBar(
+        title: context.locale.requestDetailsTitle,
+        onBack: onBack,
       ),
       body: AppErrorWidget(
         message: error.localizedMessage(context),

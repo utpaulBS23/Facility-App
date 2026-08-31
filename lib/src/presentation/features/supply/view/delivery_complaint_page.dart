@@ -9,9 +9,8 @@ import '../../../../domain/entities/supply/delivery_entity.dart';
 import '../../../../domain/entities/supply/supply_request_payloads.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/supply_request_action_provider.dart';
 
 part '../widgets/additional_details_card.dart';
@@ -44,10 +43,7 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
     super.dispose();
   }
 
-  void _onFileStateChanged(
-    AsyncValue<void>? previous,
-    AsyncValue<void> next,
-  ) {
+  void _onFileStateChanged(AsyncValue<void>? previous, AsyncValue<void> next) {
     if (previous?.isLoading == true && next.hasValue && !next.hasError) {
       if (!mounted) return;
       AppSnackBar.showSuccess(
@@ -69,7 +65,9 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
       evidencePhotoUrl: '',
     );
 
-    ref.read(supplyRequestActionProvider.notifier).fileDeliveryComplaint(request);
+    ref
+        .read(supplyRequestActionProvider.notifier)
+        .fileDeliveryComplaint(request);
   }
 
   @override
@@ -82,14 +80,7 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.deliveryComplaintTitle),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.deliveryComplaintTitle),
       body: _DeliveryComplaintBody(
         item: widget.item,
         reasonController: _reasonController,

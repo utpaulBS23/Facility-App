@@ -13,6 +13,7 @@ import '../../../../domain/entities/problem_category_entity.dart';
 import '../../../../domain/entities/report_issue_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/create_issue_provider.dart';
 
@@ -130,12 +131,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: LabelLargeText(context.locale.createIssue),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-        centerTitle: true,
-      ),
+      appBar: DetailAppBar(title: context.locale.createIssue),
       body: Form(
         key: _formKey,
         child: ListView(

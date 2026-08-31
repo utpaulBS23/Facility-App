@@ -15,11 +15,10 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../extensions/leave_presentation_extension.dart';
 import '../riverpod/leave_requests_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
@@ -28,7 +27,6 @@ import '../widgets/stat_tile.dart';
 
 part '../widgets/leave_request_action_buttons.dart';
 part '../widgets/leave_request_action_card.dart';
-part '../widgets/leave_requests_app_bar.dart';
 part '../widgets/leave_requests_body.dart';
 part '../widgets/leave_requests_list.dart';
 part '../widgets/leave_supervisor_summary_card.dart';
@@ -72,7 +70,10 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: _LeaveRequestsAppBar(onBack: () => _onBack(context)),
+      appBar: DetailAppBar(
+        title: context.locale.leaveRequests,
+        onBack: () => _onBack(context),
+      ),
       body: _LeaveRequestsBody(
         padding: padding,
         searchController: _searchController,

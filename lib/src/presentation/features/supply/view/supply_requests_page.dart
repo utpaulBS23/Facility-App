@@ -14,12 +14,11 @@ import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_summary_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_summary_provider.dart';
 import '../riverpod/supply_requests_list_provider.dart';
@@ -78,13 +77,9 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: () => _onBack(context)),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.supplyRequests),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: DetailAppBar(
+        title: context.locale.supplyRequests,
+        onBack: () => _onBack(context),
       ),
       body: _SupplyRequestsBody(
         summaryAsync: summaryAsync,
@@ -95,7 +90,9 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         onRequestTap: _onRequestTap,
         onRetry: () {
           ref.invalidate(supplyRequestSummaryProvider);
-          ref.read(supplyRequestsListProvider.notifier).fetch(filter: _selectedFilter);
+          ref
+              .read(supplyRequestsListProvider.notifier)
+              .fetch(filter: _selectedFilter);
         },
       ),
     );
