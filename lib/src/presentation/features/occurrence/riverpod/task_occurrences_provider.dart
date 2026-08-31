@@ -63,14 +63,17 @@ class TaskOccurrences extends _$TaskOccurrences {
       error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
-
 }
 
-// WHY: GetPartnerStaffUseCase has no facility scoping — same partner-wide
-// staff list every other assign flow uses (see partnerStaffProvider).
 @riverpod
-Future<List<PartnerStaffEntity>> occurrenceFacilityStaff(Ref ref) async {
-  final result = await ref.read(getPartnerStaffUseCaseProvider).call();
+Future<List<PartnerStaffEntity>> occurrenceFacilityStaff(
+  Ref ref, {
+  required int facilityId,
+  String? search,
+}) async {
+  final result = await ref
+      .read(getPartnerStaffUseCaseProvider)
+      .call(facilityId: facilityId, search: search);
   return switch (result) {
     Success(:final data) => data ?? [],
     Error() => [],

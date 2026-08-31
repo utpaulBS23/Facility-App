@@ -12,14 +12,14 @@ class PartnerStaff extends _$PartnerStaff {
   @override
   AsyncValue<List<PartnerStaffEntity>> build() => const AsyncValue.data([]);
 
-  Future<void> fetch() async {
+  Future<void> fetch({required int facilityId, String? search}) async {
     if (state.isLoading) return;
 
     state = const AsyncValue.loading();
 
     final Result<List<PartnerStaffEntity>, Failure> result = await ref
         .read(getPartnerStaffUseCaseProvider)
-        .call();
+        .call(facilityId: facilityId, search: search);
 
     state = result.when(
       success: (data) => AsyncValue.data(data ?? []),

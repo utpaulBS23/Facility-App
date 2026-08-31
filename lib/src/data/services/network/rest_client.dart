@@ -66,6 +66,9 @@ abstract class RestClient {
   @GET(Endpoints.partnerUsers)
   Future<HttpResponse> getPartnerUsers({
     @Path('partnerId') required int partnerId,
+    @Query('role') String? role,
+    @Query('facility_id') int? facilityId,
+    @Query('name') String? name,
   });
 
   @POST(Endpoints.assignShiftSlot)
@@ -502,4 +505,3 @@ abstract class RestClient {
     @Body() Map<String, dynamic> request = const {},
   });
 }
-
