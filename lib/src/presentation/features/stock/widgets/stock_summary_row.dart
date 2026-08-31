@@ -1,7 +1,12 @@
-part of '../view/stock_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _StockSummaryRow extends StatelessWidget {
-  const _StockSummaryRow({
+import '../../../../core/extensions/app_localization.dart';
+import '../../../core/theme/theme.dart';
+
+class StockSummaryRow extends StatelessWidget {
+  const StockSummaryRow({
+    super.key,
     required this.totalItems,
     required this.lastUpdated,
   });
@@ -16,14 +21,14 @@ class _StockSummaryRow extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _StockStatTile(
+          child: StockStatTile(
             value: '$totalItems',
             label: context.locale.totalItems,
           ),
         ),
         Gap(spacing.s12),
         Expanded(
-          child: _StockStatTile(
+          child: StockStatTile(
             value: lastUpdated,
             label: context.locale.lastUpdated,
           ),
@@ -33,8 +38,9 @@ class _StockSummaryRow extends StatelessWidget {
   }
 }
 
-class _StockStatTile extends StatelessWidget {
-  const _StockStatTile({
+class StockStatTile extends StatelessWidget {
+  const StockStatTile({
+    super.key,
     required this.value,
     required this.label,
   });
