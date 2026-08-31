@@ -2,8 +2,17 @@ part of 'session_service.dart';
 
 class InMemorySessionService implements SessionService {
   String? _accessToken;
+  // WHY sync: an async broadcast controller delivers to listeners on a
+  // microtask, not inside add() itself. AuthenticationRepositoryImpl's
+  // teardown (including clearing the persisted session payload) runs from
+  // this stream's listener — with async delivery, code that runs right
+  // after clear() (e.g. resetRepositories() invalidating and disposing the
+  // repository, which cancels this subscription) can race out that pending
+  // microtask entirely, so the listener never fires and the persisted
+  // session survives a logout. sync:true makes clear() deliver to the
+  // listener before it returns.
   final StreamController<void> _clearedController =
-      StreamController<void>.broadcast();
+      StreamController<void>.broadcast(sync: true);
 
   @override
   String? get accessToken => _accessToken;
