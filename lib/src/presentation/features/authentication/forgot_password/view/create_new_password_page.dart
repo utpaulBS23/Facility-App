@@ -10,6 +10,7 @@ import '../../../../../core/extensions/app_localization.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/detail_app_bar.dart';
 import '../../../../core/widgets/text/typography.dart';
 
 part '../widgets/create_new_password_body.dart';
@@ -18,7 +19,8 @@ class CreateNewPasswordPage extends ConsumerStatefulWidget {
   const CreateNewPasswordPage({super.key});
 
   @override
-  ConsumerState<CreateNewPasswordPage> createState() => _CreateNewPasswordPageState();
+  ConsumerState<CreateNewPasswordPage> createState() =>
+      _CreateNewPasswordPageState();
 }
 
 class _CreateNewPasswordPageState extends ConsumerState<CreateNewPasswordPage> {
@@ -43,7 +45,7 @@ class _CreateNewPasswordPageState extends ConsumerState<CreateNewPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: HeadlineSmallText(context.locale.createNewPassword)),
+      appBar: DetailAppBar(title: context.locale.createNewPassword),
       body: _CreateNewPasswordBody(
         formKey: formKey,
         newPasswordController: newPasswordController,

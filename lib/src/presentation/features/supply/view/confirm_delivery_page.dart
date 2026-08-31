@@ -12,10 +12,9 @@ import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../widgets/item_stepper_input.dart';
@@ -66,10 +65,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
   ) {
     if (previous?.isLoading == true && next.hasValue && !next.hasError) {
       if (!mounted) return;
-      AppSnackBar.showSuccess(
-        context,
-        context.locale.confirmDeliveryReceipt,
-      );
+      AppSnackBar.showSuccess(context, context.locale.confirmDeliveryReceipt);
       context.goNamed(Routes.supplyRequests);
     } else if (next.hasError && mounted) {
       AppSnackBar.showError(context, context.locale.somethingWentWrong);
@@ -86,17 +82,14 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
 
   void _onQuantityChanged(int index, int quantity) {
     setState(() {
-      _items[index] = _items[index].copyWith(
-        qtyReceived: quantity.toDouble(),
-      );
+      _items[index] = _items[index].copyWith(qtyReceived: quantity.toDouble());
     });
   }
 
   void _onToggleAll() {
     final allVerified = _items.every((i) => i.isVerified);
     setState(() {
-      _items =
-          _items.map((i) => i.copyWith(isVerified: !allVerified)).toList();
+      _items = _items.map((i) => i.copyWith(isVerified: !allVerified)).toList();
     });
   }
 
@@ -130,14 +123,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.confirmDeliveryReceipt),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.confirmDeliveryReceipt),
       body: _ConfirmDeliveryBody(
         request: widget.request,
         delivery: widget.delivery,

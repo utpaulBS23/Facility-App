@@ -2,6 +2,7 @@
 // Created: 2026-04-03
 
 import 'package:facility_management_app/src/presentation/core/widgets/application_logo.dart';
+import 'package:facility_management_app/src/presentation/core/widgets/detail_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -49,7 +50,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: HeadlineSmallText(context.locale.checkYourMail)),
+      appBar: DetailAppBar(title: context.locale.checkYourMail),
       body: _EmailVerificationBody(
         otpController: otpController,
         onOtpCompleted: _onOtpCompleted,

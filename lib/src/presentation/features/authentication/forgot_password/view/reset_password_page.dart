@@ -10,6 +10,7 @@ import '../../../../../core/extensions/app_localization.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/detail_app_bar.dart';
 import '../../../../core/widgets/text/typography.dart';
 
 part '../widgets/reset_password_body.dart';
@@ -41,7 +42,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: HeadlineSmallText(context.locale.resetPassword)),
+      appBar: DetailAppBar(title: context.locale.resetPassword),
       body: _ResetPasswordBody(
         formKey: formKey,
         emailController: emailController,

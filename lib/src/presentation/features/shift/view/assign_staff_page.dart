@@ -8,10 +8,9 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/assign_shift_slot_provider.dart';
 import '../riverpod/partner_staff_provider.dart';
 import '../riverpod/shift_slots_provider.dart';
@@ -89,14 +88,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: LabelLargeText(context.locale.assignStaff),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.assignStaff),
       body: SafeArea(
         top: false,
         child: staffState.when(

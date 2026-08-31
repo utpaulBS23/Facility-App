@@ -8,10 +8,9 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/assign_roster_shift_provider.dart';
 import '../riverpod/roster_staff_provider.dart';
 
@@ -81,13 +80,9 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: () => context.pop(false)),
-        leadingWidth: AppBackButton.width,
-        title: LabelLargeText(context.locale.assignStaff),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: DetailAppBar(
+        title: context.locale.assignStaff,
+        onBack: () => context.pop(false),
       ),
       body: SafeArea(
         top: false,

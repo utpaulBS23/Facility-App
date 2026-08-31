@@ -10,6 +10,7 @@ import '../../../../domain/entities/checklist_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/inspection_checklist_provider.dart';
@@ -89,12 +90,7 @@ class _InspectionChecklistPageState
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: LabelLargeText(context.locale.inspectionChecklist),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-        centerTitle: true,
-      ),
+      appBar: DetailAppBar(title: context.locale.inspectionChecklist),
       body: checklistState.isLoadingChecklist
           ? const Center(child: CircularProgressIndicator.adaptive())
           : checklistState.checklistError != null
@@ -164,16 +160,20 @@ class _ChecklistBody extends StatelessWidget {
               _InspectionProgressHeader(state: checklistState),
               Gap(spacing.s8),
               ...checklist.items
-                  .where((item) => item.answerType != ChecklistAnswerType.repairWork)
-                  .expand((item) => [
-                    _InspectionItemTile(
-                      item: item,
-                      state: checklistState,
-                      visitId: detail.id,
-                      isResolved: isResolved,
-                    ),
-                    Divider(color: context.color.borderSubtle, height: 1),
-                  ]),
+                  .where(
+                    (item) => item.answerType != ChecklistAnswerType.repairWork,
+                  )
+                  .expand(
+                    (item) => [
+                      _InspectionItemTile(
+                        item: item,
+                        state: checklistState,
+                        visitId: detail.id,
+                        isResolved: isResolved,
+                      ),
+                      Divider(color: context.color.borderSubtle, height: 1),
+                    ],
+                  ),
               _InspectionRepairWorkSection(
                 issues: [...checklist.issues, ...checklistState.localIssues],
                 onNewIssue: onNewIssue,

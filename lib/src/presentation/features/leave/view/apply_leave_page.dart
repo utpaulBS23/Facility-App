@@ -12,8 +12,7 @@ import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/app_back_button.dart';
-import '../../../core/widgets/text/typography.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../riverpod/apply_leave_provider/selected_leave_attendant_provider.dart';
 import '../riverpod/apply_leave_provider/selected_leave_policy_id_provider.dart';
 import '../riverpod/apply_leave_provider/selected_shift_provider.dart';
@@ -70,13 +69,10 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         context.pushReplacementNamed(Routes.leaveSubmitted, extra: value);
       },
       error: (e, _) {
-        AppSnackBar.showError(
-          context,
-          switch (e) {
-            Failure() => e.localizedMessage(context),
-            _ => context.locale.somethingWentWrong,
-          },
-        );
+        AppSnackBar.showError(context, switch (e) {
+          Failure() => e.localizedMessage(context),
+          _ => context.locale.somethingWentWrong,
+        });
       },
     );
   }
@@ -182,14 +178,7 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.applyLeave),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.applyLeave),
       body: ApplyLeaveBody(
         leaveApplicationType: _leaveApplicationType,
         onTypeChanged: _onLeaveApplicationTypeChanged,
@@ -201,9 +190,7 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         onSelectShift: _onSelectShift,
         reasonController: _reasonController,
       ),
-      bottomNavigationBar: ApplyLeaveSubmitButton(
-        onTap: _onSubmit,
-      ),
+      bottomNavigationBar: ApplyLeaveSubmitButton(onTap: _onSubmit),
     );
   }
 }
