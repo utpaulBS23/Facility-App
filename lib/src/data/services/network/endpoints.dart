@@ -153,6 +153,12 @@ class Endpoints {
   static const String rejectLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
 
+  // WHY placeholder path: no backend contract exists yet for travel-expense
+  // claims (see CreateTravelExpenseUseCase) — this mirrors the app's other
+  // partner-scoped POST resources and is expected to be reconciled with
+  // backend once the real endpoint is confirmed.
+  static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';

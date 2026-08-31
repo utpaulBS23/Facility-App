@@ -36,6 +36,13 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.claimExpense,
+      name: Routes.claimExpense,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: ClaimExpensePage());
+      },
+    ),
+    GoRoute(
       path: Routes.notification,
       name: Routes.notification,
       pageBuilder: (context, state) {

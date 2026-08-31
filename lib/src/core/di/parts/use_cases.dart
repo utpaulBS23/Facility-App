@@ -417,6 +417,14 @@ RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
 }
 
 @riverpod
+CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
+  return CreateTravelExpenseUseCase(
+    ref.read(travelExpenseRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),

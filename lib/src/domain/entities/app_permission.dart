@@ -107,7 +107,9 @@ enum UserPermission {
   supplyRequestCreate('supply_request.create'),
   supplyRequestApprove('supply_request.approve'),
   supplyRequestApproveSupervisor('supply_request.approve_supervisor'),
-  supplyRequestApproveOperationManager('supply_request.approve_operation_manager'),
+  supplyRequestApproveOperationManager(
+    'supply_request.approve_operation_manager',
+  ),
 
   // Delivery
   deliveryView('delivery.view'),
@@ -154,6 +156,13 @@ enum UserPermission {
   // Facility expense
   facilityExpenseCreate('facility_expense.create'),
   facilityExpenseApprove('facility_expense.approve'),
+
+  // Travel expense
+  // WHY: no backend support confirmed yet for this permission key (see
+  // CreateTravelExpenseUseCase's WHY comment) — added ahead of the backend
+  // so the app compiles against it; gated menu item stays invisible until
+  // the backend actually grants this key at login.
+  travelExpenseCreate('travel_expense.create'),
 
   // Notification
   notificationView('notification.view'),
