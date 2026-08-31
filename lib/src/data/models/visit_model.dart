@@ -65,6 +65,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
+    this.travelOriginType,
+    this.travelOriginId,
   });
 
   final int id;
@@ -109,6 +111,12 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
 
+  @MappableField(key: 'travel_origin_type')
+  final String? travelOriginType;
+
+  @MappableField(key: 'travel_origin_id')
+  final int? travelOriginId;
+
   static const fromJson = VisitSummaryModelMapper.fromJson;
 
   VisitSummaryEntity toEntity() => VisitSummaryEntity(
@@ -119,6 +127,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
         scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
+        travelOriginType: travelOriginType,
+        travelOriginId: travelOriginId,
       );
 }
 

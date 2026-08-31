@@ -35,6 +35,13 @@ final List<MenuItemConfig> menuItemConfigs = [
     permissions: [UserPermission.profileUpdate],
   ),
   MenuItemConfig(
+    icon: Assets.icons.attendance,
+    label: _myAttendanceLabel,
+    subtitle: _myAttendanceSubtitle,
+    route: Routes.myAttendance,
+    permissions: [UserPermission.attendanceView],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.service,
     label: _extraCollectionLabel,
     subtitle: _extraCollectionSubtitle,
@@ -145,6 +152,10 @@ final notificationMenuItemConfig = MenuItemConfig(
 
 String _profileLabel(BuildContext context) => context.locale.profile;
 String _profileSubtitle(BuildContext context) => context.locale.profileSubtitle;
+
+String _myAttendanceLabel(BuildContext context) => context.locale.myAttendance;
+String _myAttendanceSubtitle(BuildContext context) =>
+    context.locale.myAttendanceSubtitle;
 
 String _extraCollectionLabel(BuildContext context) =>
     context.locale.extraCollection;

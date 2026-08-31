@@ -26,6 +26,8 @@ class VisitSummaryEntity {
     required this.scheduledStartTime,
     required this.scheduledEndTime,
     this.facilityAddress,
+    this.travelOriginType,
+    this.travelOriginId,
   });
 
   final int id;
@@ -36,6 +38,13 @@ class VisitSummaryEntity {
   final String date;
   final String scheduledStartTime;
   final String scheduledEndTime;
+
+  // WHY: the travel route check-in call needs to know where the trip to
+  // this visit started from — this is the only place the API surfaces it
+  // (the visit list), so it's carried through the route `extra` down to
+  // [TravelRouteCheckInRequestEntity] rather than re-fetched.
+  final String? travelOriginType;
+  final int? travelOriginId;
 }
 
 class VisitListEntity {

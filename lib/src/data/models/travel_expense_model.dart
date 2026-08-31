@@ -5,12 +5,12 @@ part 'travel_expense_model.mapper.dart';
 @MappableClass(caseStyle: CaseStyle.snakeCase, ignoreNull: true)
 class TravelExpenseLegRequestModel with TravelExpenseLegRequestModelMappable {
   const TravelExpenseLegRequestModel({
-    required this.mode,
+    required this.vehicleTypeItemId,
     required this.distanceKm,
     required this.ratePerKm,
   });
 
-  final String mode;
+  final int vehicleTypeItemId;
   final double distanceKm;
   final double ratePerKm;
 }

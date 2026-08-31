@@ -8,6 +8,13 @@ part of '../router.dart';
 List<GoRoute> _menuItemRoutes(Ref ref) {
   return [
     GoRoute(
+      path: Routes.myAttendance,
+      name: Routes.myAttendance,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: MyAttendancePage());
+      },
+    ),
+    GoRoute(
       path: Routes.profile,
       name: Routes.profile,
       pageBuilder: (context, state) {

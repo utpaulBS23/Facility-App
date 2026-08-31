@@ -164,6 +164,15 @@ abstract class RestClient {
     @Query('user_id') int? userId,
   });
 
+  @GET(Endpoints.myAttendance)
+  Future<HttpResponse> getMyAttendance({
+    @Path('partnerId') required int partnerId,
+    @Query('from_day') required String fromDay,
+    @Query('to_day') required String toDay,
+    @Query('facility_id') int? facilityId,
+    @Query('user_id') int? userId,
+  });
+
   @POST(Endpoints.approveAttendance)
   Future<HttpResponse> approveAttendance({
     @Path('partnerId') required int partnerId,
@@ -301,6 +310,12 @@ abstract class RestClient {
   Future<HttpResponse> createTravelExpense({
     @Path('partnerId') required int partnerId,
     @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.masterDataItems)
+  Future<HttpResponse> getMasterDataItems({
+    @Path('partnerId') required int partnerId,
+    @Query('category') required String category,
   });
 
   @GET(Endpoints.myLeaves)

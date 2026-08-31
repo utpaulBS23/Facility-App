@@ -19,9 +19,19 @@ part '../widgets/visit_check_in_facility_card.dart';
 part '../widgets/visit_check_in_location_card.dart';
 
 class VisitDetailPage extends ConsumerStatefulWidget {
-  const VisitDetailPage({super.key, required this.visitId});
+  const VisitDetailPage({
+    super.key,
+    required this.visitId,
+    this.travelOriginType,
+    this.travelOriginId,
+  });
 
   final int visitId;
+
+  // WHY: only available from the visit list response — carried through the
+  // route `extra` since the detail endpoint doesn't return it.
+  final String? travelOriginType;
+  final int? travelOriginId;
 
   @override
   ConsumerState<VisitDetailPage> createState() => _VisitDetailPageState();
@@ -49,7 +59,12 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
 
     await ref
         .read(visitCheckInProvider.notifier)
-        .startLocationSharing(visitId: widget.visitId, facilityId: facilityId);
+        .startLocationSharing(
+          visitId: widget.visitId,
+          facilityId: facilityId,
+          travelOriginType: widget.travelOriginType,
+          travelOriginId: widget.travelOriginId,
+        );
   }
 
   Future<void> _onConfirm(VisitDetailEntity detail) async {
