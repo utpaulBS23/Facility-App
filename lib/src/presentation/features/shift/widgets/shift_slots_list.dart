@@ -6,7 +6,6 @@ class _ShiftSlotsList extends StatelessWidget {
     required this.facility,
     required this.canApplyLeave,
     required this.onApplyLeave,
-    required this.onActiveSlotAction,
     required this.onSlotTap,
     required this.onAssignStaff,
   });
@@ -15,7 +14,6 @@ class _ShiftSlotsList extends StatelessWidget {
   final SlotFacilityEntity? facility;
   final bool canApplyLeave;
   final VoidCallback onApplyLeave;
-  final ValueChanged<ShiftSlotsEntity> onActiveSlotAction;
   final ValueChanged<ShiftSlotEntity> onSlotTap;
   final ValueChanged<ShiftSlotEntity> onAssignStaff;
 
@@ -47,12 +45,7 @@ class _ShiftSlotsList extends StatelessWidget {
           cursor -= 1;
         }
         if (activeSlot != null) {
-          if (cursor == 0) {
-            return _ActiveSlotBanner(
-              activeSlot: activeSlot,
-              onAction: () => onActiveSlotAction(data!),
-            );
-          }
+          if (cursor == 0) return _ActiveSlotBanner(activeSlot: activeSlot);
           cursor -= 1;
         }
         final slot = slots[cursor];
