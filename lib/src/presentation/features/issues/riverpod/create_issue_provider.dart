@@ -98,7 +98,9 @@ Future<List<PartnerStaffEntity>> issueAttendants(
   Ref ref,
   int facilityId,
 ) async {
-  final result = await ref.read(getPartnerStaffUseCaseProvider).call();
+  final result = await ref
+      .read(getPartnerStaffUseCaseProvider)
+      .call(facilityId: facilityId);
   return switch (result) {
     Success(:final data) => data ?? [],
     Error() => [],

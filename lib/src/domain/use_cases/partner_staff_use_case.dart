@@ -10,11 +10,16 @@ final class GetPartnerStaffUseCase {
   final PartnerStaffRepository _partnerStaffRepository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<List<PartnerStaffEntity>, Failure>> call() async {
+  Future<Result<List<PartnerStaffEntity>, Failure>> call({
+    int? facilityId,
+    String? search,
+  }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
     final result = await _partnerStaffRepository.getPartnerUsers(
       partnerId: partnerId,
+      facilityId: facilityId,
+      search: search,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
