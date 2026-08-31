@@ -13,6 +13,7 @@ import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/staff_tile.dart';
@@ -21,7 +22,6 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_reassign_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
-part '../widgets/occurrence_facility_picker_sheet.dart';
 part '../widgets/occurrence_stats_header.dart';
 part '../widgets/occurrence_slot_card.dart';
 part '../widgets/occurrence_status_chip.dart';
@@ -37,24 +37,32 @@ List<TaskOccurrenceEntity> _filterOccurrences(
   return switch (filter) {
     _OccurrenceStatusFilter.all => occurrences,
     _OccurrenceStatusFilter.pending =>
-      occurrences.where((o) => o.status == TaskOccurrenceStatus.pending).toList(),
+      occurrences
+          .where((o) => o.status == TaskOccurrenceStatus.pending)
+          .toList(),
     _OccurrenceStatusFilter.onTime =>
-      occurrences.where((o) => o.status == TaskOccurrenceStatus.onTime).toList(),
+      occurrences
+          .where((o) => o.status == TaskOccurrenceStatus.onTime)
+          .toList(),
     _OccurrenceStatusFilter.late =>
       occurrences.where((o) => o.status == TaskOccurrenceStatus.late).toList(),
     _OccurrenceStatusFilter.missed =>
-      occurrences.where((o) => o.status == TaskOccurrenceStatus.missed).toList(),
+      occurrences
+          .where((o) => o.status == TaskOccurrenceStatus.missed)
+          .toList(),
   };
 }
 
-String _occurrenceStatusFilterLabel(BuildContext context, _OccurrenceStatusFilter filter) =>
-    switch (filter) {
-      _OccurrenceStatusFilter.all => context.locale.all,
-      _OccurrenceStatusFilter.pending => context.locale.occurrenceStatsPending,
-      _OccurrenceStatusFilter.onTime => context.locale.occurrenceStatsOnTime,
-      _OccurrenceStatusFilter.late => context.locale.occurrenceStatsLate,
-      _OccurrenceStatusFilter.missed => context.locale.occurrenceStatsMissed,
-    };
+String _occurrenceStatusFilterLabel(
+  BuildContext context,
+  _OccurrenceStatusFilter filter,
+) => switch (filter) {
+  _OccurrenceStatusFilter.all => context.locale.all,
+  _OccurrenceStatusFilter.pending => context.locale.occurrenceStatsPending,
+  _OccurrenceStatusFilter.onTime => context.locale.occurrenceStatsOnTime,
+  _OccurrenceStatusFilter.late => context.locale.occurrenceStatsLate,
+  _OccurrenceStatusFilter.missed => context.locale.occurrenceStatsMissed,
+};
 
 class OccurrencePage extends ConsumerStatefulWidget {
   const OccurrencePage({super.key});
@@ -90,7 +98,10 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     if (facilityId == null) return;
     ref
         .read(taskOccurrencesProvider.notifier)
-        .fetch(facilityId: facilityId, date: DateFormat('yyyy-MM-dd').format(date));
+        .fetch(
+          facilityId: facilityId,
+          date: DateFormat('yyyy-MM-dd').format(date),
+        );
   }
 
   void _onDateChanged(DateTime date) {
@@ -104,7 +115,10 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     _fetch(_selectedDate);
   }
 
-  void _openReassignSheet(BuildContext context, TaskOccurrenceEntity occurrence) {
+  void _openReassignSheet(
+    BuildContext context,
+    TaskOccurrenceEntity occurrence,
+  ) {
     if (_selectedFacilityId == null) return;
     showModalBottomSheet<void>(
       context: context,
@@ -122,16 +136,16 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     BuildContext context,
     List<AccessibleFacilityEntity> facilities,
   ) async {
-    final facilityId = await showModalBottomSheet<int>(
+    final result = await showModalBottomSheet<({int? facilityId})>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _OccurrenceFacilityPickerSheet(
+      builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _selectedFacilityId,
       ),
     );
-    if (facilityId != null) _onFacilityChanged(facilityId);
+    if (result?.facilityId != null) _onFacilityChanged(result!.facilityId!);
   }
 
   Future<void> _pickStatusFilter(BuildContext context) async {
@@ -139,7 +153,8 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _OccurrenceStatusFilterSheet(selectedFilter: _selectedFilter),
+      builder: (_) =>
+          _OccurrenceStatusFilterSheet(selectedFilter: _selectedFilter),
     );
     if (filter != null) setState(() => _selectedFilter = filter);
   }
@@ -215,7 +230,8 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
               selectedFilter: _selectedFilter,
               onDateChanged: _onDateChanged,
               onRetry: () => _fetch(_selectedDate),
-              onReassign: (occurrence) => _openReassignSheet(context, occurrence),
+              onReassign: (occurrence) =>
+                  _openReassignSheet(context, occurrence),
               onChecklist: (occurrence) => _openChecklist(context, occurrence),
             ),
     );
@@ -255,7 +271,8 @@ class _OccurrenceBoard extends ConsumerWidget {
         ),
         Expanded(
           child: state.when(
-            loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+            loading: () =>
+                const Center(child: CircularProgressIndicator.adaptive()),
             error: (err, _) => Center(
               child: Column(
                 mainAxisSize: .min,
@@ -268,12 +285,18 @@ class _OccurrenceBoard extends ConsumerWidget {
                     textAlign: .center,
                   ),
                   Gap(spacing.s16),
-                  TextButton(onPressed: onRetry, child: Text(context.locale.retry)),
+                  TextButton(
+                    onPressed: onRetry,
+                    child: Text(context.locale.retry),
+                  ),
                 ],
               ),
             ),
             data: (entity) {
-              final occurrences = _filterOccurrences(entity.occurrences, selectedFilter);
+              final occurrences = _filterOccurrences(
+                entity.occurrences,
+                selectedFilter,
+              );
               if (occurrences.isEmpty) {
                 return Center(
                   child: Padding(
