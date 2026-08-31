@@ -36,27 +36,6 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
     _fetchSlots(date);
   }
 
-  void _onActiveSlotAction(ShiftSlotsEntity data) {
-    final activeSlot = data.activeSlot;
-    if (activeSlot == null) return;
-    if (activeSlot.action == SlotAction.checkOut) {
-      // WHY: the check-out endpoint needs the attendance id (the check-in
-      // record), not the slot id — active_slot doesn't carry it directly, so
-      // it's read off the matching slot's own attendance row.
-      int? attendanceId;
-      for (final slot in data.slots) {
-        if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-          attendanceId = slot.me?.attendance?.id;
-          break;
-        }
-      }
-      if (attendanceId == null) return;
-      context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
-      return;
-    }
-    context.pushNamed(Routes.shiftCheckIn, extra: activeSlot.shiftSlotId);
-  }
-
   void _onAssignStaff(BuildContext context, ShiftSlotEntity slot) {
     context.pushNamed(Routes.assignStaff, extra: slot);
   }
@@ -69,7 +48,6 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
         canApplyLeave: canApplyLeave,
         onDateChanged: _onDateChanged,
         onApplyLeave: widget.onApplyLeave,
-        onActiveSlotAction: _onActiveSlotAction,
         onSlotTap: widget.onSlotTap,
         onAssignStaff: (slot) => _onAssignStaff(context, slot),
       ),
