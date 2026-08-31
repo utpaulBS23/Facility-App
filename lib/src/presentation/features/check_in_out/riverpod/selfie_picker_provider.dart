@@ -13,12 +13,14 @@ class SelfiePicker extends _$SelfiePicker {
   @override
   AsyncValue<String?> build() => const AsyncValue.data(null);
 
-  Future<void> pickSelfie() async {
+  /// Validates a selfie already captured by [SelfieCameraPage] — runs face
+  /// detection on it and updates state with the path on success.
+  Future<void> capturePhoto(String path) async {
     if (state.isLoading) return;
 
     state = const AsyncValue.loading();
 
-    final result = await ref.read(pickSelfieUseCaseProvider).call();
+    final result = await ref.read(validateSelfieUseCaseProvider).call(path);
 
     state = result.when(
       success: (data) => AsyncValue.data(data),

@@ -21,10 +21,7 @@ List<GoRoute> _stockRoutes(Ref ref) {
       builder: (context, state) {
         final (request, delivery) =
             state.extra as (SupplyRequestEntity, DeliveryEntity);
-        return ConfirmDeliveryPage(
-          request: request,
-          delivery: delivery,
-        );
+        return ConfirmDeliveryPage(request: request, delivery: delivery);
       },
     ),
     GoRoute(
@@ -33,10 +30,7 @@ List<GoRoute> _stockRoutes(Ref ref) {
       builder: (context, state) {
         final (delivery, item) =
             state.extra as (DeliveryEntity, DeliveryItemEntity);
-        return DeliveryComplaintPage(
-          delivery: delivery,
-          item: item,
-        );
+        return DeliveryComplaintPage(delivery: delivery, item: item);
       },
     ),
   ];
