@@ -113,8 +113,6 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    final catalogAsync = ref.watch(itemCatalogProvider(true));
-    final countsAsync = ref.watch(shiftStockCountsProvider);
     final isLoading = ref.watch(submitShiftStockCountProvider).isLoading;
 
     return Scaffold(
@@ -127,46 +125,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      body: catalogAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => AppErrorWidget(
-          message: err.localizedMessage(context),
-          onRetry: () => ref.invalidate(itemCatalogProvider(true)),
-        ),
-        data: (catalog) => countsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => AppErrorWidget(
-            message: err.localizedMessage(context),
-            onRetry: () => ref.invalidate(shiftStockCountsProvider),
-          ),
-          data: (history) {
-            final items = [...catalog.items]
-              ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-
-            if (items.isEmpty) {
-              return Center(
-                child: Text(
-                  context.locale.notAvailable,
-                  style: context.textStyle.bodyMedium.copyWith(
-                    color: color.text.secondary,
-                  ),
-                ),
-              );
-            }
-
-            final latestByItem = {
-              for (final count in latestStockCountPerItem(history))
-                count.stockItemId: count.qtyOnHand,
-            };
-
-            return _UpdateStockBody(
-              items: items,
-              latestByItem: latestByItem,
-              getOrCreateFormEntry: _getOrCreateFormEntry,
-            );
-          },
-        ),
-      ),
+      body: _UpdateStockBody(getOrCreateFormEntry: _getOrCreateFormEntry),
       bottomNavigationBar: _UpdateStockFooterBar(
         onSave: _onSave,
         isLoading: isLoading,
@@ -174,3 +133,4 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
     );
   }
 }
+
