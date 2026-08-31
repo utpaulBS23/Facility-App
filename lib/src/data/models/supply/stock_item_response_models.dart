@@ -5,7 +5,10 @@ import 'supply_pagination_meta_model.dart';
 
 part 'stock_item_response_models.mapper.dart';
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class StockItemListResponseModel with StockItemListResponseModelMappable {
   const StockItemListResponseModel({
     this.success,

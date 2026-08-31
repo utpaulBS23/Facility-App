@@ -4,6 +4,7 @@ part 'submit_stock_count_request_model.mapper.dart';
 
 @MappableClass(
   caseStyle: CaseStyle.snakeCase,
+  ignoreNull: true,
   generateMethods: GenerateMethods.encode,
 )
 class StockCountItemModel with StockCountItemModelMappable {
@@ -20,6 +21,7 @@ class StockCountItemModel with StockCountItemModelMappable {
 
 @MappableClass(
   caseStyle: CaseStyle.snakeCase,
+  ignoreNull: true,
   generateMethods: GenerateMethods.encode,
 )
 class SubmitStockCountRequestModel with SubmitStockCountRequestModelMappable {
