@@ -95,7 +95,13 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _claimExpenseLabel,
     subtitle: _claimExpenseSubtitle,
     route: Routes.claimExpense,
-    permissions: [UserPermission.travelExpenseCreate],
+    // WHY both keys: .view opens the list/page; .create is checked again
+    // inside the page to gate the submit action itself (a viewer without
+    // .create can look but not save a claim).
+    permissions: [
+      UserPermission.travelExpenseView,
+      UserPermission.travelExpenseCreate,
+    ],
   ),
   MenuItemConfig(
     icon: Assets.icons.viewIcon,
