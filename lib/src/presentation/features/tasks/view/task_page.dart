@@ -10,13 +10,13 @@ import '../../../../domain/entities/task_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/filter_dropdown.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
 
 part '../widgets/task_card.dart';
+part '../widgets/task_facility_picker_sheet.dart';
 
 enum _TaskTab { open, inProgress, resolved }
 
@@ -57,8 +57,18 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     _fetch();
   }
 
-  void _onFacilityChanged(int? facilityId) {
-    setState(() => _selectedFacilityId = facilityId);
+  Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
+    final result = await showModalBottomSheet<({int? facilityId})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _TaskFacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: _selectedFacilityId,
+      ),
+    );
+    if (result == null || result.facilityId == _selectedFacilityId) return;
+    setState(() => _selectedFacilityId = result.facilityId);
     _fetch();
   }
 
@@ -101,6 +111,15 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
+    final selectedFacilityName = _selectedFacilityId == null
+        ? null
+        : facilities
+              .cast<AccessibleFacilityEntity?>()
+              .firstWhere(
+                (f) => f?.id == _selectedFacilityId,
+                orElse: () => null,
+              )
+              ?.name;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -109,31 +128,21 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         titleSpacing: spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (facilities.length > 1)
+            TextButton.icon(
+              onPressed: () => _pickFacility(facilities),
+              icon: const Icon(Icons.apartment_outlined, size: 18),
+              label: Text(
+                selectedFacilityName ?? context.locale.all,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (facilities.length > 1)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                spacing.s16,
-                spacing.s12,
-                spacing.s16,
-                0,
-              ),
-              child: FilterDropdown(
-                label: context.locale.facilityName,
-                value: _selectedFacilityId,
-                items: [
-                  for (final facility in facilities)
-                    DropdownMenuItem(
-                      value: facility.id,
-                      child: Text(facility.name),
-                    ),
-                ],
-                onChanged: _onFacilityChanged,
-              ),
-            ),
           _TaskTabBar(selectedTab: _selectedTab, onTabChanged: _onTabChanged),
           Expanded(
             child: taskState.when(
