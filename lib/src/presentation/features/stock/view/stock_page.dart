@@ -4,18 +4,13 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/app_permission.dart';
-import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_back_button.dart';
-import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../shift/riverpod/shift_slots_provider.dart';
 import '../widgets/facility_selector_card.dart';
 import '../widgets/facility_stock_balance_body.dart';
-import '../widgets/stock_footer_bar.dart';
 
 class StockPageArgs {
   const StockPageArgs({
@@ -45,19 +40,6 @@ class _StockPageState extends ConsumerState<StockPage> {
     _selectedFacilityId = widget.args?.facilityId;
   }
 
-  int? _assignmentIdFor(ShiftSlotsEntity data) {
-    final activeSlot = data.activeSlot;
-    if (activeSlot == null) return null;
-
-    for (final slot in data.slots) {
-      if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-        return slot.me?.assignmentId;
-      }
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final color = context.color;
@@ -65,14 +47,8 @@ class _StockPageState extends ConsumerState<StockPage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ?? const [];
 
-    final activeSlotsAsync = ref.watch(shiftSlotsProvider);
-    final activeShiftFacilityId = activeSlotsAsync.valueOrNull?.facility?.id;
-    final activeAssignmentId = activeSlotsAsync.valueOrNull != null
-        ? _assignmentIdFor(activeSlotsAsync.valueOrNull!)
-        : widget.args?.shiftAssignmentId;
-
     _selectedFacilityId ??=
-        widget.args?.facilityId ?? activeShiftFacilityId ?? facilities.firstOrNull?.id;
+        widget.args?.facilityId ?? facilities.firstOrNull?.id;
 
     final selectedFacilityName = facilities
             .where((f) => f.id == _selectedFacilityId)
@@ -113,19 +89,6 @@ class _StockPageState extends ConsumerState<StockPage> {
           ],
         ),
       ),
-      bottomNavigationBar: activeShiftFacilityId != null &&
-              activeAssignmentId != null &&
-              activeShiftFacilityId == _selectedFacilityId
-          ? PermissionGate(
-              permissions: const [UserPermission.shiftStockCountCreate],
-              child: StockFooterBar(
-                onUpdateStockBalances: () => context.pushNamed(
-                  Routes.updateStock,
-                  extra: (activeShiftFacilityId, activeAssignmentId),
-                ),
-              ),
-            )
-          : null,
     );
   }
 }
