@@ -126,6 +126,7 @@
   "location": "অবস্থান",
   "shiftTime": "শিফট সময়",
   "checkIn": "চেক ইন",
+  "attendantDetails": "কর্মীর বিবরণ",
   "checkOut": "চেক আউট",
   "addPhoto": "ছবি যোগ করুন",
   "takePhoto": "ছবি তুলুন",

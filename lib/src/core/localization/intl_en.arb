@@ -126,6 +126,7 @@
   "location": "Location",
   "shiftTime": "Shift Time",
   "checkIn": "Check In",
+  "attendantDetails": "Attendant Details",
   "checkOut": "Check Out",
   "addPhoto": "Add Photo",
   "takePhoto": "Take Photo",
