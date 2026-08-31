@@ -29,7 +29,13 @@ class _ShiftFab extends ConsumerWidget {
       context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
       return;
     }
-    context.pushNamed(Routes.shiftCheckIn, extra: activeSlot.shiftSlotId);
+    context.pushNamed(
+      Routes.shiftCheckIn,
+      extra: (
+        shiftSlotId: activeSlot.shiftSlotId,
+        supervisorName: activeSlot.supervisorName,
+      ),
+    );
   }
 
   @override

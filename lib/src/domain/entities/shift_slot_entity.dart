@@ -169,6 +169,7 @@ class ActiveSlotEntity {
     required this.action,
     required this.isSlotLead,
     required this.message,
+    required this.supervisorName,
   });
 
   final int shiftSlotId;
@@ -180,6 +181,7 @@ class ActiveSlotEntity {
   /// Backend-authored guidance (e.g. "Your shift starts soon…"). Displayed
   /// as-is — the server owns this copy.
   final String message;
+  final String supervisorName;
 }
 
 class SlotSummaryEntity {

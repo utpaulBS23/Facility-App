@@ -10,11 +10,15 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       name: Routes.shiftCheckIn,
       pageBuilder: (context, state) {
         // WHY: nullable — the manual-attendance "need face" back-navigation
-        // re-enters this route with no extra; the active-slot banner (the
+        // re-enters this route with no extra; the active-slot FAB (the
         // only other entry point) always supplies the slot id.
-        final shiftSlotId = state.extra as int?;
+        final args =
+            state.extra as ({int shiftSlotId, String? supervisorName})?;
         return MaterialPage(
-          child: ShiftCheckInPage(shiftSlotId: shiftSlotId),
+          child: ShiftCheckInPage(
+            shiftSlotId: args?.shiftSlotId,
+            supervisorName: args?.supervisorName,
+          ),
         );
       },
     ),
@@ -22,8 +26,12 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       path: Routes.approvalRequest,
       name: Routes.approvalRequest,
       pageBuilder: (context, state) {
-        final args = state.extra
-            as ({ManualAttendanceResponseEntity attendance, String withdrawRoute});
+        final args =
+            state.extra
+                as ({
+                  ManualAttendanceResponseEntity attendance,
+                  String withdrawRoute,
+                });
         return MaterialPage(
           child: ApprovalRequestPage(
             attendance: args.attendance,

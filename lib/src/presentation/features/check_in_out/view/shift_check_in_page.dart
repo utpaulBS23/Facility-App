@@ -43,9 +43,14 @@ part 'approval_request_page.dart';
 part 'shift_check_out_page.dart';
 
 class ShiftCheckInPage extends ConsumerStatefulWidget {
-  const ShiftCheckInPage({super.key, this.shiftSlotId});
+  const ShiftCheckInPage({super.key, this.shiftSlotId, this.supervisorName});
 
   final int? shiftSlotId;
+
+  /// The active slot's supervisor, from the shift-slots payload. Overrides
+  /// the logged-in user's own supervisor field (see [_AutoDetectedInfoCard])
+  /// when present.
+  final String? supervisorName;
 
   @override
   ConsumerState<ShiftCheckInPage> createState() => _ShiftCheckInPageState();
@@ -180,6 +185,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),
+        supervisorName: widget.supervisorName,
       ),
     );
   }
