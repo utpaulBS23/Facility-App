@@ -100,7 +100,7 @@ class FacilityStockBalanceBody extends ConsumerWidget {
                     ? DateFormatter.shortDate(
                         DateTime.parse(sortedItems.first.lastCountedAt!).toLocal(),
                       )
-                    : 'N/A',
+                    : context.locale.notAvailable,
               ),
             Gap(spacing.s16),
             ListView.separated(

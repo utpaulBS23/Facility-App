@@ -751,6 +751,7 @@
   "healthy": "Healthy",
   "lowStock": "Low",
   "outOfStock": "Out of stock",
-  "threshold": "Threshold"
+  "threshold": "Threshold",
+  "notAvailable": "N/A"
 }
 
