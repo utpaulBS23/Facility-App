@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,6 +43,7 @@ import '../../data/services/network/rest_client.dart';
 import '../../data/services/notification/location_sharing_notification_service.dart';
 import '../../data/services/notification/push_notification_service.dart';
 import '../../data/services/notification/push_notification_service_impl.dart';
+import '../../data/services/secure_storage/secure_storage_service.dart';
 import '../../data/services/session/session_service.dart';
 import '../../domain/repositories/manual_attendance_repository.dart';
 import '../../domain/repositories/check_out_repository.dart';
@@ -93,7 +95,6 @@ import '../../domain/use_cases/supply/dispatch_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/get_delivery_for_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/confirm_delivery_use_case.dart';
 import '../../domain/use_cases/supply/file_delivery_complaint_use_case.dart';
-import '../../presentation/core/router/router.dart';
 
 part 'dependency_injection.g.dart';
 part 'parts/externals.dart';
@@ -102,4 +103,3 @@ part 'parts/services.dart';
 part 'parts/use_cases.dart';
 
 // Trigger build_runner regeneration
-

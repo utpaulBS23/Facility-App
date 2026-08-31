@@ -54,6 +54,9 @@ final class FakeAuthenticationRepository extends AuthenticationRepository {
   Future<void> logout() => throw UnimplementedError();
 
   @override
+  Future<bool> restoreSession() => throw UnimplementedError();
+
+  @override
   UserEntity? getCurrentUser() => null;
 
   @override

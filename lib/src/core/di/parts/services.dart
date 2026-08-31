@@ -8,6 +8,11 @@ CacheService cacheService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+SecureStorageService secureStorageService(Ref ref) {
+  return FlutterSecureStorageService(ref.read(flutterSecureStorageProvider));
+}
+
+@Riverpod(keepAlive: true)
 SessionService sessionService(Ref ref) {
   final service = InMemorySessionService();
   ref.onDispose(service.dispose);
