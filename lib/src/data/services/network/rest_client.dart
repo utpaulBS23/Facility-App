@@ -297,6 +297,12 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @POST(Endpoints.travelExpenses)
+  Future<HttpResponse> createTravelExpense({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @GET(Endpoints.myLeaves)
   Future<HttpResponse> getMyLeaves({
     @Path('partnerId') required int partnerId,

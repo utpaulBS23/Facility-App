@@ -26,6 +26,7 @@ import '../../features/check_in_out/view/selfie_camera_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
 import '../../features/door_lock/view/door_lock_page.dart';
+import '../../features/claim_expense/view/claim_expense_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
 import '../../features/facility_map/view/facility_map_page.dart';
 import '../../features/gateway_management/view/gateway_management_page.dart';
