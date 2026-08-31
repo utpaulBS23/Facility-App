@@ -654,6 +654,40 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<HttpResponse<dynamic>> getMyAttendance({
+    required int partnerId,
+    required String fromDay,
+    required String toDay,
+    int? facilityId,
+    int? userId,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'from_day': fromDay,
+      r'to_day': toDay,
+      r'facility_id': facilityId,
+      r'user_id': userId,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/partners/${partnerId}/supervisor-attendance',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<dynamic>> approveAttendance({
     required int partnerId,
     required int attendanceId,
@@ -1196,6 +1230,31 @@ class _RestClient implements RestClient {
           .compose(
             _dio.options,
             '/partners/${partnerId}/travel-expenses',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> getMasterDataItems({
+    required int partnerId,
+    required String category,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'category': category};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/partners/${partnerId}/master-data/items',
             queryParameters: queryParameters,
             data: _data,
           )

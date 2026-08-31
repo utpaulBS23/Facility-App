@@ -3,7 +3,7 @@ import '../models/travel_expense_model.dart';
 
 extension TravelExpenseLegEntityToModel on TravelExpenseLegEntity {
   TravelExpenseLegRequestModel toModel() => TravelExpenseLegRequestModel(
-    mode: mode.key,
+    vehicleTypeItemId: vehicleTypeItemId,
     distanceKm: distanceKm,
     ratePerKm: ratePerKm,
   );

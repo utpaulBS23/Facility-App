@@ -59,6 +59,8 @@ class VisitCheckIn extends _$VisitCheckIn {
   Future<void> startLocationSharing({
     required int visitId,
     required int facilityId,
+    String? travelOriginType,
+    int? travelOriginId,
   }) async {
     state = state.copyWith(isStartingShare: true, clearShareError: true);
 
@@ -85,6 +87,8 @@ class VisitCheckIn extends _$VisitCheckIn {
             facilityId: facilityId,
             latitude: position.latitude,
             longitude: position.longitude,
+            startType: travelOriginType,
+            startId: travelOriginId,
           ),
         );
 

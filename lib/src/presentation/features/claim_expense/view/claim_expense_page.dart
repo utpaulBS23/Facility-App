@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/travel_expense_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../../core/utiliity/validation/validation.dart';
@@ -118,6 +119,9 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
 
     final spacing = context.dimensions.spacing;
     final visitsAsync = ref.watch(claimExpenseTodaysVisitsProvider);
+    final transportModes =
+        ref.watch(claimExpenseTransportModesProvider).valueOrNull ??
+        const <MasterDataItemEntity>[];
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
@@ -225,6 +229,7 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
               for (final leg in _legs) ...[
                 _ClaimExpenseLegRow(
                   leg: leg,
+                  transportModes: transportModes,
                   onChanged: _onLegChanged,
                   onRemove: () => _onRemoveLeg(leg),
                   showRemove: _legs.length > 1,

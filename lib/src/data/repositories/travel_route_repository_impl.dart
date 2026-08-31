@@ -21,6 +21,8 @@ final class TravelRouteRepositoryImpl extends TravelRouteRepository {
         'facility_id': request.facilityId,
         'lat': request.latitude,
         'lng': request.longitude,
+        if (request.startType != null) 'start_type': request.startType,
+        if (request.startId != null) 'start_id': request.startId,
       },
     );
     return TravelRouteCheckInResponseModel.fromJson(response.data).toEntity();

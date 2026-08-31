@@ -48,6 +48,11 @@ AttendanceRepository attendanceRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+MyAttendanceRepository myAttendanceRepository(Ref ref) {
+  return MyAttendanceRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 CheckInRepository checkInRepository(Ref ref) {
   return CheckInRepositoryImpl(ref.read(restClientServiceProvider));
 }
@@ -105,6 +110,11 @@ LeaveRepository leaveRepository(Ref ref) {
 @Riverpod(keepAlive: true)
 TravelExpenseRepository travelExpenseRepository(Ref ref) {
   return TravelExpenseRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+MasterDataRepository masterDataRepository(Ref ref) {
+  return MasterDataRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

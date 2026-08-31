@@ -4,10 +4,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/travel_expense_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 
 part 'claim_expense_provider.g.dart';
+
+@riverpod
+Future<List<MasterDataItemEntity>> claimExpenseTransportModes(Ref ref) async {
+  final result = await ref
+      .read(getMasterDataItemsUseCaseProvider)
+      .call(category: 'transportMode');
+  return switch (result) {
+    Success(:final data) => data ?? [],
+    _ => [],
+  };
+}
 
 // WHY today only: GetMyVisitsUseCase is date-scoped (one day per call), and
 // there is no "recent visits" endpoint to page through — this optional

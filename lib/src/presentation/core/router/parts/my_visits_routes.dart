@@ -6,8 +6,14 @@ List<GoRoute> _myVisitsRoutes(Ref ref) {
       path: Routes.visitDetail,
       name: Routes.visitDetail,
       pageBuilder: (context, state) {
-        final visitId = state.extra as int;
-        return MaterialPage(child: VisitDetailPage(visitId: visitId));
+        final visit = state.extra as VisitSummaryEntity;
+        return MaterialPage(
+          child: VisitDetailPage(
+            visitId: visit.id,
+            travelOriginType: visit.travelOriginType,
+            travelOriginId: visit.travelOriginId,
+          ),
+        );
       },
     ),
     GoRoute(

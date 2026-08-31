@@ -111,6 +111,14 @@ GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
 }
 
 @riverpod
+GetMyAttendanceUseCase getMyAttendanceUseCase(Ref ref) {
+  return GetMyAttendanceUseCase(
+    ref.read(myAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 ApproveAttendanceUseCase approveAttendanceUseCase(Ref ref) {
   return ApproveAttendanceUseCase(
     ref.read(attendanceRepositoryProvider),
@@ -420,6 +428,14 @@ RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
 CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
   return CreateTravelExpenseUseCase(
     ref.read(travelExpenseRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
+  return GetMasterDataItemsUseCase(
+    ref.read(masterDataRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );
 }

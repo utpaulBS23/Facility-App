@@ -3,26 +3,17 @@ part of '../view/claim_expense_page.dart';
 class _ClaimExpenseLegRow extends StatelessWidget {
   const _ClaimExpenseLegRow({
     required this.leg,
+    required this.transportModes,
     required this.onChanged,
     required this.onRemove,
     required this.showRemove,
   });
 
   final _LegDraft leg;
+  final List<MasterDataItemEntity> transportModes;
   final VoidCallback onChanged;
   final VoidCallback? onRemove;
   final bool showRemove;
-
-  String _modeLabel(BuildContext context, TransportMode mode) => switch (mode) {
-    TransportMode.rickshaw => context.locale.transportModeRickshaw,
-    TransportMode.bus => context.locale.transportModeBus,
-    TransportMode.cng => context.locale.transportModeCng,
-    TransportMode.bike => context.locale.transportModeBike,
-    TransportMode.car => context.locale.transportModeCar,
-    TransportMode.boat => context.locale.transportModeBoat,
-    TransportMode.walking => context.locale.transportModeWalking,
-    TransportMode.other => context.locale.transportModeOther,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +24,9 @@ class _ClaimExpenseLegRow extends StatelessWidget {
       children: [
         Expanded(
           flex: 3,
-          child: AppDropdownButtonFormField<TransportMode>(
-            initialValue: leg.mode,
+          child: AppDropdownButtonFormField<int>(
+            initialValue: leg.vehicleTypeItemId,
+            hint: Text(context.locale.selectTransportMode),
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(
@@ -43,15 +35,13 @@ class _ClaimExpenseLegRow extends StatelessWidget {
               ),
             ),
             items: [
-              for (final mode in TransportMode.values)
-                DropdownMenuItem(
-                  value: mode,
-                  child: Text(_modeLabel(context, mode)),
-                ),
+              for (final mode in transportModes)
+                DropdownMenuItem(value: mode.id, child: Text(mode.label)),
             ],
-            onChanged: (mode) {
-              if (mode == null) return;
-              leg.onModeChanged(mode);
+            validator: (value) =>
+                value == null ? context.locale.selectTransportMode : null,
+            onChanged: (id) {
+              leg.vehicleTypeItemId = id;
               onChanged();
             },
           ),
