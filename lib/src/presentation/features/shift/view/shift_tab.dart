@@ -25,6 +25,7 @@ import '../riverpod/shift_slots_provider.dart';
 import '../riverpod/unassign_shift_slot_provider.dart';
 
 part '../widgets/shift_action_buttons.dart';
+part '../widgets/shift_fab.dart';
 part '../widgets/shift_card_helpers.dart';
 part '../widgets/shift_detail_checkin_card.dart';
 part '../widgets/shift_detail_contract_card.dart';
@@ -82,12 +83,8 @@ class ShiftTab extends ConsumerWidget {
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
       ),
-      floatingActionButton: PermissionGate(
-        permissions: [UserPermission.rosterView],
-        child: FloatingActionButton(
-          onPressed: () => _onOpenRosters(context),
-          child: const Icon(Icons.calendar_view_week_rounded),
-        ),
+      floatingActionButton: _ShiftFab(
+        onOpenRosters: () => _onOpenRosters(context),
       ),
       // WHY these two permissions: they are what [ShiftEntitlement] is derived
       // from — managing a roster (`shift.assign_attendant`) or working a shift
