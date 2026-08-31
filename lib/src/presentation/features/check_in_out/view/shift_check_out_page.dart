@@ -13,8 +13,10 @@ class ShiftCheckOutPage extends ConsumerStatefulWidget {
 }
 
 class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
-  void _onTakePhoto() {
-    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  Future<void> _onTakePhoto() async {
+    final path = await context.pushNamed<String?>(Routes.selfieCamera);
+    if (path == null || !mounted) return;
+    ref.read(selfiePickerProvider.notifier).capturePhoto(path);
   }
 
   void _onSubmit(String? photoPath) {

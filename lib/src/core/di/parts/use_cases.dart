@@ -69,8 +69,8 @@ MarkOnboardingCompletedUseCase markOnboardingCompletedUseCase(Ref ref) {
 }
 
 @riverpod
-PickSelfieUseCase pickSelfieUseCase(Ref ref) {
-  return PickSelfieUseCase(ref.read(selfieRepositoryProvider));
+ValidateSelfieUseCase validateSelfieUseCase(Ref ref) {
+  return ValidateSelfieUseCase(ref.read(selfieRepositoryProvider));
 }
 
 @riverpod

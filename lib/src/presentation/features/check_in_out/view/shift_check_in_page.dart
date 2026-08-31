@@ -94,8 +94,10 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         );
   }
 
-  void _onTakePhoto() {
-    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  Future<void> _onTakePhoto() async {
+    final path = await context.pushNamed<String?>(Routes.selfieCamera);
+    if (path == null || !mounted) return;
+    ref.read(selfiePickerProvider.notifier).capturePhoto(path);
   }
 
   // WHY: the shift tab's slots list is fetched once on mount, so a check-in
