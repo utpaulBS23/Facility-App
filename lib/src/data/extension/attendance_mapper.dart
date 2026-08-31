@@ -1,25 +1,10 @@
 import '../models/attendance_model.dart';
 import '../../domain/entities/attendance_entity.dart';
-
-DateTime? _parseUtcIso(String? raw) {
-  if (raw == null || raw.isEmpty) return null;
-  try {
-    // WHY: API returns UTC strings without 'Z' suffix; Dart parses bare
-    // ISO strings as local time, so we force UTC before converting.
-    final s =
-        (raw.contains('Z') || raw.contains('+')) ? raw : '${raw}Z';
-    return DateTime.parse(s).toLocal();
-  } catch (_) {
-    return null;
-  }
-}
+import 'date_time_parser.dart';
 
 extension AttendanceApproverModelToEntity on AttendanceApproverModel {
-  AttendanceApproverEntity toEntity() => AttendanceApproverEntity(
-    id: id,
-    name: name ?? '',
-    uid: uid,
-  );
+  AttendanceApproverEntity toEntity() =>
+      AttendanceApproverEntity(id: id, name: name ?? '', uid: uid);
 }
 
 extension AttendanceShiftInfoModelToEntity on AttendanceShiftInfoModel {
@@ -41,8 +26,8 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     date: date ?? '',
     status: status ?? 'pending',
     isLate: isLate ?? false,
-    checkInTime: _parseUtcIso(checkInTime),
-    checkOutTime: _parseUtcIso(checkOutTime),
+    checkInTime: parseLocalIso(checkInTime),
+    checkOutTime: parseLocalIso(checkOutTime),
     durationHours: durationHours?.toString(),
     attendanceType: attendanceType ?? 'app',
     location: location,

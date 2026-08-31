@@ -1,18 +1,6 @@
 import '../models/manual_attendance_model.dart';
 import '../../domain/entities/manual_attendance_entity.dart';
-
-DateTime? _parseUtcIso(String? raw) {
-  if (raw == null || raw.isEmpty) return null;
-  try {
-    // WHY: API returns UTC strings without 'Z' suffix; Dart parses bare
-    // ISO strings as local time, so we force UTC before converting.
-    final s =
-        (raw.contains('Z') || raw.contains('+')) ? raw : '${raw}Z';
-    return DateTime.parse(s).toLocal();
-  } catch (_) {
-    return null;
-  }
-}
+import 'date_time_parser.dart';
 
 extension ManualAttendanceDataModelToEntity on ManualAttendanceDataModel {
   ManualAttendanceResponseEntity toEntity() => ManualAttendanceResponseEntity(
@@ -21,8 +9,8 @@ extension ManualAttendanceDataModelToEntity on ManualAttendanceDataModel {
     status: status ?? 'pending',
     userName: userName ?? '',
     shiftDate: shiftDate ?? '',
-    checkInTime: _parseUtcIso(checkInTime),
-    checkOutTime: _parseUtcIso(checkOutTime),
+    checkInTime: parseLocalIso(checkInTime),
+    checkOutTime: parseLocalIso(checkOutTime),
     address: address ?? '',
     reason: reason ?? '',
     approverName: approverName,
