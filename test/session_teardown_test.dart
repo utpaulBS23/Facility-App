@@ -125,6 +125,29 @@ void main() {
       expect(session.isAuthenticated, isFalse);
     });
 
+    test('logout clears the persisted session even when something disposes '
+        'the repository right after (resetRepositories-style race)', () async {
+      session.setAccessToken('token');
+      await secureStorage.save(SecureStorageKey.sessionPayload, '{}');
+
+      // WHY no pumpEventQueue between clear() and dispose(): this
+      // reproduces resetRepositories() invalidating the repository
+      // provider synchronously right after logout()'s session.clear()
+      // call, before any pending microtask could run. Without the fix
+      // (a sync onCleared stream), that dispose cancels the listener
+      // before it ever fires and the persisted payload survives logout.
+      session.clear();
+      repository.dispose();
+
+      expect(
+        await secureStorage.read(SecureStorageKey.sessionPayload),
+        isNull,
+        reason:
+            'a still-persisted payload rehydrates a logged-out user '
+            'straight past the login screen on next launch',
+      );
+    });
+
     test('disposal stops the repository listening to the token', () async {
       session.setAccessToken('token');
       repository.dispose();
