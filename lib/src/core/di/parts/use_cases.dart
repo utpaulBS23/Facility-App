@@ -669,3 +669,27 @@ GetFacilityStockBalanceUseCase getFacilityStockBalanceUseCase(Ref ref) {
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
+
+@riverpod
+GetStockAveragingUseCase getStockAveragingUseCase(Ref ref) {
+  return GetStockAveragingUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityStockTargetsUseCase getFacilityStockTargetsUseCase(Ref ref) {
+  return GetFacilityStockTargetsUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+UpdateStockTargetUseCase updateStockTargetUseCase(Ref ref) {
+  return UpdateStockTargetUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}

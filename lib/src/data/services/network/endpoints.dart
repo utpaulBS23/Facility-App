@@ -190,6 +190,10 @@ class Endpoints {
   static const String shiftStockCounts =
       '/partners/{partnerId}/shift-stock-counts';
   static const String stockAveraging = '/partners/{partnerId}/stock-averaging';
+  static const String facilityStockTargets =
+      '/partners/{partnerId}/stock-averaging/facilities/{facilityId}';
+  static const String updateStockTarget =
+      '/partners/{partnerId}/stock-averaging/targets/{targetId}';
   static const String facilityStockBalance =
       '/partners/{partnerId}/facility-stock-balance';
   static const String facilityStockBalanceThreshold =
