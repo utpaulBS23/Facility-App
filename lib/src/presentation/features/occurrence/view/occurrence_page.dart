@@ -247,7 +247,7 @@ class _OccurrenceBoard extends ConsumerWidget {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        HorizontalDatePicker.fortnight(onDateSelected: onDateChanged),
+        HorizontalDatePicker.week(onDateSelected: onDateChanged),
         state.when(
           loading: () => const SizedBox.shrink(),
           error: (e, s) => const SizedBox.shrink(),

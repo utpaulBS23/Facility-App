@@ -33,7 +33,7 @@ class _ShiftSlotsContent extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HorizontalDatePicker.fortnight(onDateSelected: onDateChanged),
+        HorizontalDatePicker.week(onDateSelected: onDateChanged),
         Expanded(
           child: slotsState.when(
             loading: () =>

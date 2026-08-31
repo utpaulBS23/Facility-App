@@ -12,9 +12,9 @@ class HorizontalDatePicker extends StatefulWidget {
     required this.onDateSelected,
   });
 
-  /// Creates a [HorizontalDatePicker] spanning 7 days before and 6 days after today.
-  HorizontalDatePicker.fortnight({super.key, required this.onDateSelected})
-    : startDate = DateTime.now().subtract(const Duration(days: 7)),
+  /// Creates a [HorizontalDatePicker] spanning today and the next 6 days.
+  HorizontalDatePicker.week({super.key, required this.onDateSelected})
+    : startDate = DateTime.now(),
       endDate = DateTime.now().add(const Duration(days: 6));
 
   final DateTime startDate;
