@@ -54,10 +54,19 @@ class _SlotCard extends StatelessWidget {
                 ],
                 // WHY: the design's staffing signal replaces the old "1/5"
                 // capacity line — it only speaks up when the slot is short.
+                // WHY gated on attendance.check_in: this is a staffing signal
+                // for whoever assigns the slot, not for the attendant working
+                // it — an attendant holding check-in doesn't need to be told
+                // the slot they're on needs more people.
                 if (slot.hasFreeCapacity)
-                  _SlotMarkerTag(
-                    color: context.color.warning,
-                    label: context.locale.employeeShortest,
+                  PermissionGate(
+                    permissions: const [UserPermission.attendanceCheckIn],
+                    builder: (context, hasCheckIn) => hasCheckIn
+                        ? const SizedBox.shrink()
+                        : _SlotMarkerTag(
+                            color: context.color.warning,
+                            label: context.locale.employeeShortest,
+                          ),
                   ),
                 const Spacer(),
                 // WHY paired with the hidden assign button below: a full slot
