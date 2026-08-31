@@ -73,7 +73,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   }
 
   void _onVisitTap(VisitSummaryEntity visit) {
-    context.pushNamed(Routes.visitDetail, extra: visit.id);
+    context.pushNamed(Routes.visitDetail, extra: visit);
   }
 
   @override

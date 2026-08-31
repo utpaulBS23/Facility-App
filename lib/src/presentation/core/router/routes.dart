@@ -34,6 +34,7 @@ class Routes {
 
   static const String attendance = '/attendance';
   static const String attendanceDetails = '/attendance-details';
+  static const String myAttendance = '/my-attendance';
   static const String myVisits = '/my-visits';
   static const String task = '/task';
   static const String taskDetail = 'task-detail';

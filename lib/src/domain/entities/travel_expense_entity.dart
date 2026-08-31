@@ -1,56 +1,18 @@
-/// A transport mode selectable on a travel-expense leg, each with its own
-/// per-km rate.
-enum TransportMode {
-  rickshaw('rickshaw'),
-  bus('bus'),
-  cng('cng'),
-  bike('bike'),
-  car('car'),
-  boat('boat'),
-  walking('walking'),
-  other('other');
-
-  const TransportMode(this.key);
-
-  final String key;
-
-  // WHY a client-side default table, not a backend config call: no such
-  // endpoint exists yet. The web mock labels this "Auto-suggested ... —
-  // editable" — these are starting points the user can always override
-  // before submitting, not authoritative pricing.
-  double get suggestedRatePerKm => switch (this) {
-    TransportMode.rickshaw => 12,
-    TransportMode.bus => 4,
-    TransportMode.cng => 15,
-    TransportMode.bike => 8,
-    TransportMode.car => 20,
-    TransportMode.boat => 10,
-    TransportMode.walking => 0,
-    TransportMode.other => 0,
-  };
-
-  static TransportMode fromKey(String? key) => switch (key) {
-    'rickshaw' => TransportMode.rickshaw,
-    'bus' => TransportMode.bus,
-    'cng' => TransportMode.cng,
-    'bike' => TransportMode.bike,
-    'car' => TransportMode.car,
-    'boat' => TransportMode.boat,
-    'walking' => TransportMode.walking,
-    _ => TransportMode.other,
-  };
-}
-
 /// One transport leg of a travel-expense claim (e.g. rickshaw for 5km, then
 /// bus for 48km).
+///
+/// WHY [vehicleTypeItemId] not an enum: the transport mode list is
+/// server-configured master data (`GET .../master-data/items?category=
+/// transportMode`), not a fixed client-side set — see
+/// `claimExpenseTransportModesProvider`.
 class TravelExpenseLegEntity {
   const TravelExpenseLegEntity({
-    required this.mode,
+    required this.vehicleTypeItemId,
     required this.distanceKm,
     required this.ratePerKm,
   });
 
-  final TransportMode mode;
+  final int vehicleTypeItemId;
   final double distanceKm;
   final double ratePerKm;
 

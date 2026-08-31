@@ -59,6 +59,10 @@ class Endpoints {
   static const String rejectAttendance =
       '/partners/{partnerId}/attendances/{attendanceId}/reject';
 
+  /// My Attendance — supervisor's own check-in/check-out visit history.
+  static const String myAttendance =
+      '/partners/{partnerId}/supervisor-attendance';
+
   /// Shifts
 
   /// Global shift configuration (templates, defaults) shared across facilities.
@@ -158,6 +162,11 @@ class Endpoints {
   // partner-scoped POST resources and is expected to be reconciled with
   // backend once the real endpoint is confirmed.
   static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
+
+  /// Master Data — generic partner/global configurable dropdown items,
+  /// filtered by `category` (e.g. `transportMode`).
+  static const String masterDataItems =
+      '/partners/{partnerId}/master-data/items';
 
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
