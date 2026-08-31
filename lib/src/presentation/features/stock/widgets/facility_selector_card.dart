@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/text/typography.dart';
 
 class FacilitySelectorCard extends StatelessWidget {
   const FacilitySelectorCard({
@@ -73,3 +76,53 @@ class FacilitySelectorCard extends StatelessWidget {
     );
   }
 }
+
+void showFacilitySelectorSheet({
+  required BuildContext context,
+  required List<AccessibleFacilityEntity> facilities,
+  required int? selectedFacilityId,
+  required ValueChanged<int> onSelected,
+}) {
+  showModalBottomSheet<void>(
+    context: context,
+    builder: (bottomSheetContext) {
+      final color = context.color;
+      final spacing = context.dimensions.spacing;
+
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(spacing.s16),
+              child: Headline2xlTinyText(context.locale.selectFacility),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: facilities.length,
+                itemBuilder: (context, index) {
+                  final facility = facilities[index];
+                  final isSelected = facility.id == selectedFacilityId;
+
+                  return ListTile(
+                    title: Text(facility.name),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle_rounded, color: color.primary)
+                        : null,
+                    onTap: () {
+                      onSelected(facility.id);
+                      context.pop();
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+

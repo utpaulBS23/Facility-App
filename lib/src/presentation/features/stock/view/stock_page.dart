@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
@@ -59,55 +58,6 @@ class _StockPageState extends ConsumerState<StockPage> {
     return null;
   }
 
-  void _showFacilitySelector(
-    BuildContext context,
-    List<AccessibleFacilityEntity> facilities,
-  ) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (bottomSheetContext) {
-        final color = context.color;
-        final spacing = context.dimensions.spacing;
-
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(spacing.s16),
-                child: Headline2xlTinyText(context.locale.selectFacility),
-              ),
-              const Divider(height: 1),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: facilities.length,
-                  itemBuilder: (context, index) {
-                    final facility = facilities[index];
-                    final isSelected = facility.id == _selectedFacilityId;
-
-                    return ListTile(
-                      title: Text(facility.name),
-                      trailing: isSelected
-                          ? Icon(Icons.check_circle_rounded, color: color.primary)
-                          : null,
-                      onTap: () {
-                        setState(() {
-                          _selectedFacilityId = facility.id;
-                        });
-                        Navigator.pop(bottomSheetContext);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final color = context.color;
@@ -150,7 +100,12 @@ class _StockPageState extends ConsumerState<StockPage> {
                 facilityName: selectedFacilityName.isEmpty
                     ? context.locale.selectFacility
                     : selectedFacilityName,
-                onTap: () => _showFacilitySelector(context, facilities),
+                onTap: () => showFacilitySelectorSheet(
+                  context: context,
+                  facilities: facilities,
+                  selectedFacilityId: _selectedFacilityId,
+                  onSelected: (id) => setState(() => _selectedFacilityId = id),
+                ),
               ),
               Gap(spacing.s16),
             ],
