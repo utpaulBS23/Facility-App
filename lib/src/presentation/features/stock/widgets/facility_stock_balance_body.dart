@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/stock/facility_stock_balance_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../riverpod/facility_stock_balance_provider.dart';
 import 'facility_balance_card.dart';
@@ -95,7 +96,11 @@ class FacilityStockBalanceBody extends ConsumerWidget {
             else
               StockSummaryRow(
                 totalItems: sortedItems.length,
-                lastUpdated: _formatDate(sortedItems.first.lastCountedAt),
+                lastUpdated: sortedItems.first.lastCountedAt != null
+                    ? DateFormatter.shortDate(
+                        DateTime.parse(sortedItems.first.lastCountedAt!).toLocal(),
+                      )
+                    : 'N/A',
               ),
             Gap(spacing.s16),
             ListView.separated(
@@ -110,15 +115,5 @@ class FacilityStockBalanceBody extends ConsumerWidget {
         );
       },
     );
-  }
-
-  String _formatDate(String? raw) {
-    if (raw == null || raw.isEmpty) return 'N/A';
-    final parsed = DateTime.tryParse(raw);
-    if (parsed == null) return raw.length >= 10 ? raw.substring(0, 10) : raw;
-    final y = parsed.year;
-    final m = parsed.month.toString().padLeft(2, '0');
-    final d = parsed.day.toString().padLeft(2, '0');
-    return '$y-$m-$d';
   }
 }
