@@ -15,6 +15,7 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_dropdown_button_form_field.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/claim_expense_provider.dart';
 
 part '../widgets/claim_expense_leg_draft.dart';
@@ -248,26 +249,32 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                 extraValidations: [RequiredValidation<String>()],
               ),
               Gap(spacing.s24),
-              SizedBox(
-                width: double.infinity,
-                height: spacing.s44,
-                child: FilledButton(
-                  onPressed: isSubmitting ? null : _onSubmit,
-                  child: isSubmitting
-                      ? SizedBox(
-                          width: spacing.s20,
-                          height: spacing.s20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              context.color.onPrimary,
+              // WHY gated: travel_expense.view opens this page, but only
+              // travel_expense.create may actually save a claim — a
+              // view-only session sees the form with no way to submit it.
+              PermissionGate(
+                permissions: [UserPermission.travelExpenseCreate],
+                child: SizedBox(
+                  width: double.infinity,
+                  height: spacing.s44,
+                  child: FilledButton(
+                    onPressed: isSubmitting ? null : _onSubmit,
+                    child: isSubmitting
+                        ? SizedBox(
+                            width: spacing.s20,
+                            height: spacing.s20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                context.color.onPrimary,
+                              ),
                             ),
+                          )
+                        : Text(
+                            '${context.locale.saveEntry} — '
+                            '৳ ${_totalAmount.toStringAsFixed(0)}',
                           ),
-                        )
-                      : Text(
-                          '${context.locale.saveEntry} — '
-                          '৳ ${_totalAmount.toStringAsFixed(0)}',
-                        ),
+                  ),
                 ),
               ),
             ],

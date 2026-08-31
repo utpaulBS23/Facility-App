@@ -12,6 +12,8 @@ enum UserPermission {
   facilityView('facility.view'),
   facilityUpdate('facility.update'),
   facilityAssignStaff('facility.assign_staff'),
+  facilityServiceView('facility_service.view'),
+  facilityAccessView('facility_access.view'),
 
   // Shift + template
   shiftConfigView('shift_config.view'),
@@ -119,6 +121,25 @@ enum UserPermission {
   deliveryComplaintCreate('delivery_complaint.create'),
   deliveryComplaintApprove('delivery_complaint.approve'),
 
+  // Facility product
+  facilityProductView('facility_product.view'),
+  facilityProductCreate('facility_product.create'),
+  facilityProductUpdate('facility_product.update'),
+  facilityProductDelete('facility_product.delete'),
+  productCatalogView('product_catalog.view'),
+  productSaleEntryView('product_sale_entry.view'),
+  productSaleEntryCreate('product_sale_entry.create'),
+
+  // Collection & finance
+  locationPingSync('location_ping.sync'),
+  coreCollectionView('core_collection.view'),
+  cashCollectionView('cash_collection.view'),
+  cashCollectionCreate('cash_collection.create'),
+  systemIncomeView('system_income.view'),
+  monthCloseView('month_close.view'),
+  facilityTargetView('facility_target.view'),
+  masterDataView('master_data.view'),
+
   // User
   userView('user.view'),
   userViewProfile('user.view_profile'),
@@ -137,12 +158,14 @@ enum UserPermission {
   visitTaskCreate('visit_task.create'),
 
   // Profile
+  profileView('profile.view'),
   profileUpdate('profile.update'),
 
   // Additional income
   additionalIncomeCreate('additional_income.create'),
   additionalIncomeApprove('additional_income.approve'),
   additionalIncomeView('additional_income.view'),
+  incomeTypeView('income_type.view'),
 
   // Leave request
   leaveRequestView('leave_request.view'),
@@ -154,15 +177,18 @@ enum UserPermission {
   doorLockControl('door_lock.control'),
 
   // Facility expense
+  facilityExpenseView('facility_expense.view'),
   facilityExpenseCreate('facility_expense.create'),
   facilityExpenseApprove('facility_expense.approve'),
+  expenseCategoryView('expense_category.view'),
 
   // Travel expense
-  // WHY: no backend support confirmed yet for this permission key (see
-  // CreateTravelExpenseUseCase's WHY comment) — added ahead of the backend
-  // so the app compiles against it; gated menu item stays invisible until
-  // the backend actually grants this key at login.
+  // WHY two keys: .view opens the Travel Expenses menu item/list; .create
+  // is checked separately to gate the actual submit action inside it — a
+  // viewer without .create can open the page but not save a claim.
+  travelExpenseView('travel_expense.view'),
   travelExpenseCreate('travel_expense.create'),
+  travelExpenseSettingView('travel_expense_setting.view'),
 
   // Notification
   notificationView('notification.view'),
@@ -176,6 +202,11 @@ enum UserPermission {
 
   // Supervisor tracking
   supervisorTrackingView('supervisor_tracking.view'),
+  travelRouteCheckIn('travel_route.check_in'),
+  trackingSettingView('tracking_setting.view'),
+  trackingSettingUpdate('tracking_setting.update'),
+  trackingModeView('tracking_mode.view'),
+  trackingModeUpdate('tracking_mode.update'),
 
   // Delivery tracking
   deliveryTrackingView('delivery_tracking.view'),
