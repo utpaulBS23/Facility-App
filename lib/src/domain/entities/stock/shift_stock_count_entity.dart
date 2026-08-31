@@ -10,7 +10,6 @@ class ShiftStockCountEntity {
     required this.unit,
     required this.qtyOnHand,
     this.photoUrl,
-    required this.reportedBy,
     required this.reportedByName,
     required this.reportedAt,
   });
@@ -25,7 +24,6 @@ class ShiftStockCountEntity {
   final String unit;
   final double qtyOnHand;
   final String? photoUrl;
-  final int reportedBy;
   final String reportedByName;
   final String reportedAt;
 

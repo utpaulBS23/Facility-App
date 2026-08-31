@@ -15,7 +15,6 @@ extension ShiftStockCountModelToEntity on ShiftStockCountModel {
         unit: unit,
         qtyOnHand: qtyOnHand,
         photoUrl: photoUrl,
-        reportedBy: reportedBy,
         reportedByName: reportedByName,
         reportedAt: reportedAt,
       );
