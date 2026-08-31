@@ -23,6 +23,13 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.selfieCamera,
+      name: Routes.selfieCamera,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: SelfieCameraPage());
+      },
+    ),
+    GoRoute(
       path: Routes.approvalRequest,
       name: Routes.approvalRequest,
       pageBuilder: (context, state) {

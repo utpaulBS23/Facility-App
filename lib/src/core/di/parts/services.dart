@@ -26,11 +26,6 @@ RestClient restClientService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-ImagePickerService imagePickerService(Ref ref) {
-  return ImagePickerServiceImpl(ImagePicker());
-}
-
-@Riverpod(keepAlive: true)
 FaceDetectionService faceDetectionService(Ref ref) {
   // ignore: invalid_service_name
   final service = FaceDetectionServiceImpl();
