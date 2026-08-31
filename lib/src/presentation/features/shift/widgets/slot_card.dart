@@ -85,7 +85,7 @@ class _SlotCard extends StatelessWidget {
             Gap(spacing.s8),
             Text(
               timeRange,
-              style: context.textStyle.titleSmall.copyWith(
+              style: context.textStyle.titleMedium.copyWith(
                 color: context.color.text.primary,
               ),
             ),
