@@ -78,30 +78,38 @@ class _UpdateStockFormCard extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
-                  width: spacing.s66,
-                  child: TextField(
-                    controller: entry.qtyController,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    cursorHeight: spacing.s16,
-                    textAlign: TextAlign.end,
-                    textAlignVertical: TextAlignVertical.center,
-                    style: context.textStyle.bodyLarge.copyWith(
-                      color: color.text.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      counterText: '',
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: spacing.s4,
-                        vertical: spacing.s2,
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: entry.qtyController,
+                  builder: (context, value, _) {
+                    final len = value.text.length;
+                    final dynamicWidth = (spacing.s66 + (len > 5 ? (len - 5) * spacing.s10 : 0))
+                        .clamp(spacing.s66, spacing.s180);
+                    return SizedBox(
+                      width: dynamicWidth,
+                      child: TextField(
+                        controller: entry.qtyController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        cursorHeight: spacing.s16,
+                        textAlign: TextAlign.end,
+                        textAlignVertical: TextAlignVertical.center,
+                        style: context.textStyle.bodyLarge.copyWith(
+                          color: color.text.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          counterText: '',
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: spacing.s4,
+                            vertical: spacing.s2,
+                          ),
+                          border: InputBorder.none,
+                        ),
                       ),
-                      border: InputBorder.none,
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 Gap(spacing.s8),
                 Text(
