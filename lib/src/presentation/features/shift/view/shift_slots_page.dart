@@ -4,8 +4,13 @@ part of 'shift_tab.dart';
 /// facility-scoped slots payload; only the assign-staff button (inside
 /// [_SlotCard]) differs by permission.
 class _ShiftSlotsView extends ConsumerStatefulWidget {
-  const _ShiftSlotsView({required this.onApplyLeave, required this.onSlotTap});
+  const _ShiftSlotsView({
+    required this.facilityId,
+    required this.onApplyLeave,
+    required this.onSlotTap,
+  });
 
+  final int? facilityId;
   final VoidCallback onApplyLeave;
   final void Function(ShiftSlotEntity slot) onSlotTap;
 
@@ -25,10 +30,21 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
     );
   }
 
+  @override
+  void didUpdateWidget(covariant _ShiftSlotsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.facilityId != widget.facilityId) {
+      _fetchSlots(_selectedDate);
+    }
+  }
+
   void _fetchSlots(DateTime date) {
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(date: DateFormat('yyyy-MM-dd').format(date));
+        .fetch(
+          date: DateFormat('yyyy-MM-dd').format(date),
+          facilityId: widget.facilityId,
+        );
   }
 
   void _onDateChanged(DateTime date) {
