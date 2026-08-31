@@ -5,7 +5,7 @@ class FacilityStockBalanceFilter {
     this.stockItemId,
     this.status,
     this.page = 1,
-    this.perPage = 20,
+    this.perPage = 100,
   });
 
   final int? facilityId;

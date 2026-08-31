@@ -338,21 +338,21 @@ class _FacilityStockBalanceBody extends ConsumerWidget {
                   Expanded(
                     child: _StockStatTile(
                       value: '${summary.outCount}',
-                      label: 'Out of stock',
+                      label: context.locale.outOfStock,
                     ),
                   ),
                   Gap(spacing.s12),
                   Expanded(
                     child: _StockStatTile(
                       value: '${summary.lowCount}',
-                      label: 'Low',
+                      label: context.locale.lowStock,
                     ),
                   ),
                   Gap(spacing.s12),
                   Expanded(
                     child: _StockStatTile(
                       value: '${summary.okCount}',
-                      label: 'Healthy',
+                      label: context.locale.healthy,
                     ),
                   ),
                 ],
@@ -360,10 +360,7 @@ class _FacilityStockBalanceBody extends ConsumerWidget {
             else
               _StockSummaryRow(
                 totalItems: sortedItems.length,
-                lastUpdated: sortedItems.first.lastCountedAt != null &&
-                        sortedItems.first.lastCountedAt!.length >= 10
-                    ? sortedItems.first.lastCountedAt!.substring(0, 10)
-                    : 'N/A',
+                lastUpdated: _formatDate(sortedItems.first.lastCountedAt),
               ),
             Gap(spacing.s16),
             ListView.separated(
@@ -378,5 +375,15 @@ class _FacilityStockBalanceBody extends ConsumerWidget {
         );
       },
     );
+  }
+
+  String _formatDate(String? raw) {
+    if (raw == null || raw.isEmpty) return 'N/A';
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return raw.length >= 10 ? raw.substring(0, 10) : raw;
+    final y = parsed.year;
+    final m = parsed.month.toString().padLeft(2, '0');
+    final d = parsed.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
   }
 }

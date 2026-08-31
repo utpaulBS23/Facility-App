@@ -747,6 +747,10 @@
   "noStockCountRecorded": "No stock count recorded yet",
   "selectFacility": "Select Facility",
   "totalItems": "Total Items",
-  "lastUpdated": "Last Updated"
+  "lastUpdated": "Last Updated",
+  "healthy": "Healthy",
+  "lowStock": "Low",
+  "outOfStock": "Out of stock",
+  "threshold": "Threshold"
 }
 
