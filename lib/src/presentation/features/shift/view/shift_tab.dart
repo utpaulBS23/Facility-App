@@ -10,6 +10,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
@@ -27,6 +28,7 @@ import '../riverpod/shift_slots_provider.dart';
 import '../riverpod/unassign_shift_slot_provider.dart';
 
 part '../widgets/shift_action_buttons.dart';
+part '../widgets/shift_facility_picker_sheet.dart';
 part '../widgets/shift_fab.dart';
 part '../widgets/shift_card_helpers.dart';
 part '../widgets/shift_detail_checkin_card.dart';
@@ -59,8 +61,15 @@ part 'shift_details_page.dart';
 part 'shift_slots_page.dart';
 part 'slot_details_page.dart';
 
-class ShiftTab extends ConsumerWidget {
+class ShiftTab extends ConsumerStatefulWidget {
   const ShiftTab({super.key});
+
+  @override
+  ConsumerState<ShiftTab> createState() => _ShiftTabState();
+}
+
+class _ShiftTabState extends ConsumerState<ShiftTab> {
+  int? _selectedFacilityId;
 
   void _onApplyLeave(BuildContext context) {
     context.pushNamed(Routes.applyLeave);
@@ -74,8 +83,30 @@ class ShiftTab extends ConsumerWidget {
     context.pushNamed(Routes.shiftDetails, extra: slot);
   }
 
+  Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
+    final facilityId = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ShiftFacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: _selectedFacilityId,
+      ),
+    );
+    if (facilityId == null || facilityId == _selectedFacilityId) return;
+    setState(() => _selectedFacilityId = facilityId);
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
+    final selectedFacilityName = facilities
+        .cast<AccessibleFacilityEntity?>()
+        .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
+        ?.name;
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
@@ -83,6 +114,17 @@ class ShiftTab extends ConsumerWidget {
         titleSpacing: context.dimensions.spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (facilities.length > 1)
+            TextButton.icon(
+              onPressed: () => _pickFacility(facilities),
+              icon: const Icon(Icons.apartment_outlined, size: 18),
+              label: Text(
+                selectedFacilityName ?? context.locale.facilityName,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
       ),
       floatingActionButton: _ShiftFab(
         onOpenRosters: () => _onOpenRosters(context),
@@ -98,6 +140,7 @@ class ShiftTab extends ConsumerWidget {
         ],
         builder: (context, hasShiftAccess) => hasShiftAccess
             ? _ShiftSlotsView(
+                facilityId: _selectedFacilityId,
                 onApplyLeave: () => _onApplyLeave(context),
                 onSlotTap: (slot) => _onSlotTap(context, slot),
               )
