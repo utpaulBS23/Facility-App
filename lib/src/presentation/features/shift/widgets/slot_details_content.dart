@@ -4,6 +4,7 @@ class _SlotDetailsContent extends StatelessWidget {
   const _SlotDetailsContent({
     required this.currentSlot,
     required this.facility,
+    required this.date,
     required this.onAssignStaff,
     required this.onUnassignStaff,
     required this.onMakeLead,
@@ -11,6 +12,7 @@ class _SlotDetailsContent extends StatelessWidget {
 
   final ShiftSlotEntity currentSlot;
   final SlotFacilityEntity? facility;
+  final String? date;
   final VoidCallback onAssignStaff;
   final ValueChanged<SlotAttendantEntity> onUnassignStaff;
   final ValueChanged<SlotAttendantEntity> onMakeLead;
@@ -24,7 +26,11 @@ class _SlotDetailsContent extends StatelessWidget {
       padding: EdgeInsets.all(spacing.s16),
       child: Column(
         children: [
-          _SlotDetailContractCard(slot: currentSlot, facility: facility),
+          _SlotDetailContractCard(
+            slot: currentSlot,
+            facility: facility,
+            date: date,
+          ),
           if (attendance != null) ...[
             Gap(spacing.s8),
             _SlotDetailCheckInCard(attendance: attendance),
