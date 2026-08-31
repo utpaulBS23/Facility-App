@@ -55,66 +55,73 @@ class FacilityPickerSheet extends StatelessWidget {
       // assertion).
       child: Material(
         type: MaterialType.transparency,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Gap(spacing.s12),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.color.borderSubtle,
-                borderRadius: BorderRadius.circular(radius.r4),
-              ),
-            ),
-            Gap(spacing.s16),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-              child: LabelLargeText(context.locale.facilityName),
-            ),
-            Gap(spacing.s8),
-            Flexible(
-              child: ListView.separated(
-                shrinkWrap: true,
-                padding: EdgeInsets.fromLTRB(
-                  spacing.s16,
-                  0,
-                  spacing.s16,
-                  spacing.s16,
+        // WHY: sheet content can sit behind the gesture/nav bar on devices
+        // with no bottom inset otherwise handled by the list's own padding.
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Gap(spacing.s12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: context.color.borderSubtle,
+                  borderRadius: BorderRadius.circular(radius.r4),
                 ),
-                itemCount: itemCount,
-                separatorBuilder: (_, _) => Gap(spacing.s8),
-                itemBuilder: (context, index) {
-                  final isAllRow = includeAllOption && index == 0;
-                  final facility = isAllRow
-                      ? null
-                      : facilities[includeAllOption ? index - 1 : index];
-                  final facilityId = facility?.id;
-                  final label = isAllRow ? context.locale.all : facility!.name;
-                  final isSelected = facilityId == selectedFacilityId;
-                  return ListTile(
-                    onTap: () =>
-                        Navigator.of(context).pop((facilityId: facilityId)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(radius.r10),
-                      side: BorderSide(
-                        color: isSelected
-                            ? context.color.primary
-                            : context.color.borderSubtle,
-                      ),
-                    ),
-                    title: Text(label),
-                    trailing: isSelected
-                        ? Icon(
-                            Icons.check_circle_rounded,
-                            color: context.color.primary,
-                          )
-                        : null,
-                  );
-                },
               ),
-            ),
-          ],
+              Gap(spacing.s16),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+                child: LabelLargeText(context.locale.facilityName),
+              ),
+              Gap(spacing.s8),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.fromLTRB(
+                    spacing.s16,
+                    0,
+                    spacing.s16,
+                    spacing.s16,
+                  ),
+                  itemCount: itemCount,
+                  separatorBuilder: (_, _) => Gap(spacing.s8),
+                  itemBuilder: (context, index) {
+                    final isAllRow = includeAllOption && index == 0;
+                    final facility = isAllRow
+                        ? null
+                        : facilities[includeAllOption ? index - 1 : index];
+                    final facilityId = facility?.id;
+                    final label = isAllRow
+                        ? context.locale.all
+                        : facility!.name;
+                    final isSelected = facilityId == selectedFacilityId;
+                    return ListTile(
+                      onTap: () =>
+                          Navigator.of(context).pop((facilityId: facilityId)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius.r10),
+                        side: BorderSide(
+                          color: isSelected
+                              ? context.color.primary
+                              : context.color.borderSubtle,
+                        ),
+                      ),
+                      title: Text(label),
+                      trailing: isSelected
+                          ? Icon(
+                              Icons.check_circle_rounded,
+                              color: context.color.primary,
+                            )
+                          : null,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
