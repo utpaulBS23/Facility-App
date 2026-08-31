@@ -35,6 +35,7 @@ extension FacilityStockBalanceListResponseModelMapperExtension
   FacilityStockBalancePageEntity toEntity() {
     return FacilityStockBalancePageEntity(
       items: data.map((model) => model.toEntity()).toList(),
+      summary: summary?.toEntity(),
     );
   }
 }
