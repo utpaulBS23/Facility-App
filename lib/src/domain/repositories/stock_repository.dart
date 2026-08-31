@@ -1,6 +1,8 @@
 import '../../core/base/failure.dart';
 import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
+import '../entities/stock/facility_stock_balance_entity.dart';
+import '../entities/stock/facility_stock_balance_filter.dart';
 import '../entities/stock/shift_stock_count_entity.dart';
 
 abstract base class StockRepository extends Repository {
@@ -18,4 +20,7 @@ abstract base class StockRepository extends Repository {
     String? from,
     String? to,
   });
+
+  Future<Result<FacilityStockBalancePageEntity, Failure>>
+      getFacilityStockBalance(FacilityStockBalanceFilter filter);
 }

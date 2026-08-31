@@ -607,6 +607,7 @@ GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
 }
 
 @riverpod
+<<<<<<< HEAD
 GetInitialPushNotificationMessageUseCase
 getInitialPushNotificationMessageUseCase(Ref ref) {
   return GetInitialPushNotificationMessageUseCase(
@@ -659,5 +660,13 @@ SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
 ) {
   return SetNotificationChannelEnabledUseCase(
     ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityStockBalanceUseCase getFacilityStockBalanceUseCase(Ref ref) {
+  return GetFacilityStockBalanceUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }

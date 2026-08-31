@@ -50,5 +50,10 @@ List<GoRoute> _stockRoutes(Ref ref) {
         );
       },
     ),
+    GoRoute(
+      path: Routes.stock,
+      name: Routes.stock,
+      builder: (context, state) => const StockPage(),
+    ),
   ];
 }

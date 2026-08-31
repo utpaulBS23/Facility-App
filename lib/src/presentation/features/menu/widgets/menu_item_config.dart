@@ -60,6 +60,17 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
+    icon: Assets.icons.service,
+    label: _stockBalanceLabel,
+    subtitle: _stockBalanceSubtitle,
+    route: Routes.stock,
+    permissions: [
+      UserPermission.facilityStockTargetView,
+      UserPermission.stockItemView,
+      UserPermission.stockAllocationView,
+    ],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.pinIcon,
     label: _leaveLabel,
     subtitle: _leaveSubtitle,
@@ -180,3 +191,7 @@ String _gatewayManagementLabel(BuildContext context) =>
     context.locale.gatewayManagement;
 String _gatewayManagementSubtitle(BuildContext context) =>
     context.locale.gatewayManagementSubtitle;
+
+String _stockBalanceLabel(BuildContext context) => context.locale.stockBalance;
+String _stockBalanceSubtitle(BuildContext context) =>
+    context.locale.stockBalanceSubtitle;

@@ -1,8 +1,12 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
+import '../../domain/entities/stock/facility_stock_balance_entity.dart';
+import '../../domain/entities/stock/facility_stock_balance_filter.dart';
 import '../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../../domain/repositories/stock_repository.dart';
+import '../extension/facility_stock_balance_mapper.dart';
 import '../extension/stock_count_mapper.dart';
+import '../models/stock/facility_stock_balance_model.dart';
 import '../models/stock/shift_stock_count_response_models.dart';
 import '../services/network/rest_client.dart';
 
@@ -48,10 +52,30 @@ final class StockRepositoryImpl extends StockRepository {
         from: from,
         to: to,
       );
+
+
       final responseModel =
           ShiftStockCountListResponseModel.fromJson(response.data);
 
       return responseModel.toEntityList();
+    });
+  }
+
+  @override
+  Future<Result<FacilityStockBalancePageEntity, Failure>>
+      getFacilityStockBalance(FacilityStockBalanceFilter filter) {
+    return asyncGuard(() async {
+      final response = await remote.getFacilityStockBalance(
+        partnerId: filter.partnerId ?? 0,
+        facilityId: filter.facilityId,
+        status: filter.status,
+        page: filter.page,
+        perPage: filter.perPage,
+      );
+      final responseModel =
+          FacilityStockBalanceListResponseModel.fromJson(response.data);
+
+      return responseModel.toEntity();
     });
   }
 }
