@@ -19,7 +19,6 @@ class TravelExpenseLegRequestModel with TravelExpenseLegRequestModelMappable {
 class CreateTravelExpenseRequestModel
     with CreateTravelExpenseRequestModelMappable {
   const CreateTravelExpenseRequestModel({
-    required this.supervisorId,
     required this.facilityId,
     this.visitId,
     required this.startLocation,
@@ -28,7 +27,6 @@ class CreateTravelExpenseRequestModel
     required this.purpose,
   });
 
-  final int supervisorId;
   final int facilityId;
   final int? visitId;
   final String startLocation;
