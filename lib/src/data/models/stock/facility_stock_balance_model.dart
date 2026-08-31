@@ -57,11 +57,13 @@ class FacilityStockBalanceListResponseModel
     this.success = true,
     this.message = '',
     required this.data,
+    this.summary,
   });
 
   final bool success;
   final String message;
   final List<FacilityStockBalanceModel> data;
+  final FacilityStockBalanceSummaryModel? summary;
 
   static const fromJson =
       FacilityStockBalanceListResponseModelMapper.fromJson;

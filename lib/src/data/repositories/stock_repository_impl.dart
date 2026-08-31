@@ -68,6 +68,7 @@ final class StockRepositoryImpl extends StockRepository {
       final response = await remote.getFacilityStockBalance(
         partnerId: filter.partnerId ?? 0,
         facilityId: filter.facilityId,
+        stockItemId: filter.stockItemId,
         status: filter.status,
         page: filter.page,
         perPage: filter.perPage,
