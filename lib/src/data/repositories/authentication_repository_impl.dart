@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
@@ -9,10 +10,15 @@ import '../../domain/repositories/authentication_repository.dart';
 import '../extension/auth_mapper.dart';
 import '../models/login_model.dart';
 import '../services/network/rest_client.dart';
+import '../services/secure_storage/secure_storage_service.dart';
 import '../services/session/session_service.dart';
 
 final class AuthenticationRepositoryImpl extends AuthenticationRepository {
-  AuthenticationRepositoryImpl({required this.remote, required this.session}) {
+  AuthenticationRepositoryImpl({
+    required this.remote,
+    required this.session,
+    required this.secureStorage,
+  }) {
     // WHY: the token is the authority on "authenticated"; this session is
     // derived from it. TokenManager clears the token from inside the Dio
     // interceptor when a refresh fails, on a path this repository cannot see —
@@ -23,6 +29,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   final RestClient remote;
   final SessionService session;
+  final SecureStorageService secureStorage;
 
   late final StreamSubscription<void> _tokenClearedSubscription;
 
@@ -53,21 +60,51 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       final loginResponse = LoginResponseModel.fromJson(response.data);
       final entity = loginResponse.toEntity();
 
-      session.setAccessToken(entity.accessToken);
-      _currentUser = entity.user;
-      _session = UserSessionEntity(
-        permissions: entity.permissions,
-        accessibleFacilities: entity.accessibleFacilities,
-        partner: entity.partner,
-        // WHY: one partner per login → active partner = the user's bound
-        // partner. A future switcher swaps this seed for a mutable selection
-        // without touching any consumer.
-        activePartnerId: entity.user.partnerId,
+      _applySession(entity);
+      // WHY: there is no "get current user" endpoint to rehydrate a session
+      // from a token alone, so the raw login payload itself is what gets
+      // persisted and replayed through the same fromJson/toEntity path on
+      // the next cold start (see restoreSession()).
+      await secureStorage.save(
+        SecureStorageKey.sessionPayload,
+        jsonEncode(response.data),
       );
-      _sessionController.add(_session);
 
       return entity;
     });
+  }
+
+  @override
+  Future<bool> restoreSession() async {
+    final raw = await secureStorage.read(SecureStorageKey.sessionPayload);
+    if (raw == null) return false;
+
+    try {
+      final json = jsonDecode(raw) as Map<String, dynamic>;
+      final entity = LoginResponseModel.fromJson(json).toEntity();
+      _applySession(entity);
+      return true;
+    } on Exception catch (e, stackTrace) {
+      Log.error(e.toString());
+      Log.error(stackTrace.toString());
+      await secureStorage.delete(SecureStorageKey.sessionPayload);
+      return false;
+    }
+  }
+
+  void _applySession(LoginResponseEntity entity) {
+    session.setAccessToken(entity.accessToken);
+    _currentUser = entity.user;
+    _session = UserSessionEntity(
+      permissions: entity.permissions,
+      accessibleFacilities: entity.accessibleFacilities,
+      partner: entity.partner,
+      // WHY: one partner per login → active partner = the user's bound
+      // partner. A future switcher swaps this seed for a mutable selection
+      // without touching any consumer.
+      activePartnerId: entity.user.partnerId,
+    );
+    _sessionController.add(_session);
   }
 
   @override
@@ -118,6 +155,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
     _currentUser = null;
     _session = null;
     _sessionController.add(null);
+    unawaited(secureStorage.delete(SecureStorageKey.sessionPayload));
   }
 
   @override

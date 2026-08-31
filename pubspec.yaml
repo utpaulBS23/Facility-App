@@ -22,6 +22,7 @@ dependencies:
   go_router: ^17.0.1
   # Cache & Database
   shared_preferences: ^2.3.1
+  flutter_secure_storage: ^9.2.4
   # Generator and Annotations
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^3.0.0

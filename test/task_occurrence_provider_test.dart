@@ -55,6 +55,9 @@ final class FakeAuthenticationRepository extends AuthenticationRepository {
   Future<void> logout() => throw UnimplementedError();
 
   @override
+  Future<bool> restoreSession() => throw UnimplementedError();
+
+  @override
   UserEntity? getCurrentUser() => null;
 
   @override
@@ -192,10 +195,7 @@ void main() {
           ),
         ),
         submitTaskOccurrenceUseCaseProvider.overrideWithValue(
-          SubmitTaskOccurrenceUseCase(
-            taskOccurrenceRepository,
-            authRepository,
-          ),
+          SubmitTaskOccurrenceUseCase(taskOccurrenceRepository, authRepository),
         ),
       ],
     );
@@ -211,10 +211,7 @@ void main() {
           .read(taskOccurrencesProvider.notifier)
           .fetch(facilityId: _facilityId, date: '2026-08-26');
 
-      expect(
-        container.read(taskOccurrencesProvider).value,
-        _occurrenceList,
-      );
+      expect(container.read(taskOccurrencesProvider).value, _occurrenceList);
       expect(taskOccurrenceRepository.getTaskOccurrencesCallCount, 1);
     });
 
@@ -245,7 +242,11 @@ void main() {
 
       await container
           .read(taskOccurrenceChecklistAnswerProvider.notifier)
-          .answer(taskOccurrenceId: _taskOccurrenceId, itemId: 4, ratingValue: 5);
+          .answer(
+            taskOccurrenceId: _taskOccurrenceId,
+            itemId: 4,
+            ratingValue: 5,
+          );
 
       expect(taskOccurrenceRepository.getTaskOccurrencesCallCount, 2);
       sub.close();
@@ -296,10 +297,7 @@ void main() {
         result,
         const Success<TaskOccurrenceEntity, Failure>(data: _occurrence),
       );
-      expect(
-        container.read(taskOccurrenceReassignProvider).value,
-        _occurrence,
-      );
+      expect(container.read(taskOccurrenceReassignProvider).value, _occurrence);
     });
 
     test('state holds the failure on error', () async {
@@ -314,10 +312,7 @@ void main() {
           .reassign(taskOccurrenceId: _taskOccurrenceId, assignedTo: 12);
 
       expect(result, const Error<TaskOccurrenceEntity, Failure>(failure));
-      expect(
-        container.read(taskOccurrenceReassignProvider).hasError,
-        isTrue,
-      );
+      expect(container.read(taskOccurrenceReassignProvider).hasError, isTrue);
     });
   });
 }

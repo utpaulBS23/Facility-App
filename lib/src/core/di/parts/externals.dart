@@ -5,6 +5,10 @@ Future<SharedPreferences> sharedPreferences(Ref ref) =>
     SharedPreferences.getInstance();
 
 @Riverpod(keepAlive: true)
+FlutterSecureStorage flutterSecureStorage(Ref ref) =>
+    const FlutterSecureStorage();
+
+@Riverpod(keepAlive: true)
 Dio dio(Ref ref) {
   final dio = Dio();
 

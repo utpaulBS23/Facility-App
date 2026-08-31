@@ -6,6 +6,11 @@ LoginUseCase loginUseCase(Ref ref) {
 }
 
 @riverpod
+RestoreSessionUseCase restoreSessionUseCase(Ref ref) {
+  return RestoreSessionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
 LogoutUseCase logoutUseCase(Ref ref) {
   return LogoutUseCase(ref.read(authenticationRepositoryProvider));
 }
@@ -557,6 +562,7 @@ GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
+
 @riverpod
 ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
   return ConfirmDeliveryUseCase(
