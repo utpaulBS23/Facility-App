@@ -528,5 +528,26 @@ abstract class RestClient {
     @Path('taskOccurrenceId') required int taskOccurrenceId,
     @Body() Map<String, dynamic> request = const {},
   });
+
+  @GET(Endpoints.stockAveraging)
+  Future<HttpResponse> getStockAveraging({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.facilityStockTargets)
+  Future<HttpResponse> getFacilityStockTargets({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+  });
+
+  @PATCH(Endpoints.updateStockTarget)
+  Future<HttpResponse> updateStockTarget({
+    @Path('partnerId') required int partnerId,
+    @Path('targetId') required int targetId,
+    @Body() required Map<String, dynamic> body,
+  });
 }
 
