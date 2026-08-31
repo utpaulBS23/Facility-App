@@ -30,7 +30,9 @@ class _VisitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final timeRange = '${visit.scheduledStartTime} – ${visit.scheduledEndTime}';
+    final dateTime = visit.scheduledEndTime.isEmpty
+        ? visit.date
+        : '${visit.date}, ${visit.scheduledStartTime} – ${visit.scheduledEndTime}';
 
     return GestureDetector(
       onTap: onTap,
@@ -73,7 +75,7 @@ class _VisitCard extends StatelessWidget {
               ),
             ],
             Gap(spacing.s6),
-            _InfoRow(icon: Icons.access_time_outlined, label: timeRange),
+            _InfoRow(icon: Icons.calendar_today_outlined, label: dateTime),
           ],
         ),
       ),
