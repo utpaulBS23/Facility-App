@@ -34,8 +34,9 @@ Future<void> appStartup(Ref ref) async {
   await ref.read(getInitialPushNotificationMessageUseCaseProvider).call();
 
   final initialPayload = ref.read(getNotificationPayloadUseCaseProvider).call();
-  if (initialPayload != null)
+  if (initialPayload != null) {
     Log.info('Consumed initial payload: $initialPayload');
+  }
 
   // WHY: no deep-link routing yet — backend hasn't defined a notification
   // type/route contract. Log taps so the payload shape is visible until

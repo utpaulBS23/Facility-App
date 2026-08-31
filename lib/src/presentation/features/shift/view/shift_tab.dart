@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/presentation/core/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
