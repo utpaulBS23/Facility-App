@@ -20,6 +20,7 @@ import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_dropdown_button_form_field.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../../shift/riverpod/shift_slots_provider.dart';
@@ -169,14 +170,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Headline2xlTinyText(context.locale.shiftCheckIn),
-        ),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.shiftCheckIn),
       body: _ShiftCheckInBody(
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,

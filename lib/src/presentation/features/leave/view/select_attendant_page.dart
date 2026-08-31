@@ -7,10 +7,9 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/apply_leave_provider/leave_attendants_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
@@ -43,14 +42,7 @@ class _SelectAttendantPageState extends ConsumerState<SelectAttendantPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.selectAttendant),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.selectAttendant),
       body: Column(
         children: [
           Padding(
