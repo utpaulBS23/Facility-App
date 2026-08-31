@@ -58,9 +58,12 @@ class TravelExpenseLegEntity {
 }
 
 /// A travel-expense claim submitted for supervisor approval.
+///
+/// WHY no supervisorId: this is always the caller's own claim — the backend
+/// identifies the approving supervisor from the authenticated session, not
+/// a value the claimant picks.
 class CreateTravelExpenseRequestEntity {
   const CreateTravelExpenseRequestEntity({
-    required this.supervisorId,
     required this.facilityId,
     this.visitId,
     required this.startLocation,
@@ -69,7 +72,6 @@ class CreateTravelExpenseRequestEntity {
     required this.purpose,
   });
 
-  final int supervisorId;
   final int facilityId;
 
   /// The visit this journey was made for, when the claim is tied to one.

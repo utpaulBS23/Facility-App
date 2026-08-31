@@ -12,7 +12,6 @@ extension TravelExpenseLegEntityToModel on TravelExpenseLegEntity {
 extension CreateTravelExpenseRequestEntityToModel
     on CreateTravelExpenseRequestEntity {
   CreateTravelExpenseRequestModel toModel() => CreateTravelExpenseRequestModel(
-    supervisorId: supervisorId,
     facilityId: facilityId,
     visitId: visitId,
     startLocation: startLocation,
