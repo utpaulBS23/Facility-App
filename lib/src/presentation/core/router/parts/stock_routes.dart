@@ -39,5 +39,16 @@ List<GoRoute> _stockRoutes(Ref ref) {
         );
       },
     ),
+    GoRoute(
+      path: Routes.updateStock,
+      name: Routes.updateStock,
+      builder: (context, state) {
+        final (facilityId, shiftAssignmentId) = state.extra as (int, int);
+        return UpdateStockPage(
+          facilityId: facilityId,
+          shiftAssignmentId: shiftAssignmentId,
+        );
+      },
+    ),
   ];
 }

@@ -736,6 +736,10 @@
   "missingLabel": "Missing",
   "complaintReasonLabel": "Reason for Complaint",
   "complaintReasonHint": "Describe the issue or reason for complaint...",
-  "proofPhoto": "Proof Photo (Optional)"
+  "proofPhoto": "Proof Photo (Optional)",
+  "updateStock": "Update Stock",
+  "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",
+  "stockCountSubmittedSuccess": "Stock count submitted successfully.",
+  "quantityOnHand": "Quantity On Hand"
 }
 

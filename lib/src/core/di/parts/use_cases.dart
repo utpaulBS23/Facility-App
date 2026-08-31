@@ -565,6 +565,8 @@ ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
   );
 }
 
+
+
 @riverpod
 FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
   return FileDeliveryComplaintUseCase(
@@ -577,6 +579,30 @@ FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
 InitializePushNotificationUseCase initializePushNotificationUseCase(Ref ref) {
   return InitializePushNotificationUseCase(
     ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetShiftStockCountsUseCase getShiftStockCountsUseCase(Ref ref) {
+  return GetShiftStockCountsUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+SubmitShiftStockCountUseCase submitShiftStockCountUseCase(Ref ref) {
+  return SubmitShiftStockCountUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
+  return GetItemCatalogUseCase(
+    itemCatalogRepository: ref.read(itemCatalogRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 

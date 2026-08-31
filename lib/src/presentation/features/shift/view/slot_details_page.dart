@@ -82,6 +82,13 @@ class SlotDetailsPage extends ConsumerWidget {
         );
   }
 
+  void _onUpdateStock(BuildContext context, int facilityId, int shiftAssignmentId) {
+    context.pushNamed(
+      Routes.updateStock,
+      extra: (facilityId, shiftAssignmentId),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // WHY re-derived from the live list rather than the static route arg: an
@@ -105,6 +112,8 @@ class SlotDetailsPage extends ConsumerWidget {
       shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
     );
     final showCheckOut = me?.action == SlotAction.checkOut;
+    final facilityId = facility?.id;
+    final shiftAssignmentId = me?.assignmentId;
 
     return _SlotDetailsActionListener(
       child: Scaffold(
@@ -123,6 +132,37 @@ class SlotDetailsPage extends ConsumerWidget {
                     _onMakeLead(context, ref, currentSlot, attendant),
               ),
             ),
+            if (facilityId != null && shiftAssignmentId != null)
+              PermissionGate(
+                permissions: const [UserPermission.shiftStockCountCreate],
+                child: SafeArea(
+                  top: false,
+                  bottom: !showCheckOut,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      context.dimensions.padding.p16,
+                      context.dimensions.spacing.s16,
+                      context.dimensions.padding.p16,
+                      showCheckOut
+                          ? 0
+                          : context.dimensions.spacing.s16,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: context.dimensions.spacing.s44,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _onUpdateStock(
+                          context,
+                          facilityId,
+                          shiftAssignmentId,
+                        ),
+                        icon: const Icon(Icons.inventory_2_outlined),
+                        label: Text(context.locale.updateStock),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (showCheckOut)
               _SlotDetailsCheckOutBar(
                 onCheckOut: () => _onCheckOut(context, currentSlot),
