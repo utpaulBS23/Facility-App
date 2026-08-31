@@ -103,6 +103,9 @@ final class FakeAuthRepo extends AuthenticationRepository {
   }
 
   @override
+  Future<bool> restoreSession() async => false;
+
+  @override
   void dispose() {}
 
   @override
@@ -181,9 +184,7 @@ void main() {
         getDeviceInfoUseCaseProvider.overrideWithValue(
           GetDeviceInfoUseCase(fakeDeviceInfoRepo),
         ),
-        logoutUseCaseProvider.overrideWithValue(
-          LogoutUseCase(fakeAuthRepo),
-        ),
+        logoutUseCaseProvider.overrideWithValue(LogoutUseCase(fakeAuthRepo)),
       ],
     );
   });

@@ -35,6 +35,16 @@ final class LoginUseCase {
   }
 }
 
+/// Rehydrates a previously logged-in session on cold start, so a still-valid
+/// login survives an app/process restart.
+final class RestoreSessionUseCase {
+  RestoreSessionUseCase(this.repository);
+
+  final AuthenticationRepository repository;
+
+  Future<bool> call() => repository.restoreSession();
+}
+
 final class LogoutUseCase {
   LogoutUseCase(this.repository);
 

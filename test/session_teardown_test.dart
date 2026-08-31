@@ -3,7 +3,25 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:facility_management_app/src/data/repositories/authentication_repository_impl.dart';
 import 'package:facility_management_app/src/data/services/network/rest_client.dart';
+import 'package:facility_management_app/src/data/services/secure_storage/secure_storage_service.dart';
 import 'package:facility_management_app/src/data/services/session/session_service.dart';
+
+class _FakeSecureStorageService implements SecureStorageService {
+  final Map<SecureStorageKey, String> _values = {};
+
+  @override
+  Future<void> save(SecureStorageKey key, String value) async {
+    _values[key] = value;
+  }
+
+  @override
+  Future<String?> read(SecureStorageKey key) async => _values[key];
+
+  @override
+  Future<void> delete(SecureStorageKey key) async {
+    _values.remove(key);
+  }
+}
 
 /// Guards the invariant that authentication has exactly one owner.
 ///
@@ -54,15 +72,18 @@ void main() {
 
   group('AuthenticationRepositoryImpl', () {
     late InMemorySessionService session;
+    late _FakeSecureStorageService secureStorage;
     late AuthenticationRepositoryImpl repository;
 
     setUp(() {
       session = InMemorySessionService();
+      secureStorage = _FakeSecureStorageService();
       // No request is issued in these tests; the client is only a constructor
       // dependency, so a bare Dio is enough.
       repository = AuthenticationRepositoryImpl(
         remote: RestClient(Dio()),
         session: session,
+        secureStorage: secureStorage,
       );
     });
 
@@ -113,6 +134,51 @@ void main() {
       await pumpEventQueue();
 
       expect(session.isAuthenticated, isFalse);
+    });
+
+    test('restoreSession returns false when nothing was persisted', () async {
+      final restored = await repository.restoreSession();
+
+      expect(restored, isFalse);
+      expect(repository.currentSession, isNull);
+      expect(session.isAuthenticated, isFalse);
+    });
+
+    test(
+      'restoreSession rehydrates the session from a stored login payload',
+      () async {
+        await secureStorage.save(SecureStorageKey.sessionPayload, '''
+      {
+        "user": {
+          "id": 1,
+          "name": "Sharmin Jahan",
+          "email": "sharmin@example.com",
+          "user_type": "attendant",
+          "permission_version": 1,
+          "two_factor_enabled": false
+        },
+        "token": {"access_token": "restored-token", "type": "bearer"},
+        "permissions": [],
+        "accessible_facilities": []
+      }
+      ''');
+
+        final restored = await repository.restoreSession();
+
+        expect(restored, isTrue);
+        expect(session.accessToken, 'restored-token');
+        expect(repository.currentSession, isNotNull);
+        expect(repository.getCurrentUser()?.name, 'Sharmin Jahan');
+      },
+    );
+
+    test('restoreSession clears a malformed stored payload', () async {
+      await secureStorage.save(SecureStorageKey.sessionPayload, 'not json');
+
+      final restored = await repository.restoreSession();
+
+      expect(restored, isFalse);
+      expect(await secureStorage.read(SecureStorageKey.sessionPayload), isNull);
     });
   });
 }

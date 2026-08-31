@@ -5,6 +5,7 @@ AuthenticationRepository authenticationRepository(Ref ref) {
   final repository = AuthenticationRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
     session: ref.read(sessionServiceProvider),
+    secureStorage: ref.read(secureStorageServiceProvider),
   );
   ref.onDispose(repository.dispose);
 
