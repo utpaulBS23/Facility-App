@@ -103,6 +103,11 @@ LeaveRepository leaveRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+TravelExpenseRepository travelExpenseRepository(Ref ref) {
+  return TravelExpenseRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 AppUpdateRepository appUpdateRepository(Ref ref) {
   return AppUpdateRepositoryImpl(
     ref.read(restClientServiceProvider),

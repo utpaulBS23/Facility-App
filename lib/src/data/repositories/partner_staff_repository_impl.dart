@@ -13,17 +13,14 @@ final class PartnerStaffRepositoryImpl extends PartnerStaffRepository {
   @override
   Future<Result<List<PartnerStaffEntity>, Failure>> getPartnerUsers({
     required int partnerId,
+    required String role,
     int? facilityId,
     String? search,
   }) {
     return asyncGuard(() async {
       final response = await remote.getPartnerUsers(
         partnerId: partnerId,
-        // WHY hardcoded here, not a repository param: this repository's
-        // single purpose is listing assignable attendants — every caller
-        // wants role=attendant, so it's an implementation detail of this
-        // method rather than something callers should be able to vary.
-        role: 'attendant',
+        role: role,
         facilityId: facilityId,
         name: search,
       );

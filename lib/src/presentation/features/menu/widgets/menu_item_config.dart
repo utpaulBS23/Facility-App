@@ -91,6 +91,13 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
+    icon: Assets.icons.visit,
+    label: _claimExpenseLabel,
+    subtitle: _claimExpenseSubtitle,
+    route: Routes.claimExpense,
+    permissions: [UserPermission.travelExpenseCreate],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.viewIcon,
     label: _profitReportLabel,
     subtitle: _profitReportSubtitle,
@@ -131,8 +138,7 @@ final notificationMenuItemConfig = MenuItemConfig(
 );
 
 String _profileLabel(BuildContext context) => context.locale.profile;
-String _profileSubtitle(BuildContext context) =>
-    context.locale.profileSubtitle;
+String _profileSubtitle(BuildContext context) => context.locale.profileSubtitle;
 
 String _extraCollectionLabel(BuildContext context) =>
     context.locale.extraCollection;
@@ -151,18 +157,19 @@ String _doorLockLabel(BuildContext context) => context.locale.doorLock;
 String _doorLockSubtitle(BuildContext context) =>
     context.locale.doorLockSubtitle;
 
-String _expenseEntryLabel(BuildContext context) =>
-    context.locale.expenseEntry;
+String _expenseEntryLabel(BuildContext context) => context.locale.expenseEntry;
 String _expenseEntrySubtitle(BuildContext context) =>
     context.locale.expenseEntrySubtitle;
 
-String _notificationLabel(BuildContext context) =>
-    context.locale.notification;
+String _claimExpenseLabel(BuildContext context) => context.locale.claimExpense;
+String _claimExpenseSubtitle(BuildContext context) =>
+    context.locale.claimExpenseSubtitle;
+
+String _notificationLabel(BuildContext context) => context.locale.notification;
 String _notificationSubtitle(BuildContext context) =>
     context.locale.notificationSubtitle;
 
-String _profitReportLabel(BuildContext context) =>
-    context.locale.profitReport;
+String _profitReportLabel(BuildContext context) => context.locale.profitReport;
 String _profitReportSubtitle(BuildContext context) =>
     context.locale.profitReportSubtitle;
 
