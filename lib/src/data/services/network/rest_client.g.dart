@@ -276,9 +276,17 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> getPartnerUsers({
     required int partnerId,
+    String? role,
+    int? facilityId,
+    String? name,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'role': role,
+      r'facility_id': facilityId,
+      r'name': name,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(

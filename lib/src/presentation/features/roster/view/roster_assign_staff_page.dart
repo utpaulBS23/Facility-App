@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -8,6 +10,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
@@ -30,12 +33,36 @@ class RosterAssignStaffPage extends ConsumerStatefulWidget {
 }
 
 class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
+  final _searchController = TextEditingController();
+  Timer? _debounce;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => ref.read(rosterStaffProvider.notifier).fetch(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchStaff());
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _fetchStaff() {
+    ref
+        .read(rosterStaffProvider.notifier)
+        .fetch(
+          facilityId: widget.roster.facilityId,
+          search: _searchController.text.trim().isEmpty
+              ? null
+              : _searchController.text.trim(),
+        );
+  }
+
+  void _onSearchChanged(String _) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), _fetchStaff);
   }
 
   Future<void> _onStaffTap(PartnerStaffEntity person) async {
@@ -86,45 +113,66 @@ class _RosterAssignStaffPageState extends ConsumerState<RosterAssignStaffPage> {
       ),
       body: SafeArea(
         top: false,
-        child: staffState.when(
-          loading: () =>
-              const Center(child: CircularProgressIndicator.adaptive()),
-          error: (err, _) => Center(
-            child: Text(
-              err.localizedMessage(context),
-              style: context.textStyle.bodyMedium.copyWith(
-                color: context.color.text.secondary,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                spacing.s16,
+                spacing.s16,
+                spacing.s16,
+                0,
               ),
-              textAlign: TextAlign.center,
+              child: AppTextField.search(
+                controller: _searchController,
+                hint: context.locale.search,
+                onChanged: _onSearchChanged,
+              ),
             ),
-          ),
-          data: (staff) {
-            if (staff.isEmpty) {
-              return Center(
-                child: Text(
-                  context.locale.noAttendantsFound,
-                  style: context.textStyle.bodyMedium.copyWith(
-                    color: context.color.text.secondary,
+            Expanded(
+              child: staffState.when(
+                loading: () =>
+                    const Center(child: CircularProgressIndicator.adaptive()),
+                error: (err, _) => Center(
+                  child: Text(
+                    err.localizedMessage(context),
+                    style: context.textStyle.bodyMedium.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              );
-            }
-            return ListView.separated(
-              padding: EdgeInsets.all(spacing.s16),
-              itemCount: staff.length,
-              separatorBuilder: (context, index) => Gap(spacing.s12),
-              itemBuilder: (context, index) {
-                final person = staff[index];
-                final isSelected = assignedIds.contains(person.id);
-                return StaffTile(
-                  staff: person,
-                  isSelected: isSelected,
-                  onAssign: isAssigning ? null : () => _onStaffTap(person),
-                );
-              },
-            );
-          },
+                data: (staff) {
+                  if (staff.isEmpty) {
+                    return Center(
+                      child: Text(
+                        context.locale.noAttendantsFound,
+                        style: context.textStyle.bodyMedium.copyWith(
+                          color: context.color.text.secondary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }
+                  return ListView.separated(
+                    padding: EdgeInsets.all(spacing.s16),
+                    itemCount: staff.length,
+                    separatorBuilder: (context, index) => Gap(spacing.s12),
+                    itemBuilder: (context, index) {
+                      final person = staff[index];
+                      final isSelected = assignedIds.contains(person.id);
+                      return StaffTile(
+                        staff: person,
+                        isSelected: isSelected,
+                        onAssign: isAssigning
+                            ? null
+                            : () => _onStaffTap(person),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
