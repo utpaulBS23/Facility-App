@@ -397,6 +397,8 @@
   "leaveDetails": "Leave Details",
   "rejection": "Rejection",
   "all": "All",
+  "filters": "Filters",
+  "applyFilters": "Apply",
   "somethingWentWrong": "Something went wrong. Please try again.",
   "morningShift": "MORNING SHIFT",
   "eveningShift": "EVENING SHIFT",
