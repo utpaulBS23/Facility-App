@@ -189,6 +189,8 @@
   "applyLeave": "ছুটির আবেদন",
   "today": "আজ",
   "all": "সব",
+  "filters": "ফিল্টার",
+  "applyFilters": "প্রয়োগ করুন",
   "attendanceDetails": "উপস্থিতির বিবরণ",
   "back": "ফিরে যান",
   "hoursWorked": "কাজের ঘণ্টা",
