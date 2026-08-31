@@ -1,15 +1,19 @@
 part of '../view/shift_tab.dart';
 
-/// Assigned roster as a table — name, mobile, and staff code aligned in columns,
-/// the slot lead's row tinted and starred.
+/// Assigned roster as a table — name and staff code aligned in columns, the
+/// slot lead's row tinted and starred.
 ///
 /// WHY a real [Table] over stacked rows: a list of icon+name lines reads fine
 /// for one person, but scanning several staff codes against names is what a
 /// table is for — the eye can track a column instead of re-reading each row.
 ///
-/// WHY [onRemove]/[onMakeLead] are nullable: the list card on the shift page
-/// shows this same table read-only (see [_SlotAssignedSection]) — only
-/// [SlotDetailsPage] wires the actions column in.
+/// WHY [onRemove]/[onMakeLead] are nullable: [SlotDetailsPage] is the only
+/// caller today, but not every role sees the actions column — a
+/// non-supervisor viewer gets a read-only table.
+///
+/// WHY no phone column: this is [SlotDetailsPage]'s roster, and phone numbers
+/// there are not this view's business — name + staff code identify the
+/// person; contact info stays out of the UI here.
 class _AssignedStaffTable extends StatelessWidget {
   const _AssignedStaffTable({
     required this.attendants,
@@ -49,10 +53,9 @@ class _AssignedStaffTable extends StatelessWidget {
       child: Table(
         columnWidths: {
           0: const FlexColumnWidth(2.6),
-          1: const FlexColumnWidth(2),
-          if (showStaffCode) 2: const FlexColumnWidth(1.8),
+          if (showStaffCode) 1: const FlexColumnWidth(1.8),
           if (_hasActionsColumn)
-            (showStaffCode ? 3 : 2): const IntrinsicColumnWidth(),
+            (showStaffCode ? 2 : 1): const IntrinsicColumnWidth(),
         },
         border: TableBorder(
           horizontalInside: BorderSide(color: context.color.borderSubtle),
@@ -64,7 +67,6 @@ class _AssignedStaffTable extends StatelessWidget {
               _TableCell(
                 child: Text(context.locale.attendantName, style: headerStyle),
               ),
-              _TableCell(child: Text(context.locale.phone, style: headerStyle)),
               if (showStaffCode)
                 _TableCell(
                   child: Text(context.locale.staffCode, style: headerStyle),
@@ -102,15 +104,6 @@ class _AssignedStaffTable extends StatelessWidget {
                         ),
                       ],
                     ],
-                  ),
-                ),
-                _TableCell(
-                  child: Text(
-                    attendant.phoneNumber ?? '-',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (showStaffCode)
