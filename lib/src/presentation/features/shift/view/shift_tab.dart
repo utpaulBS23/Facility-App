@@ -16,6 +16,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/assign_staff_button.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -28,7 +29,6 @@ import '../riverpod/shift_slots_provider.dart';
 import '../riverpod/unassign_shift_slot_provider.dart';
 
 part '../widgets/shift_action_buttons.dart';
-part '../widgets/shift_facility_picker_sheet.dart';
 part '../widgets/shift_fab.dart';
 part '../widgets/shift_card_helpers.dart';
 part '../widgets/shift_detail_checkin_card.dart';
@@ -84,17 +84,17 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
   }
 
   Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
-    final facilityId = await showModalBottomSheet<int>(
+    final result = await showModalBottomSheet<({int? facilityId})>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ShiftFacilityPickerSheet(
+      builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _selectedFacilityId,
       ),
     );
-    if (facilityId == null || facilityId == _selectedFacilityId) return;
-    setState(() => _selectedFacilityId = facilityId);
+    if (result == null || result.facilityId == _selectedFacilityId) return;
+    setState(() => _selectedFacilityId = result.facilityId);
   }
 
   @override

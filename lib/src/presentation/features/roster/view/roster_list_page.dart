@@ -13,7 +13,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/app_dropdown_button_form_field.dart';
-import '../../../core/widgets/facility_dropdown.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/form_dialog_shell.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/create_roster_provider.dart';
@@ -72,6 +72,19 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
   void _onFacilitySelected(int facilityId) {
     setState(() => _selectedFacilityId = facilityId);
     ref.read(rosterListProvider.notifier).fetch(facilityId: facilityId);
+  }
+
+  Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
+    final result = await showModalBottomSheet<({int? facilityId})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => FacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: _selectedFacilityId,
+      ),
+    );
+    if (result?.facilityId != null) _onFacilitySelected(result!.facilityId!);
   }
 
   void _onRosterTap(RosterEntity roster) {
@@ -136,6 +149,10 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
+    final selectedFacilityName = facilities
+        .cast<AccessibleFacilityEntity?>()
+        .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
+        ?.name;
     final rosterState = ref.watch(rosterListProvider);
     final shiftGlobalConfigState = ref.watch(shiftGlobalConfigProvider);
 
@@ -157,7 +174,20 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.rosters),
+      appBar: DetailAppBar(
+        title: context.locale.rosters,
+        actions: [
+          if (facilities.length > 1)
+            TextButton.icon(
+              onPressed: () => _pickFacility(facilities),
+              icon: const Icon(Icons.apartment_outlined, size: 18),
+              label: Text(
+                selectedFacilityName ?? context.locale.facilityName,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+        ],
+      ),
       floatingActionButton: PermissionGate(
         permissions: [UserPermission.rosterCreate],
         child: FloatingActionButton(
@@ -169,10 +199,7 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         ),
       ),
       body: _RosterListBody(
-        facilities: facilities,
         rosterState: rosterState,
-        selectedFacilityId: _selectedFacilityId,
-        onFacilitySelected: _onFacilitySelected,
         onRosterTap: _onRosterTap,
       ),
     );

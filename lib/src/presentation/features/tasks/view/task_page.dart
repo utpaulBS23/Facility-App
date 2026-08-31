@@ -10,13 +10,13 @@ import '../../../../domain/entities/task_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
 
 part '../widgets/task_card.dart';
-part '../widgets/task_facility_picker_sheet.dart';
 
 enum _TaskTab { open, inProgress, resolved }
 
@@ -62,9 +62,10 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _TaskFacilityPickerSheet(
+      builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _selectedFacilityId,
+        includeAllOption: true,
       ),
     );
     if (result == null || result.facilityId == _selectedFacilityId) return;

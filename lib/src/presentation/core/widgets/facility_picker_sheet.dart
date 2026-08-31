@@ -1,18 +1,44 @@
-part of '../view/occurrence_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _OccurrenceFacilityPickerSheet extends StatelessWidget {
-  const _OccurrenceFacilityPickerSheet({
+import '../../../core/extensions/app_localization.dart';
+import '../../../domain/entities/accessible_facility_entity.dart';
+import '../theme/theme.dart';
+import 'text/typography.dart';
+
+/// Facility picker shown as a modal bottom sheet from an AppBar filter
+/// action — the shared shape behind Shift/Occurrence/Task/Roster's
+/// facility filters, which all opened `showModalBottomSheet` with this
+/// exact structure duplicated per feature.
+///
+/// Pops a `({int? facilityId})` record, never a bare `int?` — a bare
+/// nullable return can't distinguish "picked All" from "dismissed with no
+/// selection," and [includeAllOption] callers need that distinction.
+class FacilityPickerSheet extends StatelessWidget {
+  /// Creates a [FacilityPickerSheet].
+  const FacilityPickerSheet({
+    super.key,
     required this.facilities,
     required this.selectedFacilityId,
+    this.includeAllOption = false,
   });
 
+  /// The facilities to list.
   final List<AccessibleFacilityEntity> facilities;
+
+  /// The currently selected facility id, or null for "All"/none.
   final int? selectedFacilityId;
+
+  /// Prepends an "All facilities" row (facilityId: null) when true — for
+  /// endpoints that support an unscoped query. Facility-scoped endpoints
+  /// (every accessible facility resolves to exactly one) leave this false.
+  final bool includeAllOption;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+    final itemCount = facilities.length + (includeAllOption ? 1 : 0);
 
     return Container(
       constraints: BoxConstraints(
@@ -56,13 +82,19 @@ class _OccurrenceFacilityPickerSheet extends StatelessWidget {
                   spacing.s16,
                   spacing.s16,
                 ),
-                itemCount: facilities.length,
+                itemCount: itemCount,
                 separatorBuilder: (_, _) => Gap(spacing.s8),
                 itemBuilder: (context, index) {
-                  final facility = facilities[index];
-                  final isSelected = facility.id == selectedFacilityId;
+                  final isAllRow = includeAllOption && index == 0;
+                  final facility = isAllRow
+                      ? null
+                      : facilities[includeAllOption ? index - 1 : index];
+                  final facilityId = facility?.id;
+                  final label = isAllRow ? context.locale.all : facility!.name;
+                  final isSelected = facilityId == selectedFacilityId;
                   return ListTile(
-                    onTap: () => Navigator.of(context).pop(facility.id),
+                    onTap: () =>
+                        Navigator.of(context).pop((facilityId: facilityId)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(radius.r10),
                       side: BorderSide(
@@ -71,7 +103,7 @@ class _OccurrenceFacilityPickerSheet extends StatelessWidget {
                             : context.color.borderSubtle,
                       ),
                     ),
-                    title: Text(facility.name),
+                    title: Text(label),
                     trailing: isSelected
                         ? Icon(
                             Icons.check_circle_rounded,
