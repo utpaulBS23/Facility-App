@@ -740,6 +740,13 @@
   "updateStock": "Update Stock",
   "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",
   "stockCountSubmittedSuccess": "Stock count submitted successfully.",
-  "quantityOnHand": "Quantity On Hand"
+  "quantityOnHand": "Quantity On Hand",
+  "stock": "Stock Balance",
+  "stockBalance": "Stock Balance",
+  "stockBalanceSubtitle": "View item inventory levels per facility",
+  "noStockCountRecorded": "No stock count recorded yet",
+  "selectFacility": "Select Facility",
+  "totalItems": "Total Items",
+  "lastUpdated": "Last Updated"
 }
 

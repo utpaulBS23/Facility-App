@@ -43,6 +43,7 @@ import '../../features/occurrence/view/occurrence_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
+import '../../features/stock/view/stock_page.dart';
 import '../../features/supply_request/view/supply_request_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';

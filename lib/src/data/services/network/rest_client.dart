@@ -489,6 +489,16 @@ abstract class RestClient {
     @Query('to') String? to,
   });
 
+  @GET(Endpoints.facilityStockTargets)
+  Future<HttpResponse> getFacilityStockBalance({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('search') String? search,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   /// Task Occurrences
   @GET(Endpoints.taskOccurrences)
   Future<HttpResponse> getTaskOccurrences({

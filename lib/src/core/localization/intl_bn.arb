@@ -726,6 +726,13 @@
   "updateStock": "স্টক আপডেট করুন",
   "updateStockInstructions": "প্রতিটি আইটেমের বর্তমান অবশিষ্ট ব্যালেন্স লিখুন। ব্যবহার স্বয়ংক্রিয়ভাবে গণনা করা হবে।",
   "stockCountSubmittedSuccess": "স্টক হিসাব সফলভাবে জমা হয়েছে।",
-  "quantityOnHand": "হাতে থাকা পরিমাণ"
+  "quantityOnHand": "হাতে থাকা পরিমাণ",
+  "stock": "স্টক ব্যালেন্স",
+  "stockBalance": "স্টক ব্যালেন্স",
+  "stockBalanceSubtitle": "ফ্যাসিলিটি ভিত্তিক পণ্য সামগ্রীর মজুদ তালিকা",
+  "noStockCountRecorded": "কোন স্টক হিসাবের তথ্য পাওয়া যায়নি",
+  "selectFacility": "ফ্যাসিলিটি নির্বাচন করুন",
+  "totalItems": "মোট আইটেম",
+  "lastUpdated": "সর্বশেষ আপডেট"
 }
 
