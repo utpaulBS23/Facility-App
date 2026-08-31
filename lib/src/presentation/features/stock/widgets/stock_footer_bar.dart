@@ -1,7 +1,10 @@
-part of '../view/stock_page.dart';
+import 'package:flutter/material.dart';
 
-class _StockFooterBar extends StatelessWidget {
-  const _StockFooterBar({required this.onUpdateStockBalances});
+import '../../../../core/extensions/app_localization.dart';
+import '../../../core/theme/theme.dart';
+
+class StockFooterBar extends StatelessWidget {
+  const StockFooterBar({super.key, required this.onUpdateStockBalances});
 
   final VoidCallback onUpdateStockBalances;
 

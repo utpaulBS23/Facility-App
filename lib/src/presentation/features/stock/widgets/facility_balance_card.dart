@@ -1,7 +1,13 @@
-part of '../view/stock_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _FacilityBalanceCard extends StatelessWidget {
-  const _FacilityBalanceCard({required this.item});
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/stock/facility_stock_balance_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/widgets/status_pill.dart';
+
+class FacilityBalanceCard extends StatelessWidget {
+  const FacilityBalanceCard({super.key, required this.item});
 
   final FacilityStockBalanceEntity item;
 
