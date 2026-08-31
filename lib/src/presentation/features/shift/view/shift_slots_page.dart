@@ -33,8 +33,14 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   @override
   void didUpdateWidget(covariant _ShiftSlotsView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // WHY post-frame: didUpdateWidget runs during the widget tree's build
+    // phase — writing to shiftSlotsProvider synchronously here throws
+    // ("Tried to modify a provider while the widget tree was building").
+    // Same reason initState() defers its own first fetch.
     if (oldWidget.facilityId != widget.facilityId) {
-      _fetchSlots(_selectedDate);
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _fetchSlots(_selectedDate),
+      );
     }
   }
 
