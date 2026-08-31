@@ -153,6 +153,7 @@ class ActiveSlotModel with ActiveSlotModelMappable {
     this.action,
     this.isSlotLead,
     this.message,
+    this.supervisorName,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -165,6 +166,8 @@ class ActiveSlotModel with ActiveSlotModelMappable {
   @MappableField(key: 'is_slot_lead')
   final bool? isSlotLead;
   final String? message;
+  @MappableField(key: 'supervisor_name')
+  final String? supervisorName;
 
   static const fromJson = ActiveSlotModelMapper.fromJson;
 }

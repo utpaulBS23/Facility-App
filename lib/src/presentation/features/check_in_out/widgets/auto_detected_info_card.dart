@@ -12,7 +12,12 @@ part of '../view/shift_check_in_page.dart';
 ///   2. Check-In Time (with clock icon)
 ///   3. Supervisor Name (with person icon)
 class _AutoDetectedInfoCard extends ConsumerWidget {
-  const _AutoDetectedInfoCard();
+  const _AutoDetectedInfoCard({this.supervisorName});
+
+  /// The active slot's supervisor, when the caller has one (see
+  /// [ShiftCheckInPage.supervisorName]). Takes priority over the logged-in
+  /// user's own supervisor field from [checkInInfoProvider].
+  final String? supervisorName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,7 +50,7 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
             value: checkInInfoState.when(
               data: (info) => info?.location ?? context.locale.loading,
               loading: () => context.locale.loading,
-              error: (err, stack) =>context.locale.locationUnavailable,
+              error: (err, stack) => context.locale.locationUnavailable,
             ),
           ),
           Gap(dimensions.spacing.s8),
@@ -55,18 +60,21 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
             value: checkInInfoState.when(
               data: (info) => info?.checkInTime ?? context.locale.loading,
               loading: () => context.locale.loading,
-              error: (err, stack) =>context.locale.loading,
+              error: (err, stack) => context.locale.loading,
             ),
           ),
           Gap(dimensions.spacing.s8),
           _ContactInfoItem(
             icon: Icons.person_outline,
             label: context.locale.supervisorName,
-            value: checkInInfoState.when(
-              data: (info) => info?.supervisorName ?? context.locale.loading,
-              loading: () => context.locale.loading,
-              error: (err, stack) =>context.locale.loading,
-            ),
+            value: supervisorName?.isNotEmpty == true
+                ? supervisorName!
+                : checkInInfoState.when(
+                    data: (info) =>
+                        info?.supervisorName ?? context.locale.loading,
+                    loading: () => context.locale.loading,
+                    error: (err, stack) => context.locale.loading,
+                  ),
           ),
         ],
       ),

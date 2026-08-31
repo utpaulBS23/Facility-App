@@ -65,6 +65,7 @@ extension ActiveSlotModelToEntity on ActiveSlotModel {
     action: SlotAction.fromKey(action),
     isSlotLead: isSlotLead ?? false,
     message: message ?? '',
+    supervisorName: supervisorName ?? '',
   );
 }
 
