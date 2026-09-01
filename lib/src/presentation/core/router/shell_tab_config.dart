@@ -103,7 +103,7 @@ final List<ShellTabConfig> shellTabConfigs = [
     route: Routes.issue,
     icon: Assets.icons.issue,
     label: _issuesLabel,
-    permissions: [UserPermission.taskView],
+    permissions: [UserPermission.issueView],
   ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
   // gated individually.

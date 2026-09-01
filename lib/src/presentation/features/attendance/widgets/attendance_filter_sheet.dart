@@ -9,24 +9,24 @@ part of '../view/attendance_page.dart';
 /// re-open the sheet twice for one filter action. Selections are held
 /// locally and only committed via Apply, so a dismiss (tap outside/back)
 /// discards them instead of applying half-finished state.
-class _AttendanceFilterSheet extends StatefulWidget {
+class _AttendanceFilterSheet extends ConsumerStatefulWidget {
   const _AttendanceFilterSheet({
     required this.facilities,
-    required this.staff,
     required this.selectedFacilityId,
     required this.selectedUserId,
   });
 
   final List<AccessibleFacilityEntity> facilities;
-  final List<PartnerStaffEntity> staff;
   final int? selectedFacilityId;
   final int? selectedUserId;
 
   @override
-  State<_AttendanceFilterSheet> createState() => _AttendanceFilterSheetState();
+  ConsumerState<_AttendanceFilterSheet> createState() =>
+      _AttendanceFilterSheetState();
 }
 
-class _AttendanceFilterSheetState extends State<_AttendanceFilterSheet> {
+class _AttendanceFilterSheetState
+    extends ConsumerState<_AttendanceFilterSheet> {
   late int? _facilityId = widget.selectedFacilityId;
   late int? _userId = widget.selectedUserId;
 
@@ -34,10 +34,26 @@ class _AttendanceFilterSheetState extends State<_AttendanceFilterSheet> {
     Navigator.of(context).pop((facilityId: _facilityId, userId: _userId));
   }
 
+  // WHY: refetch attendant options for the newly picked facility instead of
+  // keeping the list scoped to whatever facility was selected when the sheet
+  // opened — the API filters attendants by facility_id, so a stale list here
+  // means the sheet offers attendants outside the just-picked facility.
+  void _onFacilitySelected(int? value) {
+    setState(() {
+      _facilityId = value;
+      _userId = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+    final staff =
+        ref
+            .watch(attendanceStaffOptionsProvider(facilityId: _facilityId))
+            .valueOrNull ??
+        const <PartnerStaffEntity>[];
 
     return Container(
       constraints: BoxConstraints(
@@ -80,18 +96,17 @@ class _AttendanceFilterSheetState extends State<_AttendanceFilterSheet> {
                         for (final facility in widget.facilities)
                           (value: facility.id, label: facility.name),
                       ],
-                      onSelected: (value) =>
-                          setState(() => _facilityId = value),
+                      onSelected: _onFacilitySelected,
                     ),
                     Gap(spacing.s20),
                   ],
-                  if (widget.staff.isNotEmpty)
+                  if (staff.isNotEmpty)
                     _FilterChipGroup<int?>(
                       label: context.locale.attendant,
                       selected: _userId,
                       options: [
                         (value: null, label: context.locale.all),
-                        for (final member in widget.staff)
+                        for (final member in staff)
                           (value: member.id, label: member.name),
                       ],
                       onSelected: (value) => setState(() => _userId = value),

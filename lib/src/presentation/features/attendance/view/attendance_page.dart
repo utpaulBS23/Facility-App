@@ -10,6 +10,7 @@ import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
+import '../../../core/gen/assets.gen.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -51,6 +52,16 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     super.initState();
     final now = DateTime.now();
     _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    _selectedFacilityId = _defaultFacilityId;
+  }
+
+  int? get _defaultFacilityId {
+    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
+    if (facilities == null || facilities.isEmpty) return null;
+    for (final facility in facilities) {
+      if (facility.isPrimary) return facility.id;
+    }
+    return facilities.first.id;
   }
 
   void _onItemTap(AttendanceItemEntity item) {
@@ -61,17 +72,13 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     context.pushNamed(Routes.applyLeave);
   }
 
-  Future<void> _pickFilters(
-    List<AccessibleFacilityEntity> facilities,
-    List<PartnerStaffEntity> staff,
-  ) async {
+  Future<void> _pickFilters(List<AccessibleFacilityEntity> facilities) async {
     final result = await showModalBottomSheet<({int? facilityId, int? userId})>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _AttendanceFilterSheet(
         facilities: facilities,
-        staff: staff,
         selectedFacilityId: _selectedFacilityId,
         selectedUserId: _selectedUserId,
       ),
@@ -115,10 +122,8 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
-    final staffAsync = ref.watch(attendanceStaffOptionsProvider);
-    final staff = staffAsync.valueOrNull ?? const <PartnerStaffEntity>[];
     final hasActiveFilter =
-        _selectedFacilityId != null || _selectedUserId != null;
+        _selectedFacilityId != _defaultFacilityId || _selectedUserId != null;
     final spacing = context.dimensions.spacing;
 
     return Scaffold(
@@ -138,7 +143,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
             clipBehavior: Clip.none,
             children: [
               IconButton(
-                onPressed: () => _pickFilters(facilities, staff),
+                onPressed: () => _pickFilters(facilities),
                 icon: const Icon(Icons.filter_list_rounded),
               ),
               if (hasActiveFilter)

@@ -9,6 +9,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/my_visits_provider.dart';

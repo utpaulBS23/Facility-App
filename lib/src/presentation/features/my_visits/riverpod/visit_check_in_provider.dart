@@ -94,15 +94,15 @@ class VisitCheckIn extends _$VisitCheckIn {
 
     switch (travelRouteResult) {
       case Success(:final data):
-        // WHY: `travel_tracking_excluded` true means the backend skipped the
-        // Barikoi route calc (e.g. first visit of the day) — fall back to
-        // continuous ping tracking for this leg. Otherwise the route call
-        // already covers it, so no background tracking is started.
+        // WHY: `travel_tracking_excluded` true means this visit has no
+        // travel leg to calculate (e.g. first visit of the day) — skip
+        // ping tracking entirely. Otherwise start continuous ping tracking
+        // as the fallback since the Barikoi route calc doesn't cover it.
         final result = data!.travelTrackingExcluded
-            ? await ref
-                .read(startLocationPingTrackingUseCaseProvider)
-                .call(taskId: visitId)
-            : const Success<void, Failure>();
+            ? const Success<void, Failure>()
+            : await ref
+                  .read(startLocationPingTrackingUseCaseProvider)
+                  .call(taskId: visitId);
 
         state = result.when(
           success: (_) => state.copyWith(
