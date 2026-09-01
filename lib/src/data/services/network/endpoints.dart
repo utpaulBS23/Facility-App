@@ -189,6 +189,13 @@ class Endpoints {
       '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
   static const String shiftStockCounts =
       '/partners/{partnerId}/shift-stock-counts';
+  static const String stockAveraging = '/partners/{partnerId}/stock-averaging';
+  static const String facilityStockBalance =
+      '/partners/{partnerId}/facility-stock-balance';
+  static const String facilityStockBalanceThreshold =
+      '/partners/{partnerId}/facility-stock-balance/threshold';
+  static const String facilityStockBalanceHistory =
+      '/partners/{partnerId}/facility-stock-balance/history';
 
   /// Task Occurrences — generated slots from `task_schedules`, never
   /// created/deleted via the API (nightly cron only).

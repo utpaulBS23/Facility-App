@@ -661,3 +661,11 @@ SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+GetFacilityStockBalanceUseCase getFacilityStockBalanceUseCase(Ref ref) {
+  return GetFacilityStockBalanceUseCase(
+    stockRepository: ref.read(stockRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
