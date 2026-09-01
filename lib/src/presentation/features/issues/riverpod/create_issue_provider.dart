@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
@@ -19,14 +20,14 @@ class CreateIssueState {
 
   final bool isSubmitting;
   final ChecklistIssueEntity? createdIssue;
-  final String? error;
+  final Failure? error;
 
   bool get submitSuccess => createdIssue != null;
 
   CreateIssueState copyWith({
     bool? isSubmitting,
     ChecklistIssueEntity? createdIssue,
-    String? error,
+    Failure? error,
     bool clearError = false,
   }) => CreateIssueState(
     isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -65,8 +66,7 @@ class CreateIssue extends _$CreateIssue {
                 status: response.status,
               ),
       ),
-      error: (err) =>
-          state.copyWith(isSubmitting: false, error: err.toString()),
+      error: (err) => state.copyWith(isSubmitting: false, error: err),
     );
   }
 
