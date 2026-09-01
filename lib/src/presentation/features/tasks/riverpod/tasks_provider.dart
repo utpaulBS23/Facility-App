@@ -80,7 +80,7 @@ class Tasks extends _$Tasks {
   }
 
   Future<TaskEntity?> completeIssue({required int issueId}) async {
-    if (!ref.hasPermission(UserPermission.taskComplete)) {
+    if (!ref.hasPermission(UserPermission.issueResolve)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return null;
     }
