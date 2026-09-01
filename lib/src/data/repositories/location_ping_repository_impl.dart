@@ -20,7 +20,9 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
        _notificationService = notificationService,
        _authenticationRepository = authenticationRepository;
 
-  static const _syncInterval = Duration(seconds: 10);
+  // WHY fallback: used only if a session was restored without
+  // tracking_settings (e.g. payload persisted before this field existed).
+  static const _defaultSyncInterval = Duration(seconds: 10);
 
   final RestClient _remote;
   final BackgroundLocationTrackingService _trackingService;
@@ -32,8 +34,14 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
     return asyncGuard(() async {
       await _ensureTrackingPermission();
       await _notificationService.showSharingNotification();
+      final activeVisitIntervalSeconds = _authenticationRepository
+          .currentSession
+          ?.trackingSettings
+          ?.activeVisitPingIntervalSeconds;
       _trackingService.start(
-        interval: _syncInterval,
+        interval: activeVisitIntervalSeconds == null
+            ? _defaultSyncInterval
+            : Duration(seconds: activeVisitIntervalSeconds),
         fireImmediately: true,
         onPosition: (position) async {
           await syncPosition(taskId: taskId, position: position);
