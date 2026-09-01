@@ -7,7 +7,7 @@ import '../entities/stock/facility_stock_target_detail_entity.dart';
 import '../entities/stock/facility_stock_target_entity.dart';
 import '../entities/stock/shift_stock_count_entity.dart';
 import '../entities/stock/stock_averaging_filter.dart';
-import '../entities/stock/stock_averaging_page_entity.dart';
+import '../entities/stock/stock_averaging_overview_entity.dart';
 
 abstract base class StockRepository extends Repository {
   Future<Result<List<ShiftStockCountEntity>, Failure>> submitShiftStockCount({
@@ -28,7 +28,7 @@ abstract base class StockRepository extends Repository {
   Future<Result<List<FacilityStockBalanceEntity>, Failure>>
       getFacilityStockBalance(FacilityStockBalanceFilter filter);
 
-  Future<Result<StockAveragingPageEntity, Failure>> getStockAveraging(
+  Future<Result<StockAveragingOverviewEntity, Failure>> getStockAveraging(
     StockAveragingFilter filter,
   );
 

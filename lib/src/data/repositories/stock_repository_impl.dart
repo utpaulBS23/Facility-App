@@ -6,7 +6,7 @@ import '../../domain/entities/stock/facility_stock_target_detail_entity.dart';
 import '../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../../domain/entities/stock/stock_averaging_filter.dart';
-import '../../domain/entities/stock/stock_averaging_page_entity.dart';
+import '../../domain/entities/stock/stock_averaging_overview_entity.dart';
 import '../../domain/repositories/stock_repository.dart';
 import '../extension/facility_stock_balance_mapper.dart';
 import '../extension/facility_stock_target_mapper.dart';
@@ -86,7 +86,7 @@ final class StockRepositoryImpl extends StockRepository {
   }
 
   @override
-  Future<Result<StockAveragingPageEntity, Failure>> getStockAveraging(
+  Future<Result<StockAveragingOverviewEntity, Failure>> getStockAveraging(
     StockAveragingFilter filter,
   ) {
     return asyncGuard(() async {

@@ -1,7 +1,7 @@
 import '../../domain/entities/stock/facility_stock_averaging_overview_entity.dart';
 import '../../domain/entities/stock/facility_stock_target_detail_entity.dart';
 import '../../domain/entities/stock/facility_stock_target_entity.dart';
-import '../../domain/entities/stock/stock_averaging_page_entity.dart';
+import '../../domain/entities/stock/stock_averaging_overview_entity.dart';
 import '../../domain/entities/stock/top_demand_item_entity.dart';
 import '../models/stock/facility_stock_target_detail_model.dart';
 import '../models/stock/facility_stock_target_model.dart';
@@ -72,8 +72,8 @@ extension FacilityStockTargetDetailResponseModelMapperExtension
 
 extension StockAveragingResponseModelMapperExtension
     on StockAveragingResponseModel {
-  StockAveragingPageEntity toEntity() {
-    return StockAveragingPageEntity(
+  StockAveragingOverviewEntity toEntity() {
+    return StockAveragingOverviewEntity(
       facilities: data?.map((e) => e.toEntity()).toList() ?? const [],
       monthlyDemand:
           summary?.monthlyDemand?.map((e) => e.toEntity()).toList() ?? const [],
