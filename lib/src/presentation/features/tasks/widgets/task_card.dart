@@ -30,7 +30,7 @@ class _TaskCard extends StatelessWidget {
     TaskPriority.low => context.locale.low,
   };
 
-  Color _statusBorderColor(BuildContext context) => switch (task.status) {
+  Color _statusAccent(BuildContext context) => switch (task.status) {
     TaskStatus.open => context.color.warning,
     TaskStatus.inProgress => context.color.primary,
     TaskStatus.resolved => context.color.success,
@@ -44,13 +44,6 @@ class _TaskCard extends StatelessWidget {
     TaskStatus.closed => context.color.successAlt,
   };
 
-  Color _statusChipText(BuildContext context) => switch (task.status) {
-    TaskStatus.open => context.color.warning,
-    TaskStatus.inProgress => context.color.primary,
-    TaskStatus.resolved => context.color.success,
-    TaskStatus.closed => context.color.success,
-  };
-
   String _statusLabel(BuildContext context) => switch (task.status) {
     TaskStatus.open => context.locale.open,
     TaskStatus.inProgress => context.locale.inProgress,
@@ -58,14 +51,11 @@ class _TaskCard extends StatelessWidget {
     TaskStatus.closed => context.locale.closed,
   };
 
-  Color _startButtonColor(BuildContext context) => switch (task.status) {
-    TaskStatus.open => context.color.warning,
-    _ => context.color.primary,
-  };
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+    final accent = _statusAccent(context);
     final titleColor = _isCompleted
         ? context.color.text.secondary
         : context.color.text.primary;
@@ -76,131 +66,120 @@ class _TaskCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: context.color.onPrimary,
-          border: Border.all(color: _statusBorderColor(context)),
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // status accent strip
-            Container(
-              height: 4,
-              decoration: BoxDecoration(
-                color: _statusBorderColor(context),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(context.dimensions.radius.r12),
-                  topRight: Radius.circular(context.dimensions.radius.r12),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(spacing.s16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: _priorityColor(context),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const Gap(6),
-                      Text(
-                        _priorityLabel(context),
-                        style: context.textStyle.bodySmall.copyWith(
-                          color: context.color.text.secondary,
-                        ),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: spacing.s8,
-                          vertical: spacing.s4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _statusChipBg(context),
-                          borderRadius: BorderRadius.circular(
-                            context.dimensions.radius.r6,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (_isCompleted) ...[
-                              Icon(
-                                Icons.check_circle_outline,
-                                size: 12,
-                                color: _statusChipText(context),
-                              ),
-                              const Gap(4),
-                            ],
-                            Text(
-                              _statusLabel(context),
-                              style: context.textStyle.bodySmall.copyWith(
-                                color: _statusChipText(context),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Gap(spacing.s8),
-                  Text(
-                    task.title,
-                    style: context.textStyle.labelLarge.copyWith(
-                      color: titleColor,
-                      decoration: _isCompleted
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                      decorationColor: context.color.text.secondary,
-                    ),
-                  ),
-                  Gap(spacing.s6),
-                  _InfoRow(
-                    icon: Icons.location_on_outlined,
-                    label: task.location,
-                    muted: _isCompleted,
-                  ),
-                  Gap(spacing.s4),
-                  _InfoRow(
-                    icon: Icons.access_time_outlined,
-                    label: '${context.locale.due}: ${task.dueTime}',
-                    muted: _isCompleted,
-                  ),
-                  if (_canStart) ...[
-                    Gap(spacing.s12),
-                    FilledButton(
-                      onPressed: onStartTap,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: _startButtonColor(context),
-                      ),
-                      child: Text(context.locale.start),
-                    ),
-                  ],
-                  if (_canComplete)
-                    PermissionGate(
-                      permissions: [UserPermission.taskComplete],
-                      child: Padding(
-                        padding: EdgeInsets.only(top: spacing.s12),
-                        child: FilledButton(
-                          onPressed: onCompleteTap,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: context.color.success,
-                          ),
-                          child: Text(context.locale.completeTask),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+          borderRadius: BorderRadius.circular(radius.r12),
+          border: Border.all(color: context.color.borderSubtle),
+          boxShadow: [
+            BoxShadow(
+              color: context.color.shadow,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 4, color: accent),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(spacing.s16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              task.title,
+                              style: context.textStyle.labelLarge.copyWith(
+                                color: titleColor,
+                                decoration: _isCompleted
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                                decorationColor: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                          Gap(spacing.s8),
+                          StatusPill(
+                            label: _statusLabel(context),
+                            background: _statusChipBg(context),
+                            foreground: accent,
+                            icon: _isCompleted
+                                ? Icons.check_circle_outline
+                                : null,
+                          ),
+                        ],
+                      ),
+                      Gap(spacing.s8),
+                      Row(
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: _priorityColor(context),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Gap(spacing.s6),
+                          BodySmallText(
+                            _priorityLabel(context),
+                            color: context.color.text.secondary,
+                          ),
+                        ],
+                      ),
+                      Gap(spacing.s12),
+                      _InfoRow(
+                        icon: Icons.location_on_outlined,
+                        label: task.location,
+                        muted: _isCompleted,
+                      ),
+                      Gap(spacing.s4),
+                      _InfoRow(
+                        icon: Icons.access_time_outlined,
+                        label: '${context.locale.due}: ${task.dueTime}',
+                        muted: _isCompleted,
+                      ),
+                      if (_canStart || _canComplete) ...[
+                        Gap(spacing.s16),
+                        Wrap(
+                          spacing: spacing.s8,
+                          runSpacing: spacing.s8,
+                          children: [
+                            if (_canStart)
+                              OutlinedButton.icon(
+                                onPressed: onStartTap,
+                                icon: const Icon(
+                                  Icons.play_arrow_rounded,
+                                  size: 16,
+                                ),
+                                label: Text(context.locale.start),
+                              ),
+                            if (_canComplete)
+                              PermissionGate(
+                                permissions: [UserPermission.issueResolve],
+                                child: OutlinedButton.icon(
+                                  onPressed: onCompleteTap,
+                                  icon: const Icon(
+                                    Icons.check_rounded,
+                                    size: 16,
+                                  ),
+                                  label: Text(context.locale.completeTask),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
