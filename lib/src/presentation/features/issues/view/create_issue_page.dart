@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../core/utiliity/validation/required_validation.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/problem_category_entity.dart';
@@ -136,7 +137,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
     } else if (issueState.error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(issueState.error!),
+          content: Text(issueState.error!.localized(context)),
           backgroundColor: context.color.error,
         ),
       );
