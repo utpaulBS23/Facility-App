@@ -14,48 +14,34 @@ class _OccurrenceChecklistProgressHeader extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final progress = total == 0 ? 0.0 : answered / total;
-    final isComplete = total > 0 && answered == total;
 
     return Container(
-      padding: .all(spacing.s16),
+      padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
         color: context.color.onPrimary,
-        borderRadius: .circular(radius.r12),
+        borderRadius: BorderRadius.circular(radius.r6),
         border: Border.all(color: context.color.borderSubtle),
       ),
       child: Column(
-        crossAxisAlignment: .start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    isComplete ? Icons.task_alt_rounded : Icons.checklist_rounded,
-                    size: 18,
-                    color: isComplete ? context.color.success : context.color.primary,
-                  ),
-                  Gap(spacing.s8),
-                  LabelMediumText(
-                    context.locale.occurrenceChecklist,
-                    color: context.color.text.primary,
-                  ),
-                ],
-              ),
               LabelMediumText(
-                '$answered/$total',
-                color: isComplete ? context.color.success : context.color.primary,
+                context.locale.occurrenceChecklist,
+                color: context.color.text.primary,
               ),
+              LabelMediumText('$answered/$total', color: context.color.primary),
             ],
           ),
-          Gap(spacing.s12),
+          SizedBox(height: spacing.s12),
           ClipRRect(
-            borderRadius: .circular(radius.r4),
+            borderRadius: BorderRadius.circular(radius.r4),
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: context.color.borderSubtle,
-              color: isComplete ? context.color.success : context.color.primary,
+              color: context.color.primary,
               minHeight: spacing.s8,
             ),
           ),
