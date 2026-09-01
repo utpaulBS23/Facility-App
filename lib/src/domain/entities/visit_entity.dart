@@ -4,14 +4,14 @@ enum VisitType { routineInspection, followUp }
 
 class VisitStatsSummaryEntity {
   const VisitStatsSummaryEntity({
-    required this.total,
-    required this.pending,
+    required this.todayCount,
+    required this.thisWeekCount,
     required this.inProgress,
     required this.completed,
   });
 
-  final int total;
-  final int pending;
+  final int todayCount;
+  final int thisWeekCount;
   final int inProgress;
   final int completed;
 }
@@ -27,6 +27,7 @@ class VisitSummaryEntity {
     required this.scheduledEndTime,
     this.title,
     this.facilityAddress,
+    this.priority,
     this.travelOriginType,
     this.travelOriginId,
     this.travelOriginName,
@@ -37,6 +38,7 @@ class VisitSummaryEntity {
   final String facilityName;
   final String? facilityAddress;
   final String? title;
+  final String? priority;
   final VisitStatus status;
   final VisitType type;
   final String date;
@@ -88,19 +90,28 @@ class VisitDetailEntity {
     required this.date,
     required this.scheduledStartTime,
     required this.scheduledEndTime,
+    this.title,
     this.facilityAddress,
     this.facilityLatitude,
     this.facilityLongitude,
     this.inRangeThresholdMeters,
     this.assignedBy,
     this.locationVerified = false,
+    this.scorePercentage,
+    this.travelTrackingExcluded = false,
+    this.travelOriginType,
+    this.travelOriginId,
+    this.travelOriginName,
+    this.travelDistanceKm,
     this.travelStartedAt,
+    this.submittedAt,
   });
 
   final int id;
   final String facilityName;
   final int? facilityId;
   final String? facilityAddress;
+  final String? title;
   final double? facilityLatitude;
   final double? facilityLongitude;
   final double? inRangeThresholdMeters;
@@ -111,7 +122,14 @@ class VisitDetailEntity {
   final String scheduledEndTime;
   final VisitAssignedByEntity? assignedBy;
   final bool locationVerified;
+  final double? scorePercentage;
+  final bool travelTrackingExcluded;
+  final String? travelOriginType;
+  final int? travelOriginId;
+  final String? travelOriginName;
+  final double? travelDistanceKm;
   final String? travelStartedAt;
+  final String? submittedAt;
 }
 
 class GpsVerificationEntity {

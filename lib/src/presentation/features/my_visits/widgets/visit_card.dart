@@ -27,6 +27,20 @@ class _VisitCard extends StatelessWidget {
     VisitType.followUp => context.locale.followUp,
   };
 
+  String? _priorityLabel(BuildContext context) => switch (visit.priority) {
+    'high' => context.locale.priorityHigh,
+    'medium' => context.locale.priorityMedium,
+    'normal' => context.locale.priorityNormal,
+    'low' => context.locale.priorityLow,
+    _ => null,
+  };
+
+  Color _priorityColor(BuildContext context) => switch (visit.priority) {
+    'high' => context.color.error,
+    'medium' => context.color.warning,
+    _ => context.color.text.secondary,
+  };
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -59,30 +73,35 @@ class _VisitCard extends StatelessWidget {
                   color: context.color.icon,
                   label: _typeLabel(context),
                 ),
+                if (_priorityLabel(context) != null) ...[
+                  Gap(spacing.s8),
+                  _StatusChip(
+                    color: _priorityColor(context),
+                    label: _priorityLabel(context)!,
+                  ),
+                ],
               ],
             ),
             Gap(spacing.s8),
-            Text(
-              visit.facilityName,
-              style: context.textStyle.titleMedium.copyWith(
-                color: context.color.text.primary,
+            if (visit.title?.isNotEmpty == true) ...[
+              Text(
+                visit.title!,
+                style: context.textStyle.titleMedium.copyWith(
+                  color: context.color.text.primary,
+                ),
               ),
-            ),
-            if (visit.facilityAddress != null &&
-                visit.facilityAddress!.isNotEmpty) ...[
               Gap(spacing.s6),
-              Row(
-                children: [
-                  Icon(Icons.location_on_outlined, size: 16, color: context.color.icon),
-                  Text(
-                    visit.facilityAddress ?? '',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
-                  ),
-                ],
+              _InfoRow(
+                icon: Icons.apartment_outlined,
+                label: visit.facilityName,
               ),
-            ],
+            ] else
+              Text(
+                visit.facilityName,
+                style: context.textStyle.titleMedium.copyWith(
+                  color: context.color.text.primary,
+                ),
+              ),
             if (visit.facilityAddress?.isNotEmpty == true) ...[
               Gap(spacing.s6),
               _InfoRow(

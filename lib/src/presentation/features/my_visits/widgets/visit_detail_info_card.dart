@@ -41,7 +41,15 @@ class _VisitDetailInfoCard extends StatelessWidget {
             label: _statusLabel(context),
           ),
           Gap(spacing.s12),
-          Headline2xlTinyText(detail.facilityName),
+          if (detail.title?.isNotEmpty == true) ...[
+            Headline2xlTinyText(detail.title!),
+            Gap(spacing.s8),
+            _InfoRow(
+              icon: Icons.apartment_outlined,
+              label: detail.facilityName,
+            ),
+          ] else
+            Headline2xlTinyText(detail.facilityName),
           if (detail.facilityAddress?.isNotEmpty == true) ...[
             Gap(spacing.s8),
             _InfoRow(
@@ -50,23 +58,9 @@ class _VisitDetailInfoCard extends StatelessWidget {
             ),
           ],
           Gap(spacing.s12),
-          Row(
-            children: [
-              Expanded(
-                child: _DateTimeBox(
-                  label: context.locale.date,
-                  value: DateFormatter.dayMonthYear(detail.date),
-                ),
-              ),
-              Gap(spacing.s8),
-              Expanded(
-                child: _DateTimeBox(
-                  label: context.locale.time,
-                  value:
-                      '${detail.scheduledStartTime} – ${detail.scheduledEndTime}',
-                ),
-              ),
-            ],
+          _DateTimeBox(
+            label: context.locale.date,
+            value: DateFormatter.dayMonthYear(detail.date),
           ),
         ],
       ),
@@ -146,7 +140,7 @@ class _DateTimeBox extends StatelessWidget {
           Row(
             children: [
               Icon(
-                Icons.access_time_outlined,
+                Icons.calendar_today_outlined,
                 size: 16,
                 color: context.color.icon,
               ),
