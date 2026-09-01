@@ -29,15 +29,15 @@ class _VisitStatsTabs extends StatelessWidget {
         child: Row(
           children: [
             _StatTab(
-              count: stats.total,
-              label: context.locale.all,
+              count: stats.todayCount,
+              label: context.locale.today,
               isSelected: selectedTab == _VisitTab.all,
               onTap: () => onTabChanged(_VisitTab.all),
             ),
             _Divider(),
             _StatTab(
-              count: stats.pending,
-              label: context.locale.pending,
+              count: stats.thisWeekCount,
+              label: context.locale.thisWeek,
               isSelected: selectedTab == _VisitTab.pending,
               onTap: () => onTabChanged(_VisitTab.pending),
             ),
