@@ -32,6 +32,14 @@ extension AccessibleFacilityModelToEntity on AccessibleFacilityModel {
   );
 }
 
+extension TrackingSettingsModelToEntity on TrackingSettingsModel {
+  TrackingSettingsEntity toEntity() => TrackingSettingsEntity(
+    idlePingIntervalSeconds: idlePingIntervalSeconds,
+    activeVisitPingIntervalSeconds: activeVisitPingIntervalSeconds,
+    trackingMode: trackingMode,
+  );
+}
+
 extension LoginResponseModelToEntity on LoginResponseModel {
   LoginResponseEntity toEntity() => LoginResponseEntity(
     user: user.toEntity(),
@@ -43,6 +51,7 @@ extension LoginResponseModelToEntity on LoginResponseModel {
         .map((facility) => facility.toEntity())
         .toList(),
     partner: partner?.toEntity(),
+    trackingSettings: trackingSettings?.toEntity(),
   );
 }
 
