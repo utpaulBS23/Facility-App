@@ -93,14 +93,13 @@ class FacilityStockBalanceBody extends ConsumerWidget {
                 ),
               ],
             ),
-              StockSummaryRow(
-                totalItems: sortedItems.length,
-                lastUpdated: sortedItems.first.lastCountedAt != null
-                    ? DateFormatter.shortDate(
-                        DateTime.parse(sortedItems.first.lastCountedAt!).toLocal(),
-                      )
-                    : context.locale.notAvailable,
-              ),
+            StockSummaryRow(
+              lastUpdated: sortedItems.first.lastCountedAt != null
+                  ? DateFormatter.shortDate(
+                      DateTime.parse(sortedItems.first.lastCountedAt!).toLocal(),
+                    )
+                  : context.locale.notAvailable,
+            ),
             Gap(spacing.s16),
             ListView.separated(
               shrinkWrap: true,
