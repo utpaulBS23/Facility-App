@@ -246,7 +246,7 @@ class _TaskDetailBody extends StatelessWidget {
                   child: FilledButton(
                     onPressed: () => onCompleteTap(task),
                     style: FilledButton.styleFrom(
-                      backgroundColor: context.color.success,
+                      backgroundColor: context.color.primary,
                     ),
                     child: Text(context.locale.completeTask),
                   ),
