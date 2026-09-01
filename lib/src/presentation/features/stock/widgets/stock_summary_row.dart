@@ -7,33 +7,16 @@ import '../../../core/theme/theme.dart';
 class StockSummaryRow extends StatelessWidget {
   const StockSummaryRow({
     super.key,
-    required this.totalItems,
     required this.lastUpdated,
   });
 
-  final int totalItems;
   final String lastUpdated;
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Row(
-      children: [
-        Expanded(
-          child: StockStatTile(
-            value: '$totalItems',
-            label: context.locale.totalItems,
-          ),
-        ),
-        Gap(spacing.s12),
-        Expanded(
-          child: StockStatTile(
-            value: lastUpdated,
-            label: context.locale.lastUpdated,
-          ),
-        ),
-      ],
+    return StockStatTile(
+      value: lastUpdated,
+      label: context.locale.lastUpdated,
     );
   }
 }
