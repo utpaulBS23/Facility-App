@@ -12,12 +12,12 @@ extension FacilityStockTargetModelMapperExtension on FacilityStockTargetModel {
       facilityId: facilityId,
       facilityName: facilityName,
       stockItemId: stockItemId,
-      itemCode: itemCode,
+      itemCode: itemCode ?? '',
       itemName: itemName,
-      unit: unit,
+      unit: unit ?? '',
       monthlyTargetQty: monthlyTargetQty,
-      updatedByName: updatedByName,
-      updatedAt: updatedAt,
+      updatedByName: updatedByName ?? '',
+      updatedAt: updatedAt ?? '',
     );
   }
 }
@@ -26,9 +26,9 @@ extension TopDemandItemModelMapperExtension on TopDemandItemModel {
   TopDemandItemEntity toEntity() {
     return TopDemandItemEntity(
       stockItemId: stockItemId,
-      itemCode: itemCode,
+      itemCode: itemCode ?? '',
       itemName: itemName,
-      unit: unit,
+      unit: unit ?? '',
       totalMonthlyDemandQty: totalMonthlyDemandQty,
     );
   }
