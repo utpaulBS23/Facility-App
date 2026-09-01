@@ -14,6 +14,7 @@ import '../../../../domain/entities/report_issue_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/filter_chip_group.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/create_issue_provider.dart';
 
@@ -82,6 +83,25 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
 
   void _onClearAttendant() => setState(() => _selectedAttendant = null);
 
+  Future<void> _onPickCategory() async {
+    final partnerId = ref.read(createIssueProvider.notifier).partnerId;
+    final result = await showModalBottomSheet<ProblemCategoryEntity>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _CategoryPickerSheet(
+        partnerId: partnerId,
+        selected: _selectedCategory,
+      ),
+    );
+    if (result != null) {
+      setState(() {
+        _selectedCategory = result;
+        _categoryError = false;
+      });
+    }
+  }
+
   Future<void> _onSubmit() async {
     final categoryOk = _selectedCategory != null;
     setState(() => _categoryError = !categoryOk);
@@ -126,8 +146,6 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final submitState = ref.watch(createIssueProvider);
-    final partnerId = ref.watch(createIssueProvider.notifier).partnerId;
-    final categoriesAsync = ref.watch(problemCategoriesProvider(partnerId));
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -151,14 +169,10 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
             Gap(spacing.s16),
             _SectionLabel(context.locale.specificProblem),
             Gap(spacing.s8),
-            _CategoryDropdown(
-              categoriesAsync: categoriesAsync,
+            _CategorySelector(
               selected: _selectedCategory,
               hasError: _categoryError,
-              onChanged: (cat) => setState(() {
-                _selectedCategory = cat;
-                _categoryError = false;
-              }),
+              onTap: _onPickCategory,
             ),
             Gap(spacing.s16),
             _SectionLabel(context.locale.location),
@@ -253,56 +267,29 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   }
 }
 
-class _CategoryDropdown extends StatelessWidget {
-  const _CategoryDropdown({
-    required this.categoriesAsync,
+class _CategorySelector extends StatelessWidget {
+  const _CategorySelector({
     required this.selected,
     required this.hasError,
-    required this.onChanged,
+    required this.onTap,
   });
 
-  final AsyncValue<List<ProblemCategoryEntity>> categoriesAsync;
   final ProblemCategoryEntity? selected;
   final bool hasError;
-  final ValueChanged<ProblemCategoryEntity?> onChanged;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final radius = context.dimensions.radius;
     final spacing = context.dimensions.spacing;
 
-    return categoriesAsync.when(
-      loading: () => Container(
-        height: 52,
-        decoration: BoxDecoration(
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r6),
-        ),
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-        child: SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-        ),
-      ),
-      error: (_, _) => Container(
-        height: 52,
-        decoration: BoxDecoration(
-          border: Border.all(color: context.color.error),
-          borderRadius: BorderRadius.circular(radius.r6),
-        ),
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-        child: BodySmallText(
-          context.locale.reportIssueFailed,
-          color: context.color.error,
-        ),
-      ),
-      data: (categories) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: 52,
             decoration: BoxDecoration(
               border: Border.all(
                 color: hasError
@@ -311,51 +298,157 @@ class _CategoryDropdown extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(radius.r6),
             ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<ProblemCategoryEntity>(
-                value: selected,
-                isExpanded: true,
-                hint: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+            padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+            child: Row(
+              children: [
+                Expanded(
                   child: BodyRegularText(
-                    context.locale.specificProblemHint,
-                    color: context.color.text.secondary,
+                    selected?.name ?? context.locale.specificProblemHint,
+                    color: selected != null
+                        ? context.color.text.primary
+                        : context.color.text.secondary,
                   ),
                 ),
-                icon: Padding(
-                  padding: EdgeInsets.only(right: spacing.s12),
-                  child: Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: context.color.text.secondary,
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: context.color.text.secondary,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (hasError) ...[
+          Gap(spacing.s4),
+          Padding(
+            padding: EdgeInsets.only(left: spacing.s4),
+            child: BodySmallText(
+              context.locale.fieldRequired,
+              color: context.color.error,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// WHY chip group + Apply, not tap-to-select-and-pop: mirrors the
+// attendance filter sheet's single-field layout (see
+// FilterChipGroup/attendance_filter_sheet.dart) so every chip-based picker
+// in the app behaves and looks the same.
+class _CategoryPickerSheet extends ConsumerStatefulWidget {
+  const _CategoryPickerSheet({required this.partnerId, this.selected});
+
+  final int partnerId;
+  final ProblemCategoryEntity? selected;
+
+  @override
+  ConsumerState<_CategoryPickerSheet> createState() =>
+      _CategoryPickerSheetState();
+}
+
+class _CategoryPickerSheetState extends ConsumerState<_CategoryPickerSheet> {
+  late String? _selectedValue = widget.selected?.value;
+  List<ProblemCategoryEntity> _categories = const [];
+
+  // WHY comparing by `value` (String key), not the entity itself: the
+  // provider is autoDispose, so a rebuild can hand back a fresh list of
+  // ProblemCategoryEntity instances for the same categories — comparing
+  // objects directly would silently drop the chip's selected state.
+  void _onApply() {
+    final selected = _categories
+        .cast<ProblemCategoryEntity?>()
+        .firstWhere((cat) => cat?.value == _selectedValue, orElse: () => null);
+    Navigator.of(context).pop(selected);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+    final categoriesAsync = ref.watch(
+      problemCategoriesProvider(widget.partnerId),
+    );
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+      ),
+      decoration: BoxDecoration(
+        color: context.color.scaffoldBackground,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(radius.r12)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gap(spacing.s12),
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: context.color.borderSubtle,
+              borderRadius: BorderRadius.circular(radius.r4),
+            ),
+          ),
+          Gap(spacing.s16),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+            child: LabelLargeText(context.locale.specificProblem),
+          ),
+          Gap(spacing.s16),
+          Flexible(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+              child: categoriesAsync.when(
+                loading: () =>
+                    const Center(child: CircularProgressIndicator.adaptive()),
+                error: (_, _) => Center(
+                  child: BodySmallText(
+                    context.locale.reportIssueFailed,
+                    color: context.color.error,
                   ),
                 ),
-                borderRadius: BorderRadius.circular(radius.r12),
-                onChanged: onChanged,
-                items: categories.map((cat) {
-                  return DropdownMenuItem(
-                    value: cat,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-                      child: BodyRegularText(
-                        cat.name,
-                        color: context.color.text.primary,
+                data: (categories) {
+                  _categories = categories;
+                  if (categories.isEmpty) {
+                    return Center(
+                      child: BodySmallText(
+                        context.locale.noProblemCategoriesFound,
+                        color: context.color.text.secondary,
                       ),
-                    ),
+                    );
+                  }
+                  return FilterChipGroup<String?>(
+                    label: context.locale.specificProblem,
+                    selected: _selectedValue,
+                    options: [
+                      for (final category in categories)
+                        (value: category.value, label: category.name),
+                    ],
+                    onSelected: (value) =>
+                        setState(() => _selectedValue = value),
                   );
-                }).toList(),
+                },
               ),
             ),
           ),
-          if (hasError) ...[
-            Gap(spacing.s4),
-            Padding(
-              padding: EdgeInsets.only(left: spacing.s4),
-              child: BodySmallText(
-                context.locale.fieldRequired,
-                color: context.color.error,
+          Gap(spacing.s16),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              spacing.s16,
+              0,
+              spacing.s16,
+              spacing.s16,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              height: spacing.s44,
+              child: FilledButton(
+                onPressed: _onApply,
+                child: Text(context.locale.applyFilters),
               ),
             ),
-          ],
+          ),
         ],
       ),
     );
