@@ -8,6 +8,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/visit_check_in_provider.dart';

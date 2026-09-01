@@ -125,7 +125,9 @@ class Endpoints {
 
   /// Called when a supervisor starts traveling toward a facility, before
   /// [visitCheckIn]. `travel_tracking_excluded: true` in the response means
-  /// this is the day's first visit — fall back to [locationPingSync] instead.
+  /// this leg has no travel to track (e.g. day's first visit) — skip
+  /// [locationPingSync]; otherwise start it as the fallback since the
+  /// Barikoi route calc doesn't cover it.
   static const String travelRouteCheckIn =
       '/partners/{partnerId}/travel-routes/check-in';
   static const String problemCategories =

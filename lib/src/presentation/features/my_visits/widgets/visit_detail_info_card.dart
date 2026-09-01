@@ -55,7 +55,7 @@ class _VisitDetailInfoCard extends StatelessWidget {
               Expanded(
                 child: _DateTimeBox(
                   label: context.locale.date,
-                  value: detail.date,
+                  value: DateFormatter.dayMonthYear(detail.date),
                 ),
               ),
               Gap(spacing.s8),

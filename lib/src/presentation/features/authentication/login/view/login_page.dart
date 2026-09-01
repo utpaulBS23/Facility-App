@@ -21,6 +21,7 @@ import '../../../../features/authentication/login/riverpod/login_provider.dart';
 import '../widgets/language_switcher.dart';
 
 part '../widgets/login_form.dart';
+
 part '../widgets/login_form_footer.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -41,8 +42,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _uidController.text='bs_2110';
-    _passwordController.text='password123';
+    _uidController.text = 'bs_2110';
+    _passwordController.text = 'password123';
     ref.listenManual(loginProvider, _onLoginStateChanged);
   }
 
@@ -61,7 +62,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         // WHY: landing tab is permission-driven — a user without shift.view
         // goes straight to their first permitted tab; the shift-status flow
         // below only applies to shift-capable attendants.
-        if (permissions.contains(UserPermission.shiftView)) {
+        if (permissions.contains(UserPermission.shiftView) ||
+            permissions.contains(UserPermission.shiftSlotView)) {
           context.goNamed(firstPermittedShellRoute(permissions));
           return;
         }

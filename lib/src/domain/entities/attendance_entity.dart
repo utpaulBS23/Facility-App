@@ -80,6 +80,7 @@ class AttendanceItemEntity {
       return isLate ? AttendanceStatus.late : AttendanceStatus.present;
     }
     if (status == 'rejected') return AttendanceStatus.rejected;
+
     return AttendanceStatus.pending;
   }
 }

@@ -39,7 +39,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _myAttendanceLabel,
     subtitle: _myAttendanceSubtitle,
     route: Routes.myAttendance,
-    permissions: [UserPermission.attendanceView],
+    permissions: [UserPermission.supervisorAttendanceView],
   ),
   MenuItemConfig(
     icon: Assets.icons.service,
@@ -62,8 +62,6 @@ final List<MenuItemConfig> menuItemConfigs = [
     // comment) — any one of the three should be enough to reach it.
     permissions: [
       UserPermission.supplyRequestView,
-      UserPermission.deliveryTrackingView,
-      UserPermission.deliveryComplaintView,
     ],
   ),
   MenuItemConfig(
@@ -147,7 +145,7 @@ final notificationMenuItemConfig = MenuItemConfig(
   label: _notificationLabel,
   subtitle: _notificationSubtitle,
   route: Routes.notification,
-  permissions: [UserPermission.notificationView],
+  permissions: [UserPermission.notificationSettings],
 );
 
 String _profileLabel(BuildContext context) => context.locale.profile;
