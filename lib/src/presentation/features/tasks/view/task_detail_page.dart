@@ -240,7 +240,7 @@ class _TaskDetailBody extends StatelessWidget {
             ],
             if (_canComplete)
               PermissionGate(
-                permissions: [UserPermission.taskComplete],
+                permissions: [UserPermission.issueResolve],
                 child: Padding(
                   padding: EdgeInsets.only(top: spacing.s24),
                   child: FilledButton(
