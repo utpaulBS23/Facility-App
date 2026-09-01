@@ -29,6 +29,7 @@ class VisitSummaryEntity {
     this.facilityAddress,
     this.travelOriginType,
     this.travelOriginId,
+    this.travelOriginName,
     this.travelStartedAt,
   });
 
@@ -48,6 +49,12 @@ class VisitSummaryEntity {
   // [TravelRouteCheckInRequestEntity] rather than re-fetched.
   final String? travelOriginType;
   final int? travelOriginId;
+
+  /// "Home" (fixed label) when [travelOriginType] is `home`, or the real
+  /// facility/office name when chained from a previous visit. Null when no
+  /// travel origin has been recorded yet for this visit — a visit in that
+  /// state cannot be used as a travel-expense claim's reference visit.
+  final String? travelOriginName;
   final String? travelStartedAt;
 }
 

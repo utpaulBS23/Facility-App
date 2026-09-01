@@ -68,6 +68,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.assignedToName,
     this.travelOriginType,
     this.travelOriginId,
+    this.travelOriginName,
     this.facilityAddress,
     this.travelStartedAt,
   });
@@ -125,6 +126,9 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   @MappableField(key: 'travel_origin_id')
   final int? travelOriginId;
 
+  @MappableField(key: 'travel_origin_name')
+  final String? travelOriginName;
+
   @MappableField(key: 'travel_started_at')
   final String? travelStartedAt;
 
@@ -142,6 +146,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
         travelOriginType: travelOriginType,
         travelOriginId: travelOriginId,
+        travelOriginName: travelOriginName,
         travelStartedAt: travelStartedAt,
       );
 }

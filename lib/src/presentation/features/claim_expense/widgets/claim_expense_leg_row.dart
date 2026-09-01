@@ -60,23 +60,12 @@ class _ClaimExpenseLegRow extends StatelessWidget {
                 ),
               ),
             ),
-            onChanged: (_) => onChanged(),
-          ),
-        ),
-        Gap(spacing.s8),
-        Expanded(
-          flex: 2,
-          child: TextFormField(
-            controller: leg.rateController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              hintText: context.locale.ratePerKm,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r6,
-                ),
-              ),
-            ),
+            validator: (value) {
+              final distance = double.tryParse(value?.trim() ?? '');
+              return distance == null || distance <= 0
+                  ? context.locale.distanceKm
+                  : null;
+            },
             onChanged: (_) => onChanged(),
           ),
         ),

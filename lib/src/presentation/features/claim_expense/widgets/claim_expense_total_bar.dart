@@ -1,13 +1,12 @@
 part of '../view/claim_expense_page.dart';
 
+// WHY distance only, no amount: claimed_amount is computed server-side from
+// the partner's currently configured rate, which this app never fetches —
+// showing a client-guessed total would just be wrong.
 class _ClaimExpenseTotalBar extends StatelessWidget {
-  const _ClaimExpenseTotalBar({
-    required this.totalDistanceKm,
-    required this.totalAmount,
-  });
+  const _ClaimExpenseTotalBar({required this.totalDistanceKm});
 
   final double totalDistanceKm;
-  final double totalAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +20,13 @@ class _ClaimExpenseTotalBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${context.locale.totalLabel}: '
-            '${totalDistanceKm.toStringAsFixed(1)} km',
+            '${context.locale.totalLabel}:',
             style: context.textStyle.bodyMedium.copyWith(
               color: context.color.text.secondary,
             ),
           ),
           Text(
-            '৳ ${totalAmount.toStringAsFixed(0)}',
+            '${totalDistanceKm.toStringAsFixed(1)} km',
             style: context.textStyle.titleMedium.copyWith(
               color: context.color.text.primary,
             ),

@@ -176,7 +176,7 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        title: DisplaySmallText(context.locale.board),
+        title: DisplaySmallText(context.locale.task),
         titleSpacing: spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
