@@ -62,16 +62,37 @@ class TopDemandItemModel with TopDemandItemModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
-class StockAveragingDataModel with StockAveragingDataModelMappable {
-  const StockAveragingDataModel({
-    this.items = const [],
-    this.topDemandItems = const [],
+class FacilityStockAveragingOverviewModel
+    with FacilityStockAveragingOverviewModelMappable {
+  const FacilityStockAveragingOverviewModel({
+    required this.facilityId,
+    required this.facilityName,
+    this.supervisorName,
+    this.lastStockCountAt,
+    this.isSetUp,
   });
 
-  final List<FacilityStockTargetModel> items;
-  final List<TopDemandItemModel> topDemandItems;
+  final int facilityId;
+  final String facilityName;
+  final String? supervisorName;
+  final String? lastStockCountAt;
+  final bool? isSetUp;
 
-  static const fromJson = StockAveragingDataModelMapper.fromJson;
+  static const fromJson = FacilityStockAveragingOverviewModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class StockAveragingSummaryModel with StockAveragingSummaryModelMappable {
+  const StockAveragingSummaryModel({
+    this.monthlyDemand,
+  });
+
+  final List<TopDemandItemModel>? monthlyDemand;
+
+  static const fromJson = StockAveragingSummaryModelMapper.fromJson;
 }
 
 @MappableClass(
@@ -80,10 +101,12 @@ class StockAveragingDataModel with StockAveragingDataModelMappable {
 )
 class StockAveragingResponseModel with StockAveragingResponseModelMappable {
   const StockAveragingResponseModel({
-    required this.data,
+    this.data,
+    this.summary,
   });
 
-  final StockAveragingDataModel data;
+  final List<FacilityStockAveragingOverviewModel>? data;
+  final StockAveragingSummaryModel? summary;
 
   static const fromJson = StockAveragingResponseModelMapper.fromJson;
 }

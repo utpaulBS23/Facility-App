@@ -1,12 +1,12 @@
-import 'facility_stock_target_entity.dart';
+import 'facility_stock_averaging_overview_entity.dart';
 import 'top_demand_item_entity.dart';
 
 class StockAveragingPageEntity {
   const StockAveragingPageEntity({
-    required this.items,
-    required this.topDemandItems,
+    required this.facilities,
+    required this.monthlyDemand,
   });
 
-  final List<FacilityStockTargetEntity> items;
-  final List<TopDemandItemEntity> topDemandItems;
+  final List<FacilityStockAveragingOverviewEntity> facilities;
+  final List<TopDemandItemEntity> monthlyDemand;
 }
