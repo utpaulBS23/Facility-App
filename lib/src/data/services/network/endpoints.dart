@@ -189,7 +189,8 @@ class Endpoints {
       '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
   static const String shiftStockCounts =
       '/partners/{partnerId}/shift-stock-counts';
-  static const String stockAveraging = '/partners/{partnerId}/stock-averaging';
+  static const String stockAveraging =
+      '/partners/{partnerId}/stock-averaging/overview';
   static const String facilityStockTargets =
       '/partners/{partnerId}/stock-averaging/facilities/{facilityId}';
   static const String updateStockTarget =
