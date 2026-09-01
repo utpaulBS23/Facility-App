@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/stock/facility_stock_balance_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/status_pill.dart';
 
 class FacilityBalanceCard extends StatelessWidget {
@@ -29,6 +30,7 @@ class FacilityBalanceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius.r12),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: EdgeInsets.all(spacing.s10),
@@ -44,37 +46,51 @@ class FacilityBalanceCard extends StatelessWidget {
           ),
           Gap(spacing.s12),
           Expanded(
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
                         item.itemName,
                         style: context.textStyle.bodyLarge.copyWith(
                           color: color.text.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    _StockStatusPill(status: item.status),
-                  ],
-                ),
-                Gap(spacing.s4),
-                Row(
-                  children: [
-                    Text(
-                      '$formattedQty ${item.unit}',
-                      style: context.textStyle.bodyMedium.copyWith(
-                        color: color.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (item.thresholdQty != null) ...[
-                      Gap(spacing.s8),
+                      Gap(spacing.s2),
                       Text(
-                        '• ${context.locale.threshold}: ${item.thresholdQty!.toInt()} ${item.unit}',
+                        '$formattedQty ${item.unit}',
+                        style: context.textStyle.bodyMedium.copyWith(
+                          color: color.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (item.thresholdQty != null) ...[
+                        Gap(spacing.s2),
+                        Text(
+                          '${context.locale.threshold}: ${item.thresholdQty!.toInt()} ${item.unit}',
+                          style: context.textStyle.bodySmall.copyWith(
+                            color: color.text.secondary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                Gap(spacing.s12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _StockStatusPill(status: item.status),
+                    if (item.lastCountedAt != null) ...[
+                      Gap(spacing.s4),
+                      Text(
+                        DateFormatter.shortDate(
+                          DateTime.parse(item.lastCountedAt!).toLocal(),
+                        ),
                         style: context.textStyle.bodySmall.copyWith(
                           color: color.text.secondary,
                         ),

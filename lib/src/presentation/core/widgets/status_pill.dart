@@ -39,7 +39,7 @@ class StatusPill extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 12, color: foreground),
+            Icon(icon, size: dimensions.spacing.s12, color: foreground),
             SizedBox(width: dimensions.spacing.s4),
           ],
           Text(
