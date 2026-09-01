@@ -37,10 +37,7 @@ class FacilityStockBalanceBody extends ConsumerWidget {
           facilityStockBalanceProvider(facilityId: facilityId),
         ),
       ),
-      data: (page) {
-        final items = page.items;
-        final summary = page.summary;
-
+      data: (items) {
         if (items.isEmpty) {
           return Center(
             child: Text(
@@ -65,35 +62,37 @@ class FacilityStockBalanceBody extends ConsumerWidget {
           ..sort((a, b) =>
               statusPriority(a.status).compareTo(statusPriority(b.status)));
 
+        final outCount = items.where((i) => i.status == FacilityStockStatus.out).length;
+        final lowCount = items.where((i) => i.status == FacilityStockStatus.low).length;
+        final okCount = items.where((i) => i.status == FacilityStockStatus.ok).length;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (summary != null)
-              Row(
-                children: [
-                  Expanded(
-                    child: StockStatTile(
-                      value: '${summary.outCount}',
-                      label: context.locale.outOfStock,
-                    ),
+            Row(
+              children: [
+                Expanded(
+                  child: StockStatTile(
+                    value: '$outCount',
+                    label: context.locale.outOfStock,
                   ),
-                  Gap(spacing.s12),
-                  Expanded(
-                    child: StockStatTile(
-                      value: '${summary.lowCount}',
-                      label: context.locale.lowStock,
-                    ),
+                ),
+                Gap(spacing.s12),
+                Expanded(
+                  child: StockStatTile(
+                    value: '$lowCount',
+                    label: context.locale.lowStock,
                   ),
-                  Gap(spacing.s12),
-                  Expanded(
-                    child: StockStatTile(
-                      value: '${summary.okCount}',
-                      label: context.locale.healthy,
-                    ),
+                ),
+                Gap(spacing.s12),
+                Expanded(
+                  child: StockStatTile(
+                    value: '$okCount',
+                    label: context.locale.healthy,
                   ),
-                ],
-              )
-            else
+                ),
+              ],
+            ),
               StockSummaryRow(
                 totalItems: sortedItems.length,
                 lastUpdated: sortedItems.first.lastCountedAt != null

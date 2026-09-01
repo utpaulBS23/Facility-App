@@ -64,13 +64,3 @@ class FacilityStockBalanceSummaryEntity {
   final int lowCount;
   final int okCount;
 }
-
-class FacilityStockBalancePageEntity {
-  const FacilityStockBalancePageEntity({
-    required this.items,
-    this.summary,
-  });
-
-  final List<FacilityStockBalanceEntity> items;
-  final FacilityStockBalanceSummaryEntity? summary;
-}

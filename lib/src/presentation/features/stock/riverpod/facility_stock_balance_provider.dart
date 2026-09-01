@@ -9,7 +9,7 @@ import '../../../../domain/entities/stock/facility_stock_balance_filter.dart';
 part 'facility_stock_balance_provider.g.dart';
 
 @riverpod
-FutureOr<FacilityStockBalancePageEntity> facilityStockBalance(
+FutureOr<List<FacilityStockBalanceEntity>> facilityStockBalance(
   Ref ref, {
   int? facilityId,
   int? stockItemId,
@@ -25,8 +25,8 @@ FutureOr<FacilityStockBalancePageEntity> facilityStockBalance(
   final result = await useCase(filter);
 
   return switch (result) {
-    Success(:final data) => data ?? const FacilityStockBalancePageEntity(items: []),
+    Success(:final data) => data ?? const [],
     Error(:final error) => throw error,
-    _ => const FacilityStockBalancePageEntity(items: []),
+    _ => const [],
   };
 }
