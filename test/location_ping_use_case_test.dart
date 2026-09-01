@@ -19,16 +19,30 @@ base class _FakeLocationPingRepository extends LocationPingRepository {
   int stopTrackingCalls = 0;
   int? lastSyncedTaskId;
   int? lastSyncedPartnerId;
+  bool _isSharingLocation = false;
+  int? _activeTaskId;
+
+  @override
+  bool get isSharingLocation => _isSharingLocation;
+
+  @override
+  int? get activeTaskId => _activeTaskId;
 
   @override
   Future<Result<void, Failure>> startTracking({required int taskId}) async {
     startTrackingCalls++;
+    if (startTrackingResult is Success<void, Failure>) {
+      _isSharingLocation = true;
+      _activeTaskId = taskId;
+    }
     return startTrackingResult;
   }
 
   @override
   Future<Result<void, Failure>> stopTracking() async {
     stopTrackingCalls++;
+    _isSharingLocation = false;
+    _activeTaskId = null;
     return stopTrackingResult;
   }
 
