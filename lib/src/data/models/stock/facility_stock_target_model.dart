@@ -2,20 +2,23 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'facility_stock_target_model.mapper.dart';
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class FacilityStockTargetModel with FacilityStockTargetModelMappable {
-  FacilityStockTargetModel({
+  const FacilityStockTargetModel({
     required this.id,
-    @MappableField(key: 'facility_id') required this.facilityId,
-    @MappableField(key: 'facility_name') required this.facilityName,
-    @MappableField(key: 'stock_item_id') required this.stockItemId,
-    @MappableField(key: 'item_code') required this.itemCode,
-    @MappableField(key: 'item_name') required this.itemName,
+    required this.facilityId,
+    required this.facilityName,
+    required this.stockItemId,
+    required this.itemCode,
+    required this.itemName,
     required this.unit,
-    @MappableField(key: 'monthly_target_qty') required this.monthlyTargetQty,
-    @MappableField(key: 'updated_by') required this.updatedBy,
-    @MappableField(key: 'updated_by_name') required this.updatedByName,
-    @MappableField(key: 'updated_at') required this.updatedAt,
+    required this.monthlyTargetQty,
+    required this.updatedBy,
+    required this.updatedByName,
+    required this.updatedAt,
   });
 
   final int id;
@@ -33,14 +36,17 @@ class FacilityStockTargetModel with FacilityStockTargetModelMappable {
   static const fromJson = FacilityStockTargetModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class TopDemandItemModel with TopDemandItemModelMappable {
-  TopDemandItemModel({
-    @MappableField(key: 'stock_item_id') required this.stockItemId,
-    @MappableField(key: 'item_code') required this.itemCode,
-    @MappableField(key: 'item_name') required this.itemName,
+  const TopDemandItemModel({
+    required this.stockItemId,
+    required this.itemCode,
+    required this.itemName,
     required this.unit,
-    @MappableField(key: 'total_monthly_demand_qty') required this.totalMonthlyDemandQty,
+    required this.totalMonthlyDemandQty,
   });
 
   final int stockItemId;
@@ -50,4 +56,32 @@ class TopDemandItemModel with TopDemandItemModelMappable {
   final double totalMonthlyDemandQty;
 
   static const fromJson = TopDemandItemModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class StockAveragingResponseModel with StockAveragingResponseModelMappable {
+  const StockAveragingResponseModel({
+    this.items = const [],
+    this.topDemandItems = const [],
+  });
+
+  final List<FacilityStockTargetModel> items;
+  final List<TopDemandItemModel> topDemandItems;
+
+  static const fromJson = StockAveragingResponseModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.encode,
+)
+class UpdateStockTargetRequestModel with UpdateStockTargetRequestModelMappable {
+  const UpdateStockTargetRequestModel({
+    required this.monthlyTargetQty,
+  });
+
+  final double monthlyTargetQty;
 }
