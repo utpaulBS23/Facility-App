@@ -146,7 +146,12 @@ class _ChecklistBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checklist = checklistState.checklist!;
-    final isResolved = detail.status == VisitStatus.resolved;
+    // WHY: a completed visit is as final as a resolved one — both mean the
+    // checklist can no longer be edited, so cancel/submit/new-issue actions
+    // must hide for either status, not just resolved.
+    final isResolved =
+        detail.status == VisitStatus.resolved ||
+        detail.status == VisitStatus.completed;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -177,6 +182,7 @@ class _ChecklistBody extends StatelessWidget {
               _InspectionRepairWorkSection(
                 issues: [...checklist.issues, ...checklistState.localIssues],
                 onNewIssue: onNewIssue,
+                canAddIssue: !isResolved,
               ),
               Gap(spacing.s8),
             ],

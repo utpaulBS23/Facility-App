@@ -297,6 +297,7 @@
   "shiftWindowClosed": "Check-In Window Closed",
   "shiftWindowClosedHelp": "Please contact your supervisor for assistance.",
   "noAttendantsFound": "No attendants found",
+  "noProblemCategoriesFound": "No problem categories found",
   "staffAssignedSuccessfully": "Staff assigned successfully.",
   "assignAsSlotLead": "Assign as Slot Lead",
   "assignAsSlotLeadMessage": "Assign {name} as the slot lead for this shift?",
