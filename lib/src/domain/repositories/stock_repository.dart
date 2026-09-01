@@ -21,6 +21,6 @@ abstract base class StockRepository extends Repository {
     String? to,
   });
 
-  Future<Result<FacilityStockBalancePageEntity, Failure>>
+  Future<Result<List<FacilityStockBalanceEntity>, Failure>>
       getFacilityStockBalance(FacilityStockBalanceFilter filter);
 }
