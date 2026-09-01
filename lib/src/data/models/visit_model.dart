@@ -53,6 +53,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     required this.id,
     required this.facilityName,
     required this.status,
+    this.title,
     this.visitType,
     required this.scheduledDate,
     this.scheduledStartTime,
@@ -67,6 +68,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.assignedToName,
     this.travelOriginType,
     this.travelOriginId,
+    this.facilityAddress,
+    this.travelStartedAt,
   });
 
   final int id;
@@ -74,7 +77,12 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   @MappableField(key: 'facility_name')
   final String facilityName;
 
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
+
   final String status;
+
+  final String? title;
 
   @MappableField(key: 'visit_type')
   final String? visitType;
@@ -117,18 +125,24 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   @MappableField(key: 'travel_origin_id')
   final int? travelOriginId;
 
+  @MappableField(key: 'travel_started_at')
+  final String? travelStartedAt;
+
   static const fromJson = VisitSummaryModelMapper.fromJson;
 
   VisitSummaryEntity toEntity() => VisitSummaryEntity(
         id: id,
         facilityName: facilityName,
+        facilityAddress: facilityAddress,
         status: _parseStatus(status),
+        title: title,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
         scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
         travelOriginType: travelOriginType,
         travelOriginId: travelOriginId,
+        travelStartedAt: travelStartedAt,
       );
 }
 
@@ -165,6 +179,8 @@ class VisitDetailModel with VisitDetailModelMappable {
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
+    this.facilityAddress,
+    this.travelStartedAt,
   });
 
   final int id;
@@ -174,6 +190,9 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
+
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
 
   final String status;
 
@@ -221,12 +240,16 @@ class VisitDetailModel with VisitDetailModelMappable {
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
 
+  @MappableField(key: 'travel_started_at')
+  final String? travelStartedAt;
+
   static const fromJson = VisitDetailModelMapper.fromJson;
 
   VisitDetailEntity toEntity() => VisitDetailEntity(
         id: id,
         facilityName: facilityName,
         facilityId: facilityId,
+        facilityAddress: facilityAddress,
         status: _parseStatus(status),
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
@@ -239,6 +262,7 @@ class VisitDetailModel with VisitDetailModelMappable {
                 role: createdByRole ?? '',
               )
             : null,
+        travelStartedAt: travelStartedAt,
       );
 }
 

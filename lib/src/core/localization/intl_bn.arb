@@ -203,6 +203,8 @@
   "claimExpenseSubtitle": "ভ্রমণ খরচের দাবি জমা দিন",
   "addTravelExpense": "ভ্রমণ খরচ যোগ করুন",
   "referenceVisitOptional": "সংশ্লিষ্ট ভিজিট (ঐচ্ছিক)",
+  "none": "কোনোটি নয়",
+  "noVisitsFound": "কোনো ভিজিট পাওয়া যায়নি",
   "startLocation": "শুরুর স্থান",
   "startLocationHint": "যেমন মিরপুর-১০ টয়লেট",
   "destination": "গন্তব্য",

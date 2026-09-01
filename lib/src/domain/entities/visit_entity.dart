@@ -25,14 +25,17 @@ class VisitSummaryEntity {
     required this.date,
     required this.scheduledStartTime,
     required this.scheduledEndTime,
+    this.title,
     this.facilityAddress,
     this.travelOriginType,
     this.travelOriginId,
+    this.travelStartedAt,
   });
 
   final int id;
   final String facilityName;
   final String? facilityAddress;
+  final String? title;
   final VisitStatus status;
   final VisitType type;
   final String date;
@@ -45,6 +48,7 @@ class VisitSummaryEntity {
   // [TravelRouteCheckInRequestEntity] rather than re-fetched.
   final String? travelOriginType;
   final int? travelOriginId;
+  final String? travelStartedAt;
 }
 
 class VisitListEntity {
@@ -83,6 +87,7 @@ class VisitDetailEntity {
     this.inRangeThresholdMeters,
     this.assignedBy,
     this.locationVerified = false,
+    this.travelStartedAt,
   });
 
   final int id;
@@ -99,6 +104,7 @@ class VisitDetailEntity {
   final String scheduledEndTime;
   final VisitAssignedByEntity? assignedBy;
   final bool locationVerified;
+  final String? travelStartedAt;
 }
 
 class GpsVerificationEntity {
