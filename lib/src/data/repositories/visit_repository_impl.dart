@@ -30,10 +30,12 @@ final class VisitRepositoryImpl extends VisitRepository {
   Future<Result<VisitListEntity, Failure>> getMyVisits({
     required int partnerId,
     required String date,
+    String? status,
   }) => asyncGuard(() async {
     final response = await _client.getMyVisits(
       partnerId: partnerId,
       date: date,
+      status: status,
     );
     return VisitListResponseModel.fromJson(response.data).toEntity();
   });

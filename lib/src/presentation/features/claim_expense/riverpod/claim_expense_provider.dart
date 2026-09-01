@@ -30,7 +30,9 @@ Future<List<VisitSummaryEntity>> claimExpenseTodaysVisits(Ref ref) async {
   final today = DateTime.now();
   final date =
       '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-  final result = await ref.read(getMyVisitsUseCaseProvider).call(date: date);
+  final result = await ref
+      .read(getMyVisitsUseCaseProvider)
+      .call(date: date, status: 'completed');
   return switch (result) {
     Success(:final data) => data?.visits ?? [],
     Error() => [],

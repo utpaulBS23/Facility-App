@@ -190,6 +190,7 @@ abstract class RestClient {
   Future<HttpResponse> getMyVisits({
     @Path('partnerId') required int partnerId,
     @Query('date') required String date,
+    @Query('status') String? status,
   });
 
   @GET(Endpoints.visitDetail)

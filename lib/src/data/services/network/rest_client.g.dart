@@ -741,9 +741,11 @@ class _RestClient implements RestClient {
   Future<HttpResponse<dynamic>> getMyVisits({
     required int partnerId,
     required String date,
+    String? status,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'date': date};
+    final queryParameters = <String, dynamic>{r'date': date, r'status': status};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(

@@ -13,13 +13,17 @@ final class GetMyVisitsUseCase {
   final VisitRepository _repository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<VisitListEntity, Failure>> call({required String date}) async {
+  Future<Result<VisitListEntity, Failure>> call({
+    required String date,
+    String? status,
+  }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
     final result = await _repository.getMyVisits(
       partnerId: partnerId,
       date: date,
+      status: status,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),
