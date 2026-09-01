@@ -6,11 +6,13 @@ class _ChecklistItemForm extends ConsumerStatefulWidget {
     required this.occurrenceId,
     required this.item,
     required this.order,
+    this.readOnly = false,
   });
 
   final int occurrenceId;
   final TaskOccurrenceChecklistItemEntity item;
   final int order;
+  final bool readOnly;
 
   @override
   ConsumerState<_ChecklistItemForm> createState() => _ChecklistItemFormState();
@@ -106,7 +108,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
     if (!hasSavedPhoto) {
       return Expanded(
         child: GestureDetector(
-          onTap: _isSaving ? null : _pickPhoto,
+          onTap: _isSaving || widget.readOnly ? null : _pickPhoto,
           child: Container(
             padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
             decoration: BoxDecoration(
@@ -172,13 +174,14 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
 
   Widget _answerInput(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final isDisabled = _isSaving || widget.readOnly;
     return switch (widget.item.responseType) {
       TaskOccurrenceChecklistResponseType.rating => Row(
         children: List.generate(5, (i) {
           final value = i + 1;
           final isFilled = (_ratingValue ?? 0) >= value;
           return GestureDetector(
-            onTap: _isSaving ? null : () => setState(() => _ratingValue = value),
+            onTap: isDisabled ? null : () => setState(() => _ratingValue = value),
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: .only(right: spacing.s8),
@@ -199,7 +202,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.check_rounded,
               isSelected: _booleanValue == true,
               color: context.color.success,
-              onTap: _isSaving ? null : () => setState(() => _booleanValue = true),
+              onTap: isDisabled ? null : () => setState(() => _booleanValue = true),
             ),
           ),
           Gap(spacing.s8),
@@ -209,14 +212,14 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.close_rounded,
               isSelected: _booleanValue == false,
               color: context.color.error,
-              onTap: _isSaving ? null : () => setState(() => _booleanValue = false),
+              onTap: isDisabled ? null : () => setState(() => _booleanValue = false),
             ),
           ),
         ],
       ),
       TaskOccurrenceChecklistResponseType.text => TextField(
         controller: _textController,
-        enabled: !_isSaving,
+        enabled: !isDisabled,
         maxLines: 3,
         decoration: InputDecoration(labelText: context.locale.occurrenceTextAnswerLabel),
         onChanged: (_) => setState(() {}),
@@ -264,7 +267,9 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               Gap(spacing.s8),
               Expanded(
                 child: FilledButton(
-                  onPressed: _isSaving || !_hasAnswer ? null : _save,
+                  onPressed: _isSaving || !_hasAnswer || widget.readOnly
+                      ? null
+                      : _save,
                   child: _isSaving
                       ? SizedBox(
                           width: 16,
@@ -295,17 +300,14 @@ class _ItemOrderBadge extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      width: 28,
-      height: 28,
+      width: 32,
+      height: 32,
       decoration: BoxDecoration(
         color: context.color.subtle,
         borderRadius: .circular(radius.r6),
       ),
       alignment: .center,
-      child: Text(
-        '$order',
-        style: context.textStyle.bodySmall.copyWith(color: context.color.text.primary),
-      ),
+      child: LabelLargeText('$order', color: context.color.text.primary),
     );
   }
 }

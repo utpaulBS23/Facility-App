@@ -21,6 +21,7 @@ import '../riverpod/task_occurrences_provider.dart';
 part '../widgets/occurrence_checklist_item_form.dart';
 part '../widgets/occurrence_checklist_progress_header.dart';
 part '../widgets/occurrence_checklist_submit_bar.dart';
+part '../widgets/occurrence_info_card.dart';
 
 class OccurrenceChecklistPage extends ConsumerStatefulWidget {
   const OccurrenceChecklistPage({super.key, required this.occurrence});
@@ -42,6 +43,8 @@ class _OccurrenceChecklistPageState
     }
     return widget.occurrence;
   }
+
+  void _onCancel() => Navigator.of(context).pop();
 
   Future<void> _submit(TaskOccurrenceEntity current) async {
     setState(() => _isSubmitting = true);
@@ -75,59 +78,78 @@ class _OccurrenceChecklistPageState
     final isRefreshing =
         occurrencesAsync.isLoading && occurrencesAsync.hasValue;
     final answered = items.where((i) => i.isAnswered).length;
+    // WHY: answers are only editable while the occurrence is still pending —
+    // once it's on_time/late/missed it's already been resolved by a submit
+    // (or the window closed), so the form must go read-only.
+    final isReadOnly = current.status != TaskOccurrenceStatus.pending;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: DetailAppBar(title: context.locale.occurrenceChecklist),
-      body: Stack(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          items.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: .all(spacing.s24),
-                    child: BodySmallText(
-                      context.locale.noTasksFound,
-                      color: context.color.text.secondary,
+          Expanded(
+            child: Stack(
+              children: [
+                items.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(spacing.s24),
+                          child: BodySmallText(
+                            context.locale.noTasksFound,
+                            color: context.color.text.secondary,
+                          ),
+                        ),
+                      )
+                    : ListView(
+                        padding: EdgeInsets.all(spacing.s16),
+                        children: [
+                          _OccurrenceInfoCard(occurrence: current),
+                          Gap(spacing.s16),
+                          _OccurrenceChecklistProgressHeader(
+                            answered: answered,
+                            total: items.length,
+                          ),
+                          Gap(spacing.s12),
+                          for (var i = 0; i < items.length; i++) ...[
+                            _ChecklistItemForm(
+                              key: ValueKey(items[i].id),
+                              occurrenceId: current.id,
+                              item: items[i],
+                              order: i + 1,
+                              readOnly: isReadOnly,
+                            ),
+                            Gap(spacing.s12),
+                          ],
+                        ],
+                      ),
+                if (isRefreshing)
+                  Positioned.fill(
+                    child: ColoredBox(
+                      color: context.color.scaffoldBackground.withValues(
+                        alpha: 0.6,
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
                     ),
                   ),
-                )
-              : ListView.separated(
-                  padding: .all(spacing.s16),
-                  itemCount: items.length + 1,
-                  separatorBuilder: (_, _) => Gap(spacing.s12),
-                  itemBuilder: (_, i) => i == 0
-                      ? _OccurrenceChecklistProgressHeader(
-                          answered: answered,
-                          total: items.length,
-                        )
-                      : _ChecklistItemForm(
-                          key: ValueKey(items[i - 1].id),
-                          occurrenceId: current.id,
-                          item: items[i - 1],
-                          order: i,
-                        ),
-                ),
-          if (isRefreshing)
-            Positioned.fill(
-              child: ColoredBox(
-                color: context.color.scaffoldBackground.withValues(alpha: 0.6),
-                child: const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                ),
-              ),
+              ],
             ),
-        ],
-      ),
-      bottomNavigationBar: current.status == TaskOccurrenceStatus.pending
-          ? PermissionGate(
+          ),
+          if (current.status == TaskOccurrenceStatus.pending)
+            PermissionGate(
               permissions: const [UserPermission.taskOccurrenceSubmit],
               child: _OccurrenceChecklistSubmitBar(
                 isComplete: current.isChecklistComplete,
                 isSubmitting: _isSubmitting,
                 onSubmit: () => _submit(current),
+                onCancel: _onCancel,
               ),
-            )
-          : null,
+            ),
+        ],
+      ),
     );
   }
 }
