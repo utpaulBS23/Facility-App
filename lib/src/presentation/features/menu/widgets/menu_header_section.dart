@@ -38,7 +38,10 @@ class _MenuHeaderSection extends StatelessWidget {
             ),
           ],
         ),
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(radius.r20), bottomRight: Radius.circular(radius.r20)),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(radius.r20),
+          bottomRight: Radius.circular(radius.r20),
+        ),
       ),
       child: SafeArea(
         child: Stack(

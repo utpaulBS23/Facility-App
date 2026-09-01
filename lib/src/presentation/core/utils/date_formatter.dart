@@ -24,4 +24,13 @@ final class DateFormatter {
 
   /// Local [DateTime] → `MMM d, yyyy`.
   static String shortDate(DateTime d) => DateFormat('MMM d, yyyy').format(d);
+
+  /// `yyyy-MM-dd` string → `dd/MM/yyyy`.
+  static String dayMonthYear(String ymd) {
+    try {
+      return DateFormat('dd/MM/yyyy').format(DateFormat('yyyy-MM-dd').parse(ymd));
+    } catch (_) {
+      return ymd;
+    }
+  }
 }

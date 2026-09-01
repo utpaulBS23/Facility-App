@@ -37,6 +37,7 @@ enum UserPermission {
   attendanceApprove('attendance.approve'),
   attendanceReject('attendance.reject'),
   attendanceManualEntry('attendance.manual_entry'),
+  supervisorAttendanceView('supervisor_attendance.view'),
 
   // Leave
   leavePolicyView('leave_policy.view'),
@@ -148,14 +149,14 @@ enum UserPermission {
   insightsDashboardView('insights.dashboard.view'),
 
   // Shift slot
-  shiftSlotView('shift_slot.view'),
-  shiftSlotCheckIn('shift_slot.check_in'),
-  shiftSlotCheckOut('shift_slot.check_out'),
-  shiftSlotAssign('shift_slot.assign'),
+  shiftSlotView('slot.view'),
+  shiftSlotCheckIn('slot.check_in'),
+  shiftSlotCheckOut('slot.check_out'),
+  shiftSlotAssign('slot.assign'),
 
   // Visit task
-  visitTaskView('visit_task.view'),
-  visitTaskCreate('visit_task.create'),
+  visitTaskView('task.view'),
+  visitTaskCreate('task.create'),
 
   // Profile
   profileView('profile.view'),
@@ -192,6 +193,7 @@ enum UserPermission {
 
   // Notification
   notificationView('notification.view'),
+  notificationSettings('notification.settings'),
 
   // Reports
   reportFacilityWiseView('report.facility_wise.view'),

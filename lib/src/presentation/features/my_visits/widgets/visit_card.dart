@@ -30,9 +30,10 @@ class _VisitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final formattedDate = DateFormatter.dayMonthYear(visit.date);
     final dateTime = visit.scheduledEndTime.isEmpty
-        ? visit.date
-        : '${visit.date}, ${visit.scheduledStartTime} – ${visit.scheduledEndTime}';
+        ? formattedDate
+        : '$formattedDate, ${visit.scheduledStartTime} – ${visit.scheduledEndTime}';
 
     return GestureDetector(
       onTap: onTap,
@@ -63,10 +64,25 @@ class _VisitCard extends StatelessWidget {
             Gap(spacing.s8),
             Text(
               visit.facilityName,
-              style: context.textStyle.labelLarge.copyWith(
+              style: context.textStyle.titleMedium.copyWith(
                 color: context.color.text.primary,
               ),
             ),
+            if (visit.facilityAddress != null &&
+                visit.facilityAddress!.isNotEmpty) ...[
+              Gap(spacing.s6),
+              Row(
+                children: [
+                  Icon(Icons.location_on_outlined, size: 16, color: context.color.icon),
+                  Text(
+                    visit.facilityAddress ?? '',
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                ],
+              ),
+            ],
             if (visit.facilityAddress?.isNotEmpty == true) ...[
               Gap(spacing.s6),
               _InfoRow(
