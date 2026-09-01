@@ -8,7 +8,6 @@ class FacilityStockTargetEntity {
     required this.itemName,
     required this.unit,
     required this.monthlyTargetQty,
-    required this.updatedBy,
     required this.updatedByName,
     required this.updatedAt,
   });
@@ -21,7 +20,6 @@ class FacilityStockTargetEntity {
   final String itemName;
   final String unit;
   final double monthlyTargetQty;
-  final int updatedBy;
   final String updatedByName;
   final String updatedAt;
 }

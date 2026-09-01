@@ -59,8 +59,6 @@ final class StockRepositoryImpl extends StockRepository {
         from: from,
         to: to,
       );
-
-
       final responseModel =
           ShiftStockCountListResponseModel.fromJson(response.data);
 
@@ -100,28 +98,9 @@ final class StockRepositoryImpl extends StockRepository {
       );
       final body = response.data as Map<String, dynamic>;
       final data = body['data'] as Map<String, dynamic>;
-      final itemsRaw = data['items'] as List<dynamic>? ?? const [];
-      final topItemsRaw = data['top_demand_items'] as List<dynamic>? ?? const [];
+      final responseModel = StockAveragingResponseModel.fromJson(data);
 
-      final items = itemsRaw
-          .map(
-            (e) => FacilityStockTargetModel.fromJson(
-              e as Map<String, dynamic>,
-            ).toEntity(),
-          )
-          .toList();
-      final topDemandItems = topItemsRaw
-          .map(
-            (e) => TopDemandItemModel.fromJson(
-              e as Map<String, dynamic>,
-            ).toEntity(),
-          )
-          .toList();
-
-      return StockAveragingPageEntity(
-        items: items,
-        topDemandItems: topDemandItems,
-      );
+      return responseModel.toEntity();
     });
   }
 
@@ -151,10 +130,13 @@ final class StockRepositoryImpl extends StockRepository {
     required double monthlyTargetQty,
   }) {
     return asyncGuard(() async {
+      final requestModel = UpdateStockTargetRequestModel(
+        monthlyTargetQty: monthlyTargetQty,
+      );
       final response = await remote.updateStockTarget(
         partnerId: partnerId,
         targetId: targetId,
-        body: {'monthly_target_qty': monthlyTargetQty},
+        body: requestModel.toJson(),
       );
       final body = response.data as Map<String, dynamic>;
       final data = body['data'] as Map<String, dynamic>;
