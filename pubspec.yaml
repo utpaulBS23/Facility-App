@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.20.2
   geolocator: ^14.0.2
   geocoding: ^4.0.0
+  battery_plus: ^7.0.1
   permission_handler: ^11.3.1
   pinput: ^6.0.2
   google_mlkit_face_detection: ^0.13.2

@@ -1,6 +1,8 @@
+import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../core/base/base.dart';
+import '../../core/logger/log.dart';
 import '../../domain/entities/location_ping_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/location_ping_repository.dart';
@@ -28,12 +30,24 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
   final BackgroundLocationTrackingService _trackingService;
   final LocationSharingNotificationService _notificationService;
   final AuthenticationRepository _authenticationRepository;
+  final Battery _battery = Battery();
+  int? _activeTaskId;
+
+  // WHY delegate to the tracking service, not a separate bool: it is
+  // already the single source of truth for whether the position stream is
+  // running — a second flag here could drift out of sync with it.
+  @override
+  bool get isSharingLocation => _trackingService.isRunning;
+
+  @override
+  int? get activeTaskId => _trackingService.isRunning ? _activeTaskId : null;
 
   @override
   Future<Result<void, Failure>> startTracking({required int taskId}) {
     return asyncGuard(() async {
       await _ensureTrackingPermission();
       await _notificationService.showSharingNotification();
+      _activeTaskId = taskId;
       final activeVisitIntervalSeconds = _authenticationRepository
           .currentSession
           ?.trackingSettings
@@ -54,6 +68,7 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
   Future<Result<void, Failure>> stopTracking() {
     return asyncGuard(() async {
       _trackingService.stop();
+      _activeTaskId = null;
       await _notificationService.hideSharingNotification();
     });
   }
@@ -105,12 +120,23 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
     };
   }
 
-  LocationPingSyncRequestEntity _requestFromPosition({
+  Future<LocationPingSyncRequestEntity> _requestFromPosition({
     required int taskId,
     required Position position,
-  }) {
+  }) async {
     if (position.isMocked) {
       throw Exception('You are using a mocked location');
+    }
+
+    // WHY best-effort: battery level is a nice-to-have for ops visibility,
+    // not something a ping should ever fail over — omit it rather than
+    // block/throw when the platform can't report it.
+    int? battery;
+    try {
+      battery = await _battery.batteryLevel;
+    } catch (e) {
+      Log.error('battery level unavailable: $e');
+      battery = null;
     }
 
     return LocationPingSyncRequestEntity(
@@ -121,6 +147,7 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
           longitude: position.longitude,
           accuracy: position.accuracy,
           recordedAt: DateTime.now().toUtc(),
+          battery: battery,
         ),
       ],
     );

@@ -23,6 +23,21 @@ final class StopLocationPingTrackingUseCase {
   }
 }
 
+/// One visit can be tracked at a time — [taskId] is null whenever
+/// [isSharing] is false.
+typedef LocationSharingStatus = ({bool isSharing, int? taskId});
+
+final class GetLocationSharingStatusUseCase {
+  GetLocationSharingStatusUseCase(this._repository);
+
+  final LocationPingRepository _repository;
+
+  LocationSharingStatus call() => (
+    isSharing: _repository.isSharingLocation,
+    taskId: _repository.activeTaskId,
+  );
+}
+
 final class SyncCurrentLocationPingUseCase {
   SyncCurrentLocationPingUseCase(this._repository, this._authRepository);
 

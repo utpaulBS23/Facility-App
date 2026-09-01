@@ -101,6 +101,11 @@ SyncCurrentLocationPingUseCase syncCurrentLocationPingUseCase(Ref ref) {
 }
 
 @riverpod
+GetLocationSharingStatusUseCase getLocationSharingStatusUseCase(Ref ref) {
+  return GetLocationSharingStatusUseCase(ref.read(locationPingRepositoryProvider));
+}
+
+@riverpod
 GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
   Ref ref,
 ) {
