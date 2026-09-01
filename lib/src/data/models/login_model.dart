@@ -78,6 +78,24 @@ class AccessibleFacilityModel with AccessibleFacilityModelMappable {
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class TrackingSettingsModel with TrackingSettingsModelMappable {
+  TrackingSettingsModel({
+    required this.idlePingIntervalSeconds,
+    required this.activeVisitPingIntervalSeconds,
+    required this.trackingMode,
+  });
+
+  @MappableField(key: 'idle_ping_interval_seconds')
+  final int idlePingIntervalSeconds;
+  @MappableField(key: 'active_visit_ping_interval_seconds')
+  final int activeVisitPingIntervalSeconds;
+  @MappableField(key: 'tracking_mode')
+  final String trackingMode;
+
+  static const fromJson = TrackingSettingsModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class LoginResponseModel with LoginResponseModelMappable {
   LoginResponseModel({
     required this.user,
@@ -85,6 +103,7 @@ class LoginResponseModel with LoginResponseModelMappable {
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
+    this.trackingSettings,
   });
 
   final UserModel user;
@@ -96,6 +115,8 @@ class LoginResponseModel with LoginResponseModelMappable {
   @MappableField(key: 'accessible_facilities')
   final List<AccessibleFacilityModel> accessibleFacilities;
   final PartnerModel? partner;
+  @MappableField(key: 'tracking_settings')
+  final TrackingSettingsModel? trackingSettings;
 
   static const fromJson = LoginResponseModelMapper.fromJson;
 }

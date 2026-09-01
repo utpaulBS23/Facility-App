@@ -103,6 +103,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       // partner. A future switcher swaps this seed for a mutable selection
       // without touching any consumer.
       activePartnerId: entity.user.partnerId,
+      trackingSettings: entity.trackingSettings,
     );
     _sessionController.add(_session);
   }
