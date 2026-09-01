@@ -22,15 +22,17 @@ class VisitListResponseModel with VisitListResponseModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class VisitStatsModel with VisitStatsModelMappable {
   VisitStatsModel({
-    required this.total,
-    required this.pending,
+    required this.todayCount,
+    required this.thisWeekCount,
     required this.inProgress,
     required this.completed,
   });
 
-  final int total;
+  @MappableField(key: 'today_count')
+  final int todayCount;
 
-  final int pending;
+  @MappableField(key: 'this_week_count')
+  final int thisWeekCount;
 
   @MappableField(key: 'in_progress')
   final int inProgress;
@@ -40,8 +42,8 @@ class VisitStatsModel with VisitStatsModelMappable {
   static const fromJson = VisitStatsModelMapper.fromJson;
 
   VisitStatsSummaryEntity toEntity() => VisitStatsSummaryEntity(
-        total: total,
-        pending: pending,
+        todayCount: todayCount,
+        thisWeekCount: thisWeekCount,
         inProgress: inProgress,
         completed: completed,
       );
@@ -140,6 +142,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,
+        priority: priority,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
@@ -169,6 +172,7 @@ class VisitDetailModel with VisitDetailModelMappable {
     required this.facilityName,
     this.facilityId,
     required this.status,
+    this.title,
     this.visitType,
     required this.scheduledDate,
     this.scheduledStartTime,
@@ -180,12 +184,19 @@ class VisitDetailModel with VisitDetailModelMappable {
     this.checkInDistanceMeters,
     this.totalScore,
     this.maxScore,
+    this.scorePercentage,
     this.itemsTotal,
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
     this.facilityAddress,
+    this.travelTrackingExcluded,
+    this.travelOriginType,
+    this.travelOriginId,
+    this.travelOriginName,
+    this.travelDistanceKm,
     this.travelStartedAt,
+    this.submittedAt,
   });
 
   final int id;
@@ -200,6 +211,8 @@ class VisitDetailModel with VisitDetailModelMappable {
   final String? facilityAddress;
 
   final String status;
+
+  final String? title;
 
   @MappableField(key: 'visit_type')
   final String? visitType;
@@ -234,6 +247,9 @@ class VisitDetailModel with VisitDetailModelMappable {
   @MappableField(key: 'max_score')
   final int? maxScore;
 
+  @MappableField(key: 'score_percentage')
+  final double? scorePercentage;
+
   @MappableField(key: 'items_total')
   final int? itemsTotal;
 
@@ -245,8 +261,26 @@ class VisitDetailModel with VisitDetailModelMappable {
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
 
+  @MappableField(key: 'travel_tracking_excluded')
+  final bool? travelTrackingExcluded;
+
+  @MappableField(key: 'travel_origin_type')
+  final String? travelOriginType;
+
+  @MappableField(key: 'travel_origin_id')
+  final int? travelOriginId;
+
+  @MappableField(key: 'travel_origin_name')
+  final String? travelOriginName;
+
+  @MappableField(key: 'travel_distance_km')
+  final double? travelDistanceKm;
+
   @MappableField(key: 'travel_started_at')
   final String? travelStartedAt;
+
+  @MappableField(key: 'submitted_at')
+  final String? submittedAt;
 
   static const fromJson = VisitDetailModelMapper.fromJson;
 
@@ -256,6 +290,7 @@ class VisitDetailModel with VisitDetailModelMappable {
         facilityId: facilityId,
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
+        title: title,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
@@ -267,7 +302,14 @@ class VisitDetailModel with VisitDetailModelMappable {
                 role: createdByRole ?? '',
               )
             : null,
+        scorePercentage: scorePercentage,
+        travelTrackingExcluded: travelTrackingExcluded ?? false,
+        travelOriginType: travelOriginType,
+        travelOriginId: travelOriginId,
+        travelOriginName: travelOriginName,
+        travelDistanceKm: travelDistanceKm,
         travelStartedAt: travelStartedAt,
+        submittedAt: submittedAt,
       );
 }
 
