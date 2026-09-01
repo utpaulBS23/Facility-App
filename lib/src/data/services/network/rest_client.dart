@@ -189,8 +189,10 @@ abstract class RestClient {
   @GET(Endpoints.myVisits)
   Future<HttpResponse> getMyVisits({
     @Path('partnerId') required int partnerId,
-    @Query('date') required String date,
+    @Query('date') String? date,
     @Query('status') String? status,
+    @Query('facility_id') int? facilityId,
+    @Query('assigned_to') int? assignedTo,
   });
 
   @GET(Endpoints.visitDetail)

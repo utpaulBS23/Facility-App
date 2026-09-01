@@ -740,11 +740,18 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> getMyVisits({
     required int partnerId,
-    required String date,
+    String? date,
     String? status,
+    int? facilityId,
+    int? assignedTo,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'date': date, r'status': status};
+    final queryParameters = <String, dynamic>{
+      r'date': date,
+      r'status': status,
+      r'facility_id': facilityId,
+      r'assigned_to': assignedTo,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;

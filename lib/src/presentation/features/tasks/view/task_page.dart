@@ -125,7 +125,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        title: DisplaySmallText(context.locale.task.trim()),
+        title: DisplaySmallText(context.locale.issues.trim()),
         titleSpacing: spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
