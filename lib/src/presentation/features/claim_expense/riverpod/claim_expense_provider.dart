@@ -21,18 +21,21 @@ Future<List<MasterDataItemEntity>> claimExpenseTransportModes(Ref ref) async {
   };
 }
 
-// WHY today only: GetMyVisitsUseCase is date-scoped (one day per call), and
-// there is no "recent visits" endpoint to page through — this optional
-// reference-visit picker is limited to today's visits rather than adding
-// N sequential day-by-day requests for a non-essential field.
+// WHY facility-scoped, not date-scoped: matches the documented reference-
+// visit filter (facility_id + assigned_to=self + status=completed) — a
+// claim is filed against a specific destination facility, and the visit it
+// references may have been completed any day, not just today.
 @riverpod
-Future<List<VisitSummaryEntity>> claimExpenseTodaysVisits(Ref ref) async {
-  final today = DateTime.now();
-  final date =
-      '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+Future<List<VisitSummaryEntity>> claimExpenseReferenceVisits(
+  Ref ref,
+  int facilityId,
+) async {
+  final userId = ref.read(getCurrentUserUseCaseProvider).call()?.id;
+  if (userId == null) return [];
+
   final result = await ref
       .read(getMyVisitsUseCaseProvider)
-      .call(date: date, status: 'completed');
+      .call(status: 'completed', facilityId: facilityId, assignedTo: userId);
   return switch (result) {
     Success(:final data) => data?.visits ?? [],
     Error() => [],

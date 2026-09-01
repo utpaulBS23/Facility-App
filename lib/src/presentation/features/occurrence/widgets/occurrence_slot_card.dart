@@ -128,7 +128,7 @@ class _OccurrenceSlotCard extends StatelessWidget {
                         ),
                         if (items != null)
                           PermissionGate(
-                            permissions: const [UserPermission.checklistResponseSubmit],
+                            permissions: const [UserPermission.taskOccurrenceSubmit],
                             child: OutlinedButton.icon(
                               onPressed: onChecklist,
                               icon: const Icon(Icons.checklist_rounded, size: 16),
