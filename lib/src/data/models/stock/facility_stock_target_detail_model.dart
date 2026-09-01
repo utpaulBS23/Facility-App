@@ -24,3 +24,19 @@ class FacilityStockTargetDetailModel
 
   static const fromJson = FacilityStockTargetDetailModelMapper.fromJson;
 }
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class FacilityStockTargetDetailResponseModel
+    with FacilityStockTargetDetailResponseModelMappable {
+  const FacilityStockTargetDetailResponseModel({
+    required this.data,
+  });
+
+  final FacilityStockTargetDetailModel data;
+
+  static const fromJson =
+      FacilityStockTargetDetailResponseModelMapper.fromJson;
+}
