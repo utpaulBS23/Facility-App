@@ -96,9 +96,7 @@ final class StockRepositoryImpl extends StockRepository {
         page: filter.page,
         perPage: filter.perPage,
       );
-      final body = response.data as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>;
-      final responseModel = StockAveragingResponseModel.fromJson(data);
+      final responseModel = StockAveragingResponseModel.fromJson(response.data);
 
       return responseModel.toEntity();
     });
@@ -115,9 +113,8 @@ final class StockRepositoryImpl extends StockRepository {
         partnerId: partnerId,
         facilityId: facilityId,
       );
-      final body = response.data as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>;
-      final responseModel = FacilityStockTargetDetailModel.fromJson(data);
+      final responseModel =
+          FacilityStockTargetDetailResponseModel.fromJson(response.data);
 
       return responseModel.toEntity();
     });
@@ -138,9 +135,8 @@ final class StockRepositoryImpl extends StockRepository {
         targetId: targetId,
         body: requestModel.toJson(),
       );
-      final body = response.data as Map<String, dynamic>;
-      final data = body['data'] as Map<String, dynamic>;
-      final responseModel = FacilityStockTargetModel.fromJson(data);
+      final responseModel =
+          FacilityStockTargetResponseModel.fromJson(response.data);
 
       return responseModel.toEntity();
     });

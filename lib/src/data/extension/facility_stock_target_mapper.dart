@@ -34,6 +34,11 @@ extension TopDemandItemModelMapperExtension on TopDemandItemModel {
   }
 }
 
+extension FacilityStockTargetResponseModelMapperExtension
+    on FacilityStockTargetResponseModel {
+  FacilityStockTargetEntity toEntity() => data.toEntity();
+}
+
 extension FacilityStockTargetDetailModelMapperExtension
     on FacilityStockTargetDetailModel {
   FacilityStockTargetDetailEntity toEntity() {
@@ -46,12 +51,17 @@ extension FacilityStockTargetDetailModelMapperExtension
   }
 }
 
+extension FacilityStockTargetDetailResponseModelMapperExtension
+    on FacilityStockTargetDetailResponseModel {
+  FacilityStockTargetDetailEntity toEntity() => data.toEntity();
+}
+
 extension StockAveragingResponseModelMapperExtension
     on StockAveragingResponseModel {
   StockAveragingPageEntity toEntity() {
     return StockAveragingPageEntity(
-      items: items.map((e) => e.toEntity()).toList(),
-      topDemandItems: topDemandItems.map((e) => e.toEntity()).toList(),
+      items: data.items.map((e) => e.toEntity()).toList(),
+      topDemandItems: data.topDemandItems.map((e) => e.toEntity()).toList(),
     );
   }
 }
