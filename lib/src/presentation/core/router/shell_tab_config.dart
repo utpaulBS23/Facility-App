@@ -74,7 +74,6 @@ final List<ShellTabConfig> shellTabConfigs = [
     // new key, checklistResponseView is the pre-existing gate for this tab.
     permissions: [
       UserPermission.visitTaskView,
-      UserPermission.checklistResponseView,
     ],
   ),
   // WHY permission: this slot now renders the board/occurrence content (see

@@ -311,6 +311,7 @@
   "shiftWindowClosed": "চেক-ইন উইন্ডো বন্ধ",
   "shiftWindowClosedHelp": "সহায়তার জন্য আপনার সুপারভাইজারের সাথে যোগাযোগ করুন।",
   "noAttendantsFound": "কোনো কর্মী পাওয়া যায়নি",
+  "noProblemCategoriesFound": "কোনো সমস্যার ধরন পাওয়া যায়নি",
   "staffAssignedSuccessfully": "স্টাফ সফলভাবে নিযুক্ত হয়েছে।",
   "assignAsSlotLead": "স্লট লিড হিসেবে নিয়োগ করুন",
   "assignAsSlotLeadMessage": "{name} কে কি এই শিফটের স্লট লিড হিসেবে নিয়োগ করা হবে?",

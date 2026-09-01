@@ -88,14 +88,14 @@ enum ShiftEntitlement { attendant, supervisor, none }
 /// battery/accuracy tradeoffs per partner without an app release.
 class TrackingSettingsEntity {
   TrackingSettingsEntity({
-    required this.idlePingIntervalSeconds,
-    required this.activeVisitPingIntervalSeconds,
-    required this.trackingMode,
+    this.idlePingIntervalSeconds,
+    this.activeVisitPingIntervalSeconds,
+    this.trackingMode,
   });
 
-  final int idlePingIntervalSeconds;
-  final int activeVisitPingIntervalSeconds;
-  final String trackingMode;
+  final int? idlePingIntervalSeconds;
+  final int? activeVisitPingIntervalSeconds;
+  final String? trackingMode;
 }
 
 interface class LoginEntity {}
