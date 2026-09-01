@@ -8,7 +8,6 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
-import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -16,14 +15,16 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
-import '../../../core/widgets/filter_chip_group.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/loading_indicator.dart';
+import '../../../core/widgets/picker_sheet_states.dart';
+import '../../../core/widgets/selection_picker_sheet.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/attendance_provider.dart';
 
 part '../widgets/attendance_approve_reject_bar.dart';
 part '../widgets/attendance_body.dart';
-part '../widgets/attendance_filter_sheet.dart';
+part '../widgets/attendant_filter_sheet.dart';
 part '../widgets/attendance_detail_check_card.dart';
 part '../widgets/attendance_detail_info_card.dart';
 part '../widgets/attendance_detail_main_card.dart';
@@ -73,22 +74,39 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     context.pushNamed(Routes.applyLeave);
   }
 
-  Future<void> _pickFilters(List<AccessibleFacilityEntity> facilities) async {
-    final result = await showModalBottomSheet<({int? facilityId, int? userId})>(
+  Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
+    final result = await showModalBottomSheet<({int? facilityId})>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _AttendanceFilterSheet(
+      builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _selectedFacilityId,
+        includeAllOption: true,
+      ),
+    );
+    if (result == null || result.facilityId == _selectedFacilityId) return;
+    // WHY reset attendant: the attendant list is scoped to the selected
+    // facility — a previously picked attendant may not belong to the newly
+    // picked one.
+    setState(() {
+      _selectedFacilityId = result.facilityId;
+      _selectedUserId = null;
+    });
+  }
+
+  Future<void> _pickAttendant() async {
+    final result = await showModalBottomSheet<({int? value})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _AttendantFilterSheet(
+        facilityId: _selectedFacilityId,
         selectedUserId: _selectedUserId,
       ),
     );
-    if (result == null) return;
-    setState(() {
-      _selectedFacilityId = result.facilityId;
-      _selectedUserId = result.userId;
-    });
+    if (result == null || result.value == _selectedUserId) return;
+    setState(() => _selectedUserId = result.value);
   }
 
   Future<void> _pickMonth() async {
@@ -123,8 +141,8 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
-    final hasActiveFilter =
-        _selectedFacilityId != _defaultFacilityId || _selectedUserId != null;
+    final hasFacilityFilter = _selectedFacilityId != _defaultFacilityId;
+    final hasAttendantFilter = _selectedUserId != null;
     final spacing = context.dimensions.spacing;
 
     return Scaffold(
@@ -140,27 +158,15 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
             icon: const Icon(Icons.calendar_month_outlined, size: 18),
             label: Text(_selectedMonth),
           ),
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              IconButton(
-                onPressed: () => _pickFilters(facilities),
-                icon: const Icon(Icons.filter_list_rounded),
-              ),
-              if (hasActiveFilter)
-                Positioned(
-                  top: spacing.s8,
-                  right: spacing.s8,
-                  child: Container(
-                    width: spacing.s8,
-                    height: spacing.s8,
-                    decoration: BoxDecoration(
-                      color: context.color.primary,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
+          _FilterIconButton(
+            icon: Icons.location_on_outlined,
+            hasActiveFilter: hasFacilityFilter,
+            onPressed: () => _pickFacility(facilities),
+          ),
+          _FilterIconButton(
+            icon: Icons.person_outline_rounded,
+            hasActiveFilter: hasAttendantFilter,
+            onPressed: _pickAttendant,
           ),
           Gap(spacing.s8),
         ],
@@ -178,6 +184,43 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text(err.localizedMessage(context))),
       ),
+    );
+  }
+}
+
+class _FilterIconButton extends StatelessWidget {
+  const _FilterIconButton({
+    required this.icon,
+    required this.hasActiveFilter,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final bool hasActiveFilter;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(onPressed: onPressed, icon: Icon(icon)),
+        if (hasActiveFilter)
+          Positioned(
+            top: spacing.s8,
+            right: spacing.s8,
+            child: Container(
+              width: spacing.s8,
+              height: spacing.s8,
+              decoration: BoxDecoration(
+                color: context.color.primary,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

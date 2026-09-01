@@ -420,6 +420,8 @@
   "claimExpenseSubtitle": "Submit travel expense claims",
   "addTravelExpense": "Add Travel Expense",
   "referenceVisitOptional": "Reference visit (optional)",
+  "none": "None",
+  "noVisitsFound": "No visits found",
   "startLocation": "Start location",
   "startLocationHint": "e.g. Mirpur-10 Toilet",
   "destination": "Destination",
