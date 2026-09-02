@@ -46,6 +46,7 @@ extension AttendanceOverviewResponseModelToEntity
       presentCount: summary?.presentCount,
       lateCount: summary?.lateCount,
       absentCount: summary?.absentCount,
+      rejectCount: summary?.rejectCount,
       leaveCount: summary?.leaveCount,
       attendances: attendances.map((m) => m.toEntity()).toList(),
     );

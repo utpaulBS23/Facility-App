@@ -10,14 +10,16 @@ class _AttendanceListItem extends StatelessWidget {
     AttendanceStatus.approved ||
     AttendanceStatus.autoApproved => context.color.successAlt,
     AttendanceStatus.pending => context.color.warningAlt,
-    AttendanceStatus.rejected => context.color.errorAlt,
+    AttendanceStatus.rejected ||
+    AttendanceStatus.absent => context.color.errorAlt,
   };
 
   Color _iconColor(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.approved ||
     AttendanceStatus.autoApproved => context.color.success,
     AttendanceStatus.pending => context.color.warning,
-    AttendanceStatus.rejected => context.color.error,
+    AttendanceStatus.rejected ||
+    AttendanceStatus.absent => context.color.error,
   };
 
   IconData get _icon => switch (item.displayStatus) {
@@ -25,13 +27,15 @@ class _AttendanceListItem extends StatelessWidget {
     AttendanceStatus.autoApproved => Icons.check_rounded,
     AttendanceStatus.pending => Icons.hourglass_empty_rounded,
     AttendanceStatus.rejected => Icons.close_rounded,
+    AttendanceStatus.absent => Icons.person_off_rounded,
   };
 
   Color _dotColor(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.approved ||
     AttendanceStatus.autoApproved => context.color.success,
     AttendanceStatus.pending => context.color.warning,
-    AttendanceStatus.rejected => context.color.error,
+    AttendanceStatus.rejected ||
+    AttendanceStatus.absent => context.color.error,
   };
 
   String _statusLabel(BuildContext context) => switch (item.displayStatus) {
@@ -39,6 +43,7 @@ class _AttendanceListItem extends StatelessWidget {
     AttendanceStatus.approved => 'Approved',
     AttendanceStatus.autoApproved => 'Auto Approved',
     AttendanceStatus.rejected => context.locale.rejected,
+    AttendanceStatus.absent => context.locale.absent,
   };
 
   @override
@@ -132,7 +137,9 @@ class _AttendanceListItem extends StatelessWidget {
                           Gap(spacing.s4),
                           Flexible(
                             child: Text(
-                              DateFormatter.formatTimeRange(item.shift!.shiftType),
+                              DateFormatter.formatTimeRange(
+                                item.shift!.shiftType,
+                              ),
                               style: context.textStyle.bodySmall.copyWith(
                                 color: context.color.text.secondary,
                               ),
@@ -161,7 +168,8 @@ class _AttendanceListItem extends StatelessWidget {
                         ],
                       ),
                     ],
-                    if (item.checkInTime != null || item.checkOutTime != null) ...[
+                    if (item.checkInTime != null ||
+                        item.checkOutTime != null) ...[
                       Gap(spacing.s6),
                       Row(
                         children: [
@@ -234,10 +242,7 @@ class _TimeChip extends StatelessWidget {
       children: [
         Icon(icon, size: 12, color: color),
         Gap(context.dimensions.spacing.s4),
-        Text(
-          time,
-          style: context.textStyle.bodySmall.copyWith(color: color),
-        ),
+        Text(time, style: context.textStyle.bodySmall.copyWith(color: color)),
       ],
     );
   }

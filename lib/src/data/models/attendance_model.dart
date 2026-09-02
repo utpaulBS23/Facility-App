@@ -8,6 +8,7 @@ class AttendanceSummaryModel with AttendanceSummaryModelMappable {
     this.presentCount,
     this.lateCount,
     this.absentCount,
+    this.rejectCount,
     this.leaveCount,
   });
 
@@ -19,6 +20,9 @@ class AttendanceSummaryModel with AttendanceSummaryModelMappable {
 
   @MappableField(key: 'absent_count')
   final int? absentCount;
+
+  @MappableField(key: 'reject_count')
+  final int? rejectCount;
 
   @MappableField(key: 'leave_count')
   final int? leaveCount;
@@ -68,7 +72,7 @@ class AttendanceShiftInfoModel with AttendanceShiftInfoModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class AttendanceItemModel with AttendanceItemModelMappable {
   AttendanceItemModel({
-    required this.id,
+    this.id,
     required this.userId,
     this.userName,
     this.userUid,
@@ -87,7 +91,7 @@ class AttendanceItemModel with AttendanceItemModelMappable {
     this.approver,
   });
 
-  final int id;
+  final int? id;
 
   @MappableField(key: 'user_id')
   final int userId;
