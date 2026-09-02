@@ -63,5 +63,7 @@ class Routes {
   static const String deliveryComplaint = '/delivery-complaint';
   static const String updateStock = '/update-stock';
   static const String stock = '/stock';
+  static const String stockAveraging = '/stock-averaging';
+  static const String stockAveragingDetails = '/stock-averaging-details';
 }
 
