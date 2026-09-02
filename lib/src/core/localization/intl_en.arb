@@ -404,6 +404,8 @@
   "submitChecklistFailed": "Failed to submit inspection checklist.",
   "saveChecklistAnswerFailed": "Failed to save answer.",
   "leaveRequests": "Leave Requests",
+  "myLeave": "My Leave",
+  "leaveApprovals": "Leave Approvals",
   "managerApproval": "Manager Approval",
   "noRequestsFound": "No requests found",
   "selectAttendant": "Select attendant",

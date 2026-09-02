@@ -11,7 +11,7 @@ class _LeaveStatusTimeline extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final applicantName = leaveRequest.applicant.name;
+    final applicantName = leaveRequest.applicant?.name ?? leaveRequest.leavePolicy.name;
     final steps = leaveRequest.approvalSteps;
 
     return Container(
