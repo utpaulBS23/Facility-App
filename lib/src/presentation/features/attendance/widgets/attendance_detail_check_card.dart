@@ -16,20 +16,16 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
   final AttendanceItemEntity detail;
 
   Color _dotColor(BuildContext context) => switch (detail.displayStatus) {
-    AttendanceStatus.present => context.color.success,
-    AttendanceStatus.late => context.color.warning,
-    AttendanceStatus.absent => context.color.error,
-    AttendanceStatus.onLeave => context.color.text.secondary,
+    AttendanceStatus.approved ||
+    AttendanceStatus.autoApproved => context.color.success,
     AttendanceStatus.pending => context.color.warning,
     AttendanceStatus.rejected => context.color.error,
   };
 
   String _statusLabel(BuildContext context) => switch (detail.displayStatus) {
-    AttendanceStatus.present => context.locale.present,
-    AttendanceStatus.late => context.locale.late,
-    AttendanceStatus.absent => context.locale.absent,
-    AttendanceStatus.onLeave => context.locale.onLeave,
     AttendanceStatus.pending => context.locale.pending,
+    AttendanceStatus.approved => 'Approved',
+    AttendanceStatus.autoApproved => 'Auto Approved',
     AttendanceStatus.rejected => context.locale.rejected,
   };
 
