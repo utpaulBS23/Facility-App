@@ -14,7 +14,7 @@ class _LeaveRequestsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filtered = requests.where((r) {
-      final name = r.applicant.name.toLowerCase();
+      final name = (r.applicant?.name ?? r.leavePolicy.name).toLowerCase();
       final matchesSearch = searchQuery.isEmpty || name.contains(searchQuery);
       if (!matchesSearch) {
         return false;

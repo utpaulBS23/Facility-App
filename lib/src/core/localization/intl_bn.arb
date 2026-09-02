@@ -757,6 +757,8 @@
   "missingLabel": "ঘাটতি",
   "complaintReasonLabel": "অভিযোগের কারণ",
   "complaintReasonHint": "সমস্যা বা অভিযোগের কারণ বর্ণনা করুন...",
-  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)"
+  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)",
+  "myLeave": "আমার ছুটি",
+  "leaveApprovals": "ছুটি অনুমোদন"
 }
 

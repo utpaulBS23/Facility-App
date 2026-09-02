@@ -57,7 +57,7 @@ class LeaveRequestEntity {
   const LeaveRequestEntity({
     required this.id,
     required this.referenceCode,
-    required this.applicant,
+    this.applicant,
     this.createdBy,
     required this.leavePolicy,
     required this.startDate,
@@ -76,7 +76,7 @@ class LeaveRequestEntity {
 
   final int id;
   final String referenceCode;
-  final LeaveApplicantEntity applicant;
+  final LeaveApplicantEntity? applicant;
   final LeaveApplicantEntity? createdBy;
   final LeavePolicyEntity leavePolicy;
   final String startDate;
@@ -97,16 +97,14 @@ class LeaveRequestEntity {
   final bool canAction;
 
   bool isFiledOnBehalf() {
-    return switch (createdBy) {
-      final creator? => creator.id != applicant.id,
-      null => false,
-    };
+    if (createdBy == null || applicant == null) return false;
+    return createdBy!.id != applicant!.id;
   }
 
   String submitterName() {
-    return switch (createdBy) {
-      final creator? when creator.id != applicant.id => creator.name,
-      _ => applicant.name,
-    };
+    if (createdBy != null && applicant != null && createdBy!.id != applicant!.id) {
+      return createdBy!.name;
+    }
+    return applicant?.name ?? leavePolicy.name;
   }
 }

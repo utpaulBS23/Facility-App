@@ -8,10 +8,18 @@ import 'apply_leave_provider/submit_leave_request_provider.dart';
 
 part 'leave_requests_provider.g.dart';
 
+enum LeaveTab {
+  myLeave,
+  leaveApprovals,
+}
+
 @riverpod
 class LeaveRequests extends _$LeaveRequests {
   String _searchQuery = '';
   LeaveFilter _selectedFilter = LeaveFilter.all;
+  LeaveTab _currentTab = LeaveTab.myLeave;
+
+  LeaveTab get currentTab => _currentTab;
 
   @override
   Future<List<LeaveRequestEntity>> build() async {
@@ -21,26 +29,36 @@ class LeaveRequests extends _$LeaveRequests {
       }
     });
 
-    return fetch(search: _searchQuery, filter: _selectedFilter);
+    return fetch(
+      tab: _currentTab,
+      search: _searchQuery,
+      filter: _selectedFilter,
+    );
   }
 
   Future<List<LeaveRequestEntity>> fetch({
+    LeaveTab? tab,
     String search = '',
     LeaveFilter filter = LeaveFilter.all,
   }) async {
+    if (tab != null) _currentTab = tab;
     _searchQuery = search;
     _selectedFilter = filter;
 
     state = const AsyncValue.loading();
 
-    final result = await ref
-        .read(getLeaveApprovalsUseCaseProvider)
-        .call(status: filter.status);
+    final result = _currentTab == LeaveTab.leaveApprovals
+        ? await ref
+            .read(getLeaveApprovalsUseCaseProvider)
+            .call(status: filter.status)
+        : await ref
+            .read(getMyLeavesUseCaseProvider)
+            .call(status: filter.status);
 
     return switch (result) {
       Success(:final data) => _onFetchSuccess(data ?? const []),
       Error(:final error) => _onFetchError(error),
-      _ => _onFetchError(Failure.emptyResponse('get leave approvals')),
+      _ => _onFetchError(Failure.emptyResponse('load leave requests')),
     };
   }
 
@@ -54,12 +72,17 @@ class LeaveRequests extends _$LeaveRequests {
     return const [];
   }
 
+  void setTab(LeaveTab tab) {
+    if (_currentTab == tab) return;
+    fetch(tab: tab, search: _searchQuery, filter: _selectedFilter);
+  }
+
   void search(String query) {
-    fetch(search: query, filter: _selectedFilter);
+    fetch(tab: _currentTab, search: query, filter: _selectedFilter);
   }
 
   void filter(LeaveFilter filter) {
-    fetch(search: _searchQuery, filter: filter);
+    fetch(tab: _currentTab, search: _searchQuery, filter: filter);
   }
 
   Future<void> approve(int leaveRequestId) async {
