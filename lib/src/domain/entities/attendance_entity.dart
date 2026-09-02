@@ -3,7 +3,12 @@ enum AttendanceStatue { pending, success, reject, needFace }
 
 // WHY: Separate from AttendanceStatue — this enum drives UI display (color,
 // label) for the attendance history list and detail screens.
-enum AttendanceStatus { present, late, absent, onLeave, pending, rejected }
+enum AttendanceStatus {
+  pending,
+  approved,
+  autoApproved,
+  rejected,
+}
 
 class AttendanceShiftInfoEntity {
   const AttendanceShiftInfoEntity({
@@ -72,31 +77,65 @@ class AttendanceItemEntity {
   final AttendanceShiftInfoEntity? shift;
   final AttendanceApproverEntity? approver;
 
-  // WHY: API returns raw `status` string + `isLate` bool; this getter
-  // collapses them into a single enum the UI can switch on without
-  // duplicating the mapping logic across widgets.
-  AttendanceStatus get displayStatus {
-    if (status == 'approved') {
-      return isLate ? AttendanceStatus.late : AttendanceStatus.present;
-    }
-    if (status == 'rejected') return AttendanceStatus.rejected;
-
-    return AttendanceStatus.pending;
-  }
+  // WHY: API returns raw `status` string ('pending', 'approved', 'auto_approved',
+  // 'rejected'); maps directly to backend enum.
+  AttendanceStatus get displayStatus => switch (status) {
+        'approved' => AttendanceStatus.approved,
+        'auto_approved' || 'autoApproved' => AttendanceStatus.autoApproved,
+        'rejected' => AttendanceStatus.rejected,
+        _ => AttendanceStatus.pending,
+      };
 }
 
 class MonthlyAttendanceSummaryEntity {
   const MonthlyAttendanceSummaryEntity({
-    required this.presentCount,
-    required this.lateCount,
-    required this.absentCount,
-    required this.leaveCount,
     required this.attendances,
-  });
+    int? presentCount,
+    int? lateCount,
+    int? absentCount,
+    int? leaveCount,
+  })  : _rawPresentCount = presentCount,
+        _rawLateCount = lateCount,
+        _rawAbsentCount = absentCount,
+        _rawLeaveCount = leaveCount;
 
-  final int presentCount;
-  final int lateCount;
-  final int absentCount;
-  final int leaveCount;
   final List<AttendanceItemEntity> attendances;
+  final int? _rawPresentCount;
+  final int? _rawLateCount;
+  final int? _rawAbsentCount;
+  final int? _rawLeaveCount;
+
+  int get presentCount {
+    final count = _rawPresentCount;
+    if (count != null && count > 0) return count;
+    return attendances
+        .where(
+          (a) =>
+              a.displayStatus == AttendanceStatus.approved ||
+              a.displayStatus == AttendanceStatus.autoApproved,
+        )
+        .length;
+  }
+
+  int get lateCount {
+    final count = _rawLateCount;
+    if (count != null && count > 0) return count;
+    return attendances.where((a) => a.isLate).length;
+  }
+
+  int get absentCount {
+    final count = _rawAbsentCount;
+    if (count != null && count > 0) return count;
+    return attendances
+        .where((a) => a.displayStatus == AttendanceStatus.rejected)
+        .length;
+  }
+
+  int get leaveCount {
+    final count = _rawLeaveCount;
+    if (count != null && count > 0) return count;
+    return attendances
+        .where((a) => a.displayStatus == AttendanceStatus.pending)
+        .length;
+  }
 }

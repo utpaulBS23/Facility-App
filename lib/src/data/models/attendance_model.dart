@@ -130,3 +130,21 @@ class AttendanceItemModel with AttendanceItemModelMappable {
 
   static const fromJson = AttendanceItemModelMapper.fromJson;
 }
+
+@MappableClass(generateMethods: GenerateMethods.decode)
+class AttendanceOverviewResponseModel
+    with AttendanceOverviewResponseModelMappable {
+  AttendanceOverviewResponseModel({
+    required this.success,
+    this.message,
+    this.summary,
+    this.attendances = const [],
+  });
+
+  final bool success;
+  final String? message;
+  final AttendanceSummaryModel? summary;
+  final List<AttendanceItemModel> attendances;
+
+  static const fromJson = AttendanceOverviewResponseModelMapper.fromJson;
+}
