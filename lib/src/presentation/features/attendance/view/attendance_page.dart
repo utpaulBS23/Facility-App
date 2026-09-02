@@ -158,15 +158,22 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
             icon: const Icon(Icons.calendar_month_outlined, size: 18),
             label: Text(_selectedMonth),
           ),
-          _FilterIconButton(
-            icon: Icons.location_on_outlined,
-            hasActiveFilter: hasFacilityFilter,
-            onPressed: () => _pickFacility(facilities),
-          ),
-          _FilterIconButton(
-            icon: Icons.person_outline_rounded,
-            hasActiveFilter: hasAttendantFilter,
-            onPressed: _pickAttendant,
+          if (facilities.length > 1)
+            _FilterIconButton(
+              icon: Icons.location_on_outlined,
+              hasActiveFilter: hasFacilityFilter,
+              onPressed: () => _pickFacility(facilities),
+            ),
+          PermissionGate(
+            permissions: const [
+              UserPermission.supervisorAttendanceView,
+              UserPermission.attendanceApprove,
+            ],
+            child: _FilterIconButton(
+              icon: Icons.person_outline_rounded,
+              hasActiveFilter: hasAttendantFilter,
+              onPressed: _pickAttendant,
+            ),
           ),
           Gap(spacing.s8),
         ],
