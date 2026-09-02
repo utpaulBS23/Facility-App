@@ -107,7 +107,7 @@ class _AttendanceListItem extends StatelessWidget {
                     ],
                   ),
                   if (item.userName.trim().isNotEmpty) ...[
-                    Gap(spacing.s2),
+                    Gap(spacing.s6),
                     Row(
                       children: [
                         Icon(
@@ -126,7 +126,7 @@ class _AttendanceListItem extends StatelessWidget {
                     ),
                   ],
                   if (item.shift?.facilityName.trim().isNotEmpty == true) ...[
-                    Gap(spacing.s2),
+                    Gap(spacing.s6),
                     Row(
                       children: [
                         Icon(
@@ -148,7 +148,7 @@ class _AttendanceListItem extends StatelessWidget {
                     ),
                   ],
                   if (item.shift?.shiftType.trim().isNotEmpty == true) ...[
-                    Gap(spacing.s2),
+                    Gap(spacing.s6),
                     Row(
                       children: [
                         Icon(
@@ -170,7 +170,7 @@ class _AttendanceListItem extends StatelessWidget {
                     ),
                   ],
                   if (item.checkInTime != null || item.checkOutTime != null) ...[
-                    Gap(spacing.s4),
+                    Gap(spacing.s6),
                     Row(
                       children: [
                         if (item.checkInTime != null) ...[
