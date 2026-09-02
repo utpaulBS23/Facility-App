@@ -111,6 +111,7 @@ class UserEntity extends LoginEntity {
     this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
+    this.profileImage,
   });
 
   final int id;
@@ -122,6 +123,7 @@ class UserEntity extends LoginEntity {
   final String? supervisor;
   final int permissionVersion;
   final bool twoFactorEnabled;
+  final String? profileImage;
 }
 
 class LoginRequestEntity extends LoginEntity {
