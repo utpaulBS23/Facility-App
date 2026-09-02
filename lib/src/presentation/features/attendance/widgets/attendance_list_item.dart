@@ -89,9 +89,12 @@ class _AttendanceListItem extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          date,
+                          item.userName.trim().isNotEmpty
+                              ? item.userName
+                              : date,
                           style: context.textStyle.labelLarge.copyWith(
                             color: context.color.text.primary,
+                            fontWeight: FontWeight.bold,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -103,34 +106,99 @@ class _AttendanceListItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Gap(spacing.s2),
-                  Row(
-                    children: [
-                      if (item.checkInTime != null) ...[
-                        _TimeChip(
-                          icon: Icons.login_rounded,
-                          time: DateFormatter.timeOnly(item.checkInTime!),
+                  if (item.userName.trim().isNotEmpty) ...[
+                    Gap(spacing.s2),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: 12,
                           color: context.color.text.secondary,
                         ),
-                        Gap(spacing.s10),
-                      ],
-                      if (item.checkOutTime != null) ...[
-                        _TimeChip(
-                          icon: Icons.logout_rounded,
-                          time: DateFormatter.timeOnly(item.checkOutTime!),
-                          color: context.color.text.secondary,
-                        ),
-                        Gap(spacing.s10),
-                      ],
-                      if (item.durationHours != null)
+                        Gap(spacing.s4),
                         Text(
-                          item.durationHours!,
+                          date,
                           style: context.textStyle.bodySmall.copyWith(
                             color: context.color.text.secondary,
                           ),
                         ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
+                  if (item.shift?.facilityName.trim().isNotEmpty == true) ...[
+                    Gap(spacing.s2),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.business_rounded,
+                          size: 12,
+                          color: context.color.text.secondary,
+                        ),
+                        Gap(spacing.s4),
+                        Flexible(
+                          child: Text(
+                            item.shift!.facilityName,
+                            style: context.textStyle.bodySmall.copyWith(
+                              color: context.color.text.secondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (item.shift?.shiftType.trim().isNotEmpty == true) ...[
+                    Gap(spacing.s2),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.schedule_rounded,
+                          size: 12,
+                          color: context.color.text.secondary,
+                        ),
+                        Gap(spacing.s4),
+                        Flexible(
+                          child: Text(
+                            DateFormatter.formatTimeRange(item.shift!.shiftType),
+                            style: context.textStyle.bodySmall.copyWith(
+                              color: context.color.text.secondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (item.checkInTime != null || item.checkOutTime != null) ...[
+                    Gap(spacing.s4),
+                    Row(
+                      children: [
+                        if (item.checkInTime != null) ...[
+                          _TimeChip(
+                            icon: Icons.login_rounded,
+                            time: DateFormatter.timeOnly(item.checkInTime!),
+                            color: context.color.text.secondary,
+                          ),
+                          Gap(spacing.s10),
+                        ],
+                        if (item.checkOutTime != null) ...[
+                          _TimeChip(
+                            icon: Icons.logout_rounded,
+                            time: DateFormatter.timeOnly(item.checkOutTime!),
+                            color: context.color.text.secondary,
+                          ),
+                          Gap(spacing.s10),
+                        ],
+                        if (item.durationHours != null)
+                          Text(
+                            item.durationHours!,
+                            style: context.textStyle.bodySmall.copyWith(
+                              color: context.color.text.secondary,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
