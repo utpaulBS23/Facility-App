@@ -141,7 +141,8 @@ class _TaskCard extends StatelessWidget {
                       Gap(spacing.s4),
                       _InfoRow(
                         icon: Icons.access_time_outlined,
-                        label: '${context.locale.due}: ${task.dueTime}',
+                        label:
+                            '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
                         muted: _isCompleted,
                       ),
                       if (_canStart || _canComplete) ...[
