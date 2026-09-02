@@ -19,7 +19,8 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
     AttendanceStatus.approved ||
     AttendanceStatus.autoApproved => context.color.success,
     AttendanceStatus.pending => context.color.warning,
-    AttendanceStatus.rejected => context.color.error,
+    AttendanceStatus.rejected ||
+    AttendanceStatus.absent => context.color.error,
   };
 
   String _statusLabel(BuildContext context) => switch (detail.displayStatus) {
@@ -27,6 +28,7 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
     AttendanceStatus.approved => 'Approved',
     AttendanceStatus.autoApproved => 'Auto Approved',
     AttendanceStatus.rejected => context.locale.rejected,
+    AttendanceStatus.absent => context.locale.absent,
   };
 
   @override

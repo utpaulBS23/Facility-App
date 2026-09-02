@@ -8,6 +8,7 @@ enum AttendanceStatus {
   approved,
   autoApproved,
   rejected,
+  absent,
 }
 
 class AttendanceShiftInfoEntity {
@@ -40,7 +41,7 @@ class AttendanceApproverEntity {
 
 class AttendanceItemEntity {
   const AttendanceItemEntity({
-    required this.id,
+    this.id,
     required this.userId,
     required this.userName,
     required this.userUid,
@@ -59,7 +60,7 @@ class AttendanceItemEntity {
     this.approver,
   });
 
-  final int id;
+  final int? id;
   final int userId;
   final String userName;
   final String userUid;
@@ -78,11 +79,12 @@ class AttendanceItemEntity {
   final AttendanceApproverEntity? approver;
 
   // WHY: API returns raw `status` string ('pending', 'approved', 'auto_approved',
-  // 'rejected'); maps directly to backend enum.
+  // 'rejected', 'absent').
   AttendanceStatus get displayStatus => switch (status) {
         'approved' => AttendanceStatus.approved,
         'auto_approved' || 'autoApproved' => AttendanceStatus.autoApproved,
         'rejected' => AttendanceStatus.rejected,
+        'absent' => AttendanceStatus.absent,
         _ => AttendanceStatus.pending,
       };
 }
@@ -93,16 +95,19 @@ class MonthlyAttendanceSummaryEntity {
     int? presentCount,
     int? lateCount,
     int? absentCount,
+    int? rejectCount,
     int? leaveCount,
   })  : _rawPresentCount = presentCount,
         _rawLateCount = lateCount,
         _rawAbsentCount = absentCount,
+        _rawRejectCount = rejectCount,
         _rawLeaveCount = leaveCount;
 
   final List<AttendanceItemEntity> attendances;
   final int? _rawPresentCount;
   final int? _rawLateCount;
   final int? _rawAbsentCount;
+  final int? _rawRejectCount;
   final int? _rawLeaveCount;
 
   int get presentCount {
@@ -125,6 +130,14 @@ class MonthlyAttendanceSummaryEntity {
 
   int get absentCount {
     final count = _rawAbsentCount;
+    if (count != null && count > 0) return count;
+    return attendances
+        .where((a) => a.displayStatus == AttendanceStatus.absent)
+        .length;
+  }
+
+  int get rejectCount {
+    final count = _rawRejectCount;
     if (count != null && count > 0) return count;
     return attendances
         .where((a) => a.displayStatus == AttendanceStatus.rejected)
