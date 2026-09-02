@@ -5,6 +5,7 @@ class _MenuHeaderSection extends StatelessWidget {
     required this.name,
     required this.email,
     this.partnerName,
+    this.avatarUrl,
     this.appVersion,
     this.buildNumber,
   });
@@ -12,6 +13,7 @@ class _MenuHeaderSection extends StatelessWidget {
   final String name;
   final String email;
   final String? partnerName;
+  final String? avatarUrl;
   final String? appVersion;
   final String? buildNumber;
 
@@ -38,6 +40,13 @@ class _MenuHeaderSection extends StatelessWidget {
             ),
           ],
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(radius.r20),
           bottomRight: Radius.circular(radius.r20),
@@ -52,13 +61,36 @@ class _MenuHeaderSection extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircleAvatar(
-                      radius: spacing.s36,
-                      backgroundColor: color.onPrimary.withValues(alpha: 0.2),
-                      child: Icon(
-                        Icons.person,
-                        color: color.onPrimary,
-                        size: spacing.s32,
+                    ClipOval(
+                      child: Container(
+                        width: 72,
+                        height: 72,
+                        color: color.onPrimary.withValues(alpha: 0.2),
+                        child: avatarUrl != null && avatarUrl!.isNotEmpty
+                            ? Image.network(
+                                avatarUrl!,
+                                width: 72,
+                                height: 72,
+                                fit: BoxFit.cover,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Shimmer.fromColors(
+                                    baseColor:
+                                        color.onPrimary.withValues(alpha: 0.2),
+                                    highlightColor:
+                                        color.onPrimary.withValues(alpha: 0.4),
+                                    child: Container(
+                                      width: 72,
+                                      height: 72,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (_, _, _) =>
+                                    _buildFallbackAvatar(context),
+                              )
+                            : _buildFallbackAvatar(context),
                       ),
                     ),
                     Gap(spacing.s16),
@@ -135,6 +167,31 @@ class _MenuHeaderSection extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildFallbackAvatar(BuildContext context) {
+    final color = context.color;
+    final textStyle = context.textStyle;
+    final spacing = context.dimensions.spacing;
+
+    if (name.trim().isNotEmpty) {
+      return Center(
+        child: Text(
+          name.trim()[0].toUpperCase(),
+          style: textStyle.titleLarge.copyWith(
+            color: color.onPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+    return Center(
+      child: Icon(
+        Icons.person,
+        color: color.onPrimary,
+        size: spacing.s32,
       ),
     );
   }

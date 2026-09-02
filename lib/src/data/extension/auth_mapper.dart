@@ -12,6 +12,7 @@ extension UserModelToEntity on UserModel {
     supervisor: supervisor,
     permissionVersion: permissionVersion,
     twoFactorEnabled: twoFactorEnabled,
+    profileImage: profileImage,
   );
 }
 
