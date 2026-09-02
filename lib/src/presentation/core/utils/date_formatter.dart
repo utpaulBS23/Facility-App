@@ -3,33 +3,25 @@ import 'package:intl/intl.dart';
 final class DateFormatter {
   const DateFormatter._();
 
-  /// Local `HH:mm:ss`, `HH:mm`, or datetime string → `h:mm a`.
-  static String shiftTime(String raw) {
-    final trimmed = raw.trim();
-    if (trimmed.isEmpty) return raw;
+  /// Local `HH:mm:ss` or `HH:mm` string → `h:mm a`.
+  static String shiftTime(String hms) {
+    final trimmed = hms.trim();
+    if (trimmed.isEmpty) return hms;
+    final pattern = trimmed.split(':').length == 3 ? 'HH:mm:ss' : 'HH:mm';
     try {
-      final formattedIso = trimmed.contains('T') ? trimmed : trimmed.replaceAll(' ', 'T');
-      final dt = DateTime.tryParse(formattedIso);
-      if (dt != null) {
-        return DateFormat('h:mm a').format(dt);
-      }
-      final parts = trimmed.split(':');
-      if (parts.length >= 2) {
-        final hour = int.parse(parts[0]);
-        final minute = int.parse(parts[1]);
-        final timeDt = DateTime(2000, 1, 1, hour, minute);
-        return DateFormat('h:mm a').format(timeDt);
-      }
-    } catch (_) {}
-    return raw;
+      return DateFormat('h:mm a').format(DateFormat(pattern).parse(trimmed));
+    } catch (_) {
+      return hms;
+    }
   }
 
   /// Local [DateTime] → `MMM d, h:mm a`.
   static String timestamp(DateTime dt) =>
-      DateFormat('MMM d, h:mm a').format(dt);
+      DateFormat('MMM d, h:mm a').format(dt.toLocal());
 
   /// Local [DateTime] → `h:mm a`.
-  static String timeOnly(DateTime dt) => DateFormat('h:mm a').format(dt);
+  static String timeOnly(DateTime dt) =>
+      DateFormat('h:mm a').format(dt.toLocal());
 
   static String shiftDate(DateTime d) => DateFormat('EEE, MMM d').format(d);
 
@@ -49,8 +41,7 @@ final class DateFormatter {
   static String formatDueTime(String raw) {
     if (raw.isEmpty) return raw;
     try {
-      final formattedRaw = raw.contains('T') ? raw : raw.replaceAll(' ', 'T');
-      final dt = DateTime.tryParse(formattedRaw);
+      final dt = DateTime.tryParse(raw.contains('T') ? raw : raw.replaceAll(' ', 'T'));
       if (dt != null) return timestamp(dt);
     } catch (_) {}
     return shiftTime(raw);
