@@ -63,7 +63,9 @@ class _OccurrenceSlotCard extends StatelessWidget {
                                   ),
                                   Gap(spacing.s4),
                                   BodySmallText(
-                                    occurrence.timeRange,
+                                    DateFormatter.formatTimeRange(
+                                      occurrence.timeRange,
+                                    ),
                                     color: context.color.text.secondary,
                                   ),
                                 ],
