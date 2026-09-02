@@ -98,25 +98,6 @@ class _AttendanceListItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (item.userName.trim().isNotEmpty) ...[
-                      Gap(spacing.s6),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_outlined,
-                            size: 12,
-                            color: context.color.text.secondary,
-                          ),
-                          Gap(spacing.s4),
-                          Text(
-                            date,
-                            style: context.textStyle.bodySmall.copyWith(
-                              color: context.color.text.secondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                     if (item.shift?.facilityName.trim().isNotEmpty == true) ...[
                       Gap(spacing.s6),
                       Row(
@@ -130,7 +111,7 @@ class _AttendanceListItem extends StatelessWidget {
                           Flexible(
                             child: Text(
                               item.shift!.facilityName,
-                              style: context.textStyle.bodySmall.copyWith(
+                              style: context.textStyle.titleSmall.copyWith(
                                 color: context.color.text.secondary,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -156,6 +137,25 @@ class _AttendanceListItem extends StatelessWidget {
                                 color: context.color.text.secondary,
                               ),
                               overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    if (item.userName.trim().isNotEmpty) ...[
+                      Gap(spacing.s6),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_outlined,
+                            size: 12,
+                            color: context.color.text.secondary,
+                          ),
+                          Gap(spacing.s4),
+                          Text(
+                            date,
+                            style: context.textStyle.bodySmall.copyWith(
+                              color: context.color.text.secondary,
                             ),
                           ),
                         ],
