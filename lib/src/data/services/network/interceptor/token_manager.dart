@@ -132,7 +132,7 @@ class TokenManager extends Interceptor {
     DioException originalError,
     ErrorInterceptorHandler handler,
   ) async {
-    sessionService.clear();
+    sessionService.notifyUnauthorized();
     handler.reject(originalError);
   }
 }
