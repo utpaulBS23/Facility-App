@@ -670,3 +670,30 @@ SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+SendForgotPasswordOtpUseCase sendForgotPasswordOtpUseCase(Ref ref) {
+  return SendForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+VerifyForgotPasswordOtpUseCase verifyForgotPasswordOtpUseCase(Ref ref) {
+  return VerifyForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+ResetForgotPasswordUseCase resetForgotPasswordUseCase(Ref ref) {
+  return ResetForgotPasswordUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+GetProfileUseCase getProfileUseCase(Ref ref) {
+  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+UpdateProfileUseCase updateProfileUseCase(Ref ref) {
+  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+

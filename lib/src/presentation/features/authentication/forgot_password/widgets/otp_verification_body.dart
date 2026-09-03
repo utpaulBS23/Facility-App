@@ -1,20 +1,24 @@
 // Author: Md. Shahin Bashar
 // Created: 2026-04-03
 
-part of '../view/email_verification_page.dart';
+part of '../view/otp_verification_page.dart';
 
-class _EmailVerificationBody extends StatelessWidget {
-  const _EmailVerificationBody({
+class _OtpVerificationBody extends StatelessWidget {
+  const _OtpVerificationBody({
+    this.phoneNumber,
     required this.otpController,
     required this.onOtpCompleted,
     required this.onResendCode,
     required this.onTryAnotherEmail,
+    required this.isLoading,
   });
 
+  final String? phoneNumber;
   final TextEditingController otpController;
   final ValueChanged<String> onOtpCompleted;
   final VoidCallback onResendCode;
   final VoidCallback onTryAnotherEmail;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +51,10 @@ class _EmailVerificationBody extends StatelessWidget {
       ),
     );
 
+    final phoneStr = phoneNumber != null && phoneNumber!.isNotEmpty
+        ? phoneNumber
+        : '';
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -56,34 +64,34 @@ class _EmailVerificationBody extends StatelessWidget {
               Gap(context.spacing.s24),
               ApplicationLogo(),
               Gap(context.spacing.s24),
-              HeadlineLargeText(context.locale.checkYourMail),
+              HeadlineLargeText(context.locale.verifyOtp),
               Gap(context.spacing.s8),
               BodyRegularText.secondary(
-                context.locale.enterVerificationCode,
+                phoneStr != null && phoneStr.isNotEmpty
+                    ? '${context.locale.enterVerificationCode} ($phoneStr)'
+                    : context.locale.enterVerificationCode,
                 textAlign: TextAlign.center,
               ),
               Gap(context.spacing.s32),
               Pinput(
                 controller: otpController,
-                length: 4,
+                length: 6,
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: focusedPinTheme,
                 errorPinTheme: errorPinTheme,
-                onCompleted: onOtpCompleted,
+                onCompleted: isLoading ? null : onOtpCompleted,
                 keyboardType: TextInputType.number,
                 hapticFeedbackType: HapticFeedbackType.lightImpact,
               ),
+              if (isLoading) ...[
+                Gap(dimensions.spacing.s16),
+                const CircularProgressIndicator(),
+              ],
               Gap(context.spacing.s24),
               LinkText(
                 text: context.locale.didntGetCode,
                 linkText: context.locale.clickToResend,
                 onTap: onResendCode,
-              ),
-              Gap(context.spacing.s8),
-              LinkText(
-                text: context.locale.didNotReceiveEmail,
-                linkText: context.locale.tryAnotherEmail,
-                onTap: onTryAnotherEmail,
               ),
             ],
           ),

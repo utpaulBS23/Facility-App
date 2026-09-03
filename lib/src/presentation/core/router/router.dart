@@ -16,7 +16,7 @@ import '../../../domain/entities/visit_entity.dart';
 import '../../../domain/entities/leave/leave_request_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';
-import '../../features/authentication/forgot_password/view/email_verification_page.dart';
+import '../../features/authentication/forgot_password/view/otp_verification_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
@@ -44,6 +44,7 @@ import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/notification/view/notification_page.dart';
 import '../../features/occurrence/view/occurrence_checklist_page.dart';
 import '../../features/occurrence/view/occurrence_page.dart';
+import '../../features/profile/view/my_profile_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
@@ -89,6 +90,7 @@ part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
 part 'parts/stock_routes.dart';
+part 'parts/profile_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -183,6 +185,7 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._profileRoutes(ref),
       _shellRoutes(ref),
     ],
   );
