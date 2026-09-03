@@ -1,10 +1,11 @@
 // Author: Md. Shahin Bashar
 // Created: 2026-04-03
 
-part of '../view/email_verification_page.dart';
+part of '../view/otp_verification_page.dart';
 
-class _EmailVerificationBody extends StatelessWidget {
-  const _EmailVerificationBody({
+class _OtpVerificationBody extends StatelessWidget {
+  const _OtpVerificationBody({
+    this.phoneNumber,
     required this.otpController,
     required this.onOtpCompleted,
     required this.onResendCode,
@@ -12,6 +13,7 @@ class _EmailVerificationBody extends StatelessWidget {
     required this.isLoading,
   });
 
+  final String? phoneNumber;
   final TextEditingController otpController;
   final ValueChanged<String> onOtpCompleted;
   final VoidCallback onResendCode;
@@ -49,6 +51,10 @@ class _EmailVerificationBody extends StatelessWidget {
       ),
     );
 
+    final phoneStr = phoneNumber != null && phoneNumber!.isNotEmpty
+        ? phoneNumber
+        : '';
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -61,7 +67,9 @@ class _EmailVerificationBody extends StatelessWidget {
               HeadlineLargeText(context.locale.verifyOtp),
               Gap(context.spacing.s8),
               BodyRegularText.secondary(
-                context.locale.enterVerificationCode,
+                phoneStr != null && phoneStr.isNotEmpty
+                    ? '${context.locale.enterVerificationCode} ($phoneStr)'
+                    : context.locale.enterVerificationCode,
                 textAlign: TextAlign.center,
               ),
               Gap(context.spacing.s32),
@@ -84,12 +92,6 @@ class _EmailVerificationBody extends StatelessWidget {
                 text: context.locale.didntGetCode,
                 linkText: context.locale.clickToResend,
                 onTap: onResendCode,
-              ),
-              Gap(context.spacing.s8),
-              LinkText(
-                text: context.locale.didNotReceiveEmail,
-                linkText: context.locale.tryAnotherEmail,
-                onTap: onTryAnotherEmail,
               ),
             ],
           ),

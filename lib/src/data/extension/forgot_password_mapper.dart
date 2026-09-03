@@ -1,5 +1,3 @@
-import 'package:dart_mappable/dart_mappable.dart';
-
 import '../../domain/entities/forgot_password/forgot_password_entities.dart';
 import '../models/forgot_password_models.dart';
 
@@ -8,7 +6,7 @@ extension SendOtpEntityMapper on SendOtpEntity {
         phoneNumber: phoneNumber,
       );
 
-  Map<String, dynamic> toJson() => MapperContainer.globals.toMap(toModel());
+  Map<String, dynamic> toJson() => toModel().toJson();
 }
 
 extension SendOtpResponseModelMapper on SendOtpResponseModel {
@@ -26,7 +24,7 @@ extension VerifyOtpEntityMapper on VerifyOtpEntity {
         otp: otp,
       );
 
-  Map<String, dynamic> toJson() => MapperContainer.globals.toMap(toModel());
+  Map<String, dynamic> toJson() => toModel().toJson();
 }
 
 extension VerifyOtpResponseModelMapper on VerifyOtpResponseModel {
@@ -46,5 +44,6 @@ extension ResetPasswordEntityMapper on ResetPasswordEntity {
         passwordConfirmation: passwordConfirmation,
       );
 
-  Map<String, dynamic> toJson() => MapperContainer.globals.toMap(toModel());
+  Map<String, dynamic> toJson() => toModel().toJson();
 }
+

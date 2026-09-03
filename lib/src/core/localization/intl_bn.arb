@@ -30,7 +30,7 @@
   "passwordRequired": "পাসওয়ার্ড প্রয়োজন",
   "isRequired": "এই ক্ষেত্রটি প্রয়োজন",
   "validEmail": "অনুগ্রহ করে একটি বৈধ ইমেইল ঠিকানা দিন",
-  "enterAssociatedEmail": "আপনার অ্যাকাউন্টের সাথে যুক্ত ইমেইল দিন এবং আমরা আপনার পাসওয়ার্ড রিসেট করার নির্দেশনা সহ একটি ইমেইল পাঠাব।",
+  "enterAssociatedEmail": "আপনার অ্যাকাউন্টের সাথে যুক্ত ফোন নম্বর দিন এবং আমরা পাসওয়ার্ড রিসেট করার জন্য একটি ভেরিফিকেশন কোড পাঠাব।",
   "minLengthValidation": "এই ক্ষেত্রটি কমপক্ষে {min} অক্ষর দীর্ঘ হতে হবে",
   "@minLengthValidation": {
     "description": "ন্যূনতম দৈর্ঘ্য যাচাইকরণের জন্য ত্রুটি বার্তা",
@@ -68,7 +68,7 @@
   "dontHaveAccount": "অ্যাকাউন্ট নেই? ",
   "alreadyHaveAccount": "ইতিমধ্যে অ্যাকাউন্ট আছে? ",
   "checkYourMail": "আপনার মেইল চেক করুন",
-  "enterVerificationCode": "অনুগ্রহ করে আপনার মেইলে পাঠানো 4 অঙ্কের কোড দিন hello**@gmail.com।",
+  "enterVerificationCode": "অনুগ্রহ করে আপনার ফোন নম্বরে পাঠানো ৬ অঙ্কের ভেরিফিকেশন কোড দিন।",
   "didntGetCode": "কোড পাননি? ",
   "clickToResend": "পুনরায় পাঠাতে ক্লিক করুন",
   "didNotReceiveEmail": "ইমেইল পাননি? আপনার স্প্যাম ফিল্টার চেক করুন। অথবা ",
@@ -757,6 +757,7 @@
   "missingLabel": "ঘাটতি",
   "complaintReasonLabel": "অভিযোগের কারণ",
   "complaintReasonHint": "সমস্যা বা অভিযোগের কারণ বর্ণনা করুন...",
-  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)"
+  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)",
+  "otpSentSuccessfully": "ওটিপি সফলভাবে পাঠানো হয়েছে"
 }
 

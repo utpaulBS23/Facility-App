@@ -30,7 +30,7 @@
   "passwordRequired": "Password is required",
   "isRequired": "This field is required",
   "validEmail": "Please enter valid email address",
-  "enterAssociatedEmail": "Enter the email associated with your account and we’ll send an email with instructions to reset your password.",
+  "enterAssociatedEmail": "Enter the phone number associated with your account and we’ll send a verification code to reset your password.",
   "minLengthValidation": "This field must be at least {min} characters long",
   "@minLengthValidation": {
     "description": "Error message for minimum length validation",
@@ -68,7 +68,7 @@
   "dontHaveAccount": "Don't have an account? ",
   "alreadyHaveAccount": "Already have an account? ",
   "checkYourMail": "Check your mail",
-  "enterVerificationCode": "Please enter 4 digit code sent to your mail hello**@gmail.com.",
+  "enterVerificationCode": "Please enter 6-digit verification code sent to your phone number.",
   "didntGetCode": "Didn't get a code? ",
   "clickToResend": "Click to resend",
   "didNotReceiveEmail": "Did not receive the email? Check your spam filter. or ",

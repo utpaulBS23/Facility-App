@@ -13,13 +13,13 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
-  @POST('/backend/auth/forgot-password/send-otp')
+  @POST('/auth/forgot-password/send-otp')
   Future<HttpResponse> sendForgotPasswordOtp(@Body() Map<String, dynamic> body);
 
-  @POST('/backend/auth/forgot-password/verify-otp')
+  @POST('/auth/forgot-password/verify-otp')
   Future<HttpResponse> verifyForgotPasswordOtp(@Body() Map<String, dynamic> body);
 
-  @POST('/backend/auth/forgot-password/reset')
+  @POST('/auth/forgot-password/reset')
   Future<HttpResponse> resetForgotPassword(@Body() Map<String, dynamic> body);
 
   @DELETE(Endpoints.logout)

@@ -21,20 +21,20 @@ import '../../../../core/widgets/text/typography.dart';
 import '../riverpod/send_otp_provider.dart';
 import '../riverpod/verify_otp_provider.dart';
 
-part '../widgets/email_verification_body.dart';
+part '../widgets/otp_verification_body.dart';
 
-class EmailVerificationPage extends ConsumerStatefulWidget {
-  const EmailVerificationPage({super.key, this.phoneNumber});
+class ForgotPasswordOtpVerificationPage extends ConsumerStatefulWidget {
+  const ForgotPasswordOtpVerificationPage({super.key, this.phoneNumber});
 
   final String? phoneNumber;
 
   @override
-  ConsumerState<EmailVerificationPage> createState() =>
-      _EmailVerificationPageState();
+  ConsumerState<ForgotPasswordOtpVerificationPage> createState() =>
+      _ForgotPasswordOtpVerificationPageState();
 }
 
-class _EmailVerificationPageState
-    extends ConsumerState<EmailVerificationPage> {
+class _ForgotPasswordOtpVerificationPageState
+    extends ConsumerState<ForgotPasswordOtpVerificationPage> {
   final otpController = TextEditingController();
 
   @override
@@ -90,7 +90,7 @@ class _EmailVerificationPageState
 
     ref.listen(sendOtpProvider, (previous, next) {
       if (previous is AsyncLoading && next is AsyncData && next.value != null) {
-        AppSnackBar.showSuccess(context, context.locale.clickToResend);
+        AppSnackBar.showSuccess(context, context.locale.otpSentSuccessfully);
       } else if (next is AsyncError) {
         final err = next.error;
         AppSnackBar.showError(
@@ -104,7 +104,8 @@ class _EmailVerificationPageState
 
     return Scaffold(
       appBar: DetailAppBar(title: context.locale.verifyOtp),
-      body: _EmailVerificationBody(
+      body: _OtpVerificationBody(
+        phoneNumber: widget.phoneNumber,
         otpController: otpController,
         onOtpCompleted: _onOtpCompleted,
         onResendCode: _onResendCode,
