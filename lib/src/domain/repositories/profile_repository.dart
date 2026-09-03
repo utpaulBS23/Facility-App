@@ -10,8 +10,4 @@ abstract base class ProfileRepository extends Repository {
   Future<Result<UserProfileEntity, Failure>> updateProfile(
     UpdateProfileEntity request,
   );
-
-  Future<Result<void, Failure>> changePassword(
-    ChangePasswordEntity request,
-  );
 }

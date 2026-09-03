@@ -37,21 +37,3 @@ final class UpdateProfileUseCase {
     };
   }
 }
-
-final class ChangePasswordUseCase {
-  ChangePasswordUseCase({required this.repository});
-
-  final ProfileRepository repository;
-
-  Future<Result<void, Failure>> call(
-    ChangePasswordEntity request,
-  ) async {
-    final result = await repository.changePassword(request);
-
-    return switch (result) {
-      Success() => const Success(data: null),
-      Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('change password')),
-    };
-  }
-}

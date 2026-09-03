@@ -680,8 +680,3 @@ GetProfileUseCase getProfileUseCase(Ref ref) {
 UpdateProfileUseCase updateProfileUseCase(Ref ref) {
   return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
 }
-
-@riverpod
-ChangePasswordUseCase changePasswordUseCase(Ref ref) {
-  return ChangePasswordUseCase(repository: ref.read(profileRepositoryProvider));
-}

@@ -44,10 +44,8 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    await ref
-        .read(changePasswordProvider.notifier)
-        .changePassword(
-          ChangePasswordEntity(
+    await ref.read(editProfileProvider.notifier).updateProfile(
+          UpdateProfileEntity(
             currentPassword: currentPassword,
             newPassword: newPassword,
             newPasswordConfirmation: confirmPassword,
@@ -61,7 +59,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    ref.listen(changePasswordProvider, (previous, next) {
+    ref.listen(editProfileProvider, (previous, next) {
       if (previous is AsyncLoading && next is AsyncData) {
         AppSnackBar.showSuccess(context, context.locale.changePassword);
         if (context.canPop()) {
@@ -76,7 +74,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
       }
     });
 
-    final changeState = ref.watch(changePasswordProvider);
+    final changeState = ref.watch(editProfileProvider);
     final isLoading = changeState.isLoading;
 
     return Scaffold(

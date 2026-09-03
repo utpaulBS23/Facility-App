@@ -12,7 +12,6 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../riverpod/change_password_provider.dart';
 import '../riverpod/edit_profile_provider.dart';
 import '../riverpod/profile_provider.dart';
 import '../widgets/auth_header_icon.dart';
