@@ -137,3 +137,8 @@ PushNotificationRepository pushNotificationRepository(Ref ref) {
     cacheService: ref.read(cacheServiceProvider),
   );
 }
+
+@Riverpod(keepAlive: true)
+ProfileRepository profileRepository(Ref ref) {
+  return ProfileRepositoryImpl(restClient: ref.read(restClientServiceProvider));
+}

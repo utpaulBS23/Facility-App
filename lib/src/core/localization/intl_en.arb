@@ -779,6 +779,40 @@
   "missingLabel": "Missing",
   "complaintReasonLabel": "Reason for Complaint",
   "complaintReasonHint": "Describe the issue or reason for complaint...",
-  "proofPhoto": "Proof Photo (Optional)"
+  "proofPhoto": "Proof Photo (Optional)",
+  "myProfile": "My Profile",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "changePasswordSubtitle": "Update your password regularly to keep your account secure",
+  "passwordReset": "Password Reset",
+  "passwordResetSubtitle": "Reset your password using OTP sent to your phone",
+  "personalInformation": "Personal Information",
+  "name": "Name",
+  "phoneNumber": "Phone Number",
+  "employeeId": "Employee ID",
+  "joiningDate": "Joining Date",
+  "saveChanges": "Save Changes",
+  "enterYourOtp": "Enter Your OTP",
+  "enterSixDigitCode": "Enter the 6-digit code sent to your phone",
+  "resendIn": "Resend in {seconds}s",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "resendOtp": "Resend OTP",
+  "verifyOtp": "Verify OTP",
+  "enterYourUserId": "Enter Your User ID",
+  "enterYourUserIdHint": "Enter your email or phone number",
+  "otpWillBeSent": "An OTP will be sent to your registered phone number for verification.",
+  "sendOtp": "Send OTP",
+  "otpSentSuccessfully": "OTP sent successfully",
+  "changePicture": "Change Picture",
+  "accountSecurity": "Update your password regularly to keep your account secure",
+  "currentPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password"
 }
 
