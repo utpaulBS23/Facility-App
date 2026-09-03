@@ -14,12 +14,19 @@ enum LeaveTab {
 }
 
 @riverpod
+class SelectedLeaveTab extends _$SelectedLeaveTab {
+  @override
+  LeaveTab build() => LeaveTab.myLeave;
+
+  void selectTab(LeaveTab tab) {
+    state = tab;
+  }
+}
+
+@riverpod
 class LeaveRequests extends _$LeaveRequests {
   String _searchQuery = '';
   LeaveFilter _selectedFilter = LeaveFilter.all;
-  LeaveTab _currentTab = LeaveTab.myLeave;
-
-  LeaveTab get currentTab => _currentTab;
 
   @override
   Future<List<LeaveRequestEntity>> build() async {
@@ -29,8 +36,16 @@ class LeaveRequests extends _$LeaveRequests {
       }
     });
 
+    ref.listen(selectedLeaveTabProvider, (previous, next) {
+      if (previous != next) {
+        ref.invalidateSelf();
+      }
+    });
+
+    final currentTab = ref.watch(selectedLeaveTabProvider);
+
     return fetch(
-      tab: _currentTab,
+      tab: currentTab,
       search: _searchQuery,
       filter: _selectedFilter,
     );
@@ -41,13 +56,13 @@ class LeaveRequests extends _$LeaveRequests {
     String search = '',
     LeaveFilter filter = LeaveFilter.all,
   }) async {
-    if (tab != null) _currentTab = tab;
+    final currentTab = tab ?? ref.read(selectedLeaveTabProvider);
     _searchQuery = search;
     _selectedFilter = filter;
 
     state = const AsyncValue.loading();
 
-    final result = _currentTab == LeaveTab.leaveApprovals
+    final result = currentTab == LeaveTab.leaveApprovals
         ? await ref
             .read(getLeaveApprovalsUseCaseProvider)
             .call(status: filter.status)
@@ -72,17 +87,12 @@ class LeaveRequests extends _$LeaveRequests {
     return const [];
   }
 
-  void setTab(LeaveTab tab) {
-    if (_currentTab == tab) return;
-    fetch(tab: tab, search: _searchQuery, filter: _selectedFilter);
-  }
-
   void search(String query) {
-    fetch(tab: _currentTab, search: query, filter: _selectedFilter);
+    fetch(search: query, filter: _selectedFilter);
   }
 
   void filter(LeaveFilter filter) {
-    fetch(tab: _currentTab, search: _searchQuery, filter: filter);
+    fetch(search: _searchQuery, filter: filter);
   }
 
   Future<void> approve(int leaveRequestId) async {
