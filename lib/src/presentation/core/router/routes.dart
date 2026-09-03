@@ -23,7 +23,7 @@ class Routes {
 
   static const String applyLeave = '/apply-leave';
   static const String leaveRequests = '/leave-requests';
-  static const String leaveDetails = '/leave-details';
+  static const String leaveDetails = '/leave-details/:id';
   static const String selectShift = '/select-shift';
   static const String selectAttendant = '/select-attendant';
   static const String leaveSubmitted = '/leave-submitted';

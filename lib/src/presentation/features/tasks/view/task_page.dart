@@ -11,6 +11,7 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_pill.dart';
@@ -59,21 +60,6 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     _fetch();
   }
 
-  Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
-    final result = await showModalBottomSheet<({int? facilityId})>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => FacilityPickerSheet(
-        facilities: facilities,
-        selectedFacilityId: _selectedFacilityId,
-        includeAllOption: true,
-      ),
-    );
-    if (result == null || result.facilityId == _selectedFacilityId) return;
-    setState(() => _selectedFacilityId = result.facilityId);
-    _fetch();
-  }
 
   void _onRetry() => _fetch();
 
@@ -127,15 +113,6 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
-    final selectedFacilityName = _selectedFacilityId == null
-        ? null
-        : facilities
-              .cast<AccessibleFacilityEntity?>()
-              .firstWhere(
-                (f) => f?.id == _selectedFacilityId,
-                orElse: () => null,
-              )
-              ?.name;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -146,13 +123,18 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         surfaceTintColor: Colors.transparent,
         actions: [
           if (facilities.length > 1)
-            TextButton.icon(
-              onPressed: () => _pickFacility(facilities),
-              icon: const Icon(Icons.apartment_outlined, size: 18),
-              label: Text(
-                selectedFacilityName ?? context.locale.all,
-                overflow: TextOverflow.ellipsis,
-              ),
+            AppBarFilterButton<int?>(
+              title: context.locale.filters,
+              icon: Icons.apartment_outlined,
+              currentValue: _selectedFacilityId,
+              options: [
+                (value: null, label: context.locale.all),
+                ...facilities.map((f) => (value: f.id as int?, label: f.name)),
+              ],
+              onSelected: (facilityId) {
+                setState(() => _selectedFacilityId = facilityId);
+                _fetch();
+              },
             ),
         ],
       ),

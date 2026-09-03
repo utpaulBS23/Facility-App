@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/form_selector_card.dart';
+import '../../../core/widgets/selection_picker_sheet.dart';
 import '../riverpod/apply_leave_provider/leave_balance_provider.dart';
 import '../riverpod/apply_leave_provider/selected_leave_policy_id_provider.dart';
 import 'shimmer/shimmer_box.dart';
@@ -17,68 +19,78 @@ class LeaveTypeInput extends ConsumerWidget {
   final int? attendantId;
   final bool isEnabled;
 
+  Future<void> _openPicker({
+    required BuildContext context,
+    required WidgetRef ref,
+    required int? selectedId,
+    required List<({int value, String label})> options,
+  }) async {
+    if (!isEnabled || options.isEmpty) return;
+
+    final result = await showModalBottomSheet<({int value})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SelectionPickerSheet<int>(
+        title: context.locale.leaveType,
+        options: options,
+        isSelected: (val) => val == selectedId,
+      ),
+    );
+
+    if (result != null && result.value != selectedId) {
+      ref.read(selectedLeavePolicyIdProvider.notifier).select(result.value);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedLeavePolicyId = ref.watch(selectedLeavePolicyIdProvider);
     final balanceState = ref.watch(leaveBalanceProvider(attendantId));
     final color = context.color;
     final dimensions = context.dimensions;
-    final textStyle = context.textStyle;
+    final spacing = dimensions.spacing;
 
     if (balanceState.isLoading) {
       return ShimmerBox(
         width: double.infinity,
-        height: dimensions.spacing.s48,
+        height: spacing.s48 + spacing.s32,
         borderRadius: BorderRadius.circular(dimensions.radius.r12),
       );
     }
 
-    final items = balanceState.maybeWhen(
-      data: (balances) => balances
-          .map(
-            (balance) => DropdownMenuItem<int>(
-              value: balance.leavePolicy.id,
-              child: Text(balance.leavePolicy.name),
-            ),
-          )
-          .toList(),
-      orElse: () => <DropdownMenuItem<int>>[],
-    );
+    final balances = balanceState.valueOrNull ?? [];
+    final options = balances
+        .map((b) => (value: b.leavePolicy.id, label: b.leavePolicy.name))
+        .toList();
 
-    return DropdownButtonFormField<int>(
-      initialValue: selectedLeavePolicyId,
-      decoration: InputDecoration(
-        hintText: context.locale.leaveType,
-        filled: true,
-        fillColor: isEnabled
-            ? color.onPrimary
-            : color.borderSubtle.withValues(alpha: 0.1),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: dimensions.spacing.s16,
-          vertical: dimensions.spacing.s12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          borderSide: BorderSide(color: color.borderSubtle),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          borderSide: BorderSide(color: color.borderSubtle),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          borderSide: BorderSide(color: color.primary),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(dimensions.radius.r12),
-          borderSide: BorderSide(color: color.borderSubtle),
-        ),
+    final selectedBalance = balances
+        .where((b) => b.leavePolicy.id == selectedLeavePolicyId)
+        .firstOrNull;
+
+    final selectedName = selectedBalance?.leavePolicy.name;
+
+    return FormSelectorCard(
+      title: context.locale.leaveType,
+      icon: Icons.category_outlined,
+      enabled: isEnabled,
+      onTap: () => _openPicker(
+        context: context,
+        ref: ref,
+        selectedId: selectedLeavePolicyId,
+        options: options,
       ),
-      style: textStyle.bodyLarge.copyWith(color: color.text.primary),
-      items: items,
-      onChanged: isEnabled
-          ? (id) => ref.read(selectedLeavePolicyIdProvider.notifier).select(id)
-          : null,
+      content: Text(
+        selectedName ?? context.locale.leaveType,
+        style: selectedName == null
+            ? context.textStyle.titleSmall.copyWith(
+                color: color.backgroundMuted,
+              )
+            : context.textStyle.titleSmall.copyWith(
+                color: color.text.secondary,
+              ),
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }
