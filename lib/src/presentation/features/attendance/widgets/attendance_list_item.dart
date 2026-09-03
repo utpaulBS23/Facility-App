@@ -146,9 +146,9 @@ class _AttendanceListItem extends StatelessWidget {
                           Gap(spacing.s4),
                           Flexible(
                             child: Text(
-                              DateFormatter.formatTimeRange(
-                                item.shift!.shiftType,
-                              ),
+                              item.shift!.startTime.isNotEmpty && item.shift!.endTime.isNotEmpty
+                                  ? '${item.shift!.shiftType} (${DateFormatter.shiftTime(item.shift!.startTime)} – ${DateFormatter.shiftTime(item.shift!.endTime)})'
+                                  : item.shift!.shiftType,
                               style: context.textStyle.bodySmall.copyWith(
                                 color: context.color.text.secondary,
                               ),
