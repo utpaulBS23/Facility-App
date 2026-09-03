@@ -43,7 +43,10 @@ class _LeaveRequestsList extends StatelessWidget {
 
         return _LeaveRequestActionCard(
           leaveRequest: request,
-          onTap: () => context.pushNamed(Routes.leaveDetails, extra: request),
+          onTap: () => context.pushNamed(
+            Routes.leaveDetails,
+            pathParameters: {'id': request.id.toString()},
+          ),
         );
       },
     );

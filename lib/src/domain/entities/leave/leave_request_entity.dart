@@ -7,10 +7,12 @@ class LeaveApplicantEntity {
   const LeaveApplicantEntity({
     required this.id,
     required this.name,
+    this.groupName,
   });
 
   final int id;
   final String name;
+  final String? groupName;
 }
 
 class LeaveApprovalStepEntity {
