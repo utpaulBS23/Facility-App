@@ -152,6 +152,7 @@ class LoginResponseEntity extends LoginEntity {
     required this.accessibleFacilities,
     this.partner,
     this.trackingSettings,
+    required this.weekStartDay,
   });
 
   final UserEntity user;
@@ -160,4 +161,5 @@ class LoginResponseEntity extends LoginEntity {
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
   final TrackingSettingsEntity? trackingSettings;
+  final int weekStartDay;
 }

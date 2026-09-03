@@ -107,6 +107,7 @@ class LoginResponseModel with LoginResponseModelMappable {
     required this.accessibleFacilities,
     this.partner,
     this.trackingSettings,
+    this.weekStartDay,
   });
 
   final UserModel user;
@@ -120,6 +121,8 @@ class LoginResponseModel with LoginResponseModelMappable {
   final PartnerModel? partner;
   @MappableField(key: 'tracking_settings')
   final TrackingSettingsModel? trackingSettings;
+  @MappableField(key: 'week_start_day')
+  final int? weekStartDay;
 
   static const fromJson = LoginResponseModelMapper.fromJson;
 }
