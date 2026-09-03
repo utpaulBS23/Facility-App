@@ -14,6 +14,7 @@ class UserModel with UserModelMappable {
     this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
+    this.profileImage,
   });
 
   final int id;
@@ -30,6 +31,8 @@ class UserModel with UserModelMappable {
   final int permissionVersion;
   @MappableField(key: 'two_factor_enabled')
   final bool twoFactorEnabled;
+  @MappableField(key: 'profile_image')
+  final String? profileImage;
 
   static const fromJson = UserModelMapper.fromJson;
 }
@@ -104,6 +107,7 @@ class LoginResponseModel with LoginResponseModelMappable {
     required this.accessibleFacilities,
     this.partner,
     this.trackingSettings,
+    this.weekStartDay,
   });
 
   final UserModel user;
@@ -117,6 +121,8 @@ class LoginResponseModel with LoginResponseModelMappable {
   final PartnerModel? partner;
   @MappableField(key: 'tracking_settings')
   final TrackingSettingsModel? trackingSettings;
+  @MappableField(key: 'week_start_day')
+  final int? weekStartDay;
 
   static const fromJson = LoginResponseModelMapper.fromJson;
 }

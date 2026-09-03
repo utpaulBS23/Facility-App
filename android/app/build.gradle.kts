@@ -23,6 +23,15 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = (rootProject.findProperty("KEY_ALIAS") as? String) ?: "facility_app"
+            keyPassword = (rootProject.findProperty("KEY_PASSWORD") as? String) ?: "facility@123"
+            storeFile = file((rootProject.findProperty("KEYSTORE_PATH") as? String) ?: "release.jks")
+            storePassword = (rootProject.findProperty("KEYSTORE_PASSWORD") as? String) ?: "facility@123"
+        }
+    }
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.bhumijo.facilityapp"
@@ -30,15 +39,13 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
         versionName = flutter.versionName
+        versionCode = flutter.versionCode
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

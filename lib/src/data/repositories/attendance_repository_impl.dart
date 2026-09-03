@@ -38,25 +38,15 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
         facilityId: facilityId,
         userId: userId,
       );
-      final body = response.data as Map<String, dynamic>;
-      final success = body['success'] as bool? ?? false;
-      if (!success) {
-        throw Exception(body['message'] as String? ?? 'Failed to load attendance');
+      final responseModel = AttendanceOverviewResponseModel.fromJson(
+        response.data,
+      );
+      if (!responseModel.success) {
+        throw Exception(
+          responseModel.message ?? 'Failed to load attendance',
+        );
       }
-      final summary = AttendanceSummaryModel.fromJson(
-        body['summary'] as Map<String, dynamic>,
-      );
-      final rawList = body['attendances'] as List<dynamic>? ?? [];
-      return MonthlyAttendanceSummaryEntity(
-        presentCount: summary.presentCount ?? 0,
-        lateCount: summary.lateCount ?? 0,
-        absentCount: summary.absentCount ?? 0,
-        leaveCount: summary.leaveCount ?? 0,
-        attendances: rawList
-            .cast<Map<String, dynamic>>()
-            .map(_parseItem)
-            .toList(),
-      );
+      return responseModel.toEntity();
     });
   }
 

@@ -17,14 +17,24 @@ abstract class SessionService {
   /// True while a token is held. The one source of truth for "logged in".
   bool get isAuthenticated;
 
+  /// Carbon day number (0=Sun..6=Sat) configured for the active partner. Defaults to 6 (Saturday).
+  int get weekStartDay;
+
   void setAccessToken(String token);
+  void setWeekStartDay(int day);
 
   /// Drops the token and notifies [onCleared]. Idempotent.
   void clear();
 
+  /// Notifies listeners that an unhandled 401 occurred requiring user re-authentication.
+  void notifyUnauthorized();
+
   /// Emits whenever the token is dropped — by an explicit logout or by a
   /// failed refresh. Anything derived from the token must reset on this.
   Stream<void> get onCleared;
+
+  /// Emits whenever a 401 Unauthorized condition occurs.
+  Stream<void> get onUnauthorized;
 
   void dispose();
 }

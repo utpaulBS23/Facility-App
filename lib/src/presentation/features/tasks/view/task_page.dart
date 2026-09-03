@@ -10,6 +10,7 @@ import '../../../../domain/entities/task_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_pill.dart';
@@ -79,29 +80,42 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
 
-  void _onStartTap(TaskEntity task) {
-    ref.read(tasksProvider.notifier).startIssue(issueId: task.id);
+  Future<void> _onStartTap(TaskEntity task) async {
+    final success = await ref
+        .read(tasksProvider.notifier)
+        .startIssue(issueId: task.id);
+    if (success) {
+      _onTabChanged(_TaskTab.inProgress);
+    }
   }
 
-  void _onCompleteTap(TaskEntity task) {
+  Future<void> _onCompleteTap(TaskEntity task) async {
     if (!task.proofRequiredOnComplete || task.media.isNotEmpty) {
-      ref
-          .read(tasksProvider.notifier)
-          .completeIssue(issueId: task.id)
-          .then((_) => _fetch())
-          // WHY: error already surfaced via AsyncValue.error on tasksProvider; suppress unhandled Future
-          .catchError((_) {});
+      try {
+        final completed = await ref
+            .read(tasksProvider.notifier)
+            .completeIssue(issueId: task.id);
+        if (completed != null) {
+          _onTabChanged(_TaskTab.resolved);
+        }
+      } catch (_) {}
       return;
     }
 
     showTaskProofBottomSheet(
       context,
       onSubmit: (photoPath, alt) async {
-        await ref
-            .read(tasksProvider.notifier)
-            .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
-        await ref.read(tasksProvider.notifier).completeIssue(issueId: task.id);
-        _fetch();
+        try {
+          await ref
+              .read(tasksProvider.notifier)
+              .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
+          final completed = await ref
+              .read(tasksProvider.notifier)
+              .completeIssue(issueId: task.id);
+          if (completed != null) {
+            _onTabChanged(_TaskTab.resolved);
+          }
+        } catch (_) {}
       },
     );
   }

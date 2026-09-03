@@ -757,6 +757,10 @@
   "missingLabel": "ঘাটতি",
   "complaintReasonLabel": "অভিযোগের কারণ",
   "complaintReasonHint": "সমস্যা বা অভিযোগের কারণ বর্ণনা করুন...",
-  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)"
+  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)",
+  "sessionExpired": "সেশন শেষ হয়েছে",
+  "sessionExpiredMessage": "আপনার সেশনের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে আবার লগইন করুন।",
+  "ok": "ঠিক আছে",
+  "autoApproved": "স্বয়ংক্রিয় অনুমোদিত"
 }
 

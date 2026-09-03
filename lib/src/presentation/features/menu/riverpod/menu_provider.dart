@@ -23,6 +23,7 @@ class MenuNotifier extends _$MenuNotifier {
       name: user?.name ?? partnerName ?? '',
       email: user?.email ?? '',
       partnerName: partnerName,
+      avatarUrl: user?.profileImage,
     );
   }
 
