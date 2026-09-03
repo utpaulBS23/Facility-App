@@ -31,97 +31,418 @@ WatchUserSessionUseCase watchUserSessionUseCase(Ref ref) {
 }
 
 @riverpod
-CheckVersionUseCase checkVersionUseCase(Ref ref) {
-  return CheckVersionUseCase(ref.read(appUpdateRepositoryProvider));
-}
-
-@riverpod
-ReportUpdateActionUseCase reportUpdateActionUseCase(Ref ref) {
-  return ReportUpdateActionUseCase(ref.read(appUpdateRepositoryProvider));
+HasPermissionUseCase hasPermissionUseCase(Ref ref) {
+  return HasPermissionUseCase(ref.read(authenticationRepositoryProvider));
 }
 
 @riverpod
 CheckInUseCase checkInUseCase(Ref ref) {
-  return CheckInUseCase(ref.read(checkInRepositoryProvider));
+  return CheckInUseCase(
+    ref.read(checkInRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-CheckOutUseCase checkOutUseCase(Ref ref) {
-  return CheckOutUseCase(ref.read(checkOutRepositoryProvider));
+GetDeviceNameUseCase getDeviceNameUseCase(Ref ref) {
+  return GetDeviceNameUseCase(ref.read(deviceInfoRepositoryProvider));
 }
 
 @riverpod
-UploadSelfieUseCase uploadSelfieUseCase(Ref ref) {
-  return UploadSelfieUseCase(ref.read(selfieRepositoryProvider));
+GetCurrentLocaleUseCase getCurrentLocaleUseCase(Ref ref) {
+  return GetCurrentLocaleUseCase(ref.read(localeRepositoryProvider));
 }
 
 @riverpod
-VerifySelfieUseCase verifySelfieUseCase(Ref ref) {
-  return VerifySelfieUseCase(ref.read(selfieRepositoryProvider));
+SetCurrentLocaleUseCase setCurrentLocaleUseCase(Ref ref) {
+  return SetCurrentLocaleUseCase(ref.read(localeRepositoryProvider));
 }
 
 @riverpod
-GetAttendanceHistoryUseCase getAttendanceHistoryUseCase(Ref ref) {
-  return GetAttendanceHistoryUseCase(ref.read(attendanceRepositoryProvider));
+GetOnboardingStatusUseCase getOnboardingStatusUseCase(Ref ref) {
+  return GetOnboardingStatusUseCase(ref.read(routerRepositoryProvider));
 }
 
 @riverpod
-GetTodayAttendanceUseCase getTodayAttendanceUseCase(Ref ref) {
-  return GetTodayAttendanceUseCase(ref.read(attendanceRepositoryProvider));
+MarkOnboardingCompletedUseCase markOnboardingCompletedUseCase(Ref ref) {
+  return MarkOnboardingCompletedUseCase(ref.read(routerRepositoryProvider));
+}
+
+@riverpod
+ValidateSelfieUseCase validateSelfieUseCase(Ref ref) {
+  return ValidateSelfieUseCase(ref.read(selfieRepositoryProvider));
+}
+
+@riverpod
+GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
+  return GetCurrentLocationUseCase(ref.read(locationRepositoryProvider));
+}
+
+@riverpod
+StartLocationPingTrackingUseCase startLocationPingTrackingUseCase(Ref ref) {
+  return StartLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+StopLocationPingTrackingUseCase stopLocationPingTrackingUseCase(Ref ref) {
+  return StopLocationPingTrackingUseCase(
+    ref.read(locationPingRepositoryProvider),
+  );
+}
+
+@riverpod
+SyncCurrentLocationPingUseCase syncCurrentLocationPingUseCase(Ref ref) {
+  return SyncCurrentLocationPingUseCase(
+    ref.read(locationPingRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLocationSharingStatusUseCase getLocationSharingStatusUseCase(Ref ref) {
+  return GetLocationSharingStatusUseCase(ref.read(locationPingRepositoryProvider));
+}
+
+@riverpod
+GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
+  Ref ref,
+) {
+  return GetMonthlyAttendanceOverviewUseCase(
+    ref.read(attendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
 GetMyAttendanceUseCase getMyAttendanceUseCase(Ref ref) {
-  return GetMyAttendanceUseCase(ref.read(myAttendanceRepositoryProvider));
+  return GetMyAttendanceUseCase(
+    ref.read(myAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-GetManualAttendanceHistoryUseCase getManualAttendanceHistoryUseCase(Ref ref) {
-  return GetManualAttendanceHistoryUseCase(
-      ref.read(manualAttendanceRepositoryProvider));
+ApproveAttendanceUseCase approveAttendanceUseCase(Ref ref) {
+  return ApproveAttendanceUseCase(
+    ref.read(attendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-RequestManualAttendanceUseCase requestManualAttendanceUseCase(Ref ref) {
-  return RequestManualAttendanceUseCase(
-      ref.read(manualAttendanceRepositoryProvider));
+RejectAttendanceUseCase rejectAttendanceUseCase(Ref ref) {
+  return RejectAttendanceUseCase(
+    ref.read(attendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-ApproveManualAttendanceUseCase approveManualAttendanceUseCase(Ref ref) {
-  return ApproveManualAttendanceUseCase(
-      ref.read(manualAttendanceRepositoryProvider));
-}
-
-@riverpod
-RejectManualAttendanceUseCase rejectManualAttendanceUseCase(Ref ref) {
-  return RejectManualAttendanceUseCase(
-      ref.read(manualAttendanceRepositoryProvider));
+GetPartnerStaffUseCase getPartnerStaffUseCase(Ref ref) {
+  return GetPartnerStaffUseCase(
+    ref.read(partnerStaffRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
 GetShiftsUseCase getShiftsUseCase(Ref ref) {
-  return GetShiftsUseCase(ref.read(shiftRepositoryProvider));
+  return GetShiftsUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-GetTodayShiftUseCase getTodayShiftUseCase(Ref ref) {
-  return GetTodayShiftUseCase(ref.read(shiftRepositoryProvider));
+GetShiftSlotsUseCase getShiftSlotsUseCase(Ref ref) {
+  return GetShiftSlotsUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-GetStaffShiftsUseCase getStaffShiftsUseCase(Ref ref) {
-  return GetStaffShiftsUseCase(ref.read(shiftRepositoryProvider));
+GetShiftGlobalConfigUseCase getShiftGlobalConfigUseCase(Ref ref) {
+  return GetShiftGlobalConfigUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-AssignShiftUseCase assignShiftUseCase(Ref ref) {
-  return AssignShiftUseCase(ref.read(shiftRepositoryProvider));
+CheckOutUseCase checkOutUseCase(Ref ref) {
+  return CheckOutUseCase(
+    ref.read(checkOutRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
-SwapShiftUseCase swapShiftUseCase(Ref ref) {
-  return SwapShiftUseCase(ref.read(shiftRepositoryProvider));
+AssignShiftSlotUseCase assignShiftSlotUseCase(Ref ref) {
+  return AssignShiftSlotUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+UnassignShiftSlotUseCase unassignShiftSlotUseCase(Ref ref) {
+  return UnassignShiftSlotUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+MakeSlotLeadUseCase makeSlotLeadUseCase(Ref ref) {
+  return MakeSlotLeadUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+SubmitManualAttendanceUseCase submitManualAttendanceUseCase(Ref ref) {
+  return SubmitManualAttendanceUseCase(
+    ref.read(manualAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateRosterUseCase createRosterUseCase(Ref ref) {
+  return CreateRosterUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetRostersUseCase getRostersUseCase(Ref ref) {
+  return GetRostersUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+PublishRosterUseCase publishRosterUseCase(Ref ref) {
+  return PublishRosterUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetRosterShiftsUseCase getRosterShiftsUseCase(Ref ref) {
+  return GetRosterShiftsUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetShiftTemplatesUseCase getShiftTemplatesUseCase(Ref ref) {
+  return GetShiftTemplatesUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateShiftUseCase createShiftUseCase(Ref ref) {
+  return CreateShiftUseCase(
+    ref.read(shiftRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RefreshAttendanceUseCase refreshAttendanceUseCase(Ref ref) {
+  return RefreshAttendanceUseCase(
+    ref.read(manualAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+WithdrawAttendanceUseCase withdrawAttendanceUseCase(Ref ref) {
+  return WithdrawAttendanceUseCase(
+    ref.read(manualAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetIssuesUseCase getIssuesUseCase(Ref ref) {
+  return GetIssuesUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetIssueDetailUseCase getIssueDetailUseCase(Ref ref) {
+  return GetIssueDetailUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+StartIssueUseCase startIssueUseCase(Ref ref) {
+  return StartIssueUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+UploadTaskMediaUseCase uploadTaskMediaUseCase(Ref ref) {
+  return UploadTaskMediaUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CompleteIssueUseCase completeIssueUseCase(Ref ref) {
+  return CompleteIssueUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetMyVisitsUseCase getMyVisitsUseCase(Ref ref) {
+  return GetMyVisitsUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetVisitDetailUseCase getVisitDetailUseCase(Ref ref) {
+  return GetVisitDetailUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CheckInVisitUseCase checkInVisitUseCase(Ref ref) {
+  return CheckInVisitUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+TravelRouteCheckInUseCase travelRouteCheckInUseCase(Ref ref) {
+  return TravelRouteCheckInUseCase(
+    ref.read(travelRouteRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetChecklistUseCase getChecklistUseCase(Ref ref) {
+  return GetChecklistUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+SubmitVisitUseCase submitVisitUseCase(Ref ref) {
+  return SubmitVisitUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+WatchVisitSubmittedUseCase watchVisitSubmittedUseCase(Ref ref) {
+  return WatchVisitSubmittedUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+SaveChecklistItemResponseUseCase saveChecklistItemResponseUseCase(Ref ref) {
+  return SaveChecklistItemResponseUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+/// Task Occurrence UseCases
+
+@riverpod
+GetTaskOccurrencesUseCase getTaskOccurrencesUseCase(Ref ref) {
+  return GetTaskOccurrencesUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+ReassignTaskOccurrenceUseCase reassignTaskOccurrenceUseCase(Ref ref) {
+  return ReassignTaskOccurrenceUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+AnswerTaskOccurrenceChecklistItemUseCase
+answerTaskOccurrenceChecklistItemUseCase(Ref ref) {
+  return AnswerTaskOccurrenceChecklistItemUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+SubmitTaskOccurrenceUseCase submitTaskOccurrenceUseCase(Ref ref) {
+  return SubmitTaskOccurrenceUseCase(
+    ref.read(taskOccurrenceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+/// Leave Management UseCases
+
+@riverpod
+GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
+  return GetLeaveBalancesUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
+  return RequestLeaveUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
+  return CreateTravelExpenseUseCase(
+    ref.read(travelExpenseRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
+  return GetMasterDataItemsUseCase(
+    ref.read(masterDataRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod
@@ -133,8 +454,8 @@ GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
 }
 
 @riverpod
-ApplyLeaveUseCase applyLeaveUseCase(Ref ref) {
-  return ApplyLeaveUseCase(
+GetLeaveRequestDetailsUseCase getLeaveRequestDetailsUseCase(Ref ref) {
+  return GetLeaveRequestDetailsUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
@@ -143,6 +464,22 @@ ApplyLeaveUseCase applyLeaveUseCase(Ref ref) {
 @riverpod
 CancelLeaveUseCase cancelLeaveUseCase(Ref ref) {
   return CancelLeaveUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
+  return GetLeaveAttendantsUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
+  return GetLeaveApprovalsUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
@@ -165,207 +502,13 @@ RejectLeaveUseCase rejectLeaveUseCase(Ref ref) {
 }
 
 @riverpod
-GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
-  return GetLeaveApprovalsUseCase(
-    leaveRepository: ref.read(leaveRepositoryProvider),
-    authRepository: ref.read(authenticationRepositoryProvider),
-  );
+ReportIssueUseCase reportIssueUseCase(Ref ref) {
+  return ReportIssueUseCase(ref.read(visitRepositoryProvider));
 }
 
 @riverpod
-GetLeaveBalancesUseCase getLeaveBalancesUseCase(Ref ref) {
-  return GetLeaveBalancesUseCase(
-    leaveRepository: ref.read(leaveRepositoryProvider),
-    authRepository: ref.read(authenticationRepositoryProvider),
-  );
-}
-
-@riverpod
-GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
-  return GetLeaveAttendantsUseCase(
-    leaveRepository: ref.read(leaveRepositoryProvider),
-    authRepository: ref.read(authenticationRepositoryProvider),
-  );
-}
-
-@riverpod
-GetTasksUseCase getTasksUseCase(Ref ref) {
-  return GetTasksUseCase(ref.read(taskRepositoryProvider));
-}
-
-@riverpod
-GetTaskDetailsUseCase getTaskDetailsUseCase(Ref ref) {
-  return GetTaskDetailsUseCase(ref.read(taskRepositoryProvider));
-}
-
-@riverpod
-CreateTaskUseCase createTaskUseCase(Ref ref) {
-  return CreateTaskUseCase(ref.read(taskRepositoryProvider));
-}
-
-@riverpod
-UpdateTaskStatusUseCase updateTaskStatusUseCase(Ref ref) {
-  return UpdateTaskStatusUseCase(ref.read(taskRepositoryProvider));
-}
-
-@riverpod
-CompleteTaskUseCase completeTaskUseCase(Ref ref) {
-  return CompleteTaskUseCase(ref.read(taskRepositoryProvider));
-}
-
-@riverpod
-AssignTaskUseCase assignTaskUseCase(Ref ref) {
-  return AssignTaskUseCase(ref.read(taskRepositoryProvider));
-}
-
-@riverpod
-GetTaskOccurrencesUseCase getTaskOccurrencesUseCase(Ref ref) {
-  return GetTaskOccurrencesUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-GetTaskOccurrenceDetailsUseCase getTaskOccurrenceDetailsUseCase(Ref ref) {
-  return GetTaskOccurrenceDetailsUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-StartTaskOccurrenceUseCase startTaskOccurrenceUseCase(Ref ref) {
-  return StartTaskOccurrenceUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-CompleteTaskOccurrenceUseCase completeTaskOccurrenceUseCase(Ref ref) {
-  return CompleteTaskOccurrenceUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-VerifyTaskOccurrenceUseCase verifyTaskOccurrenceUseCase(Ref ref) {
-  return VerifyTaskOccurrenceUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-RejectTaskOccurrenceUseCase rejectTaskOccurrenceUseCase(Ref ref) {
-  return RejectTaskOccurrenceUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-SubmitChecklistItemUseCase submitChecklistItemUseCase(Ref ref) {
-  return SubmitChecklistItemUseCase(
-      ref.read(taskOccurrenceRepositoryProvider));
-}
-
-@riverpod
-GetVisitsUseCase getVisitsUseCase(Ref ref) {
-  return GetVisitsUseCase(ref.read(visitRepositoryProvider));
-}
-
-@riverpod
-GetVisitDetailsUseCase getVisitDetailsUseCase(Ref ref) {
-  return GetVisitDetailsUseCase(ref.read(visitRepositoryProvider));
-}
-
-@riverpod
-CreateVisitUseCase createVisitUseCase(Ref ref) {
-  return CreateVisitUseCase(ref.read(visitRepositoryProvider));
-}
-
-@riverpod
-StartVisitUseCase startVisitUseCase(Ref ref) {
-  return StartVisitUseCase(ref.read(visitRepositoryProvider));
-}
-
-@riverpod
-CompleteVisitUseCase completeVisitUseCase(Ref ref) {
-  return CompleteVisitUseCase(ref.read(visitRepositoryProvider));
-}
-
-@riverpod
-GetTravelRoutesUseCase getTravelRoutesUseCase(Ref ref) {
-  return GetTravelRoutesUseCase(ref.read(travelRouteRepositoryProvider));
-}
-
-@riverpod
-GetTravelRouteDetailsUseCase getTravelRouteDetailsUseCase(Ref ref) {
-  return GetTravelRouteDetailsUseCase(ref.read(travelRouteRepositoryProvider));
-}
-
-@riverpod
-StartTravelRouteUseCase startTravelRouteUseCase(Ref ref) {
-  return StartTravelRouteUseCase(ref.read(travelRouteRepositoryProvider));
-}
-
-@riverpod
-CompleteTravelRouteUseCase completeTravelRouteUseCase(Ref ref) {
-  return CompleteTravelRouteUseCase(ref.read(travelRouteRepositoryProvider));
-}
-
-@riverpod
-GetStaffListUseCase getStaffListUseCase(Ref ref) {
-  return GetStaffListUseCase(ref.read(partnerStaffRepositoryProvider));
-}
-
-@riverpod
-GetStaffDetailsUseCase getStaffDetailsUseCase(Ref ref) {
-  return GetStaffDetailsUseCase(ref.read(partnerStaffRepositoryProvider));
-}
-
-@riverpod
-GetTravelExpensesUseCase getTravelExpensesUseCase(Ref ref) {
-  return GetTravelExpensesUseCase(ref.read(travelExpenseRepositoryProvider));
-}
-
-@riverpod
-CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
-  return CreateTravelExpenseUseCase(ref.read(travelExpenseRepositoryProvider));
-}
-
-@riverpod
-ApproveTravelExpenseUseCase approveTravelExpenseUseCase(Ref ref) {
-  return ApproveTravelExpenseUseCase(
-      ref.read(travelExpenseRepositoryProvider));
-}
-
-@riverpod
-RejectTravelExpenseUseCase rejectTravelExpenseUseCase(Ref ref) {
-  return RejectTravelExpenseUseCase(
-      ref.read(travelExpenseRepositoryProvider));
-}
-
-@riverpod
-GetMasterDataUseCase getMasterDataUseCase(Ref ref) {
-  return GetMasterDataUseCase(ref.read(masterDataRepositoryProvider));
-}
-
-@riverpod
-GetLocationPingConfigUseCase getLocationPingConfigUseCase(Ref ref) {
-  return GetLocationPingConfigUseCase(
-      ref.read(locationPingRepositoryProvider));
-}
-
-@riverpod
-SendLocationPingUseCase sendLocationPingUseCase(Ref ref) {
-  return SendLocationPingUseCase(ref.read(locationPingRepositoryProvider));
-}
-
-@riverpod
-GetCurrentLocationUseCase getCurrentLocationUseCase(Ref ref) {
-  return GetCurrentLocationUseCase(ref.read(locationRepositoryProvider));
-}
-
-@riverpod
-WatchLocationUpdatesUseCase watchLocationUpdatesUseCase(Ref ref) {
-  return WatchLocationUpdatesUseCase(ref.read(locationRepositoryProvider));
-}
-
-@riverpod
-GetDeviceIdUseCase getDeviceIdUseCase(Ref ref) {
-  return GetDeviceIdUseCase(ref.read(deviceInfoRepositoryProvider));
+GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
+  return GetProblemCategoriesUseCase(ref.read(visitRepositoryProvider));
 }
 
 @riverpod
@@ -374,23 +517,23 @@ GetDeviceInfoUseCase getDeviceInfoUseCase(Ref ref) {
 }
 
 @riverpod
-GetLocaleUseCase getLocaleUseCase(Ref ref) {
-  return GetLocaleUseCase(ref.read(localeRepositoryProvider));
+CheckAppVersionUseCase checkAppVersionUseCase(Ref ref) {
+  return CheckAppVersionUseCase(ref.read(appUpdateRepositoryProvider));
 }
 
 @riverpod
-SetLocaleUseCase setLocaleUseCase(Ref ref) {
-  return SetLocaleUseCase(ref.read(localeRepositoryProvider));
+ReportAppUpdateActionUseCase reportAppUpdateActionUseCase(Ref ref) {
+  return ReportAppUpdateActionUseCase(ref.read(appUpdateRepositoryProvider));
 }
 
 @riverpod
-GetSavedRouteUseCase getSavedRouteUseCase(Ref ref) {
-  return GetSavedRouteUseCase(ref.read(routerRepositoryProvider));
+DownloadApkUseCase downloadApkUseCase(Ref ref) {
+  return DownloadApkUseCase(ref.read(appUpdateRepositoryProvider));
 }
 
 @riverpod
-SaveRouteUseCase saveRouteUseCase(Ref ref) {
-  return SaveRouteUseCase(ref.read(routerRepositoryProvider));
+InstallApkUseCase installApkUseCase(Ref ref) {
+  return InstallApkUseCase(ref.read(appUpdateRepositoryProvider));
 }
 
 @riverpod
@@ -442,8 +585,7 @@ DispatchSupplyRequestUseCase dispatchSupplyRequestUseCase(Ref ref) {
 }
 
 @riverpod
-GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(
-    Ref ref) {
+GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
   return GetDeliveryForSupplyRequestUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
@@ -467,32 +609,66 @@ FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
 }
 
 @riverpod
-GetPushTokenUseCase getPushTokenUseCase(Ref ref) {
-  return GetPushTokenUseCase(ref.read(pushNotificationRepositoryProvider));
-}
-
-@riverpod
-RegisterPushTokenUseCase registerPushTokenUseCase(Ref ref) {
-  return RegisterPushTokenUseCase(
+InitializePushNotificationUseCase initializePushNotificationUseCase(Ref ref) {
+  return InitializePushNotificationUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
 
 @riverpod
-UnregisterPushTokenUseCase unregisterPushTokenUseCase(Ref ref) {
-  return UnregisterPushTokenUseCase(
+GetInitialPushNotificationMessageUseCase
+getInitialPushNotificationMessageUseCase(Ref ref) {
+  return GetInitialPushNotificationMessageUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
 
 @riverpod
-GetProfileUseCase getProfileUseCase(Ref ref) {
-  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+GetNotificationPayloadUseCase getNotificationPayloadUseCase(Ref ref) {
+  return GetNotificationPayloadUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
 }
 
 @riverpod
-UpdateProfileUseCase updateProfileUseCase(Ref ref) {
-  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
+GetNotificationPayloadStreamUseCase getNotificationPayloadStreamUseCase(
+  Ref ref,
+) {
+  return GetNotificationPayloadStreamUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetNotificationsEnabledUseCase getNotificationsEnabledUseCase(Ref ref) {
+  return GetNotificationsEnabledUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+SetNotificationsEnabledUseCase setNotificationsEnabledUseCase(Ref ref) {
+  return SetNotificationsEnabledUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetDisabledNotificationChannelsUseCase getDisabledNotificationChannelsUseCase(
+  Ref ref,
+) {
+  return GetDisabledNotificationChannelsUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
+}
+
+@riverpod
+SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
+  Ref ref,
+) {
+  return SetNotificationChannelEnabledUseCase(
+    ref.read(pushNotificationRepositoryProvider),
+  );
 }
 
 @riverpod
@@ -509,3 +685,15 @@ VerifyForgotPasswordOtpUseCase verifyForgotPasswordOtpUseCase(Ref ref) {
 ResetForgotPasswordUseCase resetForgotPasswordUseCase(Ref ref) {
   return ResetForgotPasswordUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
 }
+
+@riverpod
+GetProfileUseCase getProfileUseCase(Ref ref) {
+  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+UpdateProfileUseCase updateProfileUseCase(Ref ref) {
+  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+

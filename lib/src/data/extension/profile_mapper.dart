@@ -1,5 +1,3 @@
-import 'package:dart_mappable/dart_mappable.dart';
-
 import '../../domain/entities/profile_entity.dart';
 import '../../domain/entities/profile_payloads.dart';
 import '../models/profile_model.dart';

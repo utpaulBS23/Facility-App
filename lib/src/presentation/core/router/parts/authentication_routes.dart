@@ -21,7 +21,7 @@ List<GoRoute> _authenticationRoutes(Ref ref) {
               pageBuilder: (context, state) {
                 final phone = state.extra as String?;
                 return MaterialPage(
-                  child: EmailVerificationPage(phoneNumber: phone),
+                  child: ForgotPasswordOtpVerificationPage(phoneNumber: phone),
                 );
               },
             ),

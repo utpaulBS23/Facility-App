@@ -55,7 +55,7 @@ class _RestClient implements RestClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/backend/auth/forgot-password/send-otp',
+            '/auth/forgot-password/send-otp',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -80,7 +80,7 @@ class _RestClient implements RestClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/backend/auth/forgot-password/verify-otp',
+            '/auth/forgot-password/verify-otp',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -105,7 +105,7 @@ class _RestClient implements RestClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/backend/auth/forgot-password/reset',
+            '/auth/forgot-password/reset',
             queryParameters: queryParameters,
             data: _data,
           )
