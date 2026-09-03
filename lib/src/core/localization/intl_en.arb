@@ -30,7 +30,7 @@
   "passwordRequired": "Password is required",
   "isRequired": "This field is required",
   "validEmail": "Please enter valid email address",
-  "enterAssociatedEmail": "Enter the email associated with your account and we’ll send an email with instructions to reset your password.",
+  "enterAssociatedEmail": "Enter the phone number associated with your account and we’ll send a verification code to reset your password.",
   "minLengthValidation": "This field must be at least {min} characters long",
   "@minLengthValidation": {
     "description": "Error message for minimum length validation",
@@ -68,7 +68,7 @@
   "dontHaveAccount": "Don't have an account? ",
   "alreadyHaveAccount": "Already have an account? ",
   "checkYourMail": "Check your mail",
-  "enterVerificationCode": "Please enter 4 digit code sent to your mail hello**@gmail.com.",
+  "enterVerificationCode": "Please enter 6-digit verification code sent to your phone number.",
   "didntGetCode": "Didn't get a code? ",
   "clickToResend": "Click to resend",
   "didNotReceiveEmail": "Did not receive the email? Check your spam filter. or ",
@@ -785,6 +785,40 @@
   "sessionExpired": "Session Expired",
   "sessionExpiredMessage": "Your session has expired or is invalid. Please log in again.",
   "ok": "OK",
-  "autoApproved": "Auto Approved"
+  "autoApproved": "Auto Approved",
+  "myProfile": "My Profile",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "changePasswordSubtitle": "Update your password regularly to keep your account secure",
+  "passwordReset": "Password Reset",
+  "passwordResetSubtitle": "Reset your password using OTP sent to your phone",
+  "personalInformation": "Personal Information",
+  "name": "Name",
+  "phoneNumber": "Phone Number",
+  "employeeId": "Employee ID",
+  "joiningDate": "Joining Date",
+  "saveChanges": "Save Changes",
+  "enterYourOtp": "Enter Your OTP",
+  "enterSixDigitCode": "Enter the 6-digit code sent to your phone",
+  "resendIn": "Resend in {seconds}s",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "resendOtp": "Resend OTP",
+  "verifyOtp": "Verify OTP",
+  "enterYourUserId": "Enter Your User ID",
+  "enterYourUserIdHint": "Enter your email or phone number",
+  "otpWillBeSent": "An OTP will be sent to your registered phone number for verification.",
+  "sendOtp": "Send OTP",
+  "otpSentSuccessfully": "OTP sent successfully",
+  "changePicture": "Change Picture",
+  "accountSecurity": "Update your password regularly to keep your account secure",
+  "currentPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password"
 }
 

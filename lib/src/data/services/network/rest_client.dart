@@ -13,6 +13,15 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
+  @POST('/auth/forgot-password/send-otp')
+  Future<HttpResponse> sendForgotPasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/forgot-password/verify-otp')
+  Future<HttpResponse> verifyForgotPasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/forgot-password/reset')
+  Future<HttpResponse> resetForgotPassword(@Body() Map<String, dynamic> body);
+
   @DELETE(Endpoints.logout)
   Future<HttpResponse> logout();
 
@@ -527,5 +536,14 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('taskOccurrenceId') required int taskOccurrenceId,
     @Body() Map<String, dynamic> request = const {},
+  });
+
+  /// Profile
+  @GET(Endpoints.profile)
+  Future<HttpResponse> getProfile();
+
+  @PATCH(Endpoints.profile)
+  Future<HttpResponse> updateProfile({
+    @Body() required Map<String, dynamic> body,
   });
 }

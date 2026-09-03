@@ -213,4 +213,7 @@ class Endpoints {
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/checklist-items/{itemId}/response';
   static const String taskOccurrenceSubmit =
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/submit';
+
+  /// Profile
+  static const String profile = '/profile';
 }
