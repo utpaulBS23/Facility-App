@@ -20,7 +20,6 @@ import '../../features/authentication/forgot_password/view/email_verification_pa
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
-import '../../features/app_update/view/app_update_checker.dart';
 import '../../features/additional_income/view/additional_income_page.dart';
 import '../../features/check_in_out/view/selfie_camera_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';

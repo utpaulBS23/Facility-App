@@ -9,12 +9,14 @@ class _EmailVerificationBody extends StatelessWidget {
     required this.onOtpCompleted,
     required this.onResendCode,
     required this.onTryAnotherEmail,
+    required this.isLoading,
   });
 
   final TextEditingController otpController;
   final ValueChanged<String> onOtpCompleted;
   final VoidCallback onResendCode;
   final VoidCallback onTryAnotherEmail;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class _EmailVerificationBody extends StatelessWidget {
               Gap(context.spacing.s24),
               ApplicationLogo(),
               Gap(context.spacing.s24),
-              HeadlineLargeText(context.locale.checkYourMail),
+              HeadlineLargeText(context.locale.verifyOtp),
               Gap(context.spacing.s8),
               BodyRegularText.secondary(
                 context.locale.enterVerificationCode,
@@ -65,14 +67,18 @@ class _EmailVerificationBody extends StatelessWidget {
               Gap(context.spacing.s32),
               Pinput(
                 controller: otpController,
-                length: 4,
+                length: 6,
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: focusedPinTheme,
                 errorPinTheme: errorPinTheme,
-                onCompleted: onOtpCompleted,
+                onCompleted: isLoading ? null : onOtpCompleted,
                 keyboardType: TextInputType.number,
                 hapticFeedbackType: HapticFeedbackType.lightImpact,
               ),
+              if (isLoading) ...[
+                Gap(dimensions.spacing.s16),
+                const CircularProgressIndicator(),
+              ],
               Gap(context.spacing.s24),
               LinkText(
                 text: context.locale.didntGetCode,

@@ -18,14 +18,25 @@ List<GoRoute> _authenticationRoutes(Ref ref) {
             GoRoute(
               path: Routes.emailVerification,
               name: Routes.emailVerification,
-              pageBuilder: (context, state) =>
-                  const MaterialPage(child: EmailVerificationPage()),
+              pageBuilder: (context, state) {
+                final phone = state.extra as String?;
+                return MaterialPage(
+                  child: EmailVerificationPage(phoneNumber: phone),
+                );
+              },
             ),
             GoRoute(
               path: Routes.createNewPassword,
               name: Routes.createNewPassword,
-              pageBuilder: (context, state) =>
-                  const MaterialPage(child: CreateNewPasswordPage()),
+              pageBuilder: (context, state) {
+                final extra = state.extra as Map<String, String>?;
+                return MaterialPage(
+                  child: CreateNewPasswordPage(
+                    phoneNumber: extra?['phoneNumber'],
+                    resetToken: extra?['resetToken'],
+                  ),
+                );
+              },
               routes: [
                 GoRoute(
                   path: Routes.resetPasswordSuccess,
