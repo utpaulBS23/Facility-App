@@ -1,65 +1,59 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/profile_entity.dart';
+import '../../domain/entities/profile_payloads.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../extension/profile_mapper.dart';
 import '../models/profile_model.dart';
 import '../services/network/rest_client.dart';
 
-class ProfileRepositoryImpl implements ProfileRepository {
+final class ProfileRepositoryImpl extends ProfileRepository {
   ProfileRepositoryImpl({required this.restClient});
 
   final RestClient restClient;
 
   @override
   Future<Result<UserProfileEntity, Failure>> getProfile() async {
-    try {
+    return asyncGuard(() async {
       final response = await restClient.getProfile();
       final model = UserProfileModel.fromJson(response.data);
-      return Result.success(data: model.toEntity());
-    } on Exception catch (e) {
-      return Result.error(Failure.mapExceptionToFailure(e));
-    }
+
+      return model.toEntity();
+    });
   }
 
   @override
-  Future<Result<UserProfileEntity, Failure>> updateProfile({
-    String? name,
-    String? email,
-    String? phoneNumber,
-  }) async {
-    try {
+  Future<Result<UserProfileEntity, Failure>> updateProfile(
+    UpdateProfileEntity request,
+  ) async {
+    return asyncGuard(() async {
       final body = <String, dynamic>{};
-      if (name != null) body['name'] = name;
-      if (email != null) body['email'] = email;
-      if (phoneNumber != null) body['phone_number'] = phoneNumber;
+      if (request.name != null) body['name'] = request.name;
+      if (request.email != null) body['email'] = request.email;
+      if (request.phoneNumber != null) body['phone_number'] = request.phoneNumber;
 
       final response = await restClient.updateProfile(body: body);
       final model = UserProfileModel.fromJson(response.data);
-      return Result.success(data: model.toEntity());
-    } on Exception catch (e) {
-      return Result.error(Failure.mapExceptionToFailure(e));
-    }
+
+      return model.toEntity();
+    });
   }
 
   @override
-  Future<Result<UserProfileEntity, Failure>> changePassword({
-    required String currentPassword,
-    required String newPassword,
-    required String newPasswordConfirmation,
-  }) async {
-    try {
+  Future<Result<UserProfileEntity, Failure>> changePassword(
+    ChangePasswordEntity request,
+  ) async {
+    return asyncGuard(() async {
       final body = <String, dynamic>{
-        'current_password': currentPassword,
-        'new_password': newPassword,
-        'new_password_confirmation': newPasswordConfirmation,
+        'current_password': request.currentPassword,
+        'new_password': request.newPassword,
+        'new_password_confirmation': request.newPasswordConfirmation,
       };
 
       final response = await restClient.updateProfile(body: body);
       final model = UserProfileModel.fromJson(response.data);
-      return Result.success(data: model.toEntity());
-    } on Exception catch (e) {
-      return Result.error(Failure.mapExceptionToFailure(e));
-    }
+
+      return model.toEntity();
+    });
   }
 }

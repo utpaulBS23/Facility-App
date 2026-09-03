@@ -4,13 +4,15 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/base/failure.dart';
-import '../../../../core/base/result.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/profile_payloads.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../riverpod/change_password_provider.dart';
+import '../riverpod/edit_profile_provider.dart';
 import '../riverpod/profile_provider.dart';
 import '../widgets/auth_header_icon.dart';
 import '../widgets/profile_avatar_badge.dart';
@@ -33,7 +35,7 @@ class MyProfilePage extends ConsumerWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final profileState = ref.watch(profileNotifierProvider);
+    final profileState = ref.watch(profileProvider);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -42,7 +44,11 @@ class MyProfilePage extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: color.primary, size: 20),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
         title: Text(
           context.locale.myProfile,
@@ -65,8 +71,7 @@ class MyProfilePage extends ConsumerWidget {
               ),
               Gap(spacing.s12),
               ElevatedButton(
-                onPressed: () =>
-                    ref.read(profileNotifierProvider.notifier).refreshProfile(),
+                onPressed: () => ref.invalidate(profileProvider),
                 child: Text(context.locale.retry),
               ),
             ],
@@ -80,8 +85,9 @@ class MyProfilePage extends ConsumerWidget {
           final partner = profile.partnerName ?? '—';
 
           return RefreshIndicator(
-            onRefresh: () =>
-                ref.read(profileNotifierProvider.notifier).refreshProfile(),
+            onRefresh: () async {
+              ref.invalidate(profileProvider);
+            },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(

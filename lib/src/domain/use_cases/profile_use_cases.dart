@@ -1,46 +1,57 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../entities/profile_entity.dart';
+import '../entities/profile_payloads.dart';
 import '../repositories/profile_repository.dart';
 
-class GetProfileUseCase {
+final class GetProfileUseCase {
   GetProfileUseCase({required this.repository});
 
   final ProfileRepository repository;
 
-  Future<Result<UserProfileEntity, Failure>> call() => repository.getProfile();
+  Future<Result<UserProfileEntity, Failure>> call() async {
+    final result = await repository.getProfile();
+
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get profile')),
+    };
+  }
 }
 
-class UpdateProfileUseCase {
+final class UpdateProfileUseCase {
   UpdateProfileUseCase({required this.repository});
 
   final ProfileRepository repository;
 
-  Future<Result<UserProfileEntity, Failure>> call({
-    String? name,
-    String? email,
-    String? phoneNumber,
-  }) =>
-      repository.updateProfile(
-        name: name,
-        email: email,
-        phoneNumber: phoneNumber,
-      );
+  Future<Result<UserProfileEntity, Failure>> call(
+    UpdateProfileEntity request,
+  ) async {
+    final result = await repository.updateProfile(request);
+
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('update profile')),
+    };
+  }
 }
 
-class ChangePasswordUseCase {
+final class ChangePasswordUseCase {
   ChangePasswordUseCase({required this.repository});
 
   final ProfileRepository repository;
 
-  Future<Result<UserProfileEntity, Failure>> call({
-    required String currentPassword,
-    required String newPassword,
-    required String newPasswordConfirmation,
-  }) =>
-      repository.changePassword(
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        newPasswordConfirmation: newPasswordConfirmation,
-      );
+  Future<Result<UserProfileEntity, Failure>> call(
+    ChangePasswordEntity request,
+  ) async {
+    final result = await repository.changePassword(request);
+
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('change password')),
+    };
+  }
 }

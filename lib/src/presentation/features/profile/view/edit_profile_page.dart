@@ -14,7 +14,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    final profile = ref.read(profileNotifierProvider).valueOrNull;
+    final profile = ref.read(profileProvider).valueOrNull;
     _nameController = TextEditingController(text: profile?.name ?? '');
     _phoneController = TextEditingController(text: profile?.phoneNumber ?? '');
   }
@@ -30,24 +30,12 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
 
-    final result = await ref
-        .read(editProfileNotifierProvider.notifier)
-        .updateProfile(
-          name: name.isNotEmpty ? name : null,
-          phoneNumber: phone.isNotEmpty ? phone : null,
+    await ref.read(editProfileProvider.notifier).updateProfile(
+          UpdateProfileEntity(
+            name: name.isNotEmpty ? name : null,
+            phoneNumber: phone.isNotEmpty ? phone : null,
+          ),
         );
-
-    if (!mounted) return;
-
-    result.when(
-      success: (data) {
-        AppSnackBar.showSuccess(context, context.locale.saveChanges);
-        context.pop();
-      },
-      error: (failure) {
-        AppSnackBar.showError(context, failure.localizedMessage(context));
-      },
-    );
   }
 
   @override
@@ -56,10 +44,25 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final editState = ref.watch(editProfileNotifierProvider);
-    final isLoading = editState.isLoading;
+    ref.listen(editProfileProvider, (previous, next) {
+      if (next is AsyncData && next.value != null) {
+        AppSnackBar.showSuccess(context, context.locale.saveChanges);
+        if (context.canPop()) {
+          context.pop();
+        }
+      } else if (next is AsyncError) {
+        final err = next.error;
+        AppSnackBar.showError(
+          context,
+          err is Failure ? err.localizedMessage(context) : err.toString(),
+        );
+      }
+    });
 
-    final profile = ref.watch(profileNotifierProvider).valueOrNull;
+    final updateState = ref.watch(editProfileProvider);
+    final isLoading = updateState.isLoading;
+
+    final profile = ref.watch(profileProvider).valueOrNull;
     final name = profile?.name ?? '';
 
     return Scaffold(
@@ -69,7 +72,11 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: color.primary, size: 20),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
         title: Text(
           context.locale.editProfile,
