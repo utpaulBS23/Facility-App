@@ -3,9 +3,11 @@ part of '../router.dart';
 StatefulShellRoute _shellRoutes(Ref ref) {
   return StatefulShellRoute.indexedStack(
     builder: (context, state, navigationShell) {
-      return AppUpdateChecker(
-        child: NavigationShell(statefulNavigationShell: navigationShell),
-      );
+      // TODO: re-enable when update check is ready
+      // return AppUpdateChecker(
+      //   child: NavigationShell(statefulNavigationShell: navigationShell),
+      // );
+      return NavigationShell(statefulNavigationShell: navigationShell);
     },
     branches: [
       StatefulShellBranch(

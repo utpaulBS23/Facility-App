@@ -12,7 +12,7 @@ class Profile extends _$Profile {
   @override
   Future<UserProfileEntity> build() async {
     ref.listen(editProfileProvider, (previous, next) {
-      if (next is AsyncData && next.value != null) {
+      if (previous is AsyncLoading && next is AsyncData) {
         ref.invalidateSelf();
       }
     });
