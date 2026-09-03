@@ -2,6 +2,7 @@ part of 'session_service.dart';
 
 class InMemorySessionService implements SessionService {
   String? _accessToken;
+  int _weekStartDay = 6;
   bool _hasNotifiedUnauthorized = false;
   // WHY sync: an async broadcast controller delivers to listeners on a
   // microtask, not inside add() itself. AuthenticationRepositoryImpl's
@@ -24,9 +25,17 @@ class InMemorySessionService implements SessionService {
   bool get isAuthenticated => _accessToken != null;
 
   @override
+  int get weekStartDay => _weekStartDay;
+
+  @override
   void setAccessToken(String token) {
     _accessToken = token;
     _hasNotifiedUnauthorized = false;
+  }
+
+  @override
+  void setWeekStartDay(int day) {
+    _weekStartDay = day;
   }
 
   // WHY: guard on the already-null case so a logout that races a failed token

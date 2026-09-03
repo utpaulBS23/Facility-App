@@ -17,7 +17,11 @@ abstract class SessionService {
   /// True while a token is held. The one source of truth for "logged in".
   bool get isAuthenticated;
 
+  /// Carbon day number (0=Sun..6=Sat) configured for the active partner. Defaults to 6 (Saturday).
+  int get weekStartDay;
+
   void setAccessToken(String token);
+  void setWeekStartDay(int day);
 
   /// Drops the token and notifies [onCleared]. Idempotent.
   void clear();
