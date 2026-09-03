@@ -25,10 +25,10 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = "facility_app"
-            keyPassword = "facility@123"
-            storeFile = file("release.jks")
-            storePassword = "facility@123"
+            keyAlias = (rootProject.findProperty("KEY_ALIAS") as? String) ?: "facility_app"
+            keyPassword = (rootProject.findProperty("KEY_PASSWORD") as? String) ?: "facility@123"
+            storeFile = file((rootProject.findProperty("KEYSTORE_PATH") as? String) ?: "release.jks")
+            storePassword = (rootProject.findProperty("KEYSTORE_PASSWORD") as? String) ?: "facility@123"
         }
     }
 
@@ -40,12 +40,7 @@ android {
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionName = flutter.versionName
-
-        val versionParts = flutter.versionName.split(".")
-        val major = versionParts.getOrNull(0)?.toIntOrNull() ?: 0
-        val minor = versionParts.getOrNull(1)?.toIntOrNull() ?: 0
-        val patch = versionParts.getOrNull(2)?.toIntOrNull() ?: 0
-        versionCode = major * 10000 + minor * 100 + patch
+        versionCode = flutter.versionCode
     }
 
     buildTypes {
