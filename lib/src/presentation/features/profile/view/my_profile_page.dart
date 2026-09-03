@@ -10,6 +10,7 @@ import '../../../../domain/entities/profile_payloads.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../riverpod/change_password_provider.dart';
 import '../riverpod/edit_profile_provider.dart';
@@ -61,28 +62,18 @@ class MyProfilePage extends ConsumerWidget {
       ),
       body: profileState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                err is Failure ? err.localizedMessage(context) : err.toString(),
-                style: textStyle.bodyMedium.copyWith(color: color.error),
-              ),
-              Gap(spacing.s12),
-              ElevatedButton(
-                onPressed: () => ref.invalidate(profileProvider),
-                child: Text(context.locale.retry),
-              ),
-            ],
-          ),
+        error: (err, stack) => AppErrorWidget(
+          message: err is Failure
+              ? err.localizedMessage(context)
+              : err.toString(),
+          onRetry: () => ref.invalidate(profileProvider),
         ),
         data: (profile) {
           final name = profile.name;
           final email = profile.email;
-          final phone = profile.phoneNumber ?? '—';
+          final phone = profile.phoneNumber.isEmpty ? '—' : profile.phoneNumber;
           final role = profile.userType;
-          final partner = profile.partnerName ?? '—';
+          final partner = profile.partnerName.isEmpty ? '—' : profile.partnerName;
 
           return RefreshIndicator(
             onRefresh: () async {

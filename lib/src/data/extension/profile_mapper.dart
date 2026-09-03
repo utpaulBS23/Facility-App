@@ -6,9 +6,9 @@ extension UserProfileModelToEntity on UserProfileModel {
         id: id,
         name: name,
         email: email,
-        phoneNumber: phoneNumber,
-        userType: userType ?? 'partner_staff',
-        partnerName: partner?.name ?? partner?.brandName,
-        profileImageUrl: profileImageUrl,
+        phoneNumber: phoneNumber ?? '',
+        userType: userType ?? '',
+        partnerName: partner?.name ?? '',
+        profileImageUrl: profileImageUrl ?? '',
       );
 }

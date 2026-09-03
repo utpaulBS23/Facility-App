@@ -43,13 +43,13 @@ final class ChangePasswordUseCase {
 
   final ProfileRepository repository;
 
-  Future<Result<UserProfileEntity, Failure>> call(
+  Future<Result<void, Failure>> call(
     ChangePasswordEntity request,
   ) async {
     final result = await repository.changePassword(request);
 
     return switch (result) {
-      Success(:final data) => Success(data: data),
+      Success() => const Success(data: null),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('change password')),
     };
