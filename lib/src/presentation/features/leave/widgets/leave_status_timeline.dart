@@ -11,7 +11,7 @@ class _LeaveStatusTimeline extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final applicantName = leaveRequest.applicant.name;
+    final applicantName = leaveRequest.applicant?.name ?? leaveRequest.leavePolicy.name;
     final steps = leaveRequest.approvalSteps;
 
     return Container(
@@ -39,7 +39,7 @@ class _LeaveStatusTimeline extends StatelessWidget {
                     applicantName,
                   )
                 : context.locale.requestedBy(applicantName),
-            subtitle: leaveRequest.createdAt,
+            subtitle: _formatTimestamp(leaveRequest.createdAt),
             iconColor: color.success,
             isLast: steps.isEmpty,
           ),
@@ -64,9 +64,13 @@ class _LeaveStatusTimeline extends StatelessWidget {
                 ),
             };
 
+            final formattedDecidedAt = _formatTimestamp(step.decidedAt);
+
             return _LeaveTimelineItem(
               title: stepTitle,
-              subtitle: step.decidedAt ?? context.locale.pending,
+              subtitle: formattedDecidedAt.isNotEmpty
+                  ? formattedDecidedAt
+                  : context.locale.pending,
               iconColor: stepColor,
               isLast: isLast,
             );
@@ -74,6 +78,16 @@ class _LeaveStatusTimeline extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatTimestamp(String? isoString) {
+    if (isoString == null || isoString.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(isoString).toLocal();
+      return DateFormatter.timestamp(dt);
+    } catch (_) {
+      return isoString;
+    }
   }
 
   String _getRoleName(BuildContext context, String approverRole) {

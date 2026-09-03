@@ -5,6 +5,7 @@ class _LeaveRequestsBody extends StatelessWidget {
     required this.padding,
     required this.searchController,
     required this.selectedFilter,
+    required this.currentTab,
     required this.onFilterSelected,
     required this.onSearchChanged,
     required this.leaveRequestsState,
@@ -14,6 +15,7 @@ class _LeaveRequestsBody extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final TextEditingController searchController;
   final LeaveFilter selectedFilter;
+  final LeaveTab currentTab;
   final ValueChanged<LeaveFilter> onFilterSelected;
   final VoidCallback onSearchChanged;
   final AsyncValue<List<LeaveRequestEntity>> leaveRequestsState;
@@ -23,29 +25,31 @@ class _LeaveRequestsBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: padding,
-          child: leaveRequestsState.when(
-            data: (requests) => _LeaveSupervisorSummaryCard(
-              pendingCount: requests
-                  .where((request) => request.status == LeaveStatus.pendingSupervisor)
-                  .length,
-              managerCount: requests
-                  .where((request) => request.status == LeaveStatus.pendingManager)
-                  .length,
+        if (currentTab == LeaveTab.leaveApprovals)
+          Padding(
+            padding: padding,
+            child: leaveRequestsState.when(
+              data: (requests) => _LeaveSupervisorSummaryCard(
+                pendingCount: requests
+                    .where((request) => request.status == LeaveStatus.pendingSupervisor)
+                    .length,
+                managerCount: requests
+                    .where((request) => request.status == LeaveStatus.pendingManager)
+                    .length,
+              ),
+              loading: () => const LeaveSupervisorSummaryCardShimmer(),
+              error: (err, stack) => const SizedBox.shrink(),
             ),
-            loading: () => const LeaveSupervisorSummaryCardShimmer(),
-            error: (err, stack) => const SizedBox.shrink(),
           ),
-        ),
-        Padding(
-          padding: padding,
-          child: AppTextField.search(
-            controller: searchController,
-            hint: context.locale.search,
-            onChanged: (_) => onSearchChanged(),
+        if (currentTab == LeaveTab.leaveApprovals)
+          Padding(
+            padding: padding,
+            child: AppTextField.search(
+              controller: searchController,
+              hint: context.locale.search,
+              onChanged: (_) => onSearchChanged(),
+            ),
           ),
-        ),
         Padding(
           padding: padding,
           child: CategoryFilterChips<LeaveFilter>(

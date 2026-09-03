@@ -13,6 +13,7 @@ import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
@@ -67,17 +68,56 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     );
 
     final leaveRequestsState = ref.watch(leaveRequestsProvider);
+    final currentTab = ref.watch(selectedLeaveTabProvider);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: DetailAppBar(
         title: context.locale.leaveRequests,
         onBack: () => _onBack(context),
+        actions: [
+          PermissionGate(
+            permissions: const [
+              UserPermission.leaveApproveSupervisor,
+              UserPermission.leaveApproveManager,
+            ],
+            builder: (context, canSeeApprovals) {
+              if (!canSeeApprovals) {
+                if (currentTab != LeaveTab.myLeave) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ref.read(selectedLeaveTabProvider.notifier).selectTab(LeaveTab.myLeave);
+                  });
+                }
+                return const SizedBox.shrink();
+              }
+
+              return AppBarFilterButton<LeaveTab>(
+                title: context.locale.filters,
+                icon: Icons.filter_list_rounded,
+                currentValue: currentTab,
+                options: [
+                  (
+                    value: LeaveTab.leaveApprovals,
+                    label: context.locale.leaveApprovals,
+                  ),
+                  (
+                    value: LeaveTab.myLeave,
+                    label: context.locale.myLeave,
+                  ),
+                ],
+                onSelected: (tab) {
+                  ref.read(selectedLeaveTabProvider.notifier).selectTab(tab);
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: _LeaveRequestsBody(
         padding: padding,
         searchController: _searchController,
         selectedFilter: _selectedFilter,
+        currentTab: currentTab,
         onFilterSelected: (filter) {
           setState(() => _selectedFilter = filter);
           ref.read(leaveRequestsProvider.notifier).filter(filter);
