@@ -2,7 +2,10 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 part 'profile_model.mapper.dart';
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class ProfilePartnerModel with ProfilePartnerModelMappable {
   ProfilePartnerModel({
     required this.id,
@@ -12,13 +15,15 @@ class ProfilePartnerModel with ProfilePartnerModelMappable {
 
   final int id;
   final String? name;
-  @MappableField(key: 'brand_name')
   final String? brandName;
 
   static const fromJson = ProfilePartnerModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.decode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class UserProfileModel with UserProfileModelMappable {
   UserProfileModel({
     required this.id,
@@ -34,20 +39,19 @@ class UserProfileModel with UserProfileModelMappable {
   final int id;
   final String name;
   final String email;
-  @MappableField(key: 'phone_number')
   final String? phoneNumber;
-  @MappableField(key: 'user_type')
   final String? userType;
   final ProfilePartnerModel? partner;
-  @MappableField(key: 'profile_image_url')
   final String? profileImageUrl;
-  @MappableField(key: 'is_active')
   final bool? isActive;
 
   static const fromJson = UserProfileModelMapper.fromJson;
 }
 
-@MappableClass(generateMethods: GenerateMethods.encode)
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.encode,
+)
 class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
   UpdateProfileRequestModel({
     this.name,
@@ -60,12 +64,8 @@ class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
 
   final String? name;
   final String? email;
-  @MappableField(key: 'phone_number')
   final String? phoneNumber;
-  @MappableField(key: 'current_password')
   final String? currentPassword;
-  @MappableField(key: 'new_password')
   final String? newPassword;
-  @MappableField(key: 'new_password_confirmation')
   final String? newPasswordConfirmation;
 }

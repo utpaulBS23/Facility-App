@@ -44,25 +44,15 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    final result = await ref
-        .read(changePasswordNotifierProvider.notifier)
+    await ref
+        .read(changePasswordProvider.notifier)
         .changePassword(
-          currentPassword: currentPassword,
-          newPassword: newPassword,
-          newPasswordConfirmation: confirmPassword,
+          ChangePasswordEntity(
+            currentPassword: currentPassword,
+            newPassword: newPassword,
+            newPasswordConfirmation: confirmPassword,
+          ),
         );
-
-    if (!mounted) return;
-
-    result.when(
-      success: (data) {
-        AppSnackBar.showSuccess(context, context.locale.changePassword);
-        context.pop();
-      },
-      error: (failure) {
-        AppSnackBar.showError(context, failure.localizedMessage(context));
-      },
-    );
   }
 
   @override
@@ -71,7 +61,22 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final changeState = ref.watch(changePasswordNotifierProvider);
+    ref.listen(changePasswordProvider, (previous, next) {
+      if (next is AsyncData && next.value != null) {
+        AppSnackBar.showSuccess(context, context.locale.changePassword);
+        if (context.canPop()) {
+          context.pop();
+        }
+      } else if (next is AsyncError) {
+        final err = next.error;
+        AppSnackBar.showError(
+          context,
+          err is Failure ? err.localizedMessage(context) : err.toString(),
+        );
+      }
+    });
+
+    final changeState = ref.watch(changePasswordProvider);
     final isLoading = changeState.isLoading;
 
     return Scaffold(
@@ -81,7 +86,11 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: color.primary, size: 20),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            }
+          },
         ),
         title: Text(
           context.locale.changePassword,
