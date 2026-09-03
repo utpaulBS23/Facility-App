@@ -1,31 +1,40 @@
 // Author: Md. Shahin Bashar
 // Created: 2026-04-03
 
-import 'package:facility_management_app/src/presentation/core/widgets/application_logo.dart';
-import 'package:facility_management_app/src/presentation/core/widgets/detail_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../../../../core/base/failure.dart';
 import '../../../../../core/extensions/app_localization.dart';
+import '../../../../../core/extensions/failure_localization.dart';
+import '../../../../../domain/entities/forgot_password/forgot_password_entities.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
+import '../../../../core/utils/app_snackbar.dart';
+import '../../../../core/widgets/application_logo.dart';
+import '../../../../core/widgets/detail_app_bar.dart';
 import '../../../../core/widgets/link_text.dart';
 import '../../../../core/widgets/text/typography.dart';
+import '../riverpod/send_otp_provider.dart';
+import '../riverpod/verify_otp_provider.dart';
 
 part '../widgets/email_verification_body.dart';
 
 class EmailVerificationPage extends ConsumerStatefulWidget {
-  const EmailVerificationPage({super.key});
+  const EmailVerificationPage({super.key, this.phoneNumber});
+
+  final String? phoneNumber;
 
   @override
   ConsumerState<EmailVerificationPage> createState() =>
       _EmailVerificationPageState();
 }
 
-class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
+class _EmailVerificationPageState
+    extends ConsumerState<EmailVerificationPage> {
   final otpController = TextEditingController();
 
   @override
@@ -35,12 +44,24 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
   }
 
   void _onOtpCompleted(String otp) {
-    // TODO: Call provider to verify OTP
-    context.pushReplacementNamed(Routes.createNewPassword);
+    final phone = widget.phoneNumber ?? '';
+    if (phone.isEmpty) return;
+
+    ref.read(verifyOtpProvider.notifier).verifyOtp(
+          VerifyOtpEntity(
+            phoneNumber: phone,
+            otp: otp,
+          ),
+        );
   }
 
   void _onResendCode() {
-    // TODO: Call provider to resend OTP
+    final phone = widget.phoneNumber ?? '';
+    if (phone.isEmpty) return;
+
+    ref.read(sendOtpProvider.notifier).sendOtp(
+          SendOtpEntity(phoneNumber: phone),
+        );
   }
 
   void _onTryAnotherEmail() {
@@ -49,13 +70,46 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(verifyOtpProvider, (previous, next) {
+      if (previous is AsyncLoading && next is AsyncData && next.value != null) {
+        context.pushReplacementNamed(
+          Routes.createNewPassword,
+          extra: {
+            'phoneNumber': widget.phoneNumber ?? '',
+            'resetToken': next.value!.resetToken,
+          },
+        );
+      } else if (next is AsyncError) {
+        final err = next.error;
+        AppSnackBar.showError(
+          context,
+          err is Failure ? err.localizedMessage(context) : err.toString(),
+        );
+      }
+    });
+
+    ref.listen(sendOtpProvider, (previous, next) {
+      if (previous is AsyncLoading && next is AsyncData && next.value != null) {
+        AppSnackBar.showSuccess(context, context.locale.clickToResend);
+      } else if (next is AsyncError) {
+        final err = next.error;
+        AppSnackBar.showError(
+          context,
+          err is Failure ? err.localizedMessage(context) : err.toString(),
+        );
+      }
+    });
+
+    final verifyState = ref.watch(verifyOtpProvider);
+
     return Scaffold(
-      appBar: DetailAppBar(title: context.locale.checkYourMail),
+      appBar: DetailAppBar(title: context.locale.verifyOtp),
       body: _EmailVerificationBody(
         otpController: otpController,
         onOtpCompleted: _onOtpCompleted,
         onResendCode: _onResendCode,
         onTryAnotherEmail: _onTryAnotherEmail,
+        isLoading: verifyState.isLoading,
       ),
     );
   }

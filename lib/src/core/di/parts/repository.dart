@@ -142,3 +142,8 @@ PushNotificationRepository pushNotificationRepository(Ref ref) {
 ProfileRepository profileRepository(Ref ref) {
   return ProfileRepositoryImpl(restClient: ref.read(restClientServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+ForgotPasswordRepository forgotPasswordRepository(Ref ref) {
+  return ForgotPasswordRepositoryImpl(restClient: ref.read(restClientServiceProvider));
+}
