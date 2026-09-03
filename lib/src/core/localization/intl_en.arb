@@ -782,6 +782,7 @@
   "proofPhoto": "Proof Photo (Optional)",
   "sessionExpired": "Session Expired",
   "sessionExpiredMessage": "Your session has expired or is invalid. Please log in again.",
-  "ok": "OK"
+  "ok": "OK",
+  "autoApproved": "Auto Approved"
 }
 
