@@ -528,4 +528,13 @@ abstract class RestClient {
     @Path('taskOccurrenceId') required int taskOccurrenceId,
     @Body() Map<String, dynamic> request = const {},
   });
+
+  /// Profile
+  @GET(Endpoints.profile)
+  Future<HttpResponse> getProfile();
+
+  @PATCH(Endpoints.profile)
+  Future<HttpResponse> updateProfile({
+    @Body() required Map<String, dynamic> body,
+  });
 }

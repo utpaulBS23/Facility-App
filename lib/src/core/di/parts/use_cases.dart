@@ -670,3 +670,18 @@ SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+GetProfileUseCase getProfileUseCase(Ref ref) {
+  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+UpdateProfileUseCase updateProfileUseCase(Ref ref) {
+  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+ChangePasswordUseCase changePasswordUseCase(Ref ref) {
+  return ChangePasswordUseCase(repository: ref.read(profileRepositoryProvider));
+}

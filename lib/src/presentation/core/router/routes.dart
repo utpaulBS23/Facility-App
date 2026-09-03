@@ -64,4 +64,10 @@ class Routes {
   static const String requestDetails = '/request-details/:id';
   static const String confirmDelivery = '/confirm-delivery';
   static const String deliveryComplaint = '/delivery-complaint';
+
+  static const String myProfile = '/my-profile';
+  static const String editProfile = '/edit-profile';
+  static const String changePassword = '/change-password';
+  static const String passwordReset = '/password-reset';
+  static const String otpVerification = '/otp-verification';
 }
