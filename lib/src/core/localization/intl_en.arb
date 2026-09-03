@@ -779,6 +779,9 @@
   "missingLabel": "Missing",
   "complaintReasonLabel": "Reason for Complaint",
   "complaintReasonHint": "Describe the issue or reason for complaint...",
-  "proofPhoto": "Proof Photo (Optional)"
+  "proofPhoto": "Proof Photo (Optional)",
+  "sessionExpired": "Session Expired",
+  "sessionExpiredMessage": "Your session has expired or is invalid. Please log in again.",
+  "ok": "OK"
 }
 
