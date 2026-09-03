@@ -41,14 +41,15 @@ class _LeaveRequestsBody extends StatelessWidget {
               error: (err, stack) => const SizedBox.shrink(),
             ),
           ),
-        Padding(
-          padding: padding,
-          child: AppTextField.search(
-            controller: searchController,
-            hint: context.locale.search,
-            onChanged: (_) => onSearchChanged(),
+        if (currentTab == LeaveTab.leaveApprovals)
+          Padding(
+            padding: padding,
+            child: AppTextField.search(
+              controller: searchController,
+              hint: context.locale.search,
+              onChanged: (_) => onSearchChanged(),
+            ),
           ),
-        ),
         Padding(
           padding: padding,
           child: CategoryFilterChips<LeaveFilter>(
