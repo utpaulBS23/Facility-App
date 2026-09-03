@@ -13,12 +13,14 @@ class ProfileAvatarBadge extends StatelessWidget {
   const ProfileAvatarBadge({
     super.key,
     required this.initials,
+    this.imageUrl,
     required this.badgeIcon,
     required this.badgeColor,
     this.radius = 44,
   });
 
   final String initials;
+  final String? imageUrl;
   final IconData badgeIcon;
   final Color badgeColor;
   final double radius;
@@ -27,6 +29,7 @@ class ProfileAvatarBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.color;
     final badgeSize = radius * 0.55;
+    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -34,13 +37,18 @@ class ProfileAvatarBadge extends StatelessWidget {
         CircleAvatar(
           radius: radius,
           backgroundColor: color.primary.withValues(alpha: 0.1),
-          child: Text(
-            initials.isNotEmpty ? initials.substring(0, 1).toUpperCase() : '?',
-            style: context.textStyle.headlineLarge.copyWith(
-              color: color.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          backgroundImage: hasImage ? NetworkImage(imageUrl!) : null,
+          child: !hasImage
+              ? Text(
+                  initials.isNotEmpty
+                      ? initials.substring(0, 1).toUpperCase()
+                      : '?',
+                  style: context.textStyle.headlineLarge.copyWith(
+                    color: color.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : null,
         ),
         Positioned(
           bottom: 0,
@@ -70,12 +78,14 @@ class ProfileAvatarWithLabel extends StatelessWidget {
   const ProfileAvatarWithLabel({
     super.key,
     required this.initials,
+    this.imageUrl,
     required this.badgeIcon,
     required this.badgeColor,
     required this.label,
   });
 
   final String initials;
+  final String? imageUrl;
   final IconData badgeIcon;
   final Color badgeColor;
   final String label;
@@ -87,6 +97,7 @@ class ProfileAvatarWithLabel extends StatelessWidget {
       children: [
         ProfileAvatarBadge(
           initials: initials,
+          imageUrl: imageUrl,
           badgeIcon: badgeIcon,
           badgeColor: badgeColor,
         ),

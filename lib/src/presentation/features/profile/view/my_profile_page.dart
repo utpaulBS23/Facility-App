@@ -111,6 +111,7 @@ class MyProfilePage extends ConsumerWidget {
                               children: [
                                 ProfileAvatarBadge(
                                   initials: name,
+                                  imageUrl: profile.profileImageUrl,
                                   badgeIcon: Icons.check,
                                   badgeColor: color.success,
                                 ),

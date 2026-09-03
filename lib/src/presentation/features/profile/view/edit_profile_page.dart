@@ -105,6 +105,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     child: Center(
                       child: ProfileAvatarWithLabel(
                         initials: name,
+                        imageUrl: profile?.profileImageUrl,
                         badgeIcon: Icons.camera_alt_outlined,
                         badgeColor: color.primary,
                         label: context.locale.changePicture,
