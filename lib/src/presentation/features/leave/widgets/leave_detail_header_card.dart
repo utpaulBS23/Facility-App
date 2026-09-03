@@ -44,13 +44,19 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
                     color: color.text.primary,
                   ),
                 ),
-                Gap(spacing.s4),
-                Text(
-                  context.locale.attendant,
-                  style: textStyle.bodyMedium.copyWith(
-                    color: color.text.secondary,
+                if (
+                  leaveRequest.applicant?.groupName 
+                  case final groupName? 
+                  when groupName.isNotEmpty
+                  ) ...[
+                  Gap(spacing.s4),
+                  Text(
+                    groupName,
+                    style: textStyle.bodyMedium.copyWith(
+                      color: color.text.secondary,
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

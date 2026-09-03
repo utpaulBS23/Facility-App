@@ -45,7 +45,11 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
 
 extension LeaveApplicantModelToEntity on LeaveApplicantModel {
   LeaveApplicantEntity toEntity() {
-    return LeaveApplicantEntity(id: id, name: name);
+    return LeaveApplicantEntity(
+      id: id,
+      name: name,
+      groupName: groupName,
+    );
   }
 }
 
