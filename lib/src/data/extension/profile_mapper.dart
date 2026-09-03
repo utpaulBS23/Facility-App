@@ -27,7 +27,7 @@ extension UpdateProfileEntityToModelMapper on UpdateProfileEntity {
       );
 
   Map<String, dynamic> toJson() {
-    final map = MapperContainer.globals.toMap(toModel());
+    final map = toModel().toJson();
     map.removeWhere((key, value) => value == null);
 
     return map;
