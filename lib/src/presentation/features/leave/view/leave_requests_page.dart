@@ -68,7 +68,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     );
 
     final leaveRequestsState = ref.watch(leaveRequestsProvider);
-    final currentTab = ref.watch(leaveRequestsProvider.notifier).currentTab;
+    final currentTab = ref.watch(selectedLeaveTabProvider);
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -85,7 +85,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
               if (!canSeeApprovals) {
                 if (currentTab != LeaveTab.myLeave) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ref.read(leaveRequestsProvider.notifier).setTab(LeaveTab.myLeave);
+                    ref.read(selectedLeaveTabProvider.notifier).selectTab(LeaveTab.myLeave);
                   });
                 }
                 return const SizedBox.shrink();
@@ -106,7 +106,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
                   ),
                 ],
                 onSelected: (tab) {
-                  ref.read(leaveRequestsProvider.notifier).setTab(tab);
+                  ref.read(selectedLeaveTabProvider.notifier).selectTab(tab);
                 },
               );
             },
