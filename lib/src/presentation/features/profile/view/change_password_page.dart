@@ -62,7 +62,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
     final textStyle = context.textStyle;
 
     ref.listen(changePasswordProvider, (previous, next) {
-      if (next is AsyncData && next.value != null) {
+      if (previous is AsyncLoading && next is AsyncData) {
         AppSnackBar.showSuccess(context, context.locale.changePassword);
         if (context.canPop()) {
           context.pop();

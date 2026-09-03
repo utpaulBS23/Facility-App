@@ -45,7 +45,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     final textStyle = context.textStyle;
 
     ref.listen(editProfileProvider, (previous, next) {
-      if (next is AsyncData && next.value != null) {
+      if (previous is AsyncLoading && next is AsyncData) {
         AppSnackBar.showSuccess(context, context.locale.saveChanges);
         if (context.canPop()) {
           context.pop();
