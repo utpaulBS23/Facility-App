@@ -40,7 +40,7 @@ final class ProfileRepositoryImpl extends ProfileRepository {
   }
 
   @override
-  Future<Result<UserProfileEntity, Failure>> changePassword(
+  Future<Result<void, Failure>> changePassword(
     ChangePasswordEntity request,
   ) async {
     return asyncGuard(() async {
@@ -50,10 +50,7 @@ final class ProfileRepositoryImpl extends ProfileRepository {
         'new_password_confirmation': request.newPasswordConfirmation,
       };
 
-      final response = await restClient.updateProfile(body: body);
-      final model = UserProfileModel.fromJson(response.data);
-
-      return model.toEntity();
+      await restClient.updateProfile(body: body);
     });
   }
 }
