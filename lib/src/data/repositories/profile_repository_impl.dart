@@ -27,30 +27,10 @@ final class ProfileRepositoryImpl extends ProfileRepository {
     UpdateProfileEntity request,
   ) async {
     return asyncGuard(() async {
-      final body = <String, dynamic>{};
-      if (request.name != null) body['name'] = request.name;
-      if (request.email != null) body['email'] = request.email;
-      if (request.phoneNumber != null) body['phone_number'] = request.phoneNumber;
-
-      final response = await restClient.updateProfile(body: body);
+      final response = await restClient.updateProfile(body: request.toJson());
       final model = UserProfileModel.fromJson(response.data);
 
       return model.toEntity();
-    });
-  }
-
-  @override
-  Future<Result<void, Failure>> changePassword(
-    ChangePasswordEntity request,
-  ) async {
-    return asyncGuard(() async {
-      final body = <String, dynamic>{
-        'current_password': request.currentPassword,
-        'new_password': request.newPassword,
-        'new_password_confirmation': request.newPasswordConfirmation,
-      };
-
-      await restClient.updateProfile(body: body);
     });
   }
 }

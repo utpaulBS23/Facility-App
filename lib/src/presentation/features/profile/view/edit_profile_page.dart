@@ -9,6 +9,7 @@ class EditProfilePage extends ConsumerStatefulWidget {
 
 class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
 
   @override
@@ -16,23 +17,27 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     super.initState();
     final profile = ref.read(profileProvider).valueOrNull;
     _nameController = TextEditingController(text: profile?.name ?? '');
+    _emailController = TextEditingController(text: profile?.email ?? '');
     _phoneController = TextEditingController(text: profile?.phoneNumber ?? '');
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
     final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
     final phone = _phoneController.text.trim();
 
     await ref.read(editProfileProvider.notifier).updateProfile(
           UpdateProfileEntity(
             name: name.isNotEmpty ? name : null,
+            email: email.isNotEmpty ? email : null,
             phoneNumber: phone.isNotEmpty ? phone : null,
           ),
         );
@@ -125,6 +130,12 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     label: context.locale.name,
                     hint: context.locale.name,
                     prefixIcon: const Icon(Icons.person_outline),
+                  ),
+                  Gap(spacing.s16),
+                  AppTextField.email(
+                    controller: _emailController,
+                    label: context.locale.email,
+                    hint: context.locale.email,
                   ),
                   Gap(spacing.s16),
                   AppTextField.text(
