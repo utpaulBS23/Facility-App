@@ -6,29 +6,38 @@ class _AttendanceListItem extends StatelessWidget {
   final AttendanceItemEntity item;
   final VoidCallback onTap;
 
-  Color _iconBg(BuildContext context) => switch (item.displayStatus) {
-    AttendanceStatus.approved ||
-    AttendanceStatus.autoApproved => context.color.successAlt,
-    AttendanceStatus.pending => context.color.warningAlt,
-    AttendanceStatus.rejected ||
-    AttendanceStatus.absent => context.color.errorAlt,
-  };
+  Color _iconBg(BuildContext context) {
+    if (item.isLate) return context.color.warningAlt;
+    return switch (item.displayStatus) {
+      AttendanceStatus.approved ||
+      AttendanceStatus.autoApproved => context.color.successAlt,
+      AttendanceStatus.pending => context.color.warningAlt,
+      AttendanceStatus.rejected => context.color.errorAlt,
+      AttendanceStatus.absent => context.color.borderSubtle.withValues(alpha: 0.2),
+    };
+  }
 
-  Color _iconColor(BuildContext context) => switch (item.displayStatus) {
-    AttendanceStatus.approved ||
-    AttendanceStatus.autoApproved => context.color.success,
-    AttendanceStatus.pending => context.color.warning,
-    AttendanceStatus.rejected ||
-    AttendanceStatus.absent => context.color.error,
-  };
+  Color _iconColor(BuildContext context) {
+    if (item.isLate) return context.color.warning;
+    return switch (item.displayStatus) {
+      AttendanceStatus.approved ||
+      AttendanceStatus.autoApproved => context.color.success,
+      AttendanceStatus.pending => context.color.warning,
+      AttendanceStatus.rejected => context.color.error,
+      AttendanceStatus.absent => context.color.text.secondary,
+    };
+  }
 
-  IconData get _icon => switch (item.displayStatus) {
-    AttendanceStatus.approved ||
-    AttendanceStatus.autoApproved => Icons.check_rounded,
-    AttendanceStatus.pending => Icons.hourglass_empty_rounded,
-    AttendanceStatus.rejected => Icons.close_rounded,
-    AttendanceStatus.absent => Icons.person_off_rounded,
-  };
+  IconData get _icon {
+    if (item.isLate) return Icons.schedule_rounded;
+    return switch (item.displayStatus) {
+      AttendanceStatus.approved ||
+      AttendanceStatus.autoApproved => Icons.check_rounded,
+      AttendanceStatus.pending => Icons.hourglass_empty_rounded,
+      AttendanceStatus.rejected => Icons.close_rounded,
+      AttendanceStatus.absent => Icons.event_busy_rounded,
+    };
+  }
 
   Color _dotColor(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.approved ||
@@ -40,8 +49,8 @@ class _AttendanceListItem extends StatelessWidget {
 
   String _statusLabel(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.pending => context.locale.pending,
-    AttendanceStatus.approved => 'Approved',
-    AttendanceStatus.autoApproved => 'Auto Approved',
+    AttendanceStatus.approved => context.locale.approved,
+    AttendanceStatus.autoApproved => context.locale.autoApproved,
     AttendanceStatus.rejected => context.locale.rejected,
     AttendanceStatus.absent => context.locale.absent,
   };
