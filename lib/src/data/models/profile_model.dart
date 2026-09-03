@@ -50,7 +50,7 @@ class UserProfileModel with UserProfileModelMappable {
 
 @MappableClass(
   caseStyle: CaseStyle.snakeCase,
-  generateMethods: GenerateMethods.encode,
+  generateMethods: GenerateMethods.decode | GenerateMethods.encode | GenerateMethods.stringify,
 )
 class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
   UpdateProfileRequestModel({
