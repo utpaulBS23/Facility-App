@@ -46,6 +46,13 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       path: Routes.claimExpense,
       name: Routes.claimExpense,
       pageBuilder: (context, state) {
+        return const MaterialPage(child: TravelExpensesPage());
+      },
+    ),
+    GoRoute(
+      path: Routes.addTravelExpense,
+      name: Routes.addTravelExpense,
+      pageBuilder: (context, state) {
         return const MaterialPage(child: ClaimExpensePage());
       },
     ),
