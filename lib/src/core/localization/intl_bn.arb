@@ -201,6 +201,8 @@
   "totalLabel": "মোট",
   "claimExpense": "ভ্রমণ খরচ",
   "claimExpenseSubtitle": "ভ্রমণ খরচের দাবি জমা দিন",
+  "noTravelExpensesFound": "কোনো ভ্রমণ খরচ পাওয়া যায়নি",
+  "averageCost": "গড় খরচ",
   "addTravelExpense": "ভ্রমণ খরচ যোগ করুন",
   "referenceVisitOptional": "সংশ্লিষ্ট ভিজিট (ঐচ্ছিক)",
   "none": "কোনোটি নয়",
