@@ -324,6 +324,14 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.travelExpenses)
+  Future<HttpResponse> getTravelExpenses({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('facility_id') int? facilityId,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.masterDataItems)
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,
