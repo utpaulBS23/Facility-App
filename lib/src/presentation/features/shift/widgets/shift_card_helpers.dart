@@ -43,13 +43,18 @@ class _InfoRow extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 16, color: context.color.text.secondary),
         Gap(spacing.s4),
-        Text(
-          label,
-          style: context.textStyle.bodySmall.copyWith(
-            color: context.color.text.secondary,
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyle.bodySmall.copyWith(
+              color: context.color.text.secondary,
+            ),
           ),
         ),
       ],
