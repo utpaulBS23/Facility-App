@@ -26,7 +26,8 @@ class _AppUpdateCheckerState extends ConsumerState<AppUpdateChecker> {
 
     if (!mounted || update == null || !update.hasUpdate) return;
 
-    AppUpdateDialog.show(context, update);
+    // TEMP: disabled for testing, never commit this.
+    // AppUpdateDialog.show(context, update);
   }
 
   @override

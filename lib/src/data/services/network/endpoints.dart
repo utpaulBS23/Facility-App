@@ -193,6 +193,12 @@ class Endpoints {
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
   static const String rejectSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+
+  /// Facility Expenses
+  static const String facilityExpenses =
+      '/partners/{partnerId}/facility-expenses';
+  static const String facilityExpenseDetails =
+      '/partners/{partnerId}/facility-expenses/{facilityExpenseId}';
   static const String dispatchSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/dispatch';
   static const String deliveries = '/partners/{partnerId}/deliveries';
