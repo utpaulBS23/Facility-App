@@ -4,6 +4,7 @@ import '../../../../../core/base/failure.dart';
 import '../../../../../core/base/result.dart';
 import '../../../../../core/di/dependency_injection.dart';
 import '../../../../../domain/entities/facility_expense/facility_expense_entity.dart';
+import '../../../../../domain/entities/facility_expense/facility_expense_payloads.dart';
 
 part 'submit_facility_expense_provider.g.dart';
 

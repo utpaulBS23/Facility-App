@@ -1,6 +1,8 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/facility_expense/facility_expense_entity.dart';
+import '../../domain/entities/facility_expense/facility_expense_filter.dart';
+import '../../domain/entities/facility_expense/facility_expense_payloads.dart';
 import '../../domain/repositories/facility_expense_repository.dart';
 import '../extension/facility_expense_mapper.dart';
 import '../models/facility_expense/facility_expense_model.dart';
