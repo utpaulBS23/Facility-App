@@ -1,63 +1,7 @@
-part of '../view/facility_expense_page.dart';
+part of '../view/add_facility_expense_page.dart';
 
-class _ExpenseFacilitySelector extends StatelessWidget {
-  const _ExpenseFacilitySelector({required this.facilityName, this.onTap});
-
-  final String? facilityName;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final radius = context.dimensions.radius;
-    final spacing = context.dimensions.spacing;
-    final isDisabled = onTap == null;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: spacing.s56,
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r12),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-        child: Row(
-          children: [
-            Icon(
-              Icons.location_on_outlined,
-              size: spacing.s20,
-              color: context.color.text.secondary,
-            ),
-            Gap(spacing.s8),
-            Expanded(
-              child: Text(
-                facilityName ?? context.locale.selectFacility,
-                overflow: TextOverflow.ellipsis,
-                style: facilityName == null
-                    ? context.textStyle.bodyMedium.copyWith(
-                        color: context.color.text.secondary,
-                      )
-                    : context.textStyle.bodyMedium,
-              ),
-            ),
-            if (!isDisabled)
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: context.color.text.secondary,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// WHY tap-to-select-and-pop, not a native dropdown: mirrors
-// FacilityPickerSheet's interaction so every filter/picker sheet in the app
-// behaves the same way.
-class _ExpenseFacilityPickerSheet extends StatelessWidget {
-  const _ExpenseFacilityPickerSheet({
+class _FacilityListSheet extends StatelessWidget {
+  const _FacilityListSheet({
     required this.facilities,
     required this.selectedFacilityId,
   });
@@ -111,9 +55,7 @@ class _ExpenseFacilityPickerSheet extends StatelessWidget {
                 final facility = facilities[index];
                 final isSelected = facility.id == selectedFacilityId;
                 return GestureDetector(
-                  onTap: () => Navigator.of(
-                    context,
-                  ).pop((facilityId: facility.id)),
+                  onTap: () => Navigator.of(context).pop(facility.id),
                   child: Container(
                     padding: EdgeInsets.all(spacing.s16),
                     decoration: BoxDecoration(

@@ -1,5 +1,7 @@
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/facility_expense/facility_expense_entity.dart';
+import '../../domain/entities/facility_expense/facility_expense_paid_by.dart';
+import '../../domain/entities/facility_expense/facility_expense_payloads.dart';
 import '../models/facility_expense/facility_expense_model.dart';
 
 extension FacilityExpenseModelMapper on FacilityExpenseModel {

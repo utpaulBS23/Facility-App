@@ -98,7 +98,7 @@ class _MasterDataOptionCard extends StatelessWidget {
                 : isSelected
                 ? context.color.primary
                 : context.color.borderSubtle,
-            width: isSelected ? 1.5 : 1,
+            width: isSelected ? spacing.s1_25 : spacing.s1,
           ),
         ),
         child: Text(
