@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/base/base.dart';
-import '../../../../core/di/dependency_injection.dart';
-import '../../../../domain/entities/master_data_entity.dart';
+import '../../../../../core/base/base.dart';
+import '../../../../../core/di/dependency_injection.dart';
+import '../../../../../domain/entities/master_data_entity.dart';
 
 part 'expense_dropdowns_provider.g.dart';
 
