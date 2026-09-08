@@ -16,8 +16,11 @@ import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../riverpod/expense_dropdowns_provider.dart';
-import '../riverpod/submit_facility_expense_provider.dart';
+import '../riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
+import '../riverpod/submit_expense_provider/selected_expense_category_provider.dart';
+import '../riverpod/submit_expense_provider/selected_expense_facility_provider.dart';
+import '../riverpod/submit_expense_provider/selected_expense_paid_by_provider.dart';
+import '../riverpod/submit_expense_provider/submit_facility_expense_provider.dart';
 
 part '../widgets/expense_master_data_selector.dart';
 
@@ -35,31 +38,10 @@ class _AddFacilityExpensePageState
   final _amountController = TextEditingController();
   final _commentsController = TextEditingController();
 
-  MasterDataItemEntity? _category;
   bool _categoryError = false;
-  int? _facilityId;
   bool _facilityError = false;
   DateTime _expenseDate = DateTime.now();
-  MasterDataItemEntity? _paidBy;
   bool _paidByError = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _selectDefaultFacility(),
-    );
-  }
-
-  void _selectDefaultFacility() {
-    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
-    if (facilities == null || facilities.isEmpty || !mounted) return;
-    final primary = facilities.cast<AccessibleFacilityEntity?>().firstWhere(
-      (f) => f?.isPrimary ?? false,
-      orElse: () => null,
-    );
-    setState(() => _facilityId = (primary ?? facilities.first).id);
-  }
 
   @override
   void dispose() {
@@ -68,18 +50,19 @@ class _AddFacilityExpensePageState
     super.dispose();
   }
 
+  // WHY the cascade resets downstream selections: category/facility/paid-by
+  // are unrelated data (no field's options actually depend on another's
+  // value) so this is a pure UX-ordering rule — but once a later step has
+  // already been filled, changing an earlier one could leave a stale,
+  // no-longer-reviewed choice behind, so it's cleared instead.
   void _onSelectCategory(MasterDataItemEntity category) {
-    setState(() {
-      _category = category;
-      _categoryError = false;
-    });
+    setState(() => _categoryError = false);
+    ref.read(selectedExpenseCategoryProvider.notifier).select(category);
   }
 
   void _onSelectPaidBy(MasterDataItemEntity paidBy) {
-    setState(() {
-      _paidBy = paidBy;
-      _paidByError = false;
-    });
+    setState(() => _paidByError = false);
+    ref.read(selectedExpensePaidByProvider.notifier).select(paidBy);
   }
 
   Future<void> _onPickFacility(List<AccessibleFacilityEntity> facilities) async {
@@ -89,14 +72,12 @@ class _AddFacilityExpensePageState
       backgroundColor: Colors.transparent,
       builder: (_) => _FacilityListSheet(
         facilities: facilities,
-        selectedFacilityId: _facilityId,
+        selectedFacilityId: ref.read(selectedExpenseFacilityProvider),
       ),
     );
     if (result == null) return;
-    setState(() {
-      _facilityId = result;
-      _facilityError = false;
-    });
+    setState(() => _facilityError = false);
+    ref.read(selectedExpenseFacilityProvider.notifier).select(result);
   }
 
   Future<void> _onPickDate() async {
@@ -110,9 +91,13 @@ class _AddFacilityExpensePageState
   }
 
   void _onSubmit() {
-    final categoryOk = _category != null;
-    final paidByOk = _paidBy != null;
-    final facilityOk = _facilityId != null;
+    final category = ref.read(selectedExpenseCategoryProvider);
+    final facilityId = ref.read(selectedExpenseFacilityProvider);
+    final paidBy = ref.read(selectedExpensePaidByProvider);
+
+    final categoryOk = category != null;
+    final paidByOk = paidBy != null;
+    final facilityOk = facilityId != null;
 
     setState(() {
       _categoryError = !categoryOk;
@@ -134,11 +119,11 @@ class _AddFacilityExpensePageState
         .read(submitFacilityExpenseProvider.notifier)
         .submit(
           CreateFacilityExpenseRequestEntity(
-            facilityId: _facilityId!,
-            category: _category!.value,
+            facilityId: facilityId,
+            category: category.value,
             amount: amount,
             expenseDate: _expenseDate,
-            paidBy: _paidBy!.value,
+            paidBy: paidBy.value,
             note: note.isEmpty ? null : note,
           ),
         );
@@ -159,13 +144,20 @@ class _AddFacilityExpensePageState
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
+    final category = ref.watch(selectedExpenseCategoryProvider);
+    final facilityId = ref.watch(selectedExpenseFacilityProvider);
+    final paidBy = ref.watch(selectedExpensePaidByProvider);
     final facilityName = facilities
         .cast<AccessibleFacilityEntity?>()
-        .firstWhere((f) => f?.id == _facilityId, orElse: () => null)
+        .firstWhere((f) => f?.id == facilityId, orElse: () => null)
         ?.name;
     final categoriesAsync = ref.watch(expenseCategoryOptionsProvider);
     final paymentMethodsAsync = ref.watch(paymentMethodOptionsProvider);
     final isSubmitting = ref.watch(submitFacilityExpenseProvider).isLoading;
+
+    final facilityEnabled = category != null;
+    final dateEnabled = facilityId != null;
+    final amountEnabled = dateEnabled;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -188,7 +180,7 @@ class _AddFacilityExpensePageState
               ),
               data: (categories) => _MasterDataOptionSelector(
                 options: categories,
-                selected: _category,
+                selected: category,
                 hasError: _categoryError,
                 onChanged: _onSelectCategory,
               ),
@@ -200,7 +192,7 @@ class _AddFacilityExpensePageState
               value: facilityName,
               hint: context.locale.selectFacility,
               hasError: _facilityError,
-              onTap: facilities.length > 1
+              onTap: facilityEnabled && facilities.length > 1
                   ? () => _onPickFacility(facilities)
                   : null,
             ),
@@ -210,29 +202,39 @@ class _AddFacilityExpensePageState
             _DropdownField(
               value: DateFormatter.shortDate(_expenseDate),
               hint: context.locale.expenseDate,
-              onTap: _onPickDate,
+              onTap: dateEnabled ? _onPickDate : null,
             ),
             Gap(spacing.s16),
             AppTextField.text(
               controller: _amountController,
               label: context.locale.amountBdt,
               hint: context.locale.enterAmount,
+              enabled: amountEnabled,
             ),
             Gap(spacing.s16),
             LabelLargeText(context.locale.paidBy),
             Gap(spacing.s8),
-            paymentMethodsAsync.when(
-              loading: () => const LinearProgressIndicator(),
-              error: (_, _) => BodySmallText(
-                context.locale.paidBy,
-                color: context.color.error,
-              ),
-              data: (methods) => _MasterDataOptionSelector(
-                options: methods,
-                selected: _paidBy,
-                hasError: _paidByError,
-                onChanged: _onSelectPaidBy,
-              ),
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _amountController,
+              builder: (context, amountValue, _) {
+                final paidByEnabled =
+                    (double.tryParse(amountValue.text.trim()) ?? 0) > 0;
+
+                return paymentMethodsAsync.when(
+                  loading: () => const LinearProgressIndicator(),
+                  error: (_, _) => BodySmallText(
+                    context.locale.paidBy,
+                    color: context.color.error,
+                  ),
+                  data: (methods) => _MasterDataOptionSelector(
+                    options: methods,
+                    selected: paidBy,
+                    hasError: _paidByError,
+                    enabled: paidByEnabled,
+                    onChanged: _onSelectPaidBy,
+                  ),
+                );
+              },
             ),
             Gap(spacing.s16),
             AppTextField.description(
@@ -273,7 +275,9 @@ class _AddFacilityExpensePageState
                     child: SizedBox(
                       height: 52,
                       child: FilledButton(
-                        onPressed: isSubmitting ? null : _onSubmit,
+                        onPressed: isSubmitting || paidBy == null
+                            ? null
+                            : _onSubmit,
                         style: FilledButton.styleFrom(
                           backgroundColor: context.color.primary,
                           disabledBackgroundColor: context.color.primary
