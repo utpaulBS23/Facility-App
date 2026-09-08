@@ -1,6 +1,7 @@
 import '../../../core/base/failure.dart';
 import '../../../core/base/result.dart';
 import '../../entities/facility_expense/facility_expense_entity.dart';
+import '../../entities/facility_expense/facility_expense_payloads.dart';
 import '../../repositories/facility_expense_repository.dart';
 import '../partner_use_case.dart';
 

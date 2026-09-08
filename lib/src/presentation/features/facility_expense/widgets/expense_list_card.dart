@@ -25,7 +25,7 @@ class _ExpenseListCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.access_time_rounded,
-                size: 14,
+                size: spacing.s14,
                 color: context.color.text.secondary,
               ),
               Gap(spacing.s4),
@@ -40,7 +40,7 @@ class _ExpenseListCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.location_on_outlined,
-                size: 14,
+                size: spacing.s14,
                 color: context.color.text.secondary,
               ),
               Gap(spacing.s4),
@@ -53,7 +53,10 @@ class _ExpenseListCard extends StatelessWidget {
             ],
           ),
           Gap(spacing.s12),
-          LabelLargeText(expense.categoryName),
+          Text(
+            expense.categoryName,
+            style: context.textStyle.bodyLarge
+          ),
           if (note != null && note.isNotEmpty) ...[
             Gap(spacing.s2),
             BodySmallText(note, color: context.color.text.secondary),
@@ -61,8 +64,8 @@ class _ExpenseListCard extends StatelessWidget {
           Gap(spacing.s8),
           Text(
             '৳${NumberFormatter.format(expense.amount)}',
-            style: context.textStyle.headline2xlTiny.copyWith(
-              color: context.color.error,
+            style: context.textStyle.headlineTiny.copyWith(
+              color: context.color.primary,
             ),
           ),
           Gap(spacing.s12),
@@ -70,7 +73,7 @@ class _ExpenseListCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.person_outline_rounded,
-                size: 14,
+                size: spacing.s14,
                 color: context.color.text.secondary,
               ),
               Gap(spacing.s4),

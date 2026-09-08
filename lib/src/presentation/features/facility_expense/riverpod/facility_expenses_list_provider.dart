@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/facility_expense/facility_expense_entity.dart';
+import '../../../../domain/entities/facility_expense/facility_expense_filter.dart';
 import 'submit_expense_provider/submit_facility_expense_provider.dart';
 
 part 'facility_expenses_list_provider.g.dart';

@@ -40,13 +40,15 @@ class _ExpenseStatsRowShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final spacing = context.dimensions.spacing;
+
+    return Row(
       children: [
-        _StatCardShimmer(),
-        SizedBox(width: 8),
-        _StatCardShimmer(),
-        SizedBox(width: 8),
-        _StatCardShimmer(),
+        const _StatCardShimmer(),
+        SizedBox(width: spacing.s8),
+        const _StatCardShimmer(),
+        SizedBox(width: spacing.s8),
+        const _StatCardShimmer(),
       ],
     );
   }
