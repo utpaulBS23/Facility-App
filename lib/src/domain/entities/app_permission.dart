@@ -181,6 +181,7 @@ enum UserPermission {
   facilityExpenseView('facility_expense.view'),
   facilityExpenseCreate('facility_expense.create'),
   facilityExpenseApprove('facility_expense.approve'),
+  facilityExpenseDelete('facility_expense.delete'),
   expenseCategoryView('expense_category.view'),
 
   // Travel expense
