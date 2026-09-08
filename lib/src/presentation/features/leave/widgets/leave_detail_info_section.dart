@@ -14,7 +14,9 @@ class _LeaveDetailInfoSection extends StatelessWidget {
     final dateRange = '${leaveRequest.startDate} → ${leaveRequest.endDate}';
     final reasonText = leaveRequest.reason ?? context.locale.optional;
 
-    final typeLabel = leaveRequest.leaveType.localizedLabel(context);
+    final typeLabel = leaveRequest.leavePolicy.name.isNotEmpty
+        ? leaveRequest.leavePolicy.name
+        : leaveRequest.leaveType.localizedLabel(context);
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),

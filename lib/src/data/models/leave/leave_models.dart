@@ -199,7 +199,7 @@ class LeaveShiftDetailModel with LeaveShiftDetailModelMappable {
 class LeaveRequestModel with LeaveRequestModelMappable {
   const LeaveRequestModel({
     required this.id,
-    required this.partnerId,
+    this.partnerId,
     required this.referenceCode,
     required this.startDate,
     required this.endDate,
@@ -221,7 +221,7 @@ class LeaveRequestModel with LeaveRequestModelMappable {
   });
 
   final int id;
-  final int partnerId;
+  final int? partnerId;
   final String referenceCode;
   final String startDate;
   final String endDate;

@@ -9,15 +9,20 @@ class _CreateNewPasswordBody extends StatelessWidget {
     required this.newPasswordController,
     required this.confirmPasswordController,
     required this.onResetPassword,
+    required this.isLoading,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController newPasswordController;
   final TextEditingController confirmPasswordController;
   final VoidCallback onResetPassword;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
+    final color = context.color;
+    final spacing = context.dimensions.spacing;
+
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: context.padding.p16),
@@ -41,14 +46,23 @@ class _CreateNewPasswordBody extends StatelessWidget {
                 label: context.locale.confirmPassword,
                 hint: context.locale.confirmPassword,
                 textInputAction: TextInputAction.done,
-                onSubmitted: (_) => onResetPassword(),
+                onSubmitted: (_) => isLoading ? null : onResetPassword(),
               ),
               Gap(context.spacing.s32),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: onResetPassword,
-                  child: Text(context.locale.resetPassword),
+                  onPressed: isLoading ? null : onResetPassword,
+                  child: isLoading
+                      ? SizedBox(
+                          height: spacing.s20,
+                          width: spacing.s20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: color.onPrimary,
+                          ),
+                        )
+                      : Text(context.locale.resetPassword),
                 ),
               ),
             ],
