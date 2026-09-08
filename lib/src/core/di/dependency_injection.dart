@@ -36,6 +36,7 @@ import '../../data/repositories/additional_income_repository_impl.dart';
 import '../../data/repositories/facility_product_repository_impl.dart';
 import '../../data/repositories/product_catalog_repository_impl.dart';
 import '../../data/repositories/product_sale_entry_repository_impl.dart';
+import '../../data/repositories/facility_expense_repository_impl.dart';
 import '../../data/repositories/push_notification_repository_impl.dart';
 import '../../data/services/cache/cache_service.dart';
 import '../../data/services/device/device_info_service.dart';
@@ -84,6 +85,7 @@ import '../../domain/repositories/additional_income_repository.dart';
 import '../../domain/repositories/facility_product_repository.dart';
 import '../../domain/repositories/product_catalog_repository.dart';
 import '../../domain/repositories/product_sale_entry_repository.dart';
+import '../../domain/repositories/facility_expense_repository.dart';
 import '../../domain/use_cases/manual_attendance_use_case.dart';
 import '../../domain/use_cases/attendance_use_case.dart';
 import '../../domain/use_cases/my_attendance_use_case.dart';
@@ -121,6 +123,9 @@ import '../../domain/use_cases/additional_income/create_additional_income_use_ca
 import '../../domain/use_cases/facility_product/get_facility_products_use_case.dart';
 import '../../domain/use_cases/product_catalog/get_product_catalog_dropdown_use_case.dart';
 import '../../domain/use_cases/product_sale_entry/create_product_sale_entry_use_case.dart';
+import '../../domain/use_cases/facility_expense/get_facility_expenses_use_case.dart';
+import '../../domain/use_cases/facility_expense/create_facility_expense_use_case.dart';
+import '../../domain/use_cases/facility_expense/delete_facility_expense_use_case.dart';
 
 part 'dependency_injection.g.dart';
 part 'parts/externals.dart';

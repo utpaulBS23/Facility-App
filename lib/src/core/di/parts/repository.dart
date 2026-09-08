@@ -159,6 +159,13 @@ ProductSaleEntryRepository productSaleEntryRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
+  return FacilityExpenseRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 PushNotificationRepository pushNotificationRepository(Ref ref) {
   return PushNotificationRepositoryImpl(
     notificationService: ref.read(pushNotificationServiceProvider),

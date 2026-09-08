@@ -657,6 +657,30 @@ FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilityExpensesUseCase getFacilityExpensesUseCase(Ref ref) {
+  return GetFacilityExpensesUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateFacilityExpenseUseCase createFacilityExpenseUseCase(Ref ref) {
+  return CreateFacilityExpenseUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+DeleteFacilityExpenseUseCase deleteFacilityExpenseUseCase(Ref ref) {
+  return DeleteFacilityExpenseUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 InitializePushNotificationUseCase initializePushNotificationUseCase(Ref ref) {
   return InitializePushNotificationUseCase(
     ref.read(pushNotificationRepositoryProvider),
