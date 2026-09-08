@@ -9,12 +9,14 @@ class _MasterDataOptionSelector extends StatelessWidget {
     required this.selected,
     required this.hasError,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final List<MasterDataItemEntity> options;
   final MasterDataItemEntity? selected;
   final bool hasError;
   final ValueChanged<MasterDataItemEntity> onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,8 @@ class _MasterDataOptionSelector extends StatelessWidget {
                 option: option,
                 isSelected: selected?.id == option.id,
                 hasError: hasError,
-                onTap: () => onChanged(option),
+                enabled: enabled,
+                onTap: enabled ? () => onChanged(option) : null,
               ),
           ],
         ),
@@ -61,12 +64,14 @@ class _MasterDataOptionCard extends StatelessWidget {
     required this.isSelected,
     required this.hasError,
     required this.onTap,
+    this.enabled = true,
   });
 
   final MasterDataItemEntity option;
   final bool isSelected;
   final bool hasError;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +90,7 @@ class _MasterDataOptionCard extends StatelessWidget {
           vertical: spacing.s12,
         ),
         decoration: BoxDecoration(
-          color: context.color.onPrimary,
+          color: enabled ? context.color.onPrimary : context.color.subtle,
           borderRadius: BorderRadius.circular(radius.r12),
           border: Border.all(
             color: hasError && !isSelected
@@ -100,7 +105,9 @@ class _MasterDataOptionCard extends StatelessWidget {
           option.label,
           textAlign: TextAlign.center,
           style: context.textStyle.bodySmall.copyWith(
-            color: isSelected
+            color: !enabled
+                ? context.color.text.secondary
+                : isSelected
                 ? context.color.primary
                 : context.color.text.secondary,
           ),
