@@ -67,7 +67,7 @@ class _LeaveRequestActionCardState
     final textStyle = context.textStyle;
     final color = context.color;
 
-    final applicantName = leaveRequest.applicant.name;
+    final applicantName = leaveRequest.applicant?.name ?? leaveRequest.leavePolicy.name;
     final dateRange = '${leaveRequest.startDate} → ${leaveRequest.endDate}';
 
     final (statusLabel, dotColor) = leaveRequest.status.labelAndDotColor(context);

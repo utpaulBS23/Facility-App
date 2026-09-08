@@ -159,10 +159,6 @@ class Endpoints {
   static const String rejectLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
 
-  // WHY placeholder path: no backend contract exists yet for travel-expense
-  // claims (see CreateTravelExpenseUseCase) — this mirrors the app's other
-  // partner-scoped POST resources and is expected to be reconciled with
-  // backend once the real endpoint is confirmed.
   static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
 
   /// Master Data — generic partner/global configurable dropdown items,
@@ -213,4 +209,7 @@ class Endpoints {
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/checklist-items/{itemId}/response';
   static const String taskOccurrenceSubmit =
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/submit';
+
+  /// Profile
+  static const String profile = '/profile';
 }
