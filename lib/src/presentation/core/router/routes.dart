@@ -51,6 +51,7 @@ class Routes {
   static const String doorLock = '/door-lock';
   static const String additionalIncome = '/additional-income';
   static const String facilityExpense = '/facility-expense';
+  static const String addFacilityExpense = '/facility-expense/add';
   static const String claimExpense = '/claim-expense';
   static const String notification = '/notification';
   static const String supplyRequest = '/supply-request';

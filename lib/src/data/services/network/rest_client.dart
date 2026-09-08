@@ -403,6 +403,26 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.facilityExpenses)
+  Future<HttpResponse> getFacilityExpenses({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.facilityExpenses)
+  Future<HttpResponse> createFacilityExpense({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @DELETE(Endpoints.facilityExpenseDetails)
+  Future<HttpResponse> deleteFacilityExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityExpenseId') required int facilityExpenseId,
+  });
+
   @POST(Endpoints.approveSupplyRequest)
   Future<HttpResponse> approveSupplyRequest({
     @Path('partnerId') required int partnerId,

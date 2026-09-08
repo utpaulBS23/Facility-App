@@ -85,10 +85,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _expenseEntryLabel,
     subtitle: _expenseEntrySubtitle,
     route: Routes.facilityExpense,
-    permissions: [
-      UserPermission.facilityExpenseCreate,
-      UserPermission.facilityExpenseApprove,
-    ],
+    permissions: [UserPermission.facilityExpenseView],
   ),
   MenuItemConfig(
     icon: Assets.icons.visit,
