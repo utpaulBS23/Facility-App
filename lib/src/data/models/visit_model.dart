@@ -6,15 +6,15 @@ part 'visit_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class VisitListResponseModel with VisitListResponseModelMappable {
-  VisitListResponseModel({required this.data, required this.stats});
+  VisitListResponseModel({required this.data, this.meta});
 
   final List<VisitSummaryModel> data;
-  final VisitStatsModel stats;
+  final VisitStatsModel? meta;
 
   static const fromJson = VisitListResponseModelMapper.fromJson;
 
   VisitListEntity toEntity() => VisitListEntity(
-        stats: stats.toEntity(),
+        stats: meta?.toEntity(),
         visits: data.map((e) => e.toEntity()).toList(),
       );
 }
@@ -24,9 +24,8 @@ class VisitStatsModel with VisitStatsModelMappable {
   VisitStatsModel({
     required this.todayCount,
     required this.thisWeekCount,
-    required this.inProgress,
-    required this.completed,
-  });
+    int? completed,
+  }) : completed = completed ?? 0;
 
   @MappableField(key: 'today_count')
   final int todayCount;
@@ -34,9 +33,7 @@ class VisitStatsModel with VisitStatsModelMappable {
   @MappableField(key: 'this_week_count')
   final int thisWeekCount;
 
-  @MappableField(key: 'in_progress')
-  final int inProgress;
-
+  @MappableField(key: 'completed_count')
   final int completed;
 
   static const fromJson = VisitStatsModelMapper.fromJson;
@@ -44,7 +41,7 @@ class VisitStatsModel with VisitStatsModelMappable {
   VisitStatsSummaryEntity toEntity() => VisitStatsSummaryEntity(
         todayCount: todayCount,
         thisWeekCount: thisWeekCount,
-        inProgress: inProgress,
+        inProgress: 0,
         completed: completed,
       );
 }

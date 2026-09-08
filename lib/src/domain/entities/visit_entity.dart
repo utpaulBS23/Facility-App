@@ -62,11 +62,11 @@ class VisitSummaryEntity {
 
 class VisitListEntity {
   const VisitListEntity({
-    required this.stats,
+    this.stats,
     required this.visits,
   });
 
-  final VisitStatsSummaryEntity stats;
+  final VisitStatsSummaryEntity? stats;
   final List<VisitSummaryEntity> visits;
 }
 
