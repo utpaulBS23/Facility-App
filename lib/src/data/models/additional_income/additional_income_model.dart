@@ -23,31 +23,9 @@ class AdditionalIncomeSummaryModel with AdditionalIncomeSummaryModelMappable {
   static const fromJson = AdditionalIncomeSummaryModelMapper.fromJson;
 }
 
-// WHY nested income_type object with its own model: unlike facility-expense's
-// category (a plain master-data value string), the doc's additional-income
-// response nests income_type as {id, code, name, requires_photo}.
-@MappableClass(
-  caseStyle: CaseStyle.snakeCase,
-  generateMethods: GenerateMethods.decode,
-)
-class AdditionalIncomeTypeRefModel with AdditionalIncomeTypeRefModelMappable {
-  const AdditionalIncomeTypeRefModel({
-    required this.id,
-    this.code,
-    this.name,
-    this.requiresPhoto,
-  });
-
-  final int id;
-  final String? code;
-  final String? name;
-  final bool? requiresPhoto;
-
-  static const fromJson = AdditionalIncomeTypeRefModelMapper.fromJson;
-}
-
-// WHY no separate wrapper: matches facility-expense's flat store/show model
-// — no `data` wrapper at the top level of a single record response.
+// WHY no separate wrapper for the record itself: this model IS the flat
+// object nested one level under the response's top-level `data` key — see
+// AdditionalIncomeResponseModel below for that wrapper.
 @MappableClass(
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
@@ -67,7 +45,11 @@ class AdditionalIncomeModel with AdditionalIncomeModelMappable {
 
   final int id;
   final NamedRefModel? facility;
-  final AdditionalIncomeTypeRefModel? incomeType;
+  // WHY String not a nested object: the doc documents income_type as
+  // {id, code, name, requires_photo}, but the real store response returns
+  // it as a plain string (the master-data value, e.g. "rent_device") — same
+  // stale-doc pattern as facility-expense's category field.
+  final String? incomeType;
   final double? amount;
   final String? description;
   final String? evidencePhotoUrl;
@@ -78,19 +60,30 @@ class AdditionalIncomeModel with AdditionalIncomeModelMappable {
   static const fromJson = AdditionalIncomeModelMapper.fromJson;
 }
 
+// WHY a wrapper: unlike facility-expense's flat store/show response, the
+// real additional-incomes store/show response nests the record under a
+// top-level `data` key.
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class AdditionalIncomeResponseModel with AdditionalIncomeResponseModelMappable {
+  const AdditionalIncomeResponseModel({this.data});
+
+  final AdditionalIncomeModel? data;
+
+  static const fromJson = AdditionalIncomeResponseModelMapper.fromJson;
+}
+
 @MappableClass(
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
 class AdditionalIncomeListResponseModel
     with AdditionalIncomeListResponseModelMappable {
-  const AdditionalIncomeListResponseModel({
-    this.data = const [],
-    this.meta,
-    this.summary,
-  });
+  const AdditionalIncomeListResponseModel({this.data, this.meta, this.summary});
 
-  final List<AdditionalIncomeModel> data;
+  final List<AdditionalIncomeModel>? data;
   final AdditionalIncomePaginationMetaModel? meta;
   final AdditionalIncomeSummaryModel? summary;
 

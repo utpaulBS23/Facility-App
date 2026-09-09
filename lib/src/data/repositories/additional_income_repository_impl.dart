@@ -40,8 +40,10 @@ final class AdditionalIncomeRepositoryImpl extends AdditionalIncomeRepository {
         partnerId: request.partnerId!,
         body: request.toBody(),
       );
-      final responseModel = AdditionalIncomeModel.fromJson(response.data);
-      return responseModel.toEntity();
+      final responseModel = AdditionalIncomeResponseModel.fromJson(
+        response.data,
+      );
+      return responseModel.data!.toEntity();
     });
   }
 }

@@ -8,7 +8,7 @@ extension AdditionalIncomeModelMapper on AdditionalIncomeModel {
     return AdditionalIncomeEntity(
       id: id,
       facilityName: facility?.name ?? '',
-      incomeTypeName: incomeType?.name ?? '',
+      incomeTypeName: incomeType ?? '',
       amount: amount ?? 0,
       description: description,
       evidencePhotoUrl: evidencePhotoUrl,
@@ -32,7 +32,7 @@ extension AdditionalIncomeSummaryModelMapper on AdditionalIncomeSummaryModel {
 extension AdditionalIncomeListResponseModelToEntity
     on AdditionalIncomeListResponseModel {
   AdditionalIncomeListResultEntity toEntity() {
-    final items = data.map((model) => model.toEntity()).toList();
+    final items = (data ?? const []).map((model) => model.toEntity()).toList();
     final curPage = meta?.currentPage ?? 1;
     final size = meta?.perPage ?? 20;
     final total = meta?.total ?? items.length;
@@ -57,7 +57,7 @@ extension CreateAdditionalIncomeRequestEntityMapper
     on CreateAdditionalIncomeRequestEntity {
   Map<String, dynamic> toBody() => {
     'facility_id': facilityId,
-    if (incomeTypeId != null) 'income_type_id': incomeTypeId,
+    'income_type': incomeType,
     'amount': amount,
     if (description != null && description!.isNotEmpty) 'description': description,
     if (evidencePhotoUrl != null && evidencePhotoUrl!.isNotEmpty)
