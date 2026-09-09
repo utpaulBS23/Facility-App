@@ -23,6 +23,7 @@ import '../../features/authentication/login/view/login_page.dart';
 import '../../features/app_update/view/app_update_checker.dart';
 import '../widgets/session_expired_dialog.dart';
 import '../../features/additional_income/view/additional_income_page.dart';
+import '../../features/additional_income/view/add_additional_income_page.dart';
 import '../../features/check_in_out/view/selfie_camera_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
