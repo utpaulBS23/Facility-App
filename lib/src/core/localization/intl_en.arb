@@ -821,6 +821,17 @@
   "accountSecurity": "Update your password regularly to keep your account secure",
   "currentPassword": "Current Password",
   "newPassword": "New Password",
-  "confirmPassword": "Confirm Password"
+  "confirmPassword": "Confirm Password",
+  "comments": "Comments",
+  "commentsHint": "Enter any additional information",
+  "amountBdt": "Amount (BDT)",
+  "enterAmount": "Enter the amount",
+  "addIncome": "Add Income",
+  "selectIncomeType": "Select income type",
+  "noIncomeFound": "No income found",
+  "approvedTotal": "Approved Total",
+  "totalSubmissions": "Total Submissions",
+  "submittedBy": "Submitted by",
+  "incomeSubmittedSuccess": "Income entry submitted successfully"
 }
 

@@ -166,6 +166,10 @@ class Endpoints {
   static const String masterDataItems =
       '/partners/{partnerId}/master-data/items';
 
+  /// Additional Incomes (Extra Collection)
+  static const String additionalIncomes =
+      '/partners/{partnerId}/additional-incomes';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';

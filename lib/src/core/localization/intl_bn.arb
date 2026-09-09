@@ -766,6 +766,17 @@
   "autoApproved": "স্বয়ংক্রিয় অনুমোদিত",
   "myLeave": "আমার ছুটি",
   "leaveApprovals": "ছুটি অনুমোদন",
-  "otpSentSuccessfully": "ওটিপি সফলভাবে পাঠানো হয়েছে"
+  "otpSentSuccessfully": "ওটিপি সফলভাবে পাঠানো হয়েছে",
+  "comments": "মন্তব্য",
+  "commentsHint": "অতিরিক্ত তথ্য লিখুন",
+  "amountBdt": "পরিমাণ (BDT)",
+  "enterAmount": "পরিমাণ লিখুন",
+  "addIncome": "আয় যোগ করুন",
+  "selectIncomeType": "আয়ের ধরন নির্বাচন করুন",
+  "noIncomeFound": "কোনো আয় পাওয়া যায়নি",
+  "approvedTotal": "অনুমোদিত মোট",
+  "totalSubmissions": "মোট জমা",
+  "submittedBy": "জমাদানকারী",
+  "incomeSubmittedSuccess": "আয়ের এন্ট্রি সফলভাবে জমা হয়েছে"
 }
 
