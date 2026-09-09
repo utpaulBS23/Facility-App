@@ -47,7 +47,7 @@ class _FacilityExpenseBody extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: context.color.primary,
                   foregroundColor: context.color.onPrimary,
-                  minimumSize: const Size.fromHeight(52),
+                  minimumSize: Size.fromHeight(spacing.s56),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       context.dimensions.radius.r12,
