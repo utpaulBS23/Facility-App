@@ -1,22 +1,21 @@
 part of '../view/add_facility_expense_page.dart';
 
-class _AddExpenseActionButtons extends StatelessWidget {
+class _AddExpenseActionButtons extends ConsumerWidget {
   const _AddExpenseActionButtons({
     required this.isSubmitting,
-    required this.canSubmit,
     required this.onCancel,
     required this.onSubmit,
   });
 
   final bool isSubmitting;
-  final bool canSubmit;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+    final canSubmit = ref.watch(selectedExpensePaidByProvider) != null;
 
     return Row(
       children: [
