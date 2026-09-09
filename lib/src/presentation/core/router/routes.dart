@@ -50,6 +50,7 @@ class Routes {
   static const String profile = '/profile';
   static const String doorLock = '/door-lock';
   static const String additionalIncome = '/additional-income';
+  static const String addAdditionalIncome = '/additional-income/add';
   static const String facilityExpense = '/facility-expense';
   static const String claimExpense = '/claim-expense';
   static const String notification = '/notification';

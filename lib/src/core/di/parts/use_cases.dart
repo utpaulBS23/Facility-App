@@ -446,6 +446,22 @@ GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
 }
 
 @riverpod
+GetAdditionalIncomesUseCase getAdditionalIncomesUseCase(Ref ref) {
+  return GetAdditionalIncomesUseCase(
+    additionalIncomeRepository: ref.read(additionalIncomeRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateAdditionalIncomeUseCase createAdditionalIncomeUseCase(Ref ref) {
+  return CreateAdditionalIncomeUseCase(
+    additionalIncomeRepository: ref.read(additionalIncomeRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
