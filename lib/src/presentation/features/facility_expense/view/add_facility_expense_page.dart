@@ -24,9 +24,12 @@ import '../riverpod/submit_expense_provider/submit_facility_expense_provider.dar
 
 part '../widgets/add_expense_action_buttons.dart';
 part '../widgets/add_expense_body.dart';
+part '../widgets/expense_category_section.dart';
 part '../widgets/expense_dropdown_field.dart';
 part '../widgets/expense_facility_list_sheet.dart';
+part '../widgets/expense_facility_section.dart';
 part '../widgets/expense_master_data_selector.dart';
+part '../widgets/expense_paid_by_section.dart';
 
 class AddFacilityExpensePage extends ConsumerStatefulWidget {
   const AddFacilityExpensePage({super.key});
@@ -45,6 +48,7 @@ class _AddFacilityExpensePageState
   bool _categoryError = false;
   bool _facilityError = false;
   DateTime _expenseDate = DateTime.now();
+  bool _amountError = false;
   bool _paidByError = false;
 
   @override
@@ -52,36 +56,6 @@ class _AddFacilityExpensePageState
     _amountController.dispose();
     _commentsController.dispose();
     super.dispose();
-  }
-
-  // WHY the cascade resets downstream selections: category/facility/paid-by
-  // are unrelated data (no field's options actually depend on another's
-  // value) so this is a pure UX-ordering rule — but once a later step has
-  // already been filled, changing an earlier one could leave a stale,
-  // no-longer-reviewed choice behind, so it's cleared instead.
-  void _onSelectCategory(MasterDataItemEntity category) {
-    setState(() => _categoryError = false);
-    ref.read(selectedExpenseCategoryProvider.notifier).select(category);
-  }
-
-  void _onSelectPaidBy(MasterDataItemEntity paidBy) {
-    setState(() => _paidByError = false);
-    ref.read(selectedExpensePaidByProvider.notifier).select(paidBy);
-  }
-
-  Future<void> _onPickFacility(List<AccessibleFacilityEntity> facilities) async {
-    final result = await showModalBottomSheet<int?>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _FacilityListSheet(
-        facilities: facilities,
-        selectedFacilityId: ref.read(selectedExpenseFacilityProvider),
-      ),
-    );
-    if (result == null) return;
-    setState(() => _facilityError = false);
-    ref.read(selectedExpenseFacilityProvider.notifier).select(result);
   }
 
   Future<void> _onPickDate() async {
@@ -98,25 +72,28 @@ class _AddFacilityExpensePageState
     final category = ref.read(selectedExpenseCategoryProvider);
     final facilityId = ref.read(selectedExpenseFacilityProvider);
     final paidBy = ref.read(selectedExpensePaidByProvider);
+    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
 
     final categoryOk = category != null;
-    final paidByOk = paidBy != null;
     final facilityOk = facilityId != null;
+    final amountOk = amount > 0;
+    final paidByOk = paidBy != null;
 
     setState(() {
       _categoryError = !categoryOk;
-      _paidByError = !paidByOk;
       _facilityError = !facilityOk;
+      _amountError = !amountOk;
+      _paidByError = !paidByOk;
     });
 
     if (!_formKey.currentState!.validate() ||
         !categoryOk ||
-        !paidByOk ||
-        !facilityOk) {
+        !facilityOk ||
+        !amountOk ||
+        !paidByOk) {
       return;
     }
 
-    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
     final note = _commentsController.text.trim();
 
     ref
@@ -144,17 +121,6 @@ class _AddFacilityExpensePageState
       }
     });
 
-    final facilities =
-        ref.watch(userSessionProvider)?.accessibleFacilities ??
-        const <AccessibleFacilityEntity>[];
-    final category = ref.watch(selectedExpenseCategoryProvider);
-    final facilityId = ref.watch(selectedExpenseFacilityProvider);
-    final paidBy = ref.watch(selectedExpensePaidByProvider);
-    final facilityName = facilities
-        .cast<AccessibleFacilityEntity?>()
-        .firstWhere((f) => f?.id == facilityId, orElse: () => null)
-        ?.name;
-
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: DetailAppBar(title: context.locale.expenseEntry),
@@ -162,23 +128,18 @@ class _AddFacilityExpensePageState
         formKey: _formKey,
         amountController: _amountController,
         commentsController: _commentsController,
-        categoriesAsync: ref.watch(expenseCategoryOptionsProvider),
-        paymentMethodsAsync: ref.watch(paymentMethodOptionsProvider),
-        category: category,
         categoryError: _categoryError,
-        onSelectCategory: _onSelectCategory,
-        facilityName: facilityName,
-        facilities: facilities,
-        facilityEnabled: category != null,
+        onCategorySelected: () => setState(() => _categoryError = false),
         facilityError: _facilityError,
-        onPickFacility: () => _onPickFacility(facilities),
+        onFacilitySelected: () => setState(() => _facilityError = false),
         expenseDate: _expenseDate,
-        dateEnabled: facilityId != null,
         onPickDate: _onPickDate,
-        amountEnabled: facilityId != null,
-        paidBy: paidBy,
+        amountError: _amountError,
+        onAmountChanged: () {
+          if (_amountError) setState(() => _amountError = false);
+        },
         paidByError: _paidByError,
-        onSelectPaidBy: _onSelectPaidBy,
+        onPaidBySelected: () => setState(() => _paidByError = false),
         isSubmitting: ref.watch(submitFacilityExpenseProvider).isLoading,
         onCancel: () => context.pop(),
         onSubmit: _onSubmit,
