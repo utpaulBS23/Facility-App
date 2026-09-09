@@ -55,23 +55,24 @@ class _AddAdditionalIncomePageState
   }
 
   void _onSubmit() {
-    // WHY income type not required: no income-type master data exists yet
-    // (placeholder category key, see EXTRA_COLLECTION_GAPS.md) — blocking
-    // submit on it would make the form unusable. Re-add the requirement
-    // once real income-type data lands.
     final incomeType = ref.read(selectedIncomeTypeProvider);
     final facilityId = ref.read(selectedIncomeFacilityProvider);
     final amount = double.tryParse(_amountController.text.trim()) ?? 0;
 
+    final incomeTypeOk = incomeType != null;
     final facilityOk = facilityId != null;
     final amountOk = amount > 0;
 
     setState(() {
+      _incomeTypeError = !incomeTypeOk;
       _facilityError = !facilityOk;
       _amountError = !amountOk;
     });
 
-    if (!_formKey.currentState!.validate() || !facilityOk || !amountOk) {
+    if (!_formKey.currentState!.validate() ||
+        !incomeTypeOk ||
+        !facilityOk ||
+        !amountOk) {
       return;
     }
 
@@ -82,7 +83,7 @@ class _AddAdditionalIncomePageState
         .submit(
           CreateAdditionalIncomeRequestEntity(
             facilityId: facilityId,
-            incomeTypeId: incomeType?.id,
+            incomeType: incomeType.value,
             description: description.isEmpty ? null : description,
             amount: amount,
           ),

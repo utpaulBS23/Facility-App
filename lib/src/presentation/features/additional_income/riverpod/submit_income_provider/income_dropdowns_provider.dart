@@ -9,15 +9,12 @@ part 'income_dropdowns_provider.g.dart';
 
 // WHY master-data-sourced, not the dedicated `/income-types` endpoint: per
 // instruction, income-type options come from the generic master-data system
-// (key TBD, provided later). 'incomeType' is a placeholder category key
-// mirroring expenseCategory/paymentMethod naming — see WHY note on
-// CreateAdditionalIncomeRequestEntity.incomeTypeId for the resulting wiring
-// risk.
+// under the 'extraEarningType' category.
 @riverpod
 Future<List<MasterDataItemEntity>> incomeTypeOptions(Ref ref) async {
   final result = await ref
       .read(getMasterDataItemsUseCaseProvider)
-      .call(category: 'incomeType');
+      .call(category: 'extraEarningType');
 
   return switch (result) {
     Success(:final data) => data ?? const [],

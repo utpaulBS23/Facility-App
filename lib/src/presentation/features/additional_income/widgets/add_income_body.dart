@@ -32,11 +32,7 @@ class _AddIncomeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    // WHY always enabled: income-type master data isn't populated yet
-    // (placeholder category key, see EXTRA_COLLECTION_GAPS.md), so gating
-    // facility on it would block the form entirely. Re-enable the cascade
-    // once the real income-type key/data is wired up.
-    const facilityEnabled = true;
+    final facilityEnabled = ref.watch(selectedIncomeTypeProvider) != null;
 
     return Form(
       key: formKey,
