@@ -2,7 +2,7 @@ class CreateAdditionalIncomeRequestEntity {
   const CreateAdditionalIncomeRequestEntity({
     this.partnerId,
     required this.facilityId,
-    this.incomeTypeId,
+    required this.incomeType,
     this.description,
     required this.amount,
     this.evidencePhotoUrl,
@@ -14,13 +14,12 @@ class CreateAdditionalIncomeRequestEntity {
   // PartnerUseCase.getPartnerId().
   final int? partnerId;
   final int facilityId;
-  // WHY nullable: the doc's `additional_incomes` store payload requires
-  // `income_type_id` as an integer FK into the real `income_types` table,
-  // but no income-type master data exists yet (placeholder category key
-  // `incomeType`, pending the real key — see EXTRA_COLLECTION_GAPS.md).
-  // Temporarily optional so the form isn't blocked; omitted from the wire
-  // body when null. Make required again once real income-type data lands.
-  final int? incomeTypeId;
+  // WHY String 'income_type' not int 'income_type_id': the doc documents
+  // income_type_id as a numeric FK, but the backend's actual validation
+  // rejects both the key and a numeric value — it wants 'income_type' as a
+  // string (the master-data item's `value`). Same stale-doc pattern as
+  // facility-expense's category/paid_by fields.
+  final String incomeType;
   final String? description;
   final double amount;
   final String? evidencePhotoUrl;
@@ -28,7 +27,7 @@ class CreateAdditionalIncomeRequestEntity {
   CreateAdditionalIncomeRequestEntity copyWith({
     int? partnerId,
     int? facilityId,
-    int? incomeTypeId,
+    String? incomeType,
     String? description,
     double? amount,
     String? evidencePhotoUrl,
@@ -36,7 +35,7 @@ class CreateAdditionalIncomeRequestEntity {
     return CreateAdditionalIncomeRequestEntity(
       partnerId: partnerId ?? this.partnerId,
       facilityId: facilityId ?? this.facilityId,
-      incomeTypeId: incomeTypeId ?? this.incomeTypeId,
+      incomeType: incomeType ?? this.incomeType,
       description: description ?? this.description,
       amount: amount ?? this.amount,
       evidencePhotoUrl: evidencePhotoUrl ?? this.evidencePhotoUrl,
