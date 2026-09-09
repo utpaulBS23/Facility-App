@@ -779,6 +779,17 @@
   "missingLabel": "Missing",
   "complaintReasonLabel": "Reason for Complaint",
   "complaintReasonHint": "Describe the issue or reason for complaint...",
-  "proofPhoto": "Proof Photo (Optional)"
+  "proofPhoto": "Proof Photo (Optional)",
+  "comments": "Comments",
+  "commentsHint": "Enter any additional information",
+  "amountBdt": "Amount (BDT)",
+  "enterAmount": "Enter the amount",
+  "addIncome": "Add Income",
+  "selectIncomeType": "Select income type",
+  "noIncomeFound": "No income found",
+  "approvedTotal": "Approved Total",
+  "totalSubmissions": "Total Submissions",
+  "submittedBy": "Submitted by",
+  "incomeSubmittedSuccess": "Income entry submitted successfully"
 }
 

@@ -321,6 +321,20 @@ abstract class RestClient {
     @Query('category') required String category,
   });
 
+  @GET(Endpoints.additionalIncomes)
+  Future<HttpResponse> getAdditionalIncomes({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.additionalIncomes)
+  Future<HttpResponse> createAdditionalIncome({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @GET(Endpoints.myLeaves)
   Future<HttpResponse> getMyLeaves({
     @Path('partnerId') required int partnerId,
