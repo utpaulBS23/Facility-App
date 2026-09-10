@@ -352,6 +352,24 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.productCatalogDropdown)
+  Future<HttpResponse> getProductCatalogDropdown({
+    @Path('partnerId') required int partnerId,
+  });
+
+  @GET(Endpoints.facilityProducts)
+  Future<HttpResponse> getFacilityProducts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.productSaleEntries)
+  Future<HttpResponse> createProductSaleEntry({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @GET(Endpoints.myLeaves)
   Future<HttpResponse> getMyLeaves({
     @Path('partnerId') required int partnerId,

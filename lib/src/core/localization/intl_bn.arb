@@ -777,6 +777,14 @@
   "approvedTotal": "অনুমোদিত মোট",
   "totalSubmissions": "মোট জমা",
   "submittedBy": "জমাদানকারী",
-  "incomeSubmittedSuccess": "আয়ের এন্ট্রি সফলভাবে জমা হয়েছে"
+  "incomeSubmittedSuccess": "আয়ের এন্ট্রি সফলভাবে জমা হয়েছে",
+  "productSell": "পণ্য বিক্রয়",
+  "selectProduct": "পণ্য নির্বাচন করুন",
+  "entryDate": "এন্ট্রি তারিখ",
+  "unitsSold": "বিক্রিত একক",
+  "enterUnitsSold": "বিক্রিত একক লিখুন",
+  "unitPriceBdt": "একক মূল্য (BDT)",
+  "availableStock": "উপলব্ধ স্টক",
+  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি"
 }
 

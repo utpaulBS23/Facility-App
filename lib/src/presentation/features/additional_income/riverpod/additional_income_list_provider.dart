@@ -4,7 +4,7 @@ import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/additional_income/additional_income_entity.dart';
 import '../../../../domain/entities/additional_income/additional_income_filter.dart';
-import 'submit_income_provider/submit_additional_income_provider.dart';
+import 'submit_income_provider/submit_income_provider.dart';
 
 part 'additional_income_list_provider.g.dart';
 
@@ -14,7 +14,7 @@ class AdditionalIncomeList extends _$AdditionalIncomeList {
 
   @override
   Future<AdditionalIncomeListResultEntity> build() async {
-    ref.listen(submitAdditionalIncomeProvider, (previous, next) {
+    ref.listen(submitIncomeProvider, (previous, next) {
       if (previous?.isLoading == true && next.hasValue && !next.hasError) {
         ref.invalidateSelf();
       }
