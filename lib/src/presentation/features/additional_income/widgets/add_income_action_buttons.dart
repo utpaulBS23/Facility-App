@@ -15,7 +15,16 @@ class _AddIncomeActionButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final canSubmit = ref.watch(selectedIncomeFacilityProvider) != null;
+    final isProductSell =
+        ref.watch(selectedIncomeTypeProvider)?.value ==
+        productSellIncomeTypeValue;
+    final facilityOk = ref.watch(selectedIncomeFacilityProvider) != null;
+    final productOk =
+        !isProductSell || ref.watch(selectedProductProvider) != null;
+    final canSubmit = facilityOk && productOk;
+    final requiredPermission = isProductSell
+        ? UserPermission.productSaleEntryCreate
+        : UserPermission.additionalIncomeCreate;
 
     return Row(
       children: [
@@ -43,7 +52,7 @@ class _AddIncomeActionButtons extends ConsumerWidget {
         Gap(spacing.s12),
         Expanded(
           child: PermissionGate(
-            permissions: const [UserPermission.additionalIncomeCreate],
+            permissions: [requiredPermission],
             child: SizedBox(
               height: spacing.s56,
               child: FilledButton(
