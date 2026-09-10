@@ -20,7 +20,6 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/submit_income_provider/facility_product_options_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
-import '../riverpod/submit_income_provider/product_sell_income_type.dart';
 import '../riverpod/submit_income_provider/selected_income_facility_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_type_provider.dart';
 import '../riverpod/submit_income_provider/selected_product_provider.dart';
@@ -29,6 +28,7 @@ import '../riverpod/submit_income_provider/submit_income_provider.dart';
 part '../widgets/add_income_action_buttons.dart';
 part '../widgets/add_income_body.dart';
 part '../widgets/income_dropdown_field.dart';
+part '../widgets/income_entry_type_switch.dart';
 part '../widgets/income_facility_list_sheet.dart';
 part '../widgets/income_facility_section.dart';
 part '../widgets/income_master_data_selector.dart';
@@ -51,6 +51,7 @@ class _AddAdditionalIncomePageState
   final _descriptionController = TextEditingController();
   final _unitsSoldController = TextEditingController();
 
+  IncomeEntryType _incomeEntryType = IncomeEntryType.rentAndOthers;
   bool _incomeTypeError = false;
   bool _facilityError = false;
   bool _amountError = false;
@@ -66,6 +67,21 @@ class _AddAdditionalIncomePageState
     super.dispose();
   }
 
+  void _onIncomeEntryTypeChanged(IncomeEntryType type) {
+    setState(() {
+      _incomeEntryType = type;
+      _incomeTypeError = false;
+      _productError = false;
+      _unitsSoldError = false;
+      _amountError = false;
+      _amountController.clear();
+      _descriptionController.clear();
+      _unitsSoldController.clear();
+      ref.read(selectedIncomeTypeProvider.notifier).select(null);
+      ref.read(selectedProductProvider.notifier).select(null);
+    });
+  }
+
   Future<void> _onPickEntryDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -76,19 +92,25 @@ class _AddAdditionalIncomePageState
     if (picked != null) setState(() => _entryDate = picked);
   }
 
-  void _onSubmitAdditionalIncome(MasterDataItemEntity incomeType) {
+  void _onSubmitAdditionalIncome() {
+    final incomeType = ref.read(selectedIncomeTypeProvider);
     final facilityId = ref.read(selectedIncomeFacilityProvider);
     final amount = double.tryParse(_amountController.text.trim()) ?? 0;
 
+    final incomeTypeOk = incomeType != null;
     final facilityOk = facilityId != null;
     final amountOk = amount > 0;
 
     setState(() {
+      _incomeTypeError = !incomeTypeOk;
       _facilityError = !facilityOk;
       _amountError = !amountOk;
     });
 
-    if (!_formKey.currentState!.validate() || !facilityOk || !amountOk) {
+    if (!_formKey.currentState!.validate() ||
+        !incomeTypeOk ||
+        !facilityOk ||
+        !amountOk) {
       return;
     }
 
@@ -151,15 +173,11 @@ class _AddAdditionalIncomePageState
   }
 
   void _onSubmit() {
-    final incomeType = ref.read(selectedIncomeTypeProvider);
-
-    setState(() => _incomeTypeError = incomeType == null);
-    if (incomeType == null) return;
-
-    if (incomeType.value == productSellIncomeTypeValue) {
-      _onSubmitProductSale();
-    } else {
-      _onSubmitAdditionalIncome(incomeType);
+    switch (_incomeEntryType) {
+      case IncomeEntryType.rentAndOthers:
+        _onSubmitAdditionalIncome();
+      case IncomeEntryType.productSell:
+        _onSubmitProductSale();
     }
   }
 
@@ -181,6 +199,8 @@ class _AddAdditionalIncomePageState
       appBar: DetailAppBar(title: context.locale.addIncome),
       body: _AddIncomeBody(
         formKey: _formKey,
+        incomeEntryType: _incomeEntryType,
+        onIncomeEntryTypeChanged: _onIncomeEntryTypeChanged,
         amountController: _amountController,
         descriptionController: _descriptionController,
         unitsSoldController: _unitsSoldController,
