@@ -790,6 +790,14 @@
   "approvedTotal": "Approved Total",
   "totalSubmissions": "Total Submissions",
   "submittedBy": "Submitted by",
-  "incomeSubmittedSuccess": "Income entry submitted successfully"
+  "incomeSubmittedSuccess": "Income entry submitted successfully",
+  "productSell": "Product Sell",
+  "selectProduct": "Select product",
+  "entryDate": "Entry date",
+  "unitsSold": "Units sold",
+  "enterUnitsSold": "Enter units sold",
+  "unitPriceBdt": "Unit price (BDT)",
+  "availableStock": "Available stock",
+  "unitsSoldExceedsStock": "Units sold exceeds available stock"
 }
 
