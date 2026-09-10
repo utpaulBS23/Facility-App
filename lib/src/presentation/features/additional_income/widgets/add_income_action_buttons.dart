@@ -2,11 +2,13 @@ part of '../view/add_additional_income_page.dart';
 
 class _AddIncomeActionButtons extends ConsumerWidget {
   const _AddIncomeActionButtons({
+    required this.incomeEntryType,
     required this.isSubmitting,
     required this.onCancel,
     required this.onSubmit,
   });
 
+  final IncomeEntryType incomeEntryType;
   final bool isSubmitting;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
@@ -15,9 +17,7 @@ class _AddIncomeActionButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final isProductSell =
-        ref.watch(selectedIncomeTypeProvider)?.value ==
-        productSellIncomeTypeValue;
+    final isProductSell = incomeEntryType == IncomeEntryType.productSell;
     final facilityOk = ref.watch(selectedIncomeFacilityProvider) != null;
     final productOk =
         !isProductSell || ref.watch(selectedProductProvider) != null;
