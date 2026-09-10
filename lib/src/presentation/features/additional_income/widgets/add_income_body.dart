@@ -3,6 +3,8 @@ part of '../view/add_additional_income_page.dart';
 class _AddIncomeBody extends ConsumerWidget {
   const _AddIncomeBody({
     required this.formKey,
+    required this.incomeEntryType,
+    required this.onIncomeEntryTypeChanged,
     required this.amountController,
     required this.descriptionController,
     required this.unitsSoldController,
@@ -24,6 +26,8 @@ class _AddIncomeBody extends ConsumerWidget {
   });
 
   final GlobalKey<FormState> formKey;
+  final IncomeEntryType incomeEntryType;
+  final ValueChanged<IncomeEntryType> onIncomeEntryTypeChanged;
   final TextEditingController amountController;
   final TextEditingController descriptionController;
   final TextEditingController unitsSoldController;
@@ -46,9 +50,9 @@ class _AddIncomeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
+    final isProductSell = incomeEntryType == IncomeEntryType.productSell;
     final incomeType = ref.watch(selectedIncomeTypeProvider);
-    final facilityEnabled = incomeType != null;
-    final isProductSell = incomeType?.value == productSellIncomeTypeValue;
+    final facilityEnabled = isProductSell || incomeType != null;
     final productSelected = ref.watch(selectedProductProvider) != null;
 
     return Form(
@@ -59,13 +63,20 @@ class _AddIncomeBody extends ConsumerWidget {
           vertical: spacing.s20,
         ),
         children: [
-          LabelLargeText(context.locale.selectIncomeType),
-          Gap(spacing.s8),
-          _IncomeTypeSection(
-            hasError: incomeTypeError,
-            onSelected: onIncomeTypeSelected,
+          _IncomeEntryTypeSwitch(
+            selectedType: incomeEntryType,
+            onTypeChanged: onIncomeEntryTypeChanged,
           ),
           Gap(spacing.s16),
+          if (!isProductSell) ...[
+            LabelLargeText(context.locale.selectIncomeType),
+            Gap(spacing.s8),
+            _IncomeTypeSection(
+              hasError: incomeTypeError,
+              onSelected: onIncomeTypeSelected,
+            ),
+            Gap(spacing.s16),
+          ],
           LabelLargeText(context.locale.selectFacility),
           Gap(spacing.s8),
           _IncomeFacilitySection(
@@ -134,6 +145,7 @@ class _AddIncomeBody extends ConsumerWidget {
           ],
           Gap(spacing.s24),
           _AddIncomeActionButtons(
+            incomeEntryType: incomeEntryType,
             isSubmitting: isSubmitting,
             onCancel: onCancel,
             onSubmit: onSubmit,

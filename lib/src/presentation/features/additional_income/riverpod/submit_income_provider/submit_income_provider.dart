@@ -4,15 +4,14 @@ import '../../../../../core/base/result.dart';
 import '../../../../../core/di/dependency_injection.dart';
 import '../../../../../domain/entities/additional_income/additional_income_payloads.dart';
 import '../../../../../domain/entities/product_sale_entry/product_sale_entry_payloads.dart';
-import 'product_sell_income_type.dart';
-import 'selected_income_type_provider.dart';
 
 part 'submit_income_provider.g.dart';
 
 // WHY one provider, not two: additional-income create and product-sale-entry
 // create are the same mutation pattern (one form, one submit button) that
-// only differs in which endpoint gets called — branch on the selected income
-// type here instead of duplicating the notifier per endpoint.
+// only differs in which endpoint gets called — branch on which request the
+// caller built (the add-income page decides that from its own tab state)
+// instead of duplicating the notifier per endpoint.
 @riverpod
 class SubmitIncome extends _$SubmitIncome {
   @override
@@ -26,15 +25,11 @@ class SubmitIncome extends _$SubmitIncome {
 
     state = const AsyncValue.loading();
 
-    final isProductSell =
-        ref.read(selectedIncomeTypeProvider)?.value ==
-        productSellIncomeTypeValue;
-
-    final result = switch (isProductSell) {
-      true => await ref
+    final result = switch (productSaleRequest) {
+      final request? => await ref
           .read(createProductSaleEntryUseCaseProvider)
-          .call(productSaleRequest!),
-      false => await ref
+          .call(request),
+      null => await ref
           .read(createAdditionalIncomeUseCaseProvider)
           .call(incomeRequest!),
     };
