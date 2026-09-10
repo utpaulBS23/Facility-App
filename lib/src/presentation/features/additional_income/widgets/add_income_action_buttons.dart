@@ -16,7 +16,6 @@ class _AddIncomeActionButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
     final isProductSell = incomeEntryType == IncomeEntryType.productSell;
     final facilityOk = ref.watch(selectedIncomeFacilityProvider) != null;
     final productOk =
@@ -29,59 +28,29 @@ class _AddIncomeActionButtons extends ConsumerWidget {
     return Row(
       children: [
         Expanded(
-          child: SizedBox(
-            height: spacing.s56,
-            child: OutlinedButton(
-              onPressed: onCancel,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: context.color.error,
-                side: BorderSide(color: context.color.error),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(radius.r12),
-                ),
-              ),
-              child: Text(
-                context.locale.cancel,
-                style: context.textStyle.labelLarge.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          child: OutlinedButton(
+            onPressed: onCancel,
+            child: Text(context.locale.cancel),
           ),
         ),
         Gap(spacing.s12),
         Expanded(
           child: PermissionGate(
             permissions: [requiredPermission],
-            child: SizedBox(
-              height: spacing.s56,
-              child: FilledButton(
-                onPressed: isSubmitting || !canSubmit ? null : onSubmit,
-                style: FilledButton.styleFrom(
-                  backgroundColor: context.color.primary,
-                  foregroundColor: context.color.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius.r12),
-                  ),
-                ),
-                child: isSubmitting
-                    ? SizedBox(
-                        width: spacing.s20,
-                        height: spacing.s20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: spacing.s2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            context.color.onPrimary,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        context.locale.submit,
-                        style: context.textStyle.labelLarge.copyWith(
-                          fontWeight: FontWeight.w600,
+            child: FilledButton(
+              onPressed: isSubmitting || !canSubmit ? null : onSubmit,
+              child: isSubmitting
+                  ? SizedBox(
+                      width: spacing.s20,
+                      height: spacing.s20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: spacing.s2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          context.color.onPrimary,
                         ),
                       ),
-              ),
+                    )
+                  : Text(context.locale.submit),
             ),
           ),
         ),
