@@ -99,8 +99,18 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
         facilityName: _facilityName(facilities, _facilityId),
         canPickFacility: facilities.length > 1,
         onPickFacility: () => _onPickFacility(facilities),
-        onAddIncome: _onAddIncome,
         onRetry: _fetch,
+      ),
+      floatingActionButton: PermissionGate(
+        permissions: const [UserPermission.additionalIncomeCreate],
+        child: FloatingActionButton(
+          onPressed: _onAddIncome,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+          ),
+          backgroundColor: context.color.primary,
+          child: Icon(Icons.add, size: context.dimensions.spacing.s30),
+        ),
       ),
     );
   }
