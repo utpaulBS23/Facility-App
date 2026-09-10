@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../../core/base/failure.dart';
 import '../../../../../core/base/result.dart';
 import '../../../../../core/di/dependency_injection.dart';
 import '../../../../../domain/entities/additional_income/additional_income_entity.dart';
@@ -26,7 +25,7 @@ class SubmitAdditionalIncome extends _$SubmitAdditionalIncome {
       Success(:final data) => AsyncValue.data(data),
       Error(:final error) => AsyncValue.error(error, StackTrace.current),
       _ => AsyncValue.error(
-        Failure.emptyResponse('submit additional income'),
+        Exception('Failed to submit additional income'),
         StackTrace.current,
       ),
     };
