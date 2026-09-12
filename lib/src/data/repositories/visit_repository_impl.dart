@@ -33,6 +33,8 @@ final class VisitRepositoryImpl extends VisitRepository {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? page,
+    int? perPage,
   }) => asyncGuard(() async {
     final response = await _client.getMyVisits(
       partnerId: partnerId,
@@ -40,6 +42,8 @@ final class VisitRepositoryImpl extends VisitRepository {
       status: status,
       facilityId: facilityId,
       assignedTo: assignedTo,
+      page: page,
+      perPage: perPage,
     );
     return VisitListResponseModel.fromJson(response.data).toEntity();
   });

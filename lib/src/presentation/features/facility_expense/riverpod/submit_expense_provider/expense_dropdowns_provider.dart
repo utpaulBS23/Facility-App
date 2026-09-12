@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../core/base/base.dart';
 import '../../../../../core/di/dependency_injection.dart';
 import '../../../../../domain/entities/master_data_entity.dart';
+import 'selected_expense_category_provider.dart';
 
 part 'expense_dropdowns_provider.g.dart';
 
@@ -11,7 +12,11 @@ part 'expense_dropdowns_provider.g.dart';
 Future<List<MasterDataItemEntity>> expenseCategoryOptions(Ref ref) async {
   final result = await ref
       .read(getMasterDataItemsUseCaseProvider)
-      .call(category: 'expenseCategory');
+      .call(
+        category: 'expenseCategory',
+        perPage: 100,
+        includeInactive: true,
+      );
 
   return switch (result) {
     Success(:final data) => data ?? const [],
@@ -21,10 +26,14 @@ Future<List<MasterDataItemEntity>> expenseCategoryOptions(Ref ref) async {
 }
 
 @riverpod
-Future<List<MasterDataItemEntity>> paymentMethodOptions(Ref ref) async {
+Future<List<MasterDataItemEntity>> paidByOptions(Ref ref) async {
   final result = await ref
       .read(getMasterDataItemsUseCaseProvider)
-      .call(category: 'paymentMethod');
+      .call(
+        category: 'expenseCategory',
+        perPage: 100,
+        includeInactive: true,
+      );
 
   return switch (result) {
     Success(:final data) => data ?? const [],

@@ -8,6 +8,7 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/facility_expense/facility_expense_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -91,6 +92,10 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         const <AccessibleFacilityEntity>[];
     final listAsync = ref.watch(facilityExpensesListProvider);
 
+    final session = ref.watch(userSessionProvider);
+    final canAddExpense =
+        session?.canAny([UserPermission.facilityExpenseCreate]) ?? false;
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: DetailAppBar(title: context.locale.expenseTracking),
@@ -99,9 +104,14 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         facilityName: _facilityName(facilities, _facilityId),
         canPickFacility: facilities.length > 1,
         onPickFacility: () => _onPickFacility(facilities),
-        onAddExpense: _onAddExpense,
         onRetry: _fetch,
       ),
+      floatingActionButton: canAddExpense
+          ? FloatingActionButton(
+              onPressed: _onAddExpense,
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

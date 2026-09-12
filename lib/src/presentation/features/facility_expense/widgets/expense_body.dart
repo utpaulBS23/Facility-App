@@ -6,7 +6,6 @@ class _FacilityExpenseBody extends StatelessWidget {
     required this.facilityName,
     required this.canPickFacility,
     required this.onPickFacility,
-    required this.onAddExpense,
     required this.onRetry,
   });
 
@@ -14,7 +13,6 @@ class _FacilityExpenseBody extends StatelessWidget {
   final String? facilityName;
   final bool canPickFacility;
   final VoidCallback onPickFacility;
-  final VoidCallback onAddExpense;
   final VoidCallback onRetry;
 
   @override
@@ -38,30 +36,6 @@ class _FacilityExpenseBody extends StatelessWidget {
             _ExpenseFacilitySelector(
               facilityName: facilityName,
               onTap: canPickFacility ? onPickFacility : null,
-            ),
-            Gap(spacing.s16),
-            PermissionGate(
-              permissions: const [UserPermission.facilityExpenseCreate],
-              child: FilledButton(
-                onPressed: onAddExpense,
-                style: FilledButton.styleFrom(
-                  backgroundColor: context.color.primary,
-                  foregroundColor: context.color.onPrimary,
-                  minimumSize: Size.fromHeight(spacing.s56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      context.dimensions.radius.r12,
-                    ),
-                  ),
-                ),
-                child: Text(
-                  context.locale.addExpense,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.onPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
             ),
             Gap(spacing.s16),
             _ExpenseListSection(listAsync: listAsync, onRetry: onRetry),

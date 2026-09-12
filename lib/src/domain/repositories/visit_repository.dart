@@ -11,6 +11,8 @@ abstract base class VisitRepository extends Repository {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? page,
+    int? perPage,
   });
 
   Future<Result<VisitDetailEntity, Failure>> getVisitDetail({
