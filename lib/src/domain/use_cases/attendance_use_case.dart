@@ -14,6 +14,8 @@ final class GetMonthlyAttendanceOverviewUseCase {
     required String month,
     int? facilityId,
     int? userId,
+    int? page,
+    int? perPage,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -23,6 +25,8 @@ final class GetMonthlyAttendanceOverviewUseCase {
       month: month,
       facilityId: facilityId,
       userId: userId,
+      page: page,
+      perPage: perPage,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),

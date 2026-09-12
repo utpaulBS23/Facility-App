@@ -5,5 +5,7 @@ abstract base class MasterDataRepository extends Repository {
   Future<Result<List<MasterDataItemEntity>, Failure>> getItems({
     required int partnerId,
     required String category,
+    int? perPage,
+    bool? includeInactive,
   });
 }

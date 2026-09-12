@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart' hide Consumer;
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -52,11 +52,79 @@ class _AddFacilityExpensePageState
   bool _paidByError = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeFacility();
+    });
+  }
+
+  void _initializeFacility() {
+    final facilities =
+        ref.read(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
+
+    if (facilities.length == 1) {
+      ref
+          .read(selectedExpenseFacilityProvider.notifier)
+          .state = facilities.first.id;
+    }
+  }
+
+  @override
   void dispose() {
     _amountController.dispose();
     _commentsController.dispose();
     super.dispose();
   }
+
+  Future<void> _onFacilityTap() async {
+    final facilities =
+        ref.read(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
+
+    if (facilities.length <= 1) return;
+
+    final result = await showModalBottomSheet<({int? facilityId})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ExpenseFacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: ref.read(selectedExpenseFacilityProvider),
+      ),
+    );
+
+    if (result?.facilityId != null && mounted) {
+      ref.read(selectedExpenseFacilityProvider.notifier).state =
+          result!.facilityId;
+    }
+  }
+
+  Future<void> _onCategoryTap() async {
+    if (!mounted) return;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Consumer(
+        builder: (context, ref, _) {
+          final categoriesAsync = ref.watch(expenseCategoryOptionsProvider);
+          return categoriesAsync.when(
+            data: (categories) => _ExpenseCategoryPickerSheet(
+              categories: categories,
+              onSelected: () => Navigator.pop(context),
+            ),
+            loading: () => Center(
+              child: CircularProgressIndicator(),
+            ),
+            error: (error, stack) => SizedBox.shrink(),
+          );
+        },
+      ),
+    );
+  }
+
 
   Future<void> _onPickDate() async {
     final picked = await showDatePicker(
@@ -121,6 +189,10 @@ class _AddFacilityExpensePageState
       }
     });
 
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
+
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: DetailAppBar(title: context.locale.expenseEntry),
@@ -130,8 +202,11 @@ class _AddFacilityExpensePageState
         commentsController: _commentsController,
         categoryError: _categoryError,
         onCategorySelected: () => setState(() => _categoryError = false),
+        onCategoryTap: _onCategoryTap,
         facilityError: _facilityError,
         onFacilitySelected: () => setState(() => _facilityError = false),
+        onFacilityTap: _onFacilityTap,
+        canPickFacility: facilities.length > 1,
         expenseDate: _expenseDate,
         onPickDate: _onPickDate,
         amountError: _amountError,

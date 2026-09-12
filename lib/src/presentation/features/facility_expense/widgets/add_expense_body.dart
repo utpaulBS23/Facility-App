@@ -7,8 +7,11 @@ class _AddExpenseBody extends ConsumerWidget {
     required this.commentsController,
     required this.categoryError,
     required this.onCategorySelected,
+    required this.onCategoryTap,
     required this.facilityError,
     required this.onFacilitySelected,
+    required this.onFacilityTap,
+    required this.canPickFacility,
     required this.expenseDate,
     required this.onPickDate,
     required this.amountError,
@@ -25,8 +28,11 @@ class _AddExpenseBody extends ConsumerWidget {
   final TextEditingController commentsController;
   final bool categoryError;
   final VoidCallback onCategorySelected;
+  final VoidCallback onCategoryTap;
   final bool facilityError;
   final VoidCallback onFacilitySelected;
+  final VoidCallback onFacilityTap;
+  final bool canPickFacility;
   final DateTime expenseDate;
   final VoidCallback onPickDate;
   final bool amountError;
@@ -40,8 +46,9 @@ class _AddExpenseBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    final facilityEnabled = ref.watch(selectedExpenseCategoryProvider) != null;
-    final dateEnabled = ref.watch(selectedExpenseFacilityProvider) != null;
+    final radius = context.dimensions.radius;
+    final categorySelected = ref.watch(selectedExpenseCategoryProvider);
+    final facilitySelected = ref.watch(selectedExpenseFacilityProvider);
 
     return Form(
       key: formKey,
@@ -51,34 +58,139 @@ class _AddExpenseBody extends ConsumerWidget {
           vertical: spacing.s20,
         ),
         children: [
-          LabelLargeText(context.locale.selectTypeOfExpense),
-          Gap(spacing.s8),
-          _CategorySection(
-            hasError: categoryError,
-            onSelected: onCategorySelected,
-          ),
-          Gap(spacing.s16),
           LabelLargeText(context.locale.selectFacility),
           Gap(spacing.s8),
-          _FacilitySection(
-            enabled: facilityEnabled,
-            hasError: facilityError,
-            onSelected: onFacilitySelected,
+          Consumer(
+            builder: (context, ref, _) {
+              final facilities =
+                  ref.watch(userSessionProvider)?.accessibleFacilities ??
+                  const <AccessibleFacilityEntity>[];
+              final facilityName = facilities
+                  .firstWhere((f) => f.id == facilitySelected,
+                      orElse: () =>
+                          AccessibleFacilityEntity(id: 0, name: '', isPrimary: false))
+                  .name;
+              return GestureDetector(
+                onTap: canPickFacility ? onFacilityTap : null,
+                child: Container(
+                  height: 52,
+                  padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+                  decoration: BoxDecoration(
+                    color: facilityError
+                        ? context.color.error.withOpacity(0.1)
+                        : context.color.onPrimary,
+                    border: Border.all(
+                      color: facilityError
+                          ? context.color.error
+                          : context.color.borderSubtle,
+                    ),
+                    borderRadius: BorderRadius.circular(radius.r6),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          facilityName.isNotEmpty
+                              ? facilityName
+                              : context.locale.selectFacility,
+                          overflow: TextOverflow.ellipsis,
+                          style: facilityName.isNotEmpty
+                              ? context.textStyle.bodyMedium
+                              : context.textStyle.bodyMedium.copyWith(
+                                  color: context.color.text.secondary,
+                                ),
+                        ),
+                      ),
+                      if (canPickFacility)
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: context.color.text.secondary,
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          Gap(spacing.s16),
+          LabelLargeText(context.locale.selectTypeOfExpense),
+          Gap(spacing.s8),
+          GestureDetector(
+            onTap: onCategoryTap,
+            child: Container(
+              height: 52,
+              padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+              decoration: BoxDecoration(
+                color: categoryError
+                    ? context.color.error.withOpacity(0.1)
+                    : context.color.onPrimary,
+                border: Border.all(
+                  color: categoryError
+                      ? context.color.error
+                      : context.color.borderSubtle,
+                ),
+                borderRadius: BorderRadius.circular(radius.r6),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      categorySelected?.label ?? context.locale.selectTypeOfExpense,
+                      overflow: TextOverflow.ellipsis,
+                      style: categorySelected != null
+                          ? context.textStyle.bodyMedium
+                          : context.textStyle.bodyMedium.copyWith(
+                              color: context.color.text.secondary,
+                            ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: context.color.text.secondary,
+                  ),
+                ],
+              ),
+            ),
           ),
           Gap(spacing.s16),
           LabelLargeText(context.locale.expenseDate),
           Gap(spacing.s8),
-          _DropdownField(
-            value: DateFormatter.shortDate(expenseDate),
-            hint: context.locale.expenseDate,
-            onTap: dateEnabled ? onPickDate : null,
+          GestureDetector(
+            onTap: onPickDate,
+            child: Container(
+              height: 52,
+              padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+              decoration: BoxDecoration(
+                color: context.color.onPrimary,
+                border: Border.all(color: context.color.borderSubtle),
+                borderRadius: BorderRadius.circular(radius.r6),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      DateFormatter.shortDate(expenseDate),
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyle.bodyMedium,
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: context.color.text.secondary,
+                  ),
+                ],
+              ),
+            ),
           ),
           Gap(spacing.s16),
+          LabelLargeText(context.locale.amountBdt),
+          Gap(spacing.s8),
           AppTextField.text(
             controller: amountController,
-            label: context.locale.amountBdt,
             hint: context.locale.enterAmount,
-            enabled: dateEnabled,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             errorText: amountError ? context.locale.fieldRequired : null,
             onChanged: (_) => onAmountChanged(),
@@ -92,9 +204,12 @@ class _AddExpenseBody extends ConsumerWidget {
             onSelected: onPaidBySelected,
           ),
           Gap(spacing.s16),
+          LabelLargeText(
+            '${context.locale.comments} (${context.locale.optional})',
+          ),
+          Gap(spacing.s8),
           AppTextField.description(
             controller: commentsController,
-            label: '${context.locale.comments} (${context.locale.optional})',
             hint: context.locale.commentsHint,
           ),
           Gap(spacing.s24),

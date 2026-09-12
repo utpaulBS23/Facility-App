@@ -79,7 +79,8 @@ class VisitCheckIn extends _$VisitCheckIn {
 
   Future<void> startLocationSharing({
     required int visitId,
-    required int facilityId,
+    int? facilityId,
+    int? officeId,
     String? travelOriginType,
     int? travelOriginId,
   }) async {
@@ -87,6 +88,36 @@ class VisitCheckIn extends _$VisitCheckIn {
 
     final Position position;
     try {
+      var permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.unableToDetermine) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        state = state.copyWith(
+          isStartingShare: false,
+          shareError: const Failure(
+            type: FailureType.forbidden,
+            message: 'Location permission denied. Enable it in app settings.',
+          ),
+        );
+        return;
+      }
+
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        state = state.copyWith(
+          isStartingShare: false,
+          shareError: const Failure(
+            type: FailureType.forbidden,
+            message: 'Location permission required to check in',
+          ),
+        );
+        return;
+      }
+
       position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
@@ -106,6 +137,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           request: TravelRouteCheckInRequestEntity(
             taskId: visitId,
             facilityId: facilityId,
+            officeId: officeId,
             latitude: position.latitude,
             longitude: position.longitude,
             startType: travelOriginType,
@@ -179,10 +211,42 @@ class VisitCheckIn extends _$VisitCheckIn {
   Future<void> confirmCheckIn({required int visitId}) async {
     state = state.copyWith(isCheckingIn: true, clearCheckInError: true);
 
-    await ref.read(stopLocationPingTrackingUseCaseProvider).call();
+    if (state.isSharingLocation) {
+      await ref.read(stopLocationPingTrackingUseCaseProvider).call();
+    }
 
     final Position position;
     try {
+      var permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.unableToDetermine) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        state = state.copyWith(
+          isCheckingIn: false,
+          checkInError: const Failure(
+            type: FailureType.forbidden,
+            message: 'Location permission denied. Enable it in app settings.',
+          ),
+        );
+        return;
+      }
+
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        state = state.copyWith(
+          isCheckingIn: false,
+          checkInError: const Failure(
+            type: FailureType.forbidden,
+            message: 'Location permission required to check in',
+          ),
+        );
+        return;
+      }
+
       position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,

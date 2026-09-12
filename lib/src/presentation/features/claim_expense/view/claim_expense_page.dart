@@ -272,7 +272,7 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                 Gap(spacing.s16),
                 _ReadOnlyField(
                   label: context.locale.destination,
-                  value: selectedVisit.facilityName,
+                  value: selectedVisit.facilityName ?? selectedVisit.officeName ?? '—',
                 ),
                 Gap(spacing.s16),
               ] else ...[

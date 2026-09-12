@@ -13,7 +13,7 @@ class _PaidBySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final paymentMethodsAsync = ref.watch(paymentMethodOptionsProvider);
+    final paidByOptionsAsync = ref.watch(paidByOptionsProvider);
     final paidBy = ref.watch(selectedExpensePaidByProvider);
 
     return ValueListenableBuilder<TextEditingValue>(
@@ -22,17 +22,17 @@ class _PaidBySection extends ConsumerWidget {
         final paidByEnabled =
             (double.tryParse(amountValue.text.trim()) ?? 0) > 0;
 
-        return paymentMethodsAsync.when(
+        return paidByOptionsAsync.when(
           loading: () => const LinearProgressIndicator(),
           error: (_, _) => BodySmallText(
             context.locale.paidBy,
             color: context.color.error,
           ),
-          data: (methods) => _MasterDataOptionSelector(
-            options: methods,
+          data: (options) => _MasterDataOptionSelector(
+            options: options,
             selected: paidBy,
             hasError: hasError,
-            enabled: paidByEnabled,
+            enabled: paidByEnabled && options.isNotEmpty,
             onChanged: (selected) {
               ref.read(selectedExpensePaidByProvider.notifier).select(selected);
               onSelected();
