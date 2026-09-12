@@ -8,6 +8,8 @@ abstract base class AttendanceRepository extends Repository {
     required String month,
     int? facilityId,
     int? userId,
+    int? page,
+    int? perPage,
   });
 
   Future<Result<AttendanceItemEntity, Failure>> approveAttendance({

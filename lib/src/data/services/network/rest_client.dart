@@ -13,6 +13,15 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
+  @POST('/auth/forgot-password/send-otp')
+  Future<HttpResponse> sendForgotPasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/forgot-password/verify-otp')
+  Future<HttpResponse> verifyForgotPasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/forgot-password/reset')
+  Future<HttpResponse> resetForgotPassword(@Body() Map<String, dynamic> body);
+
   @DELETE(Endpoints.logout)
   Future<HttpResponse> logout();
 
@@ -162,6 +171,8 @@ abstract class RestClient {
     @Query('month') required String month,
     @Query('facility_id') int? facilityId,
     @Query('user_id') int? userId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.myAttendance)
@@ -193,6 +204,8 @@ abstract class RestClient {
     @Query('status') String? status,
     @Query('facility_id') int? facilityId,
     @Query('assigned_to') int? assignedTo,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.visitDetail)
@@ -315,10 +328,52 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.travelExpenses)
+  Future<HttpResponse> getTravelExpenses({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('facility_id') int? facilityId,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.masterDataItems)
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,
     @Query('category') required String category,
+    @Query('per_page') int? perPage,
+    @Query('include_inactive') bool? includeInactive,
+  });
+
+  @GET(Endpoints.additionalIncomes)
+  Future<HttpResponse> getAdditionalIncomes({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.additionalIncomes)
+  Future<HttpResponse> createAdditionalIncome({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.productCatalogDropdown)
+  Future<HttpResponse> getProductCatalogDropdown({
+    @Path('partnerId') required int partnerId,
+  });
+
+  @GET(Endpoints.facilityProducts)
+  Future<HttpResponse> getFacilityProducts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.productSaleEntries)
+  Future<HttpResponse> createProductSaleEntry({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
   });
 
   @GET(Endpoints.myLeaves)
@@ -401,6 +456,26 @@ abstract class RestClient {
   Future<HttpResponse> createSupplyRequest({
     @Path('partnerId') required int partnerId,
     @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.facilityExpenses)
+  Future<HttpResponse> getFacilityExpenses({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.facilityExpenses)
+  Future<HttpResponse> createFacilityExpense({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @DELETE(Endpoints.facilityExpenseDetails)
+  Future<HttpResponse> deleteFacilityExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityExpenseId') required int facilityExpenseId,
   });
 
   @POST(Endpoints.approveSupplyRequest)
@@ -527,5 +602,14 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('taskOccurrenceId') required int taskOccurrenceId,
     @Body() Map<String, dynamic> request = const {},
+  });
+
+  /// Profile
+  @GET(Endpoints.profile)
+  Future<HttpResponse> getProfile();
+
+  @PATCH(Endpoints.profile)
+  Future<HttpResponse> updateProfile({
+    @Body() required Map<String, dynamic> body,
   });
 }

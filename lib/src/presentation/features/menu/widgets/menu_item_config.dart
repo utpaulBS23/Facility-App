@@ -31,8 +31,8 @@ final List<MenuItemConfig> menuItemConfigs = [
     icon: Assets.icons.customerIcon,
     label: _profileLabel,
     subtitle: _profileSubtitle,
-    route: Routes.profile,
-    permissions: [UserPermission.profileUpdate],
+    route: Routes.myProfile,
+    permissions: [UserPermission.profileView, UserPermission.profileUpdate],
   ),
   MenuItemConfig(
     icon: Assets.icons.attendance,
@@ -46,11 +46,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _extraCollectionLabel,
     subtitle: _extraCollectionSubtitle,
     route: Routes.additionalIncome,
-    permissions: [
-      UserPermission.additionalIncomeCreate,
-      UserPermission.additionalIncomeApprove,
-      UserPermission.additionalIncomeView,
-    ],
+    permissions: [UserPermission.additionalIncomeView],
   ),
   MenuItemConfig(
     icon: Assets.icons.route,
@@ -85,10 +81,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _expenseEntryLabel,
     subtitle: _expenseEntrySubtitle,
     route: Routes.facilityExpense,
-    permissions: [
-      UserPermission.facilityExpenseCreate,
-      UserPermission.facilityExpenseApprove,
-    ],
+    permissions: [UserPermission.facilityExpenseView],
   ),
   MenuItemConfig(
     icon: Assets.icons.visit,

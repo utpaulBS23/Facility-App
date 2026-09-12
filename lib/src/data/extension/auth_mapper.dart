@@ -12,6 +12,7 @@ extension UserModelToEntity on UserModel {
     supervisor: supervisor,
     permissionVersion: permissionVersion,
     twoFactorEnabled: twoFactorEnabled,
+    profileImage: profileImage,
   );
 }
 
@@ -52,6 +53,7 @@ extension LoginResponseModelToEntity on LoginResponseModel {
         .toList(),
     partner: partner?.toEntity(),
     trackingSettings: trackingSettings?.toEntity(),
+    weekStartDay: weekStartDay ?? 6,
   );
 }
 

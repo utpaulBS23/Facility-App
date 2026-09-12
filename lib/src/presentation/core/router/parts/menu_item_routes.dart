@@ -36,6 +36,13 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.addAdditionalIncome,
+      name: Routes.addAdditionalIncome,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: AddAdditionalIncomePage());
+      },
+    ),
+    GoRoute(
       path: Routes.facilityExpense,
       name: Routes.facilityExpense,
       pageBuilder: (context, state) {
@@ -43,8 +50,22 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.addFacilityExpense,
+      name: Routes.addFacilityExpense,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: AddFacilityExpensePage());
+      },
+    ),
+    GoRoute(
       path: Routes.claimExpense,
       name: Routes.claimExpense,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: TravelExpensesPage());
+      },
+    ),
+    GoRoute(
+      path: Routes.addTravelExpense,
+      name: Routes.addTravelExpense,
       pageBuilder: (context, state) {
         return const MaterialPage(child: ClaimExpensePage());
       },

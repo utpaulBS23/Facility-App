@@ -35,7 +35,11 @@ extension TaskOccurrenceModelToEntity on TaskOccurrenceModel {
     occurrenceDate: occurrenceDate ?? '',
     slotStart: slotStart ?? '',
     slotEnd: slotEnd ?? '',
-    timeRange: timeRange ?? '',
+    timeRange: (timeRange != null && timeRange!.isNotEmpty)
+        ? timeRange!
+        : (slotStart != null && slotEnd != null && slotStart!.isNotEmpty)
+            ? '$slotStart - $slotEnd'
+            : '',
     status: taskOccurrenceStatusFromKey(status ?? 'pending'),
     assignedTo: assignedTo,
     assignedToName: assignedToName,

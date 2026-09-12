@@ -14,20 +14,24 @@ final class MasterDataRepositoryImpl extends MasterDataRepository {
   Future<Result<List<MasterDataItemEntity>, Failure>> getItems({
     required int partnerId,
     required String category,
+    int? perPage,
+    bool? includeInactive,
   }) {
     return asyncGuard(() async {
       final response = await _client.getMasterDataItems(
         partnerId: partnerId,
         category: category,
+        perPage: perPage,
+        includeInactive: includeInactive,
       );
       final model = MasterDataItemListResponseModel.fromJson(response.data);
-      // WHY: inactive items are excluded by default per the master-data
-      // contract — callers needing them pass `include_inactive` server-side,
-      // not expected for the pickers this feeds today.
-      final items = model.data.map((e) => e.toEntity()).where(
-        (item) => item.isActive,
-      ).toList()..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-      return items;
+      final items = model.data.map((e) => e.toEntity()).toList();
+      // Filter inactive items only if include_inactive is false or null
+      final filtered = (includeInactive == true)
+          ? items
+          : items.where((item) => item.isActive).toList();
+      filtered.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+      return filtered;
     });
   }
 }

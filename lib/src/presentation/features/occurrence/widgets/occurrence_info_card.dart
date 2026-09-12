@@ -52,7 +52,9 @@ class _OccurrenceInfoCard extends StatelessWidget {
                     SizedBox(width: spacing.s4),
                     Expanded(
                       child: BodySmallText(
-                        occurrence.timeRange,
+                        DateFormatter.formatTimeRange(
+                          occurrence.timeRange,
+                        ),
                         color: context.color.text.secondary,
                       ),
                     ),

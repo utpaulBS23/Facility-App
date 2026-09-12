@@ -16,21 +16,19 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
   final AttendanceItemEntity detail;
 
   Color _dotColor(BuildContext context) => switch (detail.displayStatus) {
-    AttendanceStatus.present => context.color.success,
-    AttendanceStatus.late => context.color.warning,
-    AttendanceStatus.absent => context.color.error,
-    AttendanceStatus.onLeave => context.color.text.secondary,
+    AttendanceStatus.approved ||
+    AttendanceStatus.autoApproved => context.color.success,
     AttendanceStatus.pending => context.color.warning,
-    AttendanceStatus.rejected => context.color.error,
+    AttendanceStatus.rejected ||
+    AttendanceStatus.absent => context.color.error,
   };
 
   String _statusLabel(BuildContext context) => switch (detail.displayStatus) {
-    AttendanceStatus.present => context.locale.present,
-    AttendanceStatus.late => context.locale.late,
-    AttendanceStatus.absent => context.locale.absent,
-    AttendanceStatus.onLeave => context.locale.onLeave,
     AttendanceStatus.pending => context.locale.pending,
+    AttendanceStatus.approved => context.locale.approved,
+    AttendanceStatus.autoApproved => context.locale.autoApproved,
     AttendanceStatus.rejected => context.locale.rejected,
+    AttendanceStatus.absent => context.locale.absent,
   };
 
   @override
@@ -64,22 +62,70 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
               ),
             ],
           ),
-          Gap(spacing.s2),
-          Row(
-            children: [
-              Icon(
-                Icons.login_rounded,
-                size: 12,
-                color: context.color.text.secondary,
-              ),
-              Gap(spacing.s4),
+          if (detail.shift != null) ...[
+            Gap(spacing.s10),
+            if (detail.shift!.facilityName.trim().isNotEmpty) ...[
               Text(
-                detail.checkInTime != null
-                    ? DateFormatter.timeOnly(detail.checkInTime!)
-                    : '—',
+                detail.shift!.facilityName,
+                style: context.textStyle.titleMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: context.color.text.primary,
+                ),
+              ),
+              Gap(spacing.s2),
+            ],
+            if (detail.shift!.shiftType.trim().isNotEmpty) ...[
+              Text(
+                detail.shift!.startTime.isNotEmpty && detail.shift!.endTime.isNotEmpty
+                    ? '${detail.shift!.shiftType} (${DateFormatter.shiftTime(detail.shift!.startTime)} – ${DateFormatter.shiftTime(detail.shift!.endTime)})'
+                    : detail.shift!.shiftType,
                 style: context.textStyle.bodySmall.copyWith(
                   color: context.color.text.secondary,
                 ),
+              ),
+            ],
+          ],
+          Gap(spacing.s10),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.login_rounded,
+                    size: 14,
+                    color: context.color.text.secondary,
+                  ),
+                  Gap(spacing.s4),
+                  Text(
+                    detail.checkInTime != null
+                        ? DateFormatter.timeOnly(detail.checkInTime!)
+                        : '—',
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              Gap(spacing.s16),
+              Row(
+                children: [
+                  Icon(
+                    Icons.logout_rounded,
+                    size: 14,
+                    color: context.color.text.secondary,
+                  ),
+                  Gap(spacing.s4),
+                  Text(
+                    detail.checkOutTime != null
+                        ? DateFormatter.timeOnly(detail.checkOutTime!)
+                        : '—',
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

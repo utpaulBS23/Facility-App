@@ -23,7 +23,7 @@ class Routes {
 
   static const String applyLeave = '/apply-leave';
   static const String leaveRequests = '/leave-requests';
-  static const String leaveDetails = '/leave-details';
+  static const String leaveDetails = '/leave-details/:id';
   static const String selectShift = '/select-shift';
   static const String selectAttendant = '/select-attendant';
   static const String leaveSubmitted = '/leave-submitted';
@@ -50,8 +50,11 @@ class Routes {
   static const String profile = '/profile';
   static const String doorLock = '/door-lock';
   static const String additionalIncome = '/additional-income';
+  static const String addAdditionalIncome = '/additional-income/add';
   static const String facilityExpense = '/facility-expense';
+  static const String addFacilityExpense = '/facility-expense/add';
   static const String claimExpense = '/claim-expense';
+  static const String addTravelExpense = '/claim-expense/add';
   static const String notification = '/notification';
   static const String supplyRequest = '/supply-request';
   static const String report = '/report';
@@ -64,4 +67,10 @@ class Routes {
   static const String requestDetails = '/request-details/:id';
   static const String confirmDelivery = '/confirm-delivery';
   static const String deliveryComplaint = '/delivery-complaint';
+
+  static const String myProfile = '/my-profile';
+  static const String editProfile = '/edit-profile';
+  static const String changePassword = '/change-password';
+  static const String passwordReset = '/password-reset';
+  static const String otpVerification = '/otp-verification';
 }

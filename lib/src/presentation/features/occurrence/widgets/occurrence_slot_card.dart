@@ -40,104 +40,109 @@ class _OccurrenceSlotCard extends StatelessWidget {
           children: [
             Container(width: 4, color: accent),
             Expanded(
-              child: Padding(
-                padding: .all(spacing.s16),
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: .start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: .start,
-                            children: [
-                              LabelLargeText(occurrence.scheduleTitle),
-                              Gap(spacing.s4),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.access_time_rounded,
-                                    size: 14,
-                                    color: context.color.text.secondary,
-                                  ),
-                                  Gap(spacing.s4),
-                                  BodySmallText(
-                                    occurrence.timeRange,
-                                    color: context.color.text.secondary,
-                                  ),
-                                ],
-                              ),
-                            ],
+              child: PermissionGate(
+                permissions: const [UserPermission.taskOccurrenceView],
+                child: Padding(
+                  padding: .all(spacing.s16),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: .start,
+                              children: [
+                                LabelLargeText(occurrence.scheduleTitle),
+                                Gap(spacing.s4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.access_time_rounded,
+                                      size: 14,
+                                      color: context.color.text.secondary,
+                                    ),
+                                    Gap(spacing.s4),
+                                    BodySmallText(
+                                      DateFormatter.formatTimeRange(
+                                        occurrence.timeRange,
+                                      ),
+                                      color: context.color.text.secondary,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        _OccurrenceStatusChip(status: occurrence.status),
-                      ],
-                    ),
-                    Gap(spacing.s12),
-                    Row(
-                      children: [
-                        _OccurrenceAssigneeAvatar(name: occurrence.assignedToName),
-                        Gap(spacing.s8),
-                        Expanded(
-                          child: BodySmallText(
-                            occurrence.assignedToName ?? context.locale.unassigned,
-                            color: context.color.text.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (items != null) ...[
+                          _OccurrenceStatusChip(status: occurrence.status),
+                        ],
+                      ),
                       Gap(spacing.s12),
                       Row(
                         children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: .circular(radius.r4),
-                              child: LinearProgressIndicator(
-                                value: progress,
-                                minHeight: spacing.s6,
-                                backgroundColor: context.color.borderSubtle,
-                                color: accent,
-                              ),
-                            ),
-                          ),
+                          _OccurrenceAssigneeAvatar(name: occurrence.assignedToName),
                           Gap(spacing.s8),
-                          BodySmallText(
-                            context.locale.occurrenceChecklistItemsCompleted(
-                              answered,
-                              items.length,
+                          Expanded(
+                            child: BodySmallText(
+                              occurrence.assignedToName ?? context.locale.unassigned,
+                              color: context.color.text.secondary,
                             ),
-                            color: context.color.text.secondary,
                           ),
                         ],
                       ),
-                    ],
-                    Gap(spacing.s16),
-                    Wrap(
-                      spacing: spacing.s8,
-                      runSpacing: spacing.s8,
-                      children: [
-                        PermissionGate(
-                          permissions: const [UserPermission.taskOccurrenceAssign],
-                          child: OutlinedButton.icon(
-                            onPressed: onReassign,
-                            icon: const Icon(Icons.swap_horiz_rounded, size: 16),
-                            label: Text(context.locale.occurrenceReassign),
-                          ),
+                      if (items != null) ...[
+                        Gap(spacing.s12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: .circular(radius.r4),
+                                child: LinearProgressIndicator(
+                                  value: progress,
+                                  minHeight: spacing.s6,
+                                  backgroundColor: context.color.borderSubtle,
+                                  color: accent,
+                                ),
+                              ),
+                            ),
+                            Gap(spacing.s8),
+                            BodySmallText(
+                              context.locale.occurrenceChecklistItemsCompleted(
+                                answered,
+                                items.length,
+                              ),
+                              color: context.color.text.secondary,
+                            ),
+                          ],
                         ),
-                        if (items != null)
+                      ],
+                      Gap(spacing.s16),
+                      Wrap(
+                        spacing: spacing.s8,
+                        runSpacing: spacing.s8,
+                        children: [
                           PermissionGate(
-                            permissions: const [UserPermission.taskOccurrenceSubmit],
+                            permissions: const [UserPermission.taskOccurrenceAssign],
                             child: OutlinedButton.icon(
-                              onPressed: onChecklist,
-                              icon: const Icon(Icons.checklist_rounded, size: 16),
-                              label: Text(context.locale.occurrenceChecklist),
+                              onPressed: onReassign,
+                              icon: const Icon(Icons.swap_horiz_rounded, size: 16),
+                              label: Text(context.locale.occurrenceReassign),
                             ),
                           ),
-                      ],
-                    ),
-                  ],
+                          if (items != null)
+                            PermissionGate(
+                              permissions: const [UserPermission.taskOccurrenceSubmit],
+                              child: OutlinedButton.icon(
+                                onPressed: onChecklist,
+                                icon: const Icon(Icons.checklist_rounded, size: 16),
+                                label: Text(context.locale.occurrenceChecklist),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
