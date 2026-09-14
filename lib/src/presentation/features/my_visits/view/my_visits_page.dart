@@ -67,7 +67,9 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
 
   void _onDateChanged(DateTime date) {
     setState(() => _selectedDate = date);
-    _scrollController.jumpTo(0);
+    if (_scrollController.positions.isNotEmpty) {
+      _scrollController.jumpTo(0);
+    }
     _fetchVisits(date);
   }
 
