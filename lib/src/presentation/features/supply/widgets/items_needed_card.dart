@@ -1,15 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+part of '../view/new_request_page.dart';
 
-import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/supply/stock_item_entity.dart';
-import '../../../core/theme/theme.dart';
-import 'item_stepper_input.dart';
-import 'stock_mock_models.dart';
-
-class ItemsNeededCard extends StatelessWidget {
-  const ItemsNeededCard({
-    super.key,
+class _ItemsNeededCard extends StatelessWidget {
+  const _ItemsNeededCard({
     required this.items,
     required this.availableItems,
     required this.onItemSelected,
@@ -24,6 +16,27 @@ class ItemsNeededCard extends StatelessWidget {
   final void Function(int index, int quantity) onQuantityChanged;
   final VoidCallback onAddItem;
   final void Function(int index) onRemoveItem;
+
+  Future<void> _onPickItem(
+    BuildContext context,
+    int index,
+    StockItemEntity? selected,
+  ) async {
+    final result = await showModalBottomSheet<({StockItemEntity value})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SelectionPickerSheet<StockItemEntity>(
+        title: context.locale.selectItem,
+        options: [
+          for (final item in availableItems) (value: item, label: item.name),
+        ],
+        isSelected: (value) => value.id == selected?.id,
+      ),
+    );
+    if (result == null) return;
+    onItemSelected(index, result.value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,65 +78,62 @@ class ItemsNeededCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: spacing.s12,
-                            vertical: spacing.s8,
+                        child: GestureDetector(
+                          onTap: () => _onPickItem(
+                            context,
+                            index,
+                            availableItems
+                                .where((s) => s.id == item.stockItemId)
+                                .firstOrNull,
                           ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: color.borderSubtle),
-                            borderRadius: BorderRadius.circular(radius.r10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.locale.item,
-                                style: context.textStyle.bodySmall.copyWith(
-                                  color: color.text.secondary,
-                                ),
-                              ),
-                              Gap(spacing.s2),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton<int>(
-                                  value: item.stockItemId,
-                                  isDense: true,
-                                  isExpanded: true,
-                                  hint: Text(
-                                    context.locale.selectItem,
-                                    style:
-                                        context.textStyle.bodyMedium.copyWith(
-                                      color: color.text.secondary,
-                                    ),
-                                  ),
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: spacing.s12,
+                              vertical: spacing.s8,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: color.borderSubtle),
+                              borderRadius: BorderRadius.circular(radius.r10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.locale.item,
+                                  style: context.textStyle.bodySmall.copyWith(
                                     color: color.text.secondary,
                                   ),
-                                  style: context.textStyle.labelLarge.copyWith(
-                                    color: color.text.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  items: availableItems.map((stockItem) {
-                                    return DropdownMenuItem<int>(
-                                      value: stockItem.id,
-                                      child: Text(
-                                        stockItem.name,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (val) {
-                                    final selected = availableItems
-                                        .where((s) => s.id == val)
-                                        .firstOrNull;
-                                    if (selected != null) {
-                                      onItemSelected(index, selected);
-                                    }
-                                  },
                                 ),
-                              ),
-                            ],
+                                Gap(spacing.s2),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item.itemName ??
+                                            context.locale.selectItem,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: item.itemName == null
+                                            ? context.textStyle.bodyMedium
+                                                  .copyWith(
+                                                    color:
+                                                        color.text.secondary,
+                                                  )
+                                            : context.textStyle.labelLarge
+                                                  .copyWith(
+                                                    color: color.text.primary,
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                  ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: color.text.secondary,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -134,7 +144,7 @@ class ItemsNeededCard extends StatelessWidget {
                           icon: Icon(
                             Icons.delete_outline_rounded,
                             color: color.error,
-                            size: 20,
+                            size: spacing.s20,
                           ),
                         ),
                       ],
@@ -172,10 +182,10 @@ class ItemsNeededCard extends StatelessWidget {
           Gap(spacing.s16),
           SizedBox(
             width: double.infinity,
-            height: 44,
+            height: spacing.s44,
             child: OutlinedButton.icon(
               onPressed: onAddItem,
-              icon: const Icon(Icons.add_rounded, size: 18),
+              icon: Icon(Icons.add_rounded, size: spacing.s20),
               label: Text(context.locale.addMoreItems),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: color.borderSubtle),

@@ -1,14 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+part of '../view/new_request_page.dart';
 
-import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/supply/supply_request_status.dart';
-import '../../../core/theme/theme.dart';
-import '../extensions/supply_status_extension.dart';
-
-class UrgencySelectorCard extends StatelessWidget {
-  const UrgencySelectorCard({
-    super.key,
+class _UrgencySelectorCard extends StatelessWidget {
+  const _UrgencySelectorCard({
     required this.selectedUrgency,
     required this.onChanged,
   });
@@ -79,13 +72,14 @@ class _UrgencySegmentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final color = context.color;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 38,
+        height: spacing.s40,
         decoration: BoxDecoration(
           color: isSelected ? color.onPrimary : Colors.transparent,
           borderRadius: BorderRadius.circular(radius.r12),

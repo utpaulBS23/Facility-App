@@ -30,7 +30,7 @@ class _NewRequestFooterBar extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              height: 44,
+              height: spacing.s44,
               child: FilledButton(
                 onPressed: canSubmit ? onSubmit : null,
                 child: isSubmitting
@@ -38,7 +38,7 @@ class _NewRequestFooterBar extends StatelessWidget {
                         width: spacing.s20,
                         height: spacing.s20,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2,
+                          strokeWidth: spacing.s2,
                           color: color.onPrimary,
                         ),
                       )
@@ -48,7 +48,7 @@ class _NewRequestFooterBar extends StatelessWidget {
             Gap(spacing.s12),
             SizedBox(
               width: double.infinity,
-              height: 44,
+              height: spacing.s44,
               child: OutlinedButton(
                 onPressed: isSubmitting ? null : onCancel,
                 style: OutlinedButton.styleFrom(

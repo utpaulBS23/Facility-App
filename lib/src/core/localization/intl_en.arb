@@ -520,6 +520,8 @@
   "assignResponsibility": "Assign responsibility",
   "noResponsibilityAdded": "No responsibility has been added",
   "submitRequest": "Submit Request",
+  "newRequestTitle": "New Request",
+  "requestSubmittedSuccessfully": "Request submitted successfully",
   "issueTitle": "Issue Title",
   "issueTitleHint": "Enter a short title for this issue",
   "rosters": "Rosters",

@@ -93,6 +93,8 @@ import '../../domain/use_cases/visit_use_case.dart';
 import '../../domain/use_cases/leave_use_cases.dart';
 import '../../domain/use_cases/travel_expense_use_case.dart';
 import '../../domain/use_cases/master_data_use_case.dart';
+import '../../domain/use_cases/supply/create_supply_request_use_case.dart';
+import '../../domain/use_cases/supply/get_item_catalog_use_case.dart';
 import '../../domain/use_cases/supply/get_supply_requests_use_case.dart';
 import '../../domain/use_cases/supply/get_supply_request_summary_use_case.dart';
 import '../../domain/use_cases/supply/get_supply_request_details_use_case.dart';
