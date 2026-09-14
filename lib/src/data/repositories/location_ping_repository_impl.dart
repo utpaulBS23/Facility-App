@@ -173,8 +173,9 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
     }
 
     var permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied ||
-        permission == LocationPermission.whileInUse) {
+        permission == LocationPermission.unableToDetermine) {
       permission = await Geolocator.requestPermission();
     }
 
@@ -183,9 +184,13 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
       throw Exception('Location permission denied');
     }
 
+    if (permission == LocationPermission.unableToDetermine) {
+      throw Exception('Unable to determine location permission');
+    }
+
     if (permission != LocationPermission.always) {
-      await Geolocator.openAppSettings();
-      throw Exception('Background location permission is required');
+      await Geolocator.openLocationSettings();
+      throw Exception('Background location permission is required. Enable "Allow all the time" in settings.');
     }
   }
 }

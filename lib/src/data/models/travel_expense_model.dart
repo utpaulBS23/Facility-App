@@ -67,6 +67,7 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.taskId,
     this.facilityId,
     this.facilityName,
+    this.userName,
     this.purpose,
     this.calculatedDistanceKm,
     this.calculatedAmount,
@@ -75,12 +76,15 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.ratePerKm,
     this.status,
     this.transportLines,
+    this.submittedAt,
+    this.rejectionNote,
   });
 
   final int id;
   final int? taskId;
   final int? facilityId;
   final String? facilityName;
+  final String? userName;
   final String? purpose;
   final double? calculatedDistanceKm;
   final double? calculatedAmount;
@@ -89,6 +93,8 @@ class TravelExpenseModel with TravelExpenseModelMappable {
   final double? ratePerKm;
   final String? status;
   final List<TravelExpenseLineModel>? transportLines;
+  final String? submittedAt;
+  final String? rejectionNote;
 
   static const fromJson = TravelExpenseModelMapper.fromJson;
 }
@@ -105,4 +111,20 @@ class TravelExpenseResponseModel with TravelExpenseResponseModelMappable {
   final TravelExpenseModel? data;
 
   static const fromJson = TravelExpenseResponseModelMapper.fromJson;
+}
+
+/// `GET /travel-expenses` — Laravel's standard paginated shape, `links`/`meta`
+/// deliberately not modeled: the list is fetched one `per_page=100` page and
+/// treated as the full set for now, see `GetTravelExpensesUseCase`.
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class TravelExpenseListResponseModel
+    with TravelExpenseListResponseModelMappable {
+  const TravelExpenseListResponseModel({this.data = const []});
+
+  final List<TravelExpenseModel> data;
+
+  static const fromJson = TravelExpenseListResponseModelMapper.fromJson;
 }

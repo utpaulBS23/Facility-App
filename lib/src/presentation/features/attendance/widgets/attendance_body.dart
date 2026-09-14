@@ -17,23 +17,47 @@ class _AttendanceBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return ListView.separated(
-      padding: EdgeInsets.all(spacing.s16),
-      // WHY: stats card is always item 0; apply-leave slot exists only when
-      // the user holds leave.request — index math shifts accordingly.
-      itemCount: summary.attendances.length + (showApplyLeave ? 2 : 1),
-      separatorBuilder: (context, index) => Gap(spacing.s12),
-      itemBuilder: (context, index) {
-        if (index == 0) return _AttendanceStatsCard(summary: summary);
-        if (showApplyLeave && index == 1) {
-          return _ApplyLeaveButton(onTap: onApplyLeave);
-        }
-        final item = summary.attendances[index - (showApplyLeave ? 2 : 1)];
-        return _AttendanceListItem(
-          item: item,
-          onTap: () => onItemTap(item),
-        );
-      },
+    return Column(
+      children: [
+        Container(
+          color: context.color.scaffoldBackground,
+          padding: EdgeInsets.fromLTRB(
+            spacing.s16,
+            spacing.s16,
+            spacing.s16,
+            spacing.s12,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _AttendanceStatsCard(summary: summary),
+              if (showApplyLeave) ...[
+                Gap(spacing.s12),
+                _ApplyLeaveButton(onTap: onApplyLeave),
+              ],
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.separated(
+            padding: EdgeInsets.fromLTRB(
+              spacing.s16,
+              spacing.s4,
+              spacing.s16,
+              spacing.s16,
+            ),
+            itemCount: summary.attendances.length,
+            separatorBuilder: (context, index) => Gap(spacing.s12),
+            itemBuilder: (context, index) {
+              final item = summary.attendances[index];
+              return _AttendanceListItem(
+                item: item,
+                onTap: () => onItemTap(item),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

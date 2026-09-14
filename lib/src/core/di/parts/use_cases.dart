@@ -432,8 +432,16 @@ RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
 @riverpod
 CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
   return CreateTravelExpenseUseCase(
-    ref.read(travelExpenseRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTravelExpensesUseCase getTravelExpensesUseCase(Ref ref) {
+  return GetTravelExpensesUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
@@ -442,6 +450,46 @@ GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
   return GetMasterDataItemsUseCase(
     ref.read(masterDataRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetAdditionalIncomesUseCase getAdditionalIncomesUseCase(Ref ref) {
+  return GetAdditionalIncomesUseCase(
+    additionalIncomeRepository: ref.read(additionalIncomeRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateAdditionalIncomeUseCase createAdditionalIncomeUseCase(Ref ref) {
+  return CreateAdditionalIncomeUseCase(
+    additionalIncomeRepository: ref.read(additionalIncomeRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetProductCatalogDropdownUseCase getProductCatalogDropdownUseCase(Ref ref) {
+  return GetProductCatalogDropdownUseCase(
+    productCatalogRepository: ref.read(productCatalogRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityProductsUseCase getFacilityProductsUseCase(Ref ref) {
+  return GetFacilityProductsUseCase(
+    facilityProductRepository: ref.read(facilityProductRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateProductSaleEntryUseCase createProductSaleEntryUseCase(Ref ref) {
+  return CreateProductSaleEntryUseCase(
+    productSaleEntryRepository: ref.read(productSaleEntryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
@@ -609,6 +657,30 @@ FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilityExpensesUseCase getFacilityExpensesUseCase(Ref ref) {
+  return GetFacilityExpensesUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateFacilityExpenseUseCase createFacilityExpenseUseCase(Ref ref) {
+  return CreateFacilityExpenseUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+DeleteFacilityExpenseUseCase deleteFacilityExpenseUseCase(Ref ref) {
+  return DeleteFacilityExpenseUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 InitializePushNotificationUseCase initializePushNotificationUseCase(Ref ref) {
   return InitializePushNotificationUseCase(
     ref.read(pushNotificationRepositoryProvider),
@@ -670,3 +742,30 @@ SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+SendForgotPasswordOtpUseCase sendForgotPasswordOtpUseCase(Ref ref) {
+  return SendForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+VerifyForgotPasswordOtpUseCase verifyForgotPasswordOtpUseCase(Ref ref) {
+  return VerifyForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+ResetForgotPasswordUseCase resetForgotPasswordUseCase(Ref ref) {
+  return ResetForgotPasswordUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+GetProfileUseCase getProfileUseCase(Ref ref) {
+  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+UpdateProfileUseCase updateProfileUseCase(Ref ref) {
+  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -54,14 +56,12 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
   }
 
   Future<void> _onCheckIn(VisitDetailEntity detail) async {
-    final facilityId = detail.facilityId;
-    if (facilityId == null) return;
-
     await ref
         .read(visitCheckInProvider.notifier)
         .startLocationSharing(
           visitId: widget.visitId,
-          facilityId: facilityId,
+          facilityId: detail.locationType == 'facility' ? detail.facilityId : null,
+          officeId: detail.locationType == 'external' ? detail.officeId : null,
           travelOriginType: widget.travelOriginType,
           travelOriginId: widget.travelOriginId,
         );
@@ -216,14 +216,35 @@ class _DetailBody extends StatelessWidget {
           )
         else ...[
           if (checkInState.shareError != null) ...[
-            Text(
-              checkInState.shareError!.localized(context),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.error,
+            Container(
+              padding: EdgeInsets.all(spacing.s12),
+              decoration: BoxDecoration(
+                color: context.color.error.withValues(alpha: 0.1),
+                border: Border.all(color: context.color.error),
+                borderRadius: BorderRadius.circular(
+                  context.dimensions.radius.r12,
+                ),
               ),
-              textAlign: TextAlign.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    checkInState.shareError!.localized(context),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.error,
+                    ),
+                  ),
+                  Gap(spacing.s8),
+                  TextButton(
+                    onPressed: () async {
+                      await Geolocator.openAppSettings();
+                    },
+                    child: const Text('Open Settings'),
+                  ),
+                ],
+              ),
             ),
-            Gap(spacing.s8),
+            Gap(spacing.s12),
           ],
           FilledButton(
             onPressed: onCheckIn,
@@ -345,14 +366,24 @@ class _CheckInBody extends StatelessWidget {
         _VisitCheckInLocationCard(state: checkInState),
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
-          Text(
-            checkInState.checkInError!.localized(context),
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.error,
+          Container(
+            padding: EdgeInsets.all(spacing.s12),
+            decoration: BoxDecoration(
+              color: context.color.error.withValues(alpha: 0.1),
+              border: Border.all(color: context.color.error),
+              borderRadius: BorderRadius.circular(
+                context.dimensions.radius.r12,
+              ),
             ),
-            textAlign: TextAlign.center,
+            child: Text(
+              checkInState.checkInError!.localized(context),
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.error,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-          Gap(spacing.s8),
+          Gap(spacing.s12),
         ],
         FilledButton(
           onPressed: checkInState.isCheckingIn ? null : onConfirm,

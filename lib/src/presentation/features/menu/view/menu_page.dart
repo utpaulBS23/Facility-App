@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../core/gen/l10n/app_localizations.dart';
+import '../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -13,6 +16,7 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/text/typography.dart';
 import '../riverpod/menu_provider.dart';
 import '../widgets/menu_item_config.dart';
 
@@ -73,6 +77,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                   name: menuState.name,
                   email: menuState.email,
                   partnerName: menuState.partnerName,
+                  avatarUrl: menuState.avatarUrl,
                   appVersion: menuState.appVersion,
                   buildNumber: menuState.buildNumber,
                 ),
@@ -92,7 +97,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       // without scrolling, the trailing items (notification,
                       // logout) overflow off-screen.
                       return Padding(
-                        padding: .symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: context.dimensions.padding.p16,
                         ),
                         child: SingleChildScrollView(

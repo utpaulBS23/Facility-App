@@ -18,7 +18,8 @@ final class TravelRouteRepositoryImpl extends TravelRouteRepository {
       partnerId: partnerId,
       request: {
         'task_id': request.taskId,
-        'facility_id': request.facilityId,
+        if (request.facilityId != null) 'facility_id': request.facilityId,
+        if (request.officeId != null) 'office_id': request.officeId,
         'lat': request.latitude,
         'lng': request.longitude,
         if (request.startType != null) 'start_type': request.startType,

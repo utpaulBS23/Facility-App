@@ -1,6 +1,34 @@
+import 'travel_expense_status.dart';
+
 /// Which table [CreateTravelExpenseRequestEntity.startId] refers to when
 /// [CreateTravelExpenseRequestEntity.taskId] is not given.
 enum TravelExpenseStartType { facility, home, office }
+
+/// Filter query parameters for the travel-expense list
+/// (`GET /travel-expenses`).
+class TravelExpenseFilter {
+  const TravelExpenseFilter({
+    this.partnerId,
+    this.status,
+    this.facilityId,
+  });
+
+  final int? partnerId;
+  final TravelExpenseStatus? status;
+  final int? facilityId;
+
+  TravelExpenseFilter copyWith({
+    int? partnerId,
+    TravelExpenseStatus? status,
+    int? facilityId,
+  }) {
+    return TravelExpenseFilter(
+      partnerId: partnerId ?? this.partnerId,
+      status: status ?? this.status,
+      facilityId: facilityId ?? this.facilityId,
+    );
+  }
+}
 
 /// One transport leg of a travel-expense claim (e.g. rickshaw for 5km, then
 /// bus for 48km).
@@ -37,6 +65,7 @@ class TravelExpenseLegEntity {
 /// building this request, not by this entity.
 class CreateTravelExpenseRequestEntity {
   const CreateTravelExpenseRequestEntity({
+    this.partnerId,
     this.taskId,
     this.facilityId,
     this.startType,
@@ -45,6 +74,11 @@ class CreateTravelExpenseRequestEntity {
     this.amount,
     required this.legs,
   });
+
+  /// Domain-only — attached by [CreateTravelExpenseUseCase] via [copyWith],
+  /// used solely to address the `POST` path. Never serialized into the
+  /// request body.
+  final int? partnerId;
 
   /// The completed visit this claim is for, when tied to one.
   final int? taskId;
@@ -69,60 +103,72 @@ class CreateTravelExpenseRequestEntity {
 
   double get totalDistanceKm =>
       legs.fold(0, (sum, leg) => sum + leg.distanceKm);
+
+  CreateTravelExpenseRequestEntity copyWith({
+    int? partnerId,
+    int? taskId,
+    int? facilityId,
+    TravelExpenseStartType? startType,
+    int? startId,
+    String? purpose,
+    double? amount,
+    List<TravelExpenseLegEntity>? legs,
+  }) {
+    return CreateTravelExpenseRequestEntity(
+      partnerId: partnerId ?? this.partnerId,
+      taskId: taskId ?? this.taskId,
+      facilityId: facilityId ?? this.facilityId,
+      startType: startType ?? this.startType,
+      startId: startId ?? this.startId,
+      purpose: purpose ?? this.purpose,
+      amount: amount ?? this.amount,
+      legs: legs ?? this.legs,
+    );
+  }
 }
 
-/// One itemized transport line as recorded by the backend.
+/// One itemized transport line as recorded by the backend — only the label
+/// is rendered (joined into the list card's "Rickshaw + Bus" mode text).
 class TravelExpenseLineEntity {
   const TravelExpenseLineEntity({
     required this.id,
-    required this.vehicleTypeItemId,
-    this.vehicleTypeLabel,
-    required this.distanceKm,
-    required this.amount,
+    required this.vehicleTypeLabel,
   });
 
   final int id;
-  final int vehicleTypeItemId;
-  final String? vehicleTypeLabel;
-  final double distanceKm;
-  final double amount;
+  final String vehicleTypeLabel;
 }
 
-/// The claim as recorded by the backend after submission.
+/// The claim as recorded by the backend after submission — trimmed to just
+/// the fields the list/create-confirmation UI renders.
 class TravelExpenseEntity {
   const TravelExpenseEntity({
     required this.id,
-    this.taskId,
-    this.facilityId,
-    this.facilityName,
-    this.purpose,
-    this.calculatedDistanceKm,
-    this.calculatedAmount,
-    this.claimedDistanceKm,
-    this.claimedAmount,
-    this.ratePerKm,
+    required this.facilityName,
+    required this.userName,
+    required this.purpose,
+    required this.claimedDistanceKm,
+    required this.claimedAmount,
     required this.status,
-    this.transportLines = const [],
+    required this.submittedAt,
+    required this.rejectionNote,
+    required this.transportLines,
   });
 
   final int id;
-  final int? taskId;
-  final int? facilityId;
-  final String? facilityName;
-  final String? purpose;
-
-  /// Freshly re-resolved via the routing provider (Barikoi) at submit time.
-  final double? calculatedDistanceKm;
-  final double? calculatedAmount;
+  final String facilityName;
+  final String userName;
+  final String purpose;
 
   /// Summed from the submitted legs against the partner's rate — or the
   /// client-supplied [CreateTravelExpenseRequestEntity.amount] override.
-  final double? claimedDistanceKm;
-  final double? claimedAmount;
-  final double? ratePerKm;
+  final double claimedDistanceKm;
+  final double claimedAmount;
 
-  /// e.g. "waiting" — review (approve/reject/adjust) happens outside this
-  /// app; this only reflects the state at submission time.
-  final String status;
+  /// Review (approve/reject/adjust) happens outside this app; this only
+  /// reflects the state as last fetched.
+  final TravelExpenseStatus status;
+  final String submittedAt;
+  final String rejectionNote;
   final List<TravelExpenseLineEntity> transportLines;
 }

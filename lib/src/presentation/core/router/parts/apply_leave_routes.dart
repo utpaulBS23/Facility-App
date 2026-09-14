@@ -15,8 +15,11 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
     GoRoute(
       path: Routes.leaveDetails,
       name: Routes.leaveDetails,
-      builder: (context, state) =>
-          LeaveDetailsPage(request: state.extra! as LeaveRequestEntity),
+      builder: (context, state) {
+        final idStr = state.pathParameters['id'];
+        final id = int.parse(idStr!);
+        return LeaveDetailsPage(requestId: id);
+      },
     ),
     GoRoute(
       path: Routes.selectShift,
