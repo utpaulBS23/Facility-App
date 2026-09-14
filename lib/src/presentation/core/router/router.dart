@@ -70,6 +70,7 @@ import '../../../domain/entities/supply/supply_request_entity.dart';
 import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/request_details_page.dart';
+import '../../features/supply/view/new_request_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
 
 import '../widgets/app_startup/startup_widget.dart';
