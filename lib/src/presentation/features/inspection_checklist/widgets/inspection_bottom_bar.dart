@@ -49,7 +49,6 @@ class _InspectionBottomBar extends StatelessWidget {
                   ),
                   SizedBox(width: spacing.s12),
                   Expanded(
-                    flex: 2,
                     child: FilledButton(
                       onPressed: state.isComplete && !state.isSubmitting
                           ? onSubmit

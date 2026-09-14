@@ -172,42 +172,28 @@ class _AnswerSubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return SizedBox(
-      width: double.infinity,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.s16,
-            vertical: spacing.s10,
-          ),
-          decoration: BoxDecoration(
-            color: canSubmit
-                ? context.color.primary
-                : context.color.primary.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(radius.r6),
-          ),
-          alignment: Alignment.center,
-          child: isSaving
-              ? SizedBox(
-                  width: spacing.s16,
-                  height: spacing.s16,
-                  child: CircularProgressIndicator.adaptive(
-                    strokeWidth: 2,
-                    backgroundColor: context.color.onPrimary.withValues(
-                      alpha: 0.4,
-                    ),
-                  ),
-                )
-              : BodySmallText(
-                  context.locale.submitProof,
-                  color: context.color.onPrimary,
-                ),
+    return FilledButton(
+      onPressed: canSubmit && !isSaving ? onTap : null,
+      style: FilledButton.styleFrom(
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s6,
         ),
+        backgroundColor: context.color.primary,
+        disabledBackgroundColor: context.color.primary.withValues(alpha: 0.4),
       ),
+      child: isSaving
+          ? SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator.adaptive(
+                strokeWidth: 2,
+              ),
+            )
+          : BodySmallText(
+              context.locale.submitProof,
+              color: context.color.onPrimary,
+            ),
     );
   }
 }
@@ -374,24 +360,79 @@ class _ProofAttachmentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
     final hasAnyProof = hasExistingProof || proofImages.isNotEmpty;
-    final totalCount = (hasExistingProof ? 1 : 0) + proofImages.length;
     final isLocked = onAttach == null && onRemove == null;
 
-    return Row(
-      children: [
-        if (hasAnyProof) ...[
-          _PhotoAttachedChip(count: totalCount),
-          SizedBox(width: spacing.s8),
+    if (!hasAnyProof && !isLocked) {
+      return OutlinedButton.icon(
+        onPressed: onAttach,
+        style: OutlinedButton.styleFrom(
+          padding: EdgeInsets.symmetric(
+            horizontal: spacing.s12,
+            vertical: spacing.s6,
+          ),
+        ),
+        icon: const Icon(Icons.camera_alt_outlined, size: 14),
+        label: BodySmallText(context.locale.attachPhoto),
+      );
+    }
+
+    // Show photo preview (either from proofImages or existing)
+    if (hasAnyProof) {
+      final photoPath = proofImages.isNotEmpty ? proofImages.last.path : null;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: context.color.borderSubtle),
+                borderRadius: BorderRadius.circular(radius.r10),
+              ),
+              padding: EdgeInsets.all(spacing.s8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(radius.r6),
+                child: photoPath != null
+                    ? Image.file(
+                        File(photoPath),
+                        width: 180,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: 180,
+                        height: 180,
+                        color: context.color.subtle,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.check_circle_outline,
+                          size: 32,
+                          color: context.color.success,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+          if (!isLocked && proofImages.isNotEmpty) ...[
+            SizedBox(height: spacing.s8),
+            OutlinedButton.icon(
+              onPressed: onRemove,
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.s12,
+                  vertical: spacing.s6,
+                ),
+              ),
+              icon: const Icon(Icons.delete_outline_rounded, size: 14),
+              label: BodySmallText(context.locale.remove),
+            ),
+          ],
         ],
-        if (!hasAnyProof && !isLocked)
-          _AttachPhotoButton(onTap: onAttach ?? () {}),
-        if (hasAnyProof && !isLocked && proofImages.isNotEmpty) ...[
-          const Spacer(),
-          _RemoveProofButton(onTap: onRemove ?? () {}),
-        ],
-      ],
-    );
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
 
@@ -528,27 +569,28 @@ class _MediaThumbnailRow extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
 
-    return SizedBox(
-      height: spacing.s56,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: urls.length,
-        separatorBuilder: (_, _) => SizedBox(width: spacing.s8),
-        itemBuilder: (_, index) => ClipRRect(
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: BorderRadius.circular(radius.r10),
+        ),
+        padding: EdgeInsets.all(spacing.s8),
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(radius.r6),
           child: Image.network(
-            urls[index],
-            width: spacing.s56,
-            height: spacing.s56,
+            urls.first,
+            width: 180,
+            height: 180,
             fit: BoxFit.cover,
             errorBuilder: (_, _, _) => Container(
-              width: spacing.s56,
-              height: spacing.s56,
+              width: 180,
+              height: 180,
               color: context.color.subtle,
               alignment: Alignment.center,
               child: Icon(
                 Icons.broken_image_outlined,
-                size: spacing.s20,
+                size: 32,
                 color: context.color.text.secondary,
               ),
             ),
