@@ -91,6 +91,7 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
       builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _selectedFacilityId,
+        includeAllOption: true,
       ),
     );
     if (result == null || result.facilityId == _selectedFacilityId) return;
