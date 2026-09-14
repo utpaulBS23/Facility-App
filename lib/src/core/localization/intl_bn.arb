@@ -512,6 +512,8 @@
   "noResponsibilityAdded": "কোনো দায়িত্ব যোগ করা হয়নি",
   "add": "যোগ করুন",
   "submitRequest": "অনুরোধ জমা দিন",
+  "newRequestTitle": "নতুন অনুরোধ",
+  "requestSubmittedSuccessfully": "অনুরোধ সফলভাবে জমা হয়েছে",
   "issueTitle": "সমস্যার শিরোনাম",
   "issueTitleHint": "এই সমস্যার জন্য একটি সংক্ষিপ্ত শিরোনাম লিখুন",
   "rosters": "রোস্টার",

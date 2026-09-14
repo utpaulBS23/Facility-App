@@ -4,26 +4,31 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/stock_item_entity.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
+import '../../../../domain/entities/supply/supply_request_payloads.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
-import '../../../../domain/repositories/supply_repository.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
-import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/text/typography.dart';
+import '../../../core/widgets/selection_picker_sheet.dart';
+import '../extensions/supply_status_extension.dart';
 import '../riverpod/create_supply_request_provider.dart';
 import '../riverpod/item_catalog_provider.dart';
-import '../widgets/facility_dropdown_card.dart';
-import '../widgets/items_needed_card.dart';
+import '../widgets/item_stepper_input.dart';
+import '../widgets/request_item_entry.dart';
 import '../widgets/request_notes_card.dart';
-import '../widgets/stock_mock_models.dart';
-import '../widgets/urgency_selector_card.dart';
 
+part '../widgets/facility_dropdown_card.dart';
+part '../widgets/items_needed_card.dart';
+part '../widgets/new_request_body.dart';
 part '../widgets/new_request_footer_bar.dart';
+part '../widgets/urgency_selector_card.dart';
 
 class NewRequestPage extends ConsumerStatefulWidget {
   const NewRequestPage({super.key});
@@ -106,22 +111,25 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
     final selectedItems = _items.where((item) => item.stockItemId != null);
     if (facilityId == null || selectedItems.isEmpty) return;
 
+    final notes = _notesController.text.trim();
+
     ref.read(createSupplyRequestProvider.notifier).create(
-          facilityId: facilityId,
-          urgency: _selectedUrgency,
-          notes: _notesController.text.trim(),
-          items: selectedItems
-              .map((item) => CreateSupplyRequestItemParams(
-                    stockItemId: item.stockItemId!,
-                    qtyRequested: item.quantity.toDouble(),
-                  ))
-              .toList(),
+          CreateSupplyRequestEntity(
+            facilityId: facilityId,
+            urgency: _selectedUrgency,
+            notes: notes.isEmpty ? null : notes,
+            items: selectedItems
+                .map((item) => CreateSupplyRequestItemEntity(
+                      stockItemId: item.stockItemId!,
+                      qtyRequested: item.quantity.toDouble(),
+                    ))
+                .toList(),
+          ),
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final color = context.color;
 
     final createRequestState = ref.watch(createSupplyRequestProvider);
@@ -142,43 +150,20 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.newRequestTitle),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FacilityDropdownCard(
-              selectedFacilityId: _selectedFacilityId,
-              facilities: facilities,
-              onChanged: (val) => setState(() => _selectedFacilityId = val),
-            ),
-            Gap(spacing.s16),
-            ItemsNeededCard(
-              items: _items,
-              availableItems: availableItems,
-              onItemSelected: _onItemSelected,
-              onQuantityChanged: _onQuantityChanged,
-              onAddItem: _onAddItem,
-              onRemoveItem: _onRemoveItem,
-            ),
-            Gap(spacing.s16),
-            UrgencySelectorCard(
-              selectedUrgency: _selectedUrgency,
-              onChanged: (val) => setState(() => _selectedUrgency = val),
-            ),
-            Gap(spacing.s16),
-            RequestNotesCard(controller: _notesController),
-            Gap(spacing.s24),
-          ],
-        ),
+      appBar: DetailAppBar(title: context.locale.newRequestTitle),
+      body: _NewRequestBody(
+        selectedFacilityId: _selectedFacilityId,
+        facilities: facilities,
+        onFacilityChanged: (val) => setState(() => _selectedFacilityId = val),
+        items: _items,
+        availableItems: availableItems,
+        onItemSelected: _onItemSelected,
+        onQuantityChanged: _onQuantityChanged,
+        onAddItem: _onAddItem,
+        onRemoveItem: _onRemoveItem,
+        selectedUrgency: _selectedUrgency,
+        onUrgencyChanged: (val) => setState(() => _selectedUrgency = val),
+        notesController: _notesController,
       ),
       bottomNavigationBar: PermissionGate(
         permissions: const [UserPermission.supplyRequestCreate],
