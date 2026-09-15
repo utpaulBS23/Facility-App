@@ -15,68 +15,140 @@ class _ClaimExpenseLegRow extends StatelessWidget {
   final VoidCallback? onRemove;
   final bool showRemove;
 
+  Future<void> _onPickMode(BuildContext context, FormFieldState<int> state) async {
+    final result = await showModalBottomSheet<({int value})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SelectionPickerSheet<int>(
+        title: context.locale.selectTransportMode,
+        options: [
+          for (final mode in transportModes) (value: mode.id, label: mode.label),
+        ],
+        isSelected: (value) => value == leg.vehicleTypeItemId,
+      ),
+    );
+    if (result == null) return;
+    leg.vehicleTypeItemId = result.value;
+    state.didChange(result.value);
+    onChanged();
+  }
+
+  String? _selectedModeLabel() => transportModes
+      .cast<MasterDataItemEntity?>()
+      .firstWhere((m) => m?.id == leg.vehicleTypeItemId, orElse: () => null)
+      ?.label;
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 3,
-          child: AppDropdownButtonFormField<int>(
-            initialValue: leg.vehicleTypeItemId,
-            hint: Text(context.locale.selectTransportMode),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r6,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: context.color.borderBrand),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+
+      ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              spacing.s16,
+              spacing.s16,
+              showRemove ? spacing.s40 : spacing.s16,
+              spacing.s16,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                FormField<int>(
+                  initialValue: leg.vehicleTypeItemId,
+                  validator: (value) =>
+                      value == null ? context.locale.selectTransportMode : null,
+                  builder: (state) {
+                    final selectedLabel = _selectedModeLabel();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FormSelectorCard(
+                          title: context.locale.transportModes,
+                          icon: Icons.directions_car_outlined,
+                          onTap: () => _onPickMode(context, state),
+                          content: Text(
+                            selectedLabel ?? context.locale.selectTransportMode,
+                            overflow: TextOverflow.ellipsis,
+                            style: selectedLabel == null
+                                ? context.textStyle.bodyMedium.copyWith(
+                                    color: context.color.text.secondary,
+                                  )
+                                : context.textStyle.bodyMedium,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: spacing.s4,
+                            left: spacing.s4,
+                          ),
+                          child: SizedBox(
+                            height: spacing.s16,
+                            child: state.hasError
+                                ? Text(
+                                    state.errorText!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: context.textStyle.bodySmall
+                                        .copyWith(color: context.color.error),
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
+                Gap(spacing.s8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: AppTextField.text(
+                        controller: leg.distanceController,
+                        label: context.locale.distanceKm,
+                        hint: context.locale.distanceKm,
+                        extraValidations: [PositiveNumberValidation()],
+                        onChanged: (_) => onChanged(),
+                      ),
+                    ),
+                    Gap(spacing.s8),
+                    Expanded(
+                      child: AppTextField.text(
+                        controller: leg.priceController,
+                        label: context.locale.price,
+                        hint: context.locale.price,
+                        extraValidations: [PositiveNumberValidation()],
+                        onChanged: (_) => onChanged(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (showRemove)
+            Positioned(
+              top: spacing.s4,
+            right: spacing.s1,
+              child: IconButton(
+                icon: Icon(
+                  Icons.delete, 
+                  color: context.color.primary,
+                  size: spacing.s16
+                  ),
+                onPressed: onRemove,
               ),
             ),
-            items: [
-              for (final mode in transportModes)
-                DropdownMenuItem(value: mode.id, child: Text(mode.label)),
-            ],
-            validator: (value) =>
-                value == null ? context.locale.selectTransportMode : null,
-            onChanged: (id) {
-              leg.vehicleTypeItemId = id;
-              onChanged();
-            },
-          ),
-        ),
-        Gap(spacing.s8),
-        Expanded(
-          flex: 2,
-          child: TextFormField(
-            controller: leg.distanceController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              hintText: context.locale.distanceKm,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r6,
-                ),
-              ),
-            ),
-            validator: (value) {
-              final distance = double.tryParse(value?.trim() ?? '');
-              return distance == null || distance <= 0
-                  ? context.locale.distanceKm
-                  : null;
-            },
-            onChanged: (_) => onChanged(),
-          ),
-        ),
-        if (showRemove) ...[
-          Gap(spacing.s4),
-          IconButton(
-            icon: Icon(Icons.close, color: context.color.icon),
-            onPressed: onRemove,
-          ),
         ],
-      ],
+      ),
     );
   }
 }
