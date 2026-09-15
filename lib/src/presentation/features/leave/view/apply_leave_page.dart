@@ -8,14 +8,12 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/leave/create_leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_attendant_entity.dart';
-import '../../../../domain/entities/shift_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../riverpod/apply_leave_provider/selected_leave_attendant_provider.dart';
 import '../riverpod/apply_leave_provider/selected_leave_policy_id_provider.dart';
-import '../riverpod/apply_leave_provider/selected_shift_provider.dart';
 import '../riverpod/apply_leave_provider/submit_leave_request_provider.dart';
 import '../widgets/apply_leave_body.dart';
 import '../widgets/apply_leave_submit_button.dart';
@@ -54,7 +52,6 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
       _leaveApplicationType = type;
       if (type == LeaveApplicationType.own) {
         ref.read(selectedLeaveAttendantProvider.notifier).select(null);
-        ref.read(selectedShiftProvider.notifier).select(null);
       }
     });
   }
@@ -105,7 +102,6 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
             _endDate = picked;
           }
         });
-        ref.read(selectedShiftProvider.notifier).select(null);
       },
     );
   }
@@ -118,21 +114,8 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
       firstDate: _startDate,
       onPicked: (picked) {
         setState(() => _endDate = picked);
-        ref.read(selectedShiftProvider.notifier).select(null);
       },
     );
-  }
-
-  Future<void> _onSelectShift() async {
-    final date = DateFormat('yyyy-MM-dd').format(_startDate);
-    final selectedShift = await context.pushNamed<ShiftEntity>(
-      Routes.selectShift,
-      extra: date,
-    );
-
-    if (selectedShift != null) {
-      ref.read(selectedShiftProvider.notifier).select(selectedShift);
-    }
   }
 
   Future<void> _onSelectAttendant() async {
@@ -187,7 +170,6 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
         endDate: _endDate,
         onPickStartDate: _onPickStartDate,
         onPickEndDate: _onPickEndDate,
-        onSelectShift: _onSelectShift,
         reasonController: _reasonController,
       ),
       bottomNavigationBar: ApplyLeaveSubmitButton(onTap: _onSubmit),
