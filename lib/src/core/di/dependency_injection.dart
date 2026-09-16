@@ -37,6 +37,7 @@ import '../../data/repositories/facility_product_repository_impl.dart';
 import '../../data/repositories/product_catalog_repository_impl.dart';
 import '../../data/repositories/product_sale_entry_repository_impl.dart';
 import '../../data/repositories/training_repository_impl.dart';
+import '../../data/repositories/facility_expense_repository_impl.dart';
 import '../../data/repositories/push_notification_repository_impl.dart';
 import '../../data/services/cache/cache_service.dart';
 import '../../data/services/device/device_info_service.dart';
@@ -75,6 +76,7 @@ import '../../domain/repositories/leave_repository.dart';
 import '../../domain/repositories/travel_expense_repository.dart';
 import '../../domain/repositories/master_data_repository.dart';
 import '../../domain/repositories/supply_repository.dart';
+import '../../domain/repositories/facility_expense_repository.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/forgot_password_repository.dart';
 import '../../data/repositories/profile_repository_impl.dart';
@@ -127,6 +129,9 @@ import '../../domain/use_cases/product_catalog/get_product_catalog_dropdown_use_
 import '../../domain/use_cases/product_sale_entry/create_product_sale_entry_use_case.dart';
 import '../../domain/use_cases/training/get_training_sessions_use_case.dart';
 import '../../domain/use_cases/training/get_training_session_details_use_case.dart';
+import '../../domain/use_cases/facility_expense/get_facility_expenses_use_case.dart';
+import '../../domain/use_cases/facility_expense/create_facility_expense_use_case.dart';
+import '../../domain/use_cases/facility_expense/delete_facility_expense_use_case.dart';
 
 part 'dependency_injection.g.dart';
 part 'parts/externals.dart';

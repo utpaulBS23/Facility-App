@@ -29,6 +29,7 @@ import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
 import '../../features/door_lock/view/door_lock_page.dart';
 import '../../features/claim_expense/view/claim_expense_page.dart';
+import '../../features/facility_expense/view/add_facility_expense_page.dart';
 import '../../features/claim_expense/view/travel_expenses_page.dart';
 import '../../features/claim_expense/view/travel_expense_details_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
