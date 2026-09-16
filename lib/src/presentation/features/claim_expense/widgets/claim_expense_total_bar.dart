@@ -18,7 +18,8 @@ class _ClaimExpenseTotalBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(context.dimensions.padding.p16),
       decoration: BoxDecoration(
-        color: context.color.subtle,
+        color: context.color.onPrimary,
+        border: Border.all(color: context.color.subtle),
         borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
       ),
       child: Column(

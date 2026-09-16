@@ -354,6 +354,14 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                 onPressed: _onAddLeg,
                 icon: const Icon(Icons.add),
                 label: Text(context.locale.addAnotherModeLeg),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: context.color.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
+                ),
               ),
               Gap(spacing.s16),
               _ClaimExpenseTotalBar(
