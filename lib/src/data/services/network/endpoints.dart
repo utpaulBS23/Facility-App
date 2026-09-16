@@ -168,6 +168,22 @@ class Endpoints {
   static const String masterDataItems =
       '/partners/{partnerId}/master-data/items';
 
+  /// Additional Incomes (Extra Collection)
+  static const String additionalIncomes =
+      '/partners/{partnerId}/additional-incomes';
+
+  /// Product Catalog (Extra Collection — Product Sell)
+  static const String productCatalogDropdown =
+      '/partners/{partnerId}/product-catalog/dropdown';
+
+  /// Facility Products (Extra Collection — Product Sell, facility-scoped)
+  static const String facilityProducts =
+      '/partners/{partnerId}/facility-products';
+
+  /// Product Sale Entries (Extra Collection — Product Sell)
+  static const String productSaleEntries =
+      '/partners/{partnerId}/product-sale-entries';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';
