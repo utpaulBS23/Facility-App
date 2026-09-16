@@ -128,11 +128,16 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
           Gap(spacing.s8),
         ],
       ),
-      body: _FacilityExpenseBody(
-        listAsync: listAsync,
-        onAddExpense: _onAddExpense,
-        onRetry: _fetch,
+      floatingActionButton: PermissionGate(
+        permissions: const [UserPermission.facilityExpenseCreate],
+        child: FloatingActionButton(
+          onPressed: _onAddExpense,
+          backgroundColor: context.color.primary,
+          foregroundColor: context.color.onPrimary,
+          child: const Icon(Icons.add),
+        ),
       ),
+      body: _FacilityExpenseBody(listAsync: listAsync, onRetry: _fetch),
     );
   }
 }
