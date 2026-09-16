@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -179,12 +181,14 @@ class _ChecklistBody extends StatelessWidget {
                       Divider(color: context.color.borderSubtle, height: 1),
                     ],
                   ),
-              _InspectionRepairWorkSection(
-                issues: [...checklist.issues, ...checklistState.localIssues],
-                onNewIssue: onNewIssue,
-                canAddIssue: !isResolved,
-              ),
-              Gap(spacing.s8),
+              if (detail.facilityName != null) ...[
+                _InspectionRepairWorkSection(
+                  issues: [...checklist.issues, ...checklistState.localIssues],
+                  onNewIssue: onNewIssue,
+                  canAddIssue: !isResolved,
+                ),
+                Gap(spacing.s8),
+              ],
             ],
           ),
         ),

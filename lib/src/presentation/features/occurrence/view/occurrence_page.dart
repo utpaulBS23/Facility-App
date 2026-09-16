@@ -26,11 +26,11 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_reassign_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
+part '../widgets/occurrence_reassign_sheet.dart';
 part '../widgets/occurrence_stats_header.dart';
 part '../widgets/occurrence_slot_card.dart';
 part '../widgets/occurrence_status_chip.dart';
 part '../widgets/occurrence_status_filter_sheet.dart';
-part '../widgets/occurrence_reassign_sheet.dart';
 
 enum _OccurrenceStatusFilter { all, pending, onTime, late, missed }
 
@@ -119,19 +119,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     _fetch(_selectedDate);
   }
 
-  void _openReassignSheet(
-    BuildContext context,
-    TaskOccurrenceEntity occurrence,
-  ) {
-    if (_selectedFacilityId == null) return;
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _OccurrenceReassignSheet(occurrence: occurrence),
-    );
-  }
-
   void _openChecklist(BuildContext context, TaskOccurrenceEntity occurrence) {
     context.pushNamed(Routes.occurrenceChecklist, extra: occurrence);
   }
@@ -185,7 +172,21 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
           if (facilities.length > 1)
             TextButton.icon(
               onPressed: () => _pickFacility(context, facilities),
-              icon: const Icon(Icons.apartment_outlined, size: 18),
+              icon: Container(
+                decoration: BoxDecoration(
+                  color: context.color.primary,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(6),
+                child: Opacity(
+                  opacity: 1.0,
+                  child: Icon(
+                    Icons.apartment_outlined,
+                    size: 20,
+                    color: context.color.onPrimary,
+                  ),
+                ),
+              ),
               label: Text(
                 selectedFacilityName ?? context.locale.facilityName,
                 overflow: TextOverflow.ellipsis,
@@ -234,8 +235,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
               selectedFilter: _selectedFilter,
               onDateChanged: _onDateChanged,
               onRetry: () => _fetch(_selectedDate),
-              onReassign: (occurrence) =>
-                  _openReassignSheet(context, occurrence),
               onChecklist: (occurrence) => _openChecklist(context, occurrence),
             ),
     );
@@ -248,7 +247,6 @@ class _OccurrenceBoard extends ConsumerWidget {
     required this.selectedFilter,
     required this.onDateChanged,
     required this.onRetry,
-    required this.onReassign,
     required this.onChecklist,
   });
 
@@ -256,7 +254,6 @@ class _OccurrenceBoard extends ConsumerWidget {
   final _OccurrenceStatusFilter selectedFilter;
   final void Function(DateTime) onDateChanged;
   final VoidCallback onRetry;
-  final void Function(TaskOccurrenceEntity) onReassign;
   final void Function(TaskOccurrenceEntity) onChecklist;
 
   @override
@@ -321,7 +318,6 @@ class _OccurrenceBoard extends ConsumerWidget {
                 separatorBuilder: (context, i) => Gap(spacing.s12),
                 itemBuilder: (_, i) => _OccurrenceSlotCard(
                   occurrence: occurrences[i],
-                  onReassign: () => onReassign(occurrences[i]),
                   onChecklist: () => onChecklist(occurrences[i]),
                 ),
               );

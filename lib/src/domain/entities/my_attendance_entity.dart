@@ -16,8 +16,11 @@ class MyAttendanceItemEntity {
   const MyAttendanceItemEntity({
     required this.userId,
     required this.supervisorName,
-    required this.facilityId,
+    this.facilityId,
     required this.facilityName,
+    this.officeId,
+    this.officeName,
+    this.locationType,
     required this.date,
     this.checkInAt,
     this.checkOutAt,
@@ -27,8 +30,11 @@ class MyAttendanceItemEntity {
 
   final int userId;
   final String supervisorName;
-  final int facilityId;
+  final int? facilityId;
   final String facilityName;
+  final int? officeId;
+  final String? officeName;
+  final String? locationType;
   final String date;
   final DateTime? checkInAt;
   final DateTime? checkOutAt;

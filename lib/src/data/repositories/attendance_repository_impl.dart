@@ -30,6 +30,8 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
     required String month,
     int? facilityId,
     int? userId,
+    int? page,
+    int? perPage,
   }) {
     return asyncGuard(() async {
       final response = await _client.getMonthlyAttendanceOverview(
@@ -37,6 +39,8 @@ final class AttendanceRepositoryImpl extends AttendanceRepository {
         month: month,
         facilityId: facilityId,
         userId: userId,
+        page: page,
+        perPage: perPage,
       );
       final responseModel = AttendanceOverviewResponseModel.fromJson(
         response.data,

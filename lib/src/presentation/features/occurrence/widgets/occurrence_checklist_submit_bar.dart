@@ -45,7 +45,6 @@ class _OccurrenceChecklistSubmitBar extends StatelessWidget {
                   ),
                   SizedBox(width: spacing.s12),
                   Expanded(
-                    flex: 2,
                     child: FilledButton(
                       onPressed: isComplete && !isSubmitting ? onSubmit : null,
                       style: FilledButton.styleFrom(
