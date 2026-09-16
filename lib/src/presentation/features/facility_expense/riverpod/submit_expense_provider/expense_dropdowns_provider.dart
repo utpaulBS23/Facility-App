@@ -11,11 +11,7 @@ part 'expense_dropdowns_provider.g.dart';
 Future<List<MasterDataItemEntity>> expenseCategoryOptions(Ref ref) async {
   final result = await ref
       .read(getMasterDataItemsUseCaseProvider)
-      .call(
-        category: 'expenseCategory',
-        perPage: 100,
-        includeInactive: true,
-      );
+      .call(category: 'expenseCategory');
 
   return switch (result) {
     Success(:final data) => data ?? const [],
@@ -25,14 +21,10 @@ Future<List<MasterDataItemEntity>> expenseCategoryOptions(Ref ref) async {
 }
 
 @riverpod
-Future<List<MasterDataItemEntity>> paidByOptions(Ref ref) async {
+Future<List<MasterDataItemEntity>> paymentMethodOptions(Ref ref) async {
   final result = await ref
       .read(getMasterDataItemsUseCaseProvider)
-      .call(
-        category: 'expenseCategory',
-        perPage: 100,
-        includeInactive: true,
-      );
+      .call(category: 'paymentMethod');
 
   return switch (result) {
     Success(:final data) => data ?? const [],

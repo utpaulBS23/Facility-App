@@ -10,7 +10,7 @@ List<GoRoute> _stockRoutes(Ref ref) {
     GoRoute(
       path: Routes.newRequest,
       name: Routes.newRequest,
-      builder: (context, state) => const SupplyRequestPage(),
+      builder: (context, state) => const NewRequestPage(),
     ),
     GoRoute(
       path: Routes.requestDetails,

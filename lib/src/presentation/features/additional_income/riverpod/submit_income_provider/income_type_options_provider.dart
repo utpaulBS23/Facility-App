@@ -15,11 +15,7 @@ class IncomeTypeOptions extends _$IncomeTypeOptions {
   Future<List<MasterDataItemEntity>> build() async {
     final result = await ref
         .read(getMasterDataItemsUseCaseProvider)
-        .call(
-          category: 'extraEarningType',
-          perPage: 100,
-          includeInactive: true,
-        );
+        .call(category: 'extraEarningType');
 
     return switch (result) {
       Success(:final data) => data ?? const [],

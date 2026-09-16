@@ -11,6 +11,10 @@ class _IncomeTypeSection extends ConsumerWidget {
     final incomeTypesAsync = ref.watch(incomeTypeOptionsProvider);
     final incomeType = ref.watch(selectedIncomeTypeProvider);
 
+    if (incomeTypesAsync.isLoading) {
+      return const _IncomeTypeShimmer();
+    }
+
     return _MasterDataOptionSelector(
       options: incomeTypesAsync.valueOrNull ?? const <MasterDataItemEntity>[],
       selected: incomeType,

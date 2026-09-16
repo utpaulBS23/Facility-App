@@ -17,6 +17,15 @@ extension _TravelExpenseStartTypeToWire on TravelExpenseStartType {
   };
 }
 
+extension _TravelExpenseStartTypeFromWire on String? {
+  TravelExpenseStartType? get toStartType => switch (this) {
+    'facility' => TravelExpenseStartType.facility,
+    'home' => TravelExpenseStartType.home,
+    'office' => TravelExpenseStartType.office,
+    _ => null,
+  };
+}
+
 extension CreateTravelExpenseRequestEntityToModel
     on CreateTravelExpenseRequestEntity {
   CreateTravelExpenseRequestModel toModel() => CreateTravelExpenseRequestModel(
@@ -41,6 +50,8 @@ extension TravelExpenseModelToEntity on TravelExpenseModel {
   TravelExpenseEntity toEntity() => TravelExpenseEntity(
     id: id,
     facilityName: facilityName ?? '',
+    startType: startType.toStartType,
+    startId: startId,
     userName: userName ?? '',
     purpose: purpose ?? '',
     claimedDistanceKm: claimedDistanceKm ?? 0,

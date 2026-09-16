@@ -21,6 +21,8 @@ final class FacilityExpenseRepositoryImpl extends FacilityExpenseRepository {
       final response = await remote.getFacilityExpenses(
         partnerId: filter.partnerId!,
         facilityId: filter.facilityId,
+        from: filter.from,
+        to: filter.to,
         page: filter.page,
         perPage: filter.pageSize,
       );
