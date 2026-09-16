@@ -104,6 +104,13 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
+    icon: Assets.icons.task,
+    label: _trainingLabel,
+    subtitle: _trainingSubtitle,
+    route: Routes.trainingSessions,
+    permissions: [UserPermission.trainingSessionView],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.viewIcon,
     label: _profitReportLabel,
     subtitle: _profitReportSubtitle,
@@ -174,6 +181,10 @@ String _expenseEntrySubtitle(BuildContext context) =>
 String _claimExpenseLabel(BuildContext context) => context.locale.claimExpense;
 String _claimExpenseSubtitle(BuildContext context) =>
     context.locale.claimExpenseSubtitle;
+
+String _trainingLabel(BuildContext context) => context.locale.trainingSessions;
+String _trainingSubtitle(BuildContext context) =>
+    context.locale.trainingSessionsSubtitle;
 
 String _notificationLabel(BuildContext context) => context.locale.notification;
 String _notificationSubtitle(BuildContext context) =>
