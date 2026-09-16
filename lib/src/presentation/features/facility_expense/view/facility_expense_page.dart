@@ -90,12 +90,6 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
 
   void _onAddExpense() => context.pushNamed(Routes.addFacilityExpense);
 
-  String? _facilityName(List<AccessibleFacilityEntity> facilities, int? id) =>
-      facilities
-          .cast<AccessibleFacilityEntity?>()
-          .firstWhere((f) => f?.id == id, orElse: () => null)
-          ?.name;
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -103,9 +97,6 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
     final listAsync = ref.watch(facilityExpensesListProvider);
-    final selectedFacilityName = _facilityId == null
-        ? context.locale.all
-        : _facilityName(facilities, _facilityId);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -117,12 +108,26 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
             onChanged: _onMonthChanged,
           ),
           if (facilities.length > 1)
-            TextButton.icon(
+            IconButton(
               onPressed: () => _onPickFacility(facilities),
-              icon: const Icon(Icons.apartment_outlined, size: 18),
-              label: Text(
-                selectedFacilityName ?? context.locale.all,
-                overflow: TextOverflow.ellipsis,
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(Icons.apartment_outlined, size: 18),
+                  if (_facilityId != null)
+                    Positioned(
+                      top: -2,
+                      right: -2,
+                      child: Container(
+                        width: spacing.s8,
+                        height: spacing.s8,
+                        decoration: BoxDecoration(
+                          color: context.color.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           Gap(spacing.s8),
