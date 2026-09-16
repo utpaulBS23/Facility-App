@@ -11,6 +11,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';

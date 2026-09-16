@@ -7,6 +7,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/task_detail_provider.dart';
@@ -187,7 +188,8 @@ class _TaskDetailBody extends StatelessWidget {
             Gap(spacing.s4),
             _InfoRow(
               icon: Icons.access_time_outlined,
-              label: '${context.locale.due}: ${task.dueTime}',
+              label:
+                  '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
             ),
             Gap(spacing.s16),
             Text(

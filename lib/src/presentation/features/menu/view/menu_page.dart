@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/extensions/app_localization.dart';
@@ -73,6 +74,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                   name: menuState.name,
                   email: menuState.email,
                   partnerName: menuState.partnerName,
+                  avatarUrl: menuState.avatarUrl,
                   appVersion: menuState.appVersion,
                   buildNumber: menuState.buildNumber,
                 ),
@@ -92,7 +94,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       // without scrolling, the trailing items (notification,
                       // logout) overflow off-screen.
                       return Padding(
-                        padding: .symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: context.dimensions.padding.p16,
                         ),
                         child: SingleChildScrollView(
