@@ -67,6 +67,8 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.taskId,
     this.facilityId,
     this.facilityName,
+    this.startType,
+    this.startId,
     this.userName,
     this.purpose,
     this.calculatedDistanceKm,
@@ -84,6 +86,8 @@ class TravelExpenseModel with TravelExpenseModelMappable {
   final int? taskId;
   final int? facilityId;
   final String? facilityName;
+  final String? startType;
+  final int? startId;
   final String? userName;
   final String? purpose;
   final double? calculatedDistanceKm;
