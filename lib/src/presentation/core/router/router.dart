@@ -68,6 +68,8 @@ import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/request_details_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
+import '../../features/training/view/training_session_details_page.dart';
+import '../../features/training/view/training_sessions_page.dart';
 
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
@@ -88,6 +90,7 @@ part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
 part 'parts/stock_routes.dart';
+part 'parts/training_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -182,6 +185,7 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._trainingRoutes(ref),
       _shellRoutes(ref),
     ],
   );

@@ -131,6 +131,11 @@ SupplyRepository supplyRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+TrainingRepository trainingRepository(Ref ref) {
+  return TrainingRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 PushNotificationRepository pushNotificationRepository(Ref ref) {
   return PushNotificationRepositoryImpl(
     notificationService: ref.read(pushNotificationServiceProvider),

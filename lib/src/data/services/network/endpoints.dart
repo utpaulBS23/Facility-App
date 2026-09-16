@@ -170,6 +170,12 @@ class Endpoints {
   static const String masterDataItems =
       '/partners/{partnerId}/master-data/items';
 
+  /// Training Management
+  static const String trainingSessions =
+      '/partners/{partnerId}/training-sessions';
+  static const String trainingSessionDetails =
+      '/partners/{partnerId}/training-sessions/{trainingSessionId}';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';
