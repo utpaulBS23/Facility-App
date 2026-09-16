@@ -15,13 +15,14 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
+import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/facility_expenses_list_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/expense_body.dart';
-part '../widgets/expense_facility_selector.dart';
 part '../widgets/expense_list_card.dart';
 part '../widgets/expense_list_section.dart';
 part '../widgets/expense_stats_row.dart';
@@ -38,10 +39,13 @@ class FacilityExpensePage extends ConsumerStatefulWidget {
 
 class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
   int? _facilityId;
+  late String _selectedMonth;
 
   @override
   void initState() {
     super.initState();
+    final now = DateTime.now();
+    _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
     WidgetsBinding.instance.addPostFrameCallback((_) => _selectDefaultFacility());
   }
 
@@ -62,9 +66,10 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ExpenseFacilityPickerSheet(
+      builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _facilityId,
+        includeAllOption: true,
       ),
     );
     if (result == null || result.facilityId == _facilityId) return;
@@ -72,8 +77,15 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
     _fetch();
   }
 
+  void _onMonthChanged(String month) {
+    setState(() => _selectedMonth = month);
+    _fetch();
+  }
+
   void _fetch() {
-    ref.read(facilityExpensesListProvider.notifier).fetch(facilityId: _facilityId);
+    ref
+        .read(facilityExpensesListProvider.notifier)
+        .fetch(facilityId: _facilityId, month: _selectedMonth);
   }
 
   void _onAddExpense() => context.pushNamed(Routes.addFacilityExpense);
@@ -86,19 +98,38 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
 
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
     final listAsync = ref.watch(facilityExpensesListProvider);
+    final selectedFacilityName = _facilityId == null
+        ? context.locale.all
+        : _facilityName(facilities, _facilityId);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.expenseTracking),
+      appBar: DetailAppBar(
+        title: context.locale.expenseTracking,
+        actions: [
+          MonthFilterButton(
+            selectedMonth: _selectedMonth,
+            onChanged: _onMonthChanged,
+          ),
+          if (facilities.length > 1)
+            TextButton.icon(
+              onPressed: () => _onPickFacility(facilities),
+              icon: const Icon(Icons.apartment_outlined, size: 18),
+              label: Text(
+                selectedFacilityName ?? context.locale.all,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          Gap(spacing.s8),
+        ],
+      ),
       body: _FacilityExpenseBody(
         listAsync: listAsync,
-        facilityName: _facilityName(facilities, _facilityId),
-        canPickFacility: facilities.length > 1,
-        onPickFacility: () => _onPickFacility(facilities),
         onAddExpense: _onAddExpense,
         onRetry: _fetch,
       ),

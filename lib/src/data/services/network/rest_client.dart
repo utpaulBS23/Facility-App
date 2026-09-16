@@ -407,6 +407,8 @@ abstract class RestClient {
   Future<HttpResponse> getFacilityExpenses({
     @Path('partnerId') required int partnerId,
     @Query('facility_id') int? facilityId,
+    @Query('from') String? from,
+    @Query('to') String? to,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
