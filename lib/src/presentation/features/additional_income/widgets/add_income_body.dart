@@ -53,7 +53,9 @@ class _AddIncomeBody extends ConsumerWidget {
     final isProductSell = incomeEntryType == IncomeEntryType.productSell;
     final incomeType = ref.watch(selectedIncomeTypeProvider);
     final facilityEnabled = isProductSell || incomeType != null;
+    final facilitySelected = ref.watch(selectedIncomeFacilityProvider) != null;
     final productSelected = ref.watch(selectedProductProvider) != null;
+    final amountEnabled = isProductSell ? productSelected : facilitySelected;
 
     return Form(
       key: formKey,
@@ -129,12 +131,11 @@ class _AddIncomeBody extends ConsumerWidget {
                 : context.locale.amountBdt,
             hint: context.locale.enterAmount,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            enabled: !isProductSell || productSelected,
+            enabled: amountEnabled,
             errorText: amountError ? context.locale.fieldRequired : null,
             onChanged: (_) => onAmountChanged(),
           ),
           if (!isProductSell) ...[
-            Gap(spacing.s16),
             AppTextField.description(
               controller: descriptionController,
               label: '${context.locale.comments} (${context.locale.optional})',
