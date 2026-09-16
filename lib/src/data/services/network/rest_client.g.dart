@@ -250,7 +250,7 @@ class _RestClient implements RestClient {
   @override
   Future<HttpResponse<dynamic>> getShiftSlots({
     required int partnerId,
-    required int facilityId,
+    int? facilityId,
     required String date,
   }) async {
     final _extra = <String, dynamic>{};
@@ -258,6 +258,7 @@ class _RestClient implements RestClient {
       r'facility_id': facilityId,
       r'date': date,
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(

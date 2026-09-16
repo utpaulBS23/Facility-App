@@ -80,6 +80,16 @@ extension SlotSummaryModelToEntity on SlotSummaryModel {
   );
 }
 
+extension ShiftSlotsFacilityModelToEntity on ShiftSlotsFacilityModel {
+  SlotsFacilityEntity toEntity() => SlotsFacilityEntity(
+    facilityId: facilityId,
+    facilityName: facilityName ?? '',
+    slots: slots.map((s) => s.toEntity()).toList(),
+    isPrimary: isPrimary,
+    isRelief: isRelief,
+  );
+}
+
 extension ShiftSlotsDataModelToEntity on ShiftSlotsDataModel {
   ShiftSlotsEntity toEntity() => ShiftSlotsEntity(
     date: date ?? '',
@@ -88,5 +98,6 @@ extension ShiftSlotsDataModelToEntity on ShiftSlotsDataModel {
     activeSlot: activeSlot?.toEntity(),
     slots: slots.map((s) => s.toEntity()).toList(),
     summary: summary?.toEntity(),
+    facilities: facilities.map((f) => f.toEntity()).toList(),
   );
 }

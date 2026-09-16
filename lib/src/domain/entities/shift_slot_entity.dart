@@ -202,7 +202,23 @@ class SlotSummaryEntity {
   final int totalCheckedIn;
 }
 
-/// One facility's shift slots for one day.
+class SlotsFacilityEntity {
+  const SlotsFacilityEntity({
+    required this.facilityId,
+    required this.facilityName,
+    this.slots = const [],
+    required this.isPrimary,
+    required this.isRelief,
+  });
+
+  final int facilityId;
+  final String facilityName;
+  final List<ShiftSlotEntity> slots;
+  final bool isPrimary;
+  final bool isRelief;
+}
+
+/// All facilities' shift slots for one day.
 class ShiftSlotsEntity {
   const ShiftSlotsEntity({
     required this.date,
@@ -211,6 +227,7 @@ class ShiftSlotsEntity {
     this.activeSlot,
     this.slots = const [],
     this.summary,
+    this.facilities = const [],
   });
 
   final String date;
@@ -219,6 +236,7 @@ class ShiftSlotsEntity {
   final ActiveSlotEntity? activeSlot;
   final List<ShiftSlotEntity> slots;
   final SlotSummaryEntity? summary;
+  final List<SlotsFacilityEntity> facilities;
 
   /// Slots the caller is personally assigned to — the attendant experience.
   List<ShiftSlotEntity> get mySlots => [

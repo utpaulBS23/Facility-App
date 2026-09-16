@@ -53,7 +53,7 @@ abstract class RestClient {
   @GET(Endpoints.shiftSlots)
   Future<HttpResponse> getShiftSlots({
     @Path('partnerId') required int partnerId,
-    @Query('facility_id') required int facilityId,
+    @Query('facility_id') int? facilityId,
     @Query('date') required String date,
   });
 

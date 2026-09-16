@@ -39,7 +39,7 @@ final class ShiftRepositoryImpl extends ShiftRepository {
   @override
   Future<Result<ShiftSlotsEntity, Failure>> getShiftSlots({
     required int partnerId,
-    required int facilityId,
+    int? facilityId,
     required String date,
   }) async {
     final result = await asyncGuard(() async {
