@@ -71,6 +71,16 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.travelExpenseDetails,
+      name: Routes.travelExpenseDetails,
+      pageBuilder: (context, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return MaterialPage(
+          child: TravelExpenseDetailsPage(travelExpenseId: id),
+        );
+      },
+    ),
+    GoRoute(
       path: Routes.notification,
       name: Routes.notification,
       pageBuilder: (context, state) {

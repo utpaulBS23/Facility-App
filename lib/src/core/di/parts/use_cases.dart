@@ -446,6 +446,14 @@ GetTravelExpensesUseCase getTravelExpensesUseCase(Ref ref) {
 }
 
 @riverpod
+GetTravelExpenseDetailUseCase getTravelExpenseDetailUseCase(Ref ref) {
+  return GetTravelExpenseDetailUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
   return GetMasterDataItemsUseCase(
     ref.read(masterDataRepositoryProvider),
@@ -593,6 +601,22 @@ GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
 }
 
 @riverpod
+CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
+  return CreateSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
+  return GetItemCatalogUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetSupplyRequestSummaryUseCase getSupplyRequestSummaryUseCase(Ref ref) {
   return GetSupplyRequestSummaryUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
@@ -604,6 +628,24 @@ GetSupplyRequestSummaryUseCase getSupplyRequestSummaryUseCase(Ref ref) {
 GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
   return GetSupplyRequestDetailsUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+/// Training Management UseCases
+
+@riverpod
+GetTrainingSessionsUseCase getTrainingSessionsUseCase(Ref ref) {
+  return GetTrainingSessionsUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTrainingSessionDetailsUseCase getTrainingSessionDetailsUseCase(Ref ref) {
+  return GetTrainingSessionDetailsUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }

@@ -16,17 +16,17 @@ class _FacilitySection extends ConsumerWidget {
     WidgetRef ref,
     List<AccessibleFacilityEntity> facilities,
   ) async {
-    final result = await showModalBottomSheet<({int? facilityId})>(
+    final result = await showModalBottomSheet<int?>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ExpenseFacilityPickerSheet(
+      builder: (_) => _FacilityListSheet(
         facilities: facilities,
         selectedFacilityId: ref.read(selectedExpenseFacilityProvider),
       ),
     );
-    if (result?.facilityId == null) return;
-    ref.read(selectedExpenseFacilityProvider.notifier).state = result!.facilityId;
+    if (result == null) return;
+    ref.read(selectedExpenseFacilityProvider.notifier).select(result);
     onSelected();
   }
 

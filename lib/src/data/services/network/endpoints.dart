@@ -160,6 +160,8 @@ class Endpoints {
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
 
   static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
+  static const String travelExpenseDetail =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}';
 
   /// Master Data — generic partner/global configurable dropdown items,
   /// filtered by `category` (e.g. `transportMode`).
@@ -181,6 +183,12 @@ class Endpoints {
   /// Product Sale Entries (Extra Collection — Product Sell)
   static const String productSaleEntries =
       '/partners/{partnerId}/product-sale-entries';
+
+  /// Training Management
+  static const String trainingSessions =
+      '/partners/{partnerId}/training-sessions';
+  static const String trainingSessionDetails =
+      '/partners/{partnerId}/training-sessions/{trainingSessionId}';
 
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';

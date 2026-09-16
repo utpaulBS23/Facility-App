@@ -138,6 +138,13 @@ AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
+  return FacilityExpenseRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 ProductCatalogRepository productCatalogRepository(Ref ref) {
   return ProductCatalogRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
@@ -159,10 +166,8 @@ ProductSaleEntryRepository productSaleEntryRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
-  return FacilityExpenseRepositoryImpl(
-    remote: ref.read(restClientServiceProvider),
-  );
+TrainingRepository trainingRepository(Ref ref) {
+  return TrainingRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

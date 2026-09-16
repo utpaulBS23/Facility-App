@@ -78,14 +78,9 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
 
   void _onAddIncome() => context.pushNamed(Routes.addAdditionalIncome);
 
-  String? _facilityName(List<AccessibleFacilityEntity> facilities, int? id) =>
-      facilities
-          .cast<AccessibleFacilityEntity?>()
-          .firstWhere((f) => f?.id == id, orElse: () => null)
-          ?.name;
-
   @override
   Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
@@ -93,12 +88,37 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.extraCollection),
+      appBar: DetailAppBar(
+        title: context.locale.extraCollection,
+        actions: [
+          if (facilities.length > 1)
+            IconButton(
+              onPressed: () => _onPickFacility(facilities),
+              icon: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(Icons.apartment_outlined, size: 18),
+                  if (_facilityId != null)
+                    Positioned(
+                      top: -2,
+                      right: -2,
+                      child: Container(
+                        width: spacing.s8,
+                        height: spacing.s8,
+                        decoration: BoxDecoration(
+                          color: context.color.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          Gap(spacing.s8),
+        ],
+      ),
       body: _AdditionalIncomeBody(
         listAsync: listAsync,
-        facilityName: _facilityName(facilities, _facilityId),
-        canPickFacility: facilities.length > 1,
-        onPickFacility: () => _onPickFacility(facilities),
         onRetry: _fetch,
       ),
       floatingActionButton: PermissionGate(
