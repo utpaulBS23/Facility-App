@@ -28,119 +28,126 @@ class _TravelExpenseListCard extends StatelessWidget {
     final dateLabel = _submittedDateLabel();
     final timeLabel = _submittedTimeLabel();
 
-    return Container(
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: color.onPrimary,
-        border: Border.all(color: color.borderSubtle),
-        borderRadius: BorderRadius.circular(radius.r12),
+    return GestureDetector(
+      onTap: () => context.pushNamed(
+        Routes.travelExpenseDetails,
+        pathParameters: {'id': '${expense.id}'},
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  expense.facilityName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.bodyLarge.copyWith(
-                    color: color.text.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Gap(spacing.s8),
-              StatusDotTag(
-                dotColor: expense.status.statusColor(context),
-                label: expense.status.localizedName(context),
-              ),
-            ],
-          ),
-          if (dateLabel != null || timeLabel != null) ...[
-            Gap(spacing.s8),
+      child: Container(
+        padding: EdgeInsets.all(spacing.s16),
+        decoration: BoxDecoration(
+          color: color.onPrimary,
+          border: Border.all(color: color.borderSubtle),
+          borderRadius: BorderRadius.circular(radius.r12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Row(
               children: [
-                if (dateLabel != null) ...[
-                  Icon(
-                    Icons.calendar_today_outlined,
-                    size: spacing.s14,
-                    color: color.text.secondary,
-                  ),
-                  Gap(spacing.s4),
-                  Text(
-                    dateLabel,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: color.text.secondary,
+                Expanded(
+                  child: Text(
+                    expense.facilityName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textStyle.bodyLarge.copyWith(
+                      color: color.text.primary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-                if (timeLabel != null) ...[
-                  Gap(spacing.s12),
-                  Icon(
-                    Icons.access_time_rounded,
-                    size: spacing.s14,
-                    color: color.text.secondary,
-                  ),
-                  Gap(spacing.s4),
-                  Text(
-                    timeLabel,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: color.text.secondary,
-                    ),
-                  ),
-                ],
+                ),
+                Gap(spacing.s8),
+                StatusDotTag(
+                  dotColor: expense.status.statusColor(context),
+                  label: expense.status.localizedName(context),
+                ),
               ],
             ),
-          ],
-          Gap(spacing.s12),
-          Row(
-            children: [
-              Icon(
-                Icons.person_outline_rounded,
-                size: spacing.s14,
-                color: color.text.secondary,
+            if (dateLabel != null || timeLabel != null) ...[
+              Gap(spacing.s8),
+              Row(
+                children: [
+                  if (dateLabel != null) ...[
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: spacing.s14,
+                      color: color.text.secondary,
+                    ),
+                    Gap(spacing.s4),
+                    Text(
+                      dateLabel,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: color.text.secondary,
+                      ),
+                    ),
+                  ],
+                  if (timeLabel != null) ...[
+                    Gap(spacing.s12),
+                    Icon(
+                      Icons.access_time_rounded,
+                      size: spacing.s14,
+                      color: color.text.secondary,
+                    ),
+                    Gap(spacing.s4),
+                    Text(
+                      timeLabel,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: color.text.secondary,
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              Gap(spacing.s4),
-              Expanded(
-                child: Text(
-                  expense.userName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: color.text.secondary,
+            ],
+            Gap(spacing.s12),
+            Row(
+              children: [
+                Icon(
+                  Icons.person_outline_rounded,
+                  size: spacing.s14,
+                  color: color.text.secondary,
+                ),
+                Gap(spacing.s4),
+                Expanded(
+                  child: Text(
+                    expense.userName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: color.text.secondary,
+                    ),
                   ),
+                ),
+              ],
+            ),
+            if (expense.purpose.isNotEmpty ||
+                _transportModeLabel.isNotEmpty) ...[
+              Gap(spacing.s4),
+              Text(
+                [
+                  if (expense.purpose.isNotEmpty) expense.purpose,
+                  if (_transportModeLabel.isNotEmpty)
+                    if (expense.claimedDistanceKm > 0)
+                      '${expense.claimedDistanceKm} km · $_transportModeLabel'
+                    else
+                      _transportModeLabel,
+                ].join(' • '),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textStyle.bodySmall.copyWith(
+                  color: color.text.secondary,
                 ),
               ),
             ],
-          ),
-          if (expense.purpose.isNotEmpty || _transportModeLabel.isNotEmpty) ...[
-            Gap(spacing.s4),
+            Divider(height: spacing.s24, color: color.borderSubtle),
             Text(
-              [
-                if (expense.purpose.isNotEmpty) expense.purpose,
-                if (_transportModeLabel.isNotEmpty)
-                  if (expense.claimedDistanceKm > 0)
-                    '${expense.claimedDistanceKm} km · $_transportModeLabel'
-                  else
-                    _transportModeLabel,
-              ].join(' • '),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.textStyle.bodySmall.copyWith(
-                color: color.text.secondary,
+              '৳${expense.claimedAmount.toStringAsFixed(0)}',
+              style: context.textStyle.headlineSmall.copyWith(
+                color: color.primary,
               ),
             ),
           ],
-          Divider(height: spacing.s24, color: color.borderSubtle),
-          Text(
-            '৳${expense.claimedAmount.toStringAsFixed(0)}',
-            style: context.textStyle.headlineSmall.copyWith(
-                            color: color.primary,
-            )
-          ),
-        ],
+        ),
       ),
     );
   }

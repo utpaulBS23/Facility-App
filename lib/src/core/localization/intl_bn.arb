@@ -759,6 +759,12 @@
   "missingLabel": "ঘাটতি",
   "complaintReasonLabel": "অভিযোগের কারণ",
   "complaintReasonHint": "সমস্যা বা অভিযোগের কারণ বর্ণনা করুন...",
-  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)"
+  "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)",
+  "transportationDetails": "যাতায়াতের বিবরণ",
+  "travelInformation": "ভ্রমণ তথ্য",
+  "travelExpenseCaption": "ভ্রমণ খরচ",
+  "dateAndTime": "তারিখ ও সময়",
+  "purposeLabel": "উদ্দেশ্য",
+  "office": "অফিস"
 }
 

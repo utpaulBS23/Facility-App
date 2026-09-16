@@ -145,6 +145,8 @@ class TravelExpenseEntity {
   const TravelExpenseEntity({
     required this.id,
     required this.facilityName,
+    required this.startType,
+    required this.startId,
     required this.userName,
     required this.purpose,
     required this.claimedDistanceKm,
@@ -157,6 +159,11 @@ class TravelExpenseEntity {
 
   final int id;
   final String facilityName;
+
+  /// Where the trip started — `null` when the API didn't resolve one (e.g.
+  /// an older claim). See [TravelExpenseStartType] for the type/id pairing.
+  final TravelExpenseStartType? startType;
+  final int? startId;
   final String userName;
   final String purpose;
 
