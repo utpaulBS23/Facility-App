@@ -215,10 +215,10 @@
   "selectTransportMode": "মাধ্যম নির্বাচন করুন",
   "addAnotherModeLeg": "আরেকটি মাধ্যম/ধাপ যোগ করুন",
   "distanceKm": "দূরত্ব (কিমি)",
+  "price": "মূল্য",
   "purpose": "উদ্দেশ্য (ঐচ্ছিক)",
   "purposeHint": "যেমন সাপ্তাহিক ভিজিট",
-  "amountOverrideOptional": "পরিমাণ ওভাররাইড (ঐচ্ছিক)",
-  "saveEntry": "এন্ট্রি সংরক্ষণ করুন",
+  "saveEntry": "ক্লেইম",
   "selectFacility": "ফ্যাসিলিটি নির্বাচন করুন",
   "travelExpenseSubmittedSuccess": "ভ্রমণ খরচ সফলভাবে জমা হয়েছে",
   "attendanceDetails": "উপস্থিতির বিবরণ",
@@ -767,6 +767,12 @@
   "autoApproved": "স্বয়ংক্রিয় অনুমোদিত",
   "myLeave": "আমার ছুটি",
   "leaveApprovals": "ছুটি অনুমোদন",
-  "otpSentSuccessfully": "ওটিপি সফলভাবে পাঠানো হয়েছে"
+  "otpSentSuccessfully": "ওটিপি সফলভাবে পাঠানো হয়েছে",
+  "transportationDetails": "যাতায়াতের বিবরণ",
+  "travelInformation": "ভ্রমণ তথ্য",
+  "travelExpenseCaption": "ভ্রমণ খরচ",
+  "dateAndTime": "তারিখ ও সময়",
+  "purposeLabel": "উদ্দেশ্য",
+  "office": "অফিস"
 }
 
