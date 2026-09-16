@@ -31,8 +31,8 @@ final List<MenuItemConfig> menuItemConfigs = [
     icon: Assets.icons.customerIcon,
     label: _profileLabel,
     subtitle: _profileSubtitle,
-    route: Routes.profile,
-    permissions: [UserPermission.profileUpdate],
+    route: Routes.myProfile,
+    permissions: [UserPermission.profileView, UserPermission.profileUpdate],
   ),
   MenuItemConfig(
     icon: Assets.icons.attendance,

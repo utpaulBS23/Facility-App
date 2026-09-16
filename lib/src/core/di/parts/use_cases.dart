@@ -432,8 +432,16 @@ RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
 @riverpod
 CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
   return CreateTravelExpenseUseCase(
-    ref.read(travelExpenseRepositoryProvider),
-    ref.read(authenticationRepositoryProvider),
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTravelExpensesUseCase getTravelExpensesUseCase(Ref ref) {
+  return GetTravelExpensesUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
 
@@ -539,6 +547,22 @@ InstallApkUseCase installApkUseCase(Ref ref) {
 @riverpod
 GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
   return GetSupplyRequestsUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
+  return CreateSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetItemCatalogUseCase getItemCatalogUseCase(Ref ref) {
+  return GetItemCatalogUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
@@ -694,3 +718,30 @@ SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
+
+@riverpod
+SendForgotPasswordOtpUseCase sendForgotPasswordOtpUseCase(Ref ref) {
+  return SendForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+VerifyForgotPasswordOtpUseCase verifyForgotPasswordOtpUseCase(Ref ref) {
+  return VerifyForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+ResetForgotPasswordUseCase resetForgotPasswordUseCase(Ref ref) {
+  return ResetForgotPasswordUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+GetProfileUseCase getProfileUseCase(Ref ref) {
+  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+UpdateProfileUseCase updateProfileUseCase(Ref ref) {
+  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+

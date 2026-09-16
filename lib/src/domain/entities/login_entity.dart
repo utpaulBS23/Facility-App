@@ -111,6 +111,7 @@ class UserEntity extends LoginEntity {
     this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
+    this.profileImage,
   });
 
   final int id;
@@ -122,6 +123,7 @@ class UserEntity extends LoginEntity {
   final String? supervisor;
   final int permissionVersion;
   final bool twoFactorEnabled;
+  final String? profileImage;
 }
 
 class LoginRequestEntity extends LoginEntity {
@@ -150,6 +152,7 @@ class LoginResponseEntity extends LoginEntity {
     required this.accessibleFacilities,
     this.partner,
     this.trackingSettings,
+    required this.weekStartDay,
   });
 
   final UserEntity user;
@@ -158,4 +161,5 @@ class LoginResponseEntity extends LoginEntity {
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
   final TrackingSettingsEntity? trackingSettings;
+  final int weekStartDay;
 }

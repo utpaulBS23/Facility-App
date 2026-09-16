@@ -16,11 +16,12 @@ import '../../../domain/entities/visit_entity.dart';
 import '../../../domain/entities/leave/leave_request_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';
-import '../../features/authentication/forgot_password/view/email_verification_page.dart';
+import '../../features/authentication/forgot_password/view/otp_verification_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
-import '../../features/app_update/view/app_update_checker.dart';
+// import '../../features/app_update/view/app_update_checker.dart';
+import '../widgets/session_expired_dialog.dart';
 import '../../features/additional_income/view/additional_income_page.dart';
 import '../../features/check_in_out/view/selfie_camera_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
@@ -28,6 +29,7 @@ import '../../features/dashboard/view/dashboard_page.dart';
 import '../../features/door_lock/view/door_lock_page.dart';
 import '../../features/claim_expense/view/claim_expense_page.dart';
 import '../../features/facility_expense/view/add_facility_expense_page.dart';
+import '../../features/claim_expense/view/travel_expenses_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
 import '../../features/facility_map/view/facility_map_page.dart';
 import '../../features/gateway_management/view/gateway_management_page.dart';
@@ -36,7 +38,6 @@ import '../../features/leave/view/leave_details_page.dart';
 import '../../features/leave/view/leave_requests_page.dart';
 import '../../features/leave/view/leave_submitted_page.dart';
 import '../../features/leave/view/select_attendant_page.dart';
-import '../../features/leave/view/select_shift_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/menu/widgets/menu_item_config.dart';
 import '../../features/my_attendance/view/my_attendance_page.dart';
@@ -44,6 +45,7 @@ import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/notification/view/notification_page.dart';
 import '../../features/occurrence/view/occurrence_checklist_page.dart';
 import '../../features/occurrence/view/occurrence_page.dart';
+import '../../features/profile/view/my_profile_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
@@ -68,6 +70,7 @@ import '../../../domain/entities/supply/supply_request_entity.dart';
 import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/request_details_page.dart';
+import '../../features/supply/view/new_request_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
 
 import '../widgets/app_startup/startup_widget.dart';
@@ -89,6 +92,7 @@ part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
 part 'parts/stock_routes.dart';
+part 'parts/profile_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -183,6 +187,7 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._profileRoutes(ref),
       _shellRoutes(ref),
     ],
   );
