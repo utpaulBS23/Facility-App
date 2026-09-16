@@ -371,6 +371,7 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
               Gap(spacing.s16),
               AppTextField.text(
                 controller: _purposeController,
+                label: context.locale.purpose,
                 hint: '${context.locale.purpose} — ${context.locale.purposeHint}',
               ),
               Gap(spacing.s24),
@@ -533,11 +534,11 @@ class _ReadOnlyField extends StatelessWidget {
         Text(label, style: context.textStyle.labelLarge),
         Gap(spacing.s8),
         Container(
-          height: 52,
+          height: spacing.s56,
           decoration: BoxDecoration(
             color: context.color.subtle,
             border: Border.all(color: context.color.borderSubtle),
-            borderRadius: BorderRadius.circular(radius.r6),
+            borderRadius: BorderRadius.circular(radius.r12),
           ),
           padding: EdgeInsets.symmetric(horizontal: spacing.s16),
           alignment: Alignment.centerLeft,
