@@ -53,7 +53,7 @@ abstract class RestClient {
   @GET(Endpoints.shiftSlots)
   Future<HttpResponse> getShiftSlots({
     @Path('partnerId') required int partnerId,
-    @Query('facility_id') required int facilityId,
+    @Query('facility_id') int? facilityId,
     @Query('date') required String date,
   });
 
@@ -171,6 +171,8 @@ abstract class RestClient {
     @Query('month') required String month,
     @Query('facility_id') int? facilityId,
     @Query('user_id') int? userId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.myAttendance)
@@ -202,6 +204,8 @@ abstract class RestClient {
     @Query('status') String? status,
     @Query('facility_id') int? facilityId,
     @Query('assigned_to') int? assignedTo,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.visitDetail)
@@ -342,6 +346,8 @@ abstract class RestClient {
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,
     @Query('category') required String category,
+    @Query('per_page') int? perPage,
+    @Query('include_inactive') bool? includeInactive,
   });
 
   @GET(Endpoints.additionalIncomes)

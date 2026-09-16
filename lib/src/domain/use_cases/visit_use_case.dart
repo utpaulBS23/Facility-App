@@ -18,6 +18,8 @@ final class GetMyVisitsUseCase {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? page,
+    int? perPage,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -28,6 +30,8 @@ final class GetMyVisitsUseCase {
       status: status,
       facilityId: facilityId,
       assignedTo: assignedTo,
+      page: page,
+      perPage: perPage,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),

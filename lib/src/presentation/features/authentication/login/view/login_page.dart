@@ -10,6 +10,7 @@ import '../../../../../core/base/base.dart';
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../core/extensions/failure_localization.dart';
 import '../../../../../domain/entities/login_entity.dart';
+import '../../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/router/shell_tab_config.dart';
 import '../../../../core/theme/theme.dart';
@@ -18,11 +19,10 @@ import '../../../../core/widgets/application_logo.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../core/widgets/text/typography.dart';
 import '../../../../features/authentication/login/riverpod/login_provider.dart';
-import '../widgets/language_switcher.dart';
 
 part '../widgets/login_form.dart';
-
 part '../widgets/login_form_footer.dart';
+part '../widgets/login_language_toggle.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -98,13 +98,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // WHY: Language switcher flips side based on text direction so it
-              // always appears at the trailing edge of the screen.
               Align(
                 alignment: Directionality.of(context) == TextDirection.ltr
                     ? Alignment.centerRight
                     : Alignment.centerLeft,
-                child: const LanguageSwitcherWidget(),
+                child: _LoginLanguageToggle(),
               ),
               Gap(dimensions.spacing.s40),
               ApplicationLogo(height: dimensions.spacing.s80),

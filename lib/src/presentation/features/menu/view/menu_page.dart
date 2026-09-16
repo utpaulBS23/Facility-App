@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/base/base.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -14,11 +15,13 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/text/typography.dart';
 import '../riverpod/menu_provider.dart';
 import '../widgets/menu_item_config.dart';
 
 part '../widgets/menu_header_section.dart';
 part '../widgets/menu_item_tile.dart';
+part '../widgets/menu_language_toggle.dart';
 part '../widgets/menu_logout_tile.dart';
 
 class MenuPage extends ConsumerStatefulWidget {

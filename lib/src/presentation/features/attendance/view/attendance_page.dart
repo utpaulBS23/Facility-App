@@ -140,7 +140,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
           ),
           if (facilities.length > 1)
             _FilterIconButton(
-              icon: Icons.location_on_outlined,
+              icon: Icons.apartment_outlined,
               hasActiveFilter: hasFacilityFilter,
               onPressed: () => _pickFacility(facilities),
             ),

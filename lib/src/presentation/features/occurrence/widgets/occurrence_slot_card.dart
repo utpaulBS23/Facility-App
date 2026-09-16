@@ -3,12 +3,10 @@ part of '../view/occurrence_page.dart';
 class _OccurrenceSlotCard extends StatelessWidget {
   const _OccurrenceSlotCard({
     required this.occurrence,
-    required this.onReassign,
     required this.onChecklist,
   });
 
   final TaskOccurrenceEntity occurrence;
-  final VoidCallback onReassign;
   final VoidCallback onChecklist;
 
   @override
@@ -81,11 +79,22 @@ class _OccurrenceSlotCard extends StatelessWidget {
                       Gap(spacing.s12),
                       Row(
                         children: [
-                          _OccurrenceAssigneeAvatar(name: occurrence.assignedToName),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: context.color.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: Icon(
+                              Icons.person_rounded,
+                              size: 12,
+                              color: context.color.onPrimary,
+                            ),
+                          ),
                           Gap(spacing.s8),
                           Expanded(
                             child: BodySmallText(
-                              occurrence.assignedToName ?? context.locale.unassigned,
+                              occurrence.submittedByName ?? '—',
                               color: context.color.text.secondary,
                             ),
                           ),
@@ -122,17 +131,9 @@ class _OccurrenceSlotCard extends StatelessWidget {
                         spacing: spacing.s8,
                         runSpacing: spacing.s8,
                         children: [
-                          PermissionGate(
-                            permissions: const [UserPermission.taskOccurrenceAssign],
-                            child: OutlinedButton.icon(
-                              onPressed: onReassign,
-                              icon: const Icon(Icons.swap_horiz_rounded, size: 16),
-                              label: Text(context.locale.occurrenceReassign),
-                            ),
-                          ),
                           if (items != null)
                             PermissionGate(
-                              permissions: const [UserPermission.taskOccurrenceSubmit],
+                              permissions: const [UserPermission.taskOccurrenceView],
                               child: OutlinedButton.icon(
                                 onPressed: onChecklist,
                                 icon: const Icon(Icons.checklist_rounded, size: 16),
@@ -149,34 +150,6 @@ class _OccurrenceSlotCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _OccurrenceAssigneeAvatar extends StatelessWidget {
-  const _OccurrenceAssigneeAvatar({required this.name});
-
-  final String? name;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final initial = name?.trim().isNotEmpty == true ? name!.trim()[0].toUpperCase() : null;
-
-    return Container(
-      width: spacing.s24,
-      height: spacing.s24,
-      decoration: BoxDecoration(
-        color: initial != null ? context.color.brandSubtle : context.color.subtle,
-        shape: BoxShape.circle,
-      ),
-      alignment: .center,
-      child: initial != null
-          ? Text(
-              initial,
-              style: context.textStyle.bodySmall.copyWith(color: context.color.primary),
-            )
-          : Icon(Icons.person_outline, size: 14, color: context.color.icon),
     );
   }
 }
