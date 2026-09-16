@@ -773,6 +773,26 @@
   "travelExpenseCaption": "ভ্রমণ খরচ",
   "dateAndTime": "তারিখ ও সময়",
   "purposeLabel": "উদ্দেশ্য",
-  "office": "অফিস"
+  "office": "অফিস",
+  "comments": "মন্তব্য",
+  "commentsHint": "অতিরিক্ত তথ্য লিখুন",
+  "amountBdt": "পরিমাণ (BDT)",
+  "enterAmount": "পরিমাণ লিখুন",
+  "addIncome": "আয় যোগ করুন",
+  "selectIncomeType": "আয়ের ধরন নির্বাচন করুন",
+  "noIncomeFound": "কোনো আয় পাওয়া যায়নি",
+  "approvedTotal": "অনুমোদিত মোট",
+  "totalSubmissions": "মোট জমা",
+  "submittedBy": "জমাদানকারী",
+  "incomeSubmittedSuccess": "আয়ের এন্ট্রি সফলভাবে জমা হয়েছে",
+  "rentAndOthers": "ভাড়া ও অন্যান্য",
+  "productSell": "পণ্য বিক্রয়",
+  "selectProduct": "পণ্য নির্বাচন করুন",
+  "entryDate": "এন্ট্রি তারিখ",
+  "unitsSold": "বিক্রিত একক",
+  "enterUnitsSold": "বিক্রিত একক লিখুন",
+  "unitPriceBdt": "একক মূল্য (BDT)",
+  "availableStock": "উপলব্ধ স্টক",
+  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি"
 }
 

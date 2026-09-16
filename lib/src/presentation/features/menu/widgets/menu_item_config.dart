@@ -46,11 +46,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _extraCollectionLabel,
     subtitle: _extraCollectionSubtitle,
     route: Routes.additionalIncome,
-    permissions: [
-      UserPermission.additionalIncomeCreate,
-      UserPermission.additionalIncomeApprove,
-      UserPermission.additionalIncomeView,
-    ],
+    permissions: [UserPermission.additionalIncomeView],
   ),
   MenuItemConfig(
     icon: Assets.icons.route,

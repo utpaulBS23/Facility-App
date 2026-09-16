@@ -36,6 +36,13 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.addAdditionalIncome,
+      name: Routes.addAdditionalIncome,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: AddAdditionalIncomePage());
+      },
+    ),
+    GoRoute(
       path: Routes.facilityExpense,
       name: Routes.facilityExpense,
       pageBuilder: (context, state) {
