@@ -632,6 +632,24 @@ GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
   );
 }
 
+/// Training Management UseCases
+
+@riverpod
+GetTrainingSessionsUseCase getTrainingSessionsUseCase(Ref ref) {
+  return GetTrainingSessionsUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTrainingSessionDetailsUseCase getTrainingSessionDetailsUseCase(Ref ref) {
+  return GetTrainingSessionDetailsUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
 @riverpod
 ApproveSupplyRequestUseCase approveSupplyRequestUseCase(Ref ref) {
   return ApproveSupplyRequestUseCase(
