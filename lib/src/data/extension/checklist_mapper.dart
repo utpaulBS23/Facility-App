@@ -39,6 +39,9 @@ extension ChecklistItemSaveResponseModelToEntity
     booleanValue: data.booleanValue,
     pointsAwarded: data.pointsAwarded ?? 0,
     hasProof: data.hasProof ?? false,
+    media: media != null
+        ? ChecklistItemMediaEntity(id: media!.id, url: media!.url)
+        : null,
   );
 }
 

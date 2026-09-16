@@ -79,6 +79,16 @@ class ChecklistIssueEntity {
   final String status;
 }
 
+class ChecklistItemMediaEntity {
+  const ChecklistItemMediaEntity({
+    required this.id,
+    this.url,
+  });
+
+  final int id;
+  final String? url;
+}
+
 class ChecklistItemSaveResponseEntity {
   const ChecklistItemSaveResponseEntity({
     required this.id,
@@ -86,6 +96,7 @@ class ChecklistItemSaveResponseEntity {
     required this.hasProof,
     this.ratingValue,
     this.booleanValue,
+    this.media,
   });
 
   final int id;
@@ -93,5 +104,6 @@ class ChecklistItemSaveResponseEntity {
   final bool hasProof;
   final int? ratingValue;
   final bool? booleanValue;
+  final ChecklistItemMediaEntity? media;
 }
 

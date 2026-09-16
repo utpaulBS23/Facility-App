@@ -25,6 +25,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    Log.info('_ShiftSlotsView initState: facilityId=${widget.facilityId}');
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchSlots(_selectedDate),
     );
@@ -45,10 +46,12 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   }
 
   void _fetchSlots(DateTime date) {
+    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    Log.info('_fetchSlots: date=$formattedDate, facilityId=${widget.facilityId}');
     ref
         .read(shiftSlotsProvider.notifier)
         .fetch(
-          date: DateFormat('yyyy-MM-dd').format(date),
+          date: formattedDate,
           facilityId: widget.facilityId,
         );
   }

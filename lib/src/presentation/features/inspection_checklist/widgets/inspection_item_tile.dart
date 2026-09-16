@@ -70,9 +70,11 @@ class _InspectionItemTile extends ConsumerWidget {
         ? state.starAnswers.containsKey(item.id)
         : state.yesNoAnswers.containsKey(item.id);
     final hasProofSelected = state.proofImages[item.id]?.isNotEmpty == true;
+    final hasProof = hasProofSelected || item.hasProof;
+    final photoRequired = item.proofPolicy == ChecklistProofPolicy.always;
     final showSubmitButton = _isAlwaysProof && !isConfirmed;
     final canSubmit =
-        hasAnswer && (hasProofSelected || item.hasProof) && !isSaving;
+        hasAnswer && (!photoRequired || hasProof) && !isSaving;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),
@@ -105,19 +107,38 @@ class _InspectionItemTile extends ConsumerWidget {
                     ],
                   ],
                 ),
+                if (item.proofPolicy == ChecklistProofPolicy.always) ...[
+                  SizedBox(height: spacing.s4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 12,
+                        color: context.color.warning,
+                      ),
+                      SizedBox(width: spacing.s4),
+                      Expanded(
+                        child: BodySmallText(
+                          context.locale.photoRequired,
+                          color: context.color.warning,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 SizedBox(height: spacing.s8),
                 if (item.answerType == ChecklistAnswerType.star)
                   _StarRatingRow(
                     currentRating: state.starAnswers[item.id] ?? 0,
                     maxPoints: item.maxPoints,
-                    onStarTap: (isSaving || isConfirmed)
+                    onStarTap: isSaving
                         ? (_) {}
                         : (r) => _onStarTap(ref, r),
                   )
                 else
                   _YesNoRow(
                     answer: state.yesNoAnswers[item.id],
-                    onAnswer: (isSaving || isConfirmed)
+                    onAnswer: isSaving
                         ? (_) {}
                         : (v) => _onYesNo(ref, v),
                   ),
@@ -129,9 +150,10 @@ class _InspectionItemTile extends ConsumerWidget {
                   SizedBox(height: spacing.s8),
                   _ProofAttachmentRow(
                     proofImages: state.proofImages[item.id] ?? [],
+                    mediaUrl: state.mediaUrls[item.id],
                     hasExistingProof: item.hasProof,
-                    onAttach: isConfirmed ? null : () => _onPickProof(ref),
-                    onRemove: isConfirmed ? null : () => _onRemoveProof(ref),
+                    onAttach: () => _onPickProof(ref),
+                    onRemove: () => _onRemoveProof(ref),
                   ),
                 ],
                 if (!isResolved && showSubmitButton) ...[
@@ -273,20 +295,24 @@ class _YesNoRow extends StatelessWidget {
 
     return Row(
       children: [
-        _YesNoChip(
-          label: context.locale.yes,
-          icon: Icons.check_rounded,
-          isSelected: answer == true,
-          selectedColor: context.color.success,
-          onTap: () => onAnswer(true),
+        Expanded(
+          child: _YesNoChip(
+            label: context.locale.yes,
+            icon: Icons.check_rounded,
+            isSelected: answer == true,
+            selectedColor: context.color.success,
+            onTap: () => onAnswer(true),
+          ),
         ),
         SizedBox(width: spacing.s8),
-        _YesNoChip(
-          label: context.locale.no,
-          icon: Icons.close_rounded,
-          isSelected: answer == false,
-          selectedColor: context.color.error,
-          onTap: () => onAnswer(false),
+        Expanded(
+          child: _YesNoChip(
+            label: context.locale.no,
+            icon: Icons.close_rounded,
+            isSelected: answer == false,
+            selectedColor: context.color.error,
+            onTap: () => onAnswer(false),
+          ),
         ),
       ],
     );
@@ -350,9 +376,11 @@ class _ProofAttachmentRow extends StatelessWidget {
     required this.hasExistingProof,
     required this.onAttach,
     required this.onRemove,
+    this.mediaUrl,
   });
 
   final List<XFile> proofImages;
+  final String? mediaUrl;
   final bool hasExistingProof;
   final VoidCallback? onAttach;
   final VoidCallback? onRemove;
@@ -361,7 +389,7 @@ class _ProofAttachmentRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final hasAnyProof = hasExistingProof || proofImages.isNotEmpty;
+    final hasAnyProof = hasExistingProof || proofImages.isNotEmpty || mediaUrl != null;
     final isLocked = onAttach == null && onRemove == null;
 
     if (!hasAnyProof && !isLocked) {
@@ -378,7 +406,7 @@ class _ProofAttachmentRow extends StatelessWidget {
       );
     }
 
-    // Show photo preview (either from proofImages or existing)
+    // Show photo preview (mediaUrl takes priority, then local proofImages, then existing)
     if (hasAnyProof) {
       final photoPath = proofImages.isNotEmpty ? proofImages.last.path : null;
       return Column(
@@ -400,17 +428,35 @@ class _ProofAttachmentRow extends StatelessWidget {
                         height: 180,
                         fit: BoxFit.cover,
                       )
-                    : Container(
-                        width: 180,
-                        height: 180,
-                        color: context.color.subtle,
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.check_circle_outline,
-                          size: 32,
-                          color: context.color.success,
-                        ),
-                      ),
+                    : mediaUrl != null
+                        ? Image.network(
+                            mediaUrl!,
+                            width: 180,
+                            height: 180,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 180,
+                              height: 180,
+                              color: context.color.subtle,
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.image_not_supported_outlined,
+                                size: 32,
+                                color: context.color.error,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: 180,
+                            height: 180,
+                            color: context.color.subtle,
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.check_circle_outline,
+                              size: 32,
+                              color: context.color.success,
+                            ),
+                          ),
               ),
             ),
           ),
