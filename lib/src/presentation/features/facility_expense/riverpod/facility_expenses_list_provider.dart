@@ -11,6 +11,7 @@ part 'facility_expenses_list_provider.g.dart';
 @riverpod
 class FacilityExpensesList extends _$FacilityExpensesList {
   int? _selectedFacilityId;
+  String? _selectedMonth;
 
   @override
   Future<FacilityExpenseListResultEntity> build() async {
@@ -20,17 +21,34 @@ class FacilityExpensesList extends _$FacilityExpensesList {
       }
     });
 
-    return fetch(facilityId: _selectedFacilityId);
+    return fetch(facilityId: _selectedFacilityId, month: _selectedMonth);
   }
 
-  Future<FacilityExpenseListResultEntity> fetch({int? facilityId}) async {
+  /// [month] is `yyyy-MM`; mapped to an inclusive `from`/`to` date range
+  /// covering that whole month.
+  Future<FacilityExpenseListResultEntity> fetch({
+    int? facilityId,
+    String? month,
+  }) async {
     _selectedFacilityId = facilityId;
+    _selectedMonth = month;
 
     state = const AsyncValue.loading();
 
+    String? from;
+    String? to;
+    if (month != null) {
+      final parts = month.split('-');
+      final year = int.parse(parts[0]);
+      final monthNum = int.parse(parts[1]);
+      final lastDay = DateTime(year, monthNum + 1, 0).day;
+      from = '$month-01';
+      to = '$month-${lastDay.toString().padLeft(2, '0')}';
+    }
+
     final result = await ref
         .read(getFacilityExpensesUseCaseProvider)
-        .call(FacilityExpenseFilter(facilityId: facilityId));
+        .call(FacilityExpenseFilter(facilityId: facilityId, from: from, to: to));
 
     return switch (result) {
       Success(:final data) =>

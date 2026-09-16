@@ -3,17 +3,11 @@ part of '../view/facility_expense_page.dart';
 class _FacilityExpenseBody extends StatelessWidget {
   const _FacilityExpenseBody({
     required this.listAsync,
-    required this.facilityName,
-    required this.canPickFacility,
-    required this.onPickFacility,
     required this.onAddExpense,
     required this.onRetry,
   });
 
   final AsyncValue<FacilityExpenseListResultEntity> listAsync;
-  final String? facilityName;
-  final bool canPickFacility;
-  final VoidCallback onPickFacility;
   final VoidCallback onAddExpense;
   final VoidCallback onRetry;
 
@@ -35,11 +29,6 @@ class _FacilityExpenseBody extends StatelessWidget {
               _ => const _ExpenseStatsRowShimmer(),
             },
             Gap(spacing.s16),
-            _ExpenseFacilitySelector(
-              facilityName: facilityName,
-              onTap: canPickFacility ? onPickFacility : null,
-            ),
-            Gap(spacing.s16),
             PermissionGate(
               permissions: const [UserPermission.facilityExpenseCreate],
               child: FilledButton(
@@ -47,7 +36,7 @@ class _FacilityExpenseBody extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: context.color.primary,
                   foregroundColor: context.color.onPrimary,
-                  minimumSize: Size.fromHeight(spacing.s56),
+                  minimumSize: const Size.fromHeight(44),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(
                       context.dimensions.radius.r12,
