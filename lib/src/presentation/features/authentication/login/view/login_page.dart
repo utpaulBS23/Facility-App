@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/base/base.dart';
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../core/extensions/failure_localization.dart';
-import '../../../../../core/gen/l10n/app_localizations.dart';
 import '../../../../../domain/entities/login_entity.dart';
 import '../../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../../core/router/routes.dart';
