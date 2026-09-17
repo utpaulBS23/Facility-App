@@ -25,6 +25,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   bool? _booleanValue;
   XFile? _photo;
   bool _isSaving = false;
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -55,7 +56,11 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   }
 
   Future<void> _pickPhoto() async {
-    final photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+    final photo = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+      preferredCameraDevice: CameraDevice.rear,
+    );
     if (photo == null || !mounted) return;
     setState(() => _photo = photo);
   }
@@ -90,9 +95,15 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
     if (!mounted) return;
     setState(() => _isSaving = false);
     result.when(
-      success: (_) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.occurrenceAnswerSaved)),
-      ),
+      success: (_) {
+        if (!widget.item.needsProof) {
+          setState(() {
+            _ratingValue = null;
+            _booleanValue = null;
+            _textController.clear();
+          });
+        }
+      },
       error: (error) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error.localized(context))),
       ),
@@ -102,64 +113,93 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   Widget _photoSection(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final hasSavedPhoto =
-        widget.item.isAnswered && (widget.item.response?.hasProof ?? false);
+    final hasPhoto = _photo != null || (widget.item.isAnswered && (widget.item.response?.hasProof ?? false));
+    final mediaUrl = widget.item.response?.mediaUrl;
 
-    if (!hasSavedPhoto) {
+    if (!hasPhoto) {
       return SizedBox(
         width: double.infinity,
-        child: OutlinedButton.icon(
+        child: FilledButton.icon(
           onPressed: _isSaving || widget.readOnly ? null : _pickPhoto,
-          icon: Icon(
-            _photo != null ? Icons.check_circle_outline : Icons.camera_alt_outlined,
-            size: 18,
-            color: _photo != null ? context.color.success : null,
-          ),
-          label: Text(
-            _photo != null ? context.locale.changePhoto : context.locale.takePhoto,
-          ),
+          icon: const Icon(Icons.camera_alt_outlined, size: 18),
+          label: Text(context.locale.attachPhoto),
         ),
       );
     }
 
-    final mediaUrl = widget.item.response?.mediaUrl;
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(radius.r10),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: context.color.borderSubtle),
+              borderRadius: .circular(radius.r10),
+            ),
+            padding: EdgeInsets.all(spacing.s8),
+            child: ClipRRect(
+              borderRadius: .circular(radius.r6),
+              child: _photo != null
+                  ? Image.file(
+                      File(_photo!.path),
+                      width: 180,
+                      height: 180,
+                      fit: .cover,
+                    )
+                  : (mediaUrl != null
+                      ? Image.network(
+                          mediaUrl,
+                          width: 180,
+                          height: 180,
+                          fit: .cover,
+                          errorBuilder: (_, _, _) => _placeholderPhoto(context),
+                        )
+                      : _placeholderPhoto(context)),
+            ),
+          ),
         ),
-        padding: EdgeInsets.all(spacing.s8),
-        child: ClipRRect(
-          borderRadius: .circular(radius.r6),
-          child: _photo != null
-              ? Image.file(
-                  File(_photo!.path),
-                  width: 180,
-                  height: 180,
-                  fit: .cover,
-                )
-              : mediaUrl != null
-              ? Image.network(
-                  mediaUrl,
-                  width: 180,
-                  height: 180,
-                  fit: .cover,
-                  errorBuilder: (_, _, _) => _lockedPhotoChip(context),
-                )
-              : _lockedPhotoChip(context),
+        Gap(spacing.s8),
+        Center(
+          child: Wrap(
+            spacing: spacing.s16,
+            runSpacing: spacing.s8,
+            children: [
+              OutlinedButton.icon(
+                onPressed: _isSaving || widget.readOnly ? null : () => setState(() => _isEditing = !_isEditing),
+                icon: const Icon(Icons.edit_outlined, size: 14),
+                label: Text(context.locale.edit),
+              ),
+              if (_photo != null)
+                OutlinedButton.icon(
+                  onPressed: _isSaving || widget.readOnly ? null : () => setState(() => _photo = null),
+                  icon: const Icon(Icons.delete_outline_rounded, size: 14),
+                  label: Text(context.locale.remove),
+                ),
+            ],
+          ),
         ),
-      ),
+        if (_isEditing) ...[
+          Gap(spacing.s8),
+          Center(
+            child: FilledButton.icon(
+              onPressed: _isSaving || widget.readOnly ? null : _pickPhoto,
+              icon: const Icon(Icons.camera_alt_outlined, size: 18),
+              label: Text(context.locale.camera),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
-  Widget _lockedPhotoChip(BuildContext context) {
+  Widget _placeholderPhoto(BuildContext context) {
     return Container(
       width: 180,
       height: 180,
       color: context.color.subtle,
       alignment: Alignment.center,
-      child: Icon(Icons.check_circle_outline, size: 32, color: context.color.success),
+      child: Icon(Icons.image_not_supported_outlined, size: 32, color: context.color.text.secondary),
     );
   }
 
@@ -172,7 +212,10 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
           final value = i + 1;
           final isFilled = (_ratingValue ?? 0) >= value;
           return GestureDetector(
-            onTap: isDisabled ? null : () => setState(() => _ratingValue = value),
+            onTap: isDisabled ? null : () {
+              setState(() => _ratingValue = value);
+              if (!widget.item.needsProof) _save();
+            },
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: .only(right: spacing.s8),
@@ -193,7 +236,10 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.check_rounded,
               isSelected: _booleanValue == true,
               color: context.color.success,
-              onTap: isDisabled ? null : () => setState(() => _booleanValue = true),
+              onTap: isDisabled ? null : () {
+                setState(() => _booleanValue = true);
+                if (!widget.item.needsProof) _save();
+              },
             ),
           ),
           Gap(spacing.s8),
@@ -203,7 +249,10 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.close_rounded,
               isSelected: _booleanValue == false,
               color: context.color.error,
-              onTap: isDisabled ? null : () => setState(() => _booleanValue = false),
+              onTap: isDisabled ? null : () {
+                setState(() => _booleanValue = false);
+                if (!widget.item.needsProof) _save();
+              },
             ),
           ),
         ],
@@ -244,21 +293,61 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
             children: [
               _ItemOrderBadge(order: widget.order),
               Gap(spacing.s12),
-              Expanded(child: LabelLargeText(widget.item.label)),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(child: LabelLargeText(widget.item.label)),
+                    if (widget.item.isRequired == false) ...[
+                      Gap(spacing.s4),
+                      Text(
+                        context.locale.optional,
+                        style: context.textStyle.bodySmall.copyWith(
+                          color: context.color.text.secondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
               if (isAnswered)
                 Icon(Icons.check_circle_rounded, size: 18, color: context.color.primary),
             ],
           ),
           Gap(spacing.s12),
+          if (widget.item.proofPolicy?.toLowerCase() == 'photo_required' &&
+              _photo == null &&
+              !(widget.item.isAnswered && (widget.item.response?.hasProof ?? false))) ...[
+            Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 12,
+                  color: context.color.warning,
+                ),
+                Gap(spacing.s4),
+                Expanded(
+                  child: Text(
+                    context.locale.photoRequired,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.warning,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Gap(spacing.s8),
+          ],
           _answerInput(context),
-          Gap(spacing.s16),
-          _photoSection(context),
-          if (!isAnswered) ...[
+          if (widget.item.needsProof) ...[
+            Gap(spacing.s16),
+            _photoSection(context),
+          ],
+          if (((!isAnswered && _hasAnswer) || _photo != null) && widget.item.needsProof) ...[
             Gap(spacing.s16),
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: _isSaving || !_hasAnswer || widget.readOnly
+                onPressed: _isSaving || !_hasAnswer || widget.readOnly || _photo == null
                     ? null
                     : _save,
                 style: FilledButton.styleFrom(
@@ -274,7 +363,11 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
                           color: context.color.onPrimary,
                         ),
                       )
-                    : Text(context.locale.occurrenceSaveAnswer),
+                    : Text(
+                        widget.item.needsProof
+                            ? context.locale.submitProof
+                            : context.locale.occurrenceSaveAnswer,
+                      ),
               ),
             ),
           ],

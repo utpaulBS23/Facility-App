@@ -59,18 +59,33 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
     showTaskProofBottomSheet(
       context,
       onSubmit: (photoPath, alt) async {
-        final media = await ref
-            .read(taskDetailProvider.notifier)
-            .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
-        if (media == null) return;
-        // WHY: replaceTask syncs list using completedTask which carries media from detail state;
-        // appendMedia is skipped to avoid partial-failure desync if complete subsequently fails.
-        final completedTask = await ref
-            .read(taskDetailProvider.notifier)
-            .completeIssue(issueId: task.id);
-        if (completedTask == null) return;
-        ref.read(tasksProvider.notifier).replaceTask(completedTask);
-        await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
+        try {
+          final media = await ref
+              .read(taskDetailProvider.notifier)
+              .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
+          if (media == null) {
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
+            return;
+          }
+          // WHY: replaceTask syncs list using completedTask which carries media from detail state;
+          // appendMedia is skipped to avoid partial-failure desync if complete subsequently fails.
+          final completedTask = await ref
+              .read(taskDetailProvider.notifier)
+              .completeIssue(issueId: task.id);
+          if (completedTask == null) {
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
+            return;
+          }
+          ref.read(tasksProvider.notifier).replaceTask(completedTask);
+          await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
+          if (!context.mounted) return;
+          Navigator.of(context).pop();
+        } catch (_) {
+          if (!context.mounted) return;
+          Navigator.of(context).pop();
+        }
       },
     );
   }
@@ -181,6 +196,7 @@ class _TaskDetailBody extends StatelessWidget {
               task.title,
               style: context.textStyle.labelLarge.copyWith(
                 color: context.color.text.primary,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Gap(spacing.s8),
@@ -235,9 +251,12 @@ class _TaskDetailBody extends StatelessWidget {
             ],
             if (_canStart) ...[
               Gap(spacing.s24),
-              FilledButton(
-                onPressed: () => onStartTap(task),
-                child: Text(context.locale.startTask),
+              PermissionGate(
+                permissions: [UserPermission.issueResolve],
+                child: FilledButton(
+                  onPressed: () => onStartTap(task),
+                  child: Text(context.locale.startTask),
+                ),
               ),
             ],
             if (_canComplete)

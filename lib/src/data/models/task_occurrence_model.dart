@@ -22,6 +22,7 @@ class TaskOccurrenceChecklistAnswerModel
     this.booleanValue,
     this.textValue,
     this.hasProof,
+    this.photo,
   });
 
   final int? id;
@@ -41,6 +42,8 @@ class TaskOccurrenceChecklistAnswerModel
   @MappableField(key: 'has_photo')
   final bool? hasProof;
 
+  final TaskOccurrenceMediaModel? photo;
+
   static const fromJson = TaskOccurrenceChecklistAnswerModelMapper.fromJson;
 }
 
@@ -52,6 +55,9 @@ class TaskOccurrenceChecklistItemModel
     this.label,
     this.responseType,
     this.response,
+    this.proofRequiredOnComplete,
+    this.proofPolicy,
+    this.isRequired,
   });
 
   final int id;
@@ -61,6 +67,15 @@ class TaskOccurrenceChecklistItemModel
   final String? responseType;
 
   final TaskOccurrenceChecklistAnswerModel? response;
+
+  @MappableField(key: 'proof_required_on_complete')
+  final bool? proofRequiredOnComplete;
+
+  @MappableField(key: 'proof_policy')
+  final String? proofPolicy;
+
+  @MappableField(key: 'is_required')
+  final bool? isRequired;
 
   static const fromJson = TaskOccurrenceChecklistItemModelMapper.fromJson;
 }

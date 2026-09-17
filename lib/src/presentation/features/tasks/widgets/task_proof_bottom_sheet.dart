@@ -43,7 +43,13 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final photo = await _picker.pickImage(source: source, imageQuality: 85);
+    final photo = await _picker.pickImage(
+      source: source,
+      imageQuality: 85,
+      preferredCameraDevice: source == ImageSource.camera
+          ? CameraDevice.rear
+          : CameraDevice.front,
+    );
     if (photo == null) return;
     setState(() => _image = photo);
   }
