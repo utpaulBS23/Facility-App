@@ -84,7 +84,7 @@ class _AddExpenseBody extends ConsumerWidget {
                           ? context.color.error
                           : context.color.borderSubtle,
                     ),
-                    borderRadius: BorderRadius.circular(radius.r6),
+                    borderRadius: BorderRadius.circular(radius.r12),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,7 +130,7 @@ class _AddExpenseBody extends ConsumerWidget {
                       ? context.color.error
                       : context.color.borderSubtle,
                 ),
-                borderRadius: BorderRadius.circular(radius.r6),
+                borderRadius: BorderRadius.circular(radius.r12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -165,7 +165,7 @@ class _AddExpenseBody extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: context.color.onPrimary,
                 border: Border.all(color: context.color.borderSubtle),
-                borderRadius: BorderRadius.circular(radius.r6),
+                borderRadius: BorderRadius.circular(radius.r12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
