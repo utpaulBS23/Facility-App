@@ -39,7 +39,7 @@ class _ShiftSlotsList extends StatelessWidget {
 
     if (activeSlot != null) {
       if (canApplyLeave) {
-        items.add(Gap(spacing.s12));
+        items.add(Gap(spacing.s16));
       }
       items.add(_ActiveSlotBanner(activeSlot: activeSlot));
     }
@@ -48,7 +48,7 @@ class _ShiftSlotsList extends StatelessWidget {
       for (var fIdx = 0; fIdx < facilities.length; fIdx++) {
         final fac = facilities[fIdx];
         if (fIdx > 0 || canApplyLeave || activeSlot != null) {
-          items.add(Gap(spacing.s12));
+          items.add(Gap(spacing.s16));
         }
         items.add(
           Padding(
