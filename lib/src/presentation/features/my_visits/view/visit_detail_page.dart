@@ -216,7 +216,7 @@ class _DetailBody extends StatelessWidget {
         else ...[
           if (checkInState.shareError != null) ...[
             Container(
-              padding: EdgeInsets.all(spacing.s12),
+              padding: EdgeInsets.all(spacing.s16),
               decoration: BoxDecoration(
                 color: context.color.error.withValues(alpha: 0.1),
                 border: Border.all(color: context.color.error),
@@ -243,7 +243,7 @@ class _DetailBody extends StatelessWidget {
                 ],
               ),
             ),
-            Gap(spacing.s12),
+            Gap(spacing.s16),
           ],
           FilledButton(
             onPressed: onCheckIn,
@@ -366,7 +366,7 @@ class _CheckInBody extends StatelessWidget {
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
           Container(
-            padding: EdgeInsets.all(spacing.s12),
+            padding: EdgeInsets.all(spacing.s16),
             decoration: BoxDecoration(
               color: context.color.error.withValues(alpha: 0.1),
               border: Border.all(color: context.color.error),
@@ -382,7 +382,7 @@ class _CheckInBody extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Gap(spacing.s12),
+          Gap(spacing.s16),
         ],
         FilledButton(
           onPressed: checkInState.isCheckingIn ? null : onConfirm,
