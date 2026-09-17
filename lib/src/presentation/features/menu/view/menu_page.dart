@@ -120,6 +120,20 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                           if (hasAnyPermission(item.permissions, permissions))
                             item,
                       ];
+                      // WHY split here, not appended after the loop: Door
+                      // Control has no permission-gated MenuItemConfig entry
+                      // (it needs an async facility fetch, not a static
+                      // route push), so it's placed by splitting the list at
+                      // Expense Entry instead of being a config row.
+                      final expenseEntryIndex = visibleItems.indexWhere(
+                        (item) => item.route == Routes.facilityExpense,
+                      );
+                      final beforeTravelExpense = expenseEntryIndex == -1
+                          ? visibleItems
+                          : visibleItems.sublist(0, expenseEntryIndex);
+                      final fromTravelExpense = expenseEntryIndex == -1
+                          ? const <MenuItemConfig>[]
+                          : visibleItems.sublist(expenseEntryIndex);
 
                       // WHY SingleChildScrollView, not a bare Column: the
                       // menu list has grown past what fits on smaller
@@ -133,18 +147,19 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              for (var i = 0; i < visibleItems.length; i++)
-                                _MenuItemTile(
-                                  config: visibleItems[i],
-                                  showDivider: i < visibleItems.length - 1,
-                                ),
+                              for (final item in beforeTravelExpense)
+                                _MenuItemTile(config: item),
+                              _DoorControlTile(onTap: _onDoorControlTap),
+                              for (final item in fromTravelExpense)
+                                _MenuItemTile(config: item),
                               // WHY: notificationView permission not yet
                               // granted by backend — show unconditionally
-                              // until it is.
+                              // until it is. It's always the last config
+                              // row, so it's the only one with no divider.
                               _MenuItemTile(
                                 config: notificationMenuItemConfig,
+                                showDivider: false,
                               ),
-                              _DoorControlTile(onTap: _onDoorControlTap),
                               Gap(spacing.s8),
                               _LogoutTile(onTap: _onLogoutTap),
                             ],
