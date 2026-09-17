@@ -13,7 +13,7 @@ class _TaskCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onStartTap;
   final VoidCallback onCompleteTap;
-  final VoidCallback? onAssignTap;
+  final ValueChanged<TaskEntity>? onAssignTap;
 
   bool get _isCompleted =>
       task.status == TaskStatus.resolved || task.status == TaskStatus.closed;
@@ -104,6 +104,7 @@ class _TaskCard extends StatelessWidget {
                                     : TextDecoration.none,
                                 decorationColor: context.color.text.secondary,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Gap(spacing.s8),
@@ -157,7 +158,7 @@ class _TaskCard extends StatelessWidget {
                             PermissionGate(
                               permissions: [UserPermission.issueUpdate],
                               child: OutlinedButton.icon(
-                                onPressed: onAssignTap,
+                                onPressed: onAssignTap != null ? () => onAssignTap!(task) : null,
                                 icon: const Icon(
                                   Icons.person_add_outlined,
                                   size: 16,

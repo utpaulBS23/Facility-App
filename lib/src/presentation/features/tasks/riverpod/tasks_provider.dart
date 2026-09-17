@@ -149,10 +149,10 @@ class Tasks extends _$Tasks {
 }
 
 @riverpod
-Future<List<PartnerStaffEntity>> taskAssignableStaff(Ref ref) async {
+Future<List<PartnerStaffEntity>> taskAssignableStaff(Ref ref, {int? facilityId}) async {
   final result = await ref
       .read(getPartnerStaffUseCaseProvider)
-      .call();
+      .call(facilityId: facilityId);
   return switch (result) {
     Success(:final data) => data ?? [],
     Error() => [],

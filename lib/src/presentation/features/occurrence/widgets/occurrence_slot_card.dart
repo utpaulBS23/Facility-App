@@ -52,7 +52,14 @@ class _OccurrenceSlotCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: .start,
                               children: [
-                                LabelLargeText(occurrence.scheduleTitle),
+                                Text(
+                                  occurrence.scheduleTitle,
+                                  style: context.textStyle.labelLarge.copyWith(
+                                    color: context.color.text.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 Gap(spacing.s4),
                                 Row(
                                   children: [

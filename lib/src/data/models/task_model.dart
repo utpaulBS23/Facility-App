@@ -50,6 +50,7 @@ class TaskModel with TaskModelMappable {
     required this.id,
     required this.title,
     this.description,
+    this.facilityId,
     this.facilityName,
     this.dueAt,
     required this.issueStatus,
@@ -61,6 +62,9 @@ class TaskModel with TaskModelMappable {
   final int id;
   final String title;
   final String? description;
+
+  @MappableField(key: 'facility_id')
+  final int? facilityId;
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
@@ -81,6 +85,7 @@ class TaskModel with TaskModelMappable {
     id: id,
     title: title,
     description: description ?? '',
+    facilityId: facilityId,
     location: facilityName ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),
@@ -129,6 +134,7 @@ class TaskDetailModel with TaskDetailModelMappable {
     required this.id,
     required this.title,
     this.description,
+    this.facilityId,
     this.facilityName,
     this.dueAt,
     required this.issueStatus,
@@ -141,6 +147,9 @@ class TaskDetailModel with TaskDetailModelMappable {
   final int id;
   final String title;
   final String? description;
+
+  @MappableField(key: 'facility_id')
+  final int? facilityId;
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
@@ -165,6 +174,7 @@ class TaskDetailModel with TaskDetailModelMappable {
     id: id,
     title: title,
     description: description ?? '',
+    facilityId: facilityId,
     location: facilityName ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),

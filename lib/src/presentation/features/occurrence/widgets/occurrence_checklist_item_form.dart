@@ -296,7 +296,16 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               Expanded(
                 child: Row(
                   children: [
-                    Expanded(child: LabelLargeText(widget.item.label)),
+                    Expanded(
+                      child: Text(
+                        widget.item.label,
+                        style: context.textStyle.labelLarge.copyWith(
+                          color: context.color.text.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     if (widget.item.isRequired == false) ...[
                       Gap(spacing.s4),
                       Text(
