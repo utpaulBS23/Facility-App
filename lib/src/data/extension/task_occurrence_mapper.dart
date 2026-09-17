@@ -21,7 +21,10 @@ extension TaskOccurrenceChecklistItemModelToEntity
         id: id,
         label: label ?? '',
         responseType: taskOccurrenceChecklistResponseTypeFromKey(responseType),
-        response: response?.toEntity(),
+        response: response?.toEntity(mediaUrl: response?.photo?.url),
+        proofRequiredOnComplete: proofRequiredOnComplete ?? false,
+        proofPolicy: proofPolicy,
+        isRequired: isRequired,
       );
 }
 

@@ -6,12 +6,14 @@ class _TaskCard extends StatelessWidget {
     required this.onTap,
     required this.onStartTap,
     required this.onCompleteTap,
+    this.onAssignTap,
   });
 
   final TaskEntity task;
   final VoidCallback onTap;
   final VoidCallback onStartTap;
   final VoidCallback onCompleteTap;
+  final VoidCallback? onAssignTap;
 
   bool get _isCompleted =>
       task.status == TaskStatus.resolved || task.status == TaskStatus.closed;
@@ -96,6 +98,7 @@ class _TaskCard extends StatelessWidget {
                               task.title,
                               style: context.textStyle.labelLarge.copyWith(
                                 color: titleColor,
+                                fontWeight: FontWeight.bold,
                                 decoration: _isCompleted
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
@@ -151,20 +154,36 @@ class _TaskCard extends StatelessWidget {
                           spacing: spacing.s8,
                           runSpacing: spacing.s8,
                           children: [
-                            if (_canStart)
-                              OutlinedButton.icon(
-                                onPressed: onStartTap,
+                            PermissionGate(
+                              permissions: [UserPermission.issueUpdate],
+                              child: OutlinedButton.icon(
+                                onPressed: onAssignTap,
                                 icon: const Icon(
-                                  Icons.play_arrow_rounded,
+                                  Icons.person_add_outlined,
                                   size: 16,
                                 ),
-                                label: Text(context.locale.start),
+                                label: Text(context.locale.assignStaff),
+                              ),
+                            ),
+                            if (_canStart)
+                              PermissionGate(
+                                permissions: [UserPermission.issueResolve],
+                                child: OutlinedButton.icon(
+                                  onPressed: onStartTap,
+                                  icon: const Icon(
+                                    Icons.play_arrow_rounded,
+                                    size: 16,
+                                  ),
+                                  label: Text(context.locale.start),
+                                ),
                               ),
                             if (_canComplete)
                               PermissionGate(
                                 permissions: [UserPermission.issueResolve],
                                 child: OutlinedButton.icon(
-                                  onPressed: onCompleteTap,
+                                  onPressed: (task.proofRequiredOnComplete && task.media.isEmpty)
+                                      ? null
+                                      : onCompleteTap,
                                   icon: const Icon(
                                     Icons.check_rounded,
                                     size: 16,

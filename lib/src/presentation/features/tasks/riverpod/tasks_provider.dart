@@ -1,10 +1,14 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/task_entity.dart';
 
 part 'tasks_provider.g.dart';
@@ -142,4 +146,16 @@ class Tasks extends _$Tasks {
           .toList(),
     );
   }
+}
+
+@riverpod
+Future<List<PartnerStaffEntity>> taskAssignableStaff(Ref ref) async {
+  final result = await ref
+      .read(getPartnerStaffUseCaseProvider)
+      .call();
+  return switch (result) {
+    Success(:final data) => data ?? [],
+    Error() => [],
+    _ => [],
+  };
 }
