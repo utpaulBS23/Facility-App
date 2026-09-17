@@ -14,6 +14,7 @@ part 'my_visits_provider.g.dart';
 @riverpod
 class MyVisits extends _$MyVisits {
   String? _lastFetchedDate;
+  int? _lastFetchedFacilityId;
   int _currentPage = 1;
   bool _hasMorePages = true;
 
@@ -30,15 +31,16 @@ class MyVisits extends _$MyVisits {
     return const AsyncValue.loading();
   }
 
-  Future<void> fetch({required String date}) async {
+  Future<void> fetch({required String date, int? facilityId}) async {
     _lastFetchedDate = date;
+    _lastFetchedFacilityId = facilityId;
     _currentPage = 1;
     _hasMorePages = true;
     state = const AsyncValue.loading();
 
     final Result<VisitListEntity, Failure> result = await ref
         .read(getMyVisitsUseCaseProvider)
-        .call(date: date, page: 1, perPage: 10);
+        .call(date: date, facilityId: facilityId, page: 1, perPage: 10);
 
     state = result.when(
       success: (data) => data != null
@@ -59,7 +61,12 @@ class MyVisits extends _$MyVisits {
 
     final Result<VisitListEntity, Failure> result = await ref
         .read(getMyVisitsUseCaseProvider)
-        .call(date: date, page: _currentPage, perPage: 10);
+        .call(
+          date: date,
+          facilityId: _lastFetchedFacilityId,
+          page: _currentPage,
+          perPage: 10,
+        );
 
     state = result.when(
       success: (data) {
@@ -79,12 +86,12 @@ class MyVisits extends _$MyVisits {
     );
   }
 
-  // WHY: reuses the last requested date so callers (including the stream
-  // listener above) don't need to know which date is currently selected.
+  // WHY: reuses the last requested date/facility so callers (including the
+  // stream listener above) don't need to know the currently selected filters.
   Future<void> refresh() async {
     final date = _lastFetchedDate;
     if (date == null) return;
-    await fetch(date: date);
+    await fetch(date: date, facilityId: _lastFetchedFacilityId);
   }
 }
 
