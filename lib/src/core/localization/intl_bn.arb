@@ -831,6 +831,34 @@
   "enterUnitsSold": "বিক্রিত একক লিখুন",
   "unitPriceBdt": "একক মূল্য (BDT)",
   "availableStock": "উপলব্ধ স্টক",
-  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি"
+  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি",
+  "toiletLocation": "টয়লেটের অবস্থান",
+  "toiletLocationSubtitle": "সকল টয়লেট এবং লক্ষ্য দেখুন",
+  "toiletDetails": "টয়লেটের বিবরণ",
+  "findToiletLocationHint": "টয়লেটের অবস্থান খুঁজুন...",
+  "active": "সক্রিয়",
+  "inactive": "নিষ্ক্রিয়",
+  "underMaintenance": "রক্ষণাবেক্ষণ",
+  "open": "খোলা",
+  "close": "বন্ধ",
+  "underConstruction": "নির্মাণাধীন",
+  "noToiletsFound": "কোনো টয়লেট পাওয়া যায়নি",
+  "incomeTarget": "আয়ের লক্ষ্য",
+  "monthlyIncome": "মাসিক আয়",
+  "profitTarget": "মুনাফার লক্ষ্য",
+  "attendanceTarget": "উপস্থিতির লক্ষ্য",
+  "complianceTarget": "কমপ্লায়েন্স লক্ষ্য",
+  "direction": "দিকনির্দেশনা",
+  "details": "বিস্তারিত",
+  "incomeStandardTarget": "আয়ের মানক লক্ষ্য",
+  "amountLeft": "{amount} বাকি",
+  "@amountLeft": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notAvailableYet": "এখনো পাওয়া যায়নি"
 }
 

@@ -451,6 +451,21 @@ abstract class RestClient {
     @Path('trainingSessionId') required int trainingSessionId,
   });
 
+  @GET(Endpoints.facilities)
+  Future<HttpResponse> getFacilities({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.facilityWiseTargets)
+  Future<HttpResponse> getFacilityWiseTargets({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('year_month') required String yearMonth,
+  });
+
   @GET(Endpoints.supplyRequests)
   Future<HttpResponse> getSupplyRequests({
     @Path('partnerId') required int partnerId,
