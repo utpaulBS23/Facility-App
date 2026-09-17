@@ -15,12 +15,13 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/facility_filter_button.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/facility_expenses_list_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/expense_body.dart';
-part '../widgets/expense_facility_selector.dart';
 part '../widgets/expense_list_card.dart';
 part '../widgets/expense_list_section.dart';
 part '../widgets/expense_stats_row.dart';
@@ -61,7 +62,7 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ExpenseFacilityPickerSheet(
+      builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _facilityId,
       ),
@@ -77,12 +78,6 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
 
   void _onAddExpense() => context.pushNamed(Routes.addFacilityExpense);
 
-  String? _facilityName(List<AccessibleFacilityEntity> facilities, int? id) =>
-      facilities
-          .cast<AccessibleFacilityEntity?>()
-          .firstWhere((f) => f?.id == id, orElse: () => null)
-          ?.name;
-
   @override
   Widget build(BuildContext context) {
     final facilities =
@@ -96,12 +91,18 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.expenseTracking),
+      appBar: DetailAppBar(
+        title: context.locale.expenseTracking,
+        actions: [
+          if (facilities.length > 1)
+            FacilityFilterButton(
+              hasSelection: _facilityId != null,
+              onTap: () => _onPickFacility(facilities),
+            ),
+        ],
+      ),
       body: _FacilityExpenseBody(
         listAsync: listAsync,
-        facilityName: _facilityName(facilities, _facilityId),
-        canPickFacility: facilities.length > 1,
-        onPickFacility: () => _onPickFacility(facilities),
         onRetry: _fetch,
       ),
       floatingActionButton: canAddExpense
