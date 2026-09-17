@@ -4,6 +4,7 @@ export 'confirm_password_validation.dart';
 export 'email_validation.dart';
 export 'length_validation.dart';
 export 'password_validation.dart';
+export 'positive_number_validation.dart';
 export 'required_validation.dart';
 export 'validation_impl.dart';
 

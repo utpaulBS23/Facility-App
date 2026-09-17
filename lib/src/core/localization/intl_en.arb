@@ -436,11 +436,11 @@
   "selectTransportMode": "Select mode",
   "addAnotherModeLeg": "Add another mode/leg",
   "distanceKm": "Distance (km)",
+  "price": "Price",
   "purpose": "Purpose (optional)",
   "purposeHint": "e.g. Weekly visit",
-  "amountOverrideOptional": "Override amount (optional)",
-  "saveEntry": "Save entry",
-  "selectFacility": "Facility",
+  "saveEntry": "Claim",
+  "selectFacility": "Select facility",
   "travelExpenseSubmittedSuccess": "Travel expense submitted successfully",
   "somethingWentWrong": "Something went wrong. Please try again.",
   "morningShift": "MORNING SHIFT",
@@ -864,6 +864,12 @@
   "expenseDate": "Date",
   "paidBy": "Paid By",
   "cash": "Cash",
-  "accounts": "Accounts"
+  "accounts": "Accounts",
+  "transportationDetails": "Transportation Details",
+  "travelInformation": "Travel Information",
+  "travelExpenseCaption": "Travel expenses",
+  "dateAndTime": "Date and time",
+  "purposeLabel": "Purpose",
+  "office": "Office"
 }
 

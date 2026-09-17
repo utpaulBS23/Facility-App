@@ -47,4 +47,23 @@ final class TravelExpenseRepositoryImpl extends TravelExpenseRepository {
       return responseModel.toEntity();
     });
   }
+
+  @override
+  Future<Result<TravelExpenseEntity, Failure>> getTravelExpenseDetail({
+    required int partnerId,
+    required int travelExpenseId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getTravelExpenseDetail(
+        partnerId: partnerId,
+        travelExpenseId: travelExpenseId,
+      );
+      final responseModel = TravelExpenseResponseModel.fromJson(response.data);
+      final model = responseModel.data;
+      if (model == null) {
+        throw Exception('Empty travel expense response');
+      }
+      return model.toEntity();
+    });
+  }
 }
