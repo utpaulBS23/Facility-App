@@ -31,7 +31,6 @@ part '../widgets/income_dropdown_field.dart';
 part '../widgets/income_entry_type_switch.dart';
 part '../widgets/income_facility_list_sheet.dart';
 part '../widgets/income_facility_section.dart';
-part '../widgets/income_master_data_selector.dart';
 part '../widgets/income_type_section.dart';
 part '../widgets/product_dropdown_field.dart';
 part '../widgets/proof_photo_picker_card.dart';
