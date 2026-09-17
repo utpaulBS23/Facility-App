@@ -51,3 +51,28 @@ final class GetTravelExpensesUseCase extends PartnerUseCase {
     };
   }
 }
+
+final class GetTravelExpenseDetailUseCase extends PartnerUseCase {
+  GetTravelExpenseDetailUseCase({
+    required this.repository,
+    required super.authRepository,
+  });
+
+  final TravelExpenseRepository repository;
+
+  Future<Result<TravelExpenseEntity, Failure>> call(
+    int travelExpenseId,
+  ) async {
+    final partnerId = getPartnerId();
+    final result = await repository.getTravelExpenseDetail(
+      partnerId: partnerId,
+      travelExpenseId: travelExpenseId,
+    );
+
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get travel expense detail')),
+    };
+  }
+}

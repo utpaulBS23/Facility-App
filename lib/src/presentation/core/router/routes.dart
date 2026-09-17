@@ -55,6 +55,7 @@ class Routes {
   static const String addFacilityExpense = '/facility-expense/add';
   static const String claimExpense = '/claim-expense';
   static const String addTravelExpense = '/claim-expense/add';
+  static const String travelExpenseDetails = '/claim-expense/details/:id';
   static const String notification = '/notification';
   static const String supplyRequest = '/supply-request';
   static const String report = '/report';
