@@ -57,6 +57,8 @@ import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
 import '../../features/inspection_checklist/view/inspection_checklist_page.dart';
 import '../../features/issues/view/create_issue_page.dart';
+import '../../features/issues/view/issue_detail_page.dart';
+import '../../../domain/entities/issue_detail_entity.dart';
 import '../../features/my_visits/view/visit_detail_page.dart';
 import '../../features/roster/view/roster_assign_staff_page.dart';
 import '../../features/roster/view/roster_list_page.dart';

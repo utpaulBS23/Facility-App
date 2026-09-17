@@ -21,6 +21,7 @@ class TaskEntity {
     required this.dueTime,
     required this.priority,
     required this.status,
+    this.facilityId,
     this.proofRequiredOnComplete = false,
     this.media = const [],
   });
@@ -32,6 +33,7 @@ class TaskEntity {
   final String dueTime;
   final TaskPriority priority;
   final TaskStatus status;
+  final int? facilityId;
   final bool proofRequiredOnComplete;
   final List<TaskMediaEntity> media;
 
@@ -43,6 +45,7 @@ class TaskEntity {
     String? dueTime,
     TaskPriority? priority,
     TaskStatus? status,
+    int? facilityId,
     bool? proofRequiredOnComplete,
     List<TaskMediaEntity>? media,
   }) {
@@ -54,6 +57,7 @@ class TaskEntity {
       dueTime: dueTime ?? this.dueTime,
       priority: priority ?? this.priority,
       status: status ?? this.status,
+      facilityId: facilityId ?? this.facilityId,
       proofRequiredOnComplete:
           proofRequiredOnComplete ?? this.proofRequiredOnComplete,
       media: media ?? this.media,

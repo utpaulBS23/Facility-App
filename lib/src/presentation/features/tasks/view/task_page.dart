@@ -112,12 +112,12 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     );
   }
 
-  void _onAssignUserTap() {
+  void _onAssignUserTap(TaskEntity task) {
     showModalBottomSheet<({int? value})>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const _AssignUserSheet(),
+      builder: (_) => _AssignUserSheet(facilityId: task.facilityId),
     );
   }
 
@@ -315,11 +315,13 @@ class _Tab extends StatelessWidget {
 }
 
 class _AssignUserSheet extends ConsumerWidget {
-  const _AssignUserSheet();
+  const _AssignUserSheet({this.facilityId});
+
+  final int? facilityId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final staffAsync = ref.watch(taskAssignableStaffProvider);
+    final staffAsync = ref.watch(taskAssignableStaffProvider(facilityId: facilityId));
 
     return staffAsync.when(
       loading: () => const PickerSheetLoading(),

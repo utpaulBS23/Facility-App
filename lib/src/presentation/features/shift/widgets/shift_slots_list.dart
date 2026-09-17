@@ -37,10 +37,9 @@ class _ShiftSlotsList extends StatelessWidget {
       items.add(_ApplyLeaveButton(onTap: onApplyLeave));
     }
 
+    items.add(Gap(spacing.s12));
+
     if (activeSlot != null) {
-      if (canApplyLeave) {
-        items.add(Gap(spacing.s16));
-      }
       items.add(_ActiveSlotBanner(activeSlot: activeSlot));
     }
 

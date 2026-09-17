@@ -42,6 +42,7 @@ class Routes {
   static const String inspectionChecklist = '/inspection-checklist';
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
+  static const String issueDetail = '/issue-detail';
   static const String occurrenceChecklist = '/occurrence-checklist';
   static const String menu = '/menu';
   static const String dashboard = '/dashboard';

@@ -10,6 +10,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_detail_provider.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
@@ -198,6 +199,7 @@ class _TaskDetailBody extends StatelessWidget {
                 color: context.color.text.primary,
                 fontWeight: FontWeight.bold,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
             Gap(spacing.s8),
             _InfoRow(icon: Icons.location_on_outlined, label: task.location),
