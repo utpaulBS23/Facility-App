@@ -886,6 +886,34 @@
   "enterUnitsSold": "Enter units sold",
   "unitPriceBdt": "Unit price (BDT)",
   "availableStock": "Available stock",
-  "unitsSoldExceedsStock": "Units sold exceeds available stock"
+  "unitsSoldExceedsStock": "Units sold exceeds available stock",
+  "toiletLocation": "Toilet location",
+  "toiletLocationSubtitle": "View all toilets and targets",
+  "toiletDetails": "Toilet Details",
+  "findToiletLocationHint": "Find the location of the toilet...",
+  "active": "Active",
+  "inactive": "Inactive",
+  "underMaintenance": "Maintenance",
+  "open": "Open",
+  "close": "Close",
+  "underConstruction": "Under Construction",
+  "noToiletsFound": "No toilets found",
+  "incomeTarget": "Income target",
+  "monthlyIncome": "Monthly Income",
+  "profitTarget": "Profit target",
+  "attendanceTarget": "Attendance target",
+  "complianceTarget": "Compliance target",
+  "direction": "Direction",
+  "details": "Details",
+  "incomeStandardTarget": "Income standard target",
+  "amountLeft": "{amount} left",
+  "@amountLeft": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notAvailableYet": "Not yet available"
 }
 

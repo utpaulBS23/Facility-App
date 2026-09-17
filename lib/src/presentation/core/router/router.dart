@@ -34,6 +34,8 @@ import '../../features/facility_expense/view/add_facility_expense_page.dart';
 import '../../features/claim_expense/view/travel_expenses_page.dart';
 import '../../features/claim_expense/view/travel_expense_details_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
+import '../../features/toilet_location/view/toilet_details_page.dart';
+import '../../features/toilet_location/view/toilet_location_page.dart';
 import '../../features/facility_map/view/facility_map_page.dart';
 import '../../features/gateway_management/view/gateway_management_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
@@ -86,6 +88,7 @@ import 'shell_tab_config.dart';
 
 part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
+part 'parts/toilet_location_routes.dart';
 part 'parts/authentication_routes.dart';
 part 'parts/on_boarding_routes.dart';
 part 'parts/menu_item_routes.dart';
@@ -193,6 +196,7 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._toiletLocationRoutes(ref),
       ..._profileRoutes(ref),
       ..._trainingRoutes(ref),
       _shellRoutes(ref),

@@ -593,6 +593,22 @@ InstallApkUseCase installApkUseCase(Ref ref) {
 }
 
 @riverpod
+GetToiletsUseCase getToiletsUseCase(Ref ref) {
+  return GetToiletsUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetToiletTargetUseCase getToiletTargetUseCase(Ref ref) {
+  return GetToiletTargetUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
   return GetSupplyRequestsUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
