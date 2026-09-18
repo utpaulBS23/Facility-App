@@ -2638,32 +2638,7 @@ class _RestClient implements RestClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/stock-averaging/overview',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch(_options);
-    final _value = _result.data;
-    final httpResponse = HttpResponse(_value, _result);
-    return httpResponse;
-  }
-
-  @override
-  Future<HttpResponse<dynamic>> getFacilityStockTargets({
-    required int partnerId,
-    required int facilityId,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<HttpResponse<dynamic>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/partners/${partnerId}/stock-averaging/facilities/${facilityId}',
+            '/partners/${partnerId}/stock-averaging',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -2690,7 +2665,7 @@ class _RestClient implements RestClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/stock-averaging/targets/${targetId}',
+            '/partners/${partnerId}/stock-averaging/${targetId}',
             queryParameters: queryParameters,
             data: _data,
           )
