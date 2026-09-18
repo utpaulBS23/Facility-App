@@ -10,7 +10,6 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_detail_provider.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
@@ -97,7 +96,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.taskDetails),
+      appBar: DetailAppBar(title: context.locale.issueDetails),
       body: detailState.when(
         loading: () =>
             const Center(child: CircularProgressIndicator.adaptive()),
@@ -166,12 +165,26 @@ class _TaskDetailBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildCard1Header(context),
-          Gap(spacing.s8),
+          Gap(spacing.s12),
           _buildCard2Description(context),
-          Gap(spacing.s8),
+          Gap(spacing.s12),
           _buildCard3Media(context),
+          Gap(spacing.s16),
+          _buildActionButton(context),
         ],
       ),
+    );
+  }
+
+  BoxDecoration _cardDecoration(BuildContext context) {
+    final radius = context.dimensions.radius;
+    return BoxDecoration(
+      color: context.color.onPrimary,
+      border: Border.all(color: context.color.borderSubtle),
+      borderRadius: BorderRadius.circular(radius.r12),
+      boxShadow: [
+        BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2)),
+      ],
     );
   }
 
@@ -180,25 +193,30 @@ class _TaskDetailBody extends StatelessWidget {
     final radius = context.dimensions.radius;
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        border: Border.all(color: context.color.borderSubtle),
-        borderRadius: BorderRadius.circular(radius.r12),
-        boxShadow: [
-          BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2))
-        ],
-      ),
-      padding: EdgeInsets.all(spacing.s12),
+      decoration: _cardDecoration(context),
+      padding: EdgeInsets.all(spacing.s16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(task.title, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 2),
+          Row(children: [Container(width: 8, height: 8, decoration: BoxDecoration(color: _priorityColor(context), shape: BoxShape.circle)), Gap(spacing.s6), Text(_priorityLabel(context), style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
           Gap(spacing.s8),
-          Row(children: [Container(width: 8, height: 8, decoration: BoxDecoration(color: _priorityColor(context), shape: BoxShape.circle)), Gap(spacing.s6), Text(_priorityLabel(context).toUpperCase(), style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
-          Gap(spacing.s4),
-          Row(children: [Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.location, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
-          Gap(spacing.s4),
-          Row(children: [Icon(Icons.access_time_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Text('${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}', style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
+          Text(task.title, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 2),
+          Gap(spacing.s6),
+          Row(children: [Icon(Icons.location_on_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.location, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
+          Gap(spacing.s12),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(spacing.s12),
+            decoration: BoxDecoration(color: context.color.subtle, borderRadius: BorderRadius.circular(radius.r10)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [Icon(Icons.access_time_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Text(context.locale.due, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
+                Gap(spacing.s2),
+                Text(DateFormatter.formatDueTime(task.dueTime), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -206,14 +224,13 @@ class _TaskDetailBody extends StatelessWidget {
 
   Widget _buildCard2Description(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
 
     if (task.description.isEmpty) return const SizedBox.shrink();
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: context.color.onPrimary, border: Border.all(color: context.color.borderSubtle), borderRadius: BorderRadius.circular(radius.r12), boxShadow: [BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2))]),
-      padding: EdgeInsets.all(spacing.s12),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.description, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s6), Text(task.description, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]),
+      decoration: _cardDecoration(context),
+      padding: EdgeInsets.all(spacing.s16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.taskDetails, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold)), Gap(spacing.s8), Text(task.description, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.secondary))]),
     );
   }
 
@@ -221,10 +238,14 @@ class _TaskDetailBody extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
 
+    if (task.createdDate == null && task.resolvedDate == null && task.media.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: context.color.onPrimary, border: Border.all(color: context.color.borderSubtle), borderRadius: BorderRadius.circular(radius.r12), boxShadow: [BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2))]),
-      padding: EdgeInsets.all(spacing.s12),
+      decoration: _cardDecoration(context),
+      padding: EdgeInsets.all(spacing.s16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (task.createdDate != null) ...[
           Row(children: [Icon(Icons.calendar_today_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s8), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.created, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s2), Text(DateFormatter.formatDueTime(task.createdDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]))]),
@@ -234,19 +255,42 @@ class _TaskDetailBody extends StatelessWidget {
           Row(children: [Icon(Icons.check_circle_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s8), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.resolved, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s2), Text(DateFormatter.formatDueTime(task.resolvedDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]))]),
           Gap(spacing.s8),
         ],
-        if (task.media.isNotEmpty) ...[
+        if (task.media.isNotEmpty)
           SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: task.media.length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {
             final m = task.media[i];
             return ClipRRect(borderRadius: BorderRadius.circular(radius.r6), child: Image.network(m.url, width: 100, height: 100, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(width: 100, height: 100, color: context.color.borderSubtle, child: Icon(Icons.broken_image_outlined, color: context.color.icon))));
           })),
-          Gap(spacing.s12),
-        ],
-        if (_canStart) ...[
-          PermissionGate(permissions: [UserPermission.issueResolve], child: SizedBox(width: double.infinity, child: FilledButton(onPressed: () => onStartTap(task), child: Text(context.locale.startTask)))),
-          Gap(spacing.s8),
-        ],
-        if (_canComplete) PermissionGate(permissions: [UserPermission.issueResolve], child: SizedBox(width: double.infinity, child: FilledButton(onPressed: () => onCompleteTap(task), style: FilledButton.styleFrom(backgroundColor: context.color.primary), child: Text(context.locale.completeTask)))),
       ]),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    if (!_canStart && !_canComplete) return const SizedBox.shrink();
+
+    if (_canStart) {
+      return PermissionGate(
+        permissions: [UserPermission.issueResolve],
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: () => onStartTap(task),
+            style: FilledButton.styleFrom(backgroundColor: context.color.success, foregroundColor: context.color.onPrimary),
+            child: Text(context.locale.startTask),
+          ),
+        ),
+      );
+    }
+
+    return PermissionGate(
+      permissions: [UserPermission.issueResolve],
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: () => onCompleteTap(task),
+          style: FilledButton.styleFrom(backgroundColor: context.color.text.primary, foregroundColor: context.color.onPrimary),
+          child: Text(context.locale.completeTask),
+        ),
+      ),
     );
   }
 }
