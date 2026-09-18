@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -8,8 +9,10 @@ import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/assign_staff_button.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/router/routes.dart';
 import '../riverpod/task_detail_provider.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
@@ -319,33 +322,45 @@ class _TaskDetailBody extends StatelessWidget {
 
   Widget _buildActionButton(BuildContext context) {
     final showPrimaryAction = _canStart || _canComplete;
+    final spacing = context.dimensions.spacing;
 
-    if (!showPrimaryAction) return const SizedBox.shrink();
-
-    if (_canStart) {
-      return PermissionGate(
-        permissions: [UserPermission.issueResolve],
-        child: SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: () => onStartTap(task),
-            style: FilledButton.styleFrom(backgroundColor: context.color.success, foregroundColor: context.color.onPrimary),
-            child: Text(context.locale.startTask),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (showPrimaryAction) ...[
+          if (_canStart)
+            PermissionGate(
+              permissions: [UserPermission.issueResolve],
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => onStartTap(task),
+                  style: FilledButton.styleFrom(backgroundColor: context.color.success, foregroundColor: context.color.onPrimary),
+                  child: Text(context.locale.startTask),
+                ),
+              ),
+            )
+          else
+            PermissionGate(
+              permissions: [UserPermission.issueResolve],
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => onCompleteTap(task),
+                  style: FilledButton.styleFrom(backgroundColor: context.color.text.primary, foregroundColor: context.color.onPrimary),
+                  child: Text(context.locale.completeTask),
+                ),
+              ),
+            ),
+          Gap(spacing.s12),
+        ],
+        PermissionGate(
+          permissions: [UserPermission.issueUpdate],
+          child: AssignStaffButton(
+            onTap: () => context.pushNamed(Routes.assignTaskStaff, extra: task),
           ),
         ),
-      );
-    }
-
-    return PermissionGate(
-      permissions: [UserPermission.issueResolve],
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-          onPressed: () => onCompleteTap(task),
-          style: FilledButton.styleFrom(backgroundColor: context.color.text.primary, foregroundColor: context.color.onPrimary),
-          child: Text(context.locale.completeTask),
-        ),
-      ),
+      ],
     );
   }
 }

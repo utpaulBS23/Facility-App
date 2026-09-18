@@ -37,6 +37,7 @@ class Routes {
   static const String myVisits = '/my-visits';
   static const String task = '/task';
   static const String taskDetail = 'task-detail';
+  static const String assignTaskStaff = 'assign-task-staff';
   static const String visitDetail = '/visit-detail';
   static const String visitCheckIn = '/visit-check-in';
   static const String inspectionChecklist = '/inspection-checklist';

@@ -11,6 +11,14 @@ List<GoRoute> _taskRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.assignTaskStaff,
+      name: Routes.assignTaskStaff,
+      pageBuilder: (context, state) {
+        final task = state.extra as TaskEntity;
+        return MaterialPage(child: AssignTaskStaffPage(task: task));
+      },
+    ),
+    GoRoute(
       path: Routes.issueDetail,
       name: Routes.issueDetail,
       pageBuilder: (context, state) {
