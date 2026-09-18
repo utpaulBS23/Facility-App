@@ -208,7 +208,25 @@ class _TaskDetailBody extends StatelessWidget {
           Row(children: [Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.location, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
           if (task.assignedToName.isNotEmpty) ...[
             Gap(spacing.s4),
-            Row(children: [Icon(Icons.person_outline_rounded, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.assignedToName, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
+            Row(children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: context.color.primary.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.person_rounded,
+                    size: 10,
+                    color: context.color.primary,
+                  ),
+                ),
+              ),
+              Gap(spacing.s4),
+              Expanded(child: Text(task.assignedToName, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))
+            ]),
           ],
           Gap(spacing.s4),
           Row(children: [Icon(Icons.location_on_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.facilityAddress, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
