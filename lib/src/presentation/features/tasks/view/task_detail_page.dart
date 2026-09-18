@@ -167,6 +167,10 @@ class _TaskDetailBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (task.proofRequiredOnComplete) ...[
+            _buildProofRequiredAlert(context),
+            Gap(spacing.s12),
+          ],
           _buildCard1Header(context),
           Gap(spacing.s12),
           _buildCard2Description(context),
@@ -246,12 +250,13 @@ class _TaskDetailBody extends StatelessWidget {
             ),
           ),
           Gap(spacing.s12),
-          PermissionGate(
-            permissions: [UserPermission.issueUpdate],
-            child: AssignStaffButton(
-              onTap: () => context.pushNamed(Routes.assignTaskStaff, extra: task),
+          if (task.status == TaskStatus.open)
+            PermissionGate(
+              permissions: [UserPermission.issueUpdate],
+              child: AssignStaffButton(
+                onTap: () => context.pushNamed(Routes.assignTaskStaff, extra: task),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -266,6 +271,32 @@ class _TaskDetailBody extends StatelessWidget {
       decoration: _cardDecoration(context),
       padding: EdgeInsets.all(spacing.s16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.taskDetails, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold)), Gap(spacing.s8), Text(task.description, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.secondary))]),
+    );
+  }
+
+  Widget _buildProofRequiredAlert(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: context.color.warningAlt,
+        border: Border.all(color: context.color.warning),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+      ),
+      padding: EdgeInsets.all(spacing.s12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outlined, size: 20, color: context.color.warning),
+          Gap(spacing.s8),
+          Expanded(
+            child: Text(
+              'For resolving this issue you have to submit proof',
+              style: context.textStyle.bodySmall.copyWith(color: context.color.warning),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
