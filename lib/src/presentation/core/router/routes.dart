@@ -67,12 +67,17 @@ class Routes {
   static const String requestDetails = '/request-details/:id';
   static const String confirmDelivery = '/confirm-delivery';
   static const String deliveryComplaint = '/delivery-complaint';
+  static const String updateStock = '/update-stock';
+  static const String stock = '/stock';
+  static const String stockAveraging = '/stock-averaging';
+  static const String stockAveragingDetails = '/stock-averaging-details';
 
   static const String myProfile = '/my-profile';
   static const String editProfile = '/edit-profile';
   static const String changePassword = '/change-password';
   static const String passwordReset = '/password-reset';
   static const String otpVerification = '/otp-verification';
+  static const String doorControl = '/door-control';
 
   static const String trainingSessions = '/training-sessions';
   static const String trainingSessionDetails = '/training-session-details/:id';

@@ -61,6 +61,26 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
+    icon: Assets.icons.service,
+    label: _stockBalanceLabel,
+    subtitle: _stockBalanceSubtitle,
+    route: Routes.stock,
+    permissions: [
+      UserPermission.facilityStockTargetView,
+      UserPermission.stockItemView,
+      UserPermission.stockAllocationView,
+    ],
+  ),
+  MenuItemConfig(
+    icon: Assets.icons.service,
+    label: _stockAveragingMenuLabel,
+    subtitle: _stockAveragingMenuSubtitle,
+    route: Routes.stockAveraging,
+    permissions: [
+      UserPermission.facilityStockTargetView,
+    ],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.pinIcon,
     label: _leaveLabel,
     subtitle: _leaveSubtitle,
@@ -108,7 +128,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _profitReportLabel,
     subtitle: _profitReportSubtitle,
     route: Routes.report,
-    permissions: [UserPermission.reportFacilityWiseView],
+    permissions: [UserPermission.reportExecutiveView],
   ),
   MenuItemConfig(
     icon: Assets.icons.viewIcon,
@@ -201,3 +221,12 @@ String _gatewayManagementLabel(BuildContext context) =>
     context.locale.gatewayManagement;
 String _gatewayManagementSubtitle(BuildContext context) =>
     context.locale.gatewayManagementSubtitle;
+
+String _stockBalanceLabel(BuildContext context) => context.locale.stockBalance;
+String _stockBalanceSubtitle(BuildContext context) =>
+    context.locale.stockBalanceSubtitle;
+
+String _stockAveragingMenuLabel(BuildContext context) =>
+    context.locale.stockAveragingMenu;
+String _stockAveragingMenuSubtitle(BuildContext context) =>
+    context.locale.stockAveragingMenuSubtitle;

@@ -135,8 +135,15 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
         surfaceTintColor: Colors.transparent,
         actions: [
           MonthFilterButton(
-            selectedMonth: _selectedMonth,
-            onChanged: (month) => setState(() => _selectedMonth = month),
+            month: DateTime(
+              int.parse(_selectedMonth.split('-')[0]),
+              int.parse(_selectedMonth.split('-')[1]),
+            ),
+            lastDate: DateTime.now(),
+            onSelected: (date) => setState(
+              () => _selectedMonth =
+                  '${date.year}-${date.month.toString().padLeft(2, '0')}',
+            ),
           ),
           if (facilities.length > 1)
             _FilterIconButton(

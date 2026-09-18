@@ -11,7 +11,8 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/widgets/app_bar_filter_button.dart';
+import '../../../core/widgets/facility_filter_button.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -61,6 +62,22 @@ class _TaskPageState extends ConsumerState<TaskPage> {
 
 
   void _onRetry() => _fetch();
+
+  Future<void> _onPickFacility(List<AccessibleFacilityEntity> facilities) async {
+    final result = await showModalBottomSheet<({int? facilityId})>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => FacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: _selectedFacilityId,
+        includeAllOption: true,
+      ),
+    );
+    if (result == null || result.facilityId == _selectedFacilityId) return;
+    setState(() => _selectedFacilityId = result.facilityId);
+    _fetch();
+  }
 
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
@@ -122,18 +139,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         surfaceTintColor: Colors.transparent,
         actions: [
           if (facilities.length > 1)
-            AppBarFilterButton<int?>(
-              title: context.locale.filters,
-              icon: Icons.apartment_outlined,
-              currentValue: _selectedFacilityId,
-              options: [
-                (value: null, label: context.locale.all),
-                ...facilities.map((f) => (value: f.id as int?, label: f.name)),
-              ],
-              onSelected: (facilityId) {
-                setState(() => _selectedFacilityId = facilityId);
-                _fetch();
-              },
+            FacilityFilterButton(
+              hasSelection: _selectedFacilityId != null,
+              onTap: () => _onPickFacility(facilities),
             ),
         ],
       ),
