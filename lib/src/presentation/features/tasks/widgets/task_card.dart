@@ -138,17 +138,57 @@ class _TaskCard extends StatelessWidget {
                       ),
                       Gap(spacing.s12),
                       _InfoRow(
-                        icon: Icons.location_on_outlined,
+                        icon: Icons.business_rounded,
                         label: task.location,
+                        muted: _isCompleted,
+                      ),
+                      Gap(spacing.s4),
+                      _InfoRow(
+                        icon: Icons.location_on_outlined,
+                        label: task.facilityAddress,
                         muted: _isCompleted,
                       ),
                       Gap(spacing.s4),
                       _InfoRow(
                         icon: Icons.access_time_outlined,
                         label:
-                            '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
+                            '${context.locale.due}: ${DateFormatter.formatDateOnly(task.dueTime)}',
                         muted: _isCompleted,
                       ),
+                      Gap(spacing.s12),
+                      if (task.assignedToName.isNotEmpty)
+                        Row(
+                          children: [
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: context.color.primary.withValues(alpha: 0.12),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  size: 12,
+                                  color: context.color.primary,
+                                ),
+                              ),
+                            ),
+                            Gap(spacing.s8),
+                            Expanded(
+                              child: Text(
+                                task.assignedToName,
+                                style: context.textStyle.bodySmall.copyWith(
+                                  color: _isCompleted
+                                      ? context.color.text.muted
+                                      : context.color.text.secondary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       Gap(spacing.s16),
                       PermissionGate(
                         permissions: [UserPermission.issueUpdate],
