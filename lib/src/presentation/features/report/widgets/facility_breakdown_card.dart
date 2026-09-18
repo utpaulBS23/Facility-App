@@ -1,9 +1,9 @@
 part of '../view/profit_report_page.dart';
 
-class _ConvenienceBenefitsList extends StatelessWidget {
-  const _ConvenienceBenefitsList({required this.benefits});
+class _FacilityBreakdownList extends StatelessWidget {
+  const _FacilityBreakdownList({required this.facilities});
 
-  final List<ConvenienceBenefitEntity> benefits;
+  final List<IncentiveFineFacilityEntity> facilities;
 
   @override
   Widget build(BuildContext context) {
@@ -13,29 +13,29 @@ class _ConvenienceBenefitsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (var i = 0; i < benefits.length; i++) ...[
+        for (var i = 0; i < facilities.length; i++) ...[
           if (i > 0) ...[
             Gap(spacing.s10),
             Divider(color: color.borderSubtle, height: 1),
             Gap(spacing.s10),
           ],
-          _ConvenienceBenefitRow(benefit: benefits[i]),
+          _FacilityBreakdownRow(facility: facilities[i]),
         ],
       ],
     );
   }
 }
 
-class _ConvenienceBenefitRow extends StatelessWidget {
-  const _ConvenienceBenefitRow({required this.benefit});
+class _FacilityBreakdownRow extends StatelessWidget {
+  const _FacilityBreakdownRow({required this.facility});
 
-  final ConvenienceBenefitEntity benefit;
+  final IncentiveFineFacilityEntity facility;
 
   Color _statusColor(BuildContext context) {
     final color = context.color;
-    if (benefit.achievedPercent >= 100) return color.success;
-    if (benefit.achievedPercent >= 90) return color.info;
-    if (benefit.achievedPercent >= 70) return color.warning;
+    if (facility.achievementRate >= 100) return color.success;
+    if (facility.achievementRate >= 90) return color.info;
+    if (facility.achievementRate >= 70) return color.warning;
     return color.primary;
   }
 
@@ -53,7 +53,7 @@ class _ConvenienceBenefitRow extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                benefit.facilityName,
+                facility.facilityName,
                 style: context.textStyle.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -69,7 +69,7 @@ class _ConvenienceBenefitRow extends StatelessWidget {
             ),
             Gap(spacing.s6),
             Text(
-              '${benefit.achievedPercent.toStringAsFixed(0)}%',
+              '${facility.achievementRate.toStringAsFixed(0)}%',
               style: context.textStyle.bodyMedium.copyWith(
                 color: statusColor,
                 fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class _ConvenienceBenefitRow extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(radius.r20),
           child: LinearProgressIndicator(
-            value: (benefit.achievedPercent / 100).clamp(0, 1),
+            value: (facility.achievementRate / 100).clamp(0, 1),
             minHeight: spacing.s6,
             backgroundColor: color.borderSubtle,
             valueColor: AlwaysStoppedAnimation(color.primary),
@@ -92,13 +92,13 @@ class _ConvenienceBenefitRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${context.locale.target}: ৳${NumberFormatter.format(benefit.target)}',
+              '${context.locale.target}: ৳${NumberFormatter.format(facility.target)}',
               style: context.textStyle.bodySmall.copyWith(
                 color: color.text.secondary,
               ),
             ),
             Text(
-              '৳${NumberFormatter.format(benefit.achieved)}',
+              '৳${NumberFormatter.format(facility.income)}',
               style: context.textStyle.bodyMedium.copyWith(
                 color: statusColor,
                 fontWeight: FontWeight.w600,

@@ -632,6 +632,14 @@ GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
   );
 }
 
+@riverpod
+GetIncentiveFineReportUseCase getIncentiveFineReportUseCase(Ref ref) {
+  return GetIncentiveFineReportUseCase(
+    reportRepository: ref.read(reportRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
 /// Training Management UseCases
 
 @riverpod

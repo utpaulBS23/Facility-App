@@ -1,9 +1,9 @@
 part of '../view/profit_report_page.dart';
 
 class _ProfitReportContent extends StatelessWidget {
-  const _ProfitReportContent({required this.data});
+  const _ProfitReportContent({required this.report});
 
-  final ProfitReportEntity data;
+  final IncentiveFineReportEntity report;
 
   @override
   Widget build(BuildContext context) {
@@ -13,39 +13,17 @@ class _ProfitReportContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ProfitSummaryCard(summary: data.summary),
+          _ProfitSummaryCard(report: report),
           Gap(spacing.s16),
-          _IncentiveCalculationCard(
-            subtitle: data.incentiveCalculationSubtitle,
-            tiers: data.incentiveTiers,
-            totalIncentiveText: data.totalIncentiveText,
-            notApplicableNote: data.incentiveNotApplicableNote,
-            fineAlertnessMessage: data.fineAlertnessMessage,
-            fineAlertnessAmountNote: data.fineAlertnessAmountNote,
-          ),
+          _IncentiveResultCard(report: report),
           Gap(spacing.s16),
           _ProfitReportCollapsibleCard(
-            icon: Icons.card_giftcard_outlined,
-            title: context.locale.convenienceBased,
+            icon: Icons.apartment_outlined,
+            title: context.locale.facilityBreakdown,
             subtitle:
-                '${data.convenienceBenefitCount} ${context.locale.benefits}',
-            initiallyExpanded: data.convenienceBenefits.isNotEmpty,
-            child: data.convenienceBenefits.isEmpty
-                ? Text(
-                    context.locale.convenienceBenefitsComingSoon,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
-                  )
-                : _ConvenienceBenefitsList(benefits: data.convenienceBenefits),
-          ),
-          Gap(spacing.s16),
-          _ProfitReportCollapsibleCard(
-            icon: Icons.bar_chart_rounded,
-            title: context.locale.incentiveRate,
-            subtitle: data.incentiveRateSubtitle,
+                '${report.facilities.length} ${context.locale.facilities}',
             initiallyExpanded: true,
-            child: _IncentiveRateTable(rows: data.incentiveRateRows),
+            child: _FacilityBreakdownList(facilities: report.facilities),
           ),
         ],
       ),
