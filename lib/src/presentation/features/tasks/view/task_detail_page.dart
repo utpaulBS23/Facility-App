@@ -36,8 +36,11 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
     );
   }
 
-  void _onStartTap(TaskEntity task) {
-    ref.read(taskDetailProvider.notifier).startIssue(issueId: task.id);
+  Future<void> _onStartTap(TaskEntity task) async {
+    await ref.read(taskDetailProvider.notifier).startIssue(issueId: task.id);
+    if (mounted) {
+      await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
+    }
   }
 
   void _onRetry() {
