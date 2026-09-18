@@ -8,7 +8,6 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/login_entity.dart';
-import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/task_entity.dart';
 
 part 'tasks_provider.g.dart';
@@ -146,16 +145,4 @@ class Tasks extends _$Tasks {
           .toList(),
     );
   }
-}
-
-@riverpod
-Future<List<PartnerStaffEntity>> taskAssignableStaff(Ref ref, {int? facilityId}) async {
-  final result = await ref
-      .read(getPartnerStaffUseCaseProvider)
-      .call(facilityId: facilityId);
-  return switch (result) {
-    Success(:final data) => data ?? [],
-    Error() => [],
-    _ => [],
-  };
 }

@@ -22,8 +22,13 @@ class SlotDetailsPage extends ConsumerWidget {
     context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
   }
 
-  void _onAssignStaff(BuildContext context, ShiftSlotEntity currentSlot) {
-    context.pushNamed(Routes.assignStaff, extra: currentSlot);
+  void _onAssignStaff(BuildContext context, WidgetRef ref, ShiftSlotEntity currentSlot) {
+    final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
+    if (facilityId == null) return;
+    context.pushNamed(
+      Routes.assignStaff,
+      extra: AssignStaffArgs(slot: currentSlot, facilityId: facilityId),
+    );
   }
 
   Future<void> _onUnassignStaff(
@@ -101,9 +106,22 @@ class SlotDetailsPage extends ConsumerWidget {
     final me = currentSlot.me;
     // WHY: facility lives on the day payload, not the slot, so it is read back
     // from the same provider rather than threaded through navigation.
-    final facility = ref.watch(
-      shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
-    );
+    final slotsData = ref.watch(shiftSlotsProvider);
+    SlotFacilityEntity? facility = slotsData.valueOrNull?.facility;
+
+    // If facility is null, search in facilities array for the one containing this slot
+    if (facility == null && slotsData.valueOrNull != null) {
+      for (final fac in slotsData.valueOrNull?.facilities ?? const []) {
+        if (fac.slots.any((s) => s.shiftSlotId == currentSlot.shiftSlotId)) {
+          facility = SlotFacilityEntity(
+            id: fac.facilityId,
+            name: fac.facilityName,
+            address: '',
+          );
+          break;
+        }
+      }
+    }
     // WHY: date lives on the day payload, not the slot, so it is read back
     // from the same provider rather than threaded through navigation.
     final date = ref.watch(
@@ -122,7 +140,7 @@ class SlotDetailsPage extends ConsumerWidget {
                 currentSlot: currentSlot,
                 facility: facility,
                 date: date,
-                onAssignStaff: () => _onAssignStaff(context, currentSlot),
+                onAssignStaff: () => _onAssignStaff(context, ref, currentSlot),
                 onUnassignStaff: (attendant) =>
                     _onUnassignStaff(context, ref, currentSlot, attendant),
                 onMakeLead: (attendant) =>

@@ -38,7 +38,10 @@ class _SlotAssignedSection extends StatelessWidget {
               ),
               if (slot.hasFreeCapacity) ...[
                 Gap(spacing.s12),
-                AssignStaffButton(onTap: onAssignStaff),
+                AssignStaffButton(onTap: () {
+                  Log.info('AssignStaffButton tapped for slot ${slot.shiftSlotId}');
+                  onAssignStaff();
+                }),
               ],
             ],
           ),

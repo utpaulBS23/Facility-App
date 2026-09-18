@@ -13,8 +13,6 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/picker_sheet_states.dart';
-import '../../../core/widgets/selection_picker_sheet.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
@@ -304,25 +302,3 @@ class _Tab extends StatelessWidget {
   }
 }
 
-class _AssignUserSheet extends ConsumerWidget {
-  const _AssignUserSheet({this.facilityId});
-
-  final int? facilityId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final staffAsync = ref.watch(taskAssignableStaffProvider(facilityId: facilityId));
-
-    return staffAsync.when(
-      loading: () => const PickerSheetLoading(),
-      error: (err, _) => PickerSheetError(message: err.toString()),
-      data: (staff) => SelectionPickerSheet<int?>(
-        title: context.locale.assignStaff,
-        options: [
-          for (final member in staff) (value: member.id, label: member.name),
-        ],
-        isSelected: (value) => false,
-      ),
-    );
-  }
-}
