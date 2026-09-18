@@ -12,6 +12,13 @@ class ShiftDetailsPage extends StatelessWidget {
     context.pushNamed(Routes.shiftCheckOut, extra: entity.id);
   }
 
+  void _onUpdateStock(BuildContext context) {
+    context.pushNamed(
+      Routes.updateStock,
+      extra: (entity.facility.id, entity.id),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -30,30 +37,49 @@ class ShiftDetailsPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(child: _ShiftDetailsBody(entity: entity)),
-          if (_showCheckOutButton)
-            PermissionGate(
-              permissions: [UserPermission.attendanceCheckOut],
-              child: SafeArea(
-                top: false,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    padding.p16,
-                    spacing.s16,
-                    padding.p16,
-                    spacing.s16,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: spacing.s44,
-                    child: FilledButton.icon(
-                      onPressed: () => _onCheckOut(context),
-                      icon: const Icon(Icons.logout_rounded),
-                      label: Text(context.locale.checkOut),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                padding.p16,
+                spacing.s16,
+                padding.p16,
+                spacing.s16,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  PermissionGate(
+                    permissions: const [UserPermission.shiftStockCountCreate],
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: spacing.s44,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _onUpdateStock(context),
+                        icon: const Icon(Icons.inventory_2_outlined),
+                        label: Text(context.locale.updateStock),
+                      ),
                     ),
                   ),
-                ),
+                  if (_showCheckOutButton) ...[
+                    Gap(spacing.s12),
+                    PermissionGate(
+                      permissions: const [UserPermission.attendanceCheckOut],
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: spacing.s44,
+                        child: FilledButton.icon(
+                          onPressed: () => _onCheckOut(context),
+                          icon: const Icon(Icons.logout_rounded),
+                          label: Text(context.locale.checkOut),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
+          ),
         ],
       ),
     );

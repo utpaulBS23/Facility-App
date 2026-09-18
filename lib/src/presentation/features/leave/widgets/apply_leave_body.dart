@@ -10,7 +10,6 @@ import '../riverpod/apply_leave_provider/selected_leave_policy_id_provider.dart'
 import 'apply_leave_attendant_selector.dart';
 import 'apply_leave_date_selector.dart';
 import 'apply_leave_reason_input.dart';
-import 'apply_leave_shift_selector.dart';
 import 'apply_leave_summary_card.dart';
 import 'apply_leave_type_input.dart';
 import 'apply_leave_type_switch.dart';
@@ -25,7 +24,6 @@ class ApplyLeaveBody extends ConsumerWidget {
     required this.endDate,
     required this.onPickStartDate,
     required this.onPickEndDate,
-    required this.onSelectShift,
     required this.reasonController,
   });
 
@@ -36,7 +34,6 @@ class ApplyLeaveBody extends ConsumerWidget {
   final DateTime endDate;
   final VoidCallback onPickStartDate;
   final VoidCallback onPickEndDate;
-  final VoidCallback onSelectShift;
   final TextEditingController reasonController;
 
   @override
@@ -47,10 +44,6 @@ class ApplyLeaveBody extends ConsumerWidget {
     final spacing = context.dimensions.spacing;
     final isBehalf = leaveApplicationType == LeaveApplicationType.onBehalf;
 
-    final isShiftEnabled = switch (leaveApplicationType) {
-      LeaveApplicationType.own => true,
-      LeaveApplicationType.onBehalf => selectedAttendant != null,
-    };
     final isLeavePolicyEnabled = switch (leaveApplicationType) {
       LeaveApplicationType.own => true,
       LeaveApplicationType.onBehalf => selectedAttendant != null,
@@ -93,11 +86,6 @@ class ApplyLeaveBody extends ConsumerWidget {
             endDate: endDate,
             onStartDateTap: onPickStartDate,
             onEndDateTap: onPickEndDate,
-          ),
-          Gap(spacing.s8),
-          SelectShiftCard(
-            onTap: onSelectShift,
-            enabled: isShiftEnabled,
           ),
           Gap(spacing.s8),
           LeaveTypeInput(

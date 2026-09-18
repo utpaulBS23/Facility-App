@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/presentation/features/app_update/view/app_update_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +22,7 @@ import '../../features/authentication/forgot_password/view/otp_verification_page
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
-import '../../features/app_update/view/app_update_checker.dart';
+// import '../../features/app_update/view/app_update_checker.dart';
 import '../widgets/session_expired_dialog.dart';
 import '../../features/additional_income/view/additional_income_page.dart';
 import '../../features/additional_income/view/add_additional_income_page.dart';
@@ -42,7 +43,6 @@ import '../../features/leave/view/leave_details_page.dart';
 import '../../features/leave/view/leave_requests_page.dart';
 import '../../features/leave/view/leave_submitted_page.dart';
 import '../../features/leave/view/select_attendant_page.dart';
-import '../../features/leave/view/select_shift_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/menu/widgets/menu_item_config.dart';
 import '../../features/my_attendance/view/my_attendance_page.dart';
@@ -54,6 +54,9 @@ import '../../features/profile/view/my_profile_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
+import '../../features/stock/view/stock_averaging_details_page.dart';
+import '../../features/stock/view/stock_averaging_page.dart';
+import '../../features/stock/view/stock_page.dart';
 import '../../features/supply_request/view/supply_request_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
@@ -75,7 +78,10 @@ import '../../../domain/entities/supply/supply_request_entity.dart';
 import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/request_details_page.dart';
+import '../../features/supply/view/new_request_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
+import '../../features/training/view/training_session_details_page.dart';
+import '../../features/training/view/training_sessions_page.dart';
 
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
@@ -97,7 +103,9 @@ part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
 part 'parts/stock_routes.dart';
+part 'parts/supply_routes.dart';
 part 'parts/profile_routes.dart';
+part 'parts/training_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -192,8 +200,10 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._supplyRoutes(ref),
       ..._profileRoutes(ref),
       ..._gatewayRoutes(ref),
+      ..._trainingRoutes(ref),
       _shellRoutes(ref),
     ],
   );
