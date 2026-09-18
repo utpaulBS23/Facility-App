@@ -15,11 +15,10 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/number_formatter.dart';
-import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
@@ -101,11 +100,15 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
   }
 
   void _onEvidenceReportTap(int stockItemId) {
-    final request = ref.read(supplyRequestDetailsProvider(widget.requestId)).valueOrNull;
+    final request = ref
+        .read(supplyRequestDetailsProvider(widget.requestId))
+        .valueOrNull;
     if (request == null) return;
 
     final delivery = request.hasDelivery
-        ? ref.read(supplyRequestDeliveryProvider(request.requestCode)).valueOrNull
+        ? ref
+              .read(supplyRequestDeliveryProvider(request.requestCode))
+              .valueOrNull
         : null;
 
     if (delivery == null) return;
@@ -121,10 +124,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
           )
         : deliveryItem;
 
-    context.pushNamed(
-      Routes.deliveryComplaint,
-      extra: (delivery, itemToPass),
-    );
+    context.pushNamed(Routes.deliveryComplaint, extra: (delivery, itemToPass));
   }
 
   void _onQuantityChanged(int stockItemId, int qty) {
@@ -169,31 +169,27 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
 
     return switch (requestAsync) {
       AsyncData(value: final request) => _RequestDetailsBody(
-          request: request,
-          lastAction: _lastAction,
-          isEditing: _isEditing,
-          onEditToggled: (editing) => setState(() => _isEditing = editing),
-          editedQuantities: _editedQuantities,
-          onQuantityChanged: _onQuantityChanged,
-          onEditingCancelled: _onEditingCancelled,
-          onEvidenceReportTap: _onEvidenceReportTap,
-          onConfirmDeliveryTap: _onConfirmDeliveryTap,
-          onApprove: _onApprove,
-          onReject: _onReject,
-          onDispatch: _onDispatch,
-          onBack: () => _onBack(context),
-        ),
+        request: request,
+        lastAction: _lastAction,
+        isEditing: _isEditing,
+        onEditToggled: (editing) => setState(() => _isEditing = editing),
+        editedQuantities: _editedQuantities,
+        onQuantityChanged: _onQuantityChanged,
+        onEditingCancelled: _onEditingCancelled,
+        onEvidenceReportTap: _onEvidenceReportTap,
+        onConfirmDeliveryTap: _onConfirmDeliveryTap,
+        onApprove: _onApprove,
+        onReject: _onReject,
+        onDispatch: _onDispatch,
+        onBack: () => _onBack(context),
+      ),
       AsyncError(:final error) => _RequestDetailsError(
-          error: error,
-          onRetry: () => ref.invalidate(
-            supplyRequestDetailsProvider(widget.requestId),
-          ),
-          onBack: () => _onBack(context),
-        ),
-      _ => _RequestDetailsLoading(
-          onBack: () => _onBack(context),
-        ),
+        error: error,
+        onRetry: () =>
+            ref.invalidate(supplyRequestDetailsProvider(widget.requestId)),
+        onBack: () => _onBack(context),
+      ),
+      _ => _RequestDetailsLoading(onBack: () => _onBack(context)),
     };
   }
 }
-

@@ -1,6 +1,8 @@
+import 'package:battery_plus/battery_plus.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../core/base/base.dart';
+import '../../core/logger/log.dart';
 import '../../domain/entities/location_ping_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/location_ping_repository.dart';
@@ -20,20 +22,40 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
        _notificationService = notificationService,
        _authenticationRepository = authenticationRepository;
 
-  static const _syncInterval = Duration(seconds: 10);
+  // WHY fallback: used only if a session was restored without
+  // tracking_settings (e.g. payload persisted before this field existed).
+  static const _defaultSyncInterval = Duration(seconds: 10);
 
   final RestClient _remote;
   final BackgroundLocationTrackingService _trackingService;
   final LocationSharingNotificationService _notificationService;
   final AuthenticationRepository _authenticationRepository;
+  final Battery _battery = Battery();
+  int? _activeTaskId;
+
+  // WHY delegate to the tracking service, not a separate bool: it is
+  // already the single source of truth for whether the position stream is
+  // running — a second flag here could drift out of sync with it.
+  @override
+  bool get isSharingLocation => _trackingService.isRunning;
+
+  @override
+  int? get activeTaskId => _trackingService.isRunning ? _activeTaskId : null;
 
   @override
   Future<Result<void, Failure>> startTracking({required int taskId}) {
     return asyncGuard(() async {
       await _ensureTrackingPermission();
       await _notificationService.showSharingNotification();
+      _activeTaskId = taskId;
+      final activeVisitIntervalSeconds = _authenticationRepository
+          .currentSession
+          ?.trackingSettings
+          ?.activeVisitPingIntervalSeconds;
       _trackingService.start(
-        interval: _syncInterval,
+        interval: activeVisitIntervalSeconds == null
+            ? _defaultSyncInterval
+            : Duration(seconds: activeVisitIntervalSeconds),
         fireImmediately: true,
         onPosition: (position) async {
           await syncPosition(taskId: taskId, position: position);
@@ -46,6 +68,7 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
   Future<Result<void, Failure>> stopTracking() {
     return asyncGuard(() async {
       _trackingService.stop();
+      _activeTaskId = null;
       await _notificationService.hideSharingNotification();
     });
   }
@@ -97,12 +120,23 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
     };
   }
 
-  LocationPingSyncRequestEntity _requestFromPosition({
+  Future<LocationPingSyncRequestEntity> _requestFromPosition({
     required int taskId,
     required Position position,
-  }) {
+  }) async {
     if (position.isMocked) {
       throw Exception('You are using a mocked location');
+    }
+
+    // WHY best-effort: battery level is a nice-to-have for ops visibility,
+    // not something a ping should ever fail over — omit it rather than
+    // block/throw when the platform can't report it.
+    int? battery;
+    try {
+      battery = await _battery.batteryLevel;
+    } catch (e) {
+      Log.error('battery level unavailable: $e');
+      battery = null;
     }
 
     return LocationPingSyncRequestEntity(
@@ -113,6 +147,7 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
           longitude: position.longitude,
           accuracy: position.accuracy,
           recordedAt: DateTime.now().toUtc(),
+          battery: battery,
         ),
       ],
     );
@@ -138,8 +173,9 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
     }
 
     var permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied ||
-        permission == LocationPermission.whileInUse) {
+        permission == LocationPermission.unableToDetermine) {
       permission = await Geolocator.requestPermission();
     }
 
@@ -148,9 +184,13 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
       throw Exception('Location permission denied');
     }
 
+    if (permission == LocationPermission.unableToDetermine) {
+      throw Exception('Unable to determine location permission');
+    }
+
     if (permission != LocationPermission.always) {
-      await Geolocator.openAppSettings();
-      throw Exception('Background location permission is required');
+      await Geolocator.openLocationSettings();
+      throw Exception('Background location permission is required. Enable "Allow all the time" in settings.');
     }
   }
 }

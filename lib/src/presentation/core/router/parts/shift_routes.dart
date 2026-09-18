@@ -14,7 +14,9 @@ List<GoRoute> _shiftRoutes(Ref ref) {
         if (extra is ShiftSlotEntity) {
           return MaterialPage(child: SlotDetailsPage(slot: extra));
         }
-        return MaterialPage(child: ShiftDetailsPage(entity: extra as ShiftEntity));
+        return MaterialPage(
+          child: ShiftDetailsPage(entity: extra as ShiftEntity),
+        );
       },
     ),
     GoRoute(

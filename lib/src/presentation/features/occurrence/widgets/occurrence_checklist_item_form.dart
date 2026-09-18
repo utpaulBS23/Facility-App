@@ -6,11 +6,13 @@ class _ChecklistItemForm extends ConsumerStatefulWidget {
     required this.occurrenceId,
     required this.item,
     required this.order,
+    this.readOnly = false,
   });
 
   final int occurrenceId;
   final TaskOccurrenceChecklistItemEntity item;
   final int order;
+  final bool readOnly;
 
   @override
   ConsumerState<_ChecklistItemForm> createState() => _ChecklistItemFormState();
@@ -104,81 +106,73 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
         widget.item.isAnswered && (widget.item.response?.hasProof ?? false);
 
     if (!hasSavedPhoto) {
-      return Expanded(
-        child: GestureDetector(
-          onTap: _isSaving ? null : _pickPhoto,
-          child: Container(
-            padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
-            decoration: BoxDecoration(
-              border: Border.all(color: context.color.borderSubtle),
-              borderRadius: .circular(radius.r10),
-            ),
-            child: Row(
-              mainAxisAlignment: .center,
-              children: [
-                Icon(
-                  _photo != null
-                      ? Icons.check_circle_outline
-                      : Icons.camera_alt_outlined,
-                  size: 16,
-                  color: _photo != null ? context.color.success : context.color.text.secondary,
-                ),
-                Gap(spacing.s8),
-                Flexible(
-                  child: BodySmallText(
-                    _photo != null ? context.locale.changePhoto : context.locale.takePhoto,
-                    color: context.color.text.secondary,
-                  ),
-                ),
-              ],
-            ),
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: _isSaving || widget.readOnly ? null : _pickPhoto,
+          icon: Icon(
+            _photo != null ? Icons.check_circle_outline : Icons.camera_alt_outlined,
+            size: 18,
+            color: _photo != null ? context.color.success : null,
+          ),
+          label: Text(
+            _photo != null ? context.locale.changePhoto : context.locale.takePhoto,
           ),
         ),
       );
     }
 
     final mediaUrl = widget.item.response?.mediaUrl;
-    return ClipRRect(
-      borderRadius: .circular(radius.r6),
-      child: _photo != null
-          ? Image.file(
-              File(_photo!.path),
-              width: spacing.s56,
-              height: spacing.s56,
-              fit: .cover,
-            )
-          : mediaUrl != null
-          ? Image.network(
-              mediaUrl,
-              width: spacing.s56,
-              height: spacing.s56,
-              fit: .cover,
-              errorBuilder: (_, _, _) => _lockedPhotoChip(context),
-            )
-          : _lockedPhotoChip(context),
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: .circular(radius.r10),
+        ),
+        padding: EdgeInsets.all(spacing.s8),
+        child: ClipRRect(
+          borderRadius: .circular(radius.r6),
+          child: _photo != null
+              ? Image.file(
+                  File(_photo!.path),
+                  width: 180,
+                  height: 180,
+                  fit: .cover,
+                )
+              : mediaUrl != null
+              ? Image.network(
+                  mediaUrl,
+                  width: 180,
+                  height: 180,
+                  fit: .cover,
+                  errorBuilder: (_, _, _) => _lockedPhotoChip(context),
+                )
+              : _lockedPhotoChip(context),
+        ),
+      ),
     );
   }
 
   Widget _lockedPhotoChip(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     return Container(
-      width: spacing.s56,
-      height: spacing.s56,
+      width: 180,
+      height: 180,
       color: context.color.subtle,
-      alignment: .center,
-      child: Icon(Icons.check_circle_outline, color: context.color.success),
+      alignment: Alignment.center,
+      child: Icon(Icons.check_circle_outline, size: 32, color: context.color.success),
     );
   }
 
   Widget _answerInput(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final isDisabled = _isSaving || widget.readOnly;
     return switch (widget.item.responseType) {
       TaskOccurrenceChecklistResponseType.rating => Row(
         children: List.generate(5, (i) {
           final value = i + 1;
           final isFilled = (_ratingValue ?? 0) >= value;
           return GestureDetector(
-            onTap: _isSaving ? null : () => setState(() => _ratingValue = value),
+            onTap: isDisabled ? null : () => setState(() => _ratingValue = value),
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: .only(right: spacing.s8),
@@ -199,7 +193,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.check_rounded,
               isSelected: _booleanValue == true,
               color: context.color.success,
-              onTap: _isSaving ? null : () => setState(() => _booleanValue = true),
+              onTap: isDisabled ? null : () => setState(() => _booleanValue = true),
             ),
           ),
           Gap(spacing.s8),
@@ -209,14 +203,14 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.close_rounded,
               isSelected: _booleanValue == false,
               color: context.color.error,
-              onTap: _isSaving ? null : () => setState(() => _booleanValue = false),
+              onTap: isDisabled ? null : () => setState(() => _booleanValue = false),
             ),
           ),
         ],
       ),
       TaskOccurrenceChecklistResponseType.text => TextField(
         controller: _textController,
-        enabled: !_isSaving,
+        enabled: !isDisabled,
         maxLines: 3,
         decoration: InputDecoration(labelText: context.locale.occurrenceTextAnswerLabel),
         onChanged: (_) => setState(() {}),
@@ -252,33 +246,38 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               Gap(spacing.s12),
               Expanded(child: LabelLargeText(widget.item.label)),
               if (isAnswered)
-                Icon(Icons.check_circle_rounded, size: 18, color: context.color.success),
+                Icon(Icons.check_circle_rounded, size: 18, color: context.color.primary),
             ],
           ),
           Gap(spacing.s12),
           _answerInput(context),
-          Gap(spacing.s12),
-          Row(
-            children: [
-              _photoSection(context),
-              Gap(spacing.s8),
-              Expanded(
-                child: FilledButton(
-                  onPressed: _isSaving || !_hasAnswer ? null : _save,
-                  child: _isSaving
-                      ? SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: context.color.onPrimary,
-                          ),
-                        )
-                      : Text(context.locale.occurrenceSaveAnswer),
+          Gap(spacing.s16),
+          _photoSection(context),
+          if (!isAnswered) ...[
+            Gap(spacing.s16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _isSaving || !_hasAnswer || widget.readOnly
+                    ? null
+                    : _save,
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.color.primary,
+                  disabledBackgroundColor: context.color.primary.withValues(alpha: 0.4),
                 ),
+                child: _isSaving
+                    ? SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: context.color.onPrimary,
+                        ),
+                      )
+                    : Text(context.locale.occurrenceSaveAnswer),
               ),
-            ],
-          ),
+            ),
+          ],
         ],
       ),
     );
@@ -295,17 +294,14 @@ class _ItemOrderBadge extends StatelessWidget {
     final radius = context.dimensions.radius;
 
     return Container(
-      width: 28,
-      height: 28,
+      width: 32,
+      height: 32,
       decoration: BoxDecoration(
         color: context.color.subtle,
         borderRadius: .circular(radius.r6),
       ),
       alignment: .center,
-      child: Text(
-        '$order',
-        style: context.textStyle.bodySmall.copyWith(color: context.color.text.primary),
-      ),
+      child: LabelLargeText('$order', color: context.color.text.primary),
     );
   }
 }
@@ -334,27 +330,26 @@ class _BooleanChoiceChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s8,
+        ),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.08) : context.color.onPrimary,
-          borderRadius: .circular(radius.r10),
+          color: isSelected
+              ? color.withValues(alpha: 0.08)
+              : context.color.onPrimary,
+          borderRadius: BorderRadius.circular(radius.r12),
           border: Border.all(
             color: isSelected ? color : context.color.borderSubtle,
             width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Row(
-          mainAxisAlignment: .center,
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: isSelected ? color : context.color.text.secondary),
+            Icon(icon, size: 12, color: color),
             Gap(spacing.s8),
-            Text(
-              label,
-              style: context.textStyle.bodyMedium.copyWith(
-                color: isSelected ? color : context.color.text.primary,
-              ),
-            ),
+            LabelLargeText(label, color: context.color.text.primary),
           ],
         ),
       ),

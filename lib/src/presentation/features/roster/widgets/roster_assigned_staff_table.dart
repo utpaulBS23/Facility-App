@@ -68,8 +68,7 @@ class _RosterAssignedStaffTable extends StatelessWidget {
       child: Table(
         columnWidths: {
           0: const FlexColumnWidth(3),
-          1: const FlexColumnWidth(2.4),
-          if (_hasActionsColumn) 2: const IntrinsicColumnWidth(),
+          if (_hasActionsColumn) 1: const IntrinsicColumnWidth(),
         },
         border: TableBorder(
           horizontalInside: BorderSide(color: context.color.borderSubtle),
@@ -80,9 +79,6 @@ class _RosterAssignedStaffTable extends StatelessWidget {
             children: [
               _RosterTableCell(
                 child: Text(context.locale.attendantName, style: headerStyle),
-              ),
-              _RosterTableCell(
-                child: Text(context.locale.phone, style: headerStyle),
               ),
               if (_hasActionsColumn)
                 const _RosterTableCell(child: SizedBox.shrink()),
@@ -115,15 +111,6 @@ class _RosterAssignedStaffTable extends StatelessWidget {
                         ),
                       ],
                     ],
-                  ),
-                ),
-                _RosterTableCell(
-                  child: Text(
-                    assignment.attendant.phone ?? '-',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (_hasActionsColumn)

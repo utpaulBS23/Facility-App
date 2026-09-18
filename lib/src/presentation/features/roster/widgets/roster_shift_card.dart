@@ -65,6 +65,13 @@ class _RosterShiftCard extends StatelessWidget {
               label: shift.facility.name,
             ),
           ],
+          if (shift.facility.address.isNotEmpty) ...[
+            Gap(spacing.s6),
+            _RosterShiftInfoRow(
+              icon: Icons.location_on_outlined,
+              label: shift.facility.address,
+            ),
+          ],
           if (supervisor != null && supervisor.fullName.isNotEmpty) ...[
             Gap(spacing.s6),
             _RosterShiftInfoRow(

@@ -8,6 +8,11 @@ CacheService cacheService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+SecureStorageService secureStorageService(Ref ref) {
+  return FlutterSecureStorageService(ref.read(flutterSecureStorageProvider));
+}
+
+@Riverpod(keepAlive: true)
 SessionService sessionService(Ref ref) {
   final service = InMemorySessionService();
   ref.onDispose(service.dispose);
@@ -18,11 +23,6 @@ SessionService sessionService(Ref ref) {
 @Riverpod(keepAlive: true)
 RestClient restClientService(Ref ref) {
   return RestClient(ref.read(dioProvider));
-}
-
-@Riverpod(keepAlive: true)
-ImagePickerService imagePickerService(Ref ref) {
-  return ImagePickerServiceImpl(ImagePicker());
 }
 
 @Riverpod(keepAlive: true)

@@ -8,6 +8,13 @@ part of '../router.dart';
 List<GoRoute> _menuItemRoutes(Ref ref) {
   return [
     GoRoute(
+      path: Routes.myAttendance,
+      name: Routes.myAttendance,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: MyAttendancePage());
+      },
+    ),
+    GoRoute(
       path: Routes.profile,
       name: Routes.profile,
       pageBuilder: (context, state) {
@@ -29,10 +36,48 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.addAdditionalIncome,
+      name: Routes.addAdditionalIncome,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: AddAdditionalIncomePage());
+      },
+    ),
+    GoRoute(
       path: Routes.facilityExpense,
       name: Routes.facilityExpense,
       pageBuilder: (context, state) {
         return const MaterialPage(child: FacilityExpensePage());
+      },
+    ),
+    GoRoute(
+      path: Routes.addFacilityExpense,
+      name: Routes.addFacilityExpense,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: AddFacilityExpensePage());
+      },
+    ),
+    GoRoute(
+      path: Routes.claimExpense,
+      name: Routes.claimExpense,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: TravelExpensesPage());
+      },
+    ),
+    GoRoute(
+      path: Routes.addTravelExpense,
+      name: Routes.addTravelExpense,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: ClaimExpensePage());
+      },
+    ),
+    GoRoute(
+      path: Routes.travelExpenseDetails,
+      name: Routes.travelExpenseDetails,
+      pageBuilder: (context, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return MaterialPage(
+          child: TravelExpenseDetailsPage(travelExpenseId: id),
+        );
       },
     ),
     GoRoute(

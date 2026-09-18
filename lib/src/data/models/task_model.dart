@@ -2,6 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:intl/intl.dart';
 
 import '../../domain/entities/task_entity.dart';
+import '../../presentation/core/utils/date_formatter.dart';
 
 part 'task_model.mapper.dart';
 
@@ -9,7 +10,7 @@ String _formatDueTime(String? raw) {
   if (raw == null) return '';
   try {
     final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
-    return DateFormat('hh:mm a').format(dt);
+    return DateFormatter.timestamp(dt);
   } catch (_) {
     return raw;
   }

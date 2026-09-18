@@ -14,7 +14,7 @@ class _ApplyLeaveButton extends StatelessWidget {
       height: spacing.s44,
       child: FilledButton.icon(
         onPressed: onTap,
-        icon: const Icon(Icons.calendar_month_outlined),
+        icon: Assets.icons.addCalendar.svg(),
         label: Text(context.locale.applyLeave),
       ),
     );

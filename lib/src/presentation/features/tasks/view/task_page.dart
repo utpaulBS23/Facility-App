@@ -10,8 +10,10 @@ import '../../../../domain/entities/task_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/filter_dropdown.dart';
+import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
@@ -57,39 +59,48 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     _fetch();
   }
 
-  void _onFacilityChanged(int? facilityId) {
-    setState(() => _selectedFacilityId = facilityId);
-    _fetch();
-  }
 
   void _onRetry() => _fetch();
 
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
 
-  void _onStartTap(TaskEntity task) {
-    ref.read(tasksProvider.notifier).startIssue(issueId: task.id);
+  Future<void> _onStartTap(TaskEntity task) async {
+    final success = await ref
+        .read(tasksProvider.notifier)
+        .startIssue(issueId: task.id);
+    if (success) {
+      _onTabChanged(_TaskTab.inProgress);
+    }
   }
 
-  void _onCompleteTap(TaskEntity task) {
+  Future<void> _onCompleteTap(TaskEntity task) async {
     if (!task.proofRequiredOnComplete || task.media.isNotEmpty) {
-      ref
-          .read(tasksProvider.notifier)
-          .completeIssue(issueId: task.id)
-          .then((_) => _fetch())
-          // WHY: error already surfaced via AsyncValue.error on tasksProvider; suppress unhandled Future
-          .catchError((_) {});
+      try {
+        final completed = await ref
+            .read(tasksProvider.notifier)
+            .completeIssue(issueId: task.id);
+        if (completed != null) {
+          _onTabChanged(_TaskTab.resolved);
+        }
+      } catch (_) {}
       return;
     }
 
     showTaskProofBottomSheet(
       context,
       onSubmit: (photoPath, alt) async {
-        await ref
-            .read(tasksProvider.notifier)
-            .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
-        await ref.read(tasksProvider.notifier).completeIssue(issueId: task.id);
-        _fetch();
+        try {
+          await ref
+              .read(tasksProvider.notifier)
+              .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
+          final completed = await ref
+              .read(tasksProvider.notifier)
+              .completeIssue(issueId: task.id);
+          if (completed != null) {
+            _onTabChanged(_TaskTab.resolved);
+          }
+        } catch (_) {}
       },
     );
   }
@@ -105,35 +116,30 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: AppBar(
-        title: DisplaySmallText(context.locale.task.trim()),
+        title: DisplaySmallText(context.locale.issues.trim()),
         titleSpacing: spacing.s16,
         backgroundColor: context.color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (facilities.length > 1)
+            AppBarFilterButton<int?>(
+              title: context.locale.filters,
+              icon: Icons.apartment_outlined,
+              currentValue: _selectedFacilityId,
+              options: [
+                (value: null, label: context.locale.all),
+                ...facilities.map((f) => (value: f.id as int?, label: f.name)),
+              ],
+              onSelected: (facilityId) {
+                setState(() => _selectedFacilityId = facilityId);
+                _fetch();
+              },
+            ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (facilities.length > 1)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                spacing.s16,
-                spacing.s12,
-                spacing.s16,
-                0,
-              ),
-              child: FilterDropdown(
-                label: context.locale.facilityName,
-                value: _selectedFacilityId,
-                items: [
-                  for (final facility in facilities)
-                    DropdownMenuItem(
-                      value: facility.id,
-                      child: Text(facility.name),
-                    ),
-                ],
-                onChanged: _onFacilityChanged,
-              ),
-            ),
           _TaskTabBar(selectedTab: _selectedTab, onTabChanged: _onTabChanged),
           Expanded(
             child: taskState.when(

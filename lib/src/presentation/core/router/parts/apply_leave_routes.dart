@@ -1,7 +1,6 @@
 part of '../router.dart';
 
 List<GoRoute> _applyLeaveRoutes(Ref ref) {
-  
   return [
     GoRoute(
       path: Routes.applyLeave,
@@ -16,15 +15,10 @@ List<GoRoute> _applyLeaveRoutes(Ref ref) {
     GoRoute(
       path: Routes.leaveDetails,
       name: Routes.leaveDetails,
-      builder: (context, state) =>
-          LeaveDetailsPage(request: state.extra! as LeaveRequestEntity),
-    ),
-    GoRoute(
-      path: Routes.selectShift,
-      name: Routes.selectShift,
       builder: (context, state) {
-        final date = state.extra! as String;
-        return SelectShiftPage(date: date);
+        final idStr = state.pathParameters['id'];
+        final id = int.parse(idStr!);
+        return LeaveDetailsPage(requestId: id);
       },
     ),
     GoRoute(

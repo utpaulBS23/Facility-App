@@ -4,10 +4,15 @@ part of '../view/shift_tab.dart';
 /// built from only the fields the slots payload actually carries (no
 /// shift-template name).
 class _SlotDetailContractCard extends StatelessWidget {
-  const _SlotDetailContractCard({required this.slot, required this.facility});
+  const _SlotDetailContractCard({
+    required this.slot,
+    required this.facility,
+    required this.date,
+  });
 
   final ShiftSlotEntity slot;
   final SlotFacilityEntity? facility;
+  final String? date;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +21,7 @@ class _SlotDetailContractCard extends StatelessWidget {
     final address = facility?.address ?? '';
     final timeRange =
         '${DateFormatter.shiftTime(slot.startTime)} – ${DateFormatter.shiftTime(slot.endTime)}';
+    final parsedDate = date == null ? null : DateTime.tryParse(date!);
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -51,6 +57,14 @@ class _SlotDetailContractCard extends StatelessWidget {
             Gap(spacing.s6),
           ],
           Gap(spacing.s8),
+          if (parsedDate != null) ...[
+            _DateTimeTile(
+              icon: Icons.calendar_today_outlined,
+              label: context.locale.date,
+              value: DateFormatter.shiftDate(parsedDate),
+            ),
+            Gap(spacing.s8),
+          ],
           Row(
             children: [
               Expanded(

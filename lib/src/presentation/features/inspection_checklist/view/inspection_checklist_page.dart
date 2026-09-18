@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -10,6 +12,7 @@ import '../../../../domain/entities/checklist_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/inspection_checklist_provider.dart';
@@ -89,12 +92,7 @@ class _InspectionChecklistPageState
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: LabelLargeText(context.locale.inspectionChecklist),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-        centerTitle: true,
-      ),
+      appBar: DetailAppBar(title: context.locale.inspectionChecklist),
       body: checklistState.isLoadingChecklist
           ? const Center(child: CircularProgressIndicator.adaptive())
           : checklistState.checklistError != null
@@ -150,7 +148,12 @@ class _ChecklistBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checklist = checklistState.checklist!;
-    final isResolved = detail.status == VisitStatus.resolved;
+    // WHY: a completed visit is as final as a resolved one — both mean the
+    // checklist can no longer be edited, so cancel/submit/new-issue actions
+    // must hide for either status, not just resolved.
+    final isResolved =
+        detail.status == VisitStatus.resolved ||
+        detail.status == VisitStatus.completed;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -164,21 +167,28 @@ class _ChecklistBody extends StatelessWidget {
               _InspectionProgressHeader(state: checklistState),
               Gap(spacing.s8),
               ...checklist.items
-                  .where((item) => item.answerType != ChecklistAnswerType.repairWork)
-                  .expand((item) => [
-                    _InspectionItemTile(
-                      item: item,
-                      state: checklistState,
-                      visitId: detail.id,
-                      isResolved: isResolved,
-                    ),
-                    Divider(color: context.color.borderSubtle, height: 1),
-                  ]),
-              _InspectionRepairWorkSection(
-                issues: [...checklist.issues, ...checklistState.localIssues],
-                onNewIssue: onNewIssue,
-              ),
-              Gap(spacing.s8),
+                  .where(
+                    (item) => item.answerType != ChecklistAnswerType.repairWork,
+                  )
+                  .expand(
+                    (item) => [
+                      _InspectionItemTile(
+                        item: item,
+                        state: checklistState,
+                        visitId: detail.id,
+                        isResolved: isResolved,
+                      ),
+                      Divider(color: context.color.borderSubtle, height: 1),
+                    ],
+                  ),
+              if (detail.facilityName != null) ...[
+                _InspectionRepairWorkSection(
+                  issues: [...checklist.issues, ...checklistState.localIssues],
+                  onNewIssue: onNewIssue,
+                  canAddIssue: !isResolved,
+                ),
+                Gap(spacing.s8),
+              ],
             ],
           ),
         ),

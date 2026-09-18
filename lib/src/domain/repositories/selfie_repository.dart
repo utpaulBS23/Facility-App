@@ -6,5 +6,6 @@ import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
 
 abstract base class SelfieRepository extends Repository {
-  Future<Result<String?, Failure>> pickSelfie();
+  /// Runs face-detection validation on an already-captured selfie.
+  Future<Result<String?, Failure>> validateSelfie(String path);
 }

@@ -20,6 +20,7 @@ import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_dropdown_button_form_field.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../../shift/riverpod/shift_slots_provider.dart';
@@ -43,9 +44,14 @@ part 'approval_request_page.dart';
 part 'shift_check_out_page.dart';
 
 class ShiftCheckInPage extends ConsumerStatefulWidget {
-  const ShiftCheckInPage({super.key, this.shiftSlotId});
+  const ShiftCheckInPage({super.key, this.shiftSlotId, this.supervisorName});
 
   final int? shiftSlotId;
+
+  /// The active slot's supervisor, from the shift-slots payload. Overrides
+  /// the logged-in user's own supervisor field (see [_AutoDetectedInfoCard])
+  /// when present.
+  final String? supervisorName;
 
   @override
   ConsumerState<ShiftCheckInPage> createState() => _ShiftCheckInPageState();
@@ -89,17 +95,26 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         );
   }
 
-  void _onTakePhoto() {
-    ref.read(selfiePickerProvider.notifier).pickSelfie();
+  Future<void> _onTakePhoto() async {
+    final path = await context.pushNamed<String?>(Routes.selfieCamera);
+    if (path == null || !mounted) return;
+    ref.read(selfiePickerProvider.notifier).capturePhoto(path);
   }
 
   // WHY: the shift tab's slots list is fetched once on mount, so a check-in
   // made from here would otherwise leave it showing pre-check-in state until
   // the user manually changes the date.
   void _refreshShiftSlots() {
+    // WHY facilityId re-sent: without it, a supervisor filtered to a
+    // non-default facility would have this refresh silently fall back to
+    // the session's primary facility (see GetShiftSlotsUseCase), discarding
+    // their filter selection.
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(date: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+        .fetch(
+          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          facilityId: ref.read(shiftSlotsProvider).valueOrNull?.facility?.id,
+        );
   }
 
   void _showWarnings(List<CheckInWarningEntity> warnings) {
@@ -162,14 +177,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Headline2xlTinyText(context.locale.shiftCheckIn),
-        ),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.shiftCheckIn),
       body: _ShiftCheckInBody(
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
@@ -180,6 +188,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),
+        supervisorName: widget.supervisorName,
       ),
     );
   }

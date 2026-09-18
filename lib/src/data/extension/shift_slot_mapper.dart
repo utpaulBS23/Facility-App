@@ -1,17 +1,6 @@
 import '../../domain/entities/shift_slot_entity.dart';
 import '../models/shift_slot_model.dart';
-
-DateTime? _parseUtcIso(String? raw) {
-  if (raw == null || raw.isEmpty) return null;
-  try {
-    // WHY: API returns UTC strings without a 'Z' suffix; Dart parses bare ISO
-    // strings as local time, so force UTC before converting.
-    final value = (raw.contains('Z') || raw.contains('+')) ? raw : '${raw}Z';
-    return DateTime.parse(value).toLocal();
-  } catch (_) {
-    return null;
-  }
-}
+import 'date_time_parser.dart';
 
 extension SlotFacilityModelToEntity on SlotFacilityModel {
   SlotFacilityEntity toEntity() =>
@@ -21,8 +10,8 @@ extension SlotFacilityModelToEntity on SlotFacilityModel {
 extension SlotAttendanceModelToEntity on SlotAttendanceModel {
   SlotAttendanceEntity toEntity() => SlotAttendanceEntity(
     id: id,
-    checkInTime: _parseUtcIso(checkInTime),
-    checkOutTime: _parseUtcIso(checkOutTime),
+    checkInTime: parseLocalIso(checkInTime),
+    checkOutTime: parseLocalIso(checkOutTime),
     approvalStatus: approvalStatus ?? '',
     lateByMinutes: lateByMinutes ?? 0,
     checkInDistanceMeters: checkInDistanceMeters,
@@ -76,6 +65,7 @@ extension ActiveSlotModelToEntity on ActiveSlotModel {
     action: SlotAction.fromKey(action),
     isSlotLead: isSlotLead ?? false,
     message: message ?? '',
+    supervisorName: supervisorName ?? '',
   );
 }
 
@@ -90,6 +80,16 @@ extension SlotSummaryModelToEntity on SlotSummaryModel {
   );
 }
 
+extension ShiftSlotsFacilityModelToEntity on ShiftSlotsFacilityModel {
+  SlotsFacilityEntity toEntity() => SlotsFacilityEntity(
+    facilityId: facilityId,
+    facilityName: facilityName ?? '',
+    slots: slots.map((s) => s.toEntity()).toList(),
+    isPrimary: isPrimary,
+    isRelief: isRelief,
+  );
+}
+
 extension ShiftSlotsDataModelToEntity on ShiftSlotsDataModel {
   ShiftSlotsEntity toEntity() => ShiftSlotsEntity(
     date: date ?? '',
@@ -98,5 +98,6 @@ extension ShiftSlotsDataModelToEntity on ShiftSlotsDataModel {
     activeSlot: activeSlot?.toEntity(),
     slots: slots.map((s) => s.toEntity()).toList(),
     summary: summary?.toEntity(),
+    facilities: facilities.map((f) => f.toEntity()).toList(),
   );
 }

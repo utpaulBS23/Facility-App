@@ -41,10 +41,7 @@ final List<ShellTabConfig> shellTabConfigs = [
     route: Routes.dashboard,
     icon: Assets.icons.homeIcon,
     label: _dashboardLabel,
-    permissions: [
-      UserPermission.insightsDashboardView,
-      UserPermission.reportFacilityWiseView,
-    ],
+    permissions: [UserPermission.insightsDashboardView],
   ),
   ShellTabConfig(
     branchIndex: 1,
@@ -74,7 +71,6 @@ final List<ShellTabConfig> shellTabConfigs = [
     // new key, checklistResponseView is the pre-existing gate for this tab.
     permissions: [
       UserPermission.visitTaskView,
-      UserPermission.checklistResponseView,
     ],
   ),
   // WHY permission: this slot now renders the board/occurrence content (see
@@ -103,7 +99,7 @@ final List<ShellTabConfig> shellTabConfigs = [
     route: Routes.issue,
     icon: Assets.icons.issue,
     label: _issuesLabel,
-    permissions: [UserPermission.taskView],
+    permissions: [UserPermission.issueView],
   ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
   // gated individually.

@@ -26,16 +26,18 @@ class _ManualAttendanceBottomSheetState
     if (!_formKey.currentState!.validate()) return;
     final shiftSlotId = widget.shiftSlotId;
     if (shiftSlotId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.noActiveShift)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.locale.noActiveShift)));
       return;
     }
-    ref.read(manualAttendanceProvider.notifier).submit(
-      shiftSlotId: shiftSlotId,
-      reason: _selectedReason!,
-      checkInInfo: widget.checkInInfo,
-    );
+    ref
+        .read(manualAttendanceProvider.notifier)
+        .submit(
+          shiftSlotId: shiftSlotId,
+          reason: _selectedReason!,
+          checkInInfo: widget.checkInInfo,
+        );
   }
 
   @override
@@ -45,10 +47,7 @@ class _ManualAttendanceBottomSheetState
         Navigator.of(context).pop();
         context.goNamed(
           Routes.approvalRequest,
-          extra: (
-            attendance: next.value!,
-            withdrawRoute: widget.withdrawRoute,
-          ),
+          extra: (attendance: next.value!, withdrawRoute: widget.withdrawRoute),
         );
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -75,62 +74,62 @@ class _ManualAttendanceBottomSheetState
           spacing.s16 + MediaQuery.viewInsetsOf(context).bottom,
         ),
         child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HeadlineSmallText(locale.manualAttendance),
-            Gap(spacing.s4),
-            BodyRegularText.secondary(locale.manualAttendanceDescription),
-            Gap(spacing.s16),
-            _ManualAttendanceInfoRow(
-              label: locale.checkInTime,
-              value: widget.checkInInfo.checkInTime,
-            ),
-            Gap(spacing.s8),
-            _ManualAttendanceInfoRow(
-              label: locale.location,
-              value: widget.checkInInfo.location,
-            ),
-            Gap(spacing.s16),
-            _ReasonDropdown(
-              selectedReason: _selectedReason,
-              reasons: [
-                locale.reasonCameraNotWorking,
-                locale.reasonCameraUnavailable,
-                locale.reasonPhoneCameraBroken,
-                locale.reasonNoCameraDevice,
-              ],
-              onChanged: (value) => setState(() => _selectedReason = value),
-              validator: (_) =>
-                  _selectedReason == null ? locale.reasonRequired : null,
-            ),
-            Gap(spacing.s16),
-            SizedBox(
-              width: double.infinity,
-              height: spacing.s56,
-              child: FilledButton(
-                onPressed: isLoading ? null : _onSubmit,
-                child: isLoading
-                    ? const LoadingIndicator()
-                    : Text(locale.submit),
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HeadlineSmallText(locale.manualAttendance),
+              Gap(spacing.s4),
+              BodyRegularText.secondary(locale.manualAttendanceDescription),
+              Gap(spacing.s16),
+              _ManualAttendanceInfoRow(
+                label: locale.checkInTime,
+                value: widget.checkInInfo.checkInTime,
               ),
-            ),
-            Gap(spacing.s12),
-            SizedBox(
-              width: double.infinity,
-              child: TextButton(
-                onPressed: isLoading ? null : context.pop,
-                style: TextButton.styleFrom(
-                  backgroundColor: context.color.subtle,
-                  foregroundColor: context.color.text.primary,
-                  shape: const StadiumBorder(),
+              Gap(spacing.s8),
+              _ManualAttendanceInfoRow(
+                label: locale.location,
+                value: widget.checkInInfo.location,
+              ),
+              Gap(spacing.s16),
+              _ReasonDropdown(
+                selectedReason: _selectedReason,
+                reasons: [
+                  locale.reasonCameraNotWorking,
+                  locale.reasonCameraUnavailable,
+                  locale.reasonPhoneCameraBroken,
+                  locale.reasonNoCameraDevice,
+                ],
+                onChanged: (value) => setState(() => _selectedReason = value),
+                validator: (_) =>
+                    _selectedReason == null ? locale.reasonRequired : null,
+              ),
+              Gap(spacing.s16),
+              SizedBox(
+                width: double.infinity,
+                height: spacing.s56,
+                child: FilledButton(
+                  onPressed: isLoading ? null : _onSubmit,
+                  child: isLoading
+                      ? const LoadingIndicator()
+                      : Text(locale.submit),
                 ),
-                child: LabelLargeText(locale.cancel),
               ),
-            ),
-          ],
+              Gap(spacing.s12),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: isLoading ? null : context.pop,
+                  style: TextButton.styleFrom(
+                    backgroundColor: context.color.subtle,
+                    foregroundColor: context.color.text.primary,
+                    shape: const StadiumBorder(),
+                  ),
+                  child: LabelLargeText(locale.cancel),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -139,10 +138,7 @@ class _ManualAttendanceBottomSheetState
 }
 
 class _ManualAttendanceInfoRow extends StatelessWidget {
-  const _ManualAttendanceInfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _ManualAttendanceInfoRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -152,13 +148,8 @@ class _ManualAttendanceInfoRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 100,
-          child: BodyRegularText.secondary(label),
-        ),
-        Expanded(
-          child: BodyRegularText(value),
-        ),
+        SizedBox(width: 100, child: BodyRegularText.secondary(label)),
+        Expanded(child: BodyRegularText(value)),
       ],
     );
   }

@@ -59,6 +59,10 @@ class Endpoints {
   static const String rejectAttendance =
       '/partners/{partnerId}/attendances/{attendanceId}/reject';
 
+  /// My Attendance — supervisor's own check-in/check-out visit history.
+  static const String myAttendance =
+      '/partners/{partnerId}/supervisor-attendance';
+
   /// Shifts
 
   /// Global shift configuration (templates, defaults) shared across facilities.
@@ -121,7 +125,9 @@ class Endpoints {
 
   /// Called when a supervisor starts traveling toward a facility, before
   /// [visitCheckIn]. `travel_tracking_excluded: true` in the response means
-  /// this is the day's first visit — fall back to [locationPingSync] instead.
+  /// this leg has no travel to track (e.g. day's first visit) — skip
+  /// [locationPingSync]; otherwise start it as the fallback since the
+  /// Barikoi route calc doesn't cover it.
   static const String travelRouteCheckIn =
       '/partners/{partnerId}/travel-routes/check-in';
   static const String problemCategories =
@@ -153,6 +159,37 @@ class Endpoints {
   static const String rejectLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
 
+  static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
+  static const String travelExpenseDetail =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}';
+
+  /// Master Data — generic partner/global configurable dropdown items,
+  /// filtered by `category` (e.g. `transportMode`).
+  static const String masterDataItems =
+      '/partners/{partnerId}/master-data/items';
+
+  /// Additional Incomes (Extra Collection)
+  static const String additionalIncomes =
+      '/partners/{partnerId}/additional-incomes';
+
+  /// Product Catalog (Extra Collection — Product Sell)
+  static const String productCatalogDropdown =
+      '/partners/{partnerId}/product-catalog/dropdown';
+
+  /// Facility Products (Extra Collection — Product Sell, facility-scoped)
+  static const String facilityProducts =
+      '/partners/{partnerId}/facility-products';
+
+  /// Product Sale Entries (Extra Collection — Product Sell)
+  static const String productSaleEntries =
+      '/partners/{partnerId}/product-sale-entries';
+
+  /// Training Management
+  static const String trainingSessions =
+      '/partners/{partnerId}/training-sessions';
+  static const String trainingSessionDetails =
+      '/partners/{partnerId}/training-sessions/{trainingSessionId}';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';
@@ -164,6 +201,12 @@ class Endpoints {
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
   static const String rejectSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+
+  /// Facility Expenses
+  static const String facilityExpenses =
+      '/partners/{partnerId}/facility-expenses';
+  static const String facilityExpenseDetails =
+      '/partners/{partnerId}/facility-expenses/{facilityExpenseId}';
   static const String dispatchSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/dispatch';
   static const String deliveries = '/partners/{partnerId}/deliveries';
@@ -212,4 +255,7 @@ class Endpoints {
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/checklist-items/{itemId}/response';
   static const String taskOccurrenceSubmit =
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/submit';
+
+  /// Profile
+  static const String profile = '/profile';
 }

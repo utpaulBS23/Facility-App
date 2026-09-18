@@ -5,6 +5,7 @@ AuthenticationRepository authenticationRepository(Ref ref) {
   final repository = AuthenticationRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
     session: ref.read(sessionServiceProvider),
+    secureStorage: ref.read(secureStorageServiceProvider),
   );
   ref.onDispose(repository.dispose);
 
@@ -38,15 +39,17 @@ LocationPingRepository locationPingRepository(Ref ref) {
 
 @Riverpod(keepAlive: true)
 SelfieRepository selfieRepository(Ref ref) {
-  return SelfieRepositoryImpl(
-    ref.read(imagePickerServiceProvider),
-    ref.read(faceDetectionServiceProvider),
-  );
+  return SelfieRepositoryImpl(ref.read(faceDetectionServiceProvider));
 }
 
 @Riverpod(keepAlive: true)
 AttendanceRepository attendanceRepository(Ref ref) {
   return AttendanceRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+MyAttendanceRepository myAttendanceRepository(Ref ref) {
+  return MyAttendanceRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)
@@ -105,6 +108,16 @@ LeaveRepository leaveRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+TravelExpenseRepository travelExpenseRepository(Ref ref) {
+  return TravelExpenseRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+MasterDataRepository masterDataRepository(Ref ref) {
+  return MasterDataRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 AppUpdateRepository appUpdateRepository(Ref ref) {
   return AppUpdateRepositoryImpl(
     ref.read(restClientServiceProvider),
@@ -115,6 +128,46 @@ AppUpdateRepository appUpdateRepository(Ref ref) {
 @Riverpod(keepAlive: true)
 SupplyRepository supplyRepository(Ref ref) {
   return SupplyRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
+  return AdditionalIncomeRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
+  return FacilityExpenseRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ProductCatalogRepository productCatalogRepository(Ref ref) {
+  return ProductCatalogRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+FacilityProductRepository facilityProductRepository(Ref ref) {
+  return FacilityProductRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ProductSaleEntryRepository productSaleEntryRepository(Ref ref) {
+  return ProductSaleEntryRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+TrainingRepository trainingRepository(Ref ref) {
+  return TrainingRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)
@@ -129,7 +182,18 @@ PushNotificationRepository pushNotificationRepository(Ref ref) {
 ItemCatalogRepository itemCatalogRepository(Ref ref) {
   return ItemCatalogRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
+
 @Riverpod(keepAlive: true)
 StockRepository stockRepository(Ref ref) {
   return StockRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+ProfileRepository profileRepository(Ref ref) {
+  return ProfileRepositoryImpl(restClient: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+ForgotPasswordRepository forgotPasswordRepository(Ref ref) {
+  return ForgotPasswordRepositoryImpl(restClient: ref.read(restClientServiceProvider));
 }

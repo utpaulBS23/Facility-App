@@ -6,6 +6,11 @@ LoginUseCase loginUseCase(Ref ref) {
 }
 
 @riverpod
+RestoreSessionUseCase restoreSessionUseCase(Ref ref) {
+  return RestoreSessionUseCase(ref.read(authenticationRepositoryProvider));
+}
+
+@riverpod
 LogoutUseCase logoutUseCase(Ref ref) {
   return LogoutUseCase(ref.read(authenticationRepositoryProvider));
 }
@@ -64,8 +69,8 @@ MarkOnboardingCompletedUseCase markOnboardingCompletedUseCase(Ref ref) {
 }
 
 @riverpod
-PickSelfieUseCase pickSelfieUseCase(Ref ref) {
-  return PickSelfieUseCase(ref.read(selfieRepositoryProvider));
+ValidateSelfieUseCase validateSelfieUseCase(Ref ref) {
+  return ValidateSelfieUseCase(ref.read(selfieRepositoryProvider));
 }
 
 @riverpod
@@ -96,11 +101,24 @@ SyncCurrentLocationPingUseCase syncCurrentLocationPingUseCase(Ref ref) {
 }
 
 @riverpod
+GetLocationSharingStatusUseCase getLocationSharingStatusUseCase(Ref ref) {
+  return GetLocationSharingStatusUseCase(ref.read(locationPingRepositoryProvider));
+}
+
+@riverpod
 GetMonthlyAttendanceOverviewUseCase getMonthlyAttendanceOverviewUseCase(
   Ref ref,
 ) {
   return GetMonthlyAttendanceOverviewUseCase(
     ref.read(attendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetMyAttendanceUseCase getMyAttendanceUseCase(Ref ref) {
+  return GetMyAttendanceUseCase(
+    ref.read(myAttendanceRepositoryProvider),
     ref.read(authenticationRepositoryProvider),
   );
 }
@@ -412,6 +430,78 @@ RequestLeaveUseCase requestLeaveUseCase(Ref ref) {
 }
 
 @riverpod
+CreateTravelExpenseUseCase createTravelExpenseUseCase(Ref ref) {
+  return CreateTravelExpenseUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTravelExpensesUseCase getTravelExpensesUseCase(Ref ref) {
+  return GetTravelExpensesUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTravelExpenseDetailUseCase getTravelExpenseDetailUseCase(Ref ref) {
+  return GetTravelExpenseDetailUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
+  return GetMasterDataItemsUseCase(
+    ref.read(masterDataRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetAdditionalIncomesUseCase getAdditionalIncomesUseCase(Ref ref) {
+  return GetAdditionalIncomesUseCase(
+    additionalIncomeRepository: ref.read(additionalIncomeRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateAdditionalIncomeUseCase createAdditionalIncomeUseCase(Ref ref) {
+  return CreateAdditionalIncomeUseCase(
+    additionalIncomeRepository: ref.read(additionalIncomeRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetProductCatalogDropdownUseCase getProductCatalogDropdownUseCase(Ref ref) {
+  return GetProductCatalogDropdownUseCase(
+    productCatalogRepository: ref.read(productCatalogRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityProductsUseCase getFacilityProductsUseCase(Ref ref) {
+  return GetFacilityProductsUseCase(
+    facilityProductRepository: ref.read(facilityProductRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateProductSaleEntryUseCase createProductSaleEntryUseCase(Ref ref) {
+  return CreateProductSaleEntryUseCase(
+    productSaleEntryRepository: ref.read(productSaleEntryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
@@ -511,6 +601,14 @@ GetSupplyRequestsUseCase getSupplyRequestsUseCase(Ref ref) {
 }
 
 @riverpod
+CreateSupplyRequestUseCase createSupplyRequestUseCase(Ref ref) {
+  return CreateSupplyRequestUseCase(
+    supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetSupplyRequestSummaryUseCase getSupplyRequestSummaryUseCase(Ref ref) {
   return GetSupplyRequestSummaryUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
@@ -522,6 +620,24 @@ GetSupplyRequestSummaryUseCase getSupplyRequestSummaryUseCase(Ref ref) {
 GetSupplyRequestDetailsUseCase getSupplyRequestDetailsUseCase(Ref ref) {
   return GetSupplyRequestDetailsUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+/// Training Management UseCases
+
+@riverpod
+GetTrainingSessionsUseCase getTrainingSessionsUseCase(Ref ref) {
+  return GetTrainingSessionsUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetTrainingSessionDetailsUseCase getTrainingSessionDetailsUseCase(Ref ref) {
+  return GetTrainingSessionDetailsUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -557,6 +673,7 @@ GetDeliveryForSupplyRequestUseCase getDeliveryForSupplyRequestUseCase(Ref ref) {
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
+
 @riverpod
 ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
   return ConfirmDeliveryUseCase(
@@ -571,6 +688,30 @@ ConfirmDeliveryUseCase confirmDeliveryUseCase(Ref ref) {
 FileDeliveryComplaintUseCase fileDeliveryComplaintUseCase(Ref ref) {
   return FileDeliveryComplaintUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityExpensesUseCase getFacilityExpensesUseCase(Ref ref) {
+  return GetFacilityExpensesUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateFacilityExpenseUseCase createFacilityExpenseUseCase(Ref ref) {
+  return CreateFacilityExpenseUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+DeleteFacilityExpenseUseCase deleteFacilityExpenseUseCase(Ref ref) {
+  return DeleteFacilityExpenseUseCase(
+    facilityExpenseRepository: ref.read(facilityExpenseRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -692,4 +833,29 @@ UpdateStockTargetUseCase updateStockTargetUseCase(Ref ref) {
     stockRepository: ref.read(stockRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );
+}
+
+@riverpod
+SendForgotPasswordOtpUseCase sendForgotPasswordOtpUseCase(Ref ref) {
+  return SendForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+VerifyForgotPasswordOtpUseCase verifyForgotPasswordOtpUseCase(Ref ref) {
+  return VerifyForgotPasswordOtpUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+ResetForgotPasswordUseCase resetForgotPasswordUseCase(Ref ref) {
+  return ResetForgotPasswordUseCase(repository: ref.read(forgotPasswordRepositoryProvider));
+}
+
+@riverpod
+GetProfileUseCase getProfileUseCase(Ref ref) {
+  return GetProfileUseCase(repository: ref.read(profileRepositoryProvider));
+}
+
+@riverpod
+UpdateProfileUseCase updateProfileUseCase(Ref ref) {
+  return UpdateProfileUseCase(repository: ref.read(profileRepositoryProvider));
 }

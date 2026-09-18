@@ -4,8 +4,13 @@ part of 'shift_tab.dart';
 /// facility-scoped slots payload; only the assign-staff button (inside
 /// [_SlotCard]) differs by permission.
 class _ShiftSlotsView extends ConsumerStatefulWidget {
-  const _ShiftSlotsView({required this.onApplyLeave, required this.onSlotTap});
+  const _ShiftSlotsView({
+    required this.facilityId,
+    required this.onApplyLeave,
+    required this.onSlotTap,
+  });
 
+  final int? facilityId;
   final VoidCallback onApplyLeave;
   final void Function(ShiftSlotEntity slot) onSlotTap;
 
@@ -20,41 +25,40 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    Log.info('_ShiftSlotsView initState: facilityId=${widget.facilityId}');
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchSlots(_selectedDate),
     );
   }
 
+  @override
+  void didUpdateWidget(covariant _ShiftSlotsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // WHY post-frame: didUpdateWidget runs during the widget tree's build
+    // phase — writing to shiftSlotsProvider synchronously here throws
+    // ("Tried to modify a provider while the widget tree was building").
+    // Same reason initState() defers its own first fetch.
+    if (oldWidget.facilityId != widget.facilityId) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _fetchSlots(_selectedDate),
+      );
+    }
+  }
+
   void _fetchSlots(DateTime date) {
+    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    Log.info('_fetchSlots: date=$formattedDate, facilityId=${widget.facilityId}');
     ref
         .read(shiftSlotsProvider.notifier)
-        .fetch(date: DateFormat('yyyy-MM-dd').format(date));
+        .fetch(
+          date: formattedDate,
+          facilityId: widget.facilityId,
+        );
   }
 
   void _onDateChanged(DateTime date) {
     _selectedDate = date;
     _fetchSlots(date);
-  }
-
-  void _onActiveSlotAction(ShiftSlotsEntity data) {
-    final activeSlot = data.activeSlot;
-    if (activeSlot == null) return;
-    if (activeSlot.action == SlotAction.checkOut) {
-      // WHY: the check-out endpoint needs the attendance id (the check-in
-      // record), not the slot id — active_slot doesn't carry it directly, so
-      // it's read off the matching slot's own attendance row.
-      int? attendanceId;
-      for (final slot in data.slots) {
-        if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-          attendanceId = slot.me?.attendance?.id;
-          break;
-        }
-      }
-      if (attendanceId == null) return;
-      context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
-      return;
-    }
-    context.pushNamed(Routes.shiftCheckIn, extra: activeSlot.shiftSlotId);
   }
 
   void _onAssignStaff(BuildContext context, ShiftSlotEntity slot) {
@@ -69,7 +73,6 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
         canApplyLeave: canApplyLeave,
         onDateChanged: _onDateChanged,
         onApplyLeave: widget.onApplyLeave,
-        onActiveSlotAction: _onActiveSlotAction,
         onSlotTap: widget.onSlotTap,
         onAssignStaff: (slot) => _onAssignStaff(context, slot),
       ),

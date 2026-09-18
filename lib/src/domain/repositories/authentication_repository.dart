@@ -21,6 +21,10 @@ abstract base class AuthenticationRepository extends Repository {
 
   Future<void> logout();
 
+  /// Rehydrates the session from the securely persisted login payload, if
+  /// any. Returns whether a session was restored.
+  Future<bool> restoreSession();
+
   UserEntity? getCurrentUser();
 
   /// Synchronous snapshot of the logged-in session; null when logged out.

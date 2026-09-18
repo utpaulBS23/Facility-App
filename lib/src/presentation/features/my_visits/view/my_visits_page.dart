@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -29,14 +30,32 @@ class MyVisitsPage extends ConsumerStatefulWidget {
 class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   late DateTime _selectedDate;
   _VisitTab _selectedTab = _VisitTab.all;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchVisits(_selectedDate),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 500) {
+      ref
+          .read(myVisitsProvider.notifier)
+          .loadMore(date: DateFormat('yyyy-MM-dd').format(_selectedDate));
+    }
   }
 
   void _fetchVisits(DateTime date) {
@@ -47,6 +66,9 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
 
   void _onDateChanged(DateTime date) {
     setState(() => _selectedDate = date);
+    if (_scrollController.positions.isNotEmpty) {
+      _scrollController.jumpTo(0);
+    }
     _fetchVisits(date);
   }
 
@@ -73,7 +95,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
   }
 
   void _onVisitTap(VisitSummaryEntity visit) {
-    context.pushNamed(Routes.visitDetail, extra: visit.id);
+    context.pushNamed(Routes.visitDetail, extra: visit);
   }
 
   @override
@@ -92,7 +114,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          HorizontalDatePicker.fortnight(onDateSelected: _onDateChanged),
+          HorizontalDatePicker.week(onDateSelected: _onDateChanged),
           visitState.when(
             loading: () => const SizedBox.shrink(),
             error: (e, s) => const SizedBox.shrink(),
@@ -131,6 +153,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
                   return _VisitEmptyState(tab: _selectedTab);
                 }
                 return ListView.separated(
+                  controller: _scrollController,
                   padding: EdgeInsets.all(spacing.s16),
                   itemCount: filtered.length,
                   separatorBuilder: (context, i) => Gap(spacing.s12),

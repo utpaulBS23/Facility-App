@@ -4,10 +4,12 @@ class _InspectionRepairWorkSection extends StatelessWidget {
   const _InspectionRepairWorkSection({
     required this.issues,
     required this.onNewIssue,
+    required this.canAddIssue,
   });
 
   final List<ChecklistIssueEntity> issues;
   final VoidCallback onNewIssue;
+  final bool canAddIssue;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +28,11 @@ class _InspectionRepairWorkSection extends StatelessWidget {
                   color: context.color.text.primary,
                 ),
               ),
-              PermissionGate(
-                permissions: [UserPermission.issueCreate],
-                child: _NewIssueButton(onTap: onNewIssue),
-              ),
+              if (canAddIssue)
+                PermissionGate(
+                  permissions: [UserPermission.issueCreate],
+                  child: _NewIssueButton(onTap: onNewIssue),
+                ),
             ],
           ),
           if (issues.isNotEmpty) ...[

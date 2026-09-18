@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../application_state/startup_provider/app_startup_provider.dart';
 import '../routes.dart';
+import '../shell_tab_config.dart';
 
 part 'router_state_provider.g.dart';
 
@@ -59,6 +60,12 @@ class RouterState extends _$RouterState {
       return;
     }
 
-    state = Routes.login;
+    // WHY: appStartup (awaited before this listener fires — see its
+    // ref.listen guard in build()) already ran restoreSession, so a
+    // still-valid previous login is reflected here without a fresh login.
+    final session = ref.read(getUserSessionUseCaseProvider).call();
+    state = session == null
+        ? Routes.login
+        : firstPermittedShellRoute(session.permissions);
   }
 }

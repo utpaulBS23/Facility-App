@@ -6,15 +6,15 @@ part 'visit_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class VisitListResponseModel with VisitListResponseModelMappable {
-  VisitListResponseModel({required this.data, required this.stats});
+  VisitListResponseModel({required this.data, this.stats});
 
   final List<VisitSummaryModel> data;
-  final VisitStatsModel stats;
+  final VisitStatsModel? stats;
 
   static const fromJson = VisitListResponseModelMapper.fromJson;
 
   VisitListEntity toEntity() => VisitListEntity(
-        stats: stats.toEntity(),
+        stats: stats?.toEntity(),
         visits: data.map((e) => e.toEntity()).toList(),
       );
 }
@@ -26,10 +26,11 @@ class VisitStatsModel with VisitStatsModelMappable {
     required this.pending,
     required this.inProgress,
     required this.completed,
+    required this.todayCount,
+    required this.thisWeekCount,
   });
 
   final int total;
-
   final int pending;
 
   @MappableField(key: 'in_progress')
@@ -37,11 +38,17 @@ class VisitStatsModel with VisitStatsModelMappable {
 
   final int completed;
 
+  @MappableField(key: 'today_count')
+  final int todayCount;
+
+  @MappableField(key: 'this_week_count')
+  final int thisWeekCount;
+
   static const fromJson = VisitStatsModelMapper.fromJson;
 
   VisitStatsSummaryEntity toEntity() => VisitStatsSummaryEntity(
-        total: total,
-        pending: pending,
+        todayCount: todayCount,
+        thisWeekCount: thisWeekCount,
         inProgress: inProgress,
         completed: completed,
       );
@@ -51,8 +58,9 @@ class VisitStatsModel with VisitStatsModelMappable {
 class VisitSummaryModel with VisitSummaryModelMappable {
   VisitSummaryModel({
     required this.id,
-    required this.facilityName,
+    this.facilityName,
     required this.status,
+    this.title,
     this.visitType,
     required this.scheduledDate,
     this.scheduledStartTime,
@@ -65,14 +73,36 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
+    this.travelOriginType,
+    this.travelOriginId,
+    this.travelOriginName,
+    this.facilityAddress,
+    this.travelStartedAt,
+    this.locationType,
+    this.officeId,
+    this.officeName,
   });
 
   final int id;
 
   @MappableField(key: 'facility_name')
-  final String facilityName;
+  final String? facilityName;
+
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
+
+  @MappableField(key: 'location_type')
+  final String? locationType;
+
+  @MappableField(key: 'office_id')
+  final int? officeId;
+
+  @MappableField(key: 'office_name')
+  final String? officeName;
 
   final String status;
+
+  final String? title;
 
   @MappableField(key: 'visit_type')
   final String? visitType;
@@ -109,16 +139,39 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
 
+  @MappableField(key: 'travel_origin_type')
+  final String? travelOriginType;
+
+  @MappableField(key: 'travel_origin_id')
+  final int? travelOriginId;
+
+  @MappableField(key: 'travel_origin_name')
+  final String? travelOriginName;
+
+  @MappableField(key: 'travel_started_at')
+  final String? travelStartedAt;
+
   static const fromJson = VisitSummaryModelMapper.fromJson;
 
   VisitSummaryEntity toEntity() => VisitSummaryEntity(
         id: id,
-        facilityName: facilityName,
+        facilityName: facilityName ?? officeName,
+        facilityAddress: facilityAddress,
         status: _parseStatus(status),
+        title: title,
+        priority: priority,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
         scheduledEndTime: _trimTime(scheduledEndTime ?? ''),
+        travelOriginType: travelOriginType,
+        travelOriginId: travelOriginId,
+        travelOriginName: travelOriginName,
+        travelStartedAt: travelStartedAt,
+        locationType: locationType ?? 'facility',
+        officeId: officeId,
+        officeName: officeName,
+        visitType: visitType,
       );
 }
 
@@ -137,9 +190,13 @@ class VisitDetailResponseModel with VisitDetailResponseModelMappable {
 class VisitDetailModel with VisitDetailModelMappable {
   VisitDetailModel({
     required this.id,
-    required this.facilityName,
+    this.facilityName,
     this.facilityId,
+    this.locationType,
+    this.officeId,
+    this.officeName,
     required this.status,
+    this.title,
     this.visitType,
     required this.scheduledDate,
     this.scheduledStartTime,
@@ -151,21 +208,44 @@ class VisitDetailModel with VisitDetailModelMappable {
     this.checkInDistanceMeters,
     this.totalScore,
     this.maxScore,
+    this.scorePercentage,
     this.itemsTotal,
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
+    this.facilityAddress,
+    this.travelTrackingExcluded,
+    this.travelOriginType,
+    this.travelOriginId,
+    this.travelOriginName,
+    this.travelDistanceKm,
+    this.travelStartedAt,
+    this.submittedAt,
   });
 
   final int id;
 
   @MappableField(key: 'facility_name')
-  final String facilityName;
+  final String? facilityName;
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
 
+  @MappableField(key: 'location_type')
+  final String? locationType;
+
+  @MappableField(key: 'office_id')
+  final int? officeId;
+
+  @MappableField(key: 'office_name')
+  final String? officeName;
+
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
+
   final String status;
+
+  final String? title;
 
   @MappableField(key: 'visit_type')
   final String? visitType;
@@ -200,6 +280,9 @@ class VisitDetailModel with VisitDetailModelMappable {
   @MappableField(key: 'max_score')
   final int? maxScore;
 
+  @MappableField(key: 'score_percentage')
+  final double? scorePercentage;
+
   @MappableField(key: 'items_total')
   final int? itemsTotal;
 
@@ -211,13 +294,39 @@ class VisitDetailModel with VisitDetailModelMappable {
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
 
+  @MappableField(key: 'travel_tracking_excluded')
+  final bool? travelTrackingExcluded;
+
+  @MappableField(key: 'travel_origin_type')
+  final String? travelOriginType;
+
+  @MappableField(key: 'travel_origin_id')
+  final int? travelOriginId;
+
+  @MappableField(key: 'travel_origin_name')
+  final String? travelOriginName;
+
+  @MappableField(key: 'travel_distance_km')
+  final double? travelDistanceKm;
+
+  @MappableField(key: 'travel_started_at')
+  final String? travelStartedAt;
+
+  @MappableField(key: 'submitted_at')
+  final String? submittedAt;
+
   static const fromJson = VisitDetailModelMapper.fromJson;
 
   VisitDetailEntity toEntity() => VisitDetailEntity(
         id: id,
         facilityName: facilityName,
         facilityId: facilityId,
+        locationType: locationType ?? 'facility',
+        officeId: officeId,
+        officeName: officeName,
+        facilityAddress: facilityAddress,
         status: _parseStatus(status),
+        title: title,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
@@ -229,6 +338,14 @@ class VisitDetailModel with VisitDetailModelMappable {
                 role: createdByRole ?? '',
               )
             : null,
+        scorePercentage: scorePercentage,
+        travelTrackingExcluded: travelTrackingExcluded ?? false,
+        travelOriginType: travelOriginType,
+        travelOriginId: travelOriginId,
+        travelOriginName: travelOriginName,
+        travelDistanceKm: travelDistanceKm,
+        travelStartedAt: travelStartedAt,
+        submittedAt: submittedAt,
       );
 }
 

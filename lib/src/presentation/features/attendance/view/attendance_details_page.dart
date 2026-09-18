@@ -19,15 +19,17 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   }
 
   void _onApprove() {
+    if (_current.id == null) return;
     ref
         .read(approveAttendanceProvider.notifier)
-        .approve(attendanceId: _current.id);
+        .approve(attendanceId: _current.id!);
   }
 
   void _onReject() {
+    if (_current.id == null) return;
     ref
         .read(rejectAttendanceProvider.notifier)
-        .reject(attendanceId: _current.id);
+        .reject(attendanceId: _current.id!);
   }
 
   void _showError(Object error) {
@@ -65,14 +67,7 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.attendanceDetails),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.attendanceDetails),
       body: Column(
         children: [
           Expanded(child: _AttendanceDetailsBody(detail: _current)),

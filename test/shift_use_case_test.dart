@@ -54,6 +54,9 @@ final class FakeAuthenticationRepository extends AuthenticationRepository {
   Future<void> logout() => throw UnimplementedError();
 
   @override
+  Future<bool> restoreSession() => throw UnimplementedError();
+
+  @override
   UserEntity? getCurrentUser() => null;
 
   @override
@@ -82,7 +85,7 @@ final class FakeShiftRepository extends ShiftRepository {
   onGetShiftGlobalConfig;
   Future<Result<ShiftSlotsEntity, Failure>> Function({
     required int partnerId,
-    required int facilityId,
+    int? facilityId,
     required String date,
   })?
   onGetShiftSlots;
@@ -168,7 +171,7 @@ final class FakeShiftRepository extends ShiftRepository {
   @override
   Future<Result<ShiftSlotsEntity, Failure>> getShiftSlots({
     required int partnerId,
-    required int facilityId,
+    int? facilityId,
     required String date,
   }) => onGetShiftSlots!(
     partnerId: partnerId,

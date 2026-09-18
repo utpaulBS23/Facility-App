@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 import '../../../core/extensions/app_localization.dart';
 import '../theme/theme.dart';
@@ -143,46 +144,54 @@ class _Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radius = context.dimensions.radius;
+    final spacing = context.dimensions.spacing;
     return Padding(
-      padding: EdgeInsets.all(context.dimensions.spacing.s16),
-      // WHY: OverflowBar (not a bare Row) — every button in this app's theme
-      // forces minimumSize.width = infinity, which collides with the
-      // unbounded main-axis width a plain Row gives non-flex children.
-      child: OverflowBar(
-        alignment: MainAxisAlignment.end,
-        spacing: context.dimensions.spacing.s8,
+      padding: EdgeInsets.all(spacing.s16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          TextButton(
-            onPressed: onCancel,
-            child: Text(
-              context.locale.cancel,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.text.secondary,
+          Flexible(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius.r6),
+                ),
+                side: BorderSide(color: context.color.primary),
+              ),
+              onPressed: onCancel,
+              child: Text(
+                context.locale.cancel,
+                style: context.textStyle.labelLarge.copyWith(
+                  color: context.color.primary,
+                ),
               ),
             ),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius.r6),
+          Gap(spacing.s8),
+          Flexible(
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius.r6),
+                ),
               ),
-            ),
-            onPressed: onSubmit,
-            child: isSubmitting
-                ? SizedBox.square(
-                    dimension: context.dimensions.spacing.s20,
-                    child: CircularProgressIndicator.adaptive(
-                      valueColor: AlwaysStoppedAnimation(
-                        context.color.onPrimary,
+              onPressed: onSubmit,
+              child: isSubmitting
+                  ? SizedBox.square(
+                      dimension: spacing.s20,
+                      child: CircularProgressIndicator.adaptive(
+                        valueColor: AlwaysStoppedAnimation(
+                          context.color.onPrimary,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      submitLabel,
+                      style: context.textStyle.labelLarge.copyWith(
+                        color: context.color.onPrimary,
                       ),
                     ),
-                  )
-                : Text(
-                    submitLabel,
-                    style: context.textStyle.labelLarge.copyWith(
-                      color: context.color.onPrimary,
-                    ),
-                  ),
+            ),
           ),
         ],
       ),

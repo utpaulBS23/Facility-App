@@ -10,11 +10,23 @@ final class GetPartnerStaffUseCase {
   final PartnerStaffRepository _partnerStaffRepository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<List<PartnerStaffEntity>, Failure>> call() async {
+  Future<Result<List<PartnerStaffEntity>, Failure>> call({
+    // WHY defaulted here, not hardcoded in the repository: 'attendant' is
+    // every existing caller's need (assign-staff flows, attendance filter,
+    // issue reporter picker) so it stays the default, but the claim-expense
+    // feature's supervisor picker needs role: 'supervisor' — the repository
+    // itself has no opinion on which role callers want.
+    String role = 'attendant',
+    int? facilityId,
+    String? search,
+  }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
     final result = await _partnerStaffRepository.getPartnerUsers(
       partnerId: partnerId,
+      role: role,
+      facilityId: facilityId,
+      search: search,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),

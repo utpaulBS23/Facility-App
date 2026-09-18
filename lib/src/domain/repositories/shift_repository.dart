@@ -10,7 +10,7 @@ abstract base class ShiftRepository extends Repository {
   /// [getMyShifts] and [getSupervisorShifts].
   Future<Result<ShiftSlotsEntity, Failure>> getShiftSlots({
     required int partnerId,
-    required int facilityId,
+    int? facilityId,
     required String date,
   });
 

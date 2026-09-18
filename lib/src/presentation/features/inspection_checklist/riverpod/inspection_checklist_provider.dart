@@ -16,6 +16,7 @@ class InspectionChecklistState {
     this.starAnswers = const {},
     this.yesNoAnswers = const {},
     this.proofImages = const {},
+    this.mediaUrls = const {},
     this.confirmedPoints = const {},
     this.savingItemIds = const {},
     this.itemSaveErrors = const {},
@@ -31,6 +32,7 @@ class InspectionChecklistState {
   final Map<int, int> starAnswers;
   final Map<int, bool> yesNoAnswers;
   final Map<int, List<XFile>> proofImages;
+  final Map<int, String> mediaUrls;
   // Server-confirmed points per item; drives total score display.
   final Map<int, int> confirmedPoints;
   final Set<int> savingItemIds;
@@ -74,6 +76,7 @@ class InspectionChecklistState {
     Map<int, int>? starAnswers,
     Map<int, bool>? yesNoAnswers,
     Map<int, List<XFile>>? proofImages,
+    Map<int, String>? mediaUrls,
     Map<int, int>? confirmedPoints,
     Set<int>? savingItemIds,
     Map<int, Failure>? itemSaveErrors,
@@ -91,6 +94,7 @@ class InspectionChecklistState {
       starAnswers: starAnswers ?? this.starAnswers,
       yesNoAnswers: yesNoAnswers ?? this.yesNoAnswers,
       proofImages: proofImages ?? this.proofImages,
+      mediaUrls: mediaUrls ?? this.mediaUrls,
       confirmedPoints: confirmedPoints ?? this.confirmedPoints,
       savingItemIds: savingItemIds ?? this.savingItemIds,
       itemSaveErrors: itemSaveErrors ?? this.itemSaveErrors,
@@ -205,9 +209,14 @@ class InspectionChecklist extends _$InspectionChecklist {
         } else {
           newPoints.remove(itemId);
         }
+        final updatedMediaUrls = Map<int, String>.from(state.mediaUrls);
+        if (data.media?.url != null) {
+          updatedMediaUrls[itemId] = data.media!.url!;
+        }
         return state.copyWith(
           savingItemIds: doneSaving,
           confirmedPoints: newPoints,
+          mediaUrls: updatedMediaUrls,
           proofImages: Map<int, List<XFile>>.from(state.proofImages)
             ..remove(itemId),
           checklist: _withUpdatedItemProof(
@@ -265,9 +274,20 @@ class InspectionChecklist extends _$InspectionChecklist {
         } else {
           newPoints.remove(itemId);
         }
+        final updatedMediaUrls = Map<int, String>.from(state.mediaUrls);
+        if (data.media?.url != null) {
+          updatedMediaUrls[itemId] = data.media!.url!;
+        }
         return state.copyWith(
           savingItemIds: doneSaving,
           confirmedPoints: newPoints,
+          mediaUrls: updatedMediaUrls,
+          proofImages: Map<int, List<XFile>>.from(state.proofImages)
+            ..remove(itemId),
+          checklist: _withUpdatedItemProof(
+            itemId: itemId,
+            hasProof: data.hasProof,
+          ),
         );
       },
       error: (err) {
@@ -332,9 +352,14 @@ class InspectionChecklist extends _$InspectionChecklist {
         } else {
           newPoints.remove(itemId);
         }
+        final updatedMediaUrls = Map<int, String>.from(state.mediaUrls);
+        if (data.media?.url != null) {
+          updatedMediaUrls[itemId] = data.media!.url!;
+        }
         return state.copyWith(
           savingItemIds: doneSaving,
           confirmedPoints: newPoints,
+          mediaUrls: updatedMediaUrls,
           proofImages: Map<int, List<XFile>>.from(state.proofImages)
             ..remove(itemId),
           checklist: _withUpdatedItemProof(

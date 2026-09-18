@@ -1,52 +1,19 @@
 part of '../view/roster_list_page.dart';
 
 class _RosterListBody extends StatelessWidget {
-  const _RosterListBody({
-    required this.facilities,
-    required this.rosterState,
-    required this.selectedFacilityId,
-    required this.onFacilitySelected,
-    required this.onRosterTap,
-  });
+  const _RosterListBody({required this.rosterState, required this.onRosterTap});
 
-  final List<AccessibleFacilityEntity> facilities;
   final AsyncValue<RosterListEntity?> rosterState;
-  final int? selectedFacilityId;
-  final ValueChanged<int> onFacilitySelected;
   final ValueChanged<RosterEntity> onRosterTap;
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-            spacing.s16,
-            spacing.s12,
-            spacing.s16,
-            spacing.s4,
-          ),
-          child: FacilityDropdown(
-            facilities: facilities,
-            selectedFacilityId: selectedFacilityId,
-            onChanged: onFacilitySelected,
-          ),
-        ),
-        Expanded(
-          child: rosterState.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
-            error: (err, _) =>
-                Center(child: _ErrorText(err.localizedMessage(context))),
-            data: (data) => _RosterList(
-              rosters: data?.rosters ?? const [],
-              onTap: onRosterTap,
-            ),
-          ),
-        ),
-      ],
+    return rosterState.when(
+      loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+      error: (err, _) =>
+          Center(child: _ErrorText(err.localizedMessage(context))),
+      data: (data) =>
+          _RosterList(rosters: data?.rosters ?? const [], onTap: onRosterTap),
     );
   }
 }

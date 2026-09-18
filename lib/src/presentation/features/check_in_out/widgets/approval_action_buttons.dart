@@ -48,10 +48,12 @@ class _ApprovalActionButtons extends StatelessWidget {
                 ? null
                 : switch (attendanceStatue) {
                     AttendanceStatue.pending => onRefresh,
-                    AttendanceStatue.success =>
-                      () => context.goNamed(Routes.shift),
-                    AttendanceStatue.reject =>
-                      () => context.goNamed(Routes.login),
+                    AttendanceStatue.success => () => context.goNamed(
+                      Routes.shift,
+                    ),
+                    AttendanceStatue.reject => () => context.goNamed(
+                      Routes.login,
+                    ),
                     AttendanceStatue.needFace => onNeedFace,
                   },
             child: isRefreshing

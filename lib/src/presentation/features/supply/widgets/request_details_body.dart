@@ -27,7 +27,7 @@ class _RequestDetailsBody extends ConsumerWidget {
   final VoidCallback onEditingCancelled;
   final void Function(int stockItemId) onEvidenceReportTap;
   final void Function(SupplyRequestEntity request, DeliveryEntity delivery)
-      onConfirmDeliveryTap;
+  onConfirmDeliveryTap;
   final VoidCallback onApprove;
   final VoidCallback onReject;
   final VoidCallback onDispatch;
@@ -54,13 +54,9 @@ class _RequestDetailsBody extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: onBack),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.requestDetailsTitle),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: DetailAppBar(
+        title: context.locale.requestDetailsTitle,
+        onBack: onBack,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -120,25 +116,24 @@ class _RequestDetailsBody extends ConsumerWidget {
       ),
       bottomNavigationBar: switch (request.status) {
         SupplyRequestStatus.pendingSupervisor ||
-        SupplyRequestStatus.pendingOperationManager =>
-          _PendingActionButtons(
-            status: request.status,
-            isApproveAction: lastAction == _DetailsAction.approve,
-            onReject: onReject,
-            onApprove: onApprove,
-          ),
+        SupplyRequestStatus.pendingOperationManager => _PendingActionButtons(
+          status: request.status,
+          isApproveAction: lastAction == _DetailsAction.approve,
+          onReject: onReject,
+          onApprove: onApprove,
+        ),
         SupplyRequestStatus.operationManagerApproved => _DispatchActionButton(
-            onDispatch: onDispatch,
-          ),
+          onDispatch: onDispatch,
+        ),
         SupplyRequestStatus.inDelivery => _RequestConfirmButton(
-            delivery: delivery,
-            isEnabled: !isEditing,
-            onConfirmTap: () {
-              if (delivery != null) {
-                onConfirmDeliveryTap(request, delivery);
-              }
-            },
-          ),
+          delivery: delivery,
+          isEnabled: !isEditing,
+          onConfirmTap: () {
+            if (delivery != null) {
+              onConfirmDeliveryTap(request, delivery);
+            }
+          },
+        ),
         _ => null,
       },
     );
