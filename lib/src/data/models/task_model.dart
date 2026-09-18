@@ -83,7 +83,7 @@ class TaskModel with TaskModelMappable {
 
   final String priority;
 
-  @MappableField(key: 'assigned_to_id')
+  @MappableField(key: 'assigned_to')
   final int? assignedToId;
 
   @MappableField(key: 'assigned_to_name')
@@ -189,7 +189,7 @@ class TaskDetailModel with TaskDetailModelMappable {
   @MappableField(key: 'proof_required_on_complete')
   final bool proofRequiredOnComplete;
 
-  @MappableField(key: 'assigned_to_id')
+  @MappableField(key: 'assigned_to')
   final int? assignedToId;
 
   @MappableField(key: 'assigned_to_name')

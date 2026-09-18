@@ -93,7 +93,7 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
       Field('priority', _$priority);
   static int? _$assignedToId(TaskModel v) => v.assignedToId;
   static const Field<TaskModel, int> _f$assignedToId =
-      Field('assignedToId', _$assignedToId, key: r'assigned_to_id', opt: true);
+      Field('assignedToId', _$assignedToId, key: r'assigned_to', opt: true);
   static String? _$assignedToName(TaskModel v) => v.assignedToName;
   static const Field<TaskModel, String> _f$assignedToName = Field(
       'assignedToName', _$assignedToName,
@@ -353,7 +353,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
       key: r'proof_required_on_complete', opt: true, def: false);
   static int? _$assignedToId(TaskDetailModel v) => v.assignedToId;
   static const Field<TaskDetailModel, int> _f$assignedToId =
-      Field('assignedToId', _$assignedToId, key: r'assigned_to_id', opt: true);
+      Field('assignedToId', _$assignedToId, key: r'assigned_to', opt: true);
   static String? _$assignedToName(TaskDetailModel v) => v.assignedToName;
   static const Field<TaskDetailModel, String> _f$assignedToName = Field(
       'assignedToName', _$assignedToName,
