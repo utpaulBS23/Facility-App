@@ -245,6 +245,13 @@ class _TaskDetailBody extends StatelessWidget {
               ],
             ),
           ),
+          Gap(spacing.s12),
+          PermissionGate(
+            permissions: [UserPermission.issueUpdate],
+            child: AssignStaffButton(
+              onTap: () => context.pushNamed(Routes.assignTaskStaff, extra: task),
+            ),
+          ),
         ],
       ),
     );
@@ -379,12 +386,6 @@ class _TaskDetailBody extends StatelessWidget {
             ),
           Gap(spacing.s12),
         ],
-        PermissionGate(
-          permissions: [UserPermission.issueUpdate],
-          child: AssignStaffButton(
-            onTap: () => context.pushNamed(Routes.assignTaskStaff, extra: task),
-          ),
-        ),
       ],
     );
   }
