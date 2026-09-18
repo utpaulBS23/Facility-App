@@ -12,11 +12,13 @@ class UserSessionEntity {
     required this.accessibleFacilities,
     this.partner,
     this.activePartnerId,
+    this.trackingSettings,
   });
 
   final Set<UserPermission> permissions;
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
+  final TrackingSettingsEntity? trackingSettings;
 
   // WHY: active partner is the single tenant scope every partner-scoped feature
   // reads. Today it is derived from the sole login-bound partner (one partner
@@ -80,6 +82,22 @@ class UserSessionEntity {
 /// applies at all.
 enum ShiftEntitlement { attendant, supervisor, none }
 
+/// Backend-driven cadence for background location pings.
+///
+/// WHY: interval is server-configurable, not hardcoded — ops can retune
+/// battery/accuracy tradeoffs per partner without an app release.
+class TrackingSettingsEntity {
+  TrackingSettingsEntity({
+    this.idlePingIntervalSeconds,
+    this.activeVisitPingIntervalSeconds,
+    this.trackingMode,
+  });
+
+  final int? idlePingIntervalSeconds;
+  final int? activeVisitPingIntervalSeconds;
+  final String? trackingMode;
+}
+
 interface class LoginEntity {}
 
 class UserEntity extends LoginEntity {
@@ -93,6 +111,7 @@ class UserEntity extends LoginEntity {
     this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
+    this.profileImage,
   });
 
   final int id;
@@ -104,6 +123,7 @@ class UserEntity extends LoginEntity {
   final String? supervisor;
   final int permissionVersion;
   final bool twoFactorEnabled;
+  final String? profileImage;
 }
 
 class LoginRequestEntity extends LoginEntity {
@@ -131,6 +151,8 @@ class LoginResponseEntity extends LoginEntity {
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
+    this.trackingSettings,
+    required this.weekStartDay,
   });
 
   final UserEntity user;
@@ -138,4 +160,6 @@ class LoginResponseEntity extends LoginEntity {
   final Set<UserPermission> permissions;
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
+  final TrackingSettingsEntity? trackingSettings;
+  final int weekStartDay;
 }

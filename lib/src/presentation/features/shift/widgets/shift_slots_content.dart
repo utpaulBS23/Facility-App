@@ -5,7 +5,6 @@ class _ShiftSlotsContent extends ConsumerWidget {
     required this.canApplyLeave,
     required this.onDateChanged,
     required this.onApplyLeave,
-    required this.onActiveSlotAction,
     required this.onSlotTap,
     required this.onAssignStaff,
   });
@@ -13,7 +12,6 @@ class _ShiftSlotsContent extends ConsumerWidget {
   final bool canApplyLeave;
   final ValueChanged<DateTime> onDateChanged;
   final VoidCallback onApplyLeave;
-  final ValueChanged<ShiftSlotsEntity> onActiveSlotAction;
   final ValueChanged<ShiftSlotEntity> onSlotTap;
   final ValueChanged<ShiftSlotEntity> onAssignStaff;
 
@@ -33,7 +31,7 @@ class _ShiftSlotsContent extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HorizontalDatePicker.fortnight(onDateSelected: onDateChanged),
+        HorizontalDatePicker.week(onDateSelected: onDateChanged),
         Expanded(
           child: slotsState.when(
             loading: () =>
@@ -45,7 +43,6 @@ class _ShiftSlotsContent extends ConsumerWidget {
               facility: facility,
               canApplyLeave: canApplyLeave,
               onApplyLeave: onApplyLeave,
-              onActiveSlotAction: onActiveSlotAction,
               onSlotTap: onSlotTap,
               onAssignStaff: onAssignStaff,
             ),

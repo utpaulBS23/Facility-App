@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../riverpod/app_update_provider.dart';
-import 'app_update_dialog.dart';
 
 class AppUpdateChecker extends ConsumerStatefulWidget {
   const AppUpdateChecker({super.key, required this.child});
@@ -26,7 +25,8 @@ class _AppUpdateCheckerState extends ConsumerState<AppUpdateChecker> {
 
     if (!mounted || update == null || !update.hasUpdate) return;
 
-    AppUpdateDialog.show(context, update);
+    // TEMP: disabled for testing, never commit this.
+    // AppUpdateDialog.show(context, update);
   }
 
   @override

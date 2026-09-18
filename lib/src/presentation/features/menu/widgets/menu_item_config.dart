@@ -31,19 +31,22 @@ final List<MenuItemConfig> menuItemConfigs = [
     icon: Assets.icons.customerIcon,
     label: _profileLabel,
     subtitle: _profileSubtitle,
-    route: Routes.profile,
-    permissions: [UserPermission.profileUpdate],
+    route: Routes.myProfile,
+    permissions: [UserPermission.profileView, UserPermission.profileUpdate],
+  ),
+  MenuItemConfig(
+    icon: Assets.icons.attendance,
+    label: _myAttendanceLabel,
+    subtitle: _myAttendanceSubtitle,
+    route: Routes.myAttendance,
+    permissions: [UserPermission.supervisorAttendanceView],
   ),
   MenuItemConfig(
     icon: Assets.icons.service,
     label: _extraCollectionLabel,
     subtitle: _extraCollectionSubtitle,
     route: Routes.additionalIncome,
-    permissions: [
-      UserPermission.additionalIncomeCreate,
-      UserPermission.additionalIncomeApprove,
-      UserPermission.additionalIncomeView,
-    ],
+    permissions: [UserPermission.additionalIncomeView],
   ),
   MenuItemConfig(
     icon: Assets.icons.route,
@@ -55,8 +58,6 @@ final List<MenuItemConfig> menuItemConfigs = [
     // comment) — any one of the three should be enough to reach it.
     permissions: [
       UserPermission.supplyRequestView,
-      UserPermission.deliveryTrackingView,
-      UserPermission.deliveryComplaintView,
     ],
   ),
   MenuItemConfig(
@@ -76,12 +77,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     subtitle: _leaveSubtitle,
     route: Routes.leaveRequests,
     permissions: [
-      UserPermission.leaveApproveSupervisor,
-      UserPermission.leaveApproveManager,
-      UserPermission.leaveRequestView,
-      UserPermission.leaveRequestCreateOwn,
-      UserPermission.leaveRequestCreateForOthers,
-      UserPermission.leaveRequestApprove,
+      UserPermission.leaveView,
     ],
   ),
   MenuItemConfig(
@@ -96,10 +92,27 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _expenseEntryLabel,
     subtitle: _expenseEntrySubtitle,
     route: Routes.facilityExpense,
+    permissions: [UserPermission.facilityExpenseView],
+  ),
+  MenuItemConfig(
+    icon: Assets.icons.visit,
+    label: _claimExpenseLabel,
+    subtitle: _claimExpenseSubtitle,
+    route: Routes.claimExpense,
+    // WHY both keys: .view opens the list/page; .create is checked again
+    // inside the page to gate the submit action itself (a viewer without
+    // .create can look but not save a claim).
     permissions: [
-      UserPermission.facilityExpenseCreate,
-      UserPermission.facilityExpenseApprove,
+      UserPermission.travelExpenseView,
+      UserPermission.travelExpenseCreate,
     ],
+  ),
+  MenuItemConfig(
+    icon: Assets.icons.task,
+    label: _trainingLabel,
+    subtitle: _trainingSubtitle,
+    route: Routes.trainingSessions,
+    permissions: [UserPermission.trainingSessionView],
   ),
   MenuItemConfig(
     icon: Assets.icons.viewIcon,
@@ -138,12 +151,15 @@ final notificationMenuItemConfig = MenuItemConfig(
   label: _notificationLabel,
   subtitle: _notificationSubtitle,
   route: Routes.notification,
-  permissions: [UserPermission.notificationView],
+  permissions: [UserPermission.notificationSettings],
 );
 
 String _profileLabel(BuildContext context) => context.locale.profile;
-String _profileSubtitle(BuildContext context) =>
-    context.locale.profileSubtitle;
+String _profileSubtitle(BuildContext context) => context.locale.profileSubtitle;
+
+String _myAttendanceLabel(BuildContext context) => context.locale.myAttendance;
+String _myAttendanceSubtitle(BuildContext context) =>
+    context.locale.myAttendanceSubtitle;
 
 String _extraCollectionLabel(BuildContext context) =>
     context.locale.extraCollection;
@@ -162,18 +178,23 @@ String _doorLockLabel(BuildContext context) => context.locale.doorLock;
 String _doorLockSubtitle(BuildContext context) =>
     context.locale.doorLockSubtitle;
 
-String _expenseEntryLabel(BuildContext context) =>
-    context.locale.expenseEntry;
+String _expenseEntryLabel(BuildContext context) => context.locale.expenseEntry;
 String _expenseEntrySubtitle(BuildContext context) =>
     context.locale.expenseEntrySubtitle;
 
-String _notificationLabel(BuildContext context) =>
-    context.locale.notification;
+String _claimExpenseLabel(BuildContext context) => context.locale.claimExpense;
+String _claimExpenseSubtitle(BuildContext context) =>
+    context.locale.claimExpenseSubtitle;
+
+String _trainingLabel(BuildContext context) => context.locale.trainingSessions;
+String _trainingSubtitle(BuildContext context) =>
+    context.locale.trainingSessionsSubtitle;
+
+String _notificationLabel(BuildContext context) => context.locale.notification;
 String _notificationSubtitle(BuildContext context) =>
     context.locale.notificationSubtitle;
 
-String _profitReportLabel(BuildContext context) =>
-    context.locale.profitReport;
+String _profitReportLabel(BuildContext context) => context.locale.profitReport;
 String _profitReportSubtitle(BuildContext context) =>
     context.locale.profitReportSubtitle;
 

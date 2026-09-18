@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/notification_channel_settings_provider.dart';
 import '../riverpod/notification_settings_provider.dart';
 import '../widgets/notification_channel_config.dart';
@@ -21,12 +21,7 @@ class NotificationPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.notification),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.notification),
       body: PermissionSetScope(
         builder: (context, permissions) {
           final visibleChannels = [
@@ -65,7 +60,9 @@ class NotificationPage extends ConsumerWidget {
                     // out of sync with what's actually being delivered.
                     onChanged: isEnabled
                         ? (enabled) => ref
-                              .read(notificationChannelSettingsProvider.notifier)
+                              .read(
+                                notificationChannelSettingsProvider.notifier,
+                              )
                               .setEnabled(visibleChannels[i].type, enabled)
                         : null,
                   ),

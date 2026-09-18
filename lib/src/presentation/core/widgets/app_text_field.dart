@@ -42,6 +42,7 @@ class AppTextField extends StatefulWidget {
     this.extraValidations = const [],
     this.autovalidateMode,
   }) : _type = _FieldType.email,
+       keyboardType = null,
        _minLength = 0,
        _requireNumber = false,
        _requireLowerCase = false,
@@ -71,6 +72,7 @@ class AppTextField extends StatefulWidget {
     bool requireSpecialChar = false,
   }) : _type = _FieldType.password,
        prefixIcon = null,
+       keyboardType = null,
        _minLength = minLength,
        _requireNumber = requireNumber,
        _requireLowerCase = requireLowerCase,
@@ -93,6 +95,7 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.extraValidations = const [],
     this.autovalidateMode,
+    this.keyboardType,
   }) : _type = _FieldType.text,
        _minLength = 0,
        _requireNumber = false,
@@ -117,6 +120,7 @@ class AppTextField extends StatefulWidget {
     this.autovalidateMode,
   }) : _type = _FieldType.description,
        prefixIcon = null,
+       keyboardType = null,
        _minLength = 0,
        _requireNumber = false,
        _requireLowerCase = false,
@@ -139,6 +143,7 @@ class AppTextField extends StatefulWidget {
        textInputAction = TextInputAction.search,
        extraValidations = const [],
        autovalidateMode = null,
+       keyboardType = null,
        _minLength = 0,
        _requireNumber = false,
        _requireLowerCase = false,
@@ -165,6 +170,10 @@ class AppTextField extends StatefulWidget {
   /// Additional validators appended after the built-in defaults.
   final List<Validation<String>> extraValidations;
   final AutovalidateMode? autovalidateMode;
+
+  /// Overrides the default keyboard for [AppTextField.text] (e.g. a numeric
+  /// amount field). Ignored by every other constructor.
+  final TextInputType? keyboardType;
 
   // Password-specific config — zero/false for all other types.
   final int _minLength;
@@ -376,12 +385,14 @@ class _AppTextFieldState extends State<AppTextField> {
                       enabled: widget.enabled,
                       obscureText:
                           widget._type == _FieldType.password && _obscureText,
-                      keyboardType: switch (widget._type) {
-                        _FieldType.email => TextInputType.emailAddress,
-                        _FieldType.password ||
-                        _FieldType.text => TextInputType.text,
-                        _ => TextInputType.text,
-                      },
+                      keyboardType:
+                          widget.keyboardType ??
+                          switch (widget._type) {
+                            _FieldType.email => TextInputType.emailAddress,
+                            _FieldType.password ||
+                            _FieldType.text => TextInputType.text,
+                            _ => TextInputType.text,
+                          },
                       textInputAction: widget.textInputAction,
                       onChanged: widget.onChanged,
                       onFieldSubmitted: widget.onSubmitted,
@@ -417,17 +428,28 @@ class _AppTextFieldState extends State<AppTextField> {
             ],
           ),
         ),
-        if (effectiveError != null)
-          Padding(
-            padding: EdgeInsets.only(
-              top: dimensions.spacing.s4,
-              left: dimensions.spacing.s4,
-            ),
-            child: Text(
-              effectiveError,
-              style: textStyle.bodySmall.copyWith(color: colors.error),
-            ),
+        // WHY always rendered, not conditional: reserves the error line's
+        // height up front so a field's box doesn't shift when an error
+        // appears/disappears — matters most side-by-side in a Row, where an
+        // unequal-height sibling under center alignment visibly bumps the
+        // shorter field.
+        Padding(
+          padding: EdgeInsets.only(
+            top: dimensions.spacing.s4,
+            left: dimensions.spacing.s4,
           ),
+          child: SizedBox(
+            height: dimensions.spacing.s16,
+            child: hasError
+                ? Text(
+                    effectiveError,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textStyle.bodySmall.copyWith(color: colors.error),
+                  )
+                : null,
+          ),
+        ),
       ],
     );
   }

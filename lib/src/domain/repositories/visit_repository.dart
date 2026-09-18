@@ -7,7 +7,12 @@ import '../entities/visit_entity.dart';
 abstract base class VisitRepository extends Repository {
   Future<Result<VisitListEntity, Failure>> getMyVisits({
     required int partnerId,
-    required String date,
+    String? date,
+    String? status,
+    int? facilityId,
+    int? assignedTo,
+    int? page,
+    int? perPage,
   });
 
   Future<Result<VisitDetailEntity, Failure>> getVisitDetail({

@@ -51,8 +51,14 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
     } else if (widget.withdrawRoute == Routes.shiftCheckIn) {
       // WHY: `shiftId` carries the shift_slot_id this manual submission was
       // made for (see ManualAttendance.submit) — check-in needs it again to
-      // retry the normal flow.
-      context.goNamed(Routes.shiftCheckIn, extra: _current.shiftId);
+      // retry the normal flow. No supervisor name is available on this
+      // re-entry path; the card falls back to the logged-in user's own
+      // supervisor field.
+      final extra = (
+        shiftSlotId: _current.shiftId,
+        supervisorName: null as String?,
+      );
+      context.goNamed(Routes.shiftCheckIn, extra: extra);
     } else {
       context.goNamed(widget.withdrawRoute);
     }
@@ -94,14 +100,7 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Headline2xlTinyText(context.locale.approvalRequest),
-        ),
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: DetailAppBar(title: context.locale.approvalRequest),
       body: Column(
         children: [
           Expanded(

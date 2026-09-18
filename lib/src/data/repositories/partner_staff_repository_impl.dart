@@ -13,9 +13,17 @@ final class PartnerStaffRepositoryImpl extends PartnerStaffRepository {
   @override
   Future<Result<List<PartnerStaffEntity>, Failure>> getPartnerUsers({
     required int partnerId,
+    required String role,
+    int? facilityId,
+    String? search,
   }) {
     return asyncGuard(() async {
-      final response = await remote.getPartnerUsers(partnerId: partnerId);
+      final response = await remote.getPartnerUsers(
+        partnerId: partnerId,
+        role: role,
+        facilityId: facilityId,
+        name: search,
+      );
       final model = PartnerStaffResponseModel.fromJson(response.data);
       return model.data.map((staff) => staff.toEntity()).toList();
     });

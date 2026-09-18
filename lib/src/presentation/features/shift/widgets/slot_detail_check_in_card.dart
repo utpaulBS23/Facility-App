@@ -43,7 +43,7 @@ class _SlotDetailCheckInCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            context.locale.checkIn,
+            context.locale.attendantDetails,
             style: context.textStyle.headline2xlTiny.copyWith(
               color: context.color.text.primary,
             ),

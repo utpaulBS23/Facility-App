@@ -12,6 +12,8 @@ enum UserPermission {
   facilityView('facility.view'),
   facilityUpdate('facility.update'),
   facilityAssignStaff('facility.assign_staff'),
+  facilityServiceView('facility_service.view'),
+  facilityAccessView('facility_access.view'),
 
   // Shift + template
   shiftConfigView('shift_config.view'),
@@ -35,6 +37,7 @@ enum UserPermission {
   attendanceApprove('attendance.approve'),
   attendanceReject('attendance.reject'),
   attendanceManualEntry('attendance.manual_entry'),
+  supervisorAttendanceView('supervisor_attendance.view'),
 
   // Leave
   leavePolicyView('leave_policy.view'),
@@ -109,7 +112,9 @@ enum UserPermission {
   supplyRequestCreate('supply_request.create'),
   supplyRequestApprove('supply_request.approve'),
   supplyRequestApproveSupervisor('supply_request.approve_supervisor'),
-  supplyRequestApproveOperationManager('supply_request.approve_operation_manager'),
+  supplyRequestApproveOperationManager(
+    'supply_request.approve_operation_manager',
+  ),
 
   // Delivery
   deliveryView('delivery.view'),
@@ -119,6 +124,25 @@ enum UserPermission {
   deliveryComplaintCreate('delivery_complaint.create'),
   deliveryComplaintApprove('delivery_complaint.approve'),
 
+  // Facility product
+  facilityProductView('facility_product.view'),
+  facilityProductCreate('facility_product.create'),
+  facilityProductUpdate('facility_product.update'),
+  facilityProductDelete('facility_product.delete'),
+  productCatalogView('product_catalog.view'),
+  productSaleEntryView('product_sale_entry.view'),
+  productSaleEntryCreate('product_sale_entry.create'),
+
+  // Collection & finance
+  locationPingSync('location_ping.sync'),
+  coreCollectionView('core_collection.view'),
+  cashCollectionView('cash_collection.view'),
+  cashCollectionCreate('cash_collection.create'),
+  systemIncomeView('system_income.view'),
+  monthCloseView('month_close.view'),
+  facilityTargetView('facility_target.view'),
+  masterDataView('master_data.view'),
+
   // User
   userView('user.view'),
   userViewProfile('user.view_profile'),
@@ -127,22 +151,24 @@ enum UserPermission {
   insightsDashboardView('insights.dashboard.view'),
 
   // Shift slot
-  shiftSlotView('shift_slot.view'),
-  shiftSlotCheckIn('shift_slot.check_in'),
-  shiftSlotCheckOut('shift_slot.check_out'),
-  shiftSlotAssign('shift_slot.assign'),
+  shiftSlotView('slot.view'),
+  shiftSlotCheckIn('slot.check_in'),
+  shiftSlotCheckOut('slot.check_out'),
+  shiftSlotAssign('slot.assign'),
 
   // Visit task
-  visitTaskView('visit_task.view'),
-  visitTaskCreate('visit_task.create'),
+  visitTaskView('task.view'),
+  visitTaskCreate('task.create'),
 
   // Profile
+  profileView('profile.view'),
   profileUpdate('profile.update'),
 
   // Additional income
   additionalIncomeCreate('additional_income.create'),
   additionalIncomeApprove('additional_income.approve'),
   additionalIncomeView('additional_income.view'),
+  incomeTypeView('income_type.view'),
 
   // Leave request
   leaveRequestView('leave_request.view'),
@@ -154,11 +180,23 @@ enum UserPermission {
   doorLockControl('door_lock.control'),
 
   // Facility expense
+  facilityExpenseView('facility_expense.view'),
   facilityExpenseCreate('facility_expense.create'),
   facilityExpenseApprove('facility_expense.approve'),
+  facilityExpenseDelete('facility_expense.delete'),
+  expenseCategoryView('expense_category.view'),
+
+  // Travel expense
+  // WHY two keys: .view opens the Travel Expenses menu item/list; .create
+  // is checked separately to gate the actual submit action inside it — a
+  // viewer without .create can open the page but not save a claim.
+  travelExpenseView('travel_expense.view'),
+  travelExpenseCreate('travel_expense.create'),
+  travelExpenseSettingView('travel_expense_setting.view'),
 
   // Notification
   notificationView('notification.view'),
+  notificationSettings('notification.settings'),
 
   // Reports
   reportFacilityWiseView('report.facility_wise.view'),
@@ -169,6 +207,11 @@ enum UserPermission {
 
   // Supervisor tracking
   supervisorTrackingView('supervisor_tracking.view'),
+  travelRouteCheckIn('travel_route.check_in'),
+  trackingSettingView('tracking_setting.view'),
+  trackingSettingUpdate('tracking_setting.update'),
+  trackingModeView('tracking_mode.view'),
+  trackingModeUpdate('tracking_mode.update'),
 
   // Delivery tracking
   deliveryTrackingView('delivery_tracking.view'),

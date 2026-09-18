@@ -26,7 +26,7 @@ class ApplicationLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image(
       excludeFromSemantics: semanticLabel == null,
-      image: Assets.images.bhumijoLogo.provider(),
+      image: Assets.images.bhumijoLogin.provider(),
       height: height,
       width: width,
       fit: fit,

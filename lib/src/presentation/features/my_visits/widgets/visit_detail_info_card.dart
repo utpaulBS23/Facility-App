@@ -36,13 +36,40 @@ class _VisitDetailInfoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _StatusChip(
-            color: _statusColor(context),
-            label: _statusLabel(context),
+          Row(
+            children: [
+              _StatusChip(
+                color: _statusColor(context),
+                label: _statusLabel(context),
+              ),
+              Gap(spacing.s8),
+              _StatusChip(
+                color: detail.locationType == 'external'
+                    ? context.color.warning
+                    : context.color.success,
+                label: detail.locationType == 'external' ? 'External' : 'Facility',
+              ),
+            ],
           ),
           Gap(spacing.s12),
-          Headline2xlTinyText(detail.facilityName),
-          if (detail.facilityAddress?.isNotEmpty == true) ...[
+          if (detail.title?.isNotEmpty == true) ...[
+            Headline2xlTinyText(detail.title!),
+            Gap(spacing.s8),
+            _InfoRow(
+              icon: detail.locationType == 'external'
+                  ? Icons.business_outlined
+                  : Icons.apartment_outlined,
+              label: detail.locationType == 'external'
+                  ? (detail.officeName ?? '')
+                  : (detail.facilityName ?? ''),
+            ),
+          ] else
+            Headline2xlTinyText(
+              detail.locationType == 'external'
+                  ? (detail.officeName ?? '')
+                  : (detail.facilityName ?? ''),
+            ),
+          if (detail.facilityAddress?.isNotEmpty == true && detail.locationType != 'external') ...[
             Gap(spacing.s8),
             _InfoRow(
               icon: Icons.location_on_outlined,
@@ -50,23 +77,9 @@ class _VisitDetailInfoCard extends StatelessWidget {
             ),
           ],
           Gap(spacing.s12),
-          Row(
-            children: [
-              Expanded(
-                child: _DateTimeBox(
-                  label: context.locale.date,
-                  value: detail.date,
-                ),
-              ),
-              Gap(spacing.s8),
-              Expanded(
-                child: _DateTimeBox(
-                  label: context.locale.time,
-                  value:
-                      '${detail.scheduledStartTime} – ${detail.scheduledEndTime}',
-                ),
-              ),
-            ],
+          _DateTimeBox(
+            label: context.locale.date,
+            value: DateFormat('EEE, MMM d').format(DateTime.parse(detail.date)),
           ),
         ],
       ),
@@ -146,7 +159,7 @@ class _DateTimeBox extends StatelessWidget {
           Row(
             children: [
               Icon(
-                Icons.access_time_outlined,
+                Icons.calendar_today_outlined,
                 size: 16,
                 color: context.color.icon,
               ),

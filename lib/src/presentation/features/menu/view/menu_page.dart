@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/text/typography.dart';
 import '../riverpod/menu_provider.dart';
 import '../widgets/menu_item_config.dart';
 
 part '../widgets/menu_header_section.dart';
 part '../widgets/menu_item_tile.dart';
+part '../widgets/menu_language_toggle.dart';
+part '../widgets/menu_logout_tile.dart';
 
 class MenuPage extends ConsumerStatefulWidget {
   const MenuPage({super.key});
@@ -56,108 +62,74 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final menuState = ref.watch(menuNotifierProvider);
+    final isLoggingOut = ref.watch(logoutProvider).isLoading;
 
-    return ColoredBox(
-      color: color.onPrimary,
-      child: SafeArea(
-        top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _MenuHeaderSection(
-              name: menuState.name,
-              email: menuState.email,
-              partnerName: menuState.partnerName,
-              appVersion: menuState.appVersion,
-              buildNumber: menuState.buildNumber,
-            ),
-            Gap(spacing.s16),
-            Expanded(
-              child: PermissionSetScope(
-                builder: (context, permissions) {
-                  final visibleItems = [
-                    for (final item in menuItemConfigs)
-                      if (hasAnyPermission(item.permissions, permissions)) item,
-                  ];
+    return Stack(
+      children: [
+        ColoredBox(
+          color: color.onPrimary,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _MenuHeaderSection(
+                  name: menuState.name,
+                  email: menuState.email,
+                  partnerName: menuState.partnerName,
+                  avatarUrl: menuState.avatarUrl,
+                  appVersion: menuState.appVersion,
+                  buildNumber: menuState.buildNumber,
+                ),
+                Gap(spacing.s16),
+                Expanded(
+                  child: PermissionSetScope(
+                    builder: (context, permissions) {
+                      final visibleItems = [
+                        for (final item in menuItemConfigs)
+                          if (hasAnyPermission(item.permissions, permissions))
+                            item,
+                      ];
 
-                  return Padding(
-                    padding:  .symmetric(horizontal: context.dimensions.padding.p16),
-                    child: RawScrollbar(
-                      thumbColor: color.primary,
-                      radius: Radius.circular(context.dimensions.radius.r4),
-                      thickness: spacing.s4,
-                      child: ListView(
-                        children: [
-                          for (var i = 0; i < visibleItems.length; i++)
-                            _MenuItemTile(
-                              config: visibleItems[i],
-                              showDivider: i < visibleItems.length - 1,
-                            ),
-                          // WHY: notificationView permission not yet granted by
-                          // backend — show unconditionally until it is.
-                          _MenuItemTile(
-                            config: notificationMenuItemConfig,
-                            showDivider: false,
+                      // WHY SingleChildScrollView, not a bare Column: the
+                      // menu list has grown past what fits on smaller
+                      // screens (My Attendance, Claim Expense, etc.) —
+                      // without scrolling, the trailing items (notification,
+                      // logout) overflow off-screen.
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.dimensions.padding.p16,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < visibleItems.length; i++)
+                                _MenuItemTile(
+                                  config: visibleItems[i],
+                                  showDivider: i < visibleItems.length - 1,
+                                ),
+                              // WHY: notificationView permission not yet
+                              // granted by backend — show unconditionally
+                              // until it is.
+                              _MenuItemTile(
+                                config: notificationMenuItemConfig,
+                                showDivider: false,
+                              ),
+                              _LogoutTile(onTap: _onLogoutTap),
+                            ],
                           ),
-                          _LogoutTile(onTap: _onLogoutTap),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Gap(spacing.s8),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LogoutTile extends StatelessWidget {
-  const _LogoutTile({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(context.spacing.s4),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.padding.p16,
-            vertical: context.spacing.s16,
-          ),
-          decoration: BoxDecoration(
-            color: context.color.onPrimary,
-            border: Border.all(color: context.color.primary),
-            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.logout_rounded,
-                size: context.spacing.s20,
-                color: context.color.primary,
-              ),
-              Gap(context.spacing.s12),
-              Expanded(
-                child: Text(
-                  context.locale.logout,
-                  style: context.textStyle.bodyLarge.copyWith(
-                    color: context.color.primary,
-                    fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ),
-            ],
+                Gap(spacing.s8),
+              ],
+            ),
           ),
         ),
-      ),
+        if (isLoggingOut) const LoadingOverlay(),
+      ],
     );
   }
 }

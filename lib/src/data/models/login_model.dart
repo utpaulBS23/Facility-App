@@ -14,6 +14,7 @@ class UserModel with UserModelMappable {
     this.supervisor,
     required this.permissionVersion,
     required this.twoFactorEnabled,
+    this.profileImage,
   });
 
   final int id;
@@ -30,6 +31,8 @@ class UserModel with UserModelMappable {
   final int permissionVersion;
   @MappableField(key: 'two_factor_enabled')
   final bool twoFactorEnabled;
+  @MappableField(key: 'profile_image')
+  final String? profileImage;
 
   static const fromJson = UserModelMapper.fromJson;
 }
@@ -78,6 +81,24 @@ class AccessibleFacilityModel with AccessibleFacilityModelMappable {
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class TrackingSettingsModel with TrackingSettingsModelMappable {
+  TrackingSettingsModel({
+    this.idlePingIntervalSeconds,
+    this.activeVisitPingIntervalSeconds,
+    this.trackingMode,
+  });
+
+  @MappableField(key: 'idle_ping_interval_seconds')
+  final int? idlePingIntervalSeconds;
+  @MappableField(key: 'active_visit_ping_interval_seconds')
+  final int? activeVisitPingIntervalSeconds;
+  @MappableField(key: 'tracking_mode')
+  final String? trackingMode;
+
+  static const fromJson = TrackingSettingsModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class LoginResponseModel with LoginResponseModelMappable {
   LoginResponseModel({
     required this.user,
@@ -85,6 +106,8 @@ class LoginResponseModel with LoginResponseModelMappable {
     required this.permissions,
     required this.accessibleFacilities,
     this.partner,
+    this.trackingSettings,
+    this.weekStartDay,
   });
 
   final UserModel user;
@@ -96,6 +119,10 @@ class LoginResponseModel with LoginResponseModelMappable {
   @MappableField(key: 'accessible_facilities')
   final List<AccessibleFacilityModel> accessibleFacilities;
   final PartnerModel? partner;
+  @MappableField(key: 'tracking_settings')
+  final TrackingSettingsModel? trackingSettings;
+  @MappableField(key: 'week_start_day')
+  final int? weekStartDay;
 
   static const fromJson = LoginResponseModelMapper.fromJson;
 }

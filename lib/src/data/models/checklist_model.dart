@@ -45,9 +45,13 @@ class ChecklistItemResponseModel with ChecklistItemResponseModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ChecklistItemSaveResponseModel
     with ChecklistItemSaveResponseModelMappable {
-  ChecklistItemSaveResponseModel({required this.data});
+  ChecklistItemSaveResponseModel({
+    required this.data,
+    this.media,
+  });
 
   final ChecklistItemResponseModel data;
+  final ChecklistItemMediaModel? media;
 
   static const fromJson = ChecklistItemSaveResponseModelMapper.fromJson;
 }

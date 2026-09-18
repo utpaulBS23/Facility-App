@@ -46,8 +46,8 @@ class _RosterCard extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       roster.facility?.name ?? '',
-                      style: context.textStyle.labelLarge.copyWith(
-                        color: context.color.text.primary,
+                      style: context.textStyle.titleMedium.copyWith(
+                        color: context.color.text.muted,
                       ),
                     ),
                   ),
@@ -61,7 +61,7 @@ class _RosterCard extends ConsumerWidget {
               Gap(spacing.s4),
               Text(
                 '${roster.weekStartDate} → ${roster.weekEndDate}',
-                style: context.textStyle.bodySmall.copyWith(
+                style: context.textStyle.titleMedium.copyWith(
                   color: context.color.text.secondary,
                 ),
               ),

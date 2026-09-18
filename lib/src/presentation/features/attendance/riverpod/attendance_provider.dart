@@ -28,12 +28,17 @@ Future<MonthlyAttendanceSummaryEntity> monthlyAttendanceOverview(
   };
 }
 
-// WHY: AutoDispose, no family — the attendance staff filter picks from every
-// partner staff member, same list source as the issue-report attendant
-// picker (getPartnerStaffUseCase has no facility filter of its own).
+// WHY: family on facilityId — the attendance staff filter must scope to the
+// facility already selected in the filter sheet, same as the assign-staff
+// flow (roster/shift), instead of listing every partner staff member.
 @riverpod
-Future<List<PartnerStaffEntity>> attendanceStaffOptions(Ref ref) async {
-  final result = await ref.read(getPartnerStaffUseCaseProvider).call();
+Future<List<PartnerStaffEntity>> attendanceStaffOptions(
+  Ref ref, {
+  int? facilityId,
+}) async {
+  final result = await ref
+      .read(getPartnerStaffUseCaseProvider)
+      .call(facilityId: facilityId);
   return switch (result) {
     Success(:final data) => data ?? [],
     Error() => [],

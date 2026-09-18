@@ -111,6 +111,11 @@ class SlotDetailsPage extends ConsumerWidget {
     final facility = ref.watch(
       shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
     );
+    // WHY: date lives on the day payload, not the slot, so it is read back
+    // from the same provider rather than threaded through navigation.
+    final date = ref.watch(
+      shiftSlotsProvider.select((state) => state.valueOrNull?.date),
+    );
     final showCheckOut = me?.action == SlotAction.checkOut;
     final facilityId = facility?.id;
     final shiftAssignmentId = me?.assignmentId;
@@ -118,13 +123,14 @@ class SlotDetailsPage extends ConsumerWidget {
     return _SlotDetailsActionListener(
       child: Scaffold(
         backgroundColor: context.color.scaffoldBackground,
-        appBar: const _SlotDetailsAppBar(),
+        appBar: DetailAppBar(title: context.locale.shiftDetails),
         body: Column(
           children: [
             Expanded(
               child: _SlotDetailsContent(
                 currentSlot: currentSlot,
                 facility: facility,
+                date: date,
                 onAssignStaff: () => _onAssignStaff(context, currentSlot),
                 onUnassignStaff: (attendant) =>
                     _onUnassignStaff(context, ref, currentSlot, attendant),

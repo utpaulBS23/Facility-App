@@ -14,6 +14,7 @@ class _ShiftCheckInBody extends StatelessWidget {
     required this.onTakePhoto,
     required this.onRequestSupervisor,
     required this.onSubmit,
+    this.supervisorName,
   });
 
   final String? capturedPhotoPath;
@@ -27,6 +28,7 @@ class _ShiftCheckInBody extends StatelessWidget {
   final VoidCallback onTakePhoto;
   final VoidCallback onRequestSupervisor;
   final VoidCallback onSubmit;
+  final String? supervisorName;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class _ShiftCheckInBody extends StatelessWidget {
                     ),
                   ],
                   Gap(dimensions.spacing.s16),
-                  const _AutoDetectedInfoCard(),
+                  _AutoDetectedInfoCard(supervisorName: supervisorName),
                   Gap(dimensions.spacing.s16),
                 ],
               ),

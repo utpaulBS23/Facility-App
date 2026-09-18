@@ -52,6 +52,9 @@ final class FakeAuthenticationRepository extends AuthenticationRepository {
   Future<void> logout() => throw UnimplementedError();
 
   @override
+  Future<bool> restoreSession() => throw UnimplementedError();
+
+  @override
   UserEntity? getCurrentUser() => null;
 
   @override
@@ -439,9 +442,7 @@ void main() {
           authRepository,
         );
 
-        final result = await useCase.call(
-          taskOccurrenceId: _taskOccurrenceId,
-        );
+        final result = await useCase.call(taskOccurrenceId: _taskOccurrenceId);
 
         expect(
           result,

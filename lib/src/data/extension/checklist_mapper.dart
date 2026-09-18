@@ -8,8 +8,8 @@ ChecklistAnswerType _parseAnswerType(String? raw) => switch (raw) {
 };
 
 ChecklistProofPolicy _parseProofPolicy(String? raw) => switch (raw) {
-  'always' || 'required' => ChecklistProofPolicy.always,
-  'optional' => ChecklistProofPolicy.optional,
+  'photo_required' => ChecklistProofPolicy.always,
+  'photo_optional' => ChecklistProofPolicy.optional,
   _ => ChecklistProofPolicy.none,
 };
 
@@ -39,6 +39,9 @@ extension ChecklistItemSaveResponseModelToEntity
     booleanValue: data.booleanValue,
     pointsAwarded: data.pointsAwarded ?? 0,
     hasProof: data.hasProof ?? false,
+    media: media != null
+        ? ChecklistItemMediaEntity(id: media!.id, url: media!.url)
+        : null,
   );
 }
 

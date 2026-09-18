@@ -26,19 +26,9 @@ final class GetShiftSlotsUseCase {
       return const Error(Failure.shiftsUnavailable);
     }
 
-    // WHY: the endpoint is facility-scoped but the app has no facility picker
-    // yet, so it defaults to the session's primary facility (falling back to
-    // the first accessible one). An explicit [facilityId] wins, which is the
-    // seam a future picker plugs into.
-    final resolvedFacilityId =
-        facilityId ?? _primaryFacilityId(session?.accessibleFacilities);
-    if (resolvedFacilityId == null) {
-      return const Error(Failure.noAccessibleFacility);
-    }
-
     final result = await _shiftRepository.getShiftSlots(
       partnerId: partnerId,
-      facilityId: resolvedFacilityId,
+      facilityId: facilityId,
       date: date,
     );
 
@@ -47,14 +37,6 @@ final class GetShiftSlotsUseCase {
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('get shift slots')),
     };
-  }
-
-  int? _primaryFacilityId(List<AccessibleFacilityEntity>? facilities) {
-    if (facilities == null || facilities.isEmpty) return null;
-    for (final facility in facilities) {
-      if (facility.isPrimary) return facility.id;
-    }
-    return facilities.first.id;
   }
 }
 

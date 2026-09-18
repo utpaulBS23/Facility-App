@@ -4,5 +4,8 @@ import '../entities/partner_staff_entity.dart';
 abstract base class PartnerStaffRepository extends Repository {
   Future<Result<List<PartnerStaffEntity>, Failure>> getPartnerUsers({
     required int partnerId,
+    required String role,
+    int? facilityId,
+    String? search,
   });
 }
