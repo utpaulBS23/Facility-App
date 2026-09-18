@@ -149,28 +149,18 @@ class _TaskCard extends StatelessWidget {
                             '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
                         muted: _isCompleted,
                       ),
-                      if (_canComplete) ...[
-                        Gap(spacing.s16),
-                        Wrap(
-                          spacing: spacing.s8,
-                          runSpacing: spacing.s8,
-                          children: [
-                            PermissionGate(
-                              permissions: [UserPermission.issueResolve],
-                              child: OutlinedButton.icon(
-                                onPressed: (task.proofRequiredOnComplete && task.media.isEmpty)
-                                    ? null
-                                    : onCompleteTap,
-                                icon: const Icon(
-                                  Icons.check_rounded,
-                                  size: 16,
-                                ),
-                                label: Text(context.locale.completeTask),
-                              ),
-                            ),
-                          ],
+                      Gap(spacing.s16),
+                      PermissionGate(
+                        permissions: [UserPermission.issueUpdate],
+                        child: OutlinedButton.icon(
+                          onPressed: onAssignTap != null ? () => onAssignTap!(task) : null,
+                          icon: const Icon(
+                            Icons.person_add_outlined,
+                            size: 16,
+                          ),
+                          label: Text(context.locale.assignStaff),
                         ),
-                      ],
+                      ),
                     ],
                   ),
                 ),
