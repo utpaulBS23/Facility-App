@@ -138,6 +138,18 @@ AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+ReportRepository reportRepository(Ref ref) {
+  return ReportRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
+  return FacilityExpenseRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 ProductCatalogRepository productCatalogRepository(Ref ref) {
   return ProductCatalogRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
@@ -159,10 +171,8 @@ ProductSaleEntryRepository productSaleEntryRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
-  return FacilityExpenseRepositoryImpl(
-    remote: ref.read(restClientServiceProvider),
-  );
+TrainingRepository trainingRepository(Ref ref) {
+  return TrainingRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)
@@ -171,6 +181,16 @@ PushNotificationRepository pushNotificationRepository(Ref ref) {
     notificationService: ref.read(pushNotificationServiceProvider),
     cacheService: ref.read(cacheServiceProvider),
   );
+}
+
+@Riverpod(keepAlive: true)
+ItemCatalogRepository itemCatalogRepository(Ref ref) {
+  return ItemCatalogRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+StockRepository stockRepository(Ref ref) {
+  return StockRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

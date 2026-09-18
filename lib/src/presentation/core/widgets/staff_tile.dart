@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/partner_staff_entity.dart';
 import '../theme/theme.dart';
 
 /// A tappable staff-directory row used by every "assign staff" flow.
 ///
-/// Shows [staff]'s avatar, name, and phone/email, with an "Assigned" badge
-/// when [isSelected] is true. Tapping calls [onAssign] — pass `null` to
-/// disable the row (e.g. while a request is in flight). An already-assigned
-/// row stays tappable so re-tapping can update it (e.g. toggle slot lead).
+/// Shows [staff]'s avatar, name, and phone/email, highlighted when
+/// [isSelected] is true. Tapping calls [onAssign] — pass `null` to disable
+/// the row (e.g. while a request is in flight). An already-assigned row
+/// stays tappable so re-tapping can update it (e.g. toggle slot lead).
 class StaffTile extends StatelessWidget {
   /// Creates a [StaffTile].
   const StaffTile({
@@ -23,7 +22,7 @@ class StaffTile extends StatelessWidget {
   /// The staff member this row represents.
   final PartnerStaffEntity staff;
 
-  /// Whether to show the "Assigned" badge and highlighted style.
+  /// Whether to show the highlighted style.
   final bool isSelected;
 
   /// Called when the row is tapped. `null` disables the row.
@@ -73,23 +72,6 @@ class StaffTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (isSelected)
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacing.s8,
-                  vertical: spacing.s4,
-                ),
-                decoration: BoxDecoration(
-                  color: context.color.primary,
-                  borderRadius: BorderRadius.circular(radius.r4),
-                ),
-                child: Text(
-                  context.locale.assigned,
-                  style: context.textStyle.labelSmall.copyWith(
-                    color: context.color.onPrimary,
-                  ),
-                ),
-              ),
           ],
         ),
       ),

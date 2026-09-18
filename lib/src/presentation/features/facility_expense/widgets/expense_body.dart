@@ -1,10 +1,7 @@
 part of '../view/facility_expense_page.dart';
 
 class _FacilityExpenseBody extends StatelessWidget {
-  const _FacilityExpenseBody({
-    required this.listAsync,
-    required this.onRetry,
-  });
+  const _FacilityExpenseBody({required this.listAsync, required this.onRetry});
 
   final AsyncValue<FacilityExpenseListResultEntity> listAsync;
   final VoidCallback onRetry;

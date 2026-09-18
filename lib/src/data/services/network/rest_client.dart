@@ -435,6 +435,22 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
+  @GET(Endpoints.trainingSessions)
+  Future<HttpResponse> getTrainingSessions({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('search') String? search,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.trainingSessionDetails)
+  Future<HttpResponse> getTrainingSessionDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('trainingSessionId') required int trainingSessionId,
+  });
+
   @GET(Endpoints.supplyRequests)
   Future<HttpResponse> getSupplyRequests({
     @Path('partnerId') required int partnerId,
@@ -458,6 +474,14 @@ abstract class RestClient {
     @Path('supplyRequestId') required int supplyRequestId,
   });
 
+  @GET(Endpoints.incentiveFineReport)
+  Future<HttpResponse> getIncentiveFineReport({
+    @Path('partnerId') required int partnerId,
+    @Query('supervisor_id') required int supervisorId,
+    @Query('reference_month') required String referenceMonth,
+    @Query('period_type') String? periodType,
+  });
+
   @POST(Endpoints.supplyRequests)
   Future<HttpResponse> createSupplyRequest({
     @Path('partnerId') required int partnerId,
@@ -468,6 +492,8 @@ abstract class RestClient {
   Future<HttpResponse> getFacilityExpenses({
     @Path('partnerId') required int partnerId,
     @Query('facility_id') int? facilityId,
+    @Query('from') String? from,
+    @Query('to') String? to,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
@@ -580,6 +606,33 @@ abstract class RestClient {
     @Path('stockAllocationId') required int stockAllocationId,
   });
 
+  @POST(Endpoints.submitShiftStockCount)
+  Future<HttpResponse> submitShiftStockCount({
+    @Path('partnerId') required int partnerId,
+    @Path('shiftAssignmentId') required int shiftAssignmentId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.shiftStockCounts)
+  Future<HttpResponse> getShiftStockCounts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('shift_assignment_id') int? shiftAssignmentId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('from') String? from,
+    @Query('to') String? to,
+  });
+
+  @GET(Endpoints.facilityStockBalance)
+  Future<HttpResponse> getFacilityStockBalance({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   /// Task Occurrences
   @GET(Endpoints.taskOccurrences)
   Future<HttpResponse> getTaskOccurrences({
@@ -608,6 +661,21 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('taskOccurrenceId') required int taskOccurrenceId,
     @Body() Map<String, dynamic> request = const {},
+  });
+
+  @GET(Endpoints.stockAveraging)
+  Future<HttpResponse> getStockAveraging({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @PATCH(Endpoints.updateStockTarget)
+  Future<HttpResponse> updateStockTarget({
+    @Path('partnerId') required int partnerId,
+    @Path('targetId') required int targetId,
+    @Body() required Map<String, dynamic> body,
   });
 
   /// Profile
