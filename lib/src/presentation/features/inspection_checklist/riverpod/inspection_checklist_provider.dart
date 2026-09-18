@@ -46,7 +46,8 @@ class InspectionChecklistState {
 
   int get totalAnswerableCount =>
       checklist?.items
-          .where((i) => i.answerType != ChecklistAnswerType.repairWork)
+          .where((i) => i.answerType != ChecklistAnswerType.repairWork &&
+              i.isRequired)
           .length ??
       0;
 
@@ -55,13 +56,25 @@ class InspectionChecklistState {
     int count = 0;
     for (final item in checklist!.items) {
       if (item.answerType == ChecklistAnswerType.repairWork) continue;
-      if (item.answerType == ChecklistAnswerType.star &&
-          starAnswers.containsKey(item.id)) {
-        count++;
-      }
-      if (item.answerType == ChecklistAnswerType.yesNo &&
-          yesNoAnswers.containsKey(item.id)) {
-        count++;
+      if (!item.isRequired) continue;
+
+      final hasLocalAnswer = starAnswers.containsKey(item.id) || yesNoAnswers.containsKey(item.id);
+      final hasExistingAnswer = item.isAnswered;
+      final hasAnswered = hasLocalAnswer || hasExistingAnswer;
+
+      // Items with proof_policy: "required" need both answer AND proof
+      if (item.proofPolicy == ChecklistProofPolicy.always) {
+        if (hasAnswered) {
+          final hasProof = (proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
+          if (hasProof) {
+            count++;
+          }
+        }
+      } else {
+        // Other items only need answer
+        if (hasAnswered) {
+          count++;
+        }
       }
     }
     return count;

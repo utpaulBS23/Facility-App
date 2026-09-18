@@ -326,27 +326,76 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
           if (widget.item.proofPolicy?.toLowerCase() == 'photo_required' &&
               _photo == null &&
               !(widget.item.isAnswered && (widget.item.response?.hasProof ?? false))) ...[
-            Row(
-              children: [
-                Icon(
-                  Icons.info_outline_rounded,
-                  size: 12,
-                  color: context.color.warning,
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s12,
+                vertical: spacing.s8,
+              ),
+              decoration: BoxDecoration(
+                color: context.color.warning.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                border: Border.all(
+                  color: context.color.warning.withValues(alpha: 0.3),
                 ),
-                Gap(spacing.s4),
-                Expanded(
-                  child: Text(
-                    context.locale.photoRequired,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.warning,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 16,
+                    color: context.color.warning,
+                  ),
+                  Gap(spacing.s8),
+                  Expanded(
+                    child: Text(
+                      context.locale.photoRequired,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.warning,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Gap(spacing.s8),
           ],
           _answerInput(context),
+          if (widget.item.proofPolicy?.toLowerCase() == 'required') ...[
+            Gap(spacing.s8),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s12,
+                vertical: spacing.s8,
+              ),
+              decoration: BoxDecoration(
+                color: context.color.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                border: Border.all(
+                  color: context.color.primary.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    size: 16,
+                    color: context.color.primary,
+                  ),
+                  Gap(spacing.s8),
+                  Expanded(
+                    child: Text(
+                      context.locale.updatePhotoAndInputTip,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           if (widget.item.needsProof) ...[
             Gap(spacing.s16),
             _photoSection(context),

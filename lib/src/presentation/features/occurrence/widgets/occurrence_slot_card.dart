@@ -4,10 +4,12 @@ class _OccurrenceSlotCard extends StatelessWidget {
   const _OccurrenceSlotCard({
     required this.occurrence,
     required this.onChecklist,
+    this.isRefreshing = false,
   });
 
   final TaskOccurrenceEntity occurrence;
   final VoidCallback onChecklist;
+  final bool isRefreshing;
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +22,23 @@ class _OccurrenceSlotCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onChecklist,
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          borderRadius: .circular(radius.r12),
-          border: Border.all(color: context.color.borderSubtle),
-          boxShadow: [
-            BoxShadow(
-              color: context.color.shadow,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: context.color.onPrimary,
+              borderRadius: .circular(radius.r12),
+              border: Border.all(color: context.color.borderSubtle),
+              boxShadow: [
+                BoxShadow(
+                  color: context.color.shadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        clipBehavior: .antiAlias,
-        child: IntrinsicHeight(
+            clipBehavior: .antiAlias,
+            child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: .stretch,
             children: [
@@ -172,6 +176,19 @@ class _OccurrenceSlotCard extends StatelessWidget {
             ],
           ),
         ),
+          ),
+          if (isRefreshing)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.color.scaffoldBackground.withValues(alpha: 0.3),
+                  borderRadius: .circular(radius.r12),
+                ),
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator.adaptive(),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -52,9 +52,12 @@ class TaskModel with TaskModelMappable {
     this.description,
     this.facilityId,
     this.facilityName,
+    this.facilityAddress,
     this.dueAt,
     required this.issueStatus,
     required this.priority,
+    this.assignedToId,
+    this.assignedToName,
     this.issue,
     this.media,
   });
@@ -69,6 +72,9 @@ class TaskModel with TaskModelMappable {
   @MappableField(key: 'facility_name')
   final String? facilityName;
 
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
+
   @MappableField(key: 'due_at')
   final String? dueAt;
 
@@ -76,6 +82,13 @@ class TaskModel with TaskModelMappable {
   final String issueStatus;
 
   final String priority;
+
+  @MappableField(key: 'assigned_to_id')
+  final int? assignedToId;
+
+  @MappableField(key: 'assigned_to_name')
+  final String? assignedToName;
+
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
@@ -87,9 +100,12 @@ class TaskModel with TaskModelMappable {
     description: description ?? '',
     facilityId: facilityId,
     location: facilityName ?? '',
+    facilityAddress: facilityAddress ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),
     status: _mapIssueStatus(issueStatus),
+    assignedToId: assignedToId,
+    assignedToName: assignedToName ?? '',
     proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
     media:
         media
@@ -136,10 +152,13 @@ class TaskDetailModel with TaskDetailModelMappable {
     this.description,
     this.facilityId,
     this.facilityName,
+    this.facilityAddress,
     this.dueAt,
     required this.issueStatus,
     required this.priority,
     this.proofRequiredOnComplete = false,
+    this.assignedToId,
+    this.assignedToName,
     this.issue,
     this.media,
     this.createdAt,
@@ -156,6 +175,9 @@ class TaskDetailModel with TaskDetailModelMappable {
   @MappableField(key: 'facility_name')
   final String? facilityName;
 
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
+
   @MappableField(key: 'due_at')
   final String? dueAt;
 
@@ -166,6 +188,12 @@ class TaskDetailModel with TaskDetailModelMappable {
 
   @MappableField(key: 'proof_required_on_complete')
   final bool proofRequiredOnComplete;
+
+  @MappableField(key: 'assigned_to_id')
+  final int? assignedToId;
+
+  @MappableField(key: 'assigned_to_name')
+  final String? assignedToName;
 
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
@@ -184,9 +212,12 @@ class TaskDetailModel with TaskDetailModelMappable {
     description: description ?? '',
     facilityId: facilityId,
     location: facilityName ?? '',
+    facilityAddress: facilityAddress ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),
     status: _mapIssueStatus(issueStatus),
+    assignedToId: assignedToId,
+    assignedToName: assignedToName ?? '',
     proofRequiredOnComplete:
         proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
     media:
@@ -203,15 +234,22 @@ class TaskDetailModel with TaskDetailModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class TaskMediaModel with TaskMediaModelMappable {
-  TaskMediaModel({required this.id, required this.url, this.alt});
+  TaskMediaModel({
+    required this.id,
+    required this.url,
+    this.alt,
+    this.purpose = 'creation',
+  });
 
   final int id;
   final String url;
   final String? alt;
+  final String purpose;
 
   static const fromJson = TaskMediaModelMapper.fromJson;
 
-  TaskMediaEntity toEntity() => TaskMediaEntity(id: id, url: url, alt: alt);
+  TaskMediaEntity toEntity() =>
+      TaskMediaEntity(id: id, url: url, alt: alt, purpose: purpose);
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)

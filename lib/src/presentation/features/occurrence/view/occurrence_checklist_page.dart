@@ -140,7 +140,7 @@ class _OccurrenceChecklistPageState
                                   Gap(spacing.s8),
                                   Expanded(
                                     child: BodySmallText(
-                                      'You can start this task after $minutesUntilStart min',
+                                      'You can start this task at ${current.slotStart} ($minutesUntilStart min)',
                                       color: context.color.warning,
                                     ),
                                   ),

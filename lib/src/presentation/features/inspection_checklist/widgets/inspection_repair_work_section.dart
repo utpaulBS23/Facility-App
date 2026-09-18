@@ -184,7 +184,7 @@ class _InspectionIssueCard extends ConsumerWidget {
                           SizedBox(width: spacing.s4),
                           Expanded(child: BodySmallText(
                             issue.dueDateString?.isNotEmpty ?? false
-                              ? DateFormatter.formatDueTime(issue.dueDateString!)
+                              ? DateFormatter.formatDateOnly(issue.dueDateString!)
                               : '—',
                             color: context.color.text.secondary,
                             overflow: TextOverflow.ellipsis,
