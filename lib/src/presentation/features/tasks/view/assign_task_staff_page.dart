@@ -16,7 +16,6 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/staff_tile.dart';
 import '../riverpod/assign_task_staff_provider.dart';
 import '../riverpod/task_detail_provider.dart';
-import '../riverpod/tasks_provider.dart';
 
 class AssignTaskStaffPage extends ConsumerStatefulWidget {
   const AssignTaskStaffPage({super.key, required this.task});
@@ -88,7 +87,6 @@ class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
           SnackBar(content: Text(context.locale.staffAssignedSuccessfully)),
         );
         ref.read(taskDetailProvider.notifier).fetch(taskId: widget.task.id);
-        ref.invalidate(tasksProvider);
         context.pop();
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
