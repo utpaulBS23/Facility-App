@@ -663,12 +663,6 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
-  @GET(Endpoints.facilityStockTargets)
-  Future<HttpResponse> getFacilityStockTargets({
-    @Path('partnerId') required int partnerId,
-    @Path('facilityId') required int facilityId,
-  });
-
   @PATCH(Endpoints.updateStockTarget)
   Future<HttpResponse> updateStockTarget({
     @Path('partnerId') required int partnerId,
