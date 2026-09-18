@@ -201,6 +201,7 @@ enum UserPermission {
   // Reports
   reportFacilityWiseView('report.facility_wise.view'),
   reportStockConsumptionView('report.stock_consumption.view'),
+  reportExecutiveView('report.executive.view'),
 
   // Facility map
   facilityMapView('facility_map.view'),

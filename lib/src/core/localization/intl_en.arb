@@ -900,6 +900,19 @@
   "enterUnitsSold": "Enter units sold",
   "unitPriceBdt": "Unit price (BDT)",
   "availableStock": "Available stock",
-  "unitsSoldExceedsStock": "Units sold exceeds available stock"
+  "unitsSoldExceedsStock": "Units sold exceeds available stock",
+  "monthly": "Monthly",
+  "quarterly": "Quarterly",
+  "annual": "Annual",
+  "summaryOfPerformance": "Summary Of Performance",
+  "achievements": "Achievements",
+  "target": "Target",
+  "totalIncome": "Total income",
+  "totalIncentive": "Total Incentive",
+  "fine": "Fine",
+  "facilityBreakdown": "Facility Breakdown",
+  "facilities": "Facilities",
+  "selectSupervisor": "Select supervisor",
+  "noSupervisorsFound": "No supervisors found"
 }
 
