@@ -845,6 +845,19 @@
   "enterUnitsSold": "বিক্রিত একক লিখুন",
   "unitPriceBdt": "একক মূল্য (BDT)",
   "availableStock": "উপলব্ধ স্টক",
-  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি"
+  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি",
+  "monthly": "মাসিক",
+  "quarterly": "ত্রৈমাসিক",
+  "annual": "বার্ষিক",
+  "summaryOfPerformance": "কর্মক্ষমতার সারসংক্ষেপ",
+  "achievements": "অর্জন",
+  "target": "লক্ষ্যমাত্রা",
+  "totalIncome": "মোট আয়",
+  "totalIncentive": "মোট ইনসেনটিভ",
+  "fine": "জরিমানা",
+  "facilityBreakdown": "সুবিধা অনুযায়ী বিভাজন",
+  "facilities": "সুবিধাসমূহ",
+  "selectSupervisor": "সুপারভাইজার নির্বাচন করুন",
+  "noSupervisorsFound": "কোনো সুপারভাইজার পাওয়া যায়নি"
 }
 

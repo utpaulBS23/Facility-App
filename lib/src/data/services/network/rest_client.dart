@@ -474,6 +474,14 @@ abstract class RestClient {
     @Path('supplyRequestId') required int supplyRequestId,
   });
 
+  @GET(Endpoints.incentiveFineReport)
+  Future<HttpResponse> getIncentiveFineReport({
+    @Path('partnerId') required int partnerId,
+    @Query('supervisor_id') required int supervisorId,
+    @Query('reference_month') required String referenceMonth,
+    @Query('period_type') String? periodType,
+  });
+
   @POST(Endpoints.supplyRequests)
   Future<HttpResponse> createSupplyRequest({
     @Path('partnerId') required int partnerId,

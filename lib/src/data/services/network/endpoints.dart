@@ -202,6 +202,10 @@ class Endpoints {
   static const String rejectSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
 
+  /// Reports
+  static const String incentiveFineReport =
+      '/partners/{partnerId}/reports/incentive-fine';
+
   /// Facility Expenses
   static const String facilityExpenses =
       '/partners/{partnerId}/facility-expenses';
