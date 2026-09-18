@@ -1,0 +1,42 @@
+part of '../router.dart';
+
+List<GoRoute> _supplyRoutes(Ref ref) {
+  return [
+    GoRoute(
+      path: Routes.supplyRequests,
+      name: Routes.supplyRequests,
+      builder: (context, state) => const SupplyRequestsPage(),
+    ),
+    GoRoute(
+      path: Routes.newRequest,
+      name: Routes.newRequest,
+      builder: (context, state) => const NewRequestPage(),
+    ),
+    GoRoute(
+      path: Routes.requestDetails,
+      name: Routes.requestDetails,
+      builder: (context, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return RequestDetailsPage(requestId: id);
+      },
+    ),
+    GoRoute(
+      path: Routes.confirmDelivery,
+      name: Routes.confirmDelivery,
+      builder: (context, state) {
+        final (request, delivery) =
+            state.extra as (SupplyRequestEntity, DeliveryEntity);
+        return ConfirmDeliveryPage(request: request, delivery: delivery);
+      },
+    ),
+    GoRoute(
+      path: Routes.deliveryComplaint,
+      name: Routes.deliveryComplaint,
+      builder: (context, state) {
+        final (delivery, item) =
+            state.extra as (DeliveryEntity, DeliveryItemEntity);
+        return DeliveryComplaintPage(delivery: delivery, item: item);
+      },
+    ),
+  ];
+}

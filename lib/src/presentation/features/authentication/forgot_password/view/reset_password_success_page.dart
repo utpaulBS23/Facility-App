@@ -3,13 +3,14 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/app_localization.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/text/typography.dart';
 
 class ResetPasswordSuccessPage extends StatelessWidget {
   const ResetPasswordSuccessPage({super.key});
 
-  void _onDismiss(BuildContext context) => context.pop();
+  void _onDismiss(BuildContext context) => context.goNamed(Routes.login);
 
   @override
   Widget build(BuildContext context) {

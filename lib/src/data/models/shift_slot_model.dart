@@ -198,6 +198,29 @@ class SlotSummaryModel with SlotSummaryModelMappable {
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)
+class ShiftSlotsFacilityModel with ShiftSlotsFacilityModelMappable {
+  ShiftSlotsFacilityModel({
+    required this.facilityId,
+    this.facilityName,
+    this.slots = const [],
+    this.isPrimary = false,
+    this.isRelief = false,
+  });
+
+  @MappableField(key: 'facility_id')
+  final int facilityId;
+  @MappableField(key: 'facility_name')
+  final String? facilityName;
+  final List<ShiftSlotModel> slots;
+  @MappableField(key: 'is_primary')
+  final bool isPrimary;
+  @MappableField(key: 'is_relief')
+  final bool isRelief;
+
+  static const fromJson = ShiftSlotsFacilityModelMapper.fromJson;
+}
+
+@MappableClass(generateMethods: GenerateMethods.decode)
 class ShiftSlotsDataModel with ShiftSlotsDataModelMappable {
   ShiftSlotsDataModel({
     this.date,
@@ -206,6 +229,7 @@ class ShiftSlotsDataModel with ShiftSlotsDataModelMappable {
     this.activeSlot,
     this.slots = const [],
     this.summary,
+    this.facilities = const [],
   });
 
   final String? date;
@@ -215,6 +239,7 @@ class ShiftSlotsDataModel with ShiftSlotsDataModelMappable {
   final ActiveSlotModel? activeSlot;
   final List<ShiftSlotModel> slots;
   final SlotSummaryModel? summary;
+  final List<ShiftSlotsFacilityModel> facilities;
 
   static const fromJson = ShiftSlotsDataModelMapper.fromJson;
 }

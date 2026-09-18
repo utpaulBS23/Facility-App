@@ -4,7 +4,9 @@ StatefulShellRoute _shellRoutes(Ref ref) {
   return StatefulShellRoute.indexedStack(
     builder: (context, state, navigationShell) {
       return AppUpdateChecker(
-        child: NavigationShell(statefulNavigationShell: navigationShell),
+        child: SessionExpiredDialog(
+          child: NavigationShell(statefulNavigationShell: navigationShell),
+        ),
       );
     },
     branches: [

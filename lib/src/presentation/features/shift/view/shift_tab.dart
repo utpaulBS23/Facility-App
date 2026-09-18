@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../core/logger/log.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
@@ -16,6 +17,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/assign_staff_button.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
@@ -91,6 +93,7 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
       builder: (_) => FacilityPickerSheet(
         facilities: facilities,
         selectedFacilityId: _selectedFacilityId,
+        includeAllOption: true,
       ),
     );
     if (result == null || result.facilityId == _selectedFacilityId) return;
@@ -102,10 +105,6 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
-    final selectedFacilityName = facilities
-        .cast<AccessibleFacilityEntity?>()
-        .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
-        ?.name;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -116,13 +115,9 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
         surfaceTintColor: Colors.transparent,
         actions: [
           if (facilities.length > 1)
-            TextButton.icon(
-              onPressed: () => _pickFacility(facilities),
-              icon: const Icon(Icons.apartment_outlined, size: 18),
-              label: Text(
-                selectedFacilityName ?? context.locale.facilityName,
-                overflow: TextOverflow.ellipsis,
-              ),
+            FacilityFilterButton(
+              hasSelection: _selectedFacilityId != null,
+              onTap: () => _pickFacility(facilities),
             ),
         ],
       ),

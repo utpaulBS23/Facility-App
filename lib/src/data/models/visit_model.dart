@@ -6,15 +6,15 @@ part 'visit_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class VisitListResponseModel with VisitListResponseModelMappable {
-  VisitListResponseModel({required this.data, required this.stats});
+  VisitListResponseModel({required this.data, this.stats});
 
   final List<VisitSummaryModel> data;
-  final VisitStatsModel stats;
+  final VisitStatsModel? stats;
 
   static const fromJson = VisitListResponseModelMapper.fromJson;
 
   VisitListEntity toEntity() => VisitListEntity(
-        stats: stats.toEntity(),
+        stats: stats?.toEntity(),
         visits: data.map((e) => e.toEntity()).toList(),
       );
 }
@@ -22,22 +22,27 @@ class VisitListResponseModel with VisitListResponseModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class VisitStatsModel with VisitStatsModelMappable {
   VisitStatsModel({
-    required this.todayCount,
-    required this.thisWeekCount,
+    required this.total,
+    required this.pending,
     required this.inProgress,
     required this.completed,
+    required this.todayCount,
+    required this.thisWeekCount,
   });
+
+  final int total;
+  final int pending;
+
+  @MappableField(key: 'in_progress')
+  final int inProgress;
+
+  final int completed;
 
   @MappableField(key: 'today_count')
   final int todayCount;
 
   @MappableField(key: 'this_week_count')
   final int thisWeekCount;
-
-  @MappableField(key: 'in_progress')
-  final int inProgress;
-
-  final int completed;
 
   static const fromJson = VisitStatsModelMapper.fromJson;
 
@@ -53,7 +58,7 @@ class VisitStatsModel with VisitStatsModelMappable {
 class VisitSummaryModel with VisitSummaryModelMappable {
   VisitSummaryModel({
     required this.id,
-    required this.facilityName,
+    this.facilityName,
     required this.status,
     this.title,
     this.visitType,
@@ -73,15 +78,27 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.travelOriginName,
     this.facilityAddress,
     this.travelStartedAt,
+    this.locationType,
+    this.officeId,
+    this.officeName,
   });
 
   final int id;
 
   @MappableField(key: 'facility_name')
-  final String facilityName;
+  final String? facilityName;
 
   @MappableField(key: 'facility_address')
   final String? facilityAddress;
+
+  @MappableField(key: 'location_type')
+  final String? locationType;
+
+  @MappableField(key: 'office_id')
+  final int? officeId;
+
+  @MappableField(key: 'office_name')
+  final String? officeName;
 
   final String status;
 
@@ -138,7 +155,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
 
   VisitSummaryEntity toEntity() => VisitSummaryEntity(
         id: id,
-        facilityName: facilityName,
+        facilityName: facilityName ?? officeName,
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,
@@ -151,6 +168,10 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         travelOriginId: travelOriginId,
         travelOriginName: travelOriginName,
         travelStartedAt: travelStartedAt,
+        locationType: locationType ?? 'facility',
+        officeId: officeId,
+        officeName: officeName,
+        visitType: visitType,
       );
 }
 
@@ -169,8 +190,11 @@ class VisitDetailResponseModel with VisitDetailResponseModelMappable {
 class VisitDetailModel with VisitDetailModelMappable {
   VisitDetailModel({
     required this.id,
-    required this.facilityName,
+    this.facilityName,
     this.facilityId,
+    this.locationType,
+    this.officeId,
+    this.officeName,
     required this.status,
     this.title,
     this.visitType,
@@ -202,10 +226,19 @@ class VisitDetailModel with VisitDetailModelMappable {
   final int id;
 
   @MappableField(key: 'facility_name')
-  final String facilityName;
+  final String? facilityName;
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
+
+  @MappableField(key: 'location_type')
+  final String? locationType;
+
+  @MappableField(key: 'office_id')
+  final int? officeId;
+
+  @MappableField(key: 'office_name')
+  final String? officeName;
 
   @MappableField(key: 'facility_address')
   final String? facilityAddress;
@@ -288,6 +321,9 @@ class VisitDetailModel with VisitDetailModelMappable {
         id: id,
         facilityName: facilityName,
         facilityId: facilityId,
+        locationType: locationType ?? 'facility',
+        officeId: officeId,
+        officeName: officeName,
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,

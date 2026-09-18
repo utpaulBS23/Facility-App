@@ -1,7 +1,8 @@
 class TravelRouteCheckInRequestEntity {
   const TravelRouteCheckInRequestEntity({
     required this.taskId,
-    required this.facilityId,
+    this.facilityId,
+    this.officeId,
     required this.latitude,
     required this.longitude,
     this.startType,
@@ -9,13 +10,11 @@ class TravelRouteCheckInRequestEntity {
   });
 
   final int taskId;
-  final int facilityId;
+  final int? facilityId;
+  final int? officeId;
   final double latitude;
   final double longitude;
 
-  // WHY: where this trip started from — sourced from the visit list's
-  // `travel_origin_type`/`travel_origin_id`, absent for the first leg of
-  // the day.
   final String? startType;
   final int? startId;
 }
@@ -23,11 +22,23 @@ class TravelRouteCheckInRequestEntity {
 class TravelRouteCheckInEntity {
   const TravelRouteCheckInEntity({
     required this.taskId,
-    required this.facilityId,
+    this.facilityId,
+    this.officeId,
     required this.travelTrackingExcluded,
+    this.travelOriginType,
+    this.travelOriginId,
+    this.originLat,
+    this.originLng,
+    this.originName,
   });
 
   final int taskId;
-  final int facilityId;
+  final int? facilityId;
+  final int? officeId;
   final bool travelTrackingExcluded;
+  final String? travelOriginType;
+  final int? travelOriginId;
+  final double? originLat;
+  final double? originLng;
+  final String? originName;
 }

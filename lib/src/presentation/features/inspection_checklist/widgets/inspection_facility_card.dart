@@ -38,7 +38,7 @@ class _InspectionFacilityCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LabelLargeText(
-                  detail.facilityName,
+                  detail.facilityName ?? detail.officeName ?? '',
                   color: context.color.text.primary,
                 ),
                 if (detail.facilityAddress?.isNotEmpty == true) ...[
