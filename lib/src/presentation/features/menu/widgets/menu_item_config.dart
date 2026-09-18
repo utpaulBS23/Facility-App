@@ -108,7 +108,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _profitReportLabel,
     subtitle: _profitReportSubtitle,
     route: Routes.report,
-    permissions: [UserPermission.reportFacilityWiseView],
+    permissions: [UserPermission.reportExecutiveView],
   ),
   MenuItemConfig(
     icon: Assets.icons.viewIcon,

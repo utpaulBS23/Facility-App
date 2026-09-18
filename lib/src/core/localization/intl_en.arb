@@ -894,15 +894,11 @@
   "achievements": "Achievements",
   "target": "Target",
   "totalIncome": "Total income",
-  "incentiveCalculation": "Incentive Calculation",
   "totalIncentive": "Total Incentive",
-  "convenienceBased": "Convenience Based",
-  "benefits": "Benefits",
-  "convenienceBenefitsComingSoon": "Convenience benefits breakdown coming soon",
-  "incentiveRate": "Incentive Rate",
-  "achievementRate": "Achievement Rate",
-  "incentive": "Incentive",
-  "incentivesNotApplicable": "Incentives not applicable.",
-  "fineAlertness": "Fine Alertness"
+  "fine": "Fine",
+  "facilityBreakdown": "Facility Breakdown",
+  "facilities": "Facilities",
+  "selectSupervisor": "Select supervisor",
+  "noSupervisorsFound": "No supervisors found"
 }
 

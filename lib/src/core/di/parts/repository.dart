@@ -138,6 +138,11 @@ AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+ReportRepository reportRepository(Ref ref) {
+  return ReportRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
   return FacilityExpenseRepositoryImpl(
     remote: ref.read(restClientServiceProvider),

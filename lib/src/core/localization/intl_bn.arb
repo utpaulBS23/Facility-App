@@ -839,15 +839,11 @@
   "achievements": "অর্জন",
   "target": "লক্ষ্যমাত্রা",
   "totalIncome": "মোট আয়",
-  "incentiveCalculation": "ইনসেনটিভ হিসাব",
   "totalIncentive": "মোট ইনসেনটিভ",
-  "convenienceBased": "সুবিধাভিত্তিক",
-  "benefits": "সুবিধা",
-  "convenienceBenefitsComingSoon": "সুবিধার বিস্তারিত শীঘ্রই আসছে",
-  "incentiveRate": "ইনসেনটিভ হার",
-  "achievementRate": "অর্জনের হার",
-  "incentive": "ইনসেনটিভ",
-  "incentivesNotApplicable": "ইনসেনটিভ প্রযোজ্য নয়।",
-  "fineAlertness": "জরিমানা সতর্কতা"
+  "fine": "জরিমানা",
+  "facilityBreakdown": "সুবিধা অনুযায়ী বিভাজন",
+  "facilities": "সুবিধাসমূহ",
+  "selectSupervisor": "সুপারভাইজার নির্বাচন করুন",
+  "noSupervisorsFound": "কোনো সুপারভাইজার পাওয়া যায়নি"
 }
 
