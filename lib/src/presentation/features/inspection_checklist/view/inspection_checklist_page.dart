@@ -9,12 +9,15 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
+import '../../../../domain/entities/problem_category_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../issues/riverpod/create_issue_provider.dart';
 import '../riverpod/inspection_checklist_provider.dart';
 
 part '../widgets/inspection_bottom_bar.dart';
@@ -74,11 +77,26 @@ class _InspectionChecklistPageState
   Future<void> _onNewIssue() async {
     final result = await context.pushNamed<ChecklistIssueEntity>(
       Routes.problemReport,
-      extra: (
-        visitId: widget.detail.id,
-        facilityId: widget.detail.facilityId ?? 0,
-        facilityName: widget.detail.facilityName,
-      ),
+      extra: {
+        'visitId': widget.detail.id,
+        'facilityId': widget.detail.facilityId ?? 0,
+        'facilityName': widget.detail.facilityName,
+      },
+    );
+    if (result != null) {
+      ref.read(inspectionChecklistProvider.notifier).addLocalIssue(result);
+    }
+  }
+
+  Future<void> _onEditIssue(ChecklistIssueEntity issue) async {
+    final result = await context.pushNamed<ChecklistIssueEntity>(
+      Routes.problemReport,
+      extra: {
+        'visitId': widget.detail.id,
+        'facilityId': widget.detail.facilityId ?? 0,
+        'facilityName': widget.detail.facilityName,
+        'issue': issue,
+      },
     );
     if (result != null) {
       ref.read(inspectionChecklistProvider.notifier).addLocalIssue(result);
@@ -120,6 +138,7 @@ class _InspectionChecklistPageState
                 checklistState: checklistState,
                 onSubmit: _onSubmit,
                 onNewIssue: _onNewIssue,
+                onEditIssue: (issue) => _onEditIssue(issue),
                 canSubmit: isGranted,
               ),
             ),
@@ -134,12 +153,14 @@ class _ChecklistBody extends StatelessWidget {
     required this.onSubmit,
     required this.onNewIssue,
     required this.canSubmit,
+    this.onEditIssue,
   });
 
   final VisitDetailEntity detail;
   final InspectionChecklistState checklistState;
   final VoidCallback onSubmit;
   final VoidCallback onNewIssue;
+  final Function(ChecklistIssueEntity)? onEditIssue;
   final bool canSubmit;
 
   void _onCancel(BuildContext context) => context.pop();
@@ -153,7 +174,8 @@ class _ChecklistBody extends StatelessWidget {
     // must hide for either status, not just resolved.
     final isResolved =
         detail.status == VisitStatus.resolved ||
-        detail.status == VisitStatus.completed;
+        detail.status == VisitStatus.completed ||
+        detail.status == VisitStatus.inProgress;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -176,15 +198,18 @@ class _ChecklistBody extends StatelessWidget {
                         item: item,
                         state: checklistState,
                         visitId: detail.id,
-                        isResolved: isResolved,
+                        isResolved: isResolved || checklistState.isComplete,
                       ),
                       Divider(color: context.color.borderSubtle, height: 1),
                     ],
                   ),
-              if (detail.facilityName != null) ...[
+              if (detail.facilityName != null &&
+                  (checklist.issues.isNotEmpty ||
+                      checklistState.localIssues.isNotEmpty)) ...[
                 _InspectionRepairWorkSection(
                   issues: [...checklist.issues, ...checklistState.localIssues],
                   onNewIssue: onNewIssue,
+                  onEditIssue: onEditIssue,
                   canAddIssue: !isResolved,
                 ),
                 Gap(spacing.s8),

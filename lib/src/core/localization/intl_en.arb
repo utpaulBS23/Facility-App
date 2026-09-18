@@ -505,6 +505,7 @@
   "leaveType": "Leave Type",
   "reasonOptional": "Reason (optional)",
   "createIssue": "Create Issue",
+  "editIssue": "Edit Issue",
   "department": "Department",
   "departmentHint": "e.g. Cleaning, Plumbing",
   "specificProblem": "Specific Problem",
@@ -527,6 +528,7 @@
   "requestSubmittedSuccessfully": "Request submitted successfully",
   "issueTitle": "Issue Title",
   "issueTitleHint": "Enter a short title for this issue",
+  "dueDateRequired": "Due date is required",
   "rosters": "Rosters",
   "noRostersFound": "No rosters found.",
   "createRoster": "Create Roster",
@@ -886,6 +888,9 @@
   "enterUnitsSold": "Enter units sold",
   "unitPriceBdt": "Unit price (BDT)",
   "availableStock": "Available stock",
-  "unitsSoldExceedsStock": "Units sold exceeds available stock"
+  "unitsSoldExceedsStock": "Units sold exceeds available stock",
+  "created": "Created",
+  "description": "Description",
+  "assignedTo": "Assigned To"
 }
 

@@ -142,6 +142,8 @@ class TaskDetailModel with TaskDetailModelMappable {
     this.proofRequiredOnComplete = false,
     this.issue,
     this.media,
+    this.createdAt,
+    this.resolvedAt,
   });
 
   final int id;
@@ -168,6 +170,12 @@ class TaskDetailModel with TaskDetailModelMappable {
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
+  @MappableField(key: 'created_at')
+  final String? createdAt;
+
+  @MappableField(key: 'resolved_at')
+  final String? resolvedAt;
+
   static const fromJson = TaskDetailModelMapper.fromJson;
 
   TaskEntity toEntity() => TaskEntity(
@@ -186,6 +194,8 @@ class TaskDetailModel with TaskDetailModelMappable {
             ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
             .toList() ??
         [],
+    createdDate: createdAt != null ? DateTime.tryParse(createdAt!) : null,
+    resolvedDate: resolvedAt != null ? DateTime.tryParse(resolvedAt!) : null,
   );
 }
 

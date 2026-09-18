@@ -161,150 +161,92 @@ class _TaskDetailBody extends StatelessWidget {
     final spacing = context.dimensions.spacing;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(spacing.s16),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(spacing.s16),
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: _priorityColor(context),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const Gap(6),
-                Text(
-                  _priorityLabel(context),
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: context.color.text.secondary,
-                  ),
-                ),
-              ],
-            ),
-            Gap(spacing.s8),
-            Text(
-              task.title,
-              style: context.textStyle.labelLarge.copyWith(
-                color: context.color.text.primary,
-                fontWeight: FontWeight.bold,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-            Gap(spacing.s8),
-            _InfoRow(icon: Icons.location_on_outlined, label: task.location),
-            Gap(spacing.s4),
-            _InfoRow(
-              icon: Icons.access_time_outlined,
-              label:
-                  '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
-            ),
-            Gap(spacing.s16),
-            Text(
-              task.description,
-              style: context.textStyle.bodyMedium.copyWith(
-                color: context.color.text.secondary,
-              ),
-            ),
-            if (task.media.isNotEmpty) ...[
-              Gap(spacing.s16),
-              SizedBox(
-                height: 120,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: task.media.length,
-                  separatorBuilder: (_, _) =>
-                      Gap(context.dimensions.spacing.s8),
-                  itemBuilder: (_, i) {
-                    final m = task.media[i];
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        context.dimensions.radius.r6,
-                      ),
-                      child: Image.network(
-                        m.url,
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => Container(
-                          width: 120,
-                          height: 120,
-                          color: context.color.borderSubtle,
-                          child: Icon(
-                            Icons.broken_image_outlined,
-                            color: context.color.icon,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-            if (_canStart) ...[
-              Gap(spacing.s24),
-              PermissionGate(
-                permissions: [UserPermission.issueResolve],
-                child: FilledButton(
-                  onPressed: () => onStartTap(task),
-                  child: Text(context.locale.startTask),
-                ),
-              ),
-            ],
-            if (_canComplete)
-              PermissionGate(
-                permissions: [UserPermission.issueResolve],
-                child: Padding(
-                  padding: EdgeInsets.only(top: spacing.s24),
-                  child: FilledButton(
-                    onPressed: () => onCompleteTap(task),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: context.color.primary,
-                    ),
-                    child: Text(context.locale.completeTask),
-                  ),
-                ),
-              ),
-          ],
-        ),
+      padding: EdgeInsets.all(spacing.s12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildCard1Header(context),
+          Gap(spacing.s8),
+          _buildCard2Description(context),
+          Gap(spacing.s8),
+          _buildCard3Media(context),
+        ],
       ),
     );
   }
-}
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label});
+  Widget _buildCard1Header(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: context.color.onPrimary,
+        border: Border.all(color: context.color.borderSubtle),
+        borderRadius: BorderRadius.circular(radius.r12),
+        boxShadow: [
+          BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2))
+        ],
+      ),
+      padding: EdgeInsets.all(spacing.s12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(task.title, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 2),
+          Gap(spacing.s8),
+          Row(children: [Container(width: 8, height: 8, decoration: BoxDecoration(color: _priorityColor(context), shape: BoxShape.circle)), Gap(spacing.s6), Text(_priorityLabel(context).toUpperCase(), style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
+          Gap(spacing.s4),
+          Row(children: [Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.location, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
+          Gap(spacing.s4),
+          Row(children: [Icon(Icons.access_time_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Text('${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}', style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
+        ],
+      ),
+    );
+  }
 
-  final IconData icon;
-  final String label;
+  Widget _buildCard2Description(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: context.color.icon),
-        const Gap(4),
-        Expanded(
-          child: Text(
-            label,
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.text.secondary,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
+    if (task.description.isEmpty) return const SizedBox.shrink();
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(color: context.color.onPrimary, border: Border.all(color: context.color.borderSubtle), borderRadius: BorderRadius.circular(radius.r12), boxShadow: [BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2))]),
+      padding: EdgeInsets.all(spacing.s12),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.description, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s6), Text(task.description, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]),
+    );
+  }
+
+  Widget _buildCard3Media(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final radius = context.dimensions.radius;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(color: context.color.onPrimary, border: Border.all(color: context.color.borderSubtle), borderRadius: BorderRadius.circular(radius.r12), boxShadow: [BoxShadow(color: context.color.shadow, blurRadius: 8, offset: const Offset(0, 2))]),
+      padding: EdgeInsets.all(spacing.s12),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (task.createdDate != null) ...[
+          Row(children: [Icon(Icons.calendar_today_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s8), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.created, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s2), Text(DateFormatter.formatDueTime(task.createdDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]))]),
+          Gap(spacing.s8),
+        ],
+        if (task.resolvedDate != null) ...[
+          Row(children: [Icon(Icons.check_circle_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s8), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.resolved, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s2), Text(DateFormatter.formatDueTime(task.resolvedDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]))]),
+          Gap(spacing.s8),
+        ],
+        if (task.media.isNotEmpty) ...[
+          SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: task.media.length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {
+            final m = task.media[i];
+            return ClipRRect(borderRadius: BorderRadius.circular(radius.r6), child: Image.network(m.url, width: 100, height: 100, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(width: 100, height: 100, color: context.color.borderSubtle, child: Icon(Icons.broken_image_outlined, color: context.color.icon))));
+          })),
+          Gap(spacing.s12),
+        ],
+        if (_canStart) ...[
+          PermissionGate(permissions: [UserPermission.issueResolve], child: SizedBox(width: double.infinity, child: FilledButton(onPressed: () => onStartTap(task), child: Text(context.locale.startTask)))),
+          Gap(spacing.s8),
+        ],
+        if (_canComplete) PermissionGate(permissions: [UserPermission.issueResolve], child: SizedBox(width: double.infinity, child: FilledButton(onPressed: () => onCompleteTap(task), style: FilledButton.styleFrom(backgroundColor: context.color.primary), child: Text(context.locale.completeTask)))),
+      ]),
     );
   }
 }

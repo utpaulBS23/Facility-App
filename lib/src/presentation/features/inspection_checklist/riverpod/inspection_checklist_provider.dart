@@ -378,13 +378,22 @@ class InspectionChecklist extends _$InspectionChecklist {
 
   Future<void> pickProofImage({required int itemId}) async {
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+      preferredCameraDevice: CameraDevice.rear,
+    );
     if (image == null) return;
     // WHY: replace, not append — only lastOrNull is ever uploaded; accumulating
     // stale XFile handles wastes memory and silently discards all but the last.
     final updated = Map<int, List<XFile>>.from(state.proofImages);
     updated[itemId] = [image];
-    state = state.copyWith(proofImages: updated);
+
+    // Clear old media URLs when new photo is selected for editing
+    final updatedMediaUrls = Map<int, String>.from(state.mediaUrls);
+    updatedMediaUrls.remove(itemId);
+
+    state = state.copyWith(proofImages: updated, mediaUrls: updatedMediaUrls);
   }
 
   void addLocalIssue(ChecklistIssueEntity issue) {
@@ -420,6 +429,7 @@ class InspectionChecklist extends _$InspectionChecklist {
         order: item.order,
         maxPoints: item.maxPoints,
         proofPolicy: item.proofPolicy,
+        isRequired: item.isRequired,
         existingRating: item.existingRating,
         existingBoolAnswer: item.existingBoolAnswer,
         existingPointsAwarded: item.existingPointsAwarded,
