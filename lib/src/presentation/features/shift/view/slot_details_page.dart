@@ -23,7 +23,18 @@ class SlotDetailsPage extends ConsumerWidget {
   }
 
   void _onAssignStaff(BuildContext context, WidgetRef ref, ShiftSlotEntity currentSlot) {
-    final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
+    final slotsData = ref.read(shiftSlotsProvider).valueOrNull;
+    var facilityId = slotsData?.facility?.id;
+
+    if (facilityId == null && slotsData != null && slotsData.facilities.isNotEmpty) {
+      for (final fac in slotsData.facilities) {
+        if (fac.slots.any((s) => s.shiftSlotId == currentSlot.shiftSlotId)) {
+          facilityId = fac.facilityId;
+          break;
+        }
+      }
+    }
+
     if (facilityId == null) return;
     context.pushNamed(
       Routes.assignStaff,

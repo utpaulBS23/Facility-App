@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../core/logger/log.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
@@ -47,7 +48,12 @@ class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
 
   void _fetchStaff() {
     final facilityId = _facilityId;
-    if (facilityId == null) return;
+    Log.info('_fetchStaff called: facilityId=$facilityId');
+    if (facilityId == null) {
+      Log.error('_fetchStaff: facilityId is null');
+      return;
+    }
+    Log.info('Fetching staff for facilityId=$facilityId');
     ref
         .read(taskPartnerStaffProvider.notifier)
         .fetch(
@@ -64,6 +70,7 @@ class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
   }
 
   Future<void> _onStaffTap(PartnerStaffEntity person) async {
+    Log.info('_onStaffTap: assigning task ${widget.task.id} to staff ${person.id} (${person.name})');
     ref
         .read(assignTaskStaffProvider.notifier)
         .assign(
@@ -92,6 +99,8 @@ class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
     final staffState = ref.watch(taskPartnerStaffProvider);
     final isAssigning = ref.watch(assignTaskStaffProvider).isLoading;
     final assignedId = widget.task.assignedToId;
+
+    Log.info('AssignTaskStaffPage build: assignedId=$assignedId, task=${widget.task.id}');
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -138,6 +147,7 @@ class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
                       ),
                     );
                   }
+                  Log.info('Staff list loaded: ${staff.length} staff members, assignedId=$assignedId');
                   return ListView.separated(
                     padding: EdgeInsets.all(spacing.s16),
                     itemCount: staff.length,
@@ -145,6 +155,7 @@ class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
                     itemBuilder: (context, index) {
                       final person = staff[index];
                       final isSelected = assignedId == person.id;
+                      Log.info('Staff item ${index}: id=${person.id}, name=${person.name}, isSelected=$isSelected');
                       return StaffTile(
                         staff: person,
                         isSelected: isSelected,

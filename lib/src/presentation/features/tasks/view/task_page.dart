@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/base/result.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
@@ -64,6 +66,32 @@ class _TaskPageState extends ConsumerState<TaskPage> {
 
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
+
+  Future<void> _onAssignStaffTap(TaskEntity task) async {
+    try {
+      // Fetch full task details to get assignedToId before opening assign staff
+      final result = await ref
+          .read(getIssueDetailUseCaseProvider)
+          .call(id: task.id);
+
+      if (!mounted) return;
+
+      switch (result) {
+        case Success(:final data):
+          if (data != null) {
+            context.pushNamed(Routes.assignTaskStaff, extra: data);
+          }
+        case Error(:final error):
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.localizedMessage(context))),
+          );
+      }
+    } catch (_) {
+      if (mounted) {
+        context.pushNamed(Routes.assignTaskStaff, extra: task);
+      }
+    }
+  }
 
   Future<void> _onStartTap(TaskEntity task) async {
     final success = await ref
@@ -204,6 +232,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     onTap: () => _onViewTap(tasks[i]),
                     onStartTap: () => _onStartTap(tasks[i]),
                     onCompleteTap: () => _onCompleteTap(tasks[i]),
+                    onAssignStaffTap: () async => _onAssignStaffTap(tasks[i]),
                   ),
                 );
               },
