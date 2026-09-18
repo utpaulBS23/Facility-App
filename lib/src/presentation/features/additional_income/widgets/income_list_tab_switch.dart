@@ -1,36 +1,36 @@
-part of '../view/add_additional_income_page.dart';
+part of '../view/additional_income_page.dart';
 
-enum IncomeEntryType { rentAndOthers, productSell }
+enum IncomeListTab { rentAndOthers, monthlyProductRevenue }
 
-class _IncomeEntryTypeSwitch extends StatelessWidget {
-  const _IncomeEntryTypeSwitch({
-    required this.selectedType,
-    required this.onTypeChanged,
+class _IncomeListTabSwitch extends StatelessWidget {
+  const _IncomeListTabSwitch({
+    required this.selectedTab,
+    required this.onTabChanged,
   });
 
-  final IncomeEntryType selectedType;
-  final ValueChanged<IncomeEntryType> onTypeChanged;
+  final IncomeListTab selectedTab;
+  final ValueChanged<IncomeListTab> onTabChanged;
 
   @override
   Widget build(BuildContext context) {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    return SegmentedButton<IncomeEntryType>(
+    return SegmentedButton<IncomeListTab>(
       segments: [
-        ButtonSegment<IncomeEntryType>(
-          value: IncomeEntryType.rentAndOthers,
+        ButtonSegment<IncomeListTab>(
+          value: IncomeListTab.rentAndOthers,
           label: Text(context.locale.rentAndOthers),
         ),
-        ButtonSegment<IncomeEntryType>(
-          value: IncomeEntryType.productSell,
-          label: Text(context.locale.productSell),
+        ButtonSegment<IncomeListTab>(
+          value: IncomeListTab.monthlyProductRevenue,
+          label: Text(context.locale.monthlyProductRevenue),
         ),
       ],
-      selected: {selectedType},
+      selected: {selectedTab},
       showSelectedIcon: false,
       onSelectionChanged: (newSelection) {
-        onTypeChanged(newSelection.first);
+        onTabChanged(newSelection.first);
       },
       style: SegmentedButton.styleFrom(
         backgroundColor: color.onPrimary,

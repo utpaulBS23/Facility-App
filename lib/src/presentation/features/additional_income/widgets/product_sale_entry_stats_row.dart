@@ -1,14 +1,15 @@
 part of '../view/additional_income_page.dart';
 
-class _IncomeStatsRow extends StatelessWidget {
-  const _IncomeStatsRow({required this.summary});
+class _ProductSaleStatsRow extends StatelessWidget {
+  const _ProductSaleStatsRow({required this.summary});
 
-  final AdditionalIncomeSummaryEntity summary;
+  final ProductSaleEntrySummaryEntity summary;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
+    final profit = summary.totalProfit;
 
     return Container(
       padding: EdgeInsets.all(spacing.s8),
@@ -20,24 +21,24 @@ class _IncomeStatsRow extends StatelessWidget {
       child: Row(
         children: [
           _SummaryTile(
-            valueText: '৳${NumberFormatter.format(summary.approvedTotal)}',
-            label: context.locale.approvedTotal,
+            valueText: '৳${NumberFormatter.format(summary.totalIncome)}',
+            label: context.locale.totalIncome,
             background: color.successAlt,
             textColor: color.success,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: '${summary.pendingCount}',
-            label: context.locale.pending,
-            background: color.warningAlt,
-            textColor: color.warning,
+            valueText: '${summary.totalUnits}',
+            label: context.locale.unitsSold,
+            background: color.scaffoldBackground,
+            textColor: color.text.primary,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: '${summary.totalSubmissions}',
-            label: context.locale.totalSubmissions,
-            background: color.scaffoldBackground,
-            textColor: color.text.primary,
+            valueText: profit == null ? '—' : '৳${NumberFormatter.format(profit)}',
+            label: context.locale.totalProfit,
+            background: color.warningAlt,
+            textColor: color.warning,
           ),
         ],
       ),
