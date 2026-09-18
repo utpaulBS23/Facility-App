@@ -886,6 +886,23 @@
   "enterUnitsSold": "Enter units sold",
   "unitPriceBdt": "Unit price (BDT)",
   "availableStock": "Available stock",
-  "unitsSoldExceedsStock": "Units sold exceeds available stock"
+  "unitsSoldExceedsStock": "Units sold exceeds available stock",
+  "monthly": "Monthly",
+  "quarterly": "Quarterly",
+  "annual": "Annual",
+  "summaryOfPerformance": "Summary Of Performance",
+  "achievements": "Achievements",
+  "target": "Target",
+  "totalIncome": "Total income",
+  "incentiveCalculation": "Incentive Calculation",
+  "totalIncentive": "Total Incentive",
+  "convenienceBased": "Convenience Based",
+  "benefits": "Benefits",
+  "convenienceBenefitsComingSoon": "Convenience benefits breakdown coming soon",
+  "incentiveRate": "Incentive Rate",
+  "achievementRate": "Achievement Rate",
+  "incentive": "Incentive",
+  "incentivesNotApplicable": "Incentives not applicable.",
+  "fineAlertness": "Fine Alertness"
 }
 
