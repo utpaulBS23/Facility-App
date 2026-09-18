@@ -4,15 +4,14 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/utiliity/validation/required_validation.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/problem_category_entity.dart';
-import '../../../../domain/entities/report_issue_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_text_field.dart';
 import 'issue_assign_responsibility_section.dart';
 import 'issue_category_selector.dart';
 import 'issue_due_date_section.dart';
-import 'issue_form_buttons_section.dart';
 import 'issue_location_input_section.dart';
 import 'issue_photo_picker_section.dart';
 import 'issue_priority_selector.dart';
@@ -30,6 +29,10 @@ class IssueFormFieldsListView extends StatelessWidget {
     required this.selectedAttendant,
     required this.dueDate,
     required this.isSubmitting,
+    this.isEditing = false,
+    this.existingPhotoUrl,
+    this.isFormValid = true,
+    this.priorityMasterData,
     required this.onPickCategory,
     required this.onPriorityChanged,
     required this.onPickCamera,
@@ -46,14 +49,18 @@ class IssueFormFieldsListView extends StatelessWidget {
   final TextEditingController locationController;
   final ProblemCategoryEntity? selectedCategory;
   final bool categoryError;
-  final IssuePriority priority;
+  final String priority;
   final XFile? photo;
   final PartnerStaffEntity? selectedAttendant;
   final DateTime? dueDate;
   final bool isSubmitting;
+  final bool isEditing;
+  final String? existingPhotoUrl;
+  final bool isFormValid;
+  final List<MasterDataItemEntity>? priorityMasterData;
 
   final VoidCallback onPickCategory;
-  final ValueChanged<IssuePriority> onPriorityChanged;
+  final ValueChanged<String> onPriorityChanged;
   final VoidCallback onPickCamera;
   final VoidCallback onPickGallery;
   final VoidCallback onRemovePhoto;
@@ -73,7 +80,9 @@ class IssueFormFieldsListView extends StatelessWidget {
         vertical: spacing.s20,
       ),
       children: [
-        IssueSectionLabel(context.locale.issueTitle),
+        IssueSectionLabel(
+          isEditing ? context.locale.specificProblem : context.locale.issueTitle,
+        ),
         Gap(spacing.s8),
         AppTextField.text(
           controller: titleController,
@@ -89,6 +98,21 @@ class IssueFormFieldsListView extends StatelessWidget {
           hasError: categoryError,
           onTap: onPickCategory,
         ),
+        if (selectedCategory?.proofRequiredOnComplete ?? false) ...[
+          Gap(spacing.s12),
+          Chip(
+            label: Text('Proof required for response'),
+            backgroundColor: context.color.error.withValues(alpha: 0.1),
+            labelStyle: context.textStyle.labelSmall.copyWith(
+              color: context.color.error,
+            ),
+            avatar: Icon(
+              Icons.info_outline,
+              size: 16,
+              color: context.color.error,
+            ),
+          ),
+        ],
         Gap(spacing.s16),
         IssueSectionLabel(context.locale.location),
         Gap(spacing.s8),
@@ -99,6 +123,7 @@ class IssueFormFieldsListView extends StatelessWidget {
         IssuePrioritySelector(
           selected: priority,
           onChanged: onPriorityChanged,
+          masterDataItems: priorityMasterData,
         ),
         Gap(spacing.s16),
         IssuePhotoPickerSection(
@@ -106,6 +131,7 @@ class IssueFormFieldsListView extends StatelessWidget {
           onCamera: onPickCamera,
           onGallery: onPickGallery,
           onRemove: onRemovePhoto,
+          existingPhotoUrl: existingPhotoUrl,
         ),
         Gap(spacing.s16),
         IssueAssignResponsibilitySection(
@@ -120,11 +146,6 @@ class IssueFormFieldsListView extends StatelessWidget {
           onClear: onClearDueDate,
         ),
         Gap(spacing.s24),
-        IssueFormButtonsSection(
-          isSubmitting: isSubmitting,
-          onSubmit: onSubmit,
-        ),
-        Gap(spacing.s16),
       ],
     );
   }

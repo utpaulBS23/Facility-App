@@ -11,10 +11,14 @@ extension IssueDetailMapper on IssueDetailModel {
       status: data.status,
       description: data.description,
       assignedTo: data.assignedTo,
+      assignedToName: data.assignedToName,
       problemCategory: data.problemCategory,
       facilityName: data.facilityName,
       dueDate: data.dueAt != null ? DateTime.tryParse(data.dueAt!) : null,
+      resolvedDate: data.resolvedAt != null ? DateTime.tryParse(data.resolvedAt!) : null,
+      createdDate: data.createdAt != null ? DateTime.tryParse(data.createdAt!) : null,
       photoUrl: photoUrl,
+      media: data.media?.map((m) => IssueMediaEntity(id: m.id, url: m.url ?? '')).toList() ?? [],
     );
   }
 }

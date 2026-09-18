@@ -5,11 +5,13 @@ class _InspectionRepairWorkSection extends StatelessWidget {
     required this.issues,
     required this.onNewIssue,
     required this.canAddIssue,
+    this.onEditIssue,
   });
 
   final List<ChecklistIssueEntity> issues;
   final VoidCallback onNewIssue;
   final bool canAddIssue;
+  final Function(ChecklistIssueEntity)? onEditIssue;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,10 @@ class _InspectionRepairWorkSection extends StatelessWidget {
             ...issues.map(
               (issue) => Padding(
                 padding: EdgeInsets.only(bottom: spacing.s8),
-                child: _InspectionIssueCard(issue: issue),
+                child: _InspectionIssueCard(
+                  issue: issue,
+                  onEdit: canAddIssue ? () => onEditIssue?.call(issue) : null,
+                ),
               ),
             ),
           ],
@@ -90,15 +95,38 @@ class _NewIssueButton extends StatelessWidget {
   }
 }
 
-class _InspectionIssueCard extends StatelessWidget {
-  const _InspectionIssueCard({required this.issue});
+class _InspectionIssueCard extends ConsumerWidget {
+  const _InspectionIssueCard({
+    required this.issue,
+    this.onEdit,
+  });
 
   final ChecklistIssueEntity issue;
+  final VoidCallback? onEdit;
+
+  String _getCategoryLabel(BuildContext context, AsyncValue<List<ProblemCategoryEntity>> categoriesAsync) {
+    return categoriesAsync.maybeWhen(
+      data: (categories) {
+        if (issue.category.isEmpty) return '—';
+        try {
+          final found = categories.firstWhere((cat) => cat.value == issue.category);
+          return found.name;
+        } catch (_) {
+          return issue.category;
+        }
+      },
+      orElse: () => issue.category.isNotEmpty ? issue.category : '—',
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+
+    // Fetch problem categories from provider (default partnerId: 6)
+    final categoriesAsync = ref.watch(problemCategoriesProvider(6));
+    final categoryLabel = _getCategoryLabel(context, categoriesAsync);
 
     return Container(
       padding: EdgeInsets.all(spacing.s12),
@@ -113,69 +141,86 @@ class _InspectionIssueCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: context.color.brandAccent,
-                  borderRadius: BorderRadius.circular(radius.r6),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.handyman_outlined,
-                  size: 16,
-                  color: context.color.primary,
-                ),
-              ),
-              SizedBox(width: spacing.s8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LabelLargeText(
+                    Text(
                       issue.title,
-                      color: context.color.text.primary,
+                      style: context.textStyle.labelLarge.copyWith(
+                        color: context.color.text.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
-                    SizedBox(height: spacing.s6),
-                    if (issue.category.isNotEmpty) ...[
-                      _CategoryChip(label: issue.category),
-                      SizedBox(height: spacing.s6),
-                    ],
-                    if (issue.location.isNotEmpty)
+                    SizedBox(height: spacing.s8),
+                    if (issue.facilityName?.isNotEmpty ?? false) ...[
                       Row(
                         children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 14,
-                            color: context.color.text.secondary,
-                          ),
+                          Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary),
                           SizedBox(width: spacing.s4),
-                          Expanded(
-                            child: BodySmallText(
-                              issue.location,
-                              color: context.color.text.secondary,
-                            ),
-                          ),
+                          Expanded(child: BodySmallText(issue.facilityName!, color: context.color.text.secondary, overflow: TextOverflow.ellipsis)),
                         ],
                       ),
+                      SizedBox(height: spacing.s6),
+                    ],
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Icon(Icons.map_outlined, size: 14, color: context.color.text.secondary),
+                          SizedBox(width: spacing.s4),
+                          Expanded(child: BodySmallText(categoryLabel, color: context.color.text.secondary, overflow: TextOverflow.ellipsis)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: spacing.s6),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today_outlined, size: 14, color: context.color.text.secondary),
+                          SizedBox(width: spacing.s4),
+                          Expanded(child: BodySmallText(
+                            issue.dueDateString?.isNotEmpty ?? false
+                              ? DateFormatter.formatDueTime(issue.dueDateString!)
+                              : '—',
+                            color: context.color.text.secondary,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
               SizedBox(width: spacing.s8),
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: context.color.warningAlt,
-                  borderRadius: BorderRadius.circular(radius.r10),
+              if (onEdit != null)
+                GestureDetector(
+                  onTap: onEdit,
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: context.color.brandSubtle,
+                      borderRadius: BorderRadius.circular(radius.r10),
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.edit_outlined, size: 14, color: context.color.primary),
+                  ),
+                )
+              else
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: context.color.warningAlt,
+                    borderRadius: BorderRadius.circular(radius.r10),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(Icons.warning_amber_rounded, size: 14, color: context.color.warning),
                 ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.warning_amber_rounded,
-                  size: 14,
-                  color: context.color.warning,
-                ),
-              ),
             ],
           ),
           if (issue.status.isNotEmpty || issue.priority.isNotEmpty) ...[
@@ -204,29 +249,6 @@ class _InspectionIssueCard extends StatelessWidget {
   String _capitalize(String raw) {
     if (raw.isEmpty) return raw;
     return raw[0].toUpperCase() + raw.substring(1);
-  }
-}
-
-class _CategoryChip extends StatelessWidget {
-  const _CategoryChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: spacing.s8,
-        vertical: spacing.s4,
-      ),
-      decoration: BoxDecoration(
-        color: context.color.background.surface,
-        borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
-      ),
-      child: BodySmallText(label, color: context.color.text.primary),
-    );
   }
 }
 

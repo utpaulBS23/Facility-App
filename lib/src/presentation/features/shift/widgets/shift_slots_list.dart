@@ -41,6 +41,7 @@ class _ShiftSlotsList extends StatelessWidget {
 
     if (activeSlot != null) {
       items.add(_ActiveSlotBanner(activeSlot: activeSlot));
+      items.add(Gap(spacing.s12));
     }
 
     if (hasMultipleFacilities) {

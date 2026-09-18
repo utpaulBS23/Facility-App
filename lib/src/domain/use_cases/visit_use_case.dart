@@ -1,4 +1,6 @@
 import '../entities/checklist_entity.dart';
+import '../entities/issue_detail_entity.dart';
+import '../entities/issue_list_entity.dart';
 import '../entities/problem_category_entity.dart';
 import '../entities/report_issue_entity.dart';
 import '../entities/visit_entity.dart';
@@ -196,6 +198,56 @@ final class WatchVisitSubmittedUseCase {
   final VisitRepository _repository;
 
   Stream<int> call() => _repository.onVisitSubmitted;
+}
+
+final class GetVisitIssuesUseCase {
+  GetVisitIssuesUseCase(this._repository, this._authRepository);
+
+  final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<List<IssueEntity>, Failure>> call({
+    String? status,
+    int? facilityId,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
+    final result = await _repository.getIssues(
+      partnerId: partnerId,
+      status: status,
+      facilityId: facilityId,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load issues')),
+    };
+  }
+}
+
+final class GetVisitIssueDetailUseCase {
+  GetVisitIssueDetailUseCase(this._repository, this._authRepository);
+
+  final VisitRepository _repository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<IssueDetailEntity, Failure>> call({
+    required int issueId,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
+    final result = await _repository.getIssueDetail(
+      partnerId: partnerId,
+      issueId: issueId,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load issue detail')),
+    };
+  }
 }
 
 final class GetProblemCategoriesUseCase {

@@ -568,6 +568,22 @@ GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
 }
 
 @riverpod
+GetVisitIssuesUseCase getVisitIssuesUseCase(Ref ref) {
+  return GetVisitIssuesUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetVisitIssueDetailUseCase getVisitIssueDetailUseCase(Ref ref) {
+  return GetVisitIssueDetailUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetDeviceInfoUseCase getDeviceInfoUseCase(Ref ref) {
   return GetDeviceInfoUseCase(ref.read(deviceInfoRepositoryProvider));
 }

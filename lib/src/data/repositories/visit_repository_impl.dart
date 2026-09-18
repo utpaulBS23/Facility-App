@@ -5,11 +5,17 @@ import 'package:dio/dio.dart';
 
 import '../../core/base/base.dart';
 import '../../domain/entities/checklist_entity.dart';
+import '../../domain/entities/issue_detail_entity.dart';
+import '../../domain/entities/issue_list_entity.dart';
 import '../../domain/entities/problem_category_entity.dart';
 import '../../domain/entities/report_issue_entity.dart';
 import '../../domain/entities/visit_entity.dart';
 import '../../domain/repositories/visit_repository.dart';
 import '../extension/checklist_mapper.dart';
+import '../extension/issue_detail_mapper.dart';
+import '../extension/issue_list_mapper.dart';
+import '../models/issue_detail_model.dart';
+import '../models/issue_list_model.dart';
 import '../models/problem_category_model.dart';
 import '../models/checklist_model.dart';
 import '../models/visit_model.dart';
@@ -143,7 +149,7 @@ final class VisitRepositoryImpl extends VisitRepository {
     final fields = <MapEntry<String, dynamic>>[
       MapEntry('problem_category', request.categoryValue),
       MapEntry('title', request.title),
-      MapEntry('priority', request.priority.name),
+      MapEntry('priority', request.priority),
       if (request.description != null)
         MapEntry('description', request.description!),
       if (request.assignedTo != null)
@@ -171,6 +177,32 @@ final class VisitRepositoryImpl extends VisitRepository {
       priority: data['priority'] as String? ?? '',
       status: data['status'] as String? ?? '',
     );
+  });
+
+  @override
+  Future<Result<IssueDetailEntity, Failure>> getIssueDetail({
+    required int partnerId,
+    required int issueId,
+  }) => asyncGuard(() async {
+    final response = await _client.getIssueDetail(
+      partnerId: partnerId,
+      issueId: issueId,
+    );
+    return IssueDetailModel.fromJson(response.data).toEntity();
+  });
+
+  @override
+  Future<Result<List<IssueEntity>, Failure>> getIssues({
+    required int partnerId,
+    String? status,
+    int? facilityId,
+  }) => asyncGuard(() async {
+    final response = await _client.getIssues(
+      partnerId: partnerId,
+      status: status,
+      facilityId: facilityId,
+    );
+    return IssueListResponseModel.fromJson(response.data).toEntity();
   });
 
   @override

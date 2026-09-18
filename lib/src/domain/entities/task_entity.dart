@@ -24,6 +24,8 @@ class TaskEntity {
     this.facilityId,
     this.proofRequiredOnComplete = false,
     this.media = const [],
+    this.createdDate,
+    this.resolvedDate,
   });
 
   final int id;
@@ -36,6 +38,8 @@ class TaskEntity {
   final int? facilityId;
   final bool proofRequiredOnComplete;
   final List<TaskMediaEntity> media;
+  final DateTime? createdDate;
+  final DateTime? resolvedDate;
 
   TaskEntity copyWith({
     int? id,
@@ -48,6 +52,8 @@ class TaskEntity {
     int? facilityId,
     bool? proofRequiredOnComplete,
     List<TaskMediaEntity>? media,
+    DateTime? createdDate,
+    DateTime? resolvedDate,
   }) {
     return TaskEntity(
       id: id ?? this.id,
@@ -61,6 +67,8 @@ class TaskEntity {
       proofRequiredOnComplete:
           proofRequiredOnComplete ?? this.proofRequiredOnComplete,
       media: media ?? this.media,
+      createdDate: createdDate ?? this.createdDate,
+      resolvedDate: resolvedDate ?? this.resolvedDate,
     );
   }
 }

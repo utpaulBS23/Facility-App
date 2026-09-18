@@ -494,6 +494,7 @@
   "reasonOptional": "কারণ (ঐচ্ছিক)",
   "saveChecklistAnswerFailed": "উত্তর সংরক্ষণ করা যায়নি।",
   "createIssue": "সমস্যা তৈরি করুন",
+  "editIssue": "সমস্যা সম্পাদনা করুন",
   "department": "বিভাগ",
   "departmentHint": "যেমন: পরিষ্কার, প্লাম্বিং",
   "specificProblem": "নির্দিষ্ট সমস্যা",
@@ -517,6 +518,7 @@
   "requestSubmittedSuccessfully": "অনুরোধ সফলভাবে জমা হয়েছে",
   "issueTitle": "সমস্যার শিরোনাম",
   "issueTitleHint": "এই সমস্যার জন্য একটি সংক্ষিপ্ত শিরোনাম লিখুন",
+  "dueDateRequired": "তারিখ আবশ্যক",
   "rosters": "রোস্টার",
   "noRostersFound": "কোনো রোস্টার পাওয়া যায়নি।",
   "createRoster": "রোস্টার তৈরি করুন",
@@ -831,6 +833,9 @@
   "enterUnitsSold": "বিক্রিত একক লিখুন",
   "unitPriceBdt": "একক মূল্য (BDT)",
   "availableStock": "উপলব্ধ স্টক",
-  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি"
+  "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি",
+  "created": "তৈরি",
+  "description": "বর্ণনা",
+  "assignedTo": "নিয়োজিত করা হয়েছে"
 }
 

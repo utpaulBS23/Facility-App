@@ -13,10 +13,13 @@ class IssueDataModel with IssueDataModelMappable {
     required this.status,
     this.description,
     this.assignedTo,
+    this.assignedToName,
     this.problemCategory,
     this.facilityName,
     this.dueAt,
     this.issueStatus,
+    this.resolvedAt,
+    this.createdAt,
     this.media = const [],
   });
 
@@ -29,6 +32,9 @@ class IssueDataModel with IssueDataModelMappable {
   @MappableField(key: 'assigned_to')
   final int? assignedTo;
 
+  @MappableField(key: 'assigned_to_name')
+  final String? assignedToName;
+
   @MappableField(key: 'problem_category')
   final String? problemCategory;
 
@@ -40,6 +46,12 @@ class IssueDataModel with IssueDataModelMappable {
 
   @MappableField(key: 'issue_status')
   final String? issueStatus;
+
+  @MappableField(key: 'resolved_at')
+  final String? resolvedAt;
+
+  @MappableField(key: 'created_at')
+  final String? createdAt;
 
   final List<IssueMediaModel>? media;
 

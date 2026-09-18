@@ -149,49 +149,25 @@ class _TaskCard extends StatelessWidget {
                             '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
                         muted: _isCompleted,
                       ),
-                      if (_canStart || _canComplete) ...[
+                      if (_canComplete) ...[
                         Gap(spacing.s16),
                         Wrap(
                           spacing: spacing.s8,
                           runSpacing: spacing.s8,
                           children: [
                             PermissionGate(
-                              permissions: [UserPermission.issueUpdate],
+                              permissions: [UserPermission.issueResolve],
                               child: OutlinedButton.icon(
-                                onPressed: onAssignTap != null ? () => onAssignTap!(task) : null,
+                                onPressed: (task.proofRequiredOnComplete && task.media.isEmpty)
+                                    ? null
+                                    : onCompleteTap,
                                 icon: const Icon(
-                                  Icons.person_add_outlined,
+                                  Icons.check_rounded,
                                   size: 16,
                                 ),
-                                label: Text(context.locale.assignStaff),
+                                label: Text(context.locale.completeTask),
                               ),
                             ),
-                            if (_canStart)
-                              PermissionGate(
-                                permissions: [UserPermission.issueResolve],
-                                child: OutlinedButton.icon(
-                                  onPressed: onStartTap,
-                                  icon: const Icon(
-                                    Icons.play_arrow_rounded,
-                                    size: 16,
-                                  ),
-                                  label: Text(context.locale.start),
-                                ),
-                              ),
-                            if (_canComplete)
-                              PermissionGate(
-                                permissions: [UserPermission.issueResolve],
-                                child: OutlinedButton.icon(
-                                  onPressed: (task.proofRequiredOnComplete && task.media.isEmpty)
-                                      ? null
-                                      : onCompleteTap,
-                                  icon: const Icon(
-                                    Icons.check_rounded,
-                                    size: 16,
-                                  ),
-                                  label: Text(context.locale.completeTask),
-                                ),
-                              ),
                           ],
                         ),
                       ],

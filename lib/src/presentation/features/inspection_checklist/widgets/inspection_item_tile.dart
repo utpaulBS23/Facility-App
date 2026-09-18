@@ -16,9 +16,10 @@ class _InspectionItemTile extends ConsumerWidget {
   final bool isResolved;
 
   bool get _isAlwaysProof => item.proofPolicy == ChecklistProofPolicy.always;
+  bool get _needsProof => item.proofPolicy != ChecklistProofPolicy.none;
 
   void _onStarTap(WidgetRef ref, int rating) {
-    if (_isAlwaysProof) {
+    if (_needsProof) {
       ref
           .read(inspectionChecklistProvider.notifier)
           .setStarRatingLocal(itemId: item.id, rating: rating);
@@ -30,7 +31,7 @@ class _InspectionItemTile extends ConsumerWidget {
   }
 
   void _onYesNo(WidgetRef ref, bool value) {
-    if (_isAlwaysProof) {
+    if (_needsProof) {
       ref
           .read(inspectionChecklistProvider.notifier)
           .setYesNoLocal(itemId: item.id, value: value);
@@ -72,7 +73,9 @@ class _InspectionItemTile extends ConsumerWidget {
     final hasProofSelected = state.proofImages[item.id]?.isNotEmpty == true;
     final hasProof = hasProofSelected || item.hasProof;
     final photoRequired = item.proofPolicy == ChecklistProofPolicy.always;
-    final showSubmitButton = _isAlwaysProof && !isConfirmed;
+    final needsProof = item.proofPolicy != ChecklistProofPolicy.none;
+
+    final showSubmitButton = needsProof;
     final canSubmit =
         hasAnswer && (!photoRequired || hasProof) && !isSaving;
 
@@ -90,9 +93,33 @@ class _InspectionItemTile extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: LabelLargeText(
-                        item.question,
-                        color: context.color.text.primary,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: item.question,
+                                    style: context.textStyle.labelLarge.copyWith(
+                                      color: context.color.text.primary,
+                                    ),
+                                  ),
+                                  if (!item.isRequired) ...[
+                                    TextSpan(text: ' '),
+                                    TextSpan(
+                                      text: '(${context.locale.optional})',
+                                      style: context.textStyle.bodySmall.copyWith(
+                                        color: context.color.text.secondary,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     if (isSaving) ...[
@@ -107,7 +134,7 @@ class _InspectionItemTile extends ConsumerWidget {
                     ],
                   ],
                 ),
-                if (item.proofPolicy == ChecklistProofPolicy.always) ...[
+                if (photoRequired && !hasProof) ...[
                   SizedBox(height: spacing.s4),
                   Row(
                     children: [
@@ -131,29 +158,26 @@ class _InspectionItemTile extends ConsumerWidget {
                   _StarRatingRow(
                     currentRating: state.starAnswers[item.id] ?? 0,
                     maxPoints: item.maxPoints,
-                    onStarTap: isSaving
+                    onStarTap: isSaving || isResolved
                         ? (_) {}
                         : (r) => _onStarTap(ref, r),
                   )
                 else
                   _YesNoRow(
                     answer: state.yesNoAnswers[item.id],
-                    onAnswer: isSaving
+                    onAnswer: isSaving || isResolved
                         ? (_) {}
                         : (v) => _onYesNo(ref, v),
                   ),
-                if (item.existingMediaUrls.isNotEmpty) ...[
-                  SizedBox(height: spacing.s8),
-                  _MediaThumbnailRow(urls: item.existingMediaUrls),
-                ] else if (!isResolved &&
-                    item.proofPolicy != ChecklistProofPolicy.none) ...[
+                if (item.proofPolicy != ChecklistProofPolicy.none) ...[
                   SizedBox(height: spacing.s8),
                   _ProofAttachmentRow(
                     proofImages: state.proofImages[item.id] ?? [],
                     mediaUrl: state.mediaUrls[item.id],
                     hasExistingProof: item.hasProof,
-                    onAttach: () => _onPickProof(ref),
-                    onRemove: () => _onRemoveProof(ref),
+                    existingMediaUrls: item.existingMediaUrls,
+                    onAttach: isResolved ? null : () => _onPickProof(ref),
+                    onRemove: isResolved ? null : () => _onRemoveProof(ref),
                   ),
                 ],
                 if (!isResolved && showSubmitButton) ...[
@@ -377,11 +401,13 @@ class _ProofAttachmentRow extends StatelessWidget {
     required this.onAttach,
     required this.onRemove,
     this.mediaUrl,
+    this.existingMediaUrls = const [],
   });
 
   final List<XFile> proofImages;
   final String? mediaUrl;
   final bool hasExistingProof;
+  final List<String> existingMediaUrls;
   final VoidCallback? onAttach;
   final VoidCallback? onRemove;
 
@@ -389,7 +415,8 @@ class _ProofAttachmentRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final hasAnyProof = hasExistingProof || proofImages.isNotEmpty || mediaUrl != null;
+    final existingUrl = hasExistingProof ? existingMediaUrls.firstOrNull : null;
+    final hasAnyProof = proofImages.isNotEmpty || mediaUrl != null || existingUrl != null;
     final isLocked = onAttach == null && onRemove == null;
 
     if (!hasAnyProof && !isLocked) {
@@ -446,32 +473,68 @@ class _ProofAttachmentRow extends StatelessWidget {
                               ),
                             ),
                           )
-                        : Container(
-                            width: 180,
-                            height: 180,
-                            color: context.color.subtle,
-                            alignment: Alignment.center,
-                            child: Icon(
-                              Icons.check_circle_outline,
-                              size: 32,
-                              color: context.color.success,
-                            ),
-                          ),
+                        : existingUrl != null
+                            ? Image.network(
+                                existingUrl,
+                                width: 180,
+                                height: 180,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  width: 180,
+                                  height: 180,
+                                  color: context.color.subtle,
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 32,
+                                    color: context.color.error,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                width: 180,
+                                height: 180,
+                                color: context.color.subtle,
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.check_circle_outline,
+                                  size: 32,
+                                  color: context.color.success,
+                                ),
+                              ),
               ),
             ),
           ),
-          if (!isLocked && proofImages.isNotEmpty) ...[
+          if (!isLocked && (proofImages.isNotEmpty || mediaUrl != null || existingUrl != null)) ...[
             SizedBox(height: spacing.s8),
-            OutlinedButton.icon(
-              onPressed: onRemove,
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacing.s12,
-                  vertical: spacing.s6,
+            Wrap(
+              spacing: spacing.s16,
+              runSpacing: spacing.s8,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: onAttach,
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing.s12,
+                      vertical: spacing.s6,
+                    ),
+                  ),
+                  icon: const Icon(Icons.edit_outlined, size: 14),
+                  label: BodySmallText(context.locale.edit),
                 ),
-              ),
-              icon: const Icon(Icons.delete_outline_rounded, size: 14),
-              label: BodySmallText(context.locale.remove),
+                if (proofImages.isNotEmpty)
+                  OutlinedButton.icon(
+                    onPressed: onRemove,
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: spacing.s12,
+                        vertical: spacing.s6,
+                      ),
+                    ),
+                    icon: const Icon(Icons.delete_outline_rounded, size: 14),
+                    label: BodySmallText(context.locale.remove),
+                  ),
+              ],
             ),
           ],
         ],
