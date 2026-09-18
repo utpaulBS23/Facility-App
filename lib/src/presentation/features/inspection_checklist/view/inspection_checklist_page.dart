@@ -133,14 +133,26 @@ class _InspectionChecklistPageState
             )
           : PermissionGate(
               permissions: [UserPermission.checklistResponseSubmit],
-              builder: (context, isGranted) => _ChecklistBody(
-                detail: widget.detail,
-                checklistState: checklistState,
-                onSubmit: _onSubmit,
-                onNewIssue: _onNewIssue,
-                onEditIssue: (issue) => _onEditIssue(issue),
-                canSubmit: isGranted,
-              ),
+              builder: (context, isGranted) {
+                // Check if all required items are answered (either via local state or existing response)
+                final allRequiredAnswered = checklistState.checklist?.items
+                    .where((item) => item.answerType != ChecklistAnswerType.repairWork && item.isRequired)
+                    .every((item) {
+                      final hasLocalAnswer = checklistState.starAnswers.containsKey(item.id) || checklistState.yesNoAnswers.containsKey(item.id);
+                      final hasExistingAnswer = item.isAnswered;
+                      return hasLocalAnswer || hasExistingAnswer;
+                    }) ??
+                    true;
+
+                return _ChecklistBody(
+                  detail: widget.detail,
+                  checklistState: checklistState,
+                  onSubmit: _onSubmit,
+                  onNewIssue: _onNewIssue,
+                  onEditIssue: (issue) => _onEditIssue(issue),
+                  canSubmit: isGranted && allRequiredAnswered,
+                );
+              },
             ),
     );
   }
@@ -169,13 +181,11 @@ class _ChecklistBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checklist = checklistState.checklist!;
-    // WHY: a completed visit is as final as a resolved one — both mean the
-    // checklist can no longer be edited, so cancel/submit/new-issue actions
-    // must hide for either status, not just resolved.
+    // WHY: only resolved and completed visits are final — inProgress visits
+    // still allow editing of checklist items.
     final isResolved =
         detail.status == VisitStatus.resolved ||
-        detail.status == VisitStatus.completed ||
-        detail.status == VisitStatus.inProgress;
+        detail.status == VisitStatus.completed;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -198,14 +208,12 @@ class _ChecklistBody extends StatelessWidget {
                         item: item,
                         state: checklistState,
                         visitId: detail.id,
-                        isResolved: isResolved || checklistState.isComplete,
+                        isResolved: isResolved,
                       ),
                       Divider(color: context.color.borderSubtle, height: 1),
                     ],
                   ),
-              if (detail.facilityName != null &&
-                  (checklist.issues.isNotEmpty ||
-                      checklistState.localIssues.isNotEmpty)) ...[
+              if (detail.facilityName != null) ...[
                 _InspectionRepairWorkSection(
                   issues: [...checklist.issues, ...checklistState.localIssues],
                   onNewIssue: onNewIssue,

@@ -383,6 +383,7 @@
   "view": "View",
   "start": "Start",
   "taskDetails": "Task Details",
+  "issueDetails": "Issue Details",
   "startTask": "Start Task",
   "completeTask": "Complete Task",
   "noTasksFound": "No tasks found.",

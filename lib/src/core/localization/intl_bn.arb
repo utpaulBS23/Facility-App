@@ -400,6 +400,7 @@
   "view": "দেখুন",
   "start": "শুরু করুন",
   "taskDetails": "কাজের বিবরণ",
+  "issueDetails": "সমস্যার বিবরণ",
   "startTask": "কাজ শুরু করুন",
   "completeTask": "কাজ সম্পন্ন করুন",
   "noTasksFound": "কোনো কাজ পাওয়া যায়নি।",
