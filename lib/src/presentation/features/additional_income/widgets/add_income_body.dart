@@ -51,11 +51,10 @@ class _AddIncomeBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final isProductSell = incomeEntryType == IncomeEntryType.productSell;
-    final incomeType = ref.watch(selectedIncomeTypeProvider);
-    final facilityEnabled = isProductSell || incomeType != null;
     final facilitySelected = ref.watch(selectedIncomeFacilityProvider) != null;
+    final incomeTypeSelected = ref.watch(selectedIncomeTypeProvider) != null;
     final productSelected = ref.watch(selectedProductProvider) != null;
-    final amountEnabled = isProductSell ? productSelected : facilitySelected;
+    final amountEnabled = isProductSell ? productSelected : incomeTypeSelected;
 
     return Form(
       key: formKey,
@@ -70,28 +69,36 @@ class _AddIncomeBody extends ConsumerWidget {
             onTypeChanged: onIncomeEntryTypeChanged,
           ),
           Gap(spacing.s16),
+          LabelLargeText(context.locale.selectFacility),
+          Gap(spacing.s8),
+          _IncomeFacilitySection(
+            enabled: true,
+            hasError: facilityError,
+            onSelected: onFacilitySelected,
+          ),
           if (!isProductSell) ...[
+            Gap(spacing.s16),
             LabelLargeText(context.locale.selectIncomeType),
             Gap(spacing.s8),
             _IncomeTypeSection(
+              enabled: facilitySelected,
               hasError: incomeTypeError,
               onSelected: onIncomeTypeSelected,
             ),
             Gap(spacing.s16),
+            AppTextField.description(
+              controller: descriptionController,
+              label: '${context.locale.incomeDescription} (${context.locale.optional})',
+              hint: context.locale.incomeDescriptionHint,
+              enabled: incomeTypeSelected,
+            ),
           ],
-          LabelLargeText(context.locale.selectFacility),
-          Gap(spacing.s8),
-          _IncomeFacilitySection(
-            enabled: facilityEnabled,
-            hasError: facilityError,
-            onSelected: onFacilitySelected,
-          ),
           if (isProductSell) ...[
             Gap(spacing.s16),
             LabelLargeText(context.locale.selectProduct),
             Gap(spacing.s8),
             _ProductDropdownSection(
-              enabled: ref.watch(selectedIncomeFacilityProvider) != null,
+              enabled: facilitySelected,
               hasError: productError,
               onSelected: onProductSelected,
             ),
@@ -136,11 +143,6 @@ class _AddIncomeBody extends ConsumerWidget {
             onChanged: (_) => onAmountChanged(),
           ),
           if (!isProductSell) ...[
-            AppTextField.description(
-              controller: descriptionController,
-              label: '${context.locale.comments} (${context.locale.optional})',
-              hint: context.locale.commentsHint,
-            ),
             Gap(spacing.s16),
             const _ProofPhotoPickerCard(),
           ],

@@ -5,16 +5,16 @@ class _AddExpenseBody extends ConsumerWidget {
     required this.formKey,
     required this.amountController,
     required this.commentsController,
-    required this.categoryError,
-    required this.onCategorySelected,
     required this.facilityError,
     required this.onFacilitySelected,
-    required this.expenseDate,
-    required this.onPickDate,
+    required this.categoryError,
+    required this.onCategorySelected,
     required this.amountError,
     required this.onAmountChanged,
     required this.paidByError,
     required this.onPaidBySelected,
+    required this.expenseDate,
+    required this.onPickDate,
     required this.isSubmitting,
     required this.onCancel,
     required this.onSubmit,
@@ -23,16 +23,16 @@ class _AddExpenseBody extends ConsumerWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController amountController;
   final TextEditingController commentsController;
-  final bool categoryError;
-  final VoidCallback onCategorySelected;
   final bool facilityError;
   final VoidCallback onFacilitySelected;
-  final DateTime expenseDate;
-  final VoidCallback onPickDate;
+  final bool categoryError;
+  final VoidCallback onCategorySelected;
   final bool amountError;
   final VoidCallback onAmountChanged;
   final bool paidByError;
   final VoidCallback onPaidBySelected;
+  final DateTime expenseDate;
+  final VoidCallback onPickDate;
   final bool isSubmitting;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
@@ -40,8 +40,9 @@ class _AddExpenseBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    final facilityEnabled = ref.watch(selectedExpenseCategoryProvider) != null;
-    final dateEnabled = ref.watch(selectedExpenseFacilityProvider) != null;
+    final categoryEnabled = ref.watch(selectedExpenseFacilityProvider) != null;
+    final amountEnabled = ref.watch(selectedExpenseCategoryProvider) != null;
+    final dateEnabled = ref.watch(selectedExpensePaidByProvider) != null;
 
     return Form(
       key: formKey,
@@ -51,34 +52,27 @@ class _AddExpenseBody extends ConsumerWidget {
           vertical: spacing.s20,
         ),
         children: [
-          LabelLargeText(context.locale.selectTypeOfExpense),
-          Gap(spacing.s8),
-          _CategorySection(
-            hasError: categoryError,
-            onSelected: onCategorySelected,
-          ),
-          Gap(spacing.s16),
           LabelLargeText(context.locale.selectFacility),
           Gap(spacing.s8),
           _FacilitySection(
-            enabled: facilityEnabled,
+            enabled: true,
             hasError: facilityError,
             onSelected: onFacilitySelected,
           ),
           Gap(spacing.s16),
-          LabelLargeText(context.locale.expenseDate),
+          LabelLargeText(context.locale.selectTypeOfExpense),
           Gap(spacing.s8),
-          _DropdownField(
-            value: DateFormatter.shortDate(expenseDate),
-            hint: context.locale.expenseDate,
-            onTap: dateEnabled ? onPickDate : null,
+          _CategorySection(
+            enabled: categoryEnabled,
+            hasError: categoryError,
+            onSelected: onCategorySelected,
           ),
           Gap(spacing.s16),
           AppTextField.text(
             controller: amountController,
             label: context.locale.amountBdt,
             hint: context.locale.enterAmount,
-            enabled: dateEnabled,
+            enabled: amountEnabled,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             errorText: amountError ? context.locale.fieldRequired : null,
             onChanged: (_) => onAmountChanged(),
@@ -90,6 +84,14 @@ class _AddExpenseBody extends ConsumerWidget {
             amountController: amountController,
             hasError: paidByError,
             onSelected: onPaidBySelected,
+          ),
+          Gap(spacing.s16),
+          LabelLargeText(context.locale.expenseDate),
+          Gap(spacing.s8),
+          _DropdownField(
+            value: DateFormatter.shortDate(expenseDate),
+            hint: context.locale.expenseDate,
+            onTap: dateEnabled ? onPickDate : null,
           ),
           Gap(spacing.s16),
           AppTextField.description(

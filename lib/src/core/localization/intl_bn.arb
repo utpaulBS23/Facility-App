@@ -803,6 +803,8 @@
   "jpgPngMaxSize": "JPG, PNG (সর্বোচ্চ ৫MB)",
   "comments": "মন্তব্য",
   "commentsHint": "অতিরিক্ত তথ্য লিখুন",
+  "incomeDescription": "বিবরণ",
+  "incomeDescriptionHint": "অতিরিক্ত তথ্য লিখুন",
   "verifier": "যাচাইকারী",
   "amountBdt": "পরিমাণ (BDT)",
   "enterAmount": "পরিমাণ লিখুন",

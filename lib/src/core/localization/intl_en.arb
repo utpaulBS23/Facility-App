@@ -814,6 +814,8 @@
   "threshold": "Threshold",
   "comments": "Comments",
   "commentsHint": "Enter any additional information",
+  "incomeDescription": "Description",
+  "incomeDescriptionHint": "Enter any additional information",
   "amountBdt": "Amount (BDT)",
   "enterAmount": "Enter the amount",
   "sessionExpired": "Session Expired",
