@@ -79,7 +79,10 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       switch (result) {
         case Success(:final data):
           if (data != null) {
-            context.pushNamed(Routes.assignTaskStaff, extra: data);
+            await context.pushNamed(Routes.assignTaskStaff, extra: data);
+            if (mounted) {
+              ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus, facilityId: _selectedFacilityId);
+            }
           }
         case Error(:final error):
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,7 +91,8 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       }
     } catch (_) {
       if (mounted) {
-        context.pushNamed(Routes.assignTaskStaff, extra: task);
+        await context.pushNamed(Routes.assignTaskStaff, extra: task);
+        ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus, facilityId: _selectedFacilityId);
       }
     }
   }
