@@ -241,7 +241,7 @@ class _TaskDetailBody extends StatelessWidget {
               children: [
                 Row(children: [Icon(Icons.access_time_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Text(context.locale.due, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
                 Gap(spacing.s2),
-                Text(DateFormatter.formatDueTime(task.dueTime), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
+                Text(DateFormatter.formatDateOnly(task.dueTime), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
               ],
             ),
           ),
