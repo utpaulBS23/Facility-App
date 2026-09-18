@@ -10,7 +10,7 @@ String _formatDueTime(String? raw) {
   if (raw == null) return '';
   try {
     final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
-    return DateFormatter.timestamp(dt);
+    return DateFormatter.shiftDate(dt);
   } catch (_) {
     return raw;
   }
