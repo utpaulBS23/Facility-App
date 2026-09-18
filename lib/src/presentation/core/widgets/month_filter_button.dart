@@ -3,33 +3,30 @@ import 'package:intl/intl.dart';
 
 import '../theme/theme.dart';
 
-/// Reusable app bar action that opens a year/month picker dialog and reports
-/// the selection as `yyyy-MM`.
+/// Month filter trigger + picker dialog, shared by any list page that scopes
+/// its data to a calendar month (My Attendance, Additional Income, ...).
 class MonthFilterButton extends StatelessWidget {
   const MonthFilterButton({
     super.key,
-    required this.selectedMonth,
-    required this.onChanged,
-    this.lastDate,
+    required this.month,
+    required this.lastDate,
+    required this.onSelected,
   });
 
-  /// Currently selected month, `yyyy-MM`.
-  final String selectedMonth;
-  final ValueChanged<String> onChanged;
-  final DateTime? lastDate;
+  /// The first day of the currently selected month.
+  final DateTime month;
+
+  /// The latest month selectable (usually `DateTime.now()`).
+  final DateTime lastDate;
+  final ValueChanged<DateTime> onSelected;
 
   Future<void> _pickMonth(BuildContext context) async {
-    final parts = selectedMonth.split('-');
-    final initial = DateTime(int.parse(parts[0]), int.parse(parts[1]));
-
     await showDialog<void>(
       context: context,
       builder: (_) => _MonthPickerDialog(
-        initialDate: initial,
-        lastDate: lastDate ?? DateTime.now(),
-        onSelected: (date) {
-          onChanged('${date.year}-${date.month.toString().padLeft(2, '0')}');
-        },
+        initialDate: month,
+        lastDate: lastDate,
+        onSelected: onSelected,
       ),
     );
   }
@@ -39,7 +36,7 @@ class MonthFilterButton extends StatelessWidget {
     return TextButton.icon(
       onPressed: () => _pickMonth(context),
       icon: const Icon(Icons.calendar_month_outlined, size: 18),
-      label: Text(selectedMonth),
+      label: Text(DateFormat('MMM yyyy').format(month)),
     );
   }
 }

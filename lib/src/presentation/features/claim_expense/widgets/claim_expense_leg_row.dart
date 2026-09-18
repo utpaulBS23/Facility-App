@@ -122,6 +122,9 @@ class _ClaimExpenseLegRow extends StatelessWidget {
                     controller: leg.priceController,
                     label: context.locale.price,
                     hint: context.locale.price,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     extraValidations: [PositiveNumberValidation()],
                     onChanged: (_) => onChanged(),
                   ),

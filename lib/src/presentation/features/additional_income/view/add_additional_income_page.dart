@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -25,7 +24,6 @@ import '../riverpod/submit_income_provider/selected_income_facility_provider.dar
 import '../riverpod/submit_income_provider/selected_income_type_provider.dart';
 import '../riverpod/submit_income_provider/selected_product_provider.dart';
 import '../riverpod/submit_income_provider/submit_income_provider.dart';
-import '../widgets/shimmer/shimmer_box.dart';
 
 part '../widgets/add_income_action_buttons.dart';
 part '../widgets/add_income_body.dart';
@@ -33,11 +31,9 @@ part '../widgets/income_dropdown_field.dart';
 part '../widgets/income_entry_type_switch.dart';
 part '../widgets/income_facility_list_sheet.dart';
 part '../widgets/income_facility_section.dart';
-part '../widgets/income_master_data_selector.dart';
 part '../widgets/income_type_section.dart';
 part '../widgets/product_dropdown_field.dart';
 part '../widgets/proof_photo_picker_card.dart';
-part '../widgets/shimmer/income_type_shimmer.dart';
 
 class AddAdditionalIncomePage extends ConsumerStatefulWidget {
   const AddAdditionalIncomePage({super.key});

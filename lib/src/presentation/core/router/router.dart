@@ -8,6 +8,7 @@ import '../../../core/di/dependency_injection.dart';
 import '../../../core/extensions/riverpod_extensions.dart';
 import '../../../core/logger/log.dart';
 import '../../../domain/entities/attendance_entity.dart';
+import '../../../domain/entities/facility_entity.dart';
 import '../../../domain/entities/manual_attendance_entity.dart';
 import '../../../domain/entities/shift_entity.dart';
 import '../../../domain/entities/shift_slot_entity.dart';
@@ -29,9 +30,10 @@ import '../../features/check_in_out/view/selfie_camera_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
 import '../../features/door_lock/view/door_lock_page.dart';
+import '../../features/door_access/view/door_control_page.dart';
 import '../../features/claim_expense/view/claim_expense_page.dart';
-import '../../features/facility_expense/view/add_facility_expense_page.dart';
 import '../../features/claim_expense/view/travel_expenses_page.dart';
+import '../../features/facility_expense/view/add_facility_expense_page.dart';
 import '../../features/claim_expense/view/travel_expense_details_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
 import '../../features/facility_map/view/facility_map_page.dart';
@@ -52,6 +54,9 @@ import '../../features/profile/view/my_profile_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
+import '../../features/stock/view/stock_averaging_details_page.dart';
+import '../../features/stock/view/stock_averaging_page.dart';
+import '../../features/stock/view/stock_page.dart';
 import '../../features/supply_request/view/supply_request_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
@@ -87,6 +92,7 @@ import 'shell_tab_config.dart';
 part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
 part 'parts/authentication_routes.dart';
+part 'parts/gateway_routes.dart';
 part 'parts/on_boarding_routes.dart';
 part 'parts/menu_item_routes.dart';
 part 'parts/my_visits_routes.dart';
@@ -97,6 +103,7 @@ part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
 part 'parts/stock_routes.dart';
+part 'parts/supply_routes.dart';
 part 'parts/profile_routes.dart';
 part 'parts/training_routes.dart';
 part 'router.g.dart';
@@ -193,7 +200,9 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._supplyRoutes(ref),
       ..._profileRoutes(ref),
+      ..._gatewayRoutes(ref),
       ..._trainingRoutes(ref),
       _shellRoutes(ref),
     ],

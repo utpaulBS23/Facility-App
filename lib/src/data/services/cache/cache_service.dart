@@ -9,6 +9,8 @@ enum CacheKey {
   fcmToken,
   pushNotificationsEnabled,
   disabledNotificationChannels,
+  doorLockStatusCache,
+  doorLockPendingCommands,
 }
 
 abstract class CacheService {

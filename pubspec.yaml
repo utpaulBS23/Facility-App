@@ -59,12 +59,14 @@ dependencies:
   firebase_core: ^4.14.0
   firebase_messaging: ^16.6.0
   yaml: ^3.1.0
+  connectivity_plus: ^6.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
   build_runner:
+  flutter_gen: ^5.8.0
   custom_lint:
   flutter_guardian:
     path: packages/flutter_guardian/
