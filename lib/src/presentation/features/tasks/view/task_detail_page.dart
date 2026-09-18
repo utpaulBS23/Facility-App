@@ -207,7 +207,7 @@ class _TaskDetailBody extends StatelessWidget {
           Gap(spacing.s6),
           Row(children: [Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.location, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
           if (task.assignedToName.isNotEmpty) ...[
-            Gap(spacing.s4),
+            Gap(spacing.s6),
             Row(children: [
               Container(
                 width: 20,
@@ -227,8 +227,9 @@ class _TaskDetailBody extends StatelessWidget {
               Gap(spacing.s4),
               Expanded(child: Text(task.assignedToName, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))
             ]),
-          ],
-          Gap(spacing.s4),
+            Gap(spacing.s6),
+          ] else
+            Gap(spacing.s6),
           Row(children: [Icon(Icons.location_on_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.facilityAddress, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
           Gap(spacing.s12),
           Container(
