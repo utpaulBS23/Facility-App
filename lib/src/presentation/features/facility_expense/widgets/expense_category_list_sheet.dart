@@ -1,65 +1,13 @@
-part of '../view/add_additional_income_page.dart';
+part of '../view/add_facility_expense_page.dart';
 
-class _IncomeTypeSection extends ConsumerWidget {
-  const _IncomeTypeSection({
-    required this.enabled,
-    required this.hasError,
-    required this.onSelected,
+class _CategoryListSheet extends StatelessWidget {
+  const _CategoryListSheet({
+    required this.categories,
+    required this.selectedCategoryId,
   });
 
-  final bool enabled;
-  final bool hasError;
-  final VoidCallback onSelected;
-
-  Future<void> _onTap(BuildContext context, WidgetRef ref) async {
-    final options = ref.read(incomeTypeOptionsProvider).valueOrNull ??
-        const <MasterDataItemEntity>[];
-    if (options.isEmpty) return;
-
-    final selected = await showModalBottomSheet<MasterDataItemEntity>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _IncomeTypePickerSheet(
-        options: options,
-        selected: ref.read(selectedIncomeTypeProvider),
-      ),
-    );
-
-    if (selected != null) {
-      ref.read(selectedIncomeTypeProvider.notifier).select(selected);
-      onSelected();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final incomeTypesAsync = ref.watch(incomeTypeOptionsProvider);
-    final incomeType = ref.watch(selectedIncomeTypeProvider);
-
-    return incomeTypesAsync.when(
-      loading: () => const LinearProgressIndicator(),
-      error: (_, _) => BodySmallText(
-        context.locale.selectIncomeType,
-        color: context.color.error,
-      ),
-      data: (options) => _DropdownField(
-        value: incomeType?.label,
-        hint: context.locale.selectIncomeType,
-        hasError: hasError,
-        onTap: enabled && options.isNotEmpty
-            ? () => _onTap(context, ref)
-            : null,
-      ),
-    );
-  }
-}
-
-class _IncomeTypePickerSheet extends StatelessWidget {
-  const _IncomeTypePickerSheet({required this.options, required this.selected});
-
-  final List<MasterDataItemEntity> options;
-  final MasterDataItemEntity? selected;
+  final List<MasterDataItemEntity> categories;
+  final int? selectedCategoryId;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +37,7 @@ class _IncomeTypePickerSheet extends StatelessWidget {
           Gap(spacing.s16),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-            child: LabelLargeText(context.locale.selectIncomeType),
+            child: LabelLargeText(context.locale.selectExpenseCategory),
           ),
           Gap(spacing.s16),
           Flexible(
@@ -101,13 +49,13 @@ class _IncomeTypePickerSheet extends StatelessWidget {
                 spacing.s16,
                 spacing.s16,
               ),
-              itemCount: options.length,
+              itemCount: categories.length,
               separatorBuilder: (_, _) => Gap(spacing.s12),
               itemBuilder: (context, index) {
-                final option = options[index];
-                final isSelected = option.value == selected?.value;
+                final category = categories[index];
+                final isSelected = category.id == selectedCategoryId;
                 return GestureDetector(
-                  onTap: () => Navigator.of(context).pop(option),
+                  onTap: () => Navigator.of(context).pop(category),
                   child: Container(
                     padding: EdgeInsets.all(spacing.s16),
                     decoration: BoxDecoration(
@@ -123,7 +71,7 @@ class _IncomeTypePickerSheet extends StatelessWidget {
                       children: [
                         Expanded(
                           child: LabelLargeText(
-                            option.label,
+                            category.label,
                             color: isSelected
                                 ? context.color.primary
                                 : context.color.text.primary,
