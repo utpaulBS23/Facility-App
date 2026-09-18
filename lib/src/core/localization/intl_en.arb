@@ -895,6 +895,7 @@
   "unitsSoldExceedsStock": "Units sold exceeds available stock",
   "created": "Created",
   "description": "Description",
-  "assignedTo": "Assigned To"
+  "assignedTo": "Assigned To",
+  "proofRequiredMessage": "For resolving this issue you have to submit proof"
 }
 

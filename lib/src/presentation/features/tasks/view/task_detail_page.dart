@@ -291,7 +291,7 @@ class _TaskDetailBody extends StatelessWidget {
           Gap(spacing.s8),
           Expanded(
             child: Text(
-              'For resolving this issue you have to submit proof',
+              context.locale.proofRequiredMessage,
               style: context.textStyle.bodySmall.copyWith(color: context.color.warning),
             ),
           ),

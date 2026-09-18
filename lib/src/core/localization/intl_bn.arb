@@ -840,6 +840,7 @@
   "unitsSoldExceedsStock": "বিক্রিত একক উপলব্ধ স্টকের চেয়ে বেশি",
   "created": "তৈরি",
   "description": "বর্ণনা",
-  "assignedTo": "নিয়োজিত করা হয়েছে"
+  "assignedTo": "নিয়োজিত করা হয়েছে",
+  "proofRequiredMessage": "এই সমস্যা সমাধানের জন্য আপনাকে প্রমাণ জমা দিতে হবে"
 }
 
