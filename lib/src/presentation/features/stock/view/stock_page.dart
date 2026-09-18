@@ -8,9 +8,10 @@ import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/facility_filter_button.dart';
+import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
-import '../widgets/facility_selector_card.dart';
 import '../widgets/facility_stock_balance_body.dart';
 
 class StockPageArgs {
@@ -45,50 +46,21 @@ class _StockPageState extends ConsumerState<StockPage> {
     context.goNamed(Routes.shift);
   }
 
-  void _showFacilitySelector(BuildContext context, List<AccessibleFacilityEntity> facilities) {
-    showModalBottomSheet<void>(
+  Future<void> _showFacilitySelector(
+    BuildContext context,
+    List<AccessibleFacilityEntity> facilities,
+  ) async {
+    final result = await showModalBottomSheet<({int? facilityId})>(
       context: context,
-      builder: (bottomSheetContext) {
-        final color = context.color;
-        final spacing = context.dimensions.spacing;
-
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(spacing.s16),
-                child: Headline2xlTinyText(context.locale.selectFacility),
-              ),
-              const Divider(height: 1),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: facilities.length,
-                  itemBuilder: (context, index) {
-                    final facility = facilities[index];
-                    final isSelected = facility.id == _selectedFacilityId;
-
-                    return ListTile(
-                      title: Text(facility.name),
-                      trailing: isSelected
-                          ? Icon(Icons.check_circle_rounded, color: color.primary)
-                          : null,
-                      onTap: () {
-                        setState(() {
-                          _selectedFacilityId = facility.id;
-                        });
-                        Navigator.pop(bottomSheetContext);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => FacilityPickerSheet(
+        facilities: facilities,
+        selectedFacilityId: _selectedFacilityId,
+      ),
     );
+    if (result == null || result.facilityId == _selectedFacilityId) return;
+    setState(() => _selectedFacilityId = result.facilityId);
   }
 
   @override
@@ -99,12 +71,6 @@ class _StockPageState extends ConsumerState<StockPage> {
 
     _selectedFacilityId ??= widget.args?.facilityId ?? facilities.firstOrNull?.id;
 
-    final selectedFacilityName = facilities
-            .where((f) => f.id == _selectedFacilityId)
-            .firstOrNull
-            ?.name ??
-        '';
-
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
       appBar: AppBar(
@@ -114,21 +80,20 @@ class _StockPageState extends ConsumerState<StockPage> {
         centerTitle: true,
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
+        actions: [
+          if (facilities.length > 1)
+            FacilityFilterButton(
+              hasSelection: _selectedFacilityId != null,
+              onTap: () => _showFacilitySelector(context, facilities),
+            ),
+          Gap(spacing.s8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(spacing.s16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (facilities.isNotEmpty) ...[
-              FacilitySelectorCard(
-                facilityName: selectedFacilityName.isEmpty
-                    ? context.locale.selectFacility
-                    : selectedFacilityName,
-                onTap: () => _showFacilitySelector(context, facilities),
-              ),
-              Gap(spacing.s16),
-            ],
             FacilityStockBalanceBody(facilityId: _selectedFacilityId),
           ],
         ),
