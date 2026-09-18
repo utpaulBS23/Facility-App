@@ -6,14 +6,12 @@ class _TaskCard extends StatelessWidget {
     required this.onTap,
     required this.onStartTap,
     required this.onCompleteTap,
-    this.onAssignTap,
   });
 
   final TaskEntity task;
   final VoidCallback onTap;
   final VoidCallback onStartTap;
   final VoidCallback onCompleteTap;
-  final ValueChanged<TaskEntity>? onAssignTap;
 
   bool get _isCompleted =>
       task.status == TaskStatus.resolved || task.status == TaskStatus.closed;
@@ -189,18 +187,6 @@ class _TaskCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                      Gap(spacing.s16),
-                      PermissionGate(
-                        permissions: [UserPermission.issueUpdate],
-                        child: OutlinedButton.icon(
-                          onPressed: onAssignTap != null ? () => onAssignTap!(task) : null,
-                          icon: const Icon(
-                            Icons.person_add_outlined,
-                            size: 16,
-                          ),
-                          label: Text(context.locale.assignStaff),
-                        ),
-                      ),
                     ],
                   ),
                 ),

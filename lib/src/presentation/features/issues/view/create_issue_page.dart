@@ -41,6 +41,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _locationController;
   late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
 
   ProblemCategoryEntity? _selectedCategory;
   bool _categoryError = false;
@@ -60,6 +61,9 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
     _titleController = TextEditingController(
       text: widget.issue?.title ?? '',
     );
+    _descriptionController = TextEditingController(
+      text: widget.issue?.description ?? '',
+    );
     if (widget.issue != null) {
       _priority = widget.issue.priority ?? 'medium';
       _dueDate = widget.issue.dueDate;
@@ -70,6 +74,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   void dispose() {
     _locationController.dispose();
     _titleController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -142,6 +147,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
         categoryValue: _selectedCategory!.value,
         title: _titleController.text.trim(),
         priority: _priority,
+        description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
         photoPath: _photo?.path,
         assignedTo: _selectedAttendant?.id,
         dueAt: _dueDate != null
@@ -191,6 +197,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
               _locationController.text =
                   issueDetail.facilityName ?? widget.facilityName;
               _titleController.text = issueDetail.title;
+              _descriptionController.text = issueDetail.description ?? '';
               _priority = issueDetail.priority;
               _dueDate = issueDetail.dueDate;
               _existingPhotoUrl = issueDetail.photoUrl;
@@ -263,6 +270,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
               child: IssueFormFieldsListView(
                 titleController: _titleController,
                 locationController: _locationController,
+                descriptionController: _descriptionController,
                 selectedCategory: _selectedCategory,
                 categoryError: _categoryError,
                 priority: _priority,
@@ -316,7 +324,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                             height: 20,
                             child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                           )
-                        : Text(context.locale.submitRequest),
+                        : Text(isEditing ? context.locale.save : context.locale.create),
                   ),
                 ),
               ],

@@ -242,30 +242,85 @@ class _TaskDetailBody extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final creationPhotos = task.media.where((m) => m.purpose == 'creation').toList();
+    final completionPhotos = task.media.where((m) => m.purpose == 'completion').toList();
+
     return Container(
       width: double.infinity,
       decoration: _cardDecoration(context),
       padding: EdgeInsets.all(spacing.s16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (task.createdDate != null) ...[
-          Row(children: [Icon(Icons.calendar_today_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s8), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.created, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s2), Text(DateFormatter.formatDueTime(task.createdDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]))]),
+        if (task.createdDate != null || task.resolvedDate != null) ...[
+          Row(
+            children: [
+              if (task.createdDate != null)
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today_outlined, size: 14, color: context.color.text.secondary),
+                      Gap(spacing.s8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(context.locale.created, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)),
+                            Gap(spacing.s2),
+                            Text(DateFormatter.formatDueTime(task.createdDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (task.createdDate != null && task.resolvedDate != null) Gap(spacing.s16),
+              if (task.resolvedDate != null)
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today_outlined, size: 14, color: context.color.text.secondary),
+                      Gap(spacing.s8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(context.locale.resolved, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)),
+                            Gap(spacing.s2),
+                            Text(DateFormatter.formatDueTime(task.resolvedDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
           Gap(spacing.s8),
         ],
-        if (task.resolvedDate != null) ...[
-          Row(children: [Icon(Icons.check_circle_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s8), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.resolved, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary)), Gap(spacing.s2), Text(DateFormatter.formatDueTime(task.resolvedDate.toString()), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary))]))]),
+        if (creationPhotos.isNotEmpty) ...[
+          Text('Issue Photo', style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
           Gap(spacing.s8),
-        ],
-        if (task.media.isNotEmpty)
-          SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: task.media.length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {
-            final m = task.media[i];
+          SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: creationPhotos.length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {
+            final m = creationPhotos[i];
             return ClipRRect(borderRadius: BorderRadius.circular(radius.r6), child: Image.network(m.url, width: 100, height: 100, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(width: 100, height: 100, color: context.color.borderSubtle, child: Icon(Icons.broken_image_outlined, color: context.color.icon))));
           })),
+          Gap(spacing.s12),
+        ],
+        if (completionPhotos.isNotEmpty) ...[
+          Text('Resolved Photo', style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
+          Gap(spacing.s8),
+          SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: completionPhotos.length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {
+            final m = completionPhotos[i];
+            return ClipRRect(borderRadius: BorderRadius.circular(radius.r6), child: Image.network(m.url, width: 100, height: 100, fit: BoxFit.cover, errorBuilder: (_, __, ___) => Container(width: 100, height: 100, color: context.color.borderSubtle, child: Icon(Icons.broken_image_outlined, color: context.color.icon))));
+          })),
+        ],
       ]),
     );
   }
 
   Widget _buildActionButton(BuildContext context) {
-    if (!_canStart && !_canComplete) return const SizedBox.shrink();
+    final showPrimaryAction = _canStart || _canComplete;
+
+    if (!showPrimaryAction) return const SizedBox.shrink();
 
     if (_canStart) {
       return PermissionGate(

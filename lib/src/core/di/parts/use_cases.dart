@@ -316,6 +316,14 @@ CompleteIssueUseCase completeIssueUseCase(Ref ref) {
 }
 
 @riverpod
+UpdateIssueAssignmentUseCase updateIssueAssignmentUseCase(Ref ref) {
+  return UpdateIssueAssignmentUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyVisitsUseCase getMyVisitsUseCase(Ref ref) {
   return GetMyVisitsUseCase(
     ref.read(visitRepositoryProvider),

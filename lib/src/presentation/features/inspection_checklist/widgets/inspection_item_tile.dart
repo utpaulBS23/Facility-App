@@ -134,23 +134,37 @@ class _InspectionItemTile extends ConsumerWidget {
                     ],
                   ],
                 ),
-                if (photoRequired && !hasProof) ...[
-                  SizedBox(height: spacing.s4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline_rounded,
-                        size: 12,
-                        color: context.color.warning,
+                if (item.isRequired && photoRequired) ...[
+                  SizedBox(height: spacing.s8),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing.s12,
+                      vertical: spacing.s8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.color.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                      border: Border.all(
+                        color: context.color.primary.withValues(alpha: 0.3),
                       ),
-                      SizedBox(width: spacing.s4),
-                      Expanded(
-                        child: BodySmallText(
-                          context.locale.photoRequired,
-                          color: context.color.warning,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.lightbulb_outline_rounded,
+                          size: 16,
+                          color: context.color.primary,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: spacing.s8),
+                        Expanded(
+                          child: BodySmallText(
+                            context.locale.updatePhotoAndInputTip,
+                            color: context.color.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
                 SizedBox(height: spacing.s8),

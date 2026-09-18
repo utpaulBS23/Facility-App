@@ -71,6 +71,7 @@ class ChecklistIssueEntity {
     required this.location,
     required this.priority,
     this.status = '',
+    this.description,
     this.photoUrl,
     this.dueDate,
     this.facilityName,
@@ -83,6 +84,7 @@ class ChecklistIssueEntity {
   final String location;
   final String priority;
   final String status;
+  final String? description;
   final String? photoUrl;
   final DateTime? dueDate;
   final String? facilityName;

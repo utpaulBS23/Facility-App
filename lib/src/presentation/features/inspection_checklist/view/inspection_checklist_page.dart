@@ -134,15 +134,47 @@ class _InspectionChecklistPageState
           : PermissionGate(
               permissions: [UserPermission.checklistResponseSubmit],
               builder: (context, isGranted) {
-                // Check if all required items are answered (either via local state or existing response)
-                final allRequiredAnswered = checklistState.checklist?.items
-                    .where((item) => item.answerType != ChecklistAnswerType.repairWork && item.isRequired)
-                    .every((item) {
+                // Check submit eligibility
+                final checklist = checklistState.checklist;
+                bool allRequiredAnswered = true;
+
+                if (checklist != null) {
+                  // Required items must be answered
+                  final requiredItems = checklist.items
+                      .where((item) => item.answerType != ChecklistAnswerType.repairWork && item.isRequired);
+
+                  for (final item in requiredItems) {
+                    final hasLocalAnswer = checklistState.starAnswers.containsKey(item.id) || checklistState.yesNoAnswers.containsKey(item.id);
+                    final hasExistingAnswer = item.isAnswered;
+                    if (!hasLocalAnswer && !hasExistingAnswer) {
+                      allRequiredAnswered = false;
+                      break;
+                    }
+                  }
+
+                  // Items with proof_policy: "required" need proof only if user added LOCAL answer
+                  if (allRequiredAnswered) {
+                    final proofRequiredItems = checklist.items
+                        .where((item) => item.answerType != ChecklistAnswerType.repairWork &&
+                                item.isRequired &&
+                                item.proofPolicy == ChecklistProofPolicy.always);
+
+                    for (final item in proofRequiredItems) {
                       final hasLocalAnswer = checklistState.starAnswers.containsKey(item.id) || checklistState.yesNoAnswers.containsKey(item.id);
-                      final hasExistingAnswer = item.isAnswered;
-                      return hasLocalAnswer || hasExistingAnswer;
-                    }) ??
-                    true;
+
+                      // Only enforce proof for NEW answers (local), not existing API responses
+                      if (hasLocalAnswer) {
+                        final hasProof = (checklistState.proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
+                        if (!hasProof) {
+                          allRequiredAnswered = false;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                final canSubmitForm = isGranted && allRequiredAnswered;
 
                 return _ChecklistBody(
                   detail: widget.detail,
@@ -150,7 +182,7 @@ class _InspectionChecklistPageState
                   onSubmit: _onSubmit,
                   onNewIssue: _onNewIssue,
                   onEditIssue: (issue) => _onEditIssue(issue),
-                  canSubmit: isGranted && allRequiredAnswered,
+                  canSubmit: canSubmitForm,
                 );
               },
             ),
@@ -213,7 +245,8 @@ class _ChecklistBody extends StatelessWidget {
                       Divider(color: context.color.borderSubtle, height: 1),
                     ],
                   ),
-              if (detail.facilityName != null) ...[
+              if (detail.facilityName != null &&
+                  (checklist.issues.isNotEmpty || checklistState.localIssues.isNotEmpty || !isResolved)) ...[
                 _InspectionRepairWorkSection(
                   issues: [...checklist.issues, ...checklistState.localIssues],
                   onNewIssue: onNewIssue,

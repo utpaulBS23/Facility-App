@@ -112,15 +112,6 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     );
   }
 
-  void _onAssignUserTap(TaskEntity task) {
-    showModalBottomSheet<({int? value})>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _AssignUserSheet(facilityId: task.facilityId),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -215,7 +206,6 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     onTap: () => _onViewTap(tasks[i]),
                     onStartTap: () => _onStartTap(tasks[i]),
                     onCompleteTap: () => _onCompleteTap(tasks[i]),
-                    onAssignTap: _onAssignUserTap,
                   ),
                 );
               },

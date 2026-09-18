@@ -174,17 +174,14 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
               onPressed: () => _pickFacility(context, facilities),
               icon: Container(
                 decoration: BoxDecoration(
-                  color: context.color.primary,
+                  color: context.color.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(6),
-                child: Opacity(
-                  opacity: 1.0,
-                  child: Icon(
-                    Icons.apartment_outlined,
-                    size: 20,
-                    color: context.color.onPrimary,
-                  ),
+                child: Icon(
+                  Icons.apartment_outlined,
+                  size: 20,
+                  color: context.color.primary,
                 ),
               ),
               label: Text(
@@ -272,8 +269,7 @@ class _OccurrenceBoard extends ConsumerWidget {
         ),
         Expanded(
           child: state.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
+            loading: () => const SizedBox.shrink(),
             error: (err, _) => Center(
               child: Column(
                 mainAxisSize: .min,
@@ -312,14 +308,30 @@ class _OccurrenceBoard extends ConsumerWidget {
                   ),
                 );
               }
-              return ListView.separated(
-                padding: EdgeInsets.all(spacing.s16),
-                itemCount: occurrences.length,
-                separatorBuilder: (context, i) => Gap(spacing.s12),
-                itemBuilder: (_, i) => _OccurrenceSlotCard(
-                  occurrence: occurrences[i],
-                  onChecklist: () => onChecklist(occurrences[i]),
-                ),
+              return Stack(
+                children: [
+                  ListView.separated(
+                    padding: EdgeInsets.all(spacing.s16),
+                    itemCount: occurrences.length,
+                    separatorBuilder: (context, i) => Gap(spacing.s12),
+                    itemBuilder: (_, i) => _OccurrenceSlotCard(
+                      occurrence: occurrences[i],
+                      onChecklist: () => onChecklist(occurrences[i]),
+                      isRefreshing: state.isLoading && state.hasValue,
+                    ),
+                  ),
+                  if (state.isLoading && state.hasValue)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Container(
+                          color: context.color.scaffoldBackground.withValues(alpha: 0.3),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),

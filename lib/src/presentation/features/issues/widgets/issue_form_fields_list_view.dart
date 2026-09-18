@@ -22,6 +22,7 @@ class IssueFormFieldsListView extends StatelessWidget {
     super.key,
     required this.titleController,
     required this.locationController,
+    required this.descriptionController,
     required this.selectedCategory,
     required this.categoryError,
     required this.priority,
@@ -47,6 +48,7 @@ class IssueFormFieldsListView extends StatelessWidget {
 
   final TextEditingController titleController;
   final TextEditingController locationController;
+  final TextEditingController descriptionController;
   final ProblemCategoryEntity? selectedCategory;
   final bool categoryError;
   final String priority;
@@ -80,19 +82,14 @@ class IssueFormFieldsListView extends StatelessWidget {
         vertical: spacing.s20,
       ),
       children: [
-        IssueSectionLabel(
-          isEditing ? context.locale.specificProblem : context.locale.issueTitle,
-        ),
-        Gap(spacing.s8),
-        AppTextField.text(
-          controller: titleController,
-          hint: context.locale.issueTitleHint,
-          extraValidations: [RequiredValidation()],
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-        ),
+        // 1. Facility
+        IssueSectionLabel('Facility'),
+        Gap(spacing.s2),
+        IssueLocationInputSection(controller: locationController),
         Gap(spacing.s16),
-        IssueSectionLabel(context.locale.specificProblem),
-        Gap(spacing.s8),
+        // 2. Problem Category
+        IssueSectionLabel('Problem Category'),
+        Gap(spacing.s2),
         IssueCategorySelector(
           selected: selectedCategory,
           hasError: categoryError,
@@ -114,18 +111,25 @@ class IssueFormFieldsListView extends StatelessWidget {
           ),
         ],
         Gap(spacing.s16),
-        IssueSectionLabel(context.locale.location),
-        Gap(spacing.s8),
-        IssueLocationInputSection(controller: locationController),
-        Gap(spacing.s16),
-        IssueSectionLabel(context.locale.priority),
-        Gap(spacing.s8),
-        IssuePrioritySelector(
-          selected: priority,
-          onChanged: onPriorityChanged,
-          masterDataItems: priorityMasterData,
+        // 3. Title
+        IssueSectionLabel('Title'),
+        Gap(spacing.s2),
+        AppTextField.text(
+          controller: titleController,
+          hint: context.locale.issueTitleHint,
+          extraValidations: [RequiredValidation()],
+          autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
         Gap(spacing.s16),
+        // 4. Description
+        IssueSectionLabel('Description (Optional)'),
+        Gap(spacing.s2),
+        AppTextField.description(
+          controller: descriptionController,
+          hint: 'Enter issue description',
+        ),
+        Gap(spacing.s16),
+        // 5. Photo
         IssuePhotoPickerSection(
           photo: photo,
           onCamera: onPickCamera,
@@ -134,16 +138,27 @@ class IssueFormFieldsListView extends StatelessWidget {
           existingPhotoUrl: existingPhotoUrl,
         ),
         Gap(spacing.s16),
-        IssueAssignResponsibilitySection(
-          selected: selectedAttendant,
-          onTap: onPickAttendant,
-          onClear: onClearAttendant,
-        ),
-        Gap(spacing.s16),
+        // 6. Due date
         IssueDueDateSection(
           dueDate: dueDate,
           onTap: onPickDueDate,
           onClear: onClearDueDate,
+        ),
+        Gap(spacing.s16),
+        // 7. Priority
+        IssueSectionLabel(context.locale.priority),
+        Gap(spacing.s2),
+        IssuePrioritySelector(
+          selected: priority,
+          onChanged: onPriorityChanged,
+          masterDataItems: priorityMasterData,
+        ),
+        Gap(spacing.s16),
+        // 8. Assign to
+        IssueAssignResponsibilitySection(
+          selected: selectedAttendant,
+          onTap: onPickAttendant,
+          onClear: onClearAttendant,
         ),
         Gap(spacing.s24),
       ],
