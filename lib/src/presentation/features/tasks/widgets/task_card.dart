@@ -191,17 +191,18 @@ class _TaskCard extends StatelessWidget {
                         ),
                         Gap(spacing.s12),
                       ],
-                      PermissionGate(
-                        permissions: [UserPermission.issueUpdate],
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: onAssignStaffTap,
-                            icon: const Icon(Icons.person_add_outlined),
-                            label: Text(context.locale.assignStaff),
+                      if (task.status == TaskStatus.open)
+                        PermissionGate(
+                          permissions: [UserPermission.issueUpdate],
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: onAssignStaffTap,
+                              icon: const Icon(Icons.person_add_outlined),
+                              label: Text(context.locale.assignStaff),
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
