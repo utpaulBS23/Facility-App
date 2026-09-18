@@ -2,17 +2,15 @@ import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/stock/facility_stock_balance_entity.dart';
 import '../../domain/entities/stock/facility_stock_balance_filter.dart';
-import '../../domain/entities/stock/facility_stock_target_detail_entity.dart';
 import '../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../../domain/entities/stock/stock_averaging_filter.dart';
-import '../../domain/entities/stock/stock_averaging_overview_entity.dart';
+import '../../domain/entities/stock/stock_averaging_list_entity.dart';
 import '../../domain/repositories/stock_repository.dart';
 import '../extension/facility_stock_balance_mapper.dart';
 import '../extension/facility_stock_target_mapper.dart';
 import '../extension/stock_count_mapper.dart';
 import '../models/stock/facility_stock_balance_model.dart';
-import '../models/stock/facility_stock_target_detail_model.dart';
 import '../models/stock/facility_stock_target_model.dart';
 import '../models/stock/shift_stock_count_response_models.dart';
 import '../services/network/rest_client.dart';
@@ -86,7 +84,7 @@ final class StockRepositoryImpl extends StockRepository {
   }
 
   @override
-  Future<Result<StockAveragingOverviewEntity, Failure>> getStockAveraging(
+  Future<Result<StockAveragingListEntity, Failure>> getStockAveraging(
     StockAveragingFilter filter,
   ) {
     return asyncGuard(() async {
@@ -97,24 +95,6 @@ final class StockRepositoryImpl extends StockRepository {
         perPage: filter.perPage,
       );
       final responseModel = StockAveragingResponseModel.fromJson(response.data);
-
-      return responseModel.toEntity();
-    });
-  }
-
-  @override
-  Future<Result<FacilityStockTargetDetailEntity, Failure>>
-      getFacilityStockTargets({
-    required int partnerId,
-    required int facilityId,
-  }) {
-    return asyncGuard(() async {
-      final response = await remote.getFacilityStockTargets(
-        partnerId: partnerId,
-        facilityId: facilityId,
-      );
-      final responseModel =
-          FacilityStockTargetDetailResponseModel.fromJson(response.data);
 
       return responseModel.toEntity();
     });

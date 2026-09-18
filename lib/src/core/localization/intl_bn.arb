@@ -779,6 +779,8 @@
   "stock": "ফ্যাসিলিটি স্টক ব্যালেন্স",
   "stockBalance": "ফ্যাসিলিটি স্টক ব্যালেন্স",
   "stockBalanceSubtitle": "ফ্যাসিলিটি ভিত্তিক পণ্য সামগ্রীর মজুদ তালিকা",
+  "stockAveragingMenu": "স্টক গড়",
+  "stockAveragingMenuSubtitle": "খরচের গড় এবং মাসিক চাহিদা দেখুন",
   "noStockCountRecorded": "কোন স্টক হিসাবের তথ্য পাওয়া যায়নি",
   "selectFacility": "ফ্যাসিলিটি নির্বাচন করুন",
   "totalItems": "মোট আইটেম",

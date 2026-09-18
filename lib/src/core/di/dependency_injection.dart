@@ -128,7 +128,6 @@ import '../../domain/use_cases/stock/get_shift_stock_counts_use_case.dart';
 import '../../domain/use_cases/stock/submit_shift_stock_count_use_case.dart';
 import '../../domain/use_cases/stock/get_facility_stock_balance_use_case.dart';
 import '../../domain/use_cases/stock/get_stock_averaging_use_case.dart';
-import '../../domain/use_cases/stock/get_facility_stock_targets_use_case.dart';
 import '../../domain/use_cases/stock/update_stock_target_use_case.dart';
 import '../../domain/repositories/item_catalog_repository.dart';
 import '../../domain/repositories/stock_repository.dart';

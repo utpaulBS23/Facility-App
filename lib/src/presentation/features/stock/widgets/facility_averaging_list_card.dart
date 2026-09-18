@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/stock/facility_stock_averaging_overview_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/date_formatter.dart';
 
 class FacilityAveragingListCard extends StatelessWidget {
   const FacilityAveragingListCard({
@@ -22,16 +20,9 @@ class FacilityAveragingListCard extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final isSetUp = facility.isSetUp;
-    final supervisor = facility.supervisorName.isNotEmpty
-        ? facility.supervisorName
-        : context.locale.notAvailable;
-
-    final lastCounted = facility.lastStockCountAt != null
-        ? DateFormatter.shortDate(
-            DateTime.parse(facility.lastStockCountAt!).toLocal(),
-          )
-        : context.locale.notAvailable;
+    final totalDemand = facility.monthlyTotalDemandQty % 1 == 0
+        ? facility.monthlyTotalDemandQty.toInt().toString()
+        : facility.monthlyTotalDemandQty.toString();
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -70,54 +61,11 @@ class FacilityAveragingListCard extends StatelessWidget {
                   ),
                 ),
                 Gap(spacing.s4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.person_outline_rounded,
-                      size: 14,
-                      color: color.text.secondary,
-                    ),
-                    Gap(spacing.s4),
-                    Expanded(
-                      child: Text(
-                        supervisor,
-                        style: textStyle.bodySmall.copyWith(
-                          color: color.text.secondary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                Gap(spacing.s6),
-                Row(
-                  children: [
-                    Text(
-                      'Last Count: $lastCounted  •  ',
-                      style: textStyle.bodySmall.copyWith(
-                        color: color.text.secondary,
-                        fontSize: 11,
-                      ),
-                    ),
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: isSetUp ? color.success : color.error,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Gap(spacing.s4),
-                    Text(
-                      isSetUp ? 'Set up' : 'Not set up',
-                      style: textStyle.bodySmall.copyWith(
-                        color: isSetUp ? color.success : color.error,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
+                Text(
+                  '${facility.itemCount} items  •  $totalDemand monthly demand',
+                  style: textStyle.bodySmall.copyWith(
+                    color: color.text.secondary,
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,6 @@
 import '../../../core/base/base.dart';
 import '../../entities/stock/stock_averaging_filter.dart';
-import '../../entities/stock/stock_averaging_overview_entity.dart';
+import '../../entities/stock/stock_averaging_list_entity.dart';
 import '../../repositories/stock_repository.dart';
 import '../partner_use_case.dart';
 
@@ -12,7 +12,7 @@ final class GetStockAveragingUseCase extends PartnerUseCase {
 
   final StockRepository stockRepository;
 
-  Future<Result<StockAveragingOverviewEntity, Failure>> call(
+  Future<Result<StockAveragingListEntity, Failure>> call(
     StockAveragingFilter filter,
   ) async {
     final partnerId = getPartnerId();

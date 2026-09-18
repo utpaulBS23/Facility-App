@@ -68,8 +68,8 @@ class _StockAveragingBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          MonthlyDemandCard(items: overview.monthlyDemand),
-          if (overview.monthlyDemand.isNotEmpty) Gap(spacing.s16),
+          MonthlyDemandCard(items: overview.topDemandItems),
+          if (overview.topDemandItems.isNotEmpty) Gap(spacing.s16),
           if (facilities.isEmpty)
             Center(
               child: Padding(

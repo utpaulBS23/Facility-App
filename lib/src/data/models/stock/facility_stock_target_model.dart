@@ -62,37 +62,34 @@ class TopDemandItemModel with TopDemandItemModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
-class FacilityStockAveragingOverviewModel
-    with FacilityStockAveragingOverviewModelMappable {
-  const FacilityStockAveragingOverviewModel({
-    required this.facilityId,
-    required this.facilityName,
-    this.supervisorName,
-    this.lastStockCountAt,
-    this.isSetUp,
+class StockAveragingSummaryModel with StockAveragingSummaryModelMappable {
+  const StockAveragingSummaryModel({
+    this.topDemandItems,
   });
 
-  final int facilityId;
-  final String facilityName;
-  final String? supervisorName;
-  final String? lastStockCountAt;
-  final bool? isSetUp;
+  final List<TopDemandItemModel>? topDemandItems;
 
-  static const fromJson = FacilityStockAveragingOverviewModelMapper.fromJson;
+  static const fromJson = StockAveragingSummaryModelMapper.fromJson;
 }
 
 @MappableClass(
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
-class StockAveragingSummaryModel with StockAveragingSummaryModelMappable {
-  const StockAveragingSummaryModel({
-    this.monthlyDemand,
+class StockAveragingMetaModel with StockAveragingMetaModelMappable {
+  const StockAveragingMetaModel({
+    this.currentPage,
+    this.lastPage,
+    this.perPage,
+    this.total,
   });
 
-  final List<TopDemandItemModel>? monthlyDemand;
+  final int? currentPage;
+  final int? lastPage;
+  final int? perPage;
+  final int? total;
 
-  static const fromJson = StockAveragingSummaryModelMapper.fromJson;
+  static const fromJson = StockAveragingMetaModelMapper.fromJson;
 }
 
 @MappableClass(
@@ -102,10 +99,12 @@ class StockAveragingSummaryModel with StockAveragingSummaryModelMappable {
 class StockAveragingResponseModel with StockAveragingResponseModelMappable {
   const StockAveragingResponseModel({
     this.data,
+    this.meta,
     this.summary,
   });
 
-  final List<FacilityStockAveragingOverviewModel>? data;
+  final List<FacilityStockTargetModel>? data;
+  final StockAveragingMetaModel? meta;
   final StockAveragingSummaryModel? summary;
 
   static const fromJson = StockAveragingResponseModelMapper.fromJson;
