@@ -60,7 +60,22 @@ class FacilityStockBalanceSummaryEntity {
     required this.okCount,
   });
 
+  const FacilityStockBalanceSummaryEntity.zero()
+      : outCount = 0,
+        lowCount = 0,
+        okCount = 0;
+
   final int outCount;
   final int lowCount;
   final int okCount;
+}
+
+class FacilityStockBalanceResultEntity {
+  const FacilityStockBalanceResultEntity({
+    required this.items,
+    required this.summary,
+  });
+
+  final List<FacilityStockBalanceEntity> items;
+  final FacilityStockBalanceSummaryEntity summary;
 }

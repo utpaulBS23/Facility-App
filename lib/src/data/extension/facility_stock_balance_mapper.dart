@@ -35,4 +35,12 @@ extension FacilityStockBalanceListResponseModelMapperExtension
   List<FacilityStockBalanceEntity> toEntityList() {
     return data.map((model) => model.toEntity()).toList();
   }
+
+  FacilityStockBalanceResultEntity toEntity() {
+    return FacilityStockBalanceResultEntity(
+      items: toEntityList(),
+      summary: summary?.toEntity() ??
+          const FacilityStockBalanceSummaryEntity.zero(),
+    );
+  }
 }
