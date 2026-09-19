@@ -181,6 +181,44 @@ class VisitCheckIn extends _$VisitCheckIn {
   Future<void> resumeLocationSharing({required int visitId}) async {
     state = state.copyWith(isStartingShare: true, clearShareError: true);
 
+    try {
+      var permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.unableToDetermine) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        state = state.copyWith(
+          isStartingShare: false,
+          shareError: const Failure(
+            type: FailureType.forbidden,
+            message: 'Location permission denied. Enable it in app settings.',
+          ),
+        );
+        return;
+      }
+
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        state = state.copyWith(
+          isStartingShare: false,
+          shareError: const Failure(
+            type: FailureType.forbidden,
+            message: 'Location permission required to resume sharing',
+          ),
+        );
+        return;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isStartingShare: false,
+        shareError: Failure.mapExceptionToFailure(e),
+      );
+      return;
+    }
+
     final syncResult = await ref
         .read(syncCurrentLocationPingUseCaseProvider)
         .call(taskId: visitId);
