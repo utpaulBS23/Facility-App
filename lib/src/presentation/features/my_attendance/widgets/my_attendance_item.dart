@@ -25,57 +25,99 @@ class _MyAttendanceItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                child: Text(
-                  date,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.supervisorName,
+                      style: context.textStyle.labelLarge.copyWith(
+                        color: context.color.text.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Gap(spacing.s2),
+                    Row(
+                      children: [
+                        Icon(
+                          item.locationType == 'external'
+                              ? Icons.location_on_rounded
+                              : Icons.apartment_outlined,
+                          size: 14,
+                          color: context.color.text.secondary,
+                        ),
+                        Gap(spacing.s4),
+                        Expanded(
+                          child: Text(
+                            item.locationType == 'external'
+                                ? (item.officeName ?? item.facilityName)
+                                : item.facilityName,
+                            style: context.textStyle.bodySmall.copyWith(
+                              color: context.color.text.secondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              if (item.isStillOnRound) ...[
-                Gap(spacing.s8),
+              if (item.isStillOnRound)
                 _StillOnRoundTag(),
-              ],
             ],
-          ),
-          Gap(spacing.s2),
-          Text(
-            item.facilityName,
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.text.secondary,
-            ),
           ),
           Gap(spacing.s10),
           Row(
             children: [
-              if (item.checkInAt != null) ...[
-                _TimeChip(
-                  icon: Icons.login_rounded,
-                  time: DateFormatter.timeOnly(item.checkInAt!),
+              Icon(
+                Icons.calendar_today_rounded,
+                size: 14,
+                color: context.color.text.secondary,
+              ),
+              Gap(spacing.s4),
+              Text(
+                date,
+                style: context.textStyle.bodySmall.copyWith(
                   color: context.color.text.secondary,
                 ),
-                Gap(spacing.s10),
-              ],
-              if (item.checkOutAt != null) ...[
-                _TimeChip(
-                  icon: Icons.logout_rounded,
-                  time: DateFormatter.timeOnly(item.checkOutAt!),
-                  color: context.color.text.secondary,
-                ),
-                Gap(spacing.s10),
-              ],
-              if (item.hours != null)
-                Text(
-                  context.locale.hoursValue(item.hours!.toStringAsFixed(1)),
-                  style: context.textStyle.bodySmall.copyWith(
-                    color: context.color.text.secondary,
-                  ),
-                ),
+              ),
             ],
           ),
+          if (item.checkInAt != null || item.checkOutAt != null) ...[
+            Gap(spacing.s8),
+            Row(
+              children: [
+                if (item.checkInAt != null) ...[
+                  _TimeChip(
+                    icon: Icons.login_rounded,
+                    time: DateFormatter.timeOnly(item.checkInAt!),
+                    color: context.color.text.secondary,
+                  ),
+                  Gap(spacing.s12),
+                ],
+                if (item.checkOutAt != null) ...[
+                  _TimeChip(
+                    icon: Icons.logout_rounded,
+                    time: DateFormatter.timeOnly(item.checkOutAt!),
+                    color: context.color.text.secondary,
+                  ),
+                ],
+                if (item.hours != null) ...[
+                  Gap(spacing.s12),
+                  Text(
+                    context.locale.hoursValue(item.hours!.toStringAsFixed(1)),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
         ],
       ),
     );

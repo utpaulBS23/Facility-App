@@ -30,14 +30,45 @@ class _InspectionBottomBar extends StatelessWidget {
           _ScoreRow(state: state),
           // WHY: without checklist_response.submit the bar is read-only,
           // same as an already-resolved visit.
-          if (!isResolved && canSubmit) ...[
-            if (!state.isComplete) _WarningBanner(),
+          if (!isResolved) ...[
+            if (!canSubmit) ...[
+              Container(
+                margin: EdgeInsets.fromLTRB(
+                  spacing.s16,
+                  spacing.s12,
+                  spacing.s16,
+                  spacing.s16,
+                ),
+                padding: EdgeInsets.all(spacing.s12),
+                decoration: BoxDecoration(
+                  color: context.color.error.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                  border: Border.all(color: context.color.error.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 16,
+                      color: context.color.error,
+                    ),
+                    SizedBox(width: spacing.s8),
+                    Expanded(
+                      child: BodySmallText(
+                        context.locale.completeRequiredItemsBeforeSubmit,
+                        color: context.color.error,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             Padding(
               padding: EdgeInsets.fromLTRB(
                 spacing.s16,
-                spacing.s12,
+                spacing.s4,
                 spacing.s16,
-                spacing.s16 + MediaQuery.of(context).padding.bottom,
+                spacing.s4 + MediaQuery.of(context).padding.bottom,
               ),
               child: Row(
                 children: [
@@ -49,23 +80,13 @@ class _InspectionBottomBar extends StatelessWidget {
                   ),
                   SizedBox(width: spacing.s12),
                   Expanded(
-                    flex: 2,
                     child: FilledButton(
-                      onPressed: state.isComplete && !state.isSubmitting
-                          ? onSubmit
-                          : null,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: context.color.primary,
-                        disabledBackgroundColor: context.color.primary
-                            .withValues(alpha: 0.4),
-                      ),
+                      onPressed: canSubmit && !state.isSubmitting ? onSubmit : null,
                       child: state.isSubmitting
                           ? const SizedBox(
                               width: 20,
                               height: 20,
-                              child: CircularProgressIndicator.adaptive(
-                                strokeWidth: 2,
-                              ),
+                              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
                             )
                           : Text(context.locale.submit),
                     ),
@@ -97,7 +118,7 @@ class _ScoreRow extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: spacing.s16,
-        vertical: spacing.s12,
+        vertical: spacing.s4,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -25,6 +25,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    Log.info('_ShiftSlotsView initState: facilityId=${widget.facilityId}');
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchSlots(_selectedDate),
     );
@@ -45,10 +46,12 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   }
 
   void _fetchSlots(DateTime date) {
+    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    Log.info('_fetchSlots: date=$formattedDate, facilityId=${widget.facilityId}');
     ref
         .read(shiftSlotsProvider.notifier)
         .fetch(
-          date: DateFormat('yyyy-MM-dd').format(date),
+          date: formattedDate,
           facilityId: widget.facilityId,
         );
   }
@@ -59,7 +62,36 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   }
 
   void _onAssignStaff(BuildContext context, ShiftSlotEntity slot) {
-    context.pushNamed(Routes.assignStaff, extra: slot);
+    Log.info('_onAssignStaff clicked: slot=${slot.shiftSlotId}');
+    final slotsData = ref.read(shiftSlotsProvider).valueOrNull;
+
+    var facilityId = slotsData?.facility?.id;
+    Log.info('facilityId from provider.facility: $facilityId');
+
+    if (facilityId == null && slotsData != null && slotsData.facilities.isNotEmpty) {
+      Log.info('Single facility not found, searching in facilities array: ${slotsData.facilities.length} facilities');
+      for (final fac in slotsData.facilities) {
+        if (fac.slots.any((s) => s.shiftSlotId == slot.shiftSlotId)) {
+          facilityId = fac.facilityId;
+          Log.info('Found slot in facility: $facilityId');
+          break;
+        }
+      }
+    }
+
+    facilityId ??= widget.facilityId;
+    Log.info('facilityId after resolution: $facilityId');
+
+    if (facilityId == null) {
+      Log.error('_onAssignStaff: facilityId could not be determined, aborting');
+      return;
+    }
+
+    Log.info('Navigating to assignStaff with facilityId=$facilityId, slot=${slot.shiftSlotId}');
+    context.pushNamed(
+      Routes.assignStaff,
+      extra: AssignStaffArgs(slot: slot, facilityId: facilityId),
+    );
   }
 
   @override

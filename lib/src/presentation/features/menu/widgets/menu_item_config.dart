@@ -31,8 +31,8 @@ final List<MenuItemConfig> menuItemConfigs = [
     icon: Assets.icons.customerIcon,
     label: _profileLabel,
     subtitle: _profileSubtitle,
-    route: Routes.profile,
-    permissions: [UserPermission.profileUpdate],
+    route: Routes.myProfile,
+    permissions: [UserPermission.profileView, UserPermission.profileUpdate],
   ),
   MenuItemConfig(
     icon: Assets.icons.attendance,
@@ -46,11 +46,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _extraCollectionLabel,
     subtitle: _extraCollectionSubtitle,
     route: Routes.additionalIncome,
-    permissions: [
-      UserPermission.additionalIncomeCreate,
-      UserPermission.additionalIncomeApprove,
-      UserPermission.additionalIncomeView,
-    ],
+    permissions: [UserPermission.additionalIncomeView],
   ),
   MenuItemConfig(
     icon: Assets.icons.route,
@@ -62,6 +58,26 @@ final List<MenuItemConfig> menuItemConfigs = [
     // comment) — any one of the three should be enough to reach it.
     permissions: [
       UserPermission.supplyRequestView,
+    ],
+  ),
+  MenuItemConfig(
+    icon: Assets.icons.service,
+    label: _stockBalanceLabel,
+    subtitle: _stockBalanceSubtitle,
+    route: Routes.stock,
+    permissions: [
+      UserPermission.facilityStockTargetView,
+      UserPermission.stockItemView,
+      UserPermission.stockAllocationView,
+    ],
+  ),
+  MenuItemConfig(
+    icon: Assets.icons.service,
+    label: _stockAveragingMenuLabel,
+    subtitle: _stockAveragingMenuSubtitle,
+    route: Routes.stockAveraging,
+    permissions: [
+      UserPermission.facilityStockTargetView,
     ],
   ),
   MenuItemConfig(
@@ -85,10 +101,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     label: _expenseEntryLabel,
     subtitle: _expenseEntrySubtitle,
     route: Routes.facilityExpense,
-    permissions: [
-      UserPermission.facilityExpenseCreate,
-      UserPermission.facilityExpenseApprove,
-    ],
+    permissions: [UserPermission.facilityExpenseView],
   ),
   MenuItemConfig(
     icon: Assets.icons.visit,
@@ -104,11 +117,18 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
+    icon: Assets.icons.task,
+    label: _trainingLabel,
+    subtitle: _trainingSubtitle,
+    route: Routes.trainingSessions,
+    permissions: [UserPermission.trainingSessionView],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.viewIcon,
     label: _profitReportLabel,
     subtitle: _profitReportSubtitle,
     route: Routes.report,
-    permissions: [UserPermission.reportFacilityWiseView],
+    permissions: [UserPermission.reportExecutiveView],
   ),
   MenuItemConfig(
     icon: Assets.icons.viewIcon,
@@ -175,6 +195,10 @@ String _claimExpenseLabel(BuildContext context) => context.locale.claimExpense;
 String _claimExpenseSubtitle(BuildContext context) =>
     context.locale.claimExpenseSubtitle;
 
+String _trainingLabel(BuildContext context) => context.locale.trainingSessions;
+String _trainingSubtitle(BuildContext context) =>
+    context.locale.trainingSessionsSubtitle;
+
 String _notificationLabel(BuildContext context) => context.locale.notification;
 String _notificationSubtitle(BuildContext context) =>
     context.locale.notificationSubtitle;
@@ -197,3 +221,12 @@ String _gatewayManagementLabel(BuildContext context) =>
     context.locale.gatewayManagement;
 String _gatewayManagementSubtitle(BuildContext context) =>
     context.locale.gatewayManagementSubtitle;
+
+String _stockBalanceLabel(BuildContext context) => context.locale.stockBalance;
+String _stockBalanceSubtitle(BuildContext context) =>
+    context.locale.stockBalanceSubtitle;
+
+String _stockAveragingMenuLabel(BuildContext context) =>
+    context.locale.stockAveragingMenu;
+String _stockAveragingMenuSubtitle(BuildContext context) =>
+    context.locale.stockAveragingMenuSubtitle;

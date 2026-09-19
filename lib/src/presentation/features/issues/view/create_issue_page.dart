@@ -1,24 +1,23 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../../core/utiliity/validation/required_validation.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/problem_category_entity.dart';
 import '../../../../domain/entities/report_issue_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
-import '../../../core/widgets/picker_sheet_states.dart';
-import '../../../core/widgets/selection_picker_sheet.dart';
-import '../../../core/widgets/text/typography.dart';
+
 import '../riverpod/create_issue_provider.dart';
+import '../widgets/issue_attendant_picker_sheet.dart';
+import '../widgets/issue_category_picker_sheet.dart';
+import '../widgets/issue_form_fields_list_view.dart';
 
 class CreateIssuePage extends ConsumerStatefulWidget {
   const CreateIssuePage({
@@ -26,11 +25,13 @@ class CreateIssuePage extends ConsumerStatefulWidget {
     required this.visitId,
     required this.facilityId,
     required this.facilityName,
+    this.issue,
   });
 
   final int visitId;
   final int facilityId;
   final String facilityName;
+  final dynamic issue;
 
   @override
   ConsumerState<CreateIssuePage> createState() => _CreateIssuePageState();
@@ -40,50 +41,68 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _locationController;
   late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
 
   ProblemCategoryEntity? _selectedCategory;
   bool _categoryError = false;
-  IssuePriority _priority = IssuePriority.medium;
+  String _priority = 'medium';
   XFile? _photo;
   PartnerStaffEntity? _selectedAttendant;
+  DateTime? _dueDate;
+  String? _existingPhotoUrl;
+  List<MasterDataItemEntity> _priorityMasterData = [];
 
   @override
   void initState() {
     super.initState();
-    _locationController = TextEditingController(text: widget.facilityName);
-    _titleController = TextEditingController();
+    _locationController = TextEditingController(
+      text: widget.issue?.location ?? widget.facilityName,
+    );
+    _titleController = TextEditingController(
+      text: widget.issue?.title ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: widget.issue?.description ?? '',
+    );
+    if (widget.issue != null) {
+      _priority = widget.issue.priority ?? 'medium';
+      _dueDate = widget.issue.dueDate;
+    }
   }
 
   @override
   void dispose() {
     _locationController.dispose();
     _titleController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
-  Future<void> _onPickCamera() async {
-    final file = await ImagePicker().pickImage(source: ImageSource.camera);
+  Future<void> _onPickImage(ImageSource source) async {
+    final file = await ImagePicker().pickImage(source: source);
     if (file != null) setState(() => _photo = file);
   }
-
-  Future<void> _onPickGallery() async {
-    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (file != null) setState(() => _photo = file);
-  }
-
-  void _onRemovePhoto() => setState(() => _photo = null);
 
   Future<void> _onPickAttendant() async {
-    final result = await showModalBottomSheet<PartnerStaffEntity>(
+    final staff = await showModalBottomSheet<PartnerStaffEntity>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _AttendantPickerSheet(facilityId: widget.facilityId),
+      builder: (_) => IssueAttendantPickerSheet(facilityId: widget.facilityId),
     );
-    if (result != null) setState(() => _selectedAttendant = result);
+    if (staff != null) setState(() => _selectedAttendant = staff);
   }
 
-  void _onClearAttendant() => setState(() => _selectedAttendant = null);
+  Future<void> _onPickDueDate() async {
+    final now = DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _dueDate ?? now,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (date != null) setState(() => _dueDate = date);
+  }
 
   Future<void> _onPickCategory() async {
     final partnerId = ref.read(createIssueProvider.notifier).partnerId;
@@ -91,7 +110,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _CategoryPickerSheet(
+      builder: (_) => IssueCategoryPickerSheet(
         partnerId: partnerId,
         selected: _selectedCategory,
       ),
@@ -105,24 +124,41 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
   }
 
   Future<void> _onSubmit() async {
+    final isEditing = widget.issue != null;
     final categoryOk = _selectedCategory != null;
-    setState(() => _categoryError = !categoryOk);
-    if (!_formKey.currentState!.validate() || !categoryOk) return;
+    final dueDateOk = !isEditing || _dueDate != null;
 
-    await ref
-        .read(createIssueProvider.notifier)
-        .submit(
-          request: ReportIssueRequestEntity(
-            visitId: widget.visitId,
-            categoryValue: _selectedCategory!.value,
-            title: _titleController.text.trim(),
-            priority: _priority,
-            photoPath: _photo?.path,
-            assignedTo: _selectedAttendant?.id,
+    setState(() => _categoryError = !categoryOk);
+    if (!_formKey.currentState!.validate() || !categoryOk || !dueDateOk) {
+      if (!dueDateOk) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.locale.dueDateRequired),
+            backgroundColor: context.color.error,
           ),
-          categoryName: _selectedCategory!.name,
-          facilityName: widget.facilityName,
         );
+      }
+      return;
+    }
+
+    await ref.read(createIssueProvider.notifier).submit(
+      request: ReportIssueRequestEntity(
+        visitId: widget.visitId,
+        categoryValue: _selectedCategory!.value,
+        title: _titleController.text.trim(),
+        priority: _priority,
+        description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
+        photoPath: _photo?.path,
+        assignedTo: _selectedAttendant?.id,
+        dueAt: _dueDate != null
+            ? DateFormat('yyyy-MM-dd HH:mm:ss').format(_dueDate!)
+            : null,
+      ),
+      categoryName: _selectedCategory!.name,
+      facilityName: widget.facilityName,
+      photoUrl: _photo == null ? (_existingPhotoUrl ?? widget.issue?.photoUrl) : null,
+      dueDate: _dueDate,
+    );
 
     if (!mounted) return;
     final issueState = ref.read(createIssueProvider);
@@ -146,716 +182,155 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
     final submitState = ref.watch(createIssueProvider);
+    final isEditing = widget.issue != null;
+
+    // Fetch full issue detail, categories, and priority master data if editing
+    if (isEditing) {
+      final user = ref.read(getCurrentUserUseCaseProvider).call();
+      final partnerId = user?.partnerId ?? 0;
+
+      ref.listen(issueDetailProvider(widget.issue.id), (previous, next) {
+        next.whenData((issueDetail) {
+          if (issueDetail != null && mounted) {
+            setState(() {
+              _locationController.text =
+                  issueDetail.facilityName ?? widget.facilityName;
+              _titleController.text = issueDetail.title;
+              _descriptionController.text = issueDetail.description ?? '';
+              _priority = issueDetail.priority;
+              _dueDate = issueDetail.dueDate;
+              _existingPhotoUrl = issueDetail.photoUrl;
+            });
+          }
+        });
+      });
+
+      // Watch categories separately and match when available
+      final categoriesAsync = ref.watch(problemCategoriesProvider(partnerId));
+      categoriesAsync.whenData((categories) {
+        // Get current issue detail from provider
+        ref.watch(issueDetailProvider(widget.issue.id)).whenData((issueDetail) {
+          if (issueDetail?.problemCategory != null && categories.isNotEmpty && mounted && _selectedCategory == null) {
+            // Try exact match first
+            var matchedCategory = categories.where(
+              (cat) => cat.value == issueDetail!.problemCategory,
+            ).firstOrNull;
+
+            // Then case-insensitive match
+            matchedCategory ??= categories.where(
+              (cat) => cat.value.toLowerCase() == issueDetail!.problemCategory!.toLowerCase(),
+            ).firstOrNull;
+
+            // Then partial/substring match
+            matchedCategory ??= categories.where(
+              (cat) => issueDetail!.problemCategory!.contains(cat.value) || cat.value.contains(issueDetail.problemCategory!),
+            ).firstOrNull;
+
+            // Fallback to first category
+            matchedCategory ??= categories.first;
+
+            if (mounted) {
+              setState(() => _selectedCategory = matchedCategory);
+            }
+          }
+        });
+      });
+    }
+
+    // Fetch priority master data
+    final prioritiesAsync = ref.watch(priorityMasterDataProvider);
+    prioritiesAsync.whenData((priorities) {
+      if (priorities.isNotEmpty && _priorityMasterData.isEmpty) {
+        final sorted = List<MasterDataItemEntity>.from(priorities)
+          ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() => _priorityMasterData = sorted);
+          }
+        });
+      }
+    });
+
+    final isFormValid = _titleController.text.trim().isNotEmpty &&
+        _locationController.text.trim().isNotEmpty &&
+        _selectedCategory != null &&
+        (!isEditing || _dueDate != null);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.createIssue),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.s16,
-            vertical: spacing.s20,
-          ),
-          children: [
-            _SectionLabel(context.locale.issueTitle),
-            Gap(spacing.s8),
-            AppTextField.text(
-              controller: _titleController,
-              hint: context.locale.issueTitleHint,
-              extraValidations: [RequiredValidation()],
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-            ),
-            Gap(spacing.s16),
-            _SectionLabel(context.locale.specificProblem),
-            Gap(spacing.s8),
-            _CategorySelector(
-              selected: _selectedCategory,
-              hasError: _categoryError,
-              onTap: _onPickCategory,
-            ),
-            Gap(spacing.s16),
-            _SectionLabel(context.locale.location),
-            Gap(spacing.s8),
-            IgnorePointer(
-              child: AppTextField.text(
-                controller: _locationController,
-                hint: context.locale.location,
-                prefixIcon: Icon(
-                  Icons.location_on_outlined,
-                  color: context.color.text.secondary,
-                ),
-              ),
-            ),
-            Gap(spacing.s16),
-            _SectionLabel(context.locale.priority),
-            Gap(spacing.s8),
-            _PrioritySelector(
-              selected: _priority,
-              onChanged: (p) => setState(() => _priority = p),
-            ),
-            Gap(spacing.s16),
-            _PhotoPickerSection(
-              photo: _photo,
-              onCamera: _onPickCamera,
-              onGallery: _onPickGallery,
-              onRemove: _onRemovePhoto,
-            ),
-            Gap(spacing.s16),
-            _AssignResponsibilitySection(
-              selected: _selectedAttendant,
-              onTap: _onPickAttendant,
-              onClear: _onClearAttendant,
-            ),
-            Gap(spacing.s24),
-            FilledButton(
-              onPressed: submitState.isSubmitting ? null : _onSubmit,
-              style: FilledButton.styleFrom(
-                backgroundColor: context.color.primary,
-                disabledBackgroundColor: context.color.primary.withValues(
-                  alpha: 0.4,
-                ),
-                minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    context.dimensions.radius.r12,
-                  ),
-                ),
-              ),
-              child: submitState.isSubmitting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                    )
-                  : Text(
-                      context.locale.submitRequest,
-                      style: context.textStyle.labelLarge.copyWith(
-                        color: context.color.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-            ),
-            Gap(spacing.s12),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: TextButton(
-                onPressed: () => context.pop(),
-                style: TextButton.styleFrom(
-                  backgroundColor: context.color.subtle,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      context.dimensions.radius.r12,
-                    ),
-                  ),
-                ),
-                child: Text(
-                  context.locale.cancel,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: context.color.text.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-            Gap(spacing.s16),
-          ],
-        ),
+      appBar: DetailAppBar(
+        title: isEditing ? context.locale.editIssue : context.locale.createIssue,
       ),
-    );
-  }
-}
-
-class _CategorySelector extends StatelessWidget {
-  const _CategorySelector({
-    required this.selected,
-    required this.hasError,
-    required this.onTap,
-  });
-
-  final ProblemCategoryEntity? selected;
-  final bool hasError;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final radius = context.dimensions.radius;
-    final spacing = context.dimensions.spacing;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: hasError
-                    ? context.color.error
-                    : context.color.borderSubtle,
+      body: Column(
+        children: [
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: IssueFormFieldsListView(
+                titleController: _titleController,
+                locationController: _locationController,
+                descriptionController: _descriptionController,
+                selectedCategory: _selectedCategory,
+                categoryError: _categoryError,
+                priority: _priority,
+                photo: _photo,
+                selectedAttendant: _selectedAttendant,
+                dueDate: _dueDate,
+                isSubmitting: submitState.isSubmitting,
+                isEditing: isEditing,
+                existingPhotoUrl: _existingPhotoUrl ?? widget.issue?.photoUrl,
+                isFormValid: isFormValid,
+                onPickCategory: _onPickCategory,
+                onPriorityChanged: (p) => setState(() => _priority = p),
+                onPickCamera: () => _onPickImage(ImageSource.camera),
+                onPickGallery: () => _onPickImage(ImageSource.gallery),
+                onRemovePhoto: () => setState(() => _photo = null),
+                onPickAttendant: _onPickAttendant,
+                onClearAttendant: () => setState(() => _selectedAttendant = null),
+                onPickDueDate: _onPickDueDate,
+                onClearDueDate: () => setState(() => _dueDate = null),
+                onSubmit: () {},
+                priorityMasterData: _priorityMasterData.isNotEmpty ? _priorityMasterData : null,
               ),
-              borderRadius: BorderRadius.circular(radius.r6),
             ),
-            padding: EdgeInsets.symmetric(horizontal: spacing.s16),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: context.color.onPrimary,
+              border: Border(top: BorderSide(color: context.color.borderSubtle)),
+            ),
+            padding: EdgeInsets.fromLTRB(
+              context.dimensions.spacing.s16,
+              context.dimensions.spacing.s12,
+              context.dimensions.spacing.s16,
+              context.dimensions.spacing.s16 + MediaQuery.of(context).padding.bottom,
+            ),
             child: Row(
               children: [
                 Expanded(
-                  child: BodyRegularText(
-                    selected?.name ?? context.locale.specificProblemHint,
-                    color: selected != null
-                        ? context.color.text.primary
-                        : context.color.text.secondary,
+                  child: OutlinedButton(
+                    onPressed: () => context.pop(),
+                    child: Text(context.locale.cancel),
                   ),
                 ),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: context.color.text.secondary,
+                SizedBox(width: context.dimensions.spacing.s12),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: isFormValid && !submitState.isSubmitting ? _onSubmit : null,
+                    child: submitState.isSubmitting
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                          )
+                        : Text(isEditing ? context.locale.save : context.locale.create),
+                  ),
                 ),
               ],
-            ),
-          ),
-        ),
-        if (hasError) ...[
-          Gap(spacing.s4),
-          Padding(
-            padding: EdgeInsets.only(left: spacing.s4),
-            child: BodySmallText(
-              context.locale.fieldRequired,
-              color: context.color.error,
             ),
           ),
         ],
-      ],
-    );
-  }
-}
-
-// WHY tap-to-select-and-pop, not chip group + Apply: mirrors
-// FacilityPickerSheet's interaction (via SelectionPickerSheet) so every
-// filter/picker sheet in the app — facility, attendant, category — behaves
-// and looks the same.
-class _CategoryPickerSheet extends ConsumerWidget {
-  const _CategoryPickerSheet({required this.partnerId, this.selected});
-
-  final int partnerId;
-  final ProblemCategoryEntity? selected;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final categoriesAsync = ref.watch(problemCategoriesProvider(partnerId));
-
-    return categoriesAsync.when(
-      loading: () => const PickerSheetLoading(),
-      error: (_, _) => PickerSheetError(
-        message: context.locale.reportIssueFailed,
-      ),
-      data: (categories) {
-        if (categories.isEmpty) {
-          return PickerSheetError(
-            message: context.locale.noProblemCategoriesFound,
-          );
-        }
-        return SelectionPickerSheet<ProblemCategoryEntity>(
-          title: context.locale.specificProblem,
-          options: [
-            for (final category in categories)
-              (value: category, label: category.name),
-          ],
-          isSelected: (value) => value.value == selected?.value,
-        );
-      },
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) =>
-      LabelLargeText(text, color: context.color.text.primary);
-}
-
-class _PrioritySelector extends StatelessWidget {
-  const _PrioritySelector({required this.selected, required this.onChanged});
-
-  final IssuePriority selected;
-  final ValueChanged<IssuePriority> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Row(
-      children: IssuePriority.values.map((p) {
-        final isLast = p == IssuePriority.values.last;
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(right: isLast ? 0 : spacing.s8),
-            child: _PriorityChip(
-              label: _label(context, p),
-              isSelected: p == selected,
-              onTap: () => onChanged(p),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  String _label(BuildContext context, IssuePriority p) => switch (p) {
-    IssuePriority.high => context.locale.priorityHigh,
-    IssuePriority.medium => context.locale.priorityMedium,
-    IssuePriority.normal => context.locale.priorityNormal,
-    IssuePriority.low => context.locale.priorityLow,
-  };
-}
-
-class _PriorityChip extends StatelessWidget {
-  const _PriorityChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final radius = context.dimensions.radius;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        height: 40,
-        decoration: BoxDecoration(
-          color: isSelected
-              ? context.color.primary.withValues(alpha: 0.08)
-              : context.color.onPrimary,
-          borderRadius: BorderRadius.circular(radius.r6),
-          border: Border.all(
-            color: isSelected
-                ? context.color.primary
-                : context.color.borderSubtle,
-            width: isSelected ? 1.5 : 1,
-          ),
-        ),
-        alignment: Alignment.center,
-        child: BodySmallText(
-          label,
-          color: isSelected
-              ? context.color.primary
-              : context.color.text.secondary,
-        ),
-      ),
-    );
-  }
-}
-
-class _PhotoPickerSection extends StatelessWidget {
-  const _PhotoPickerSection({
-    required this.photo,
-    required this.onCamera,
-    required this.onGallery,
-    required this.onRemove,
-  });
-
-  final XFile? photo;
-  final VoidCallback onCamera;
-  final VoidCallback onGallery;
-  final VoidCallback onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Container(
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        borderRadius: BorderRadius.circular(radius.r12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LabelLargeText(context.locale.photoOptional),
-          Gap(spacing.s12),
-          if (photo != null) ...[
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(radius.r6),
-                  child: Image.file(
-                    File(photo!.path),
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  top: spacing.s8,
-                  right: spacing.s8,
-                  child: GestureDetector(
-                    onTap: onRemove,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: context.color.onPrimary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: context.color.error),
-                      ),
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 14,
-                        color: context.color.error,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ] else ...[
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: onCamera,
-                    icon: const Icon(Icons.camera_alt_outlined, size: 20),
-                    label: Text(context.locale.camera),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: context.color.primary,
-                      foregroundColor: context.color.onPrimary,
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(radius.r12),
-                      ),
-                      textStyle: context.textStyle.labelLarge.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                Gap(spacing.s12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onGallery,
-                    icon: Icon(
-                      Icons.image_outlined,
-                      size: 20,
-                      color: context.color.primary,
-                    ),
-                    label: Text(context.locale.gallery),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: context.color.primary,
-                      side: BorderSide(
-                        color: context.color.primary,
-                        width: 1.5,
-                      ),
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(radius.r12),
-                      ),
-                      textStyle: context.textStyle.labelLarge.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _AssignResponsibilitySection extends StatelessWidget {
-  const _AssignResponsibilitySection({
-    required this.selected,
-    required this.onTap,
-    required this.onClear,
-  });
-
-  final PartnerStaffEntity? selected;
-  final VoidCallback onTap;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(spacing.s16),
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          borderRadius: BorderRadius.circular(radius.r12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (selected == null)
-              BodySmallText(
-                context.locale.noResponsibilityAdded,
-                color: context.color.text.secondary,
-              )
-            else
-              BodySmallText(
-                context.locale.assignResponsibility,
-                color: context.color.text.secondary,
-              ),
-            Gap(spacing.s12),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: selected != null
-                      ? context.color.primary
-                      : context.color.brandAccent,
-                  child: Icon(
-                    selected != null
-                        ? Icons.check_rounded
-                        : Icons.person_outline_rounded,
-                    size: 18,
-                    color: selected != null
-                        ? context.color.onPrimary
-                        : context.color.text.primary,
-                  ),
-                ),
-                Gap(spacing.s8),
-                Expanded(
-                  child: selected != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            LabelLargeText(selected!.name),
-                            Gap(spacing.s2),
-                            BodySmallText(
-                              selected!.phoneNumber ?? selected!.email,
-                              color: context.color.text.secondary,
-                            ),
-                          ],
-                        )
-                      : LabelLargeText(context.locale.assignResponsibility),
-                ),
-                if (selected != null)
-                  GestureDetector(
-                    onTap: onClear,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: context.color.error),
-                      ),
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 14,
-                        color: context.color.error,
-                      ),
-                    ),
-                  )
-                else
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: context.color.primary,
-                            width: 1.5,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.add_rounded,
-                          size: 18,
-                          color: context.color.primary,
-                        ),
-                      ),
-                      Gap(spacing.s6),
-                      LabelLargeText(
-                        context.locale.add,
-                        color: context.color.primary,
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AttendantPickerSheet extends ConsumerWidget {
-  const _AttendantPickerSheet({required this.facilityId});
-
-  final int facilityId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-    final attendantsAsync = ref.watch(issueAttendantsProvider(facilityId));
-
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.75,
-      ),
-      decoration: BoxDecoration(
-        color: context.color.scaffoldBackground,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(radius.r12)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Gap(spacing.s12),
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: context.color.borderSubtle,
-              borderRadius: BorderRadius.circular(context.dimensions.radius.r4),
-            ),
-          ),
-          Gap(spacing.s16),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-            child: LabelLargeText(context.locale.assignResponsibility),
-          ),
-          Gap(spacing.s16),
-          Flexible(
-            child: attendantsAsync.when(
-              loading: () =>
-                  const Center(child: CircularProgressIndicator.adaptive()),
-              error: (err, _) => Center(
-                child: BodySmallText(
-                  err.toString(),
-                  color: context.color.error,
-                ),
-              ),
-              data: (attendants) {
-                if (attendants.isEmpty) {
-                  return Center(
-                    child: BodySmallText(
-                      context.locale.noAttendantsFound,
-                      color: context.color.text.secondary,
-                    ),
-                  );
-                }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.fromLTRB(
-                    spacing.s16,
-                    0,
-                    spacing.s16,
-                    spacing.s16,
-                  ),
-                  itemCount: attendants.length,
-                  separatorBuilder: (_, _) => Gap(spacing.s12),
-                  itemBuilder: (context, index) {
-                    final attendant = attendants[index];
-                    return _AttendantPickerTile(
-                      attendant: attendant,
-                      onTap: () => Navigator.of(context).pop(attendant),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AttendantPickerTile extends StatelessWidget {
-  const _AttendantPickerTile({required this.attendant, required this.onTap});
-
-  final PartnerStaffEntity attendant;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(spacing.s16),
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r12),
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: context.color.brandAccent,
-              child: Icon(
-                Icons.person_outline_rounded,
-                color: context.color.text.primary,
-                size: 22,
-              ),
-            ),
-            Gap(spacing.s12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  LabelLargeText(attendant.name),
-                  Gap(spacing.s2),
-                  BodySmallText(
-                    attendant.phoneNumber ?? attendant.email,
-                    color: context.color.text.secondary,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: spacing.s8,
-                vertical: spacing.s4,
-              ),
-              decoration: BoxDecoration(
-                color: attendant.isActive
-                    ? context.color.successAlt
-                    : context.color.warningAlt,
-                borderRadius: BorderRadius.circular(radius.r4),
-              ),
-              child: BodySmallText(
-                attendant.userRole ?? context.locale.status,
-                color: attendant.isActive
-                    ? context.color.success
-                    : context.color.warning,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

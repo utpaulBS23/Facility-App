@@ -23,8 +23,10 @@ List<GoRoute> _shiftRoutes(Ref ref) {
       path: Routes.assignStaff,
       name: Routes.assignStaff,
       pageBuilder: (context, state) {
-        final slot = state.extra as ShiftSlotEntity;
-        return MaterialPage(child: AssignStaffPage(slot: slot));
+        final args = state.extra as AssignStaffArgs;
+        return MaterialPage(
+          child: AssignStaffPage(slot: args.slot, facilityId: args.facilityId),
+        );
       },
     ),
   ];

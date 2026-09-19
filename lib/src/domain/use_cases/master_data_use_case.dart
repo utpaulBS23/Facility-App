@@ -12,10 +12,17 @@ final class GetMasterDataItemsUseCase {
 
   Future<Result<List<MasterDataItemEntity>, Failure>> call({
     required String category,
+    int? perPage,
+    bool? includeInactive,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
 
-    return _repository.getItems(partnerId: partnerId, category: category);
+    return _repository.getItems(
+      partnerId: partnerId,
+      category: category,
+      perPage: perPage,
+      includeInactive: includeInactive,
+    );
   }
 }

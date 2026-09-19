@@ -1,4 +1,5 @@
 import '../../domain/entities/travel_expense_entity.dart';
+import '../../domain/entities/travel_expense_status.dart';
 import '../models/travel_expense_model.dart';
 
 extension TravelExpenseLegEntityToModel on TravelExpenseLegEntity {
@@ -13,6 +14,15 @@ extension _TravelExpenseStartTypeToWire on TravelExpenseStartType {
     TravelExpenseStartType.facility => 'facility',
     TravelExpenseStartType.home => 'home',
     TravelExpenseStartType.office => 'office',
+  };
+}
+
+extension _TravelExpenseStartTypeFromWire on String? {
+  TravelExpenseStartType? get toStartType => switch (this) {
+    'facility' => TravelExpenseStartType.facility,
+    'home' => TravelExpenseStartType.home,
+    'office' => TravelExpenseStartType.office,
+    _ => null,
   };
 }
 
@@ -32,27 +42,30 @@ extension CreateTravelExpenseRequestEntityToModel
 extension TravelExpenseLineModelToEntity on TravelExpenseLineModel {
   TravelExpenseLineEntity toEntity() => TravelExpenseLineEntity(
     id: id,
-    vehicleTypeItemId: vehicleTypeItemId ?? 0,
-    vehicleTypeLabel: vehicleTypeLabel,
-    distanceKm: distanceKm ?? 0,
-    amount: amount ?? 0,
+    vehicleTypeLabel: vehicleTypeLabel ?? '',
   );
 }
 
 extension TravelExpenseModelToEntity on TravelExpenseModel {
   TravelExpenseEntity toEntity() => TravelExpenseEntity(
     id: id,
-    taskId: taskId,
-    facilityId: facilityId,
-    facilityName: facilityName,
-    purpose: purpose,
-    calculatedDistanceKm: calculatedDistanceKm,
-    calculatedAmount: calculatedAmount,
-    claimedDistanceKm: claimedDistanceKm,
-    claimedAmount: claimedAmount,
-    ratePerKm: ratePerKm,
-    status: status ?? '',
+    facilityName: facilityName ?? '',
+    startType: startType.toStartType,
+    startId: startId,
+    userName: userName ?? '',
+    purpose: purpose ?? '',
+    claimedDistanceKm: claimedDistanceKm ?? 0,
+    claimedAmount: claimedAmount ?? 0,
+    status: TravelExpenseStatus.fromWireString(status),
+    submittedAt: submittedAt ?? '',
+    rejectionNote: rejectionNote ?? '',
     transportLines:
         transportLines?.map((line) => line.toEntity()).toList() ?? const [],
   );
+}
+
+extension TravelExpenseListResponseModelToEntity
+    on TravelExpenseListResponseModel {
+  List<TravelExpenseEntity> toEntity() =>
+      data.map((model) => model.toEntity()).toList();
 }

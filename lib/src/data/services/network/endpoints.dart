@@ -159,16 +159,36 @@ class Endpoints {
   static const String rejectLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/reject';
 
-  // WHY placeholder path: no backend contract exists yet for travel-expense
-  // claims (see CreateTravelExpenseUseCase) — this mirrors the app's other
-  // partner-scoped POST resources and is expected to be reconciled with
-  // backend once the real endpoint is confirmed.
   static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
+  static const String travelExpenseDetail =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}';
 
   /// Master Data — generic partner/global configurable dropdown items,
   /// filtered by `category` (e.g. `transportMode`).
   static const String masterDataItems =
       '/partners/{partnerId}/master-data/items';
+
+  /// Additional Incomes (Extra Collection)
+  static const String additionalIncomes =
+      '/partners/{partnerId}/additional-incomes';
+
+  /// Product Catalog (Extra Collection — Product Sell)
+  static const String productCatalogDropdown =
+      '/partners/{partnerId}/product-catalog/dropdown';
+
+  /// Facility Products (Extra Collection — Product Sell, facility-scoped)
+  static const String facilityProducts =
+      '/partners/{partnerId}/facility-products';
+
+  /// Product Sale Entries (Extra Collection — Product Sell)
+  static const String productSaleEntries =
+      '/partners/{partnerId}/product-sale-entries';
+
+  /// Training Management
+  static const String trainingSessions =
+      '/partners/{partnerId}/training-sessions';
+  static const String trainingSessionDetails =
+      '/partners/{partnerId}/training-sessions/{trainingSessionId}';
 
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
@@ -181,6 +201,16 @@ class Endpoints {
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/approve';
   static const String rejectSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
+
+  /// Reports
+  static const String incentiveFineReport =
+      '/partners/{partnerId}/reports/incentive-fine';
+
+  /// Facility Expenses
+  static const String facilityExpenses =
+      '/partners/{partnerId}/facility-expenses';
+  static const String facilityExpenseDetails =
+      '/partners/{partnerId}/facility-expenses/{facilityExpenseId}';
   static const String dispatchSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/dispatch';
   static const String deliveries = '/partners/{partnerId}/deliveries';
@@ -202,6 +232,20 @@ class Endpoints {
       '/partners/{partnerId}/stock-allocations';
   static const String stockAllocationDetails =
       '/partners/{partnerId}/stock-allocations/{stockAllocationId}';
+  static const String submitShiftStockCount =
+      '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
+  static const String shiftStockCounts =
+      '/partners/{partnerId}/shift-stock-counts';
+  static const String stockAveraging =
+      '/partners/{partnerId}/stock-averaging';
+  static const String updateStockTarget =
+      '/partners/{partnerId}/stock-averaging/{targetId}';
+  static const String facilityStockBalance =
+      '/partners/{partnerId}/facility-stock-balance';
+  static const String facilityStockBalanceThreshold =
+      '/partners/{partnerId}/facility-stock-balance/threshold';
+  static const String facilityStockBalanceHistory =
+      '/partners/{partnerId}/facility-stock-balance/history';
 
   /// Task Occurrences — generated slots from `task_schedules`, never
   /// created/deleted via the API (nightly cron only).
@@ -213,4 +257,7 @@ class Endpoints {
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/checklist-items/{itemId}/response';
   static const String taskOccurrenceSubmit =
       '/partners/{partnerId}/task-occurrences/{taskOccurrenceId}/submit';
+
+  /// Profile
+  static const String profile = '/profile';
 }

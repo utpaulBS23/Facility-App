@@ -1,10 +1,13 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/task_entity.dart';
 
 part 'tasks_provider.g.dart';
@@ -29,24 +32,29 @@ class Tasks extends _$Tasks {
     );
   }
 
-  Future<void> startIssue({required int issueId}) async {
+  Future<bool> startIssue({required int issueId}) async {
     final previousTasks = state.valueOrNull ?? const <TaskEntity>[];
     final Result<TaskEntity, Failure> result = await ref
         .read(startIssueUseCaseProvider)
         .call(issueId: issueId);
 
-    state = result.when(
+    return result.when(
       success: (data) {
         if (data == null) {
-          return AsyncValue.data(previousTasks);
+          state = AsyncValue.data(previousTasks);
+          return false;
         }
-        return AsyncValue.data(
+        state = AsyncValue.data(
           previousTasks
               .map((task) => task.id == data.id ? data : task)
               .toList(),
         );
+        return true;
       },
-      error: (error) => AsyncValue.error(error, StackTrace.current),
+      error: (error) {
+        state = AsyncValue.error(error, StackTrace.current);
+        return false;
+      },
     );
   }
 

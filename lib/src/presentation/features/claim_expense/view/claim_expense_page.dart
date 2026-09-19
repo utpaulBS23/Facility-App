@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/utiliity/validation/validation.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/travel_expense_entity.dart';
@@ -14,10 +15,10 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/widgets/app_dropdown_button_form_field.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
+import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
@@ -38,7 +39,6 @@ class ClaimExpensePage extends ConsumerStatefulWidget {
 class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
   final _formKey = GlobalKey<FormState>();
   final _purposeController = TextEditingController();
-  final _amountController = TextEditingController();
   final List<_LegDraft> _legs = [_LegDraft()];
 
   int? _facilityId;
@@ -72,7 +72,6 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
   @override
   void dispose() {
     _purposeController.dispose();
-    _amountController.dispose();
     for (final leg in _legs) {
       leg.dispose();
     }
@@ -150,8 +149,38 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
   double get _totalDistanceKm =>
       _legs.fold(0, (sum, leg) => sum + leg.distanceKm);
 
+  double get _totalPrice => _legs.fold(0, (sum, leg) => sum + leg.price);
+
   int? get _currentUserId =>
       ref.read(getCurrentUserUseCaseProvider).call()?.id;
+
+  bool get _isFormValid {
+    final facilityId = _facilityId;
+    final selectedVisit = _selectedVisit;
+    final startType = _startType;
+    final needsStandaloneFields = selectedVisit == null;
+
+    final startId = switch (startType) {
+      TravelExpenseStartType.home => _currentUserId,
+      TravelExpenseStartType.facility => _startFacilityId,
+      TravelExpenseStartType.office || null => null,
+    };
+
+    final standaloneValid =
+        !needsStandaloneFields ||
+        (facilityId != null && startType != null && startId != null);
+
+    final legsValid =
+        _legs.isNotEmpty &&
+        _legs.every(
+          (leg) =>
+              leg.vehicleTypeItemId != null &&
+              leg.distanceKm > 0 &&
+              leg.price > 0,
+        );
+
+    return facilityId != null && standaloneValid && legsValid;
+  }
 
   void _onSubmit() {
     final facilityId = _facilityId;
@@ -179,7 +208,6 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
       return;
     }
 
-    final amountOverride = double.tryParse(_amountController.text.trim());
     final purpose = _purposeController.text.trim();
 
     final request = CreateTravelExpenseRequestEntity(
@@ -188,7 +216,7 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
       startType: needsStandaloneFields ? startType : null,
       startId: needsStandaloneFields ? startId : null,
       purpose: purpose.isEmpty ? null : purpose,
-      amount: amountOverride,
+      amount: _totalPrice,
       legs: _legs.map((leg) => leg.toEntity()).toList(),
     );
 
@@ -248,19 +276,25 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                     : null,
               ),
               Gap(spacing.s16),
-              Text(
-                context.locale.referenceVisitOptional,
-                style: context.textStyle.labelLarge,
-              ),
-              Gap(spacing.s8),
               visitsAsync.when(
                 loading: () => const LinearProgressIndicator(),
                 error: (_, _) => const SizedBox.shrink(),
-                data: (visits) => _ReferenceVisitSelector(
-                  selected: selectedVisit,
-                  onTap: facilityId == null || visits.isEmpty
-                      ? null
-                      : () => _onPickVisit(visits),
+                data: (visits) => FormSelectorCard(
+                  title: context.locale.referenceVisitOptional,
+                  icon: Icons.event_note_outlined,
+                  enabled: facilityId != null && visits.isNotEmpty,
+                  onTap: () => _onPickVisit(visits),
+                  content: Text(
+                    selectedVisit == null
+                        ? context.locale.none
+                        : _referenceVisitLabel(context, selectedVisit),
+                    overflow: TextOverflow.ellipsis,
+                    style: selectedVisit == null
+                        ? context.textStyle.bodyMedium.copyWith(
+                            color: context.color.text.secondary,
+                          )
+                        : context.textStyle.bodyMedium,
+                  ),
                 ),
               ),
               Gap(spacing.s16),
@@ -272,7 +306,7 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                 Gap(spacing.s16),
                 _ReadOnlyField(
                   label: context.locale.destination,
-                  value: selectedVisit.facilityName,
+                  value: selectedVisit.facilityName ?? selectedVisit.officeName ?? '—',
                 ),
                 Gap(spacing.s16),
               ] else ...[
@@ -320,29 +354,25 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                 onPressed: _onAddLeg,
                 icon: const Icon(Icons.add),
                 label: Text(context.locale.addAnotherModeLeg),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: context.color.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
+                ),
               ),
               Gap(spacing.s16),
-              _ClaimExpenseTotalBar(totalDistanceKm: _totalDistanceKm),
+              _ClaimExpenseTotalBar(
+                totalDistanceKm: _totalDistanceKm,
+                totalPrice: _totalPrice,
+              ),
               Gap(spacing.s16),
               AppTextField.text(
                 controller: _purposeController,
                 label: context.locale.purpose,
-                hint: context.locale.purposeHint,
-              ),
-              Gap(spacing.s16),
-              TextFormField(
-                controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                decoration: InputDecoration(
-                  labelText: context.locale.amountOverrideOptional,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      context.dimensions.radius.r6,
-                    ),
-                  ),
-                ),
+                hint: '${context.locale.purpose} — ${context.locale.purposeHint}',
               ),
               Gap(spacing.s24),
               // WHY gated: travel_expense.view opens this page, but only
@@ -351,14 +381,14 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
               PermissionGate(
                 permissions: [UserPermission.travelExpenseCreate],
                 child: FilledButton(
-                  onPressed: isSubmitting ? null : _onSubmit,
+                  onPressed: (isSubmitting || !_isFormValid) ? null : _onSubmit,
                   style: FilledButton.styleFrom(
                     backgroundColor: context.color.primary,
                     disabledBackgroundColor: context.color.primary.withValues(
                       alpha: 0.4,
                     ),
                     foregroundColor: context.color.onPrimary,
-                    minimumSize: const Size.fromHeight(52),
+                    minimumSize: Size.fromHeight(spacing.s48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                         context.dimensions.radius.r12,
@@ -430,7 +460,7 @@ class _FacilitySelector extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDisabled ? context.color.subtle : null,
           border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r6),
+          borderRadius: BorderRadius.circular(radius.r12),
         ),
         padding: EdgeInsets.symmetric(horizontal: spacing.s16),
         child: Row(
@@ -440,55 +470,6 @@ class _FacilitySelector extends StatelessWidget {
                 facilityName ?? hint ?? context.locale.selectFacility,
                 overflow: TextOverflow.ellipsis,
                 style: facilityName == null
-                    ? context.textStyle.bodyMedium.copyWith(
-                        color: context.color.text.secondary,
-                      )
-                    : context.textStyle.bodyMedium,
-              ),
-            ),
-            if (!isDisabled)
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: context.color.text.secondary,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ReferenceVisitSelector extends StatelessWidget {
-  const _ReferenceVisitSelector({required this.selected, required this.onTap});
-
-  final VisitSummaryEntity? selected;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final radius = context.dimensions.radius;
-    final spacing = context.dimensions.spacing;
-    final isDisabled = onTap == null;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 52,
-        decoration: BoxDecoration(
-          color: isDisabled ? context.color.subtle : null,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r6),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                selected == null
-                    ? context.locale.none
-                    : _referenceVisitLabel(context, selected!),
-                overflow: TextOverflow.ellipsis,
-                style: selected == null
                     ? context.textStyle.bodyMedium.copyWith(
                         color: context.color.text.secondary,
                       )
@@ -553,11 +534,11 @@ class _ReadOnlyField extends StatelessWidget {
         Text(label, style: context.textStyle.labelLarge),
         Gap(spacing.s8),
         Container(
-          height: 52,
+          height: spacing.s56,
           decoration: BoxDecoration(
             color: context.color.subtle,
             border: Border.all(color: context.color.borderSubtle),
-            borderRadius: BorderRadius.circular(radius.r6),
+            borderRadius: BorderRadius.circular(radius.r12),
           ),
           padding: EdgeInsets.symmetric(horizontal: spacing.s16),
           alignment: Alignment.centerLeft,
@@ -619,7 +600,7 @@ class _StartTypeSelector extends StatelessWidget {
                       color: selected == type
                           ? context.color.primary.withValues(alpha: 0.08)
                           : context.color.onPrimary,
-                      borderRadius: BorderRadius.circular(radius.r6),
+                      borderRadius: BorderRadius.circular(radius.r12),
                       border: Border.all(
                         color: hasError
                             ? context.color.error

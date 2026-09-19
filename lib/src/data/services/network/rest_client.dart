@@ -13,6 +13,15 @@ abstract class RestClient {
   @POST(Endpoints.login)
   Future<HttpResponse> login(@Body() Map<String, dynamic> request);
 
+  @POST('/auth/forgot-password/send-otp')
+  Future<HttpResponse> sendForgotPasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/forgot-password/verify-otp')
+  Future<HttpResponse> verifyForgotPasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/auth/forgot-password/reset')
+  Future<HttpResponse> resetForgotPassword(@Body() Map<String, dynamic> body);
+
   @DELETE(Endpoints.logout)
   Future<HttpResponse> logout();
 
@@ -44,7 +53,7 @@ abstract class RestClient {
   @GET(Endpoints.shiftSlots)
   Future<HttpResponse> getShiftSlots({
     @Path('partnerId') required int partnerId,
-    @Query('facility_id') required int facilityId,
+    @Query('facility_id') int? facilityId,
     @Query('date') required String date,
   });
 
@@ -162,6 +171,8 @@ abstract class RestClient {
     @Query('month') required String month,
     @Query('facility_id') int? facilityId,
     @Query('user_id') int? userId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.myAttendance)
@@ -193,6 +204,8 @@ abstract class RestClient {
     @Query('status') String? status,
     @Query('facility_id') int? facilityId,
     @Query('assigned_to') int? assignedTo,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.visitDetail)
@@ -289,6 +302,13 @@ abstract class RestClient {
     @Body() required FormData formData,
   });
 
+  @PATCH(Endpoints.issueDetail)
+  Future<HttpResponse> updateIssueAssignment({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   /// Leave Management
   @GET(Endpoints.leavePolicies)
   Future<HttpResponse> getLeavePolicies({
@@ -315,10 +335,58 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.travelExpenses)
+  Future<HttpResponse> getTravelExpenses({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('facility_id') int? facilityId,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.travelExpenseDetail)
+  Future<HttpResponse> getTravelExpenseDetail({
+    @Path('partnerId') required int partnerId,
+    @Path('travelExpenseId') required int travelExpenseId,
+  });
+
   @GET(Endpoints.masterDataItems)
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,
     @Query('category') required String category,
+    @Query('per_page') int? perPage,
+    @Query('include_inactive') bool? includeInactive,
+  });
+
+  @GET(Endpoints.additionalIncomes)
+  Future<HttpResponse> getAdditionalIncomes({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.additionalIncomes)
+  Future<HttpResponse> createAdditionalIncome({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.productCatalogDropdown)
+  Future<HttpResponse> getProductCatalogDropdown({
+    @Path('partnerId') required int partnerId,
+  });
+
+  @GET(Endpoints.facilityProducts)
+  Future<HttpResponse> getFacilityProducts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.productSaleEntries)
+  Future<HttpResponse> createProductSaleEntry({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
   });
 
   @GET(Endpoints.myLeaves)
@@ -374,6 +442,22 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
+  @GET(Endpoints.trainingSessions)
+  Future<HttpResponse> getTrainingSessions({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('search') String? search,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.trainingSessionDetails)
+  Future<HttpResponse> getTrainingSessionDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('trainingSessionId') required int trainingSessionId,
+  });
+
   @GET(Endpoints.supplyRequests)
   Future<HttpResponse> getSupplyRequests({
     @Path('partnerId') required int partnerId,
@@ -397,10 +481,40 @@ abstract class RestClient {
     @Path('supplyRequestId') required int supplyRequestId,
   });
 
+  @GET(Endpoints.incentiveFineReport)
+  Future<HttpResponse> getIncentiveFineReport({
+    @Path('partnerId') required int partnerId,
+    @Query('supervisor_id') required int supervisorId,
+    @Query('reference_month') required String referenceMonth,
+    @Query('period_type') String? periodType,
+  });
+
   @POST(Endpoints.supplyRequests)
   Future<HttpResponse> createSupplyRequest({
     @Path('partnerId') required int partnerId,
     @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.facilityExpenses)
+  Future<HttpResponse> getFacilityExpenses({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('from') String? from,
+    @Query('to') String? to,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.facilityExpenses)
+  Future<HttpResponse> createFacilityExpense({
+    @Path('partnerId') required int partnerId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @DELETE(Endpoints.facilityExpenseDetails)
+  Future<HttpResponse> deleteFacilityExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityExpenseId') required int facilityExpenseId,
   });
 
   @POST(Endpoints.approveSupplyRequest)
@@ -499,6 +613,33 @@ abstract class RestClient {
     @Path('stockAllocationId') required int stockAllocationId,
   });
 
+  @POST(Endpoints.submitShiftStockCount)
+  Future<HttpResponse> submitShiftStockCount({
+    @Path('partnerId') required int partnerId,
+    @Path('shiftAssignmentId') required int shiftAssignmentId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @GET(Endpoints.shiftStockCounts)
+  Future<HttpResponse> getShiftStockCounts({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('shift_assignment_id') int? shiftAssignmentId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('from') String? from,
+    @Query('to') String? to,
+  });
+
+  @GET(Endpoints.facilityStockBalance)
+  Future<HttpResponse> getFacilityStockBalance({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('stock_item_id') int? stockItemId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   /// Task Occurrences
   @GET(Endpoints.taskOccurrences)
   Future<HttpResponse> getTaskOccurrences({
@@ -527,5 +668,29 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Path('taskOccurrenceId') required int taskOccurrenceId,
     @Body() Map<String, dynamic> request = const {},
+  });
+
+  @GET(Endpoints.stockAveraging)
+  Future<HttpResponse> getStockAveraging({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @PATCH(Endpoints.updateStockTarget)
+  Future<HttpResponse> updateStockTarget({
+    @Path('partnerId') required int partnerId,
+    @Path('targetId') required int targetId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  /// Profile
+  @GET(Endpoints.profile)
+  Future<HttpResponse> getProfile();
+
+  @PATCH(Endpoints.profile)
+  Future<HttpResponse> updateProfile({
+    @Body() required Map<String, dynamic> body,
   });
 }

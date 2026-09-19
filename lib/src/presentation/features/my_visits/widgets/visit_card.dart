@@ -1,6 +1,6 @@
 part of '../view/my_visits_page.dart';
 
-class _VisitCard extends StatelessWidget {
+class _VisitCard extends ConsumerWidget {
   const _VisitCard({required this.visit, required this.onTap});
 
   final VisitSummaryEntity visit;
@@ -22,10 +22,27 @@ class _VisitCard extends StatelessWidget {
     VisitStatus.pending => context.locale.pending,
   };
 
-  String _typeLabel(BuildContext context) => switch (visit.type) {
-    VisitType.routineInspection => context.locale.routineInspection,
-    VisitType.followUp => context.locale.followUp,
-  };
+  String _getVisitTypeLabel(
+    List<MasterDataItemEntity> taskTypes,
+  ) {
+    if (visit.visitType != null && visit.visitType!.isNotEmpty) {
+      try {
+        final match = taskTypes.firstWhere(
+          (item) => item.value == visit.visitType,
+        );
+        return match.label;
+      } catch (_) {
+        return visit.visitType!;
+      }
+    }
+    return switch (visit.type) {
+      VisitType.routineInspection => 'Routine Inspection',
+      VisitType.followUp => 'Follow-up',
+    };
+  }
+
+  String _locationTypeLabel(BuildContext context) =>
+      visit.locationType == 'external' ? 'External' : 'Facility';
 
   String? _priorityLabel(BuildContext context) => switch (visit.priority) {
     'high' => context.locale.priorityHigh,
@@ -42,12 +59,10 @@ class _VisitCard extends StatelessWidget {
   };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    final formattedDate = DateFormatter.dayMonthYear(visit.date);
-    final dateTime = visit.scheduledEndTime.isEmpty
-        ? formattedDate
-        : '$formattedDate, ${visit.scheduledStartTime} – ${visit.scheduledEndTime}';
+    final dateTime = DateFormat('EEE, MMM d').format(DateTime.parse(visit.date));
+    final taskTypesState = ref.watch(visitTaskTypeOptionsProvider);
 
     return GestureDetector(
       onTap: onTap,
@@ -62,55 +77,59 @@ class _VisitCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                _StatusChip(
-                  color: _statusColor(context),
-                  label: _statusLabel(context),
-                ),
-                Gap(spacing.s8),
-                _StatusChip(
-                  color: context.color.icon,
-                  label: _typeLabel(context),
-                ),
-                if (_priorityLabel(context) != null) ...[
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _StatusChip(
+                    color: _statusColor(context),
+                    label: _statusLabel(context),
+                  ),
                   Gap(spacing.s8),
                   _StatusChip(
-                    color: _priorityColor(context),
-                    label: _priorityLabel(context)!,
+                    color: visit.locationType == 'external'
+                        ? context.color.warning
+                        : context.color.success,
+                    label: _locationTypeLabel(context),
+                  ),
+                  if (_priorityLabel(context) != null) ...[
+                    Gap(spacing.s8),
+                    _StatusChip(
+                      color: _priorityColor(context),
+                      label: _priorityLabel(context)!,
+                    ),
+                  ],
+                  Gap(spacing.s8),
+                  _StatusChip(
+                    color: context.color.icon,
+                    label: taskTypesState.maybeWhen(
+                      data: (taskTypes) => _getVisitTypeLabel(taskTypes),
+                      orElse: () => visit.visitType ?? 'Task',
+                    ),
                   ),
                 ],
-              ],
+              ),
             ),
-            Gap(spacing.s8),
-            if (visit.title?.isNotEmpty == true) ...[
+            Gap(spacing.s12),
+            if (visit.title?.isNotEmpty == true)
               Text(
                 visit.title!,
                 style: context.textStyle.titleMedium.copyWith(
                   color: context.color.text.primary,
                 ),
               ),
-              Gap(spacing.s6),
-              _InfoRow(
-                icon: Icons.apartment_outlined,
-                label: visit.facilityName,
-              ),
-            ] else
-              Text(
-                visit.facilityName,
-                style: context.textStyle.titleMedium.copyWith(
-                  color: context.color.text.primary,
-                ),
-              ),
-            if (visit.facilityAddress?.isNotEmpty == true) ...[
-              Gap(spacing.s6),
-              _InfoRow(
-                icon: Icons.location_on_outlined,
-                label: visit.facilityAddress!,
-              ),
-            ],
+            Gap(spacing.s8),
+            _InfoRow(
+              icon: Icons.apartment_outlined,
+              label: visit.locationType == 'external'
+                  ? (visit.officeName ?? '')
+                  : (visit.facilityName ?? ''),
+            ),
             Gap(spacing.s6),
-            _InfoRow(icon: Icons.calendar_today_outlined, label: dateTime),
+            _InfoRow(
+              icon: Icons.calendar_today_outlined,
+              label: dateTime,
+            ),
           ],
         ),
       ),

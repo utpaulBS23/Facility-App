@@ -41,10 +41,7 @@ final List<ShellTabConfig> shellTabConfigs = [
     route: Routes.dashboard,
     icon: Assets.icons.homeIcon,
     label: _dashboardLabel,
-    permissions: [
-      UserPermission.insightsDashboardView,
-      UserPermission.reportFacilityWiseView,
-    ],
+    permissions: [UserPermission.insightsDashboardView],
   ),
   ShellTabConfig(
     branchIndex: 1,

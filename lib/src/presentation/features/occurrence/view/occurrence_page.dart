@@ -15,7 +15,9 @@ import '../../../../domain/entities/task_occurrence_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -25,11 +27,11 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_reassign_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 
+part '../widgets/occurrence_reassign_sheet.dart';
 part '../widgets/occurrence_stats_header.dart';
 part '../widgets/occurrence_slot_card.dart';
 part '../widgets/occurrence_status_chip.dart';
 part '../widgets/occurrence_status_filter_sheet.dart';
-part '../widgets/occurrence_reassign_sheet.dart';
 
 enum _OccurrenceStatusFilter { all, pending, onTime, late, missed }
 
@@ -118,19 +120,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     _fetch(_selectedDate);
   }
 
-  void _openReassignSheet(
-    BuildContext context,
-    TaskOccurrenceEntity occurrence,
-  ) {
-    if (_selectedFacilityId == null) return;
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _OccurrenceReassignSheet(occurrence: occurrence),
-    );
-  }
-
   void _openChecklist(BuildContext context, TaskOccurrenceEntity occurrence) {
     context.pushNamed(Routes.occurrenceChecklist, extra: occurrence);
   }
@@ -168,10 +157,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
-    final selectedFacilityName = facilities
-        .cast<AccessibleFacilityEntity?>()
-        .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
-        ?.name;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -182,13 +167,9 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
         surfaceTintColor: Colors.transparent,
         actions: [
           if (facilities.length > 1)
-            TextButton.icon(
-              onPressed: () => _pickFacility(context, facilities),
-              icon: const Icon(Icons.apartment_outlined, size: 18),
-              label: Text(
-                selectedFacilityName ?? context.locale.facilityName,
-                overflow: TextOverflow.ellipsis,
-              ),
+            FacilityFilterButton(
+              hasSelection: _selectedFacilityId != null,
+              onTap: () => _pickFacility(context, facilities),
             ),
           Stack(
             clipBehavior: Clip.none,
@@ -233,8 +214,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
               selectedFilter: _selectedFilter,
               onDateChanged: _onDateChanged,
               onRetry: () => _fetch(_selectedDate),
-              onReassign: (occurrence) =>
-                  _openReassignSheet(context, occurrence),
               onChecklist: (occurrence) => _openChecklist(context, occurrence),
             ),
     );
@@ -247,7 +226,6 @@ class _OccurrenceBoard extends ConsumerWidget {
     required this.selectedFilter,
     required this.onDateChanged,
     required this.onRetry,
-    required this.onReassign,
     required this.onChecklist,
   });
 
@@ -255,7 +233,6 @@ class _OccurrenceBoard extends ConsumerWidget {
   final _OccurrenceStatusFilter selectedFilter;
   final void Function(DateTime) onDateChanged;
   final VoidCallback onRetry;
-  final void Function(TaskOccurrenceEntity) onReassign;
   final void Function(TaskOccurrenceEntity) onChecklist;
 
   @override
@@ -274,8 +251,7 @@ class _OccurrenceBoard extends ConsumerWidget {
         ),
         Expanded(
           child: state.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
+            loading: () => const SizedBox.shrink(),
             error: (err, _) => Center(
               child: Column(
                 mainAxisSize: .min,
@@ -314,15 +290,30 @@ class _OccurrenceBoard extends ConsumerWidget {
                   ),
                 );
               }
-              return ListView.separated(
-                padding: EdgeInsets.all(spacing.s16),
-                itemCount: occurrences.length,
-                separatorBuilder: (context, i) => Gap(spacing.s12),
-                itemBuilder: (_, i) => _OccurrenceSlotCard(
-                  occurrence: occurrences[i],
-                  onReassign: () => onReassign(occurrences[i]),
-                  onChecklist: () => onChecklist(occurrences[i]),
-                ),
+              return Stack(
+                children: [
+                  ListView.separated(
+                    padding: EdgeInsets.all(spacing.s16),
+                    itemCount: occurrences.length,
+                    separatorBuilder: (context, i) => Gap(spacing.s12),
+                    itemBuilder: (_, i) => _OccurrenceSlotCard(
+                      occurrence: occurrences[i],
+                      onChecklist: () => onChecklist(occurrences[i]),
+                      isRefreshing: state.isLoading && state.hasValue,
+                    ),
+                  ),
+                  if (state.isLoading && state.hasValue)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Container(
+                          color: context.color.scaffoldBackground.withValues(alpha: 0.3),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),

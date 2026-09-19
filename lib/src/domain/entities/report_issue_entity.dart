@@ -15,7 +15,7 @@ class ReportIssueRequestEntity {
   final int visitId;
   final String categoryValue;
   final String title;
-  final IssuePriority priority;
+  final String priority;
   final String? description;
   final int? assignedTo;
   final String? dueAt;

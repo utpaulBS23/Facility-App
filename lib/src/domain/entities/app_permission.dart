@@ -102,8 +102,10 @@ enum UserPermission {
   // Stock
   stockItemView('stock_item.view'),
   facilityStockTargetView('facility_stock_target.view'),
+  facilityStockTargetUpdate('facility_stock_target.update'),
   stockAllocationView('stock_allocation.view'),
   shiftStockCountView('shift_stock_count.view'),
+  shiftStockCountCreate('shift_stock_count.create'),
 
   // Supply request
   supplyRequestView('supply_request.view'),
@@ -181,6 +183,7 @@ enum UserPermission {
   facilityExpenseView('facility_expense.view'),
   facilityExpenseCreate('facility_expense.create'),
   facilityExpenseApprove('facility_expense.approve'),
+  facilityExpenseDelete('facility_expense.delete'),
   expenseCategoryView('expense_category.view'),
 
   // Travel expense
@@ -198,6 +201,7 @@ enum UserPermission {
   // Reports
   reportFacilityWiseView('report.facility_wise.view'),
   reportStockConsumptionView('report.stock_consumption.view'),
+  reportExecutiveView('report.executive.view'),
 
   // Facility map
   facilityMapView('facility_map.view'),

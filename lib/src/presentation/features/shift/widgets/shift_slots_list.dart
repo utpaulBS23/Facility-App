@@ -19,44 +19,75 @@ class _ShiftSlotsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final facilities = data?.facilities ?? const <SlotsFacilityEntity>[];
     final slots = data?.slots ?? const <ShiftSlotEntity>[];
     final activeSlot = data?.activeSlot;
 
-    if (slots.isEmpty && activeSlot == null) {
+    final hasMultipleFacilities = facilities.isNotEmpty;
+    final hasSlots = slots.isNotEmpty || hasMultipleFacilities;
+
+    if (!hasSlots && activeSlot == null) {
       return _ShiftSlotsMessage(message: context.locale.noShiftsFound);
     }
 
-    final leadingCount = (canApplyLeave ? 1 : 0) + (activeSlot != null ? 1 : 0);
     final spacing = context.dimensions.spacing;
+    final items = <Widget>[];
 
-    return ListView.separated(
-      padding: EdgeInsets.fromLTRB(
-        spacing.s16,
-        spacing.s12,
-        spacing.s16,
-        spacing.s16,
-      ),
-      itemCount: slots.length + leadingCount,
-      separatorBuilder: (context, index) => Gap(spacing.s12),
-      itemBuilder: (context, index) {
-        var cursor = index;
-        if (canApplyLeave) {
-          if (cursor == 0) return _ApplyLeaveButton(onTap: onApplyLeave);
-          cursor -= 1;
-        }
-        if (activeSlot != null) {
-          if (cursor == 0) return _ActiveSlotBanner(activeSlot: activeSlot);
-          cursor -= 1;
-        }
-        final slot = slots[cursor];
+    if (canApplyLeave) {
+      items.add(_ApplyLeaveButton(onTap: onApplyLeave));
+    }
 
-        return _SlotCard(
-          slot: slot,
-          facility: facility,
-          onTap: () => onSlotTap(slot),
-          onAssignStaff: () => onAssignStaff(slot),
+    items.add(Gap(spacing.s12));
+
+    if (activeSlot != null) {
+      items.add(_ActiveSlotBanner(activeSlot: activeSlot));
+      items.add(Gap(spacing.s12));
+    }
+
+    if (hasMultipleFacilities) {
+      for (var fIdx = 0; fIdx < facilities.length; fIdx++) {
+        final fac = facilities[fIdx];
+        if (fIdx > 0 || canApplyLeave || activeSlot != null) {
+          items.add(Gap(spacing.s16));
+        }
+        items.add(
+          Padding(
+            padding: EdgeInsets.only(top: spacing.s8, bottom: spacing.s8),
+            child: Text(fac.facilityName, style: context.textStyle.titleSmall),
+          ),
         );
-      },
+        for (var i = 0; i < fac.slots.length; i++) {
+          if (i > 0) items.add(Gap(spacing.s12));
+          final slot = fac.slots[i];
+          items.add(
+            _SlotCard(
+              slot: slot,
+              facility: SlotFacilityEntity(id: fac.facilityId, name: fac.facilityName, address: ''),
+              onTap: () => onSlotTap(slot),
+              onAssignStaff: () => onAssignStaff(slot),
+            ),
+          );
+        }
+      }
+    } else {
+      for (var i = 0; i < slots.length; i++) {
+        if (i > 0) items.add(Gap(spacing.s12));
+        final slot = slots[i];
+        items.add(
+          _SlotCard(
+            slot: slot,
+            facility: facility,
+            onTap: () => onSlotTap(slot),
+            onAssignStaff: () => onAssignStaff(slot),
+          ),
+        );
+      }
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.fromLTRB(spacing.s16, spacing.s12, spacing.s16, spacing.s16),
+      itemCount: items.length,
+      itemBuilder: (context, index) => items[index],
     );
   }
 }

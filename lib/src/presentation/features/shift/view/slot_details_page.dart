@@ -22,8 +22,24 @@ class SlotDetailsPage extends ConsumerWidget {
     context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
   }
 
-  void _onAssignStaff(BuildContext context, ShiftSlotEntity currentSlot) {
-    context.pushNamed(Routes.assignStaff, extra: currentSlot);
+  void _onAssignStaff(BuildContext context, WidgetRef ref, ShiftSlotEntity currentSlot) {
+    final slotsData = ref.read(shiftSlotsProvider).valueOrNull;
+    var facilityId = slotsData?.facility?.id;
+
+    if (facilityId == null && slotsData != null && slotsData.facilities.isNotEmpty) {
+      for (final fac in slotsData.facilities) {
+        if (fac.slots.any((s) => s.shiftSlotId == currentSlot.shiftSlotId)) {
+          facilityId = fac.facilityId;
+          break;
+        }
+      }
+    }
+
+    if (facilityId == null) return;
+    context.pushNamed(
+      Routes.assignStaff,
+      extra: AssignStaffArgs(slot: currentSlot, facilityId: facilityId),
+    );
   }
 
   Future<void> _onUnassignStaff(
@@ -82,6 +98,13 @@ class SlotDetailsPage extends ConsumerWidget {
         );
   }
 
+  void _onUpdateStock(BuildContext context, int facilityId, int shiftAssignmentId) {
+    context.pushNamed(
+      Routes.updateStock,
+      extra: (facilityId, shiftAssignmentId),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // WHY re-derived from the live list rather than the static route arg: an
@@ -101,15 +124,30 @@ class SlotDetailsPage extends ConsumerWidget {
     final me = currentSlot.me;
     // WHY: facility lives on the day payload, not the slot, so it is read back
     // from the same provider rather than threaded through navigation.
-    final facility = ref.watch(
-      shiftSlotsProvider.select((state) => state.valueOrNull?.facility),
-    );
+    final slotsData = ref.watch(shiftSlotsProvider);
+    SlotFacilityEntity? facility = slotsData.valueOrNull?.facility;
+
+    // If facility is null, search in facilities array for the one containing this slot
+    if (facility == null && slotsData.valueOrNull != null) {
+      for (final fac in slotsData.valueOrNull?.facilities ?? const []) {
+        if (fac.slots.any((s) => s.shiftSlotId == currentSlot.shiftSlotId)) {
+          facility = SlotFacilityEntity(
+            id: fac.facilityId,
+            name: fac.facilityName,
+            address: '',
+          );
+          break;
+        }
+      }
+    }
     // WHY: date lives on the day payload, not the slot, so it is read back
     // from the same provider rather than threaded through navigation.
     final date = ref.watch(
       shiftSlotsProvider.select((state) => state.valueOrNull?.date),
     );
     final showCheckOut = me?.action == SlotAction.checkOut;
+    final facilityId = facility?.id;
+    final shiftAssignmentId = me?.assignmentId;
 
     return _SlotDetailsActionListener(
       child: Scaffold(
@@ -122,13 +160,44 @@ class SlotDetailsPage extends ConsumerWidget {
                 currentSlot: currentSlot,
                 facility: facility,
                 date: date,
-                onAssignStaff: () => _onAssignStaff(context, currentSlot),
+                onAssignStaff: () => _onAssignStaff(context, ref, currentSlot),
                 onUnassignStaff: (attendant) =>
                     _onUnassignStaff(context, ref, currentSlot, attendant),
                 onMakeLead: (attendant) =>
                     _onMakeLead(context, ref, currentSlot, attendant),
               ),
             ),
+            if (facilityId != null && shiftAssignmentId != null)
+              PermissionGate(
+                permissions: const [UserPermission.shiftStockCountCreate],
+                child: SafeArea(
+                  top: false,
+                  bottom: !showCheckOut,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      context.dimensions.padding.p16,
+                      context.dimensions.spacing.s16,
+                      context.dimensions.padding.p16,
+                      showCheckOut
+                          ? 0
+                          : context.dimensions.spacing.s16,
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: context.dimensions.spacing.s44,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _onUpdateStock(
+                          context,
+                          facilityId,
+                          shiftAssignmentId,
+                        ),
+                        icon: const Icon(Icons.inventory_2_outlined),
+                        label: Text(context.locale.updateStock),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (showCheckOut)
               _SlotDetailsCheckOutBar(
                 onCheckOut: () => _onCheckOut(context, currentSlot),

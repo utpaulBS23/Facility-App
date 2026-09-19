@@ -45,9 +45,13 @@ class ChecklistItemResponseModel with ChecklistItemResponseModelMappable {
 @MappableClass(generateMethods: GenerateMethods.decode)
 class ChecklistItemSaveResponseModel
     with ChecklistItemSaveResponseModelMappable {
-  ChecklistItemSaveResponseModel({required this.data});
+  ChecklistItemSaveResponseModel({
+    required this.data,
+    this.media,
+  });
 
   final ChecklistItemResponseModel data;
+  final ChecklistItemMediaModel? media;
 
   static const fromJson = ChecklistItemSaveResponseModelMapper.fromJson;
 }
@@ -60,6 +64,7 @@ class ChecklistItemModel with ChecklistItemModelMappable {
     this.responseType,
     this.maxPoints,
     this.proofPolicy,
+    this.isRequired,
     this.sortOrder,
     this.response,
   });
@@ -75,6 +80,9 @@ class ChecklistItemModel with ChecklistItemModelMappable {
 
   @MappableField(key: 'proof_policy')
   final String? proofPolicy;
+
+  @MappableField(key: 'is_required')
+  final bool? isRequired;
 
   @MappableField(key: 'sort_order')
   final int? sortOrder;
@@ -93,6 +101,8 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
     this.assignedToName,
     this.priority,
     this.status,
+    this.problemCategory,
+    this.dueDate,
   });
 
   @MappableField(key: 'task_id')
@@ -104,6 +114,10 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
   final String? assignedToName;
   final String? priority;
   final String? status;
+  @MappableField(key: 'problem_category')
+  final String? problemCategory;
+  @MappableField(key: 'due_date')
+  final String? dueDate;
 
   static const fromJson = ChecklistIssueModelMapper.fromJson;
 }

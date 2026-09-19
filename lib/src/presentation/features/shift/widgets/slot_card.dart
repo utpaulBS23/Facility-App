@@ -91,11 +91,24 @@ class _SlotCard extends StatelessWidget {
             ),
             if (facilityName.isNotEmpty) ...[
               Gap(spacing.s8),
-              Text(
-                facilityName,
-                style: context.textStyle.titleSmall.copyWith(
-                  color: context.color.text.primary,
-                ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.business_rounded,
+                    size: 14,
+                    color: context.color.text.secondary,
+                  ),
+                  Gap(spacing.s4),
+                  Flexible(
+                    child: Text(
+                      facilityName,
+                      style: context.textStyle.titleSmall.copyWith(
+                        color: context.color.text.primary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ],
             if (slot.supervisorName.isNotEmpty) ...[
@@ -109,6 +122,7 @@ class _SlotCard extends StatelessWidget {
               Gap(spacing.s6),
               _InfoRow(icon: Icons.location_on_outlined, label: address),
             ],
+            Gap(spacing.s8),
             _SlotAssignedSection(slot: slot, onAssignStaff: onAssignStaff),
           ],
         ),
