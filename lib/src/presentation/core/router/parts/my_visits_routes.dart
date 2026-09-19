@@ -28,13 +28,13 @@ List<GoRoute> _myVisitsRoutes(Ref ref) {
       path: Routes.problemReport,
       name: Routes.problemReport,
       pageBuilder: (context, state) {
-        final extra =
-            state.extra as ({int visitId, int facilityId, String facilityName});
+        final extra = state.extra as Map<String, dynamic>;
         return MaterialPage(
           child: CreateIssuePage(
-            visitId: extra.visitId,
-            facilityId: extra.facilityId,
-            facilityName: extra.facilityName,
+            visitId: extra['visitId'] as int,
+            facilityId: extra['facilityId'] as int,
+            facilityName: extra['facilityName'] as String,
+            issue: extra['issue'],
           ),
         );
       },

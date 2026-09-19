@@ -7,8 +7,11 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/base/base.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/accessible_facility_entity.dart';
+import '../../../../domain/entities/facility_entity.dart';
 import '../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
@@ -19,6 +22,7 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/menu_provider.dart';
 import '../widgets/menu_item_config.dart';
 
+part '../widgets/door_control_menu_tile.dart';
 part '../widgets/menu_header_section.dart';
 part '../widgets/menu_item_tile.dart';
 part '../widgets/menu_language_toggle.dart';
@@ -37,6 +41,32 @@ class _MenuPageState extends ConsumerState<MenuPage> {
       context: context,
       builder: (dialogContext) => LogoutConfirmDialog(
         onConfirm: () => ref.read(menuNotifierProvider.notifier).logout(),
+      ),
+    );
+  }
+
+  // WHY: staff have no facility picker yet — the door control screen is
+  // scoped to whichever facility this account can see first. Revisit once a
+  // real facility-assignment/gateway-directory concept exists.
+  void _onDoorControlTap() {
+    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
+    if (facilities == null || facilities.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.locale.noFacilityAssigned)),
+      );
+      return;
+    }
+    final primary = facilities.cast<AccessibleFacilityEntity?>().firstWhere(
+      (f) => f?.isPrimary ?? false,
+      orElse: () => null,
+    );
+    final selected = primary ?? facilities.first;
+    context.pushNamed(
+      Routes.doorControl,
+      extra: FacilityEntity(
+        id: selected.id,
+        name: selected.name,
+        address: '',
       ),
     );
   }
@@ -90,6 +120,20 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                           if (hasAnyPermission(item.permissions, permissions))
                             item,
                       ];
+                      // WHY split here, not appended after the loop: Door
+                      // Control has no permission-gated MenuItemConfig entry
+                      // (it needs an async facility fetch, not a static
+                      // route push), so it's placed by splitting the list at
+                      // Expense Entry instead of being a config row.
+                      final expenseEntryIndex = visibleItems.indexWhere(
+                        (item) => item.route == Routes.facilityExpense,
+                      );
+                      final beforeTravelExpense = expenseEntryIndex == -1
+                          ? visibleItems
+                          : visibleItems.sublist(0, expenseEntryIndex);
+                      final fromTravelExpense = expenseEntryIndex == -1
+                          ? const <MenuItemConfig>[]
+                          : visibleItems.sublist(expenseEntryIndex);
 
                       // WHY SingleChildScrollView, not a bare Column: the
                       // menu list has grown past what fits on smaller
@@ -103,18 +147,20 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              for (var i = 0; i < visibleItems.length; i++)
-                                _MenuItemTile(
-                                  config: visibleItems[i],
-                                  showDivider: i < visibleItems.length - 1,
-                                ),
+                              for (final item in beforeTravelExpense)
+                                _MenuItemTile(config: item),
+                              _DoorControlTile(onTap: _onDoorControlTap),
+                              for (final item in fromTravelExpense)
+                                _MenuItemTile(config: item),
                               // WHY: notificationView permission not yet
                               // granted by backend — show unconditionally
-                              // until it is.
+                              // until it is. It's always the last config
+                              // row, so it's the only one with no divider.
                               _MenuItemTile(
                                 config: notificationMenuItemConfig,
                                 showDivider: false,
                               ),
+                              Gap(spacing.s8),
                               _LogoutTile(onTap: _onLogoutTap),
                             ],
                           ),

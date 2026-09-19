@@ -19,9 +19,14 @@ import '../riverpod/partner_staff_provider.dart';
 import '../riverpod/shift_slots_provider.dart';
 
 class AssignStaffPage extends ConsumerStatefulWidget {
-  const AssignStaffPage({super.key, required this.slot});
+  const AssignStaffPage({
+    super.key,
+    required this.slot,
+    required this.facilityId,
+  });
 
   final ShiftSlotEntity slot;
+  final int facilityId;
 
   @override
   ConsumerState<AssignStaffPage> createState() => _AssignStaffPageState();
@@ -44,16 +49,11 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
     super.dispose();
   }
 
-  int? get _facilityId =>
-      ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
-
   void _fetchStaff() {
-    final facilityId = _facilityId;
-    if (facilityId == null) return;
     ref
         .read(partnerStaffProvider.notifier)
         .fetch(
-          facilityId: facilityId,
+          facilityId: widget.facilityId,
           search: _searchController.text.trim().isEmpty
               ? null
               : _searchController.text.trim(),
@@ -66,12 +66,8 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
   }
 
   Future<void> _onStaffTap(PartnerStaffEntity person) async {
-    // WHY: facility lives on the day payload, not the slot, so it is read
-    // back from the same provider rather than threaded through navigation
-    // (same pattern as SlotDetailsPage).
-    final facilityId = _facilityId;
     final rosterId = widget.slot.weeklyRosterId;
-    if (facilityId == null || rosterId == null) {
+    if (rosterId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.assignmentUnavailable)),
       );
@@ -87,7 +83,7 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
     ref
         .read(assignShiftSlotProvider.notifier)
         .assign(
-          facilityId: facilityId,
+          facilityId: widget.facilityId,
           rosterId: rosterId,
           shiftSlotId: widget.slot.shiftSlotId,
           attendantId: person.id,

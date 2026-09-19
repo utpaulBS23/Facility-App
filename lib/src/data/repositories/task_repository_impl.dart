@@ -82,4 +82,18 @@ final class TaskRepositoryImpl extends TaskRepository {
     );
     return TaskMediaResponseModel.fromJson(response.data).toEntity();
   });
+
+  @override
+  Future<Result<TaskEntity, Failure>> updateIssueAssignment({
+    required int partnerId,
+    required int issueId,
+    required int assignedTo,
+  }) => asyncGuard(() async {
+    final response = await _client.updateIssueAssignment(
+      partnerId: partnerId,
+      issueId: issueId,
+      body: {'assigned_to': assignedTo},
+    );
+    return TaskDetailResponseModel.fromJson(response.data).toEntity();
+  });
 }

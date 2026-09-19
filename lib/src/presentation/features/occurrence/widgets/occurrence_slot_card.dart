@@ -4,10 +4,12 @@ class _OccurrenceSlotCard extends StatelessWidget {
   const _OccurrenceSlotCard({
     required this.occurrence,
     required this.onChecklist,
+    this.isRefreshing = false,
   });
 
   final TaskOccurrenceEntity occurrence;
   final VoidCallback onChecklist;
+  final bool isRefreshing;
 
   @override
   Widget build(BuildContext context) {
@@ -18,137 +20,175 @@ class _OccurrenceSlotCard extends StatelessWidget {
     final progress = items == null || items.isEmpty ? 0.0 : answered / items.length;
     final accent = _occurrenceStatusForeground(context, occurrence.status);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        borderRadius: .circular(radius.r12),
-        border: Border.all(color: context.color.borderSubtle),
-        boxShadow: [
-          BoxShadow(
-            color: context.color.shadow,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      clipBehavior: .antiAlias,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: .stretch,
-          children: [
-            Container(width: 4, color: accent),
-            Expanded(
-              child: PermissionGate(
-                permissions: const [UserPermission.taskOccurrenceView],
-                child: Padding(
-                  padding: .all(spacing.s16),
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: .start,
-                              children: [
-                                LabelLargeText(occurrence.scheduleTitle),
-                                Gap(spacing.s4),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.access_time_rounded,
-                                      size: 14,
-                                      color: context.color.text.secondary,
+    return GestureDetector(
+      onTap: onChecklist,
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: context.color.onPrimary,
+              borderRadius: .circular(radius.r12),
+              border: Border.all(color: context.color.borderSubtle),
+              boxShadow: [
+                BoxShadow(
+                  color: context.color.shadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            clipBehavior: .antiAlias,
+            child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: .stretch,
+            children: [
+              Container(width: 4, color: accent),
+              Expanded(
+                child: PermissionGate(
+                  permissions: const [UserPermission.taskOccurrenceView],
+                  child: Padding(
+                    padding: .all(spacing.s16),
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: .start,
+                                children: [
+                                  Text(
+                                    occurrence.scheduleTitle,
+                                    style: context.textStyle.labelLarge.copyWith(
+                                      color: context.color.text.primary,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    Gap(spacing.s4),
-                                    BodySmallText(
-                                      DateFormatter.formatTimeRange(
-                                        occurrence.timeRange,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Gap(spacing.s4),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time_rounded,
+                                        size: 14,
+                                        color: context.color.text.secondary,
                                       ),
-                                      color: context.color.text.secondary,
-                                    ),
-                                  ],
+                                      Gap(spacing.s4),
+                                      BodySmallText(
+                                        DateFormatter.formatTimeRange(
+                                          occurrence.timeRange,
+                                        ),
+                                        color: context.color.text.secondary,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            _OccurrenceStatusChip(status: occurrence.status),
+                          ],
+                        ),
+                        Gap(spacing.s12),
+                        Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: context.color.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(
+                                    Icons.person_rounded,
+                                    size: 12,
+                                    color: context.color.onPrimary,
+                                  ),
+                                ),
+                                Gap(spacing.s8),
+                                Expanded(
+                                  child: BodySmallText(
+                                    occurrence.submittedByName ?? '—',
+                                    color: context.color.text.secondary,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                          _OccurrenceStatusChip(status: occurrence.status),
-                        ],
-                      ),
-                      Gap(spacing.s12),
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: context.color.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            padding: const EdgeInsets.all(4),
-                            child: Icon(
-                              Icons.person_rounded,
-                              size: 12,
-                              color: context.color.onPrimary,
-                            ),
-                          ),
-                          Gap(spacing.s8),
-                          Expanded(
-                            child: BodySmallText(
-                              occurrence.submittedByName ?? '—',
-                              color: context.color.text.secondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (items != null) ...[
-                        Gap(spacing.s12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ClipRRect(
-                                borderRadius: .circular(radius.r4),
-                                child: LinearProgressIndicator(
-                                  value: progress,
-                                  minHeight: spacing.s6,
-                                  backgroundColor: context.color.borderSubtle,
-                                  color: accent,
-                                ),
+                            if (occurrence.submittedAt != null) ...[
+                              Gap(spacing.s6),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today_outlined,
+                                    size: 12,
+                                    color: context.color.text.secondary,
+                                  ),
+                                  Gap(spacing.s8),
+                                  BodySmallText(
+                                    DateFormatter.formatDueTime(occurrence.submittedAt!),
+                                    color: context.color.text.secondary,
+                                  ),
+                                  if (occurrence.lateByMinutes != null) ...[
+                                    Gap(spacing.s8),
+                                    BodySmallText(
+                                      '(${context.locale.late} ${occurrence.lateByMinutes} min)',
+                                      color: context.color.warning,
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ),
-                            Gap(spacing.s8),
-                            BodySmallText(
-                              context.locale.occurrenceChecklistItemsCompleted(
-                                answered,
-                                items.length,
-                              ),
-                              color: context.color.text.secondary,
-                            ),
+                            ],
                           ],
                         ),
-                      ],
-                      Gap(spacing.s16),
-                      Wrap(
-                        spacing: spacing.s8,
-                        runSpacing: spacing.s8,
-                        children: [
-                          if (items != null)
-                            PermissionGate(
-                              permissions: const [UserPermission.taskOccurrenceView],
-                              child: OutlinedButton.icon(
-                                onPressed: onChecklist,
-                                icon: const Icon(Icons.checklist_rounded, size: 16),
-                                label: Text(context.locale.occurrenceChecklist),
+                        if (items != null) ...[
+                          Gap(spacing.s12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: .circular(radius.r4),
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    minHeight: spacing.s6,
+                                    backgroundColor: context.color.borderSubtle,
+                                    color: accent,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Gap(spacing.s8),
+                              BodySmallText(
+                                context.locale.occurrenceChecklistItemsCompleted(
+                                  answered,
+                                  items.length,
+                                ),
+                                color: context.color.text.secondary,
+                              ),
+                            ],
+                          ),
                         ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+          ),
+          if (isRefreshing)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.color.scaffoldBackground.withValues(alpha: 0.3),
+                  borderRadius: .circular(radius.r12),
+                ),
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator.adaptive(),
+              ),
+            ),
+        ],
       ),
     );
   }

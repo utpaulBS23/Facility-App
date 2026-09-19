@@ -1,10 +1,7 @@
 part of '../view/menu_page.dart';
 
 class _MenuItemTile extends StatelessWidget {
-  const _MenuItemTile({
-    required this.config,
-    this.showDivider = true,
-  });
+  const _MenuItemTile({required this.config, this.showDivider = true});
 
   final MenuItemConfig config;
   final bool showDivider;

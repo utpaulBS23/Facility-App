@@ -17,6 +17,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -156,10 +157,6 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
-    final selectedFacilityName = facilities
-        .cast<AccessibleFacilityEntity?>()
-        .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
-        ?.name;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -170,27 +167,9 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
         surfaceTintColor: Colors.transparent,
         actions: [
           if (facilities.length > 1)
-            TextButton.icon(
-              onPressed: () => _pickFacility(context, facilities),
-              icon: Container(
-                decoration: BoxDecoration(
-                  color: context.color.primary,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(6),
-                child: Opacity(
-                  opacity: 1.0,
-                  child: Icon(
-                    Icons.apartment_outlined,
-                    size: 20,
-                    color: context.color.onPrimary,
-                  ),
-                ),
-              ),
-              label: Text(
-                selectedFacilityName ?? context.locale.facilityName,
-                overflow: TextOverflow.ellipsis,
-              ),
+            FacilityFilterButton(
+              hasSelection: _selectedFacilityId != null,
+              onTap: () => _pickFacility(context, facilities),
             ),
           Stack(
             clipBehavior: Clip.none,
@@ -272,8 +251,7 @@ class _OccurrenceBoard extends ConsumerWidget {
         ),
         Expanded(
           child: state.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
+            loading: () => const SizedBox.shrink(),
             error: (err, _) => Center(
               child: Column(
                 mainAxisSize: .min,
@@ -312,14 +290,30 @@ class _OccurrenceBoard extends ConsumerWidget {
                   ),
                 );
               }
-              return ListView.separated(
-                padding: EdgeInsets.all(spacing.s16),
-                itemCount: occurrences.length,
-                separatorBuilder: (context, i) => Gap(spacing.s12),
-                itemBuilder: (_, i) => _OccurrenceSlotCard(
-                  occurrence: occurrences[i],
-                  onChecklist: () => onChecklist(occurrences[i]),
-                ),
+              return Stack(
+                children: [
+                  ListView.separated(
+                    padding: EdgeInsets.all(spacing.s16),
+                    itemCount: occurrences.length,
+                    separatorBuilder: (context, i) => Gap(spacing.s12),
+                    itemBuilder: (_, i) => _OccurrenceSlotCard(
+                      occurrence: occurrences[i],
+                      onChecklist: () => onChecklist(occurrences[i]),
+                      isRefreshing: state.isLoading && state.hasValue,
+                    ),
+                  ),
+                  if (state.isLoading && state.hasValue)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Container(
+                          color: context.color.scaffoldBackground.withValues(alpha: 0.3),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),

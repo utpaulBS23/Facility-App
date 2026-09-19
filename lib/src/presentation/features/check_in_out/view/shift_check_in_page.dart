@@ -184,7 +184,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         isValidating: validationState.isLoading,
         hasError: selfieState.hasError,
         errorMessage: selfieState.error?.toString(),
-        faceValidationError: validationState.error?.toString(),
+        faceValidationError: null,
         onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),

@@ -6,12 +6,14 @@ class _TaskCard extends StatelessWidget {
     required this.onTap,
     required this.onStartTap,
     required this.onCompleteTap,
+    required this.onAssignStaffTap,
   });
 
   final TaskEntity task;
   final VoidCallback onTap;
   final VoidCallback onStartTap;
   final VoidCallback onCompleteTap;
+  final VoidCallback onAssignStaffTap;
 
   bool get _isCompleted =>
       task.status == TaskStatus.resolved || task.status == TaskStatus.closed;
@@ -96,11 +98,13 @@ class _TaskCard extends StatelessWidget {
                               task.title,
                               style: context.textStyle.labelLarge.copyWith(
                                 color: titleColor,
+                                fontWeight: FontWeight.bold,
                                 decoration: _isCompleted
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                                 decorationColor: context.color.text.secondary,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Gap(spacing.s8),
@@ -134,47 +138,71 @@ class _TaskCard extends StatelessWidget {
                       ),
                       Gap(spacing.s12),
                       _InfoRow(
-                        icon: Icons.location_on_outlined,
+                        icon: Icons.business_rounded,
                         label: task.location,
+                        muted: _isCompleted,
+                      ),
+                      Gap(spacing.s4),
+                      _InfoRow(
+                        icon: Icons.location_on_outlined,
+                        label: task.facilityAddress,
                         muted: _isCompleted,
                       ),
                       Gap(spacing.s4),
                       _InfoRow(
                         icon: Icons.access_time_outlined,
                         label:
-                            '${context.locale.due}: ${DateFormatter.formatDueTime(task.dueTime)}',
+                            '${context.locale.due}: ${DateFormatter.formatDateOnly(task.dueTime)}',
                         muted: _isCompleted,
                       ),
-                      if (_canStart || _canComplete) ...[
-                        Gap(spacing.s16),
-                        Wrap(
-                          spacing: spacing.s8,
-                          runSpacing: spacing.s8,
+                      Gap(spacing.s12),
+                      if (task.assignedToName.isNotEmpty) ...[
+                        Row(
                           children: [
-                            if (_canStart)
-                              OutlinedButton.icon(
-                                onPressed: onStartTap,
-                                icon: const Icon(
-                                  Icons.play_arrow_rounded,
-                                  size: 16,
-                                ),
-                                label: Text(context.locale.start),
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: context.color.primary.withValues(alpha: 0.12),
+                                shape: BoxShape.circle,
                               ),
-                            if (_canComplete)
-                              PermissionGate(
-                                permissions: [UserPermission.issueResolve],
-                                child: OutlinedButton.icon(
-                                  onPressed: onCompleteTap,
-                                  icon: const Icon(
-                                    Icons.check_rounded,
-                                    size: 16,
-                                  ),
-                                  label: Text(context.locale.completeTask),
+                              child: Center(
+                                child: Icon(
+                                  Icons.person_rounded,
+                                  size: 12,
+                                  color: context.color.primary,
                                 ),
                               ),
+                            ),
+                            Gap(spacing.s8),
+                            Expanded(
+                              child: Text(
+                                task.assignedToName,
+                                style: context.textStyle.bodySmall.copyWith(
+                                  color: _isCompleted
+                                      ? context.color.text.muted
+                                      : context.color.text.secondary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
+                        Gap(spacing.s12),
                       ],
+                      if (task.status == TaskStatus.open)
+                        PermissionGate(
+                          permissions: [UserPermission.issueUpdate],
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: onAssignStaffTap,
+                              icon: const Icon(Icons.person_add_outlined),
+                              label: Text(context.locale.assignStaff),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
