@@ -234,12 +234,88 @@ class _DetailBody extends StatelessWidget {
                     ),
                   ),
                   Gap(spacing.s8),
-                  TextButton(
-                    onPressed: () async {
-                      await Geolocator.openAppSettings();
-                    },
-                    child: const Text('Open Settings'),
-                  ),
+                  if (checkInState.shareError!.message.toLowerCase().contains('permission'))
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await Geolocator.openAppSettings();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.settings,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Gap(spacing.s12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: onCheckIn,
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.retry,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Center(
+                      child: OutlinedButton(
+                        onPressed: onCheckIn,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s16,
+                            vertical: spacing.s8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              context.dimensions.radius.r6,
+                            ),
+                          ),
+                          side: BorderSide(
+                            color: context.color.buttonBorder.accentAlt,
+                          ),
+                        ),
+                        child: Text(
+                          context.locale.retry,
+                          style: TextStyle(
+                            color: context.color.text.secondary,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -326,14 +402,112 @@ class _ReshareLocationBody extends StatelessWidget {
           )
         else ...[
           if (checkInState.shareError != null) ...[
-            Text(
-              checkInState.shareError!.localized(context),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.error,
+            Container(
+              padding: EdgeInsets.all(spacing.s16),
+              decoration: BoxDecoration(
+                color: context.color.error.withValues(alpha: 0.1),
+                border: Border.all(color: context.color.error),
+                borderRadius: BorderRadius.circular(
+                  context.dimensions.radius.r12,
+                ),
               ),
-              textAlign: TextAlign.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    checkInState.shareError!.localized(context),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Gap(spacing.s8),
+                  if (checkInState.shareError!.message.toLowerCase().contains('permission'))
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await Geolocator.openAppSettings();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.settings,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Gap(spacing.s12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: onReshare,
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.retry,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Center(
+                      child: OutlinedButton(
+                        onPressed: onReshare,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s16,
+                            vertical: spacing.s8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              context.dimensions.radius.r6,
+                            ),
+                          ),
+                          side: BorderSide(
+                            color: context.color.buttonBorder.accentAlt,
+                          ),
+                        ),
+                        child: Text(
+                          context.locale.retry,
+                          style: TextStyle(
+                            color: context.color.text.secondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            Gap(spacing.s8),
+            Gap(spacing.s16),
           ],
           Builder(
             builder: (context) {
@@ -404,12 +578,100 @@ class _CheckInBody extends StatelessWidget {
                 context.dimensions.radius.r12,
               ),
             ),
-            child: Text(
-              checkInState.checkInError!.localized(context),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.error,
-              ),
-              textAlign: TextAlign.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  checkInState.checkInError!.localized(context),
+                  style: context.textStyle.bodySmall.copyWith(
+                    color: context.color.error,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Gap(spacing.s8),
+                if (checkInState.checkInError!.message.toLowerCase().contains('permission'))
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            await Geolocator.openAppSettings();
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              vertical: spacing.s8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                context.dimensions.radius.r6,
+                              ),
+                            ),
+                            side: BorderSide(
+                              color: context.color.buttonBorder.accentAlt,
+                            ),
+                          ),
+                          child: Text(
+                            context.locale.settings,
+                            style: TextStyle(
+                              color: context.color.text.secondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Gap(spacing.s12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: onConfirm,
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              vertical: spacing.s8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                context.dimensions.radius.r6,
+                              ),
+                            ),
+                            side: BorderSide(
+                              color: context.color.buttonBorder.accentAlt,
+                            ),
+                          ),
+                          child: Text(
+                            context.locale.retry,
+                            style: TextStyle(
+                              color: context.color.text.secondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  Center(
+                    child: OutlinedButton(
+                      onPressed: onConfirm,
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: spacing.s16,
+                          vertical: spacing.s8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            context.dimensions.radius.r6,
+                          ),
+                        ),
+                        side: BorderSide(
+                          color: context.color.buttonBorder.accentAlt,
+                        ),
+                      ),
+                      child: Text(
+                        context.locale.retry,
+                        style: TextStyle(
+                          color: context.color.text.secondary,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           Gap(spacing.s16),

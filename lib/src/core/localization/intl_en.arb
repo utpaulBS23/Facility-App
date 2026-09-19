@@ -956,6 +956,8 @@
     "created": "Created",
     "description": "Description",
     "assignedTo": "Assigned To",
-    "proofRequiredMessage": "For resolving this issue you have to submit proof"
+    "proofRequiredMessage": "For resolving this issue you have to submit proof",
+  "settings": "Settings",
+  "retry": "Retry"
 }
 
