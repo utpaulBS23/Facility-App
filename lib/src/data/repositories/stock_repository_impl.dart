@@ -65,7 +65,7 @@ final class StockRepositoryImpl extends StockRepository {
   }
 
   @override
-  Future<Result<List<FacilityStockBalanceEntity>, Failure>>
+  Future<Result<FacilityStockBalanceResultEntity, Failure>>
       getFacilityStockBalance(FacilityStockBalanceFilter filter) {
     return asyncGuard(() async {
       final response = await remote.getFacilityStockBalance(
@@ -79,7 +79,7 @@ final class StockRepositoryImpl extends StockRepository {
       final responseModel =
           FacilityStockBalanceListResponseModel.fromJson(response.data);
 
-      return responseModel.toEntityList();
+      return responseModel.toEntity();
     });
   }
 

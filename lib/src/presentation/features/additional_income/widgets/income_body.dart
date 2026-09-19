@@ -18,18 +18,7 @@ class _AdditionalIncomeBody extends StatelessWidget {
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.all(spacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            switch (listAsync) {
-              AsyncData(:final value) => _IncomeStatsRow(summary: value.summary),
-              AsyncError() => const SizedBox.shrink(),
-              _ => const _IncomeStatsRowShimmer(),
-            },
-            Gap(spacing.s16),
-            _IncomeListSection(listAsync: listAsync, onRetry: onRetry),
-          ],
-        ),
+        child: _IncomeListSection(listAsync: listAsync, onRetry: onRetry),
       ),
     );
   }

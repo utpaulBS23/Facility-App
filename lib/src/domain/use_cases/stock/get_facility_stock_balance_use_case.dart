@@ -12,7 +12,7 @@ final class GetFacilityStockBalanceUseCase extends PartnerUseCase {
 
   final StockRepository stockRepository;
 
-  Future<Result<List<FacilityStockBalanceEntity>, Failure>> call(
+  Future<Result<FacilityStockBalanceResultEntity, Failure>> call(
     FacilityStockBalanceFilter filter,
   ) async {
     final partnerId = getPartnerId();

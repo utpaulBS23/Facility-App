@@ -28,6 +28,7 @@ class _IncomeEntryTypeSwitch extends StatelessWidget {
         ),
       ],
       selected: {selectedType},
+      showSelectedIcon: false,
       onSelectionChanged: (newSelection) {
         onTypeChanged(newSelection.first);
       },

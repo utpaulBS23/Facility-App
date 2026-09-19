@@ -86,7 +86,6 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
         selectedFilter: _selectedFilter,
         filteredRequestsAsync: requestsAsync,
         onFilterSelected: _onFilterSelected,
-        onNewRequest: _onNewRequest,
         onRequestTap: _onRequestTap,
         onRetry: () {
           ref.invalidate(supplyRequestSummaryProvider);
@@ -94,6 +93,15 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
               .read(supplyRequestsListProvider.notifier)
               .fetch(filter: _selectedFilter);
         },
+      ),
+      floatingActionButton: PermissionGate(
+        permissions: const [UserPermission.supplyRequestCreate],
+        child: FloatingActionButton(
+          onPressed: _onNewRequest,
+          backgroundColor: context.color.primary,
+          foregroundColor: context.color.onPrimary,
+          child: const Icon(Icons.add_rounded),
+        ),
       ),
     );
   }
