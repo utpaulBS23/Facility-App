@@ -47,6 +47,7 @@ class _SelfieZone extends StatelessWidget {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: [
           if (hasError) ...[
             _PhotoErrorDialog(
@@ -57,25 +58,27 @@ class _SelfieZone extends StatelessWidget {
             _FaceRing(capturedPhotoPath: capturedPhotoPath),
             if (faceValidationError != null) ...[
               Gap(dimensions.spacing.s16),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: dimensions.padding.p16,
-                  vertical: dimensions.spacing.s12,
-                ),
-                decoration: BoxDecoration(
-                  color: colors.error.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(dimensions.radius.r12),
-                  border: Border.all(
-                    color: colors.error.withValues(alpha: 0.5),
+              Flexible(
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: dimensions.padding.p16,
+                    vertical: dimensions.spacing.s12,
                   ),
-                ),
-                child: Text(
-                  faceValidationError!,
-                  textAlign: TextAlign.center,
-                  style: context.textStyle.bodyRegular.copyWith(
-                    color: colors.error,
-                    fontWeight: FontWeight.w600,
+                  decoration: BoxDecoration(
+                    color: colors.error.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                    border: Border.all(
+                      color: colors.error.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Text(
+                    faceValidationError!,
+                    textAlign: TextAlign.center,
+                    style: context.textStyle.bodyRegular.copyWith(
+                      color: colors.error,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),

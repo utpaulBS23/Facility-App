@@ -69,7 +69,7 @@ class TaskDetail extends _$TaskDetail {
   }
 
   Future<TaskEntity?> completeIssue({required int issueId}) async {
-    if (!ref.hasPermission(UserPermission.taskComplete)) {
+    if (!ref.hasPermission(UserPermission.issueResolve)) {
       state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
       return null;
     }
@@ -91,5 +91,29 @@ class TaskDetail extends _$TaskDetail {
         throw Exception(error);
     }
     return completedTask;
+  }
+
+  Future<void> updateIssueAssignment({
+    required int taskId,
+    required int assignedTo,
+  }) async {
+    if (!ref.hasPermission(UserPermission.issueUpdate)) {
+      state = AsyncValue.error(Failure.permissionDenied, StackTrace.current);
+      throw Exception('Permission denied');
+    }
+
+    final Result<TaskEntity, Failure> result = await ref
+        .read(updateIssueAssignmentUseCaseProvider)
+        .call(issueId: taskId, assignedTo: assignedTo);
+
+    switch (result) {
+      case Success(:final data) when data != null:
+        state = AsyncValue.data(data);
+      case Success():
+        state = AsyncValue.error('Task not found', StackTrace.current);
+      case Error(:final error):
+        state = AsyncValue.error(error, StackTrace.current);
+        throw Exception(error);
+    }
   }
 }

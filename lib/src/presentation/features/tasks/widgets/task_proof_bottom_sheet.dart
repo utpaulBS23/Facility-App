@@ -30,20 +30,23 @@ class _ProofRequiredBottomSheet extends StatefulWidget {
 }
 
 class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
-  final _altController = TextEditingController();
   final _picker = ImagePicker();
   XFile? _image;
   bool _isSubmitting = false;
-  bool _showAltError = false;
 
   @override
   void dispose() {
-    _altController.dispose();
     super.dispose();
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final photo = await _picker.pickImage(source: source, imageQuality: 85);
+    final photo = await _picker.pickImage(
+      source: source,
+      imageQuality: 85,
+      preferredCameraDevice: source == ImageSource.camera
+          ? CameraDevice.rear
+          : CameraDevice.front,
+    );
     if (photo == null) return;
     setState(() => _image = photo);
   }
@@ -51,20 +54,12 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
   void _deleteImage() => setState(() => _image = null);
 
   Future<void> _submit() async {
-    final alt = _altController.text.trim();
-    if (alt.isEmpty) {
-      setState(() => _showAltError = true);
-      return;
-    }
     if (_image == null) return;
 
-    setState(() {
-      _isSubmitting = true;
-      _showAltError = false;
-    });
+    setState(() => _isSubmitting = true);
 
     try {
-      await widget.onSubmit(_image!.path, alt);
+      await widget.onSubmit(_image!.path, '');
       if (!mounted) return;
       Navigator.of(context).pop();
     } catch (_) {
@@ -119,13 +114,13 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
       width: 72,
       height: 72,
       decoration: BoxDecoration(
-        color: context.color.brandSubtle,
+        color: context.color.errorAlt,
         shape: BoxShape.circle,
       ),
       child: Icon(
         Icons.camera_alt_outlined,
         size: 32,
-        color: context.color.primary,
+        color: context.color.error,
       ),
     ),
     Gap(spacing.s16),
@@ -147,14 +142,18 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
     Gap(spacing.s24),
     FilledButton(
       onPressed: () => _pickImage(ImageSource.camera),
+      style: FilledButton.styleFrom(
+        backgroundColor: context.color.error,
+        foregroundColor: context.color.onPrimary,
+      ),
       child: Text(context.locale.takePhoto),
     ),
     Gap(spacing.s12),
     OutlinedButton(
       onPressed: () => _pickImage(ImageSource.gallery),
       style: OutlinedButton.styleFrom(
-        foregroundColor: context.color.primary,
-        side: BorderSide(color: context.color.primary),
+        foregroundColor: context.color.error,
+        side: BorderSide(color: context.color.error),
       ),
       child: Text(context.locale.gallery),
     ),
@@ -201,16 +200,6 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
       style: OutlinedButton.styleFrom(
         foregroundColor: context.color.primary,
         side: BorderSide(color: context.color.primary),
-      ),
-    ),
-    Gap(spacing.s16),
-    TextField(
-      controller: _altController,
-      enabled: !_isSubmitting,
-      decoration: InputDecoration(
-        labelText: context.locale.proofAltLabel,
-        hintText: context.locale.proofAltHint,
-        errorText: _showAltError ? context.locale.isRequired : null,
       ),
     ),
     Gap(spacing.s24),

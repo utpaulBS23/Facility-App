@@ -29,4 +29,10 @@ abstract base class TaskRepository extends Repository {
     required String photoPath,
     required String alt,
   });
+
+  Future<Result<TaskEntity, Failure>> updateIssueAssignment({
+    required int partnerId,
+    required int issueId,
+    required int assignedTo,
+  });
 }
