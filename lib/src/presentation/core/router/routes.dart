@@ -37,11 +37,13 @@ class Routes {
   static const String myVisits = '/my-visits';
   static const String task = '/task';
   static const String taskDetail = 'task-detail';
+  static const String assignTaskStaff = 'assign-task-staff';
   static const String visitDetail = '/visit-detail';
   static const String visitCheckIn = '/visit-check-in';
   static const String inspectionChecklist = '/inspection-checklist';
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
+  static const String issueDetail = '/issue-detail';
   static const String occurrenceChecklist = '/occurrence-checklist';
   static const String menu = '/menu';
   static const String dashboard = '/dashboard';
@@ -69,12 +71,17 @@ class Routes {
   static const String requestDetails = '/request-details/:id';
   static const String confirmDelivery = '/confirm-delivery';
   static const String deliveryComplaint = '/delivery-complaint';
+  static const String updateStock = '/update-stock';
+  static const String stock = '/stock';
+  static const String stockAveraging = '/stock-averaging';
+  static const String stockAveragingDetails = '/stock-averaging-details';
 
   static const String myProfile = '/my-profile';
   static const String editProfile = '/edit-profile';
   static const String changePassword = '/change-password';
   static const String passwordReset = '/password-reset';
   static const String otpVerification = '/otp-verification';
+  static const String doorControl = '/door-control';
 
   static const String trainingSessions = '/training-sessions';
   static const String trainingSessionDetails = '/training-session-details/:id';

@@ -207,6 +207,10 @@ class Endpoints {
   static const String rejectSupplyRequest =
       '/partners/{partnerId}/supply-requests/{supplyRequestId}/reject';
 
+  /// Reports
+  static const String incentiveFineReport =
+      '/partners/{partnerId}/reports/incentive-fine';
+
   /// Facility Expenses
   static const String facilityExpenses =
       '/partners/{partnerId}/facility-expenses';
@@ -233,6 +237,20 @@ class Endpoints {
       '/partners/{partnerId}/stock-allocations';
   static const String stockAllocationDetails =
       '/partners/{partnerId}/stock-allocations/{stockAllocationId}';
+  static const String submitShiftStockCount =
+      '/partners/{partnerId}/shift-assignments/{shiftAssignmentId}/stock-counts';
+  static const String shiftStockCounts =
+      '/partners/{partnerId}/shift-stock-counts';
+  static const String stockAveraging =
+      '/partners/{partnerId}/stock-averaging';
+  static const String updateStockTarget =
+      '/partners/{partnerId}/stock-averaging/{targetId}';
+  static const String facilityStockBalance =
+      '/partners/{partnerId}/facility-stock-balance';
+  static const String facilityStockBalanceThreshold =
+      '/partners/{partnerId}/facility-stock-balance/threshold';
+  static const String facilityStockBalanceHistory =
+      '/partners/{partnerId}/facility-stock-balance/history';
 
   /// Task Occurrences — generated slots from `task_schedules`, never
   /// created/deleted via the API (nightly cron only).

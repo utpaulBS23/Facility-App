@@ -216,7 +216,7 @@ class _DetailBody extends StatelessWidget {
         else ...[
           if (checkInState.shareError != null) ...[
             Container(
-              padding: EdgeInsets.all(spacing.s12),
+              padding: EdgeInsets.all(spacing.s16),
               decoration: BoxDecoration(
                 color: context.color.error.withValues(alpha: 0.1),
                 border: Border.all(color: context.color.error),
@@ -234,32 +234,123 @@ class _DetailBody extends StatelessWidget {
                     ),
                   ),
                   Gap(spacing.s8),
-                  TextButton(
-                    onPressed: () async {
-                      await Geolocator.openAppSettings();
-                    },
-                    child: const Text('Open Settings'),
-                  ),
+                  if (checkInState.shareError!.message.toLowerCase().contains('permission'))
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await Geolocator.openAppSettings();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.settings,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Gap(spacing.s12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: onCheckIn,
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.retry,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Center(
+                      child: OutlinedButton(
+                        onPressed: onCheckIn,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s16,
+                            vertical: spacing.s8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              context.dimensions.radius.r6,
+                            ),
+                          ),
+                          side: BorderSide(
+                            color: context.color.buttonBorder.accentAlt,
+                          ),
+                        ),
+                        child: Text(
+                          context.locale.retry,
+                          style: TextStyle(
+                            color: context.color.text.secondary,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
-            Gap(spacing.s12),
+            Gap(spacing.s16),
           ],
-          FilledButton(
-            onPressed: onCheckIn,
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.success,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
+          Builder(
+            builder: (context) {
+              final visitDate = DateTime.parse(detail.date);
+              final today = DateTime.now();
+              final isToday = visitDate.year == today.year &&
+                  visitDate.month == today.month &&
+                  visitDate.day == today.day;
+              final isPast = visitDate.isBefore(today) && !isToday;
+
+              return FilledButton(
+                onPressed: isPast ? null : onCheckIn,
+                style: FilledButton.styleFrom(
+                  backgroundColor: isPast
+                      ? context.color.subtle
+                      : context.color.success,
+                  minimumSize: const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            child: LabelLargeText(
-              context.locale.checkInToVisit,
-              color: context.color.onPrimary,
-            ),
+                child: LabelLargeText(
+                  context.locale.checkInToVisit,
+                  color: isPast
+                      ? context.color.text.secondary
+                      : context.color.onPrimary,
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -311,30 +402,143 @@ class _ReshareLocationBody extends StatelessWidget {
           )
         else ...[
           if (checkInState.shareError != null) ...[
-            Text(
-              checkInState.shareError!.localized(context),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.error,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            Gap(spacing.s8),
-          ],
-          FilledButton(
-            onPressed: onReshare,
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.success,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(
+            Container(
+              padding: EdgeInsets.all(spacing.s16),
+              decoration: BoxDecoration(
+                color: context.color.error.withValues(alpha: 0.1),
+                border: Border.all(color: context.color.error),
                 borderRadius: BorderRadius.circular(
                   context.dimensions.radius.r12,
                 ),
               ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    checkInState.shareError!.localized(context),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Gap(spacing.s8),
+                  if (checkInState.shareError!.message.toLowerCase().contains('permission'))
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              await Geolocator.openAppSettings();
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.settings,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Gap(spacing.s12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: onReshare,
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: spacing.s8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  context.dimensions.radius.r6,
+                                ),
+                              ),
+                              side: BorderSide(
+                                color: context.color.buttonBorder.accentAlt,
+                              ),
+                            ),
+                            child: Text(
+                              context.locale.retry,
+                              style: TextStyle(
+                                color: context.color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Center(
+                      child: OutlinedButton(
+                        onPressed: onReshare,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacing.s16,
+                            vertical: spacing.s8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              context.dimensions.radius.r6,
+                            ),
+                          ),
+                          side: BorderSide(
+                            color: context.color.buttonBorder.accentAlt,
+                          ),
+                        ),
+                        child: Text(
+                          context.locale.retry,
+                          style: TextStyle(
+                            color: context.color.text.secondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-            child: LabelLargeText(
-              context.locale.reshareYourLocation,
-              color: context.color.onPrimary,
-            ),
+            Gap(spacing.s16),
+          ],
+          Builder(
+            builder: (context) {
+              final visitDate = DateTime.parse(detail.date);
+              final today = DateTime.now();
+              final isToday = visitDate.year == today.year &&
+                  visitDate.month == today.month &&
+                  visitDate.day == today.day;
+              final isPast = visitDate.isBefore(today) && !isToday;
+
+              return FilledButton(
+                onPressed: isPast ? null : onReshare,
+                style: FilledButton.styleFrom(
+                  backgroundColor: isPast
+                      ? context.color.subtle
+                      : context.color.success,
+                  minimumSize: const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
+                ),
+                child: LabelLargeText(
+                  context.locale.reshareYourLocation,
+                  color: isPast
+                      ? context.color.text.secondary
+                      : context.color.onPrimary,
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -366,7 +570,7 @@ class _CheckInBody extends StatelessWidget {
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
           Container(
-            padding: EdgeInsets.all(spacing.s12),
+            padding: EdgeInsets.all(spacing.s16),
             decoration: BoxDecoration(
               color: context.color.error.withValues(alpha: 0.1),
               border: Border.all(color: context.color.error),
@@ -374,15 +578,103 @@ class _CheckInBody extends StatelessWidget {
                 context.dimensions.radius.r12,
               ),
             ),
-            child: Text(
-              checkInState.checkInError!.localized(context),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.error,
-              ),
-              textAlign: TextAlign.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  checkInState.checkInError!.localized(context),
+                  style: context.textStyle.bodySmall.copyWith(
+                    color: context.color.error,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Gap(spacing.s8),
+                if (checkInState.checkInError!.message.toLowerCase().contains('permission'))
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            await Geolocator.openAppSettings();
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              vertical: spacing.s8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                context.dimensions.radius.r6,
+                              ),
+                            ),
+                            side: BorderSide(
+                              color: context.color.buttonBorder.accentAlt,
+                            ),
+                          ),
+                          child: Text(
+                            context.locale.settings,
+                            style: TextStyle(
+                              color: context.color.text.secondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Gap(spacing.s12),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: onConfirm,
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              vertical: spacing.s8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                context.dimensions.radius.r6,
+                              ),
+                            ),
+                            side: BorderSide(
+                              color: context.color.buttonBorder.accentAlt,
+                            ),
+                          ),
+                          child: Text(
+                            context.locale.retry,
+                            style: TextStyle(
+                              color: context.color.text.secondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  Center(
+                    child: OutlinedButton(
+                      onPressed: onConfirm,
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: spacing.s16,
+                          vertical: spacing.s8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            context.dimensions.radius.r6,
+                          ),
+                        ),
+                        side: BorderSide(
+                          color: context.color.buttonBorder.accentAlt,
+                        ),
+                      ),
+                      child: Text(
+                        context.locale.retry,
+                        style: TextStyle(
+                          color: context.color.text.secondary,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          Gap(spacing.s12),
+          Gap(spacing.s16),
         ],
         FilledButton(
           onPressed: checkInState.isCheckingIn ? null : onConfirm,

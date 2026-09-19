@@ -15,6 +15,7 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -104,31 +105,19 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         title: context.locale.expenseTracking,
         actions: [
           MonthFilterButton(
-            selectedMonth: _selectedMonth,
-            onChanged: _onMonthChanged,
+            month: DateTime(
+              int.parse(_selectedMonth.split('-')[0]),
+              int.parse(_selectedMonth.split('-')[1]),
+            ),
+            lastDate: DateTime.now(),
+            onSelected: (date) => _onMonthChanged(
+              '${date.year}-${date.month.toString().padLeft(2, '0')}',
+            ),
           ),
           if (facilities.length > 1)
-            IconButton(
-              onPressed: () => _onPickFacility(facilities),
-              icon: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  const Icon(Icons.apartment_outlined, size: 18),
-                  if (_facilityId != null)
-                    Positioned(
-                      top: -2,
-                      right: -2,
-                      child: Container(
-                        width: spacing.s8,
-                        height: spacing.s8,
-                        decoration: BoxDecoration(
-                          color: context.color.primary,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+            FacilityFilterButton(
+              hasSelection: _facilityId != null,
+              onTap: () => _onPickFacility(facilities),
             ),
           Gap(spacing.s8),
         ],

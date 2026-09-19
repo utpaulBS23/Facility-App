@@ -23,12 +23,12 @@ class _OccurrenceInfoCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: context.color.brandAccent.withValues(alpha: 0.12),
+              color: context.color.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(radius.r6),
             ),
             child: Icon(
               Icons.business_rounded,
-              color: context.color.brandAccent,
+              color: context.color.primary,
               size: 24,
             ),
           ),

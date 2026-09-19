@@ -19,18 +19,10 @@ class _InspectionFacilityCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: context.color.brandAccent.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(radius.r6),
-            ),
-            child: Icon(
-              Icons.business_rounded,
-              color: context.color.brandAccent,
-              size: 24,
-            ),
+          Icon(
+            Icons.business_rounded,
+            color: context.color.primary,
+            size: 28,
           ),
           SizedBox(width: spacing.s12),
           Expanded(

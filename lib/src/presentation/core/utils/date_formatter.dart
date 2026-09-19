@@ -25,6 +25,16 @@ final class DateFormatter {
 
   static String shiftDate(DateTime d) => DateFormat('EEE, MMM d').format(d);
 
+  /// Date string (yyyy-MM-dd or datetime) → `EEE, MMM d`.
+  static String formatDateOnly(String dateStr) {
+    if (dateStr.isEmpty) return dateStr;
+    try {
+      final dt = DateTime.tryParse(dateStr.contains('T') ? dateStr : dateStr.replaceAll(' ', 'T'));
+      if (dt != null) return shiftDate(dt);
+    } catch (_) {}
+    return dateStr;
+  }
+
   /// Local [DateTime] → `MMM d, yyyy`.
   static String shortDate(DateTime d) => DateFormat('MMM d, yyyy').format(d);
 

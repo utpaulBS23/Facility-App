@@ -46,7 +46,8 @@ class InspectionChecklistState {
 
   int get totalAnswerableCount =>
       checklist?.items
-          .where((i) => i.answerType != ChecklistAnswerType.repairWork)
+          .where((i) => i.answerType != ChecklistAnswerType.repairWork &&
+              i.isRequired)
           .length ??
       0;
 
@@ -55,13 +56,25 @@ class InspectionChecklistState {
     int count = 0;
     for (final item in checklist!.items) {
       if (item.answerType == ChecklistAnswerType.repairWork) continue;
-      if (item.answerType == ChecklistAnswerType.star &&
-          starAnswers.containsKey(item.id)) {
-        count++;
-      }
-      if (item.answerType == ChecklistAnswerType.yesNo &&
-          yesNoAnswers.containsKey(item.id)) {
-        count++;
+      if (!item.isRequired) continue;
+
+      final hasLocalAnswer = starAnswers.containsKey(item.id) || yesNoAnswers.containsKey(item.id);
+      final hasExistingAnswer = item.isAnswered;
+      final hasAnswered = hasLocalAnswer || hasExistingAnswer;
+
+      // Items with proof_policy: "required" need both answer AND proof
+      if (item.proofPolicy == ChecklistProofPolicy.always) {
+        if (hasAnswered) {
+          final hasProof = (proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
+          if (hasProof) {
+            count++;
+          }
+        }
+      } else {
+        // Other items only need answer
+        if (hasAnswered) {
+          count++;
+        }
       }
     }
     return count;
@@ -378,13 +391,22 @@ class InspectionChecklist extends _$InspectionChecklist {
 
   Future<void> pickProofImage({required int itemId}) async {
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+      preferredCameraDevice: CameraDevice.rear,
+    );
     if (image == null) return;
     // WHY: replace, not append — only lastOrNull is ever uploaded; accumulating
     // stale XFile handles wastes memory and silently discards all but the last.
     final updated = Map<int, List<XFile>>.from(state.proofImages);
     updated[itemId] = [image];
-    state = state.copyWith(proofImages: updated);
+
+    // Clear old media URLs when new photo is selected for editing
+    final updatedMediaUrls = Map<int, String>.from(state.mediaUrls);
+    updatedMediaUrls.remove(itemId);
+
+    state = state.copyWith(proofImages: updated, mediaUrls: updatedMediaUrls);
   }
 
   void addLocalIssue(ChecklistIssueEntity issue) {
@@ -420,6 +442,7 @@ class InspectionChecklist extends _$InspectionChecklist {
         order: item.order,
         maxPoints: item.maxPoints,
         proofPolicy: item.proofPolicy,
+        isRequired: item.isRequired,
         existingRating: item.existingRating,
         existingBoolAnswer: item.existingBoolAnswer,
         existingPointsAwarded: item.existingPointsAwarded,

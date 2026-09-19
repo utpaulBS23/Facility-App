@@ -214,15 +214,29 @@ abstract class Failure with _$Failure {
       if (response.data is Map<String, dynamic>) {
         String message;
         final errorMap = response.data;
+        final errorCode = errorMap['error']?['code']?.toString();
 
-        if (errorMap['message'] is Map<String, dynamic>) {
+        // Handle LOCATION_OUT_OF_RANGE with custom message
+        if (errorCode == 'LOCATION_OUT_OF_RANGE') {
+          final error = errorMap['error'] as Map<String, dynamic>?;
+          final distance = error?['distance'] as int?;
+          final maxRadius = error?['max_radius'] as int?;
+          final facilityName = error?['facility_name'] as String?;
+
+          if (distance != null && maxRadius != null) {
+            final distanceKm = (distance / 1000).toStringAsFixed(2);
+            message = 'You are ${distanceKm}km from $facilityName. You must be within ${maxRadius}m to check in.';
+          } else {
+            message = errorMap['message']?.toString() ?? 'You are too far from the facility to check in.';
+          }
+        } else if (errorMap['message'] is Map<String, dynamic>) {
           final messageMap = errorMap['message'] as Map<String, dynamic>;
           message = messageMap.values.join(' ');
         } else {
           message = errorMap['message']?.toString() ?? 'Something went wrong';
         }
 
-        return (message: message, code: errorMap['statusCode']?.toString());
+        return (message: message, code: errorCode);
       }
     } catch (e, stackTrace) {
       Log.error(e.toString());

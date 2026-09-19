@@ -35,25 +35,23 @@ class _SlotDetailContractCard extends StatelessWidget {
         children: [
           if (slot.slotStatus.isNotEmpty)
             SlotStatusChip(status: slot.slotStatus),
-          Gap(spacing.s20),
+          Gap(spacing.s12),
           if (facilityName.isNotEmpty) ...[
-            Text(
-              facilityName,
-              style: context.textStyle.headline2xlTiny.copyWith(
-                color: context.color.text.primary,
-              ),
+            _InfoRow(
+              icon: Icons.apartment_outlined,
+              label: facilityName,
             ),
-            Gap(spacing.s8),
+            Gap(spacing.s6),
+          ],
+          if (address.isNotEmpty) ...[
+            _InfoRow(icon: Icons.location_on_outlined, label: address),
+            Gap(spacing.s12),
           ],
           if (slot.supervisorName.isNotEmpty) ...[
             _InfoRow(
               icon: Icons.person_outline_rounded,
               label: slot.supervisorName,
             ),
-            Gap(spacing.s6),
-          ],
-          if (address.isNotEmpty) ...[
-            _InfoRow(icon: Icons.location_on_outlined, label: address),
             Gap(spacing.s6),
           ],
           Gap(spacing.s8),
