@@ -148,6 +148,7 @@ import '../../domain/use_cases/additional_income/create_additional_income_use_ca
 import '../../domain/use_cases/facility_product/get_facility_products_use_case.dart';
 import '../../domain/use_cases/product_catalog/get_product_catalog_dropdown_use_case.dart';
 import '../../domain/use_cases/product_sale_entry/create_product_sale_entry_use_case.dart';
+import '../../domain/use_cases/product_sale_entry/get_product_sale_entries_use_case.dart';
 import '../../domain/use_cases/training/get_training_sessions_use_case.dart';
 import '../../domain/use_cases/training/get_training_session_details_use_case.dart';
 import '../../domain/use_cases/facility_expense/get_facility_expenses_use_case.dart';
