@@ -358,6 +358,10 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static const Field<TaskDetailModel, String> _f$assignedToName = Field(
       'assignedToName', _$assignedToName,
       key: r'assigned_to_name', opt: true);
+  static String? _$problemCategory(TaskDetailModel v) => v.problemCategory;
+  static const Field<TaskDetailModel, String> _f$problemCategory = Field(
+      'problemCategory', _$problemCategory,
+      key: r'problem_category', opt: true);
   static TaskIssueModel? _$issue(TaskDetailModel v) => v.issue;
   static const Field<TaskDetailModel, TaskIssueModel> _f$issue =
       Field('issue', _$issue, opt: true);
@@ -385,6 +389,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
     #proofRequiredOnComplete: _f$proofRequiredOnComplete,
     #assignedToId: _f$assignedToId,
     #assignedToName: _f$assignedToName,
+    #problemCategory: _f$problemCategory,
     #issue: _f$issue,
     #media: _f$media,
     #createdAt: _f$createdAt,
@@ -405,6 +410,7 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
         proofRequiredOnComplete: data.dec(_f$proofRequiredOnComplete),
         assignedToId: data.dec(_f$assignedToId),
         assignedToName: data.dec(_f$assignedToName),
+        problemCategory: data.dec(_f$problemCategory),
         issue: data.dec(_f$issue),
         media: data.dec(_f$media),
         createdAt: data.dec(_f$createdAt),

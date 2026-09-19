@@ -31,6 +31,7 @@ class TaskEntity {
     this.facilityAddress = '',
     this.assignedToId,
     this.assignedToName = '',
+    this.problemCategory = '',
     this.proofRequiredOnComplete = false,
     this.media = const [],
     this.createdDate,
@@ -48,6 +49,7 @@ class TaskEntity {
   final int? facilityId;
   final int? assignedToId;
   final String assignedToName;
+  final String problemCategory;
   final bool proofRequiredOnComplete;
   final List<TaskMediaEntity> media;
   final DateTime? createdDate;
@@ -65,6 +67,7 @@ class TaskEntity {
     int? facilityId,
     int? assignedToId,
     String? assignedToName,
+    String? problemCategory,
     bool? proofRequiredOnComplete,
     List<TaskMediaEntity>? media,
     DateTime? createdDate,
@@ -82,6 +85,7 @@ class TaskEntity {
       facilityId: facilityId ?? this.facilityId,
       assignedToId: assignedToId ?? this.assignedToId,
       assignedToName: assignedToName ?? this.assignedToName,
+      problemCategory: problemCategory ?? this.problemCategory,
       proofRequiredOnComplete:
           proofRequiredOnComplete ?? this.proofRequiredOnComplete,
       media: media ?? this.media,
