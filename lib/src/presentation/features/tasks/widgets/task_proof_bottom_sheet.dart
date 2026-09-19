@@ -30,15 +30,12 @@ class _ProofRequiredBottomSheet extends StatefulWidget {
 }
 
 class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
-  final _altController = TextEditingController();
   final _picker = ImagePicker();
   XFile? _image;
   bool _isSubmitting = false;
-  bool _showAltError = false;
 
   @override
   void dispose() {
-    _altController.dispose();
     super.dispose();
   }
 
@@ -57,20 +54,12 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
   void _deleteImage() => setState(() => _image = null);
 
   Future<void> _submit() async {
-    final alt = _altController.text.trim();
-    if (alt.isEmpty) {
-      setState(() => _showAltError = true);
-      return;
-    }
     if (_image == null) return;
 
-    setState(() {
-      _isSubmitting = true;
-      _showAltError = false;
-    });
+    setState(() => _isSubmitting = true);
 
     try {
-      await widget.onSubmit(_image!.path, alt);
+      await widget.onSubmit(_image!.path, '');
       if (!mounted) return;
       Navigator.of(context).pop();
     } catch (_) {
@@ -211,16 +200,6 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
       style: OutlinedButton.styleFrom(
         foregroundColor: context.color.primary,
         side: BorderSide(color: context.color.primary),
-      ),
-    ),
-    Gap(spacing.s16),
-    TextField(
-      controller: _altController,
-      enabled: !_isSubmitting,
-      decoration: InputDecoration(
-        labelText: context.locale.proofAltLabel,
-        hintText: context.locale.proofAltHint,
-        errorText: _showAltError ? context.locale.isRequired : null,
       ),
     ),
     Gap(spacing.s24),

@@ -109,7 +109,7 @@ class TaskModel with TaskModelMappable {
     proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
     media:
         media
-            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
+            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt, purpose: m.purpose))
             .toList() ??
         [],
   );
@@ -159,6 +159,7 @@ class TaskDetailModel with TaskDetailModelMappable {
     this.proofRequiredOnComplete = false,
     this.assignedToId,
     this.assignedToName,
+    this.problemCategory,
     this.issue,
     this.media,
     this.createdAt,
@@ -195,6 +196,9 @@ class TaskDetailModel with TaskDetailModelMappable {
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
 
+  @MappableField(key: 'problem_category')
+  final String? problemCategory;
+
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
@@ -206,28 +210,32 @@ class TaskDetailModel with TaskDetailModelMappable {
 
   static const fromJson = TaskDetailModelMapper.fromJson;
 
-  TaskEntity toEntity() => TaskEntity(
-    id: id,
-    title: title,
-    description: description ?? '',
-    facilityId: facilityId,
-    location: facilityName ?? '',
-    facilityAddress: facilityAddress ?? '',
-    dueTime: _formatDueTime(dueAt),
-    priority: _mapPriority(priority),
-    status: _mapIssueStatus(issueStatus),
-    assignedToId: assignedToId,
-    assignedToName: assignedToName ?? '',
-    proofRequiredOnComplete:
-        proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
-    media:
-        media
-            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
-            .toList() ??
-        [],
-    createdDate: createdAt != null ? DateTime.tryParse(createdAt!) : null,
-    resolvedDate: resolvedAt != null ? DateTime.tryParse(resolvedAt!) : null,
-  );
+  TaskEntity toEntity() {
+    print('TaskDetailModel.toEntity - problemCategory: $problemCategory');
+    return TaskEntity(
+      id: id,
+      title: title,
+      description: description ?? '',
+      facilityId: facilityId,
+      location: facilityName ?? '',
+      facilityAddress: facilityAddress ?? '',
+      dueTime: _formatDueTime(dueAt),
+      priority: _mapPriority(priority),
+      status: _mapIssueStatus(issueStatus),
+      assignedToId: assignedToId,
+      assignedToName: assignedToName ?? '',
+      problemCategory: problemCategory ?? '',
+      proofRequiredOnComplete:
+          proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
+      media:
+          media
+              ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt, purpose: m.purpose))
+              .toList() ??
+          [],
+      createdDate: createdAt != null ? DateTime.tryParse(createdAt!) : null,
+      resolvedDate: resolvedAt != null ? DateTime.tryParse(resolvedAt!) : null,
+    );
+  }
 }
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
