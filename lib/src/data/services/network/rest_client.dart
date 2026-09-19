@@ -389,6 +389,15 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.productSaleEntries)
+  Future<HttpResponse> getProductSaleEntries({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('month') String? month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.myLeaves)
   Future<HttpResponse> getMyLeaves({
     @Path('partnerId') required int partnerId,

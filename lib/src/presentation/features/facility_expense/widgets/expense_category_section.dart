@@ -1,10 +1,34 @@
 part of '../view/add_facility_expense_page.dart';
 
 class _CategorySection extends ConsumerWidget {
-  const _CategorySection({required this.hasError, required this.onSelected});
+  const _CategorySection({
+    required this.enabled,
+    required this.hasError,
+    required this.onSelected,
+  });
 
+  final bool enabled;
   final bool hasError;
   final VoidCallback onSelected;
+
+  Future<void> _onPickCategory(
+    BuildContext context,
+    WidgetRef ref,
+    List<MasterDataItemEntity> categories,
+  ) async {
+    final result = await showModalBottomSheet<MasterDataItemEntity>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _CategoryListSheet(
+        categories: categories,
+        selectedCategoryId: ref.read(selectedExpenseCategoryProvider)?.id,
+      ),
+    );
+    if (result == null) return;
+    ref.read(selectedExpenseCategoryProvider.notifier).select(result);
+    onSelected();
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,14 +41,13 @@ class _CategorySection extends ConsumerWidget {
         context.locale.selectExpenseCategory,
         color: context.color.error,
       ),
-      data: (categories) => _MasterDataOptionSelector(
-        options: categories,
-        selected: category,
+      data: (categories) => _DropdownField(
+        value: category?.label,
+        hint: context.locale.selectExpenseCategory,
         hasError: hasError,
-        onChanged: (selected) {
-          ref.read(selectedExpenseCategoryProvider.notifier).select(selected);
-          onSelected();
-        },
+        onTap: enabled
+            ? () => _onPickCategory(context, ref, categories)
+            : null,
       ),
     );
   }

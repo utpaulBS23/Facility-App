@@ -1,28 +1,15 @@
 part of '../view/additional_income_page.dart';
 
-class _IncomeListCard extends ConsumerWidget {
-  const _IncomeListCard({required this.income});
+class _ProductSaleEntryCard extends StatelessWidget {
+  const _ProductSaleEntryCard({required this.entry});
 
-  final AdditionalIncomeEntity income;
-
-  // WHY resolve client-side: the additional-incomes list endpoint returns
-  // `income_type` as the raw master-data code (e.g. "rent_device"), not a
-  // display label — cross-reference against the extraEarningType options
-  // (already fetched for the Add Income form) to show the human label.
-  String _incomeTypeLabel(WidgetRef ref) {
-    final options =
-        ref.watch(incomeTypeOptionsProvider).valueOrNull ?? const [];
-    final match = options
-        .cast<MasterDataItemEntity?>()
-        .firstWhere((o) => o?.value == income.incomeTypeName, orElse: () => null);
-    return match?.label ?? income.incomeTypeName;
-  }
+  final ProductSaleEntryEntity entry;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final description = income.description;
+    final profit = entry.profit;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -43,7 +30,7 @@ class _IncomeListCard extends ConsumerWidget {
               ),
               Gap(spacing.s4),
               BodySmallText(
-                DateFormatter.shortDate(income.createdAt),
+                DateFormatter.shortDate(entry.entryDate),
                 color: context.color.text.secondary,
               ),
             ],
@@ -59,24 +46,35 @@ class _IncomeListCard extends ConsumerWidget {
               Gap(spacing.s4),
               Expanded(
                 child: BodySmallText(
-                  income.facilityName,
+                  entry.facilityName,
                   color: context.color.text.secondary,
                 ),
               ),
             ],
           ),
           Gap(spacing.s12),
-          Text(_incomeTypeLabel(ref), style: context.textStyle.bodyLarge),
-          if (description != null && description.isNotEmpty) ...[
-            Gap(spacing.s2),
-            BodySmallText(description, color: context.color.text.secondary),
-          ],
+          Text(entry.productName, style: context.textStyle.bodyLarge),
+          Gap(spacing.s2),
+          BodySmallText(
+            '${entry.unitsSold} × ৳${NumberFormatter.format(entry.unitPrice)}',
+            color: context.color.text.secondary,
+          ),
           Gap(spacing.s8),
-          Text(
-            '৳${NumberFormatter.format(income.amount)}',
-            style: context.textStyle.headlineTiny.copyWith(
-              color: context.color.primary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '৳${NumberFormatter.format(entry.revenue)}',
+                style: context.textStyle.headlineTiny.copyWith(
+                  color: context.color.primary,
+                ),
+              ),
+              if (profit != null)
+                BodySmallText(
+                  '${context.locale.totalProfit}: ৳${NumberFormatter.format(profit)}',
+                  color: context.color.success,
+                ),
+            ],
           ),
           Gap(spacing.s12),
           Row(
@@ -88,7 +86,7 @@ class _IncomeListCard extends ConsumerWidget {
               ),
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.submittedBy}: ${income.submittedByName}',
+                '${context.locale.submittedBy}: ${entry.recordedByName}',
                 color: context.color.text.secondary,
               ),
             ],
