@@ -8,7 +8,7 @@ ChecklistAnswerType _parseAnswerType(String? raw) => switch (raw) {
 };
 
 ChecklistProofPolicy _parseProofPolicy(String? raw) => switch (raw) {
-  'photo_required' => ChecklistProofPolicy.always,
+  'photo_required' || 'required' => ChecklistProofPolicy.always,
   'photo_optional' => ChecklistProofPolicy.optional,
   _ => ChecklistProofPolicy.none,
 };
@@ -21,6 +21,7 @@ extension ChecklistItemModelToEntity on ChecklistItemModel {
     order: sortOrder ?? 0,
     maxPoints: maxPoints ?? 5,
     proofPolicy: _parseProofPolicy(proofPolicy),
+    isRequired: isRequired ?? false,
     existingRating: response?.ratingValue,
     existingBoolAnswer: response?.booleanValue,
     existingPointsAwarded: response?.pointsAwarded,
@@ -39,6 +40,9 @@ extension ChecklistItemSaveResponseModelToEntity
     booleanValue: data.booleanValue,
     pointsAwarded: data.pointsAwarded ?? 0,
     hasProof: data.hasProof ?? false,
+    media: media != null
+        ? ChecklistItemMediaEntity(id: media!.id, url: media!.url)
+        : null,
   );
 }
 
@@ -46,10 +50,12 @@ extension ChecklistIssueModelToEntity on ChecklistIssueModel {
   ChecklistIssueEntity toEntity() => ChecklistIssueEntity(
     id: taskId,
     title: title ?? '',
-    category: assignedToName ?? '',
-    location: facilityName ?? '',
+    category: problemCategory ?? '',
+    location: '',
     priority: priority ?? '',
     status: status ?? '',
+    facilityName: facilityName,
+    dueDateString: dueDate,
   );
 }
 

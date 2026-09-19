@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/extensions/app_localization.dart';
+import '../../../core/utils/week_utils.dart';
 import '../theme/theme.dart';
 
 class HorizontalDatePicker extends StatefulWidget {
@@ -12,10 +13,15 @@ class HorizontalDatePicker extends StatefulWidget {
     required this.onDateSelected,
   });
 
-  /// Creates a [HorizontalDatePicker] spanning today and the next 6 days.
-  HorizontalDatePicker.week({super.key, required this.onDateSelected})
-    : startDate = DateTime.now(),
-      endDate = DateTime.now().add(const Duration(days: 6));
+  /// Creates a [HorizontalDatePicker] spanning the 7-day week containing [anchorDate]
+  /// starting from [weekStartDay] (Carbon 0=Sun..6=Sat).
+  HorizontalDatePicker.week({
+    super.key,
+    required this.onDateSelected,
+    int weekStartDay = 6,
+    DateTime? anchorDate,
+  })  : startDate = (anchorDate ?? DateTime.now()).startOfWeek(weekStartDay),
+        endDate = (anchorDate ?? DateTime.now()).endOfWeek(weekStartDay);
 
   final DateTime startDate;
   final DateTime endDate;

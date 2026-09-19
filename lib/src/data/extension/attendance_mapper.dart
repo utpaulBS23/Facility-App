@@ -38,3 +38,17 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     approver: approver?.toEntity(),
   );
 }
+
+extension AttendanceOverviewResponseModelToEntity
+    on AttendanceOverviewResponseModel {
+  MonthlyAttendanceSummaryEntity toEntity() {
+    return MonthlyAttendanceSummaryEntity(
+      presentCount: summary?.presentCount,
+      lateCount: summary?.lateCount,
+      absentCount: summary?.absentCount,
+      rejectCount: summary?.rejectCount,
+      leaveCount: summary?.leaveCount,
+      attendances: attendances.map((m) => m.toEntity()).toList(),
+    );
+  }
+}

@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 
 part 'my_visits_provider.g.dart';
@@ -12,6 +14,9 @@ part 'my_visits_provider.g.dart';
 @riverpod
 class MyVisits extends _$MyVisits {
   String? _lastFetchedDate;
+  int? _lastFetchedFacilityId;
+  int _currentPage = 1;
+  bool _hasMorePages = true;
 
   @override
   AsyncValue<VisitListEntity> build() {
@@ -26,13 +31,16 @@ class MyVisits extends _$MyVisits {
     return const AsyncValue.loading();
   }
 
-  Future<void> fetch({required String date}) async {
+  Future<void> fetch({required String date, int? facilityId}) async {
     _lastFetchedDate = date;
+    _lastFetchedFacilityId = facilityId;
+    _currentPage = 1;
+    _hasMorePages = true;
     state = const AsyncValue.loading();
 
     final Result<VisitListEntity, Failure> result = await ref
         .read(getMyVisitsUseCaseProvider)
-        .call(date: date);
+        .call(date: date, facilityId: facilityId, page: 1, perPage: 10);
 
     state = result.when(
       success: (data) => data != null
@@ -42,11 +50,62 @@ class MyVisits extends _$MyVisits {
     );
   }
 
-  // WHY: reuses the last requested date so callers (including the stream
-  // listener above) don't need to know which date is currently selected.
+  Future<void> loadMore({required String date}) async {
+    if (!_hasMorePages) return;
+    if (state.isLoading) return;
+
+    final currentData = state.valueOrNull;
+    if (currentData == null) return;
+
+    _currentPage++;
+
+    final Result<VisitListEntity, Failure> result = await ref
+        .read(getMyVisitsUseCaseProvider)
+        .call(
+          date: date,
+          facilityId: _lastFetchedFacilityId,
+          page: _currentPage,
+          perPage: 10,
+        );
+
+    state = result.when(
+      success: (data) {
+        if (data == null || data.visits.isEmpty) {
+          _hasMorePages = false;
+          return AsyncValue.data(currentData);
+        }
+        _hasMorePages = _currentPage < (data.stats?.thisWeekCount ?? 0) ~/ 10 + 1;
+        return AsyncValue.data(
+          VisitListEntity(
+            stats: currentData.stats,
+            visits: [...currentData.visits, ...data.visits],
+          ),
+        );
+      },
+      error: (error) => AsyncValue.error(error, StackTrace.current),
+    );
+  }
+
+  // WHY: reuses the last requested date/facility so callers (including the
+  // stream listener above) don't need to know the currently selected filters.
   Future<void> refresh() async {
     final date = _lastFetchedDate;
     if (date == null) return;
-    await fetch(date: date);
+    await fetch(date: date, facilityId: _lastFetchedFacilityId);
   }
+}
+
+@riverpod
+Future<List<MasterDataItemEntity>> visitTaskTypeOptions(Ref ref) async {
+  final result = await ref
+      .read(getMasterDataItemsUseCaseProvider)
+      .call(
+        category: 'taskType',
+        perPage: 100,
+        includeInactive: true,
+      );
+  return switch (result) {
+    Success(:final data) => data ?? [],
+    _ => [],
+  };
 }

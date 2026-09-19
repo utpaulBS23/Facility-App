@@ -10,7 +10,9 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/task_occurrence_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -70,6 +72,8 @@ class _OccurrenceChecklistPageState
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final occurrencesAsync = ref.watch(taskOccurrencesProvider);
+    final userPermissions = ref.watch(userSessionProvider)?.permissions ?? {};
+    final hasSubmitPermission = userPermissions.contains(UserPermission.taskOccurrenceSubmit);
     final current = _current(
       occurrencesAsync.valueOrNull?.occurrences ?? [widget.occurrence],
     );
@@ -78,10 +82,18 @@ class _OccurrenceChecklistPageState
     final isRefreshing =
         occurrencesAsync.isLoading && occurrencesAsync.hasValue;
     final answered = items.where((i) => i.isAnswered).length;
+
+    // Calculate if task can start
+    final now = DateTime.now();
+    final slotStartTime = _parseTime(current.slotStart, current.occurrenceDate);
+    final canStart = now.isAfter(slotStartTime) || now.isAtSameMomentAs(slotStartTime);
+    final minutesUntilStart = canStart ? 0 : slotStartTime.difference(now).inMinutes;
+
     // WHY: answers are only editable while the occurrence is still pending —
     // once it's on_time/late/missed it's already been resolved by a submit
-    // (or the window closed), so the form must go read-only.
-    final isReadOnly = current.status != TaskOccurrenceStatus.pending;
+    // (or the window closed), so the form must go read-only. Also read-only
+    // if user lacks taskOccurrenceSubmit permission.
+    final isReadOnly = current.status != TaskOccurrenceStatus.pending || !hasSubmitPermission || !canStart;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -107,6 +119,36 @@ class _OccurrenceChecklistPageState
                         children: [
                           _OccurrenceInfoCard(occurrence: current),
                           Gap(spacing.s16),
+                          if (!canStart) ...[
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: spacing.s12,
+                                vertical: spacing.s12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.color.warning.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+                                border: Border.all(color: context.color.warning.withValues(alpha: 0.3)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline_rounded,
+                                    size: 16,
+                                    color: context.color.warning,
+                                  ),
+                                  Gap(spacing.s8),
+                                  Expanded(
+                                    child: BodySmallText(
+                                      'You can start this task at ${current.slotStart} ($minutesUntilStart min)',
+                                      color: context.color.warning,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Gap(spacing.s16),
+                          ],
                           _OccurrenceChecklistProgressHeader(
                             answered: answered,
                             total: items.length,
@@ -151,5 +193,24 @@ class _OccurrenceChecklistPageState
         ],
       ),
     );
+  }
+
+  DateTime _parseTime(String time, String date) {
+    try {
+      final timeParts = time.split(':');
+      final dateParts = date.split('-');
+      if (timeParts.length < 2 || dateParts.length < 3) {
+        return DateTime.now();
+      }
+      return DateTime(
+        int.parse(dateParts[0]),
+        int.parse(dateParts[1]),
+        int.parse(dateParts[2]),
+        int.parse(timeParts[0]),
+        int.parse(timeParts[1]),
+      );
+    } catch (_) {
+      return DateTime.now();
+    }
   }
 }

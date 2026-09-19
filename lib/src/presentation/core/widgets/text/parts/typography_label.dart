@@ -56,6 +56,35 @@ class LabelLargeText extends _Typography {
       );
 }
 
+class LabelLargeBoldText extends _Typography {
+  const LabelLargeBoldText(
+    super.text, {
+    super.key,
+    super.color,
+    super.textAlign,
+    super.maxLines,
+    super.overflow,
+    super.softWrap,
+    super.textDirection,
+    super.semanticsLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+        softWrap: softWrap,
+        textDirection: textDirection,
+        semanticsLabel: semanticsLabel,
+        style: context.textStyle.labelLarge.copyWith(
+          color: color ?? context.color.text.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+}
+
 class LabelMediumText extends _Typography {
   const LabelMediumText(
     super.text, {

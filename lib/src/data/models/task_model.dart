@@ -2,6 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:intl/intl.dart';
 
 import '../../domain/entities/task_entity.dart';
+import '../../presentation/core/utils/date_formatter.dart';
 
 part 'task_model.mapper.dart';
 
@@ -9,7 +10,7 @@ String _formatDueTime(String? raw) {
   if (raw == null) return '';
   try {
     final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
-    return DateFormat('hh:mm a').format(dt);
+    return DateFormatter.shiftDate(dt);
   } catch (_) {
     return raw;
   }
@@ -49,10 +50,14 @@ class TaskModel with TaskModelMappable {
     required this.id,
     required this.title,
     this.description,
+    this.facilityId,
     this.facilityName,
+    this.facilityAddress,
     this.dueAt,
     required this.issueStatus,
     required this.priority,
+    this.assignedToId,
+    this.assignedToName,
     this.issue,
     this.media,
   });
@@ -61,8 +66,14 @@ class TaskModel with TaskModelMappable {
   final String title;
   final String? description;
 
+  @MappableField(key: 'facility_id')
+  final int? facilityId;
+
   @MappableField(key: 'facility_name')
   final String? facilityName;
+
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
 
   @MappableField(key: 'due_at')
   final String? dueAt;
@@ -71,6 +82,13 @@ class TaskModel with TaskModelMappable {
   final String issueStatus;
 
   final String priority;
+
+  @MappableField(key: 'assigned_to')
+  final int? assignedToId;
+
+  @MappableField(key: 'assigned_to_name')
+  final String? assignedToName;
+
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
@@ -80,14 +98,18 @@ class TaskModel with TaskModelMappable {
     id: id,
     title: title,
     description: description ?? '',
+    facilityId: facilityId,
     location: facilityName ?? '',
+    facilityAddress: facilityAddress ?? '',
     dueTime: _formatDueTime(dueAt),
     priority: _mapPriority(priority),
     status: _mapIssueStatus(issueStatus),
+    assignedToId: assignedToId,
+    assignedToName: assignedToName ?? '',
     proofRequiredOnComplete: issue?.proofRequiredOnComplete ?? false,
     media:
         media
-            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
+            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt, purpose: m.purpose))
             .toList() ??
         [],
   );
@@ -128,21 +150,34 @@ class TaskDetailModel with TaskDetailModelMappable {
     required this.id,
     required this.title,
     this.description,
+    this.facilityId,
     this.facilityName,
+    this.facilityAddress,
     this.dueAt,
     required this.issueStatus,
     required this.priority,
     this.proofRequiredOnComplete = false,
+    this.assignedToId,
+    this.assignedToName,
+    this.problemCategory,
     this.issue,
     this.media,
+    this.createdAt,
+    this.resolvedAt,
   });
 
   final int id;
   final String title;
   final String? description;
 
+  @MappableField(key: 'facility_id')
+  final int? facilityId;
+
   @MappableField(key: 'facility_name')
   final String? facilityName;
+
+  @MappableField(key: 'facility_address')
+  final String? facilityAddress;
 
   @MappableField(key: 'due_at')
   final String? dueAt;
@@ -155,42 +190,74 @@ class TaskDetailModel with TaskDetailModelMappable {
   @MappableField(key: 'proof_required_on_complete')
   final bool proofRequiredOnComplete;
 
+  @MappableField(key: 'assigned_to')
+  final int? assignedToId;
+
+  @MappableField(key: 'assigned_to_name')
+  final String? assignedToName;
+
+  @MappableField(key: 'problem_category')
+  final String? problemCategory;
+
   final TaskIssueModel? issue;
   final List<TaskMediaModel>? media;
 
+  @MappableField(key: 'created_at')
+  final String? createdAt;
+
+  @MappableField(key: 'resolved_at')
+  final String? resolvedAt;
+
   static const fromJson = TaskDetailModelMapper.fromJson;
 
-  TaskEntity toEntity() => TaskEntity(
-    id: id,
-    title: title,
-    description: description ?? '',
-    location: facilityName ?? '',
-    dueTime: _formatDueTime(dueAt),
-    priority: _mapPriority(priority),
-    status: _mapIssueStatus(issueStatus),
-    proofRequiredOnComplete:
-        proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
-    media:
-        media
-            ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt))
-            .toList() ??
-        [],
-  );
+  TaskEntity toEntity() {
+    print('TaskDetailModel.toEntity - problemCategory: $problemCategory');
+    return TaskEntity(
+      id: id,
+      title: title,
+      description: description ?? '',
+      facilityId: facilityId,
+      location: facilityName ?? '',
+      facilityAddress: facilityAddress ?? '',
+      dueTime: _formatDueTime(dueAt),
+      priority: _mapPriority(priority),
+      status: _mapIssueStatus(issueStatus),
+      assignedToId: assignedToId,
+      assignedToName: assignedToName ?? '',
+      problemCategory: problemCategory ?? '',
+      proofRequiredOnComplete:
+          proofRequiredOnComplete || (issue?.proofRequiredOnComplete ?? false),
+      media:
+          media
+              ?.map((m) => TaskMediaEntity(id: m.id, url: m.url, alt: m.alt, purpose: m.purpose))
+              .toList() ??
+          [],
+      createdDate: createdAt != null ? DateTime.tryParse(createdAt!) : null,
+      resolvedDate: resolvedAt != null ? DateTime.tryParse(resolvedAt!) : null,
+    );
+  }
 }
 
 // ─── Shared ─────────────────────────────────────────────────────────────────
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class TaskMediaModel with TaskMediaModelMappable {
-  TaskMediaModel({required this.id, required this.url, this.alt});
+  TaskMediaModel({
+    required this.id,
+    required this.url,
+    this.alt,
+    this.purpose = 'creation',
+  });
 
   final int id;
   final String url;
   final String? alt;
+  final String purpose;
 
   static const fromJson = TaskMediaModelMapper.fromJson;
 
-  TaskMediaEntity toEntity() => TaskMediaEntity(id: id, url: url, alt: alt);
+  TaskMediaEntity toEntity() =>
+      TaskMediaEntity(id: id, url: url, alt: alt, purpose: purpose);
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)

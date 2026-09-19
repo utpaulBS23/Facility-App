@@ -26,7 +26,15 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
   LeaveBalanceEntity toEntity() {
     return LeaveBalanceEntity(
       id: id,
-      leavePolicy: leavePolicy!.toEntity(),
+      leavePolicy: leavePolicy?.toEntity() ??
+          const LeavePolicyEntity(
+            id: 0,
+            name: '',
+            leaveType: LeaveType.other,
+            defaultDaysPerYear: 0,
+            requiresApproval: true,
+            canCarryForward: false,
+          ),
       allocatedDays: allocatedDays ?? 0.0,
       usedDays: usedDays ?? 0.0,
       pendingDays: pendingDays ?? 0.0,
@@ -37,7 +45,11 @@ extension LeaveBalanceModelToEntity on LeaveBalanceModel {
 
 extension LeaveApplicantModelToEntity on LeaveApplicantModel {
   LeaveApplicantEntity toEntity() {
-    return LeaveApplicantEntity(id: id, name: name);
+    return LeaveApplicantEntity(
+      id: id,
+      name: name,
+      groupName: groupName,
+    );
   }
 }
 
@@ -74,9 +86,17 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
     return LeaveRequestEntity(
       id: id,
       referenceCode: referenceCode,
-      applicant: applicant!.toEntity(),
+      applicant: applicant?.toEntity(),
       createdBy: createdBy?.toEntity(),
-      leavePolicy: leavePolicy!.toEntity(),
+      leavePolicy: leavePolicy?.toEntity() ??
+          LeavePolicyEntity(
+            id: 0,
+            name: leaveType ?? '',
+            leaveType: LeaveType.fromWireString(leaveType),
+            defaultDaysPerYear: 0,
+            requiresApproval: true,
+            canCarryForward: false,
+          ),
       startDate: startDate,
       endDate: endDate,
       daysCount: daysCount,

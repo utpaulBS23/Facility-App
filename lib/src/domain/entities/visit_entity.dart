@@ -32,10 +32,14 @@ class VisitSummaryEntity {
     this.travelOriginId,
     this.travelOriginName,
     this.travelStartedAt,
+    this.locationType,
+    this.officeId,
+    this.officeName,
+    this.visitType,
   });
 
   final int id;
-  final String facilityName;
+  final String? facilityName;
   final String? facilityAddress;
   final String? title;
   final String? priority;
@@ -58,15 +62,19 @@ class VisitSummaryEntity {
   /// state cannot be used as a travel-expense claim's reference visit.
   final String? travelOriginName;
   final String? travelStartedAt;
+  final String? locationType;
+  final int? officeId;
+  final String? officeName;
+  final String? visitType;
 }
 
 class VisitListEntity {
   const VisitListEntity({
-    required this.stats,
+    this.stats,
     required this.visits,
   });
 
-  final VisitStatsSummaryEntity stats;
+  final VisitStatsSummaryEntity? stats;
   final List<VisitSummaryEntity> visits;
 }
 
@@ -83,8 +91,11 @@ class VisitAssignedByEntity {
 class VisitDetailEntity {
   const VisitDetailEntity({
     required this.id,
-    required this.facilityName,
+    this.facilityName,
     this.facilityId,
+    this.locationType = 'facility',
+    this.officeId,
+    this.officeName,
     required this.status,
     required this.type,
     required this.date,
@@ -108,8 +119,11 @@ class VisitDetailEntity {
   });
 
   final int id;
-  final String facilityName;
+  final String? facilityName;
   final int? facilityId;
+  final String locationType;
+  final int? officeId;
+  final String? officeName;
   final String? facilityAddress;
   final String? title;
   final double? facilityLatitude;

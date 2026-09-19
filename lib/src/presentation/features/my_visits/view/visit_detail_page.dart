@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/visit_check_in_provider.dart';
@@ -54,14 +55,12 @@ class _VisitDetailPageState extends ConsumerState<VisitDetailPage> {
   }
 
   Future<void> _onCheckIn(VisitDetailEntity detail) async {
-    final facilityId = detail.facilityId;
-    if (facilityId == null) return;
-
     await ref
         .read(visitCheckInProvider.notifier)
         .startLocationSharing(
           visitId: widget.visitId,
-          facilityId: facilityId,
+          facilityId: detail.locationType == 'facility' ? detail.facilityId : null,
+          officeId: detail.locationType == 'external' ? detail.officeId : null,
           travelOriginType: widget.travelOriginType,
           travelOriginId: widget.travelOriginId,
         );
@@ -216,30 +215,66 @@ class _DetailBody extends StatelessWidget {
           )
         else ...[
           if (checkInState.shareError != null) ...[
-            Text(
-              checkInState.shareError!.localized(context),
-              style: context.textStyle.bodySmall.copyWith(
-                color: context.color.error,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            Gap(spacing.s8),
-          ],
-          FilledButton(
-            onPressed: onCheckIn,
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.success,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(
+            Container(
+              padding: EdgeInsets.all(spacing.s16),
+              decoration: BoxDecoration(
+                color: context.color.error.withValues(alpha: 0.1),
+                border: Border.all(color: context.color.error),
                 borderRadius: BorderRadius.circular(
                   context.dimensions.radius.r12,
                 ),
               ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    checkInState.shareError!.localized(context),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.error,
+                    ),
+                  ),
+                  Gap(spacing.s8),
+                  TextButton(
+                    onPressed: () async {
+                      await Geolocator.openAppSettings();
+                    },
+                    child: const Text('Open Settings'),
+                  ),
+                ],
+              ),
             ),
-            child: LabelLargeText(
-              context.locale.checkInToVisit,
-              color: context.color.onPrimary,
-            ),
+            Gap(spacing.s16),
+          ],
+          Builder(
+            builder: (context) {
+              final visitDate = DateTime.parse(detail.date);
+              final today = DateTime.now();
+              final isToday = visitDate.year == today.year &&
+                  visitDate.month == today.month &&
+                  visitDate.day == today.day;
+              final isPast = visitDate.isBefore(today) && !isToday;
+
+              return FilledButton(
+                onPressed: isPast ? null : onCheckIn,
+                style: FilledButton.styleFrom(
+                  backgroundColor: isPast
+                      ? context.color.subtle
+                      : context.color.success,
+                  minimumSize: const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
+                ),
+                child: LabelLargeText(
+                  context.locale.checkInToVisit,
+                  color: isPast
+                      ? context.color.text.secondary
+                      : context.color.onPrimary,
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -300,21 +335,36 @@ class _ReshareLocationBody extends StatelessWidget {
             ),
             Gap(spacing.s8),
           ],
-          FilledButton(
-            onPressed: onReshare,
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.success,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
+          Builder(
+            builder: (context) {
+              final visitDate = DateTime.parse(detail.date);
+              final today = DateTime.now();
+              final isToday = visitDate.year == today.year &&
+                  visitDate.month == today.month &&
+                  visitDate.day == today.day;
+              final isPast = visitDate.isBefore(today) && !isToday;
+
+              return FilledButton(
+                onPressed: isPast ? null : onReshare,
+                style: FilledButton.styleFrom(
+                  backgroundColor: isPast
+                      ? context.color.subtle
+                      : context.color.success,
+                  minimumSize: const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            child: LabelLargeText(
-              context.locale.reshareYourLocation,
-              color: context.color.onPrimary,
-            ),
+                child: LabelLargeText(
+                  context.locale.reshareYourLocation,
+                  color: isPast
+                      ? context.color.text.secondary
+                      : context.color.onPrimary,
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -345,14 +395,24 @@ class _CheckInBody extends StatelessWidget {
         _VisitCheckInLocationCard(state: checkInState),
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
-          Text(
-            checkInState.checkInError!.localized(context),
-            style: context.textStyle.bodySmall.copyWith(
-              color: context.color.error,
+          Container(
+            padding: EdgeInsets.all(spacing.s16),
+            decoration: BoxDecoration(
+              color: context.color.error.withValues(alpha: 0.1),
+              border: Border.all(color: context.color.error),
+              borderRadius: BorderRadius.circular(
+                context.dimensions.radius.r12,
+              ),
             ),
-            textAlign: TextAlign.center,
+            child: Text(
+              checkInState.checkInError!.localized(context),
+              style: context.textStyle.bodySmall.copyWith(
+                color: context.color.error,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-          Gap(spacing.s8),
+          Gap(spacing.s16),
         ],
         FilledButton(
           onPressed: checkInState.isCheckingIn ? null : onConfirm,

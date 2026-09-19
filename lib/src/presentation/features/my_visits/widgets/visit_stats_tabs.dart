@@ -2,17 +2,19 @@ part of '../view/my_visits_page.dart';
 
 class _VisitStatsTabs extends StatelessWidget {
   const _VisitStatsTabs({
-    required this.stats,
+    this.stats,
     required this.selectedTab,
     required this.onTabChanged,
   });
 
-  final VisitStatsSummaryEntity stats;
+  final VisitStatsSummaryEntity? stats;
   final _VisitTab selectedTab;
   final void Function(_VisitTab) onTabChanged;
 
   @override
   Widget build(BuildContext context) {
+    if (stats == null) return const SizedBox.shrink();
+
     final spacing = context.dimensions.spacing;
 
     return Container(
@@ -29,28 +31,21 @@ class _VisitStatsTabs extends StatelessWidget {
         child: Row(
           children: [
             _StatTab(
-              count: stats.todayCount,
+              count: stats!.todayCount,
               label: context.locale.today,
               isSelected: selectedTab == _VisitTab.all,
               onTap: () => onTabChanged(_VisitTab.all),
             ),
             _Divider(),
             _StatTab(
-              count: stats.thisWeekCount,
+              count: stats!.thisWeekCount,
               label: context.locale.thisWeek,
               isSelected: selectedTab == _VisitTab.pending,
               onTap: () => onTabChanged(_VisitTab.pending),
             ),
             _Divider(),
             _StatTab(
-              count: stats.inProgress,
-              label: context.locale.inProgress,
-              isSelected: selectedTab == _VisitTab.inProgress,
-              onTap: () => onTabChanged(_VisitTab.inProgress),
-            ),
-            _Divider(),
-            _StatTab(
-              count: stats.completed,
+              count: stats!.completed,
               label: context.locale.completed,
               isSelected: selectedTab == _VisitTab.completed,
               isCompleted: true,

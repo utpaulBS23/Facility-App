@@ -94,6 +94,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   void _applySession(LoginResponseEntity entity) {
     session.setAccessToken(entity.accessToken);
+    session.setWeekStartDay(entity.weekStartDay);
     _currentUser = entity.user;
     _session = UserSessionEntity(
       permissions: entity.permissions,

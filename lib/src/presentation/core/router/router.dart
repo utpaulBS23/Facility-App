@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/presentation/features/app_update/view/app_update_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import '../../../core/di/dependency_injection.dart';
 import '../../../core/extensions/riverpod_extensions.dart';
 import '../../../core/logger/log.dart';
 import '../../../domain/entities/attendance_entity.dart';
+import '../../../domain/entities/facility_entity.dart';
 import '../../../domain/entities/manual_attendance_entity.dart';
 import '../../../domain/entities/shift_entity.dart';
 import '../../../domain/entities/shift_slot_entity.dart';
@@ -16,17 +18,23 @@ import '../../../domain/entities/visit_entity.dart';
 import '../../../domain/entities/leave/leave_request_entity.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';
-import '../../features/authentication/forgot_password/view/email_verification_page.dart';
+import '../../features/authentication/forgot_password/view/otp_verification_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_page.dart';
 import '../../features/authentication/forgot_password/view/reset_password_success_page.dart';
 import '../../features/authentication/login/view/login_page.dart';
-import '../../features/app_update/view/app_update_checker.dart';
+// import '../../features/app_update/view/app_update_checker.dart';
+import '../widgets/session_expired_dialog.dart';
 import '../../features/additional_income/view/additional_income_page.dart';
+import '../../features/additional_income/view/add_additional_income_page.dart';
 import '../../features/check_in_out/view/selfie_camera_page.dart';
 import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
 import '../../features/door_lock/view/door_lock_page.dart';
+import '../../features/door_access/view/door_control_page.dart';
 import '../../features/claim_expense/view/claim_expense_page.dart';
+import '../../features/claim_expense/view/travel_expenses_page.dart';
+import '../../features/facility_expense/view/add_facility_expense_page.dart';
+import '../../features/claim_expense/view/travel_expense_details_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
 import '../../features/facility_map/view/facility_map_page.dart';
 import '../../features/gateway_management/view/gateway_management_page.dart';
@@ -35,7 +43,6 @@ import '../../features/leave/view/leave_details_page.dart';
 import '../../features/leave/view/leave_requests_page.dart';
 import '../../features/leave/view/leave_submitted_page.dart';
 import '../../features/leave/view/select_attendant_page.dart';
-import '../../features/leave/view/select_shift_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/menu/widgets/menu_item_config.dart';
 import '../../features/my_attendance/view/my_attendance_page.dart';
@@ -43,18 +50,26 @@ import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/notification/view/notification_page.dart';
 import '../../features/occurrence/view/occurrence_checklist_page.dart';
 import '../../features/occurrence/view/occurrence_page.dart';
+import '../../features/profile/view/my_profile_page.dart';
 import '../../features/profile/view/profile_page.dart';
 import '../../features/report/view/consumption_report_page.dart';
 import '../../features/report/view/profit_report_page.dart';
+import '../../features/stock/view/stock_averaging_details_page.dart';
+import '../../features/stock/view/stock_averaging_page.dart';
+import '../../features/stock/view/stock_page.dart';
 import '../../features/supply_request/view/supply_request_page.dart';
+import '../../features/tasks/view/assign_task_staff_page.dart';
 import '../../features/tasks/view/task_detail_page.dart';
 import '../../features/tasks/view/task_page.dart';
 import '../../features/inspection_checklist/view/inspection_checklist_page.dart';
 import '../../features/issues/view/create_issue_page.dart';
+import '../../features/issues/view/issue_detail_page.dart';
+import '../../../domain/entities/issue_detail_entity.dart';
 import '../../features/my_visits/view/visit_detail_page.dart';
 import '../../features/roster/view/roster_assign_staff_page.dart';
 import '../../features/roster/view/roster_list_page.dart';
 import '../../features/roster/view/roster_shifts_page.dart';
+import '../../features/shift/models/assign_staff_args.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';
 import '../../features/shift/widgets/no_shift_today_widget.dart';
@@ -67,7 +82,10 @@ import '../../../domain/entities/supply/supply_request_entity.dart';
 import '../../features/supply/view/confirm_delivery_page.dart';
 import '../../features/supply/view/delivery_complaint_page.dart';
 import '../../features/supply/view/request_details_page.dart';
+import '../../features/supply/view/new_request_page.dart';
 import '../../features/supply/view/supply_requests_page.dart';
+import '../../features/training/view/training_session_details_page.dart';
+import '../../features/training/view/training_sessions_page.dart';
 
 import '../widgets/app_startup/startup_widget.dart';
 import '../widgets/navigation_shell.dart';
@@ -78,6 +96,7 @@ import 'shell_tab_config.dart';
 part 'parts/apply_leave_routes.dart';
 part 'parts/attendance_routes.dart';
 part 'parts/authentication_routes.dart';
+part 'parts/gateway_routes.dart';
 part 'parts/on_boarding_routes.dart';
 part 'parts/menu_item_routes.dart';
 part 'parts/my_visits_routes.dart';
@@ -88,6 +107,9 @@ part 'parts/shift_check_in_routes.dart';
 part 'parts/shift_routes.dart';
 part 'parts/roster_routes.dart';
 part 'parts/stock_routes.dart';
+part 'parts/supply_routes.dart';
+part 'parts/profile_routes.dart';
+part 'parts/training_routes.dart';
 part 'router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'Root');
@@ -182,6 +204,10 @@ GoRouter goRouter(Ref ref) {
       ..._occurrenceRoutes(ref),
       ..._menuItemRoutes(ref),
       ..._stockRoutes(ref),
+      ..._supplyRoutes(ref),
+      ..._profileRoutes(ref),
+      ..._gatewayRoutes(ref),
+      ..._trainingRoutes(ref),
       _shellRoutes(ref),
     ],
   );

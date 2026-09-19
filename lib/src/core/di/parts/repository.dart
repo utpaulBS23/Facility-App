@@ -131,9 +131,83 @@ SupplyRepository supplyRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
+  return AdditionalIncomeRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ReportRepository reportRepository(Ref ref) {
+  return ReportRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+FacilityExpenseRepository facilityExpenseRepository(Ref ref) {
+  return FacilityExpenseRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ProductCatalogRepository productCatalogRepository(Ref ref) {
+  return ProductCatalogRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+FacilityProductRepository facilityProductRepository(Ref ref) {
+  return FacilityProductRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ProductSaleEntryRepository productSaleEntryRepository(Ref ref) {
+  return ProductSaleEntryRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+TrainingRepository trainingRepository(Ref ref) {
+  return TrainingRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 PushNotificationRepository pushNotificationRepository(Ref ref) {
   return PushNotificationRepositoryImpl(
     notificationService: ref.read(pushNotificationServiceProvider),
     cacheService: ref.read(cacheServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ItemCatalogRepository itemCatalogRepository(Ref ref) {
+  return ItemCatalogRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+StockRepository stockRepository(Ref ref) {
+  return StockRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+ProfileRepository profileRepository(Ref ref) {
+  return ProfileRepositoryImpl(restClient: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+ForgotPasswordRepository forgotPasswordRepository(Ref ref) {
+  return ForgotPasswordRepositoryImpl(restClient: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+GatewayRepository gatewayRepository(Ref ref) {
+  return GatewayRepositoryImpl(
+    ref.read(gatewayServiceProvider),
+    ref.read(offlineCacheServiceProvider),
+    ref.read(connectivityProvider),
   );
 }

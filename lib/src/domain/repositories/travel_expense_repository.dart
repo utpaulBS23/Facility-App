@@ -3,7 +3,15 @@ import '../entities/travel_expense_entity.dart';
 
 abstract base class TravelExpenseRepository extends Repository {
   Future<Result<TravelExpenseEntity, Failure>> createTravelExpense(
-    int partnerId,
     CreateTravelExpenseRequestEntity request,
   );
+
+  Future<Result<List<TravelExpenseEntity>, Failure>> getTravelExpenses(
+    TravelExpenseFilter filter,
+  );
+
+  Future<Result<TravelExpenseEntity, Failure>> getTravelExpenseDetail({
+    required int partnerId,
+    required int travelExpenseId,
+  });
 }

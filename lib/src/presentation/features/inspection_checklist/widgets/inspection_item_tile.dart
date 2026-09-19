@@ -16,9 +16,10 @@ class _InspectionItemTile extends ConsumerWidget {
   final bool isResolved;
 
   bool get _isAlwaysProof => item.proofPolicy == ChecklistProofPolicy.always;
+  bool get _needsProof => item.proofPolicy != ChecklistProofPolicy.none;
 
   void _onStarTap(WidgetRef ref, int rating) {
-    if (_isAlwaysProof) {
+    if (_needsProof) {
       ref
           .read(inspectionChecklistProvider.notifier)
           .setStarRatingLocal(itemId: item.id, rating: rating);
@@ -30,7 +31,7 @@ class _InspectionItemTile extends ConsumerWidget {
   }
 
   void _onYesNo(WidgetRef ref, bool value) {
-    if (_isAlwaysProof) {
+    if (_needsProof) {
       ref
           .read(inspectionChecklistProvider.notifier)
           .setYesNoLocal(itemId: item.id, value: value);
@@ -70,9 +71,13 @@ class _InspectionItemTile extends ConsumerWidget {
         ? state.starAnswers.containsKey(item.id)
         : state.yesNoAnswers.containsKey(item.id);
     final hasProofSelected = state.proofImages[item.id]?.isNotEmpty == true;
-    final showSubmitButton = _isAlwaysProof && !isConfirmed;
+    final hasProof = hasProofSelected || item.hasProof;
+    final photoRequired = item.proofPolicy == ChecklistProofPolicy.always;
+    final needsProof = item.proofPolicy != ChecklistProofPolicy.none;
+
+    final showSubmitButton = needsProof;
     final canSubmit =
-        hasAnswer && (hasProofSelected || item.hasProof) && !isSaving;
+        hasAnswer && (!photoRequired || hasProof) && !isSaving;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),
@@ -88,9 +93,33 @@ class _InspectionItemTile extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: LabelLargeText(
-                        item.question,
-                        color: context.color.text.primary,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: item.question,
+                                    style: context.textStyle.labelLarge.copyWith(
+                                      color: context.color.text.primary,
+                                    ),
+                                  ),
+                                  if (!item.isRequired) ...[
+                                    TextSpan(text: ' '),
+                                    TextSpan(
+                                      text: '(${context.locale.optional})',
+                                      style: context.textStyle.bodySmall.copyWith(
+                                        color: context.color.text.secondary,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     if (isSaving) ...[
@@ -105,33 +134,64 @@ class _InspectionItemTile extends ConsumerWidget {
                     ],
                   ],
                 ),
+                if (item.isRequired && photoRequired) ...[
+                  SizedBox(height: spacing.s8),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing.s12,
+                      vertical: spacing.s8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.color.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                      border: Border.all(
+                        color: context.color.primary.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.lightbulb_outline_rounded,
+                          size: 16,
+                          color: context.color.primary,
+                        ),
+                        SizedBox(width: spacing.s8),
+                        Expanded(
+                          child: BodySmallText(
+                            context.locale.updatePhotoAndInputTip,
+                            color: context.color.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 SizedBox(height: spacing.s8),
                 if (item.answerType == ChecklistAnswerType.star)
                   _StarRatingRow(
                     currentRating: state.starAnswers[item.id] ?? 0,
                     maxPoints: item.maxPoints,
-                    onStarTap: (isSaving || isConfirmed)
+                    onStarTap: isSaving || isResolved
                         ? (_) {}
                         : (r) => _onStarTap(ref, r),
                   )
                 else
                   _YesNoRow(
                     answer: state.yesNoAnswers[item.id],
-                    onAnswer: (isSaving || isConfirmed)
+                    onAnswer: isSaving || isResolved
                         ? (_) {}
                         : (v) => _onYesNo(ref, v),
                   ),
-                if (item.existingMediaUrls.isNotEmpty) ...[
-                  SizedBox(height: spacing.s8),
-                  _MediaThumbnailRow(urls: item.existingMediaUrls),
-                ] else if (!isResolved &&
-                    item.proofPolicy != ChecklistProofPolicy.none) ...[
+                if (item.proofPolicy != ChecklistProofPolicy.none) ...[
                   SizedBox(height: spacing.s8),
                   _ProofAttachmentRow(
                     proofImages: state.proofImages[item.id] ?? [],
+                    mediaUrl: state.mediaUrls[item.id],
                     hasExistingProof: item.hasProof,
-                    onAttach: isConfirmed ? null : () => _onPickProof(ref),
-                    onRemove: isConfirmed ? null : () => _onRemoveProof(ref),
+                    existingMediaUrls: item.existingMediaUrls,
+                    onAttach: isResolved ? null : () => _onPickProof(ref),
+                    onRemove: isResolved ? null : () => _onRemoveProof(ref),
                   ),
                 ],
                 if (!isResolved && showSubmitButton) ...[
@@ -172,42 +232,28 @@ class _AnswerSubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return SizedBox(
-      width: double.infinity,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.s16,
-            vertical: spacing.s10,
-          ),
-          decoration: BoxDecoration(
-            color: canSubmit
-                ? context.color.primary
-                : context.color.primary.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(radius.r6),
-          ),
-          alignment: Alignment.center,
-          child: isSaving
-              ? SizedBox(
-                  width: spacing.s16,
-                  height: spacing.s16,
-                  child: CircularProgressIndicator.adaptive(
-                    strokeWidth: 2,
-                    backgroundColor: context.color.onPrimary.withValues(
-                      alpha: 0.4,
-                    ),
-                  ),
-                )
-              : BodySmallText(
-                  context.locale.submitProof,
-                  color: context.color.onPrimary,
-                ),
+    return FilledButton(
+      onPressed: canSubmit && !isSaving ? onTap : null,
+      style: FilledButton.styleFrom(
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s6,
         ),
+        backgroundColor: context.color.primary,
+        disabledBackgroundColor: context.color.primary.withValues(alpha: 0.4),
       ),
+      child: isSaving
+          ? SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator.adaptive(
+                strokeWidth: 2,
+              ),
+            )
+          : BodySmallText(
+              context.locale.submitProof,
+              color: context.color.onPrimary,
+            ),
     );
   }
 }
@@ -287,20 +333,24 @@ class _YesNoRow extends StatelessWidget {
 
     return Row(
       children: [
-        _YesNoChip(
-          label: context.locale.yes,
-          icon: Icons.check_rounded,
-          isSelected: answer == true,
-          selectedColor: context.color.success,
-          onTap: () => onAnswer(true),
+        Expanded(
+          child: _YesNoChip(
+            label: context.locale.yes,
+            icon: Icons.check_rounded,
+            isSelected: answer == true,
+            selectedColor: context.color.success,
+            onTap: () => onAnswer(true),
+          ),
         ),
         SizedBox(width: spacing.s8),
-        _YesNoChip(
-          label: context.locale.no,
-          icon: Icons.close_rounded,
-          isSelected: answer == false,
-          selectedColor: context.color.error,
-          onTap: () => onAnswer(false),
+        Expanded(
+          child: _YesNoChip(
+            label: context.locale.no,
+            icon: Icons.close_rounded,
+            isSelected: answer == false,
+            selectedColor: context.color.error,
+            onTap: () => onAnswer(false),
+          ),
         ),
       ],
     );
@@ -364,34 +414,148 @@ class _ProofAttachmentRow extends StatelessWidget {
     required this.hasExistingProof,
     required this.onAttach,
     required this.onRemove,
+    this.mediaUrl,
+    this.existingMediaUrls = const [],
   });
 
   final List<XFile> proofImages;
+  final String? mediaUrl;
   final bool hasExistingProof;
+  final List<String> existingMediaUrls;
   final VoidCallback? onAttach;
   final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final hasAnyProof = hasExistingProof || proofImages.isNotEmpty;
-    final totalCount = (hasExistingProof ? 1 : 0) + proofImages.length;
+    final radius = context.dimensions.radius;
+    final existingUrl = hasExistingProof ? existingMediaUrls.firstOrNull : null;
+    final hasAnyProof = proofImages.isNotEmpty || mediaUrl != null || existingUrl != null;
     final isLocked = onAttach == null && onRemove == null;
 
-    return Row(
-      children: [
-        if (hasAnyProof) ...[
-          _PhotoAttachedChip(count: totalCount),
-          SizedBox(width: spacing.s8),
+    if (!hasAnyProof && !isLocked) {
+      return OutlinedButton.icon(
+        onPressed: onAttach,
+        style: OutlinedButton.styleFrom(
+          padding: EdgeInsets.symmetric(
+            horizontal: spacing.s12,
+            vertical: spacing.s6,
+          ),
+        ),
+        icon: const Icon(Icons.camera_alt_outlined, size: 14),
+        label: BodySmallText(context.locale.attachPhoto),
+      );
+    }
+
+    // Show photo preview (mediaUrl takes priority, then local proofImages, then existing)
+    if (hasAnyProof) {
+      final photoPath = proofImages.isNotEmpty ? proofImages.last.path : null;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: context.color.borderSubtle),
+                borderRadius: BorderRadius.circular(radius.r10),
+              ),
+              padding: EdgeInsets.all(spacing.s8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(radius.r6),
+                child: photoPath != null
+                    ? Image.file(
+                        File(photoPath),
+                        width: 180,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      )
+                    : mediaUrl != null
+                        ? Image.network(
+                            mediaUrl!,
+                            width: 180,
+                            height: 180,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 180,
+                              height: 180,
+                              color: context.color.subtle,
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.image_not_supported_outlined,
+                                size: 32,
+                                color: context.color.error,
+                              ),
+                            ),
+                          )
+                        : existingUrl != null
+                            ? Image.network(
+                                existingUrl,
+                                width: 180,
+                                height: 180,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  width: 180,
+                                  height: 180,
+                                  color: context.color.subtle,
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.image_not_supported_outlined,
+                                    size: 32,
+                                    color: context.color.error,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                width: 180,
+                                height: 180,
+                                color: context.color.subtle,
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.check_circle_outline,
+                                  size: 32,
+                                  color: context.color.success,
+                                ),
+                              ),
+              ),
+            ),
+          ),
+          if (!isLocked && (proofImages.isNotEmpty || mediaUrl != null || existingUrl != null)) ...[
+            SizedBox(height: spacing.s8),
+            Wrap(
+              spacing: spacing.s16,
+              runSpacing: spacing.s8,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: onAttach,
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: spacing.s12,
+                      vertical: spacing.s6,
+                    ),
+                  ),
+                  icon: const Icon(Icons.edit_outlined, size: 14),
+                  label: BodySmallText(context.locale.edit),
+                ),
+                if (proofImages.isNotEmpty)
+                  OutlinedButton.icon(
+                    onPressed: onRemove,
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: spacing.s12,
+                        vertical: spacing.s6,
+                      ),
+                    ),
+                    icon: const Icon(Icons.delete_outline_rounded, size: 14),
+                    label: BodySmallText(context.locale.remove),
+                  ),
+              ],
+            ),
+          ],
         ],
-        if (!hasAnyProof && !isLocked)
-          _AttachPhotoButton(onTap: onAttach ?? () {}),
-        if (hasAnyProof && !isLocked && proofImages.isNotEmpty) ...[
-          const Spacer(),
-          _RemoveProofButton(onTap: onRemove ?? () {}),
-        ],
-      ],
-    );
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
 
@@ -528,27 +692,28 @@ class _MediaThumbnailRow extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
 
-    return SizedBox(
-      height: spacing.s56,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: urls.length,
-        separatorBuilder: (_, _) => SizedBox(width: spacing.s8),
-        itemBuilder: (_, index) => ClipRRect(
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: context.color.borderSubtle),
+          borderRadius: BorderRadius.circular(radius.r10),
+        ),
+        padding: EdgeInsets.all(spacing.s8),
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(radius.r6),
           child: Image.network(
-            urls[index],
-            width: spacing.s56,
-            height: spacing.s56,
+            urls.first,
+            width: 180,
+            height: 180,
             fit: BoxFit.cover,
             errorBuilder: (_, _, _) => Container(
-              width: spacing.s56,
-              height: spacing.s56,
+              width: 180,
+              height: 180,
               color: context.color.subtle,
               alignment: Alignment.center,
               child: Icon(
                 Icons.broken_image_outlined,
-                size: spacing.s20,
+                size: 32,
                 color: context.color.text.secondary,
               ),
             ),

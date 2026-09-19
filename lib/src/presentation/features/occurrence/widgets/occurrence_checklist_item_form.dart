@@ -25,6 +25,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   bool? _booleanValue;
   XFile? _photo;
   bool _isSaving = false;
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -55,7 +56,11 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   }
 
   Future<void> _pickPhoto() async {
-    final photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+    final photo = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+      preferredCameraDevice: CameraDevice.rear,
+    );
     if (photo == null || !mounted) return;
     setState(() => _photo = photo);
   }
@@ -90,9 +95,15 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
     if (!mounted) return;
     setState(() => _isSaving = false);
     result.when(
-      success: (_) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.occurrenceAnswerSaved)),
-      ),
+      success: (_) {
+        if (!widget.item.needsProof) {
+          setState(() {
+            _ratingValue = null;
+            _booleanValue = null;
+            _textController.clear();
+          });
+        }
+      },
       error: (error) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error.localized(context))),
       ),
@@ -102,73 +113,93 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
   Widget _photoSection(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
-    final hasSavedPhoto =
-        widget.item.isAnswered && (widget.item.response?.hasProof ?? false);
+    final hasPhoto = _photo != null || (widget.item.isAnswered && (widget.item.response?.hasProof ?? false));
+    final mediaUrl = widget.item.response?.mediaUrl;
 
-    if (!hasSavedPhoto) {
-      return Expanded(
-        child: GestureDetector(
-          onTap: _isSaving || widget.readOnly ? null : _pickPhoto,
-          child: Container(
-            padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
-            decoration: BoxDecoration(
-              border: Border.all(color: context.color.borderSubtle),
-              borderRadius: .circular(radius.r10),
-            ),
-            child: Row(
-              mainAxisAlignment: .center,
-              children: [
-                Icon(
-                  _photo != null
-                      ? Icons.check_circle_outline
-                      : Icons.camera_alt_outlined,
-                  size: 16,
-                  color: _photo != null ? context.color.success : context.color.text.secondary,
-                ),
-                Gap(spacing.s8),
-                Flexible(
-                  child: BodySmallText(
-                    _photo != null ? context.locale.changePhoto : context.locale.takePhoto,
-                    color: context.color.text.secondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
+    if (!hasPhoto) {
+      return SizedBox(
+        width: double.infinity,
+        child: FilledButton.icon(
+          onPressed: _isSaving || widget.readOnly ? null : _pickPhoto,
+          icon: const Icon(Icons.camera_alt_outlined, size: 18),
+          label: Text(context.locale.attachPhoto),
         ),
       );
     }
 
-    final mediaUrl = widget.item.response?.mediaUrl;
-    return ClipRRect(
-      borderRadius: .circular(radius.r6),
-      child: _photo != null
-          ? Image.file(
-              File(_photo!.path),
-              width: spacing.s56,
-              height: spacing.s56,
-              fit: .cover,
-            )
-          : mediaUrl != null
-          ? Image.network(
-              mediaUrl,
-              width: spacing.s56,
-              height: spacing.s56,
-              fit: .cover,
-              errorBuilder: (_, _, _) => _lockedPhotoChip(context),
-            )
-          : _lockedPhotoChip(context),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: context.color.borderSubtle),
+              borderRadius: .circular(radius.r10),
+            ),
+            padding: EdgeInsets.all(spacing.s8),
+            child: ClipRRect(
+              borderRadius: .circular(radius.r6),
+              child: _photo != null
+                  ? Image.file(
+                      File(_photo!.path),
+                      width: 180,
+                      height: 180,
+                      fit: .cover,
+                    )
+                  : (mediaUrl != null
+                      ? Image.network(
+                          mediaUrl,
+                          width: 180,
+                          height: 180,
+                          fit: .cover,
+                          errorBuilder: (_, _, _) => _placeholderPhoto(context),
+                        )
+                      : _placeholderPhoto(context)),
+            ),
+          ),
+        ),
+        Gap(spacing.s8),
+        Center(
+          child: Wrap(
+            spacing: spacing.s16,
+            runSpacing: spacing.s8,
+            children: [
+              OutlinedButton.icon(
+                onPressed: _isSaving || widget.readOnly ? null : () => setState(() => _isEditing = !_isEditing),
+                icon: const Icon(Icons.edit_outlined, size: 14),
+                label: Text(context.locale.edit),
+              ),
+              if (_photo != null)
+                OutlinedButton.icon(
+                  onPressed: _isSaving || widget.readOnly ? null : () => setState(() => _photo = null),
+                  icon: const Icon(Icons.delete_outline_rounded, size: 14),
+                  label: Text(context.locale.remove),
+                ),
+            ],
+          ),
+        ),
+        if (_isEditing) ...[
+          Gap(spacing.s8),
+          Center(
+            child: FilledButton.icon(
+              onPressed: _isSaving || widget.readOnly ? null : _pickPhoto,
+              icon: const Icon(Icons.camera_alt_outlined, size: 18),
+              label: Text(context.locale.camera),
+            ),
+          ),
+        ],
+      ],
     );
   }
 
-  Widget _lockedPhotoChip(BuildContext context) {
-    final spacing = context.dimensions.spacing;
+  Widget _placeholderPhoto(BuildContext context) {
     return Container(
-      width: spacing.s56,
-      height: spacing.s56,
+      width: 180,
+      height: 180,
       color: context.color.subtle,
-      alignment: .center,
-      child: Icon(Icons.check_circle_outline, color: context.color.success),
+      alignment: Alignment.center,
+      child: Icon(Icons.image_not_supported_outlined, size: 32, color: context.color.text.secondary),
     );
   }
 
@@ -181,7 +212,10 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
           final value = i + 1;
           final isFilled = (_ratingValue ?? 0) >= value;
           return GestureDetector(
-            onTap: isDisabled ? null : () => setState(() => _ratingValue = value),
+            onTap: isDisabled ? null : () {
+              setState(() => _ratingValue = value);
+              if (!widget.item.needsProof) _save();
+            },
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: .only(right: spacing.s8),
@@ -202,7 +236,10 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.check_rounded,
               isSelected: _booleanValue == true,
               color: context.color.success,
-              onTap: isDisabled ? null : () => setState(() => _booleanValue = true),
+              onTap: isDisabled ? null : () {
+                setState(() => _booleanValue = true);
+                if (!widget.item.needsProof) _save();
+              },
             ),
           ),
           Gap(spacing.s8),
@@ -212,7 +249,10 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
               icon: Icons.close_rounded,
               isSelected: _booleanValue == false,
               color: context.color.error,
-              onTap: isDisabled ? null : () => setState(() => _booleanValue = false),
+              onTap: isDisabled ? null : () {
+                setState(() => _booleanValue = false);
+                if (!widget.item.needsProof) _save();
+              },
             ),
           ),
         ],
@@ -253,37 +293,142 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
             children: [
               _ItemOrderBadge(order: widget.order),
               Gap(spacing.s12),
-              Expanded(child: LabelLargeText(widget.item.label)),
-              if (isAnswered)
-                Icon(Icons.check_circle_rounded, size: 18, color: context.color.success),
-            ],
-          ),
-          Gap(spacing.s12),
-          _answerInput(context),
-          Gap(spacing.s12),
-          Row(
-            children: [
-              _photoSection(context),
-              Gap(spacing.s8),
               Expanded(
-                child: FilledButton(
-                  onPressed: _isSaving || !_hasAnswer || widget.readOnly
-                      ? null
-                      : _save,
-                  child: _isSaving
-                      ? SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: context.color.onPrimary,
-                          ),
-                        )
-                      : Text(context.locale.occurrenceSaveAnswer),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.item.label,
+                        style: context.textStyle.labelLarge.copyWith(
+                          color: context.color.text.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (widget.item.isRequired == false) ...[
+                      Gap(spacing.s4),
+                      Text(
+                        context.locale.optional,
+                        style: context.textStyle.bodySmall.copyWith(
+                          color: context.color.text.secondary,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
+              if (isAnswered)
+                Icon(Icons.check_circle_rounded, size: 18, color: context.color.primary),
             ],
           ),
+          Gap(spacing.s12),
+          if (widget.item.proofPolicy?.toLowerCase() == 'photo_required' &&
+              _photo == null &&
+              !(widget.item.isAnswered && (widget.item.response?.hasProof ?? false))) ...[
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s12,
+                vertical: spacing.s8,
+              ),
+              decoration: BoxDecoration(
+                color: context.color.warning.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                border: Border.all(
+                  color: context.color.warning.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.image_not_supported_outlined,
+                    size: 16,
+                    color: context.color.warning,
+                  ),
+                  Gap(spacing.s8),
+                  Expanded(
+                    child: Text(
+                      context.locale.photoRequired,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.warning,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Gap(spacing.s8),
+          ],
+          _answerInput(context),
+          if (widget.item.proofPolicy?.toLowerCase() == 'required') ...[
+            Gap(spacing.s8),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: spacing.s12,
+                vertical: spacing.s8,
+              ),
+              decoration: BoxDecoration(
+                color: context.color.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(context.dimensions.radius.r10),
+                border: Border.all(
+                  color: context.color.primary.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    size: 16,
+                    color: context.color.primary,
+                  ),
+                  Gap(spacing.s8),
+                  Expanded(
+                    child: Text(
+                      context.locale.updatePhotoAndInputTip,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (widget.item.needsProof) ...[
+            Gap(spacing.s16),
+            _photoSection(context),
+          ],
+          if (((!isAnswered && _hasAnswer) || _photo != null) && widget.item.needsProof) ...[
+            Gap(spacing.s16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _isSaving || !_hasAnswer || widget.readOnly || _photo == null
+                    ? null
+                    : _save,
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.color.primary,
+                  disabledBackgroundColor: context.color.primary.withValues(alpha: 0.4),
+                ),
+                child: _isSaving
+                    ? SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: context.color.onPrimary,
+                        ),
+                      )
+                    : Text(
+                        widget.item.needsProof
+                            ? context.locale.submitProof
+                            : context.locale.occurrenceSaveAnswer,
+                      ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -336,27 +481,26 @@ class _BooleanChoiceChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: .symmetric(horizontal: spacing.s12, vertical: spacing.s10),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.s12,
+          vertical: spacing.s8,
+        ),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.08) : context.color.onPrimary,
-          borderRadius: .circular(radius.r10),
+          color: isSelected
+              ? color.withValues(alpha: 0.08)
+              : context.color.onPrimary,
+          borderRadius: BorderRadius.circular(radius.r12),
           border: Border.all(
             color: isSelected ? color : context.color.borderSubtle,
             width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Row(
-          mainAxisAlignment: .center,
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: isSelected ? color : context.color.text.secondary),
+            Icon(icon, size: 12, color: color),
             Gap(spacing.s8),
-            Text(
-              label,
-              style: context.textStyle.bodyMedium.copyWith(
-                color: isSelected ? color : context.color.text.primary,
-              ),
-            ),
+            LabelLargeText(label, color: context.color.text.primary),
           ],
         ),
       ),

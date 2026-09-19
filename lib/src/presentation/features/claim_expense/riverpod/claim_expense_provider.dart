@@ -14,7 +14,11 @@ part 'claim_expense_provider.g.dart';
 Future<List<MasterDataItemEntity>> claimExpenseTransportModes(Ref ref) async {
   final result = await ref
       .read(getMasterDataItemsUseCaseProvider)
-      .call(category: 'transportMode');
+      .call(
+        category: 'transportMode',
+        perPage: 100,
+        includeInactive: true,
+      );
   return switch (result) {
     Success(:final data) => data ?? [],
     _ => [],
