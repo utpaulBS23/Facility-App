@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../riverpod/app_update_provider.dart';
 import 'app_update_dialog.dart';
@@ -17,7 +18,25 @@ class _AppUpdateCheckerState extends ConsumerState<AppUpdateChecker> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkForUpdates());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _ensurePermissions();
+      if (mounted) {
+        await _checkForUpdates();
+      }
+    });
+  }
+
+  Future<void> _ensurePermissions() async {
+    try {
+      var permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.unableToDetermine) {
+        await Geolocator.requestPermission();
+      }
+    } catch (e) {
+      debugPrint('Permission request error: $e');
+    }
   }
 
   Future<void> _checkForUpdates() async {
