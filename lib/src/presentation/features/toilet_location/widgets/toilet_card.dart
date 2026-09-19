@@ -126,13 +126,7 @@ class _ToiletCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(radius.r10),
                       ),
                     ),
-                    child: Text(
-                      context.locale.direction,
-                      style: context.textStyle.bodySmall.copyWith(
-                        color: color.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: Text(context.locale.direction),
                   ),
                 ),
               ),
@@ -148,13 +142,7 @@ class _ToiletCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(radius.r10),
                       ),
                     ),
-                    child: Text(
-                      context.locale.details,
-                      style: context.textStyle.bodySmall.copyWith(
-                        color: color.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: Text(context.locale.details),
                   ),
                 ),
               ),
