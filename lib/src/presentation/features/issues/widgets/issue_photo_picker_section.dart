@@ -8,24 +8,34 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 
-class IssuePhotoPickerSection extends StatelessWidget {
+class IssuePhotoPickerSection extends StatefulWidget {
   const IssuePhotoPickerSection({
     super.key,
     required this.photo,
     required this.onCamera,
     required this.onGallery,
     required this.onRemove,
+    this.existingPhotoUrl,
   });
 
   final XFile? photo;
   final VoidCallback onCamera;
   final VoidCallback onGallery;
   final VoidCallback onRemove;
+  final String? existingPhotoUrl;
+
+  @override
+  State<IssuePhotoPickerSection> createState() => _IssuePhotoPickerSectionState();
+}
+
+class _IssuePhotoPickerSectionState extends State<IssuePhotoPickerSection> {
+  bool _isEditing = false;
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
+    final hasPhoto = widget.photo != null || widget.existingPhotoUrl != null;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -38,90 +48,110 @@ class IssuePhotoPickerSection extends StatelessWidget {
         children: [
           LabelLargeText(context.locale.photoOptional),
           Gap(spacing.s12),
-          if (photo != null) ...[
+          if (hasPhoto) ...[
             Stack(
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(radius.r6),
-                  child: Image.file(
-                    File(photo!.path),
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+                  child: widget.photo != null
+                      ? Image.file(
+                          File(widget.photo!.path),
+                          height: 140,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.network(
+                          widget.existingPhotoUrl!,
+                          height: 140,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 Positioned(
                   top: spacing.s8,
                   right: spacing.s8,
-                  child: GestureDetector(
-                    onTap: onRemove,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: context.color.onPrimary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: context.color.error),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => setState(() => _isEditing = !_isEditing),
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: context.color.onPrimary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: context.color.primary),
+                          ),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.edit_rounded,
+                            size: 14,
+                            color: context.color.primary,
+                          ),
+                        ),
                       ),
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 14,
-                        color: context.color.error,
+                      Gap(spacing.s8),
+                      GestureDetector(
+                        onTap: () {
+                          widget.onRemove();
+                          setState(() => _isEditing = false);
+                        },
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: context.color.onPrimary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: context.color.error),
+                          ),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 14,
+                            color: context.color.error,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
             ),
+            if (_isEditing) ...[
+              Gap(spacing.s12),
+              FilledButton.icon(
+                onPressed: widget.onCamera,
+                icon: const Icon(Icons.camera_alt_outlined, size: 20),
+                label: Text(context.locale.camera),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.color.primary,
+                  foregroundColor: context.color.onPrimary,
+                  minimumSize: const Size.fromHeight(52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius.r12),
+                  ),
+                  textStyle: context.textStyle.labelLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ] else ...[
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: onCamera,
-                    icon: const Icon(Icons.camera_alt_outlined, size: 20),
-                    label: Text(context.locale.camera),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: context.color.primary,
-                      foregroundColor: context.color.onPrimary,
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(radius.r12),
-                      ),
-                      textStyle: context.textStyle.labelLarge.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+            FilledButton.icon(
+              onPressed: widget.onCamera,
+              icon: const Icon(Icons.camera_alt_outlined, size: 20),
+              label: Text(context.locale.camera),
+              style: FilledButton.styleFrom(
+                backgroundColor: context.color.primary,
+                foregroundColor: context.color.onPrimary,
+                minimumSize: const Size.fromHeight(52),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(radius.r12),
                 ),
-                Gap(spacing.s12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onGallery,
-                    icon: Icon(
-                      Icons.image_outlined,
-                      size: 20,
-                      color: context.color.primary,
-                    ),
-                    label: Text(context.locale.gallery),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: context.color.primary,
-                      side: BorderSide(
-                        color: context.color.primary,
-                        width: 1.5,
-                      ),
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(radius.r12),
-                      ),
-                      textStyle: context.textStyle.labelLarge.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                textStyle: context.textStyle.labelLarge.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
+              ),
             ),
           ],
         ],

@@ -134,6 +134,7 @@
   "cancel": "Cancel",
   "submit": "Submit",
   "save": "Save",
+  "create": "Create",
   "photoRequired": "Please add a photo",
   "noActiveShift": "No active shift found",
   "morning": "Morning",
@@ -383,6 +384,7 @@
   "view": "View",
   "start": "Start",
   "taskDetails": "Task Details",
+  "issueDetails": "Issue Details",
   "startTask": "Start Task",
   "completeTask": "Complete Task",
   "noTasksFound": "No tasks found.",
@@ -401,6 +403,8 @@
   "visitSubmittedSuccessfully": "Visit submitted successfully.",
   "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
   "submitChecklistFailed": "Failed to submit inspection checklist.",
+  "completeRequiredItemsBeforeSubmit": "Please complete all required items before submit",
+  "updatePhotoAndInputTip": "For update photo and input you have to press submit proof",
   "saveChecklistAnswerFailed": "Failed to save answer.",
   "leaveRequests": "Leave Requests",
   "myLeave": "My Leave",
@@ -505,6 +509,7 @@
   "leaveType": "Leave Type",
   "reasonOptional": "Reason (optional)",
   "createIssue": "Create Issue",
+  "editIssue": "Edit Issue",
   "department": "Department",
   "departmentHint": "e.g. Cleaning, Plumbing",
   "specificProblem": "Specific Problem",
@@ -527,6 +532,7 @@
   "requestSubmittedSuccessfully": "Request submitted successfully",
   "issueTitle": "Issue Title",
   "issueTitleHint": "Enter a short title for this issue",
+  "dueDateRequired": "Due date is required",
   "rosters": "Rosters",
   "noRostersFound": "No rosters found.",
   "createRoster": "Create Roster",
@@ -946,6 +952,10 @@
   "facilityBreakdown": "Facility Breakdown",
   "facilities": "Facilities",
   "selectSupervisor": "Select supervisor",
-  "noSupervisorsFound": "No supervisors found"
+  "noSupervisorsFound": "No supervisors found",
+    "created": "Created",
+    "description": "Description",
+    "assignedTo": "Assigned To",
+    "proofRequiredMessage": "For resolving this issue you have to submit proof"
 }
 

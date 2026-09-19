@@ -216,7 +216,7 @@ class _DetailBody extends StatelessWidget {
         else ...[
           if (checkInState.shareError != null) ...[
             Container(
-              padding: EdgeInsets.all(spacing.s12),
+              padding: EdgeInsets.all(spacing.s16),
               decoration: BoxDecoration(
                 color: context.color.error.withValues(alpha: 0.1),
                 border: Border.all(color: context.color.error),
@@ -243,23 +243,38 @@ class _DetailBody extends StatelessWidget {
                 ],
               ),
             ),
-            Gap(spacing.s12),
+            Gap(spacing.s16),
           ],
-          FilledButton(
-            onPressed: onCheckIn,
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.success,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
+          Builder(
+            builder: (context) {
+              final visitDate = DateTime.parse(detail.date);
+              final today = DateTime.now();
+              final isToday = visitDate.year == today.year &&
+                  visitDate.month == today.month &&
+                  visitDate.day == today.day;
+              final isPast = visitDate.isBefore(today) && !isToday;
+
+              return FilledButton(
+                onPressed: isPast ? null : onCheckIn,
+                style: FilledButton.styleFrom(
+                  backgroundColor: isPast
+                      ? context.color.subtle
+                      : context.color.success,
+                  minimumSize: const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            child: LabelLargeText(
-              context.locale.checkInToVisit,
-              color: context.color.onPrimary,
-            ),
+                child: LabelLargeText(
+                  context.locale.checkInToVisit,
+                  color: isPast
+                      ? context.color.text.secondary
+                      : context.color.onPrimary,
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -320,21 +335,36 @@ class _ReshareLocationBody extends StatelessWidget {
             ),
             Gap(spacing.s8),
           ],
-          FilledButton(
-            onPressed: onReshare,
-            style: FilledButton.styleFrom(
-              backgroundColor: context.color.success,
-              minimumSize: const Size.fromHeight(44),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
+          Builder(
+            builder: (context) {
+              final visitDate = DateTime.parse(detail.date);
+              final today = DateTime.now();
+              final isToday = visitDate.year == today.year &&
+                  visitDate.month == today.month &&
+                  visitDate.day == today.day;
+              final isPast = visitDate.isBefore(today) && !isToday;
+
+              return FilledButton(
+                onPressed: isPast ? null : onReshare,
+                style: FilledButton.styleFrom(
+                  backgroundColor: isPast
+                      ? context.color.subtle
+                      : context.color.success,
+                  minimumSize: const Size.fromHeight(44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r12,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            child: LabelLargeText(
-              context.locale.reshareYourLocation,
-              color: context.color.onPrimary,
-            ),
+                child: LabelLargeText(
+                  context.locale.reshareYourLocation,
+                  color: isPast
+                      ? context.color.text.secondary
+                      : context.color.onPrimary,
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -366,7 +396,7 @@ class _CheckInBody extends StatelessWidget {
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
           Container(
-            padding: EdgeInsets.all(spacing.s12),
+            padding: EdgeInsets.all(spacing.s16),
             decoration: BoxDecoration(
               color: context.color.error.withValues(alpha: 0.1),
               border: Border.all(color: context.color.error),
@@ -382,7 +412,7 @@ class _CheckInBody extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Gap(spacing.s12),
+          Gap(spacing.s16),
         ],
         FilledButton(
           onPressed: checkInState.isCheckingIn ? null : onConfirm,

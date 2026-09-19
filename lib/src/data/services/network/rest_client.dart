@@ -302,6 +302,13 @@ abstract class RestClient {
     @Body() required FormData formData,
   });
 
+  @PATCH(Endpoints.issueDetail)
+  Future<HttpResponse> updateIssueAssignment({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   /// Leave Management
   @GET(Endpoints.leavePolicies)
   Future<HttpResponse> getLeavePolicies({

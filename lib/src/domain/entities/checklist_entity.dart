@@ -10,6 +10,7 @@ class ChecklistItemEntity {
     required this.order,
     this.maxPoints = 5,
     this.proofPolicy = ChecklistProofPolicy.none,
+    this.isRequired = false,
     this.existingRating,
     this.existingBoolAnswer,
     this.existingPointsAwarded,
@@ -23,6 +24,7 @@ class ChecklistItemEntity {
   final int order;
   final int maxPoints;
   final ChecklistProofPolicy proofPolicy;
+  final bool isRequired;
   final int? existingRating;
   final bool? existingBoolAnswer;
   final int? existingPointsAwarded;
@@ -69,6 +71,11 @@ class ChecklistIssueEntity {
     required this.location,
     required this.priority,
     this.status = '',
+    this.description,
+    this.photoUrl,
+    this.dueDate,
+    this.facilityName,
+    this.dueDateString,
   });
 
   final int id;
@@ -77,6 +84,11 @@ class ChecklistIssueEntity {
   final String location;
   final String priority;
   final String status;
+  final String? description;
+  final String? photoUrl;
+  final DateTime? dueDate;
+  final String? facilityName;
+  final String? dueDateString;
 }
 
 class ChecklistItemMediaEntity {

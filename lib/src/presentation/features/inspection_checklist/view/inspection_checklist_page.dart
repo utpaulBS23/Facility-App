@@ -9,12 +9,15 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/checklist_entity.dart';
+import '../../../../domain/entities/problem_category_entity.dart';
 import '../../../../domain/entities/visit_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../issues/riverpod/create_issue_provider.dart';
 import '../riverpod/inspection_checklist_provider.dart';
 
 part '../widgets/inspection_bottom_bar.dart';
@@ -74,11 +77,26 @@ class _InspectionChecklistPageState
   Future<void> _onNewIssue() async {
     final result = await context.pushNamed<ChecklistIssueEntity>(
       Routes.problemReport,
-      extra: (
-        visitId: widget.detail.id,
-        facilityId: widget.detail.facilityId ?? 0,
-        facilityName: widget.detail.facilityName,
-      ),
+      extra: {
+        'visitId': widget.detail.id,
+        'facilityId': widget.detail.facilityId ?? 0,
+        'facilityName': widget.detail.facilityName,
+      },
+    );
+    if (result != null) {
+      ref.read(inspectionChecklistProvider.notifier).addLocalIssue(result);
+    }
+  }
+
+  Future<void> _onEditIssue(ChecklistIssueEntity issue) async {
+    final result = await context.pushNamed<ChecklistIssueEntity>(
+      Routes.problemReport,
+      extra: {
+        'visitId': widget.detail.id,
+        'facilityId': widget.detail.facilityId ?? 0,
+        'facilityName': widget.detail.facilityName,
+        'issue': issue,
+      },
     );
     if (result != null) {
       ref.read(inspectionChecklistProvider.notifier).addLocalIssue(result);
@@ -115,13 +133,58 @@ class _InspectionChecklistPageState
             )
           : PermissionGate(
               permissions: [UserPermission.checklistResponseSubmit],
-              builder: (context, isGranted) => _ChecklistBody(
-                detail: widget.detail,
-                checklistState: checklistState,
-                onSubmit: _onSubmit,
-                onNewIssue: _onNewIssue,
-                canSubmit: isGranted,
-              ),
+              builder: (context, isGranted) {
+                // Check submit eligibility
+                final checklist = checklistState.checklist;
+                bool allRequiredAnswered = true;
+
+                if (checklist != null) {
+                  // Required items must be answered
+                  final requiredItems = checklist.items
+                      .where((item) => item.answerType != ChecklistAnswerType.repairWork && item.isRequired);
+
+                  for (final item in requiredItems) {
+                    final hasLocalAnswer = checklistState.starAnswers.containsKey(item.id) || checklistState.yesNoAnswers.containsKey(item.id);
+                    final hasExistingAnswer = item.isAnswered;
+                    if (!hasLocalAnswer && !hasExistingAnswer) {
+                      allRequiredAnswered = false;
+                      break;
+                    }
+                  }
+
+                  // Items with proof_policy: "required" need proof only if user added LOCAL answer
+                  if (allRequiredAnswered) {
+                    final proofRequiredItems = checklist.items
+                        .where((item) => item.answerType != ChecklistAnswerType.repairWork &&
+                                item.isRequired &&
+                                item.proofPolicy == ChecklistProofPolicy.always);
+
+                    for (final item in proofRequiredItems) {
+                      final hasLocalAnswer = checklistState.starAnswers.containsKey(item.id) || checklistState.yesNoAnswers.containsKey(item.id);
+
+                      // Only enforce proof for NEW answers (local), not existing API responses
+                      if (hasLocalAnswer) {
+                        final hasProof = (checklistState.proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
+                        if (!hasProof) {
+                          allRequiredAnswered = false;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                final canSubmitForm = isGranted && allRequiredAnswered;
+
+                return _ChecklistBody(
+                  detail: widget.detail,
+                  checklistState: checklistState,
+                  onSubmit: _onSubmit,
+                  onNewIssue: _onNewIssue,
+                  onEditIssue: (issue) => _onEditIssue(issue),
+                  canSubmit: canSubmitForm,
+                );
+              },
             ),
     );
   }
@@ -134,12 +197,14 @@ class _ChecklistBody extends StatelessWidget {
     required this.onSubmit,
     required this.onNewIssue,
     required this.canSubmit,
+    this.onEditIssue,
   });
 
   final VisitDetailEntity detail;
   final InspectionChecklistState checklistState;
   final VoidCallback onSubmit;
   final VoidCallback onNewIssue;
+  final Function(ChecklistIssueEntity)? onEditIssue;
   final bool canSubmit;
 
   void _onCancel(BuildContext context) => context.pop();
@@ -148,9 +213,8 @@ class _ChecklistBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final checklist = checklistState.checklist!;
-    // WHY: a completed visit is as final as a resolved one — both mean the
-    // checklist can no longer be edited, so cancel/submit/new-issue actions
-    // must hide for either status, not just resolved.
+    // WHY: only resolved and completed visits are final — inProgress visits
+    // still allow editing of checklist items.
     final isResolved =
         detail.status == VisitStatus.resolved ||
         detail.status == VisitStatus.completed;
@@ -181,10 +245,12 @@ class _ChecklistBody extends StatelessWidget {
                       Divider(color: context.color.borderSubtle, height: 1),
                     ],
                   ),
-              if (detail.facilityName != null) ...[
+              if (detail.facilityName != null &&
+                  (checklist.issues.isNotEmpty || checklistState.localIssues.isNotEmpty || !isResolved)) ...[
                 _InspectionRepairWorkSection(
                   issues: [...checklist.issues, ...checklistState.localIssues],
                   onNewIssue: onNewIssue,
+                  onEditIssue: onEditIssue,
                   canAddIssue: !isResolved,
                 ),
                 Gap(spacing.s8),

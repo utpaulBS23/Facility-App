@@ -37,11 +37,13 @@ class Routes {
   static const String myVisits = '/my-visits';
   static const String task = '/task';
   static const String taskDetail = 'task-detail';
+  static const String assignTaskStaff = 'assign-task-staff';
   static const String visitDetail = '/visit-detail';
   static const String visitCheckIn = '/visit-check-in';
   static const String inspectionChecklist = '/inspection-checklist';
   static const String problemReport = '/problem-report';
   static const String issue = '/issue';
+  static const String issueDetail = '/issue-detail';
   static const String occurrenceChecklist = '/occurrence-checklist';
   static const String menu = '/menu';
   static const String dashboard = '/dashboard';
