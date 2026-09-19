@@ -34,6 +34,7 @@ class ApplicationTypeSwitch extends StatelessWidget {
         ),
       ],
       selected: {selectedType},
+      showSelectedIcon: false,
       onSelectionChanged: (newSelection) {
         onTypeChanged(newSelection.first);
       },

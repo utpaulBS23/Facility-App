@@ -1,8 +1,10 @@
 part of '../../view/additional_income_page.dart';
 
-/// Shimmer skeleton matching [_StatCard].
-class _StatCardShimmer extends StatelessWidget {
-  const _StatCardShimmer();
+/// Shimmer skeleton matching [_SummaryTile].
+class _StatTileShimmer extends StatelessWidget {
+  const _StatTileShimmer({required this.background});
+
+  final Color background;
 
   @override
   Widget build(BuildContext context) {
@@ -11,21 +13,19 @@ class _StatCardShimmer extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        padding: EdgeInsets.all(spacing.s12),
+        padding: EdgeInsets.all(spacing.s10),
         decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r12),
+          color: background,
+          borderRadius: BorderRadius.circular(radius.r10),
         ),
         child: Shimmer.fromColors(
           baseColor: context.color.borderSubtle,
           highlightColor: context.color.scaffoldBackground,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ShimmerBox(width: spacing.s48, height: spacing.s16),
+              ShimmerBox(width: spacing.s24, height: spacing.s16),
               Gap(spacing.s4),
-              ShimmerBox(width: spacing.s80, height: spacing.s14),
+              ShimmerBox(width: spacing.s48, height: spacing.s14),
             ],
           ),
         ),
@@ -34,22 +34,32 @@ class _StatCardShimmer extends StatelessWidget {
   }
 }
 
-/// Shimmer skeleton matching [_IncomeStatsRow].
+/// Shimmer skeleton matching [_IncomeStatsRow] / [_ProductSaleStatsRow] —
+/// both render the same 3-tile shape, so one shimmer covers either.
 class _IncomeStatsRowShimmer extends StatelessWidget {
   const _IncomeStatsRowShimmer();
 
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
+    final color = context.color;
 
-    return Row(
-      children: [
-        const _StatCardShimmer(),
-        SizedBox(width: spacing.s8),
-        const _StatCardShimmer(),
-        SizedBox(width: spacing.s8),
-        const _StatCardShimmer(),
-      ],
+    return Container(
+      padding: EdgeInsets.all(spacing.s8),
+      decoration: BoxDecoration(
+        color: color.onPrimary,
+        border: Border.all(color: color.borderSubtle),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+      ),
+      child: Row(
+        children: [
+          _StatTileShimmer(background: color.successAlt),
+          Gap(spacing.s6),
+          _StatTileShimmer(background: color.warningAlt),
+          Gap(spacing.s6),
+          _StatTileShimmer(background: color.scaffoldBackground),
+        ],
+      ),
     );
   }
 }

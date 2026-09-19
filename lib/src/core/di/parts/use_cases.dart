@@ -510,6 +510,14 @@ CreateProductSaleEntryUseCase createProductSaleEntryUseCase(Ref ref) {
 }
 
 @riverpod
+GetProductSaleEntriesUseCase getProductSaleEntriesUseCase(Ref ref) {
+  return GetProductSaleEntriesUseCase(
+    productSaleEntryRepository: ref.read(productSaleEntryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
