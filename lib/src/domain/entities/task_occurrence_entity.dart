@@ -64,14 +64,25 @@ class TaskOccurrenceChecklistItemEntity {
     required this.label,
     required this.responseType,
     this.response,
+    this.proofRequiredOnComplete = false,
+    this.proofPolicy,
+    this.isRequired,
   });
 
   final int id;
   final String label;
   final TaskOccurrenceChecklistResponseType responseType;
   final ChecklistItemAnswerEntity? response;
+  final bool proofRequiredOnComplete;
+  final String? proofPolicy;
+  final bool? isRequired;
 
   bool get isAnswered => response != null;
+
+  bool get needsProof =>
+      (proofPolicy?.toLowerCase() == 'photo_required' ||
+          proofPolicy?.toLowerCase() == 'photo_optional') ||
+      proofRequiredOnComplete;
 
   TaskOccurrenceChecklistItemEntity copyWith({
     ChecklistItemAnswerEntity? response,
@@ -80,6 +91,9 @@ class TaskOccurrenceChecklistItemEntity {
     label: label,
     responseType: responseType,
     response: response ?? this.response,
+    proofRequiredOnComplete: proofRequiredOnComplete,
+    proofPolicy: proofPolicy,
+    isRequired: isRequired,
   );
 
   @override
@@ -89,10 +103,13 @@ class TaskOccurrenceChecklistItemEntity {
           id == other.id &&
           label == other.label &&
           responseType == other.responseType &&
-          response == other.response;
+          response == other.response &&
+          proofRequiredOnComplete == other.proofRequiredOnComplete &&
+          proofPolicy == other.proofPolicy &&
+          isRequired == other.isRequired;
 
   @override
-  int get hashCode => Object.hash(id, label, responseType, response);
+  int get hashCode => Object.hash(id, label, responseType, response, proofRequiredOnComplete, proofPolicy, isRequired);
 }
 
 /// One generated slot for a facility on a day. Occurrences are never

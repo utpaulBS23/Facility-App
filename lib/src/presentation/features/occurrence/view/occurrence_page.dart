@@ -251,8 +251,7 @@ class _OccurrenceBoard extends ConsumerWidget {
         ),
         Expanded(
           child: state.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator.adaptive()),
+            loading: () => const SizedBox.shrink(),
             error: (err, _) => Center(
               child: Column(
                 mainAxisSize: .min,
@@ -291,14 +290,30 @@ class _OccurrenceBoard extends ConsumerWidget {
                   ),
                 );
               }
-              return ListView.separated(
-                padding: EdgeInsets.all(spacing.s16),
-                itemCount: occurrences.length,
-                separatorBuilder: (context, i) => Gap(spacing.s12),
-                itemBuilder: (_, i) => _OccurrenceSlotCard(
-                  occurrence: occurrences[i],
-                  onChecklist: () => onChecklist(occurrences[i]),
-                ),
+              return Stack(
+                children: [
+                  ListView.separated(
+                    padding: EdgeInsets.all(spacing.s16),
+                    itemCount: occurrences.length,
+                    separatorBuilder: (context, i) => Gap(spacing.s12),
+                    itemBuilder: (_, i) => _OccurrenceSlotCard(
+                      occurrence: occurrences[i],
+                      onChecklist: () => onChecklist(occurrences[i]),
+                      isRefreshing: state.isLoading && state.hasValue,
+                    ),
+                  ),
+                  if (state.isLoading && state.hasValue)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Container(
+                          color: context.color.scaffoldBackground.withValues(alpha: 0.3),
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),

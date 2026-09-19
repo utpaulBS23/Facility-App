@@ -1,5 +1,7 @@
 import '../../core/base/base.dart';
 import '../entities/checklist_entity.dart';
+import '../entities/issue_detail_entity.dart';
+import '../entities/issue_list_entity.dart';
 import '../entities/problem_category_entity.dart';
 import '../entities/report_issue_entity.dart';
 import '../entities/visit_entity.dart';
@@ -49,6 +51,17 @@ abstract base class VisitRepository extends Repository {
     required int partnerId,
     required int visitId,
     required ReportIssueRequestEntity request,
+  });
+
+  Future<Result<IssueDetailEntity, Failure>> getIssueDetail({
+    required int partnerId,
+    required int issueId,
+  });
+
+  Future<Result<List<IssueEntity>, Failure>> getIssues({
+    required int partnerId,
+    String? status,
+    int? facilityId,
   });
 
   Future<Result<List<ProblemCategoryEntity>, Failure>> getProblemCategories({

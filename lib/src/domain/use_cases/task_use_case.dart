@@ -123,3 +123,29 @@ final class CompleteIssueUseCase {
     };
   }
 }
+
+final class UpdateIssueAssignmentUseCase {
+  UpdateIssueAssignmentUseCase(this._repository, this._authRepository);
+
+  final TaskRepository _repository;
+  final AuthenticationRepository _authRepository;
+
+  Future<Result<TaskEntity, Failure>> call({
+    required int issueId,
+    required int assignedTo,
+  }) async {
+    final partnerId = _authRepository.currentSession?.activePartnerId;
+    if (partnerId == null) return const Error(Failure.partnerUnavailable);
+
+    final result = await _repository.updateIssueAssignment(
+      partnerId: partnerId,
+      issueId: issueId,
+      assignedTo: assignedTo,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('update issue assignment')),
+    };
+  }
+}

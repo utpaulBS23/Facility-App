@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/issue_detail_entity.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/checklist_entity.dart';
 import '../../../../domain/entities/problem_category_entity.dart';
@@ -45,6 +47,8 @@ class CreateIssue extends _$CreateIssue {
     required ReportIssueRequestEntity request,
     required String categoryName,
     required String facilityName,
+    String? photoUrl,
+    DateTime? dueDate,
   }) async {
     state = state.copyWith(isSubmitting: true, clearError: true);
 
@@ -62,8 +66,12 @@ class CreateIssue extends _$CreateIssue {
                 title: response.title,
                 category: categoryName,
                 location: facilityName,
+                facilityName: facilityName,
                 priority: response.priority,
                 status: response.status,
+                photoUrl: photoUrl,
+                dueDate: dueDate,
+                dueDateString: dueDate != null ? dueDate.toIso8601String().split('T').first : null,
               ),
       ),
       error: (err) => state.copyWith(isSubmitting: false, error: err),
@@ -101,6 +109,33 @@ Future<List<PartnerStaffEntity>> issueAttendants(
   final result = await ref
       .read(getPartnerStaffUseCaseProvider)
       .call(facilityId: facilityId);
+  return switch (result) {
+    Success(:final data) => data ?? [],
+    Error() => [],
+    _ => [],
+  };
+}
+
+@riverpod
+Future<IssueDetailEntity?> issueDetail(
+  Ref ref,
+  int issueId,
+) async {
+  final result = await ref
+      .read(getVisitIssueDetailUseCaseProvider)
+      .call(issueId: issueId);
+  return switch (result) {
+    Success(:final data) => data,
+    Error() => null,
+    _ => null,
+  };
+}
+
+@riverpod
+Future<List<MasterDataItemEntity>> priorityMasterData(Ref ref) async {
+  final result = await ref
+      .read(getMasterDataItemsUseCaseProvider)
+      .call(category: 'priority');
   return switch (result) {
     Success(:final data) => data ?? [],
     Error() => [],

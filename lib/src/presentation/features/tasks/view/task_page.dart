@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/base/result.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
@@ -82,6 +84,36 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   void _onViewTap(TaskEntity task) =>
       context.pushNamed(Routes.taskDetail, extra: task);
 
+  Future<void> _onAssignStaffTap(TaskEntity task) async {
+    try {
+      // Fetch full task details to get assignedToId before opening assign staff
+      final result = await ref
+          .read(getIssueDetailUseCaseProvider)
+          .call(id: task.id);
+
+      if (!mounted) return;
+
+      switch (result) {
+        case Success(:final data):
+          if (data != null) {
+            await context.pushNamed(Routes.assignTaskStaff, extra: data);
+            if (mounted) {
+              ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus, facilityId: _selectedFacilityId);
+            }
+          }
+        case Error(:final error):
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.localizedMessage(context))),
+          );
+      }
+    } catch (_) {
+      if (mounted) {
+        await context.pushNamed(Routes.assignTaskStaff, extra: task);
+        ref.read(tasksProvider.notifier).fetch(status: _selectedTab.apiStatus, facilityId: _selectedFacilityId);
+      }
+    }
+  }
+
   Future<void> _onStartTap(TaskEntity task) async {
     final success = await ref
         .read(tasksProvider.notifier)
@@ -115,9 +147,14 @@ class _TaskPageState extends ConsumerState<TaskPage> {
               .read(tasksProvider.notifier)
               .completeIssue(issueId: task.id);
           if (completed != null) {
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
             _onTabChanged(_TaskTab.resolved);
           }
-        } catch (_) {}
+        } catch (_) {
+          if (!context.mounted) return;
+          Navigator.of(context).pop();
+        }
       },
     );
   }
@@ -207,6 +244,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     onTap: () => _onViewTap(tasks[i]),
                     onStartTap: () => _onStartTap(tasks[i]),
                     onCompleteTap: () => _onCompleteTap(tasks[i]),
+                    onAssignStaffTap: () async => _onAssignStaffTap(tasks[i]),
                   ),
                 );
               },
@@ -304,3 +342,4 @@ class _Tab extends StatelessWidget {
     );
   }
 }
+

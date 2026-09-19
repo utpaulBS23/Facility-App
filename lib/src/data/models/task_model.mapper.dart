@@ -72,9 +72,16 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
   static String? _$description(TaskModel v) => v.description;
   static const Field<TaskModel, String> _f$description =
       Field('description', _$description, opt: true);
+  static int? _$facilityId(TaskModel v) => v.facilityId;
+  static const Field<TaskModel, int> _f$facilityId =
+      Field('facilityId', _$facilityId, key: r'facility_id', opt: true);
   static String? _$facilityName(TaskModel v) => v.facilityName;
   static const Field<TaskModel, String> _f$facilityName =
       Field('facilityName', _$facilityName, key: r'facility_name', opt: true);
+  static String? _$facilityAddress(TaskModel v) => v.facilityAddress;
+  static const Field<TaskModel, String> _f$facilityAddress = Field(
+      'facilityAddress', _$facilityAddress,
+      key: r'facility_address', opt: true);
   static String? _$dueAt(TaskModel v) => v.dueAt;
   static const Field<TaskModel, String> _f$dueAt =
       Field('dueAt', _$dueAt, key: r'due_at', opt: true);
@@ -84,6 +91,13 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
   static String _$priority(TaskModel v) => v.priority;
   static const Field<TaskModel, String> _f$priority =
       Field('priority', _$priority);
+  static int? _$assignedToId(TaskModel v) => v.assignedToId;
+  static const Field<TaskModel, int> _f$assignedToId =
+      Field('assignedToId', _$assignedToId, key: r'assigned_to', opt: true);
+  static String? _$assignedToName(TaskModel v) => v.assignedToName;
+  static const Field<TaskModel, String> _f$assignedToName = Field(
+      'assignedToName', _$assignedToName,
+      key: r'assigned_to_name', opt: true);
   static TaskIssueModel? _$issue(TaskModel v) => v.issue;
   static const Field<TaskModel, TaskIssueModel> _f$issue =
       Field('issue', _$issue, opt: true);
@@ -96,10 +110,14 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
     #id: _f$id,
     #title: _f$title,
     #description: _f$description,
+    #facilityId: _f$facilityId,
     #facilityName: _f$facilityName,
+    #facilityAddress: _f$facilityAddress,
     #dueAt: _f$dueAt,
     #issueStatus: _f$issueStatus,
     #priority: _f$priority,
+    #assignedToId: _f$assignedToId,
+    #assignedToName: _f$assignedToName,
     #issue: _f$issue,
     #media: _f$media,
   };
@@ -109,10 +127,14 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
         id: data.dec(_f$id),
         title: data.dec(_f$title),
         description: data.dec(_f$description),
+        facilityId: data.dec(_f$facilityId),
         facilityName: data.dec(_f$facilityName),
+        facilityAddress: data.dec(_f$facilityAddress),
         dueAt: data.dec(_f$dueAt),
         issueStatus: data.dec(_f$issueStatus),
         priority: data.dec(_f$priority),
+        assignedToId: data.dec(_f$assignedToId),
+        assignedToName: data.dec(_f$assignedToName),
         issue: data.dec(_f$issue),
         media: data.dec(_f$media));
   }
@@ -203,17 +225,24 @@ class TaskMediaModelMapper extends ClassMapperBase<TaskMediaModel> {
   static String? _$alt(TaskMediaModel v) => v.alt;
   static const Field<TaskMediaModel, String> _f$alt =
       Field('alt', _$alt, opt: true);
+  static String _$purpose(TaskMediaModel v) => v.purpose;
+  static const Field<TaskMediaModel, String> _f$purpose =
+      Field('purpose', _$purpose, opt: true, def: 'creation');
 
   @override
   final MappableFields<TaskMediaModel> fields = const {
     #id: _f$id,
     #url: _f$url,
     #alt: _f$alt,
+    #purpose: _f$purpose,
   };
 
   static TaskMediaModel _instantiate(DecodingData data) {
     return TaskMediaModel(
-        id: data.dec(_f$id), url: data.dec(_f$url), alt: data.dec(_f$alt));
+        id: data.dec(_f$id),
+        url: data.dec(_f$url),
+        alt: data.dec(_f$alt),
+        purpose: data.dec(_f$purpose));
   }
 
   @override
@@ -298,9 +327,16 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static String? _$description(TaskDetailModel v) => v.description;
   static const Field<TaskDetailModel, String> _f$description =
       Field('description', _$description, opt: true);
+  static int? _$facilityId(TaskDetailModel v) => v.facilityId;
+  static const Field<TaskDetailModel, int> _f$facilityId =
+      Field('facilityId', _$facilityId, key: r'facility_id', opt: true);
   static String? _$facilityName(TaskDetailModel v) => v.facilityName;
   static const Field<TaskDetailModel, String> _f$facilityName =
       Field('facilityName', _$facilityName, key: r'facility_name', opt: true);
+  static String? _$facilityAddress(TaskDetailModel v) => v.facilityAddress;
+  static const Field<TaskDetailModel, String> _f$facilityAddress = Field(
+      'facilityAddress', _$facilityAddress,
+      key: r'facility_address', opt: true);
   static String? _$dueAt(TaskDetailModel v) => v.dueAt;
   static const Field<TaskDetailModel, String> _f$dueAt =
       Field('dueAt', _$dueAt, key: r'due_at', opt: true);
@@ -315,25 +351,44 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static const Field<TaskDetailModel, bool> _f$proofRequiredOnComplete = Field(
       'proofRequiredOnComplete', _$proofRequiredOnComplete,
       key: r'proof_required_on_complete', opt: true, def: false);
+  static int? _$assignedToId(TaskDetailModel v) => v.assignedToId;
+  static const Field<TaskDetailModel, int> _f$assignedToId =
+      Field('assignedToId', _$assignedToId, key: r'assigned_to', opt: true);
+  static String? _$assignedToName(TaskDetailModel v) => v.assignedToName;
+  static const Field<TaskDetailModel, String> _f$assignedToName = Field(
+      'assignedToName', _$assignedToName,
+      key: r'assigned_to_name', opt: true);
   static TaskIssueModel? _$issue(TaskDetailModel v) => v.issue;
   static const Field<TaskDetailModel, TaskIssueModel> _f$issue =
       Field('issue', _$issue, opt: true);
   static List<TaskMediaModel>? _$media(TaskDetailModel v) => v.media;
   static const Field<TaskDetailModel, List<TaskMediaModel>> _f$media =
       Field('media', _$media, opt: true);
+  static String? _$createdAt(TaskDetailModel v) => v.createdAt;
+  static const Field<TaskDetailModel, String> _f$createdAt =
+      Field('createdAt', _$createdAt, key: r'created_at', opt: true);
+  static String? _$resolvedAt(TaskDetailModel v) => v.resolvedAt;
+  static const Field<TaskDetailModel, String> _f$resolvedAt =
+      Field('resolvedAt', _$resolvedAt, key: r'resolved_at', opt: true);
 
   @override
   final MappableFields<TaskDetailModel> fields = const {
     #id: _f$id,
     #title: _f$title,
     #description: _f$description,
+    #facilityId: _f$facilityId,
     #facilityName: _f$facilityName,
+    #facilityAddress: _f$facilityAddress,
     #dueAt: _f$dueAt,
     #issueStatus: _f$issueStatus,
     #priority: _f$priority,
     #proofRequiredOnComplete: _f$proofRequiredOnComplete,
+    #assignedToId: _f$assignedToId,
+    #assignedToName: _f$assignedToName,
     #issue: _f$issue,
     #media: _f$media,
+    #createdAt: _f$createdAt,
+    #resolvedAt: _f$resolvedAt,
   };
 
   static TaskDetailModel _instantiate(DecodingData data) {
@@ -341,13 +396,19 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
         id: data.dec(_f$id),
         title: data.dec(_f$title),
         description: data.dec(_f$description),
+        facilityId: data.dec(_f$facilityId),
         facilityName: data.dec(_f$facilityName),
+        facilityAddress: data.dec(_f$facilityAddress),
         dueAt: data.dec(_f$dueAt),
         issueStatus: data.dec(_f$issueStatus),
         priority: data.dec(_f$priority),
         proofRequiredOnComplete: data.dec(_f$proofRequiredOnComplete),
+        assignedToId: data.dec(_f$assignedToId),
+        assignedToName: data.dec(_f$assignedToName),
         issue: data.dec(_f$issue),
-        media: data.dec(_f$media));
+        media: data.dec(_f$media),
+        createdAt: data.dec(_f$createdAt),
+        resolvedAt: data.dec(_f$resolvedAt));
   }
 
   @override

@@ -60,7 +60,7 @@ class _LoginCard extends StatelessWidget {
               child: Icon(Icons.person_outline, color: colors.icon),
             ),
           ),
-          Gap(dimensions.spacing.s16),
+          Gap(dimensions.spacing.s12),
           AppTextField.password(
             controller: passwordController,
             label: context.locale.password,
