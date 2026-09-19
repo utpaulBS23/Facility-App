@@ -10,10 +10,12 @@ class IssueFormButtonsSection extends StatelessWidget {
     super.key,
     required this.isSubmitting,
     required this.onSubmit,
+    this.isFormValid = true,
   });
 
   final bool isSubmitting;
   final VoidCallback onSubmit;
+  final bool isFormValid;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class IssueFormButtonsSection extends StatelessWidget {
     return Column(
       children: [
         FilledButton(
-          onPressed: isSubmitting ? null : onSubmit,
+          onPressed: isSubmitting || !isFormValid ? null : onSubmit,
           style: FilledButton.styleFrom(
             backgroundColor: context.color.primary,
             disabledBackgroundColor: context.color.primary.withValues(

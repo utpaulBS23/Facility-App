@@ -316,6 +316,14 @@ CompleteIssueUseCase completeIssueUseCase(Ref ref) {
 }
 
 @riverpod
+UpdateIssueAssignmentUseCase updateIssueAssignmentUseCase(Ref ref) {
+  return UpdateIssueAssignmentUseCase(
+    ref.read(taskRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyVisitsUseCase getMyVisitsUseCase(Ref ref) {
   return GetMyVisitsUseCase(
     ref.read(visitRepositoryProvider),
@@ -573,6 +581,22 @@ ReportIssueUseCase reportIssueUseCase(Ref ref) {
 @riverpod
 GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
   return GetProblemCategoriesUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
+GetVisitIssuesUseCase getVisitIssuesUseCase(Ref ref) {
+  return GetVisitIssuesUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetVisitIssueDetailUseCase getVisitIssueDetailUseCase(Ref ref) {
+  return GetVisitIssueDetailUseCase(
+    ref.read(visitRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod

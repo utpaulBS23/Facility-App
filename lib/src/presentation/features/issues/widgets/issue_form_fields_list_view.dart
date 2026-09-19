@@ -4,15 +4,14 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/utiliity/validation/required_validation.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../../domain/entities/problem_category_entity.dart';
-import '../../../../domain/entities/report_issue_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_text_field.dart';
 import 'issue_assign_responsibility_section.dart';
 import 'issue_category_selector.dart';
 import 'issue_due_date_section.dart';
-import 'issue_form_buttons_section.dart';
 import 'issue_location_input_section.dart';
 import 'issue_photo_picker_section.dart';
 import 'issue_priority_selector.dart';
@@ -23,6 +22,7 @@ class IssueFormFieldsListView extends StatelessWidget {
     super.key,
     required this.titleController,
     required this.locationController,
+    required this.descriptionController,
     required this.selectedCategory,
     required this.categoryError,
     required this.priority,
@@ -30,6 +30,10 @@ class IssueFormFieldsListView extends StatelessWidget {
     required this.selectedAttendant,
     required this.dueDate,
     required this.isSubmitting,
+    this.isEditing = false,
+    this.existingPhotoUrl,
+    this.isFormValid = true,
+    this.priorityMasterData,
     required this.onPickCategory,
     required this.onPriorityChanged,
     required this.onPickCamera,
@@ -44,16 +48,21 @@ class IssueFormFieldsListView extends StatelessWidget {
 
   final TextEditingController titleController;
   final TextEditingController locationController;
+  final TextEditingController descriptionController;
   final ProblemCategoryEntity? selectedCategory;
   final bool categoryError;
-  final IssuePriority priority;
+  final String priority;
   final XFile? photo;
   final PartnerStaffEntity? selectedAttendant;
   final DateTime? dueDate;
   final bool isSubmitting;
+  final bool isEditing;
+  final String? existingPhotoUrl;
+  final bool isFormValid;
+  final List<MasterDataItemEntity>? priorityMasterData;
 
   final VoidCallback onPickCategory;
-  final ValueChanged<IssuePriority> onPriorityChanged;
+  final ValueChanged<String> onPriorityChanged;
   final VoidCallback onPickCamera;
   final VoidCallback onPickGallery;
   final VoidCallback onRemovePhoto;
@@ -73,8 +82,38 @@ class IssueFormFieldsListView extends StatelessWidget {
         vertical: spacing.s20,
       ),
       children: [
-        IssueSectionLabel(context.locale.issueTitle),
-        Gap(spacing.s8),
+        // 1. Facility
+        IssueSectionLabel('Facility'),
+        Gap(spacing.s2),
+        IssueLocationInputSection(controller: locationController),
+        Gap(spacing.s16),
+        // 2. Problem Category
+        IssueSectionLabel('Problem Category'),
+        Gap(spacing.s2),
+        IssueCategorySelector(
+          selected: selectedCategory,
+          hasError: categoryError,
+          onTap: onPickCategory,
+        ),
+        if (selectedCategory?.proofRequiredOnComplete ?? false) ...[
+          Gap(spacing.s12),
+          Chip(
+            label: Text('Proof required for response'),
+            backgroundColor: context.color.error.withValues(alpha: 0.1),
+            labelStyle: context.textStyle.labelSmall.copyWith(
+              color: context.color.error,
+            ),
+            avatar: Icon(
+              Icons.info_outline,
+              size: 16,
+              color: context.color.error,
+            ),
+          ),
+        ],
+        Gap(spacing.s16),
+        // 3. Title
+        IssueSectionLabel('Title'),
+        Gap(spacing.s2),
         AppTextField.text(
           controller: titleController,
           hint: context.locale.issueTitleHint,
@@ -82,49 +121,46 @@ class IssueFormFieldsListView extends StatelessWidget {
           autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
         Gap(spacing.s16),
-        IssueSectionLabel(context.locale.specificProblem),
-        Gap(spacing.s8),
-        IssueCategorySelector(
-          selected: selectedCategory,
-          hasError: categoryError,
-          onTap: onPickCategory,
+        // 4. Description
+        IssueSectionLabel('Description (Optional)'),
+        Gap(spacing.s2),
+        AppTextField.description(
+          controller: descriptionController,
+          hint: 'Enter issue description',
         ),
         Gap(spacing.s16),
-        IssueSectionLabel(context.locale.location),
-        Gap(spacing.s8),
-        IssueLocationInputSection(controller: locationController),
-        Gap(spacing.s16),
-        IssueSectionLabel(context.locale.priority),
-        Gap(spacing.s8),
-        IssuePrioritySelector(
-          selected: priority,
-          onChanged: onPriorityChanged,
-        ),
-        Gap(spacing.s16),
+        // 5. Photo
         IssuePhotoPickerSection(
           photo: photo,
           onCamera: onPickCamera,
           onGallery: onPickGallery,
           onRemove: onRemovePhoto,
+          existingPhotoUrl: existingPhotoUrl,
         ),
         Gap(spacing.s16),
-        IssueAssignResponsibilitySection(
-          selected: selectedAttendant,
-          onTap: onPickAttendant,
-          onClear: onClearAttendant,
-        ),
-        Gap(spacing.s16),
+        // 6. Due date
         IssueDueDateSection(
           dueDate: dueDate,
           onTap: onPickDueDate,
           onClear: onClearDueDate,
         ),
-        Gap(spacing.s24),
-        IssueFormButtonsSection(
-          isSubmitting: isSubmitting,
-          onSubmit: onSubmit,
+        Gap(spacing.s16),
+        // 7. Priority
+        IssueSectionLabel(context.locale.priority),
+        Gap(spacing.s2),
+        IssuePrioritySelector(
+          selected: priority,
+          onChanged: onPriorityChanged,
+          masterDataItems: priorityMasterData,
         ),
         Gap(spacing.s16),
+        // 8. Assign to
+        IssueAssignResponsibilitySection(
+          selected: selectedAttendant,
+          onTap: onPickAttendant,
+          onClear: onClearAttendant,
+        ),
+        Gap(spacing.s24),
       ],
     );
   }

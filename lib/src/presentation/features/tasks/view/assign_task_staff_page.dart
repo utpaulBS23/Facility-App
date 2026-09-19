@@ -7,32 +7,27 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../core/logger/log.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
-import '../../../../domain/entities/shift_slot_entity.dart';
+import '../../../../domain/entities/task_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
-import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
-import '../riverpod/assign_shift_slot_provider.dart';
-import '../riverpod/partner_staff_provider.dart';
-import '../riverpod/shift_slots_provider.dart';
+import '../riverpod/assign_task_staff_provider.dart';
+import '../riverpod/task_detail_provider.dart';
 
-class AssignStaffPage extends ConsumerStatefulWidget {
-  const AssignStaffPage({
-    super.key,
-    required this.slot,
-    required this.facilityId,
-  });
+class AssignTaskStaffPage extends ConsumerStatefulWidget {
+  const AssignTaskStaffPage({super.key, required this.task});
 
-  final ShiftSlotEntity slot;
-  final int facilityId;
+  final TaskEntity task;
 
   @override
-  ConsumerState<AssignStaffPage> createState() => _AssignStaffPageState();
+  ConsumerState<AssignTaskStaffPage> createState() =>
+      _AssignTaskStaffPageState();
 }
 
-class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
+class _AssignTaskStaffPageState extends ConsumerState<AssignTaskStaffPage> {
   final _searchController = TextEditingController();
   Timer? _debounce;
 
@@ -49,11 +44,20 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
     super.dispose();
   }
 
+  int? get _facilityId => widget.task.facilityId;
+
   void _fetchStaff() {
+    final facilityId = _facilityId;
+    Log.info('_fetchStaff called: facilityId=$facilityId');
+    if (facilityId == null) {
+      Log.error('_fetchStaff: facilityId is null');
+      return;
+    }
+    Log.info('Fetching staff for facilityId=$facilityId');
     ref
-        .read(partnerStaffProvider.notifier)
+        .read(taskPartnerStaffProvider.notifier)
         .fetch(
-          facilityId: widget.facilityId,
+          facilityId: facilityId,
           search: _searchController.text.trim().isEmpty
               ? null
               : _searchController.text.trim(),
@@ -66,53 +70,37 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
   }
 
   Future<void> _onStaffTap(PartnerStaffEntity person) async {
-    final rosterId = widget.slot.weeklyRosterId;
-    if (rosterId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.assignmentUnavailable)),
-      );
-      return;
-    }
-
-    final isSlotLead = await showDialog<bool>(
-      context: context,
-      builder: (_) => SlotLeadConfirmDialog(staffName: person.name),
-    );
-    if (isSlotLead == null || !mounted) return;
-
+    Log.info('_onStaffTap: assigning task ${widget.task.id} to staff ${person.id} (${person.name})');
     ref
-        .read(assignShiftSlotProvider.notifier)
+        .read(assignTaskStaffProvider.notifier)
         .assign(
-          facilityId: widget.facilityId,
-          rosterId: rosterId,
-          shiftSlotId: widget.slot.shiftSlotId,
-          attendantId: person.id,
-          isSlotLead: isSlotLead,
+          issueId: widget.task.id,
+          assignedTo: person.id,
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(assignShiftSlotProvider, (_, next) {
+    ref.listen(assignTaskStaffProvider, (_, next) {
       if (next is AsyncData && next.hasValue) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffAssignedSuccessfully)),
         );
-        ref.read(shiftSlotsProvider.notifier).refresh();
+        ref.read(taskDetailProvider.notifier).fetch(taskId: widget.task.id);
         context.pop();
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error.localizedMessage(context))),
+          SnackBar(content: Text((next.error as dynamic).localizedMessage(context))),
         );
       }
     });
 
     final spacing = context.dimensions.spacing;
-    final staffState = ref.watch(partnerStaffProvider);
-    final isAssigning = ref.watch(assignShiftSlotProvider).isLoading;
-    final assignedIds = widget.slot.activeAttendants
-        .map((attendant) => attendant.userId)
-        .toSet();
+    final staffState = ref.watch(taskPartnerStaffProvider);
+    final isAssigning = ref.watch(assignTaskStaffProvider).isLoading;
+    final assignedId = widget.task.assignedToId;
+
+    Log.info('AssignTaskStaffPage build: assignedId=$assignedId, task=${widget.task.id}');
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -159,13 +147,15 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
                       ),
                     );
                   }
+                  Log.info('Staff list loaded: ${staff.length} staff members, assignedId=$assignedId');
                   return ListView.separated(
                     padding: EdgeInsets.all(spacing.s16),
                     itemCount: staff.length,
                     separatorBuilder: (context, index) => Gap(spacing.s12),
                     itemBuilder: (context, index) {
                       final person = staff[index];
-                      final isSelected = assignedIds.contains(person.id);
+                      final isSelected = assignedId == person.id;
+                      Log.info('Staff item ${index}: id=${person.id}, name=${person.name}, isSelected=$isSelected');
                       return StaffTile(
                         staff: person,
                         isSelected: isSelected,
