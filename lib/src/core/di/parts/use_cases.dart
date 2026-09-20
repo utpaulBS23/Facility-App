@@ -510,6 +510,14 @@ CreateProductSaleEntryUseCase createProductSaleEntryUseCase(Ref ref) {
 }
 
 @riverpod
+GetProductSaleEntriesUseCase getProductSaleEntriesUseCase(Ref ref) {
+  return GetProductSaleEntriesUseCase(
+    productSaleEntryRepository: ref.read(productSaleEntryRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMyLeavesUseCase getMyLeavesUseCase(Ref ref) {
   return GetMyLeavesUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
@@ -614,6 +622,22 @@ DownloadApkUseCase downloadApkUseCase(Ref ref) {
 @riverpod
 InstallApkUseCase installApkUseCase(Ref ref) {
   return InstallApkUseCase(ref.read(appUpdateRepositoryProvider));
+}
+
+@riverpod
+GetToiletsUseCase getToiletsUseCase(Ref ref) {
+  return GetToiletsUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetToiletTargetUseCase getToiletTargetUseCase(Ref ref) {
+  return GetToiletTargetUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
 }
 
 @riverpod

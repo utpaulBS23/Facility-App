@@ -1,6 +1,7 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/product_sale_entry/product_sale_entry_entity.dart';
+import '../../domain/entities/product_sale_entry/product_sale_entry_filter.dart';
 import '../../domain/entities/product_sale_entry/product_sale_entry_payloads.dart';
 import '../../domain/repositories/product_sale_entry_repository.dart';
 import '../extension/product_sale_entry_mapper.dart';
@@ -25,6 +26,25 @@ final class ProductSaleEntryRepositoryImpl extends ProductSaleEntryRepository {
         response.data,
       );
       return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<ProductSaleEntryListResultEntity, Failure>> getProductSaleEntries(
+    ProductSaleEntryFilter filter,
+  ) {
+    return asyncGuard(() async {
+      final response = await remote.getProductSaleEntries(
+        partnerId: filter.partnerId!,
+        facilityId: filter.facilityId,
+        month: filter.month,
+        page: filter.page,
+        perPage: filter.pageSize,
+      );
+      final responseModel = ProductSaleEntryListResponseModel.fromJson(
+        response.data,
+      );
+      return responseModel.toListResult();
     });
   }
 }

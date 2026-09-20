@@ -190,6 +190,11 @@ class Endpoints {
   static const String trainingSessionDetails =
       '/partners/{partnerId}/training-sessions/{trainingSessionId}';
 
+  /// Facility List
+  static const String facilities = '/partners/{partnerId}/facilities';
+  static const String facilityWiseTargets =
+      '/partners/{partnerId}/facility-wise-targets';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';

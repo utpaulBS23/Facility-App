@@ -24,6 +24,7 @@ import '../riverpod/submit_expense_provider/submit_facility_expense_provider.dar
 
 part '../widgets/add_expense_action_buttons.dart';
 part '../widgets/add_expense_body.dart';
+part '../widgets/expense_category_list_sheet.dart';
 part '../widgets/expense_category_section.dart';
 part '../widgets/expense_dropdown_field.dart';
 part '../widgets/expense_facility_list_sheet.dart';

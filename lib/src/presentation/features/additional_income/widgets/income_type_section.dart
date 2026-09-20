@@ -1,8 +1,13 @@
 part of '../view/add_additional_income_page.dart';
 
 class _IncomeTypeSection extends ConsumerWidget {
-  const _IncomeTypeSection({required this.hasError, required this.onSelected});
+  const _IncomeTypeSection({
+    required this.enabled,
+    required this.hasError,
+    required this.onSelected,
+  });
 
+  final bool enabled;
   final bool hasError;
   final VoidCallback onSelected;
 
@@ -42,7 +47,9 @@ class _IncomeTypeSection extends ConsumerWidget {
         value: incomeType?.label,
         hint: context.locale.selectIncomeType,
         hasError: hasError,
-        onTap: options.isEmpty ? null : () => _onTap(context, ref),
+        onTap: enabled && options.isNotEmpty
+            ? () => _onTap(context, ref)
+            : null,
       ),
     );
   }

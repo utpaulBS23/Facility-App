@@ -36,17 +36,9 @@ class FacilityStockBalanceBody extends ConsumerWidget {
           facilityStockBalanceProvider(facilityId: facilityId),
         ),
       ),
-      data: (items) {
-        if (items.isEmpty) {
-          return Center(
-            child: Text(
-              context.locale.noStockCountRecorded,
-              style: context.textStyle.bodyMedium.copyWith(
-                color: color.text.secondary,
-              ),
-            ),
-          );
-        }
+      data: (result) {
+        final items = result.items;
+        final summary = result.summary;
 
         int statusPriority(FacilityStockStatus status) {
           return switch (status) {
@@ -61,10 +53,6 @@ class FacilityStockBalanceBody extends ConsumerWidget {
           ..sort((a, b) =>
               statusPriority(a.status).compareTo(statusPriority(b.status)));
 
-        final outCount = items.where((i) => i.status == FacilityStockStatus.out).length;
-        final lowCount = items.where((i) => i.status == FacilityStockStatus.low).length;
-        final okCount = items.where((i) => i.status == FacilityStockStatus.ok).length;
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -72,35 +60,45 @@ class FacilityStockBalanceBody extends ConsumerWidget {
               children: [
                 Expanded(
                   child: StockStatTile(
-                    value: '$outCount',
+                    value: '${summary.outCount}',
                     label: context.locale.outOfStock,
                   ),
                 ),
                 Gap(spacing.s12),
                 Expanded(
                   child: StockStatTile(
-                    value: '$lowCount',
+                    value: '${summary.lowCount}',
                     label: context.locale.lowStock,
                   ),
                 ),
                 Gap(spacing.s12),
                 Expanded(
                   child: StockStatTile(
-                    value: '$okCount',
+                    value: '${summary.okCount}',
                     label: context.locale.healthy,
                   ),
                 ),
               ],
             ),
             Gap(spacing.s16),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: sortedItems.length,
-              separatorBuilder: (context, index) => Gap(spacing.s12),
-              itemBuilder: (context, index) =>
-                  FacilityBalanceCard(item: sortedItems[index]),
-            ),
+            if (sortedItems.isEmpty)
+              Center(
+                child: Text(
+                  context.locale.noStockCountRecorded,
+                  style: context.textStyle.bodyMedium.copyWith(
+                    color: color.text.secondary,
+                  ),
+                ),
+              )
+            else
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: sortedItems.length,
+                separatorBuilder: (context, index) => Gap(spacing.s12),
+                itemBuilder: (context, index) =>
+                    FacilityBalanceCard(item: sortedItems[index]),
+              ),
           ],
         );
       },

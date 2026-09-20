@@ -389,6 +389,15 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.productSaleEntries)
+  Future<HttpResponse> getProductSaleEntries({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+    @Query('month') String? month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.myLeaves)
   Future<HttpResponse> getMyLeaves({
     @Path('partnerId') required int partnerId,
@@ -456,6 +465,21 @@ abstract class RestClient {
   Future<HttpResponse> getTrainingSessionDetails({
     @Path('partnerId') required int partnerId,
     @Path('trainingSessionId') required int trainingSessionId,
+  });
+
+  @GET(Endpoints.facilities)
+  Future<HttpResponse> getFacilities({
+    @Path('partnerId') required int partnerId,
+    @Query('status') String? status,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.facilityWiseTargets)
+  Future<HttpResponse> getFacilityWiseTargets({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required int facilityId,
+    @Query('year_month') required String yearMonth,
   });
 
   @GET(Endpoints.supplyRequests)

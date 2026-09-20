@@ -87,11 +87,73 @@ class ProductSaleEntryModel with ProductSaleEntryModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
+class ProductSaleEntryPaginationMetaModel
+    with ProductSaleEntryPaginationMetaModelMappable {
+  const ProductSaleEntryPaginationMetaModel({
+    this.currentPage,
+    this.lastPage,
+    this.perPage,
+    this.total,
+  });
+
+  final int? currentPage;
+  final int? lastPage;
+  final int? perPage;
+  final int? total;
+
+  static const fromJson = ProductSaleEntryPaginationMetaModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class ProductSaleEntrySummaryModel with ProductSaleEntrySummaryModelMappable {
+  const ProductSaleEntrySummaryModel({
+    this.totalIncome,
+    this.totalUnits,
+    this.totalProfit,
+  });
+
+  final double? totalIncome;
+  final int? totalUnits;
+  final double? totalProfit;
+
+  static const fromJson = ProductSaleEntrySummaryModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class ProductSaleEntryByFacilityModel
+    with ProductSaleEntryByFacilityModelMappable {
+  const ProductSaleEntryByFacilityModel({this.facility, this.units, this.revenue});
+
+  final ProductSaleEntryFacilityRefModel? facility;
+  final int? units;
+  final double? revenue;
+
+  static const fromJson = ProductSaleEntryByFacilityModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class ProductSaleEntryListResponseModel
     with ProductSaleEntryListResponseModelMappable {
-  const ProductSaleEntryListResponseModel({this.data});
+  const ProductSaleEntryListResponseModel({
+    this.data,
+    this.meta,
+    this.summary,
+    this.byFacility,
+  });
 
   final List<ProductSaleEntryModel>? data;
+  final ProductSaleEntryPaginationMetaModel? meta;
+  final ProductSaleEntrySummaryModel? summary;
+  final List<ProductSaleEntryByFacilityModel>? byFacility;
 
   static const fromJson = ProductSaleEntryListResponseModelMapper.fromJson;
 }
