@@ -8,72 +8,37 @@ class _IncomeStatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-
-    return Row(
-      children: [
-        Expanded(
-          child: _StatCard(
-            label: context.locale.approvedTotal,
-            value: '৳${NumberFormatter.format(summary.approvedTotal)}',
-            emphasize: true,
-          ),
-        ),
-        Gap(spacing.s8),
-        Expanded(
-          child: _StatCard(
-            label: context.locale.pending,
-            value: '${summary.pendingCount}',
-            emphasize: false,
-          ),
-        ),
-        Gap(spacing.s8),
-        Expanded(
-          child: _StatCard(
-            label: context.locale.totalSubmissions,
-            value: '${summary.totalSubmissions}',
-            emphasize: false,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.emphasize,
-  });
-
-  final String label;
-  final String value;
-  final bool emphasize;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
+    final color = context.color;
 
     return Container(
-      padding: EdgeInsets.all(spacing.s12),
+      padding: EdgeInsets.all(spacing.s8),
       decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        border: Border.all(color: context.color.borderSubtle),
-        borderRadius: BorderRadius.circular(radius.r12),
+        color: color.onPrimary,
+        border: Border.all(color: color.borderSubtle),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            value,
-            style: context.textStyle.labelLarge.copyWith(
-              color: emphasize ? context.color.primary : context.color.text.primary,
-              fontWeight: FontWeight.w600,
-            ),
+          _SummaryTile(
+            valueText: '৳${NumberFormatter.format(summary.approvedTotal)}',
+            label: context.locale.approvedTotal,
+            background: color.successAlt,
+            textColor: color.success,
           ),
-          Gap(spacing.s4),
-          BodySmallText(label, color: context.color.text.secondary),
+          Gap(spacing.s6),
+          _SummaryTile(
+            valueText: '${summary.pendingCount}',
+            label: context.locale.pending,
+            background: color.warningAlt,
+            textColor: color.warning,
+          ),
+          Gap(spacing.s6),
+          _SummaryTile(
+            valueText: '${summary.totalSubmissions}',
+            label: context.locale.totalSubmissions,
+            background: color.scaffoldBackground,
+            textColor: color.text.primary,
+          ),
         ],
       ),
     );

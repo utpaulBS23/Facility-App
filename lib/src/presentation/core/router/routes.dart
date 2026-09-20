@@ -62,6 +62,8 @@ class Routes {
   static const String report = '/report';
   static const String consumptionReport = '/consumption-report';
   static const String facilityMap = '/facility-map';
+  static const String toiletLocation = '/toilet-location';
+  static const String toiletDetails = '/toilet-location/:id';
   static const String gatewayManagement = '/gateway-management';
   static const String issueManagement = '/issue-management';
   static const String supplyRequests = '/supply-requests';

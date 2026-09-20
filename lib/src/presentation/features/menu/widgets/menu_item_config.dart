@@ -138,6 +138,13 @@ final List<MenuItemConfig> menuItemConfigs = [
     permissions: [UserPermission.reportStockConsumptionView],
   ),
   MenuItemConfig(
+    icon: Assets.icons.viewIcon,
+    label: _toiletLocationLabel,
+    subtitle: _toiletLocationSubtitle,
+    route: Routes.toiletLocation,
+    permissions: [UserPermission.facilityView],
+  ),
+  MenuItemConfig(
     icon: Assets.icons.location,
     label: _facilityLocationsLabel,
     subtitle: _facilityLocationsSubtitle,
@@ -211,6 +218,11 @@ String _consumptionReportLabel(BuildContext context) =>
     context.locale.consumptionReport;
 String _consumptionReportSubtitle(BuildContext context) =>
     context.locale.consumptionReportSubtitle;
+
+String _toiletLocationLabel(BuildContext context) =>
+    context.locale.toiletLocation;
+String _toiletLocationSubtitle(BuildContext context) =>
+    context.locale.toiletLocationSubtitle;
 
 String _facilityLocationsLabel(BuildContext context) =>
     context.locale.facilityLocations;

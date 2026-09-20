@@ -3,71 +3,7 @@ part of '../view/add_additional_income_page.dart';
 // Product options come from the facility-scoped offering list
 // (`GET /partners/{partner}/facility-products?facility_id=...`), not the
 // global product catalog — a product must currently be offered at the
-// selected facility to be sold there (facility_products, doc §3.4). This is
-// why the product picker is gated on facility selection: facility must be
-// picked first.
-class _ProductDropdownSection extends ConsumerWidget {
-  const _ProductDropdownSection({
-    required this.enabled,
-    required this.hasError,
-    required this.onSelected,
-  });
-
-  final bool enabled;
-  final bool hasError;
-  final VoidCallback onSelected;
-
-  Future<void> _onPickProduct(
-    BuildContext context,
-    WidgetRef ref,
-    List<FacilityProductEntity> products,
-  ) async {
-    final result = await showModalBottomSheet<FacilityProductEntity?>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => _ProductListSheet(
-        products: products,
-        selectedProductId: ref.read(selectedProductProvider)?.id,
-      ),
-    );
-    if (result == null) return;
-    ref.read(selectedProductProvider.notifier).select(result);
-    onSelected();
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (!enabled) {
-      return _DropdownField(
-        value: null,
-        hint: context.locale.selectProduct,
-        hasError: hasError,
-        onTap: null,
-      );
-    }
-
-    final productsAsync = ref.watch(facilityProductOptionsProvider);
-    final selected = ref.watch(selectedProductProvider);
-
-    return productsAsync.when(
-      loading: () => const LinearProgressIndicator(),
-      error: (_, _) => BodySmallText(
-        context.locale.selectProduct,
-        color: context.color.error,
-      ),
-      data: (products) => _DropdownField(
-        value: selected?.productName,
-        hint: context.locale.selectProduct,
-        hasError: hasError,
-        onTap: products.isEmpty
-            ? null
-            : () => _onPickProduct(context, ref, products),
-      ),
-    );
-  }
-}
-
+// selected facility to be sold there (facility_products, doc §3.4).
 class _ProductListSheet extends StatelessWidget {
   const _ProductListSheet({
     required this.products,

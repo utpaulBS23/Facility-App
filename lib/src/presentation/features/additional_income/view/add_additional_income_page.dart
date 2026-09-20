@@ -16,13 +16,13 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/submit_income_provider/facility_product_options_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_facility_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_type_provider.dart';
-import '../riverpod/submit_income_provider/selected_product_provider.dart';
 import '../riverpod/submit_income_provider/submit_income_provider.dart';
 
 part '../widgets/add_income_action_buttons.dart';
@@ -33,6 +33,8 @@ part '../widgets/income_facility_list_sheet.dart';
 part '../widgets/income_facility_section.dart';
 part '../widgets/income_type_section.dart';
 part '../widgets/product_dropdown_field.dart';
+part '../widgets/product_leg_draft.dart';
+part '../widgets/product_leg_row.dart';
 part '../widgets/proof_photo_picker_card.dart';
 
 class AddAdditionalIncomePage extends ConsumerStatefulWidget {
@@ -48,21 +50,22 @@ class _AddAdditionalIncomePageState
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _unitsSoldController = TextEditingController();
+  List<_ProductLegDraft> _productLegs = [_ProductLegDraft()];
 
   IncomeEntryType _incomeEntryType = IncomeEntryType.rentAndOthers;
   bool _incomeTypeError = false;
   bool _facilityError = false;
   bool _amountError = false;
-  bool _productError = false;
-  bool _unitsSoldError = false;
+  bool _productLegsShowErrors = false;
   DateTime _entryDate = DateTime.now();
 
   @override
   void dispose() {
     _amountController.dispose();
     _descriptionController.dispose();
-    _unitsSoldController.dispose();
+    for (final leg in _productLegs) {
+      leg.dispose();
+    }
     super.dispose();
   }
 
@@ -70,14 +73,26 @@ class _AddAdditionalIncomePageState
     setState(() {
       _incomeEntryType = type;
       _incomeTypeError = false;
-      _productError = false;
-      _unitsSoldError = false;
+      _productLegsShowErrors = false;
       _amountError = false;
       _amountController.clear();
       _descriptionController.clear();
-      _unitsSoldController.clear();
+      for (final leg in _productLegs) {
+        leg.dispose();
+      }
+      _productLegs = [_ProductLegDraft()];
       ref.read(selectedIncomeTypeProvider.notifier).select(null);
-      ref.read(selectedProductProvider.notifier).select(null);
+    });
+  }
+
+  void _onProductLegChanged() => setState(() {});
+
+  void _onAddProductLeg() => setState(() => _productLegs.add(_ProductLegDraft()));
+
+  void _onRemoveProductLeg(_ProductLegDraft leg) {
+    setState(() {
+      _productLegs.remove(leg);
+      leg.dispose();
     });
   }
 
@@ -128,29 +143,17 @@ class _AddAdditionalIncomePageState
   }
 
   void _onSubmitProductSale() {
-    final product = ref.read(selectedProductProvider);
     final facilityId = ref.read(selectedIncomeFacilityProvider);
-    final unitsSold = int.tryParse(_unitsSoldController.text.trim()) ?? 0;
-    final unitPrice = double.tryParse(_amountController.text.trim()) ?? 0;
-
-    final productOk = product != null;
     final facilityOk = facilityId != null;
-    final unitsSoldOk =
-        unitsSold > 0 && (product == null || unitsSold <= product.stockQuantity);
-    final unitPriceOk = unitPrice > 0;
+    final legsOk =
+        _productLegs.isNotEmpty && _productLegs.every((leg) => leg.isValid);
 
     setState(() {
-      _productError = !productOk;
       _facilityError = !facilityOk;
-      _unitsSoldError = !unitsSoldOk;
-      _amountError = !unitPriceOk;
+      _productLegsShowErrors = !legsOk;
     });
 
-    if (!_formKey.currentState!.validate() ||
-        !productOk ||
-        !facilityOk ||
-        !unitsSoldOk ||
-        !unitPriceOk) {
+    if (!_formKey.currentState!.validate() || !facilityOk || !legsOk) {
       return;
     }
 
@@ -160,13 +163,7 @@ class _AddAdditionalIncomePageState
           productSaleRequest: CreateProductSaleEntryRequestEntity(
             facilityId: facilityId,
             entryDate: _entryDate,
-            items: [
-              CreateProductSaleEntryItemEntity(
-                productId: product.productId,
-                unitsSold: unitsSold,
-                unitPrice: unitPrice,
-              ),
-            ],
+            items: _productLegs.map((leg) => leg.toEntity()).toList(),
           ),
         );
   }
@@ -202,7 +199,11 @@ class _AddAdditionalIncomePageState
         onIncomeEntryTypeChanged: _onIncomeEntryTypeChanged,
         amountController: _amountController,
         descriptionController: _descriptionController,
-        unitsSoldController: _unitsSoldController,
+        productLegs: _productLegs,
+        productLegsShowErrors: _productLegsShowErrors,
+        onProductLegChanged: _onProductLegChanged,
+        onAddProductLeg: _onAddProductLeg,
+        onRemoveProductLeg: _onRemoveProductLeg,
         incomeTypeError: _incomeTypeError,
         onIncomeTypeSelected: () => setState(() => _incomeTypeError = false),
         facilityError: _facilityError,
@@ -210,20 +211,6 @@ class _AddAdditionalIncomePageState
         amountError: _amountError,
         onAmountChanged: () {
           if (_amountError) setState(() => _amountError = false);
-        },
-        productError: _productError,
-        onProductSelected: () {
-          final product = ref.read(selectedProductProvider);
-          setState(() {
-            _productError = false;
-            if (product != null) {
-              _amountController.text = product.price.toString();
-            }
-          });
-        },
-        unitsSoldError: _unitsSoldError,
-        onUnitsSoldChanged: () {
-          if (_unitsSoldError) setState(() => _unitsSoldError = false);
         },
         entryDate: _entryDate,
         onPickEntryDate: _onPickEntryDate,
