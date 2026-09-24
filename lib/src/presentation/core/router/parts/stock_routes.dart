@@ -28,4 +28,17 @@ List<RouteBase> _stockRoutes(Ref ref) => [
           );
         },
       ),
+      GoRoute(
+        path: Routes.updateStock,
+        name: Routes.updateStock,
+        pageBuilder: (context, state) {
+          final (facilityId, shiftAssignmentId) = state.extra as (int, int);
+          return MaterialPage(
+            child: UpdateStockPage(
+              facilityId: facilityId,
+              shiftAssignmentId: shiftAssignmentId,
+            ),
+          );
+        },
+      ),
     ];
