@@ -34,9 +34,9 @@ class ManualAttendance extends _$ManualAttendance {
       shiftId: shiftSlotId,
       reason: reason,
       checkInTime: checkInInfo.checkInTimeRaw,
-      lat: checkInInfo.latitude,
-      lng: checkInInfo.longitude,
-      address: checkInInfo.location,
+      lat: checkInInfo.latitude!,
+      lng: checkInInfo.longitude!,
+      address: checkInInfo.location ?? '',
     );
 
     final result = await ref
