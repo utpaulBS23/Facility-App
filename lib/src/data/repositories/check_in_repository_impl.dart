@@ -22,6 +22,7 @@ final class CheckInRepositoryImpl extends CheckInRepository {
     required double lat,
     required double lng,
     required String selfieUrl,
+    String? lateCheckInReason,
   }) async {
     return asyncGuard(() async {
       final selfie = await MultipartFile.fromFile(
@@ -33,6 +34,7 @@ final class CheckInRepositoryImpl extends CheckInRepository {
         'lat': lat,
         'lng': lng,
         'selfie_url': selfie,
+        'late_check_in_reason': ?lateCheckInReason,
       });
       final response = await remote.checkIn(partnerId, formData);
       return CheckInResponseModel.fromJson(response.data).toEntity();

@@ -36,6 +36,7 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     checkOutSelfie: checkOutSelfie,
     shift: shift?.toEntity(),
     approver: approver?.toEntity(),
+    approvalStatus: AttendanceApprovalStatus.fromWireString(status),
   );
 }
 

@@ -188,6 +188,7 @@
   "daysCovered": "দিন",
   "attendanceRecords": "রেকর্ড",
   "hoursValue": "{hours} ঘন্টা",
+  "minutesValue": "{minutes} মিনিট",
   "present": "উপস্থিত",
   "late": "দেরি",
   "absent": "অনুপস্থিত",
