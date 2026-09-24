@@ -20,6 +20,7 @@ import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_dropdown_button_form_field.dart';
+import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -58,6 +59,14 @@ class ShiftCheckInPage extends ConsumerStatefulWidget {
 }
 
 class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
+  final _reasonController = TextEditingController();
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
   void _onSubmit(String? photoPath) {
     if (photoPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -92,6 +101,9 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
           lat: checkInInfo.latitude,
           lng: checkInInfo.longitude,
           selfieUrl: photoPath,
+          lateCheckInReason: _reasonController.text.trim().isEmpty
+              ? null
+              : _reasonController.text.trim(),
         );
   }
 
@@ -189,6 +201,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         onRequestSupervisor: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),
         supervisorName: widget.supervisorName,
+        reasonController: _reasonController,
       ),
     );
   }

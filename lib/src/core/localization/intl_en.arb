@@ -196,6 +196,15 @@
       }
     }
   },
+  "minutesValue": "{minutes} min",
+  "@minutesValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "37"
+      }
+    }
+  },
   "present": "Present",
   "late": "Late",
   "absent": "Absent",

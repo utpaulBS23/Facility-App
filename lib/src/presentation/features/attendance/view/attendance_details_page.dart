@@ -63,7 +63,8 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
 
     final isApproving = ref.watch(approveAttendanceProvider).isLoading;
     final isRejecting = ref.watch(rejectAttendanceProvider).isLoading;
-    final isPending = _current.status == 'pending';
+    final isPending = _current.approvalStatus.isPendingStage;
+    final allowReject = _current.approvalStatus.isRejectable;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -87,6 +88,7 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
                       onReject: _onReject,
                       isApproving: isApproving,
                       isRejecting: isRejecting,
+                      allowReject: allowReject,
                     )
                   : const SizedBox.shrink(),
             ),

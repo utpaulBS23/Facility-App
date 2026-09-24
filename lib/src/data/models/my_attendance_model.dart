@@ -37,7 +37,7 @@ class MyAttendanceItemModel with MyAttendanceItemModelMappable {
     this.checkInAt,
     this.checkOutAt,
     this.visitCount,
-    this.hours,
+    this.minutes,
   });
 
   @MappableField(key: 'user_id')
@@ -72,7 +72,7 @@ class MyAttendanceItemModel with MyAttendanceItemModelMappable {
   @MappableField(key: 'visit_count')
   final int? visitCount;
 
-  final double? hours;
+  final int? minutes;
 
   static const fromJson = MyAttendanceItemModelMapper.fromJson;
 }

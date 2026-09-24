@@ -9,6 +9,7 @@ class CheckInRequestModel with CheckInRequestModelMappable {
     required this.lat,
     required this.lng,
     required this.selfieUrl,
+    this.lateCheckInReason,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -17,6 +18,8 @@ class CheckInRequestModel with CheckInRequestModelMappable {
   final double lng;
   @MappableField(key: 'selfie_url')
   final String selfieUrl;
+  @MappableField(key: 'late_check_in_reason')
+  final String? lateCheckInReason;
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)

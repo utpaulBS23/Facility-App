@@ -1,3 +1,7 @@
+import 'attendance/attendance_approval_status.dart';
+
+export 'attendance/attendance_approval_status.dart';
+
 // WHY: AttendanceStatue kept for the shift check-in approval flow.
 enum AttendanceStatue { pending, success, reject, needFace }
 
@@ -58,6 +62,7 @@ class AttendanceItemEntity {
     this.checkOutSelfie,
     this.shift,
     this.approver,
+    required this.approvalStatus,
   });
 
   final int? id;
@@ -66,6 +71,7 @@ class AttendanceItemEntity {
   final String userUid;
   final String date;
   final String status;
+  final AttendanceApprovalStatus approvalStatus;
   final bool isLate;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
@@ -81,9 +87,10 @@ class AttendanceItemEntity {
   // WHY: API returns raw `status` string ('pending', 'approved', 'auto_approved',
   // 'rejected', 'absent').
   AttendanceStatus get displayStatus => switch (status) {
-        'approved' => AttendanceStatus.approved,
+        'approved' || 'approved_check_in' || 'approved_check_out' =>
+          AttendanceStatus.approved,
         'auto_approved' || 'autoApproved' => AttendanceStatus.autoApproved,
-        'rejected' => AttendanceStatus.rejected,
+        'rejected' || 'rejected_check_in' => AttendanceStatus.rejected,
         'absent' => AttendanceStatus.absent,
         _ => AttendanceStatus.pending,
       };

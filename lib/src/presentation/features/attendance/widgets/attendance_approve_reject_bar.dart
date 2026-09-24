@@ -6,12 +6,14 @@ class _ApproveRejectBar extends StatelessWidget {
     required this.onReject,
     required this.isApproving,
     required this.isRejecting,
+    this.allowReject = true,
   });
 
   final VoidCallback onApprove;
   final VoidCallback onReject;
   final bool isApproving;
   final bool isRejecting;
+  final bool allowReject;
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +39,21 @@ class _ApproveRejectBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: busy ? null : onReject,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: context.color.error,
-                    side: BorderSide(color: context.color.error),
+              if (allowReject) ...[
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: busy ? null : onReject,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: context.color.error,
+                      side: BorderSide(color: context.color.error),
+                    ),
+                    child: isRejecting
+                        ? const LoadingIndicator()
+                        : Text(context.locale.reject),
                   ),
-                  child: isRejecting
-                      ? const LoadingIndicator()
-                      : Text(context.locale.reject),
                 ),
-              ),
-              Gap(spacing.s12),
+                Gap(spacing.s12),
+              ],
               Expanded(
                 child: FilledButton(
                   onPressed: busy ? null : onApprove,

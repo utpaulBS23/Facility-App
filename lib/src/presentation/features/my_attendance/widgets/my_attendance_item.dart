@@ -106,10 +106,10 @@ class _MyAttendanceItem extends StatelessWidget {
                     color: context.color.text.secondary,
                   ),
                 ],
-                if (item.hours != null) ...[
+                if (item.minutes != null) ...[
                   Gap(spacing.s12),
                   Text(
-                    context.locale.hoursValue(item.hours!.toStringAsFixed(1)),
+                    context.locale.minutesValue(item.minutes.toString()),
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,
                     ),

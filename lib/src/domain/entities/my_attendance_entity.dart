@@ -25,7 +25,7 @@ class MyAttendanceItemEntity {
     this.checkInAt,
     this.checkOutAt,
     required this.visitCount,
-    this.hours,
+    this.minutes,
   });
 
   final int userId;
@@ -39,7 +39,7 @@ class MyAttendanceItemEntity {
   final DateTime? checkInAt;
   final DateTime? checkOutAt;
   final int visitCount;
-  final double? hours;
+  final int? minutes;
 
   // WHY: a null check-out with a present check-in means the supervisor is
   // still on their round — mirrors `stats.still_on_round` for a single row.

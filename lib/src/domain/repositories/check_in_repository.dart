@@ -10,5 +10,6 @@ abstract base class CheckInRepository extends Repository {
     required double lat,
     required double lng,
     required String selfieUrl,
+    String? lateCheckInReason,
   });
 }

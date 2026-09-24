@@ -13,6 +13,14 @@ class ShiftCheckOutPage extends ConsumerStatefulWidget {
 }
 
 class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
+  final _reasonController = TextEditingController();
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
   Future<void> _onTakePhoto() async {
     final path = await context.pushNamed<String?>(Routes.selfieCamera);
     if (path == null || !mounted) return;
@@ -45,6 +53,9 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
           lat: checkInInfo.latitude,
           lng: checkInInfo.longitude,
           selfieUrl: photoPath,
+          reason: _reasonController.text.trim().isEmpty
+              ? null
+              : _reasonController.text.trim(),
         );
   }
 
@@ -113,6 +124,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         errorMessage: selfieState.error?.toString(),
         onTakePhoto: _onTakePhoto,
         onSubmit: () => _onSubmit(photoPath),
+        reasonController: _reasonController,
       ),
     );
   }
@@ -127,6 +139,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
     this.errorMessage,
     required this.onTakePhoto,
     required this.onSubmit,
+    required this.reasonController,
   });
 
   final String? capturedPhotoPath;
@@ -136,6 +149,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
   final String? errorMessage;
   final VoidCallback onTakePhoto;
   final VoidCallback onSubmit;
+  final TextEditingController reasonController;
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +184,11 @@ class _ShiftCheckOutBody extends StatelessWidget {
                   ),
                   Gap(dimensions.spacing.s16),
                   const _AutoDetectedInfoCard(),
+                  Gap(dimensions.spacing.s16),
+                  AppTextField.description(
+                    controller: reasonController,
+                    label: context.locale.reason,
+                  ),
                   Gap(dimensions.spacing.s16),
                 ],
               ),
