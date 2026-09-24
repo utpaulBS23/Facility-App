@@ -31,11 +31,17 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     durationHours: durationHours?.toString(),
     attendanceType: attendanceType ?? 'app',
     location: location,
-    reason: reason,
+    lateCheckInReason: lateCheckInReason,
+    lateCheckInByMinutes: lateCheckInByMinutes,
+    checkOutReason: checkOutReason,
+    lateCheckOutByMinutes: lateCheckOutByMinutes,
+    isLateCheckOut: isLateCheckOut,
     checkInSelfie: checkInSelfie,
     checkOutSelfie: checkOutSelfie,
     shift: shift?.toEntity(),
     approver: approver?.toEntity(),
+    checkInReviewer: checkInReviewer?.toEntity(),
+    checkOutReviewer: checkOutReviewer?.toEntity(),
     approvalStatus: AttendanceApprovalStatus.fromWireString(status),
   );
 }

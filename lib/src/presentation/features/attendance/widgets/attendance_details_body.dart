@@ -20,6 +20,20 @@ class _AttendanceDetailsBody extends StatelessWidget {
             Gap(spacing.s8),
             _AttendanceSelfieSection(detail: detail),
           ],
+          if (detail.checkInReviewer != null) ...[
+            Gap(spacing.s8),
+            _AttendanceDetailApproverCard(
+              approver: detail.checkInReviewer!,
+              label: context.locale.checkInReviewedBy,
+            ),
+          ],
+          if (detail.checkOutReviewer != null) ...[
+            Gap(spacing.s8),
+            _AttendanceDetailApproverCard(
+              approver: detail.checkOutReviewer!,
+              label: context.locale.checkOutReviewedBy,
+            ),
+          ],
           if (detail.approver != null) ...[
             Gap(spacing.s8),
             _AttendanceDetailApproverCard(approver: detail.approver!),

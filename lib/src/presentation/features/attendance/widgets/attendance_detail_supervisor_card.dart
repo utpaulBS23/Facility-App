@@ -1,9 +1,10 @@
 part of '../view/attendance_page.dart';
 
 class _AttendanceDetailApproverCard extends StatelessWidget {
-  const _AttendanceDetailApproverCard({required this.approver});
+  const _AttendanceDetailApproverCard({required this.approver, this.label});
 
   final AttendanceApproverEntity approver;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class _AttendanceDetailApproverCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  context.locale.approvedBy,
+                  label ?? context.locale.approvedBy,
                   style: context.textStyle.bodySmall.copyWith(
                     color: context.color.text.secondary,
                   ),
