@@ -77,12 +77,24 @@ class _AttendanceDetailMainCard extends StatelessWidget {
               value: detail.shift!.facilityName,
             ),
           ],
-          if (detail.reason != null) ...[
+          if (detail.lateCheckInReason != null) ...[
             Gap(spacing.s16),
             _DetailRow(
               icon: Icons.comment_outlined,
-              label: context.locale.reason,
-              value: detail.reason!,
+              label: context.locale.lateCheckInReason,
+              value: detail.lateCheckInByMinutes != null
+                  ? '${detail.lateCheckInReason} (${detail.lateCheckInByMinutes} min late)'
+                  : detail.lateCheckInReason!,
+            ),
+          ],
+          if (detail.checkOutReason != null) ...[
+            Gap(spacing.s16),
+            _DetailRow(
+              icon: Icons.comment_outlined,
+              label: context.locale.checkOutReason,
+              value: detail.lateCheckOutByMinutes != null
+                  ? '${detail.checkOutReason} (${detail.lateCheckOutByMinutes} min late)'
+                  : detail.checkOutReason!,
             ),
           ],
         ],
