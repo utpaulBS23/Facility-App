@@ -38,7 +38,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       return;
     }
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null) {
+    if (checkInInfo == null || !checkInInfo.hasLocation) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.locationUnavailable)),
       );
@@ -50,8 +50,8 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         .read(checkOutProvider.notifier)
         .checkOut(
           attendanceId: widget.attendanceId,
-          lat: checkInInfo.latitude,
-          lng: checkInInfo.longitude,
+          lat: checkInInfo.latitude!,
+          lng: checkInInfo.longitude!,
           selfieUrl: photoPath,
           reason: _reasonController.text.trim().isEmpty
               ? null
@@ -112,6 +112,8 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     final selfieState = ref.watch(selfiePickerProvider);
     final photoPath = selfieState.valueOrNull;
     final checkOutState = ref.watch(checkOutProvider);
+    final selfieError = selfieState.error;
+    final isNoFace = selfieError is Failure && selfieError.code == 'no_face_detected';
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -120,8 +122,9 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
         isSubmitting: checkOutState.isLoading,
-        hasError: selfieState.hasError,
-        errorMessage: selfieState.error?.toString(),
+        hasError: selfieState.hasError && !isNoFace,
+        errorMessage: selfieError?.localizedMessage(context),
+        faceValidationError: isNoFace ? context.locale.noFaceDetected : null,
         onTakePhoto: _onTakePhoto,
         onSubmit: () => _onSubmit(photoPath),
         reasonController: _reasonController,
@@ -137,6 +140,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
     required this.isSubmitting,
     required this.hasError,
     this.errorMessage,
+    this.faceValidationError,
     required this.onTakePhoto,
     required this.onSubmit,
     required this.reasonController,
@@ -147,6 +151,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
   final bool isSubmitting;
   final bool hasError;
   final String? errorMessage;
+  final String? faceValidationError;
   final VoidCallback onTakePhoto;
   final VoidCallback onSubmit;
   final TextEditingController reasonController;
@@ -174,6 +179,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
                     capturedPhotoPath: capturedPhotoPath,
                     hasError: hasError,
                     errorMessage: errorMessage,
+                    faceValidationError: faceValidationError,
                     onRetry: onTakePhoto,
                   ),
                   Gap(dimensions.spacing.s12),

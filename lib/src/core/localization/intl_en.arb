@@ -151,6 +151,8 @@
   "capture": "Capture",
   "loading": "Loading...",
   "locationUnavailable": "Location unavailable, please try again",
+  "locationServiceDisabled": "Location services are turned off. Please enable location to continue.",
+  "noFaceDetected": "No face detected. Please retake the photo.",
   "photoCaptureFailed": "Photo capture failed",
   "tryAgain": "Try Again",
   "retry": "Retry",

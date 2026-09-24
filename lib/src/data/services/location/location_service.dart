@@ -3,10 +3,16 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/base/exceptions.dart';
+
 /// Service for accessing device location and geocoding.
 abstract class LocationService {
   /// Gets the current position of the device.
-  Future<Position?> getCurrentPosition();
+  ///
+  /// Throws [CustomException.validation] (field `location_service_disabled`
+  /// or `location_permission_denied`) when location can't be obtained, so
+  /// callers can tell the two causes apart and prompt accordingly.
+  Future<Position> getCurrentPosition();
 
   /// Converts coordinates to a human-readable address.
   Future<String?> getAddressFromCoordinates({
@@ -17,15 +23,23 @@ abstract class LocationService {
 
 final class LocationServiceImpl implements LocationService {
   @override
-  Future<Position?> getCurrentPosition() async {
+  Future<Position> getCurrentPosition() async {
     final permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      return null;
+      throw const CustomException.validation(
+        message: 'Location permission denied.',
+        field: 'location_permission_denied',
+      );
     }
 
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) return null;
+    if (!serviceEnabled) {
+      throw const CustomException.validation(
+        message: 'Location services are disabled.',
+        field: 'location_service_disabled',
+      );
+    }
 
     return Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),

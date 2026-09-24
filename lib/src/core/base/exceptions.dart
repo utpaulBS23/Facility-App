@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'exceptions.freezed.dart';
 
 @freezed
-sealed class CustomException with _$CustomException {
+sealed class CustomException with _$CustomException implements Exception {
   const factory CustomException.parsing({
     required String message,
     String? field,

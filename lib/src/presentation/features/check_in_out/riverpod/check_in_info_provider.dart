@@ -18,28 +18,37 @@ class CheckInInfo extends _$CheckInInfo {
     return const AsyncValue.loading();
   }
 
+  /// Re-runs location detection — the retry hook for the "location off"
+  /// prompt. Time/supervisor are unaffected by location and never need it.
+  Future<void> refresh() => _loadCheckInInfo();
+
   Future<void> _loadCheckInInfo() async {
     state = const AsyncValue.loading();
     final locationResult = await ref
         .read(getCurrentLocationUseCaseProvider)
         .call();
+    final user = ref.read(getCurrentUserUseCaseProvider).call();
+    final now = DateTime.now();
 
-    state = locationResult.when(
-      success: (locationData) {
-        final user = ref.read(getCurrentUserUseCaseProvider).call();
-        final now = DateTime.now();
-        return AsyncValue.data(
-          CheckInInfoEntity(
-            location: locationData?.address ?? 'Unknown location',
-            checkInTime: DateFormat('EEE, MMM d, y, h:mm a').format(now),
-            checkInTimeRaw: DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
-            supervisorName: user?.supervisor ?? '—',
-            latitude: locationData?.latitude ?? 0.0,
-            longitude: locationData?.longitude ?? 0.0,
-          ),
-        );
-      },
-      error: (error) => AsyncValue.error(error, StackTrace.current),
+    // WHY: time/supervisor don't depend on location — a location failure
+    // must not block them, so state is always `.data`, never `.error`.
+    state = AsyncValue.data(
+      locationResult.when(
+        success: (data) => CheckInInfoEntity(
+          checkInTime: DateFormat('EEE, MMM d, y, h:mm a').format(now),
+          checkInTimeRaw: DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
+          supervisorName: user?.supervisor ?? '—',
+          location: data?.address,
+          latitude: data?.latitude,
+          longitude: data?.longitude,
+        ),
+        error: (failure) => CheckInInfoEntity(
+          checkInTime: DateFormat('EEE, MMM d, y, h:mm a').format(now),
+          checkInTimeRaw: DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
+          supervisorName: user?.supervisor ?? '—',
+          locationFailure: failure,
+        ),
+      ),
     );
   }
 }

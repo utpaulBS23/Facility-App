@@ -164,6 +164,7 @@ abstract class Failure with _$Failure {
         ValidationException() => Failure(
           type: FailureType.validation,
           message: e.message,
+          code: e.field,
           stackTrace: e.stackTrace,
         ),
         IllegalOperationException() => Failure(

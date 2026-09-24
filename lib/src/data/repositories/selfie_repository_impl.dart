@@ -23,6 +23,7 @@ final class SelfieRepositoryImpl extends SelfieRepository {
         const Failure(
           type: FailureType.validation,
           message: 'No face detected. Please retake the photo.',
+          code: 'no_face_detected',
         ),
       ),
       _ => Success(data: path),

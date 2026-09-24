@@ -90,7 +90,7 @@ class _ManualAttendanceBottomSheetState
               Gap(spacing.s8),
               _ManualAttendanceInfoRow(
                 label: locale.location,
-                value: widget.checkInInfo.location,
+                value: widget.checkInInfo.location ?? '',
               ),
               Gap(spacing.s16),
               _ReasonDropdown(

@@ -17,12 +17,26 @@ class _ShiftFab extends ConsumerWidget {
     if (activeSlot.action == SlotAction.checkOut) {
       // WHY: the check-out endpoint needs the attendance id (the check-in
       // record), not the slot id — active_slot doesn't carry it directly, so
-      // it's read off the matching slot's own attendance row.
+      // it's read off the matching slot's own attendance row. `data.slots` is
+      // scoped to the currently filtered facility, so the active slot (which
+      // isn't filter-scoped) can live only under `data.facilities` — same gap
+      // `SlotDetailsPage._onAssignStaff` already works around.
       int? attendanceId;
       for (final slot in data.slots) {
         if (slot.shiftSlotId == activeSlot.shiftSlotId) {
           attendanceId = slot.me?.attendance?.id;
           break;
+        }
+      }
+      if (attendanceId == null) {
+        outer:
+        for (final facility in data.facilities) {
+          for (final slot in facility.slots) {
+            if (slot.shiftSlotId == activeSlot.shiftSlotId) {
+              attendanceId = slot.me?.attendance?.id;
+              break outer;
+            }
+          }
         }
       }
       if (attendanceId == null) return;
