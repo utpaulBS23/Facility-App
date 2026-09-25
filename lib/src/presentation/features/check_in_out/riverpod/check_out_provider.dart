@@ -19,6 +19,7 @@ class CheckOut extends _$CheckOut {
     required double lng,
     required String selfieUrl,
     String? reason,
+    DateTime? checkOutTime,
   }) async {
     if (state.isLoading) return;
 
@@ -37,6 +38,7 @@ class CheckOut extends _$CheckOut {
           lng: lng,
           selfieUrl: selfieUrl,
           reason: reason,
+          checkOutTime: checkOutTime,
         );
 
     state = switch (result) {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
@@ -23,18 +24,23 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
     required double lng,
     required String selfieUrl,
     String? reason,
+    DateTime? checkOutTime,
   }) async {
     return asyncGuard(() async {
       final selfie = await MultipartFile.fromFile(
         selfieUrl,
         filename: File(selfieUrl).uri.pathSegments.last,
       );
+      final checkOutTimeRaw = checkOutTime == null
+          ? null
+          : DateFormat('yyyy-MM-dd HH:mm:ss').format(checkOutTime);
       final formData = FormData.fromMap({
         'attendance_id': attendanceId,
         'lat': lat,
         'lng': lng,
         'selfie_url': selfie,
         'reason': ?reason,
+        'check_out_time': ?checkOutTimeRaw,
       });
       final response = await remote.checkOut(partnerId, formData);
       return CheckOutResponseModel.fromJson(response.data).toEntity();

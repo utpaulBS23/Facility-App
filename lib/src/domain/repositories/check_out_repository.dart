@@ -11,5 +11,6 @@ abstract base class CheckOutRepository extends Repository {
     required double lng,
     required String selfieUrl,
     String? reason,
+    DateTime? checkOutTime,
   });
 }

@@ -12,11 +12,25 @@ class AttendanceDetailsPage extends ConsumerStatefulWidget {
 
 class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   late AttendanceItemEntity _current;
+  // WHY: UI-only for now — approve/reject take no body per the backend doc,
+  // so there's nowhere to send a corrected time yet. Defaults to whichever
+  // phase is currently pending so a supervisor can review/correct it before
+  // that API support lands.
+  late TimeOfDay _reviewTime;
+
   @override
   void initState() {
     super.initState();
     _current = widget.attendance;
+    _reviewTime = TimeOfDay.fromDateTime(_defaultReviewDateTime);
   }
+
+  bool get _isCheckOutPhase =>
+      _current.approvalStatus == AttendanceApprovalStatus.pendingCheckOut;
+
+  DateTime get _defaultReviewDateTime =>
+      (_isCheckOutPhase ? _current.checkOutTime : _current.checkInTime) ??
+      DateTime.now();
 
   void _onApprove() {
     if (_current.id == null) return;
@@ -83,12 +97,32 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
                 UserPermission.attendanceReject,
               ],
               builder: (context, canReview) => canReview
-                  ? _ApproveRejectBar(
-                      onApprove: _onApprove,
-                      onReject: _onReject,
-                      isApproving: isApproving,
-                      isRejecting: isRejecting,
-                      allowReject: allowReject,
+                  ? Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            context.dimensions.padding.p16,
+                            0,
+                            context.dimensions.padding.p16,
+                            context.dimensions.spacing.s8,
+                          ),
+                          child: AppTimeField(
+                            label: _isCheckOutPhase
+                                ? context.locale.checkOutTime
+                                : context.locale.checkInTime,
+                            time: _reviewTime,
+                            onChanged: (time) =>
+                                setState(() => _reviewTime = time),
+                          ),
+                        ),
+                        _ApproveRejectBar(
+                          onApprove: _onApprove,
+                          onReject: _onReject,
+                          isApproving: isApproving,
+                          isRejecting: isRejecting,
+                          allowReject: allowReject,
+                        ),
+                      ],
                     )
                   : const SizedBox.shrink(),
             ),
