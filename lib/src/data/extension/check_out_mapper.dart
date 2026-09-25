@@ -15,7 +15,7 @@ extension CheckOutResponseModelToEntity on CheckOutResponseModel {
     attendanceId: data.attendanceId,
     checkInTime: parseLocalIso(data.checkInTime),
     checkOutTime: parseLocalIso(data.checkOutTime),
-    totalHours: data.totalHours ?? 0,
+    totalMinutes: data.totalMinutes ?? 0,
     approvalStatus: data.approvalStatus ?? '',
     warnings: warnings.map((warning) => warning.toEntity()).toList(),
   );

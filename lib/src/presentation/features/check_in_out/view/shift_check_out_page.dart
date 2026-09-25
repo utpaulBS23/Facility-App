@@ -14,6 +14,12 @@ class ShiftCheckOutPage extends ConsumerStatefulWidget {
 
 class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
   final _reasonController = TextEditingController();
+  TimeOfDay _checkOutTime = TimeOfDay.fromDateTime(DateTime.now());
+  // WHY: only send `check_out_time` when the attendant actually corrected it —
+  // per the backend doc, omitting it on a live checkout leaves the server
+  // stamp untouched; sending the untouched default would be indistinguishable
+  // from a correction.
+  bool _checkOutTimeEdited = false;
 
   @override
   void dispose() {
@@ -46,6 +52,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     }
     // WHY: no upload-to-storage step exists yet — see the matching comment
     // in ShiftCheckInPage._onSubmit.
+    final now = DateTime.now();
     ref
         .read(checkOutProvider.notifier)
         .checkOut(
@@ -56,6 +63,15 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
           reason: _reasonController.text.trim().isEmpty
               ? null
               : _reasonController.text.trim(),
+          checkOutTime: _checkOutTimeEdited
+              ? DateTime(
+                  now.year,
+                  now.month,
+                  now.day,
+                  _checkOutTime.hour,
+                  _checkOutTime.minute,
+                )
+              : null,
         );
   }
 
@@ -128,6 +144,11 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         onTakePhoto: _onTakePhoto,
         onSubmit: () => _onSubmit(photoPath),
         reasonController: _reasonController,
+        checkOutTime: _checkOutTime,
+        onCheckOutTimeChanged: (time) => setState(() {
+          _checkOutTime = time;
+          _checkOutTimeEdited = true;
+        }),
       ),
     );
   }
@@ -144,6 +165,8 @@ class _ShiftCheckOutBody extends StatelessWidget {
     required this.onTakePhoto,
     required this.onSubmit,
     required this.reasonController,
+    required this.checkOutTime,
+    required this.onCheckOutTimeChanged,
   });
 
   final String? capturedPhotoPath;
@@ -155,6 +178,8 @@ class _ShiftCheckOutBody extends StatelessWidget {
   final VoidCallback onTakePhoto;
   final VoidCallback onSubmit;
   final TextEditingController reasonController;
+  final TimeOfDay checkOutTime;
+  final ValueChanged<TimeOfDay> onCheckOutTimeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +215,12 @@ class _ShiftCheckOutBody extends StatelessWidget {
                   ),
                   Gap(dimensions.spacing.s16),
                   const _AutoDetectedInfoCard(),
+                  Gap(dimensions.spacing.s16),
+                  AppTimeField(
+                    label: context.locale.checkOutTime,
+                    time: checkOutTime,
+                    onChanged: onCheckOutTimeChanged,
+                  ),
                   Gap(dimensions.spacing.s16),
                   AppTextField.description(
                     controller: reasonController,
