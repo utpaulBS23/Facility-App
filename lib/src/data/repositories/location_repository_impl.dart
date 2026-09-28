@@ -15,9 +15,6 @@ final class LocationRepositoryImpl extends LocationRepository {
   Future<Result<LocationResponseEntity, Failure>> getCurrentLocation() async {
     return asyncGuard(() async {
       final position = await _locationService.getCurrentPosition();
-      if (position == null) {
-        throw Exception('Unable to get current location');
-      }
 
       if (position.isMocked) {
         throw Exception('You are using a mocked location');

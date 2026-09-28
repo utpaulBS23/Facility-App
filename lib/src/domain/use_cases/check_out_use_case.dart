@@ -16,6 +16,7 @@ final class CheckOutUseCase {
     required double lng,
     required String selfieUrl,
     String? reason,
+    DateTime? checkOutTime,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -27,6 +28,7 @@ final class CheckOutUseCase {
       lng: lng,
       selfieUrl: selfieUrl,
       reason: reason,
+      checkOutTime: checkOutTime,
     );
 
     return switch (result) {

@@ -1,3 +1,7 @@
+import 'attendance/attendance_approval_status.dart';
+
+export 'attendance/attendance_approval_status.dart';
+
 // WHY: AttendanceStatue kept for the shift check-in approval flow.
 enum AttendanceStatue { pending, success, reject, needFace }
 
@@ -53,11 +57,18 @@ class AttendanceItemEntity {
     this.durationHours,
     required this.attendanceType,
     this.location,
-    this.reason,
+    this.lateCheckInReason,
+    this.lateCheckInByMinutes,
+    this.checkOutReason,
+    this.lateCheckOutByMinutes,
+    this.isLateCheckOut,
     this.checkInSelfie,
     this.checkOutSelfie,
     this.shift,
     this.approver,
+    this.checkInReviewer,
+    this.checkOutReviewer,
+    required this.approvalStatus,
   });
 
   final int? id;
@@ -66,24 +77,32 @@ class AttendanceItemEntity {
   final String userUid;
   final String date;
   final String status;
+  final AttendanceApprovalStatus approvalStatus;
   final bool isLate;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
   final String? durationHours;
   final String attendanceType;
   final String? location;
-  final String? reason;
+  final String? lateCheckInReason;
+  final int? lateCheckInByMinutes;
+  final String? checkOutReason;
+  final int? lateCheckOutByMinutes;
+  final bool? isLateCheckOut;
   final String? checkInSelfie;
   final String? checkOutSelfie;
   final AttendanceShiftInfoEntity? shift;
   final AttendanceApproverEntity? approver;
+  final AttendanceApproverEntity? checkInReviewer;
+  final AttendanceApproverEntity? checkOutReviewer;
 
   // WHY: API returns raw `status` string ('pending', 'approved', 'auto_approved',
   // 'rejected', 'absent').
   AttendanceStatus get displayStatus => switch (status) {
-        'approved' => AttendanceStatus.approved,
+        'approved' || 'approved_check_in' || 'approved_check_out' =>
+          AttendanceStatus.approved,
         'auto_approved' || 'autoApproved' => AttendanceStatus.autoApproved,
-        'rejected' => AttendanceStatus.rejected,
+        'rejected' || 'rejected_check_in' => AttendanceStatus.rejected,
         'absent' => AttendanceStatus.absent,
         _ => AttendanceStatus.pending,
       };

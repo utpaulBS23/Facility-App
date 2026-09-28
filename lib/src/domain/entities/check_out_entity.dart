@@ -15,7 +15,7 @@ class CheckOutEntity {
     required this.attendanceId,
     this.checkInTime,
     this.checkOutTime,
-    required this.totalHours,
+    required this.totalMinutes,
     required this.approvalStatus,
     this.warnings = const [],
   });
@@ -23,7 +23,7 @@ class CheckOutEntity {
   final int attendanceId;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
-  final num totalHours;
+  final num totalMinutes;
   final String approvalStatus;
   final List<CheckOutWarningEntity> warnings;
 }
