@@ -39,7 +39,7 @@ class CheckOutDataModel with CheckOutDataModelMappable {
     required this.attendanceId,
     this.checkInTime,
     this.checkOutTime,
-    this.totalHours,
+    this.totalMinutes,
     this.approvalStatus,
   });
 
@@ -49,8 +49,8 @@ class CheckOutDataModel with CheckOutDataModelMappable {
   final String? checkInTime;
   @MappableField(key: 'check_out_time')
   final String? checkOutTime;
-  @MappableField(key: 'total_hours')
-  final num? totalHours;
+  @MappableField(key: 'total_minutes')
+  final num? totalMinutes;
   @MappableField(key: 'approval_status')
   final String? approvalStatus;
 

@@ -18,6 +18,7 @@ class CheckIn extends _$CheckIn {
     required double lat,
     required double lng,
     required String selfieUrl,
+    String? lateCheckInReason,
   }) async {
     if (state.isLoading) return;
 
@@ -35,6 +36,7 @@ class CheckIn extends _$CheckIn {
           lat: lat,
           lng: lng,
           selfieUrl: selfieUrl,
+          lateCheckInReason: lateCheckInReason,
         );
 
     state = switch (result) {

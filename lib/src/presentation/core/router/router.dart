@@ -74,6 +74,7 @@ import '../../features/roster/view/roster_shifts_page.dart';
 import '../../features/shift/models/assign_staff_args.dart';
 import '../../features/shift/view/assign_staff_page.dart';
 import '../../features/shift/view/shift_tab.dart';
+import '../../features/shift/update_stock/view/update_stock_page.dart';
 import '../../features/shift/widgets/no_shift_today_widget.dart';
 import '../../features/shift/widgets/shift_not_yet_accessible_widget.dart';
 import '../../features/shift/widgets/shift_window_closed_widget.dart';

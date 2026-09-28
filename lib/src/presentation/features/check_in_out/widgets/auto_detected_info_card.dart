@@ -21,9 +21,33 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.color;
     final dimensions = context.dimensions;
     final checkInInfoState = ref.watch(checkInInfoProvider);
+    final info = checkInInfoState.valueOrNull;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (info?.locationFailure != null) ...[
+          _LocationDisabledBanner(failure: info!.locationFailure!),
+          Gap(dimensions.spacing.s12),
+        ],
+        _AutoDetectedInfoBody(info: info, supervisorName: supervisorName),
+      ],
+    );
+  }
+}
+
+class _AutoDetectedInfoBody extends StatelessWidget {
+  const _AutoDetectedInfoBody({required this.info, this.supervisorName});
+
+  final CheckInInfoEntity? info;
+  final String? supervisorName;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.color;
+    final dimensions = context.dimensions;
 
     return Container(
       width: double.infinity,
@@ -47,21 +71,16 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
           _ContactInfoItem(
             icon: Icons.location_on_outlined,
             label: context.locale.location,
-            value: checkInInfoState.when(
-              data: (info) => info?.location ?? context.locale.loading,
-              loading: () => context.locale.loading,
-              error: (err, stack) => context.locale.locationUnavailable,
-            ),
+            value: info?.location ??
+                (info != null
+                    ? context.locale.locationUnavailable
+                    : context.locale.loading),
           ),
           Gap(dimensions.spacing.s8),
           _ContactInfoItem(
             icon: Icons.access_time_outlined,
             label: context.locale.checkInTime,
-            value: checkInInfoState.when(
-              data: (info) => info?.checkInTime ?? context.locale.loading,
-              loading: () => context.locale.loading,
-              error: (err, stack) => context.locale.loading,
-            ),
+            value: info?.checkInTime ?? context.locale.loading,
           ),
           Gap(dimensions.spacing.s8),
           _ContactInfoItem(
@@ -69,12 +88,66 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
             label: context.locale.supervisorName,
             value: supervisorName?.isNotEmpty == true
                 ? supervisorName!
-                : checkInInfoState.when(
-                    data: (info) =>
-                        info?.supervisorName ?? context.locale.loading,
-                    loading: () => context.locale.loading,
-                    error: (err, stack) => context.locale.loading,
-                  ),
+                : info?.supervisorName ?? context.locale.loading,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Banner shown when location couldn't be obtained — explains why and offers
+/// Settings (to fix permission/service) and Retry (to re-run detection).
+class _LocationDisabledBanner extends ConsumerWidget {
+  const _LocationDisabledBanner({required this.failure});
+
+  final Failure failure;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.color;
+    final dimensions = context.dimensions;
+    final isServiceDisabled = failure.code == 'location_service_disabled';
+    final message = isServiceDisabled
+        ? context.locale.locationServiceDisabled
+        : context.locale.locationPermissionDenied;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(dimensions.padding.p16),
+      decoration: BoxDecoration(
+        color: colors.error.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(dimensions.radius.r12),
+        border: Border.all(color: colors.error.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message,
+            style: context.textStyle.bodyRegular.copyWith(color: colors.error),
+          ),
+          Gap(dimensions.spacing.s8),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => isServiceDisabled
+                      ? Geolocator.openLocationSettings()
+                      : Geolocator.openAppSettings(),
+                  child: Text(context.locale.settings),
+                ),
+              ),
+              Gap(dimensions.spacing.s8),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () =>
+                      ref.read(checkInInfoProvider.notifier).refresh(),
+                  child: Text(context.locale.retry),
+                ),
+              ),
+            ],
           ),
         ],
       ),

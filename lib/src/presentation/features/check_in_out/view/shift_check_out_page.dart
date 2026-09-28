@@ -13,6 +13,20 @@ class ShiftCheckOutPage extends ConsumerStatefulWidget {
 }
 
 class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
+  final _reasonController = TextEditingController();
+  TimeOfDay _checkOutTime = TimeOfDay.fromDateTime(DateTime.now());
+  // WHY: only send `check_out_time` when the attendant actually corrected it —
+  // per the backend doc, omitting it on a live checkout leaves the server
+  // stamp untouched; sending the untouched default would be indistinguishable
+  // from a correction.
+  bool _checkOutTimeEdited = false;
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
   Future<void> _onTakePhoto() async {
     final path = await context.pushNamed<String?>(Routes.selfieCamera);
     if (path == null || !mounted) return;
@@ -30,7 +44,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       return;
     }
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null) {
+    if (checkInInfo == null || !checkInInfo.hasLocation) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.locationUnavailable)),
       );
@@ -38,13 +52,26 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     }
     // WHY: no upload-to-storage step exists yet — see the matching comment
     // in ShiftCheckInPage._onSubmit.
+    final now = DateTime.now();
     ref
         .read(checkOutProvider.notifier)
         .checkOut(
           attendanceId: widget.attendanceId,
-          lat: checkInInfo.latitude,
-          lng: checkInInfo.longitude,
+          lat: checkInInfo.latitude!,
+          lng: checkInInfo.longitude!,
           selfieUrl: photoPath,
+          reason: _reasonController.text.trim().isEmpty
+              ? null
+              : _reasonController.text.trim(),
+          checkOutTime: _checkOutTimeEdited
+              ? DateTime(
+                  now.year,
+                  now.month,
+                  now.day,
+                  _checkOutTime.hour,
+                  _checkOutTime.minute,
+                )
+              : null,
         );
   }
 
@@ -101,6 +128,8 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     final selfieState = ref.watch(selfiePickerProvider);
     final photoPath = selfieState.valueOrNull;
     final checkOutState = ref.watch(checkOutProvider);
+    final selfieError = selfieState.error;
+    final isNoFace = selfieError is Failure && selfieError.code == 'no_face_detected';
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -109,10 +138,17 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
         isSubmitting: checkOutState.isLoading,
-        hasError: selfieState.hasError,
-        errorMessage: selfieState.error?.toString(),
+        hasError: selfieState.hasError && !isNoFace,
+        errorMessage: selfieError?.localizedMessage(context),
+        faceValidationError: isNoFace ? context.locale.noFaceDetected : null,
         onTakePhoto: _onTakePhoto,
         onSubmit: () => _onSubmit(photoPath),
+        reasonController: _reasonController,
+        checkOutTime: _checkOutTime,
+        onCheckOutTimeChanged: (time) => setState(() {
+          _checkOutTime = time;
+          _checkOutTimeEdited = true;
+        }),
       ),
     );
   }
@@ -125,8 +161,12 @@ class _ShiftCheckOutBody extends StatelessWidget {
     required this.isSubmitting,
     required this.hasError,
     this.errorMessage,
+    this.faceValidationError,
     required this.onTakePhoto,
     required this.onSubmit,
+    required this.reasonController,
+    required this.checkOutTime,
+    required this.onCheckOutTimeChanged,
   });
 
   final String? capturedPhotoPath;
@@ -134,8 +174,12 @@ class _ShiftCheckOutBody extends StatelessWidget {
   final bool isSubmitting;
   final bool hasError;
   final String? errorMessage;
+  final String? faceValidationError;
   final VoidCallback onTakePhoto;
   final VoidCallback onSubmit;
+  final TextEditingController reasonController;
+  final TimeOfDay checkOutTime;
+  final ValueChanged<TimeOfDay> onCheckOutTimeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +204,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
                     capturedPhotoPath: capturedPhotoPath,
                     hasError: hasError,
                     errorMessage: errorMessage,
+                    faceValidationError: faceValidationError,
                     onRetry: onTakePhoto,
                   ),
                   Gap(dimensions.spacing.s12),
@@ -170,6 +215,17 @@ class _ShiftCheckOutBody extends StatelessWidget {
                   ),
                   Gap(dimensions.spacing.s16),
                   const _AutoDetectedInfoCard(),
+                  Gap(dimensions.spacing.s16),
+                  AppTimeField(
+                    label: context.locale.checkOutTime,
+                    time: checkOutTime,
+                    onChanged: onCheckOutTimeChanged,
+                  ),
+                  Gap(dimensions.spacing.s16),
+                  AppTextField.description(
+                    controller: reasonController,
+                    label: context.locale.reason,
+                  ),
                   Gap(dimensions.spacing.s16),
                 ],
               ),

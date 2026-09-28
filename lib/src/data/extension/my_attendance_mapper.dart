@@ -24,6 +24,6 @@ extension MyAttendanceItemModelToEntity on MyAttendanceItemModel {
     checkInAt: parseLocalIso(checkInAt),
     checkOutAt: parseLocalIso(checkOutAt),
     visitCount: visitCount ?? 0,
-    hours: hours,
+    minutes: minutes,
   );
 }

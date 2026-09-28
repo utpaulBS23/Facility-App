@@ -5,6 +5,7 @@ import 'package:facility_management_app/src/presentation/core/router/routes.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +21,8 @@ import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_dropdown_button_form_field.dart';
+import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/app_time_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -58,6 +61,14 @@ class ShiftCheckInPage extends ConsumerStatefulWidget {
 }
 
 class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
+  final _reasonController = TextEditingController();
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
   void _onSubmit(String? photoPath) {
     if (photoPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,7 +87,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       return;
     }
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null) {
+    if (checkInInfo == null || !checkInInfo.hasLocation) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.locationUnavailable)),
       );
@@ -89,9 +100,12 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         .read(checkInProvider.notifier)
         .checkIn(
           shiftSlotId: shiftSlotId,
-          lat: checkInInfo.latitude,
-          lng: checkInInfo.longitude,
+          lat: checkInInfo.latitude!,
+          lng: checkInInfo.longitude!,
           selfieUrl: photoPath,
+          lateCheckInReason: _reasonController.text.trim().isEmpty
+              ? null
+              : _reasonController.text.trim(),
         );
   }
 
@@ -130,7 +144,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
   void _onManualAttendance() {
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null) {
+    if (checkInInfo == null || !checkInInfo.hasLocation) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.locale.locationUnavailable)),
       );
@@ -174,6 +188,8 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     final selfieState = ref.watch(selfiePickerProvider);
     final photoPath = selfieState.valueOrNull;
     final validationState = ref.watch(checkInProvider);
+    final selfieError = selfieState.error;
+    final isNoFace = selfieError is Failure && selfieError.code == 'no_face_detected';
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -182,13 +198,14 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
         isValidating: validationState.isLoading,
-        hasError: selfieState.hasError,
-        errorMessage: selfieState.error?.toString(),
-        faceValidationError: null,
+        hasError: selfieState.hasError && !isNoFace,
+        errorMessage: selfieError?.localizedMessage(context),
+        faceValidationError: isNoFace ? context.locale.noFaceDetected : null,
         onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onManualAttendance,
         onSubmit: () => _onSubmit(photoPath),
         supervisorName: widget.supervisorName,
+        reasonController: _reasonController,
       ),
     );
   }

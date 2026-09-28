@@ -151,6 +151,8 @@
   "capture": "Capture",
   "loading": "Loading...",
   "locationUnavailable": "Location unavailable, please try again",
+  "locationServiceDisabled": "Location services are turned off. Please enable location to continue.",
+  "noFaceDetected": "No face detected. Please retake the photo.",
   "photoCaptureFailed": "Photo capture failed",
   "tryAgain": "Try Again",
   "retry": "Retry",
@@ -193,6 +195,15 @@
       "hours": {
         "type": "String",
         "example": "1.5"
+      }
+    }
+  },
+  "minutesValue": "{minutes} min",
+  "@minutesValue": {
+    "placeholders": {
+      "minutes": {
+        "type": "String",
+        "example": "37"
       }
     }
   },
@@ -326,6 +337,10 @@
   "slotLeadUpdatedSuccessfully": "Slot lead updated.",
   "status": "Status",
   "approvedBy": "Approved By",
+  "checkInReviewedBy": "Check-In Reviewed By",
+  "checkOutReviewedBy": "Check-Out Reviewed By",
+  "lateCheckInReason": "Late Check-In Reason",
+  "checkOutReason": "Check-Out Reason",
   "approve": "Approve",
   "reject": "Reject",
   "rejected": "Rejected",

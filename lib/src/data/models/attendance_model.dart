@@ -84,11 +84,17 @@ class AttendanceItemModel with AttendanceItemModelMappable {
     this.durationHours,
     this.attendanceType,
     this.location,
-    this.reason,
+    this.lateCheckInReason,
+    this.lateCheckInByMinutes,
+    this.checkOutReason,
+    this.lateCheckOutByMinutes,
+    this.isLateCheckOut,
     this.checkInSelfie,
     this.checkOutSelfie,
     this.shift,
     this.approver,
+    this.checkInReviewer,
+    this.checkOutReviewer,
   });
 
   final int? id;
@@ -121,7 +127,21 @@ class AttendanceItemModel with AttendanceItemModelMappable {
   final String? attendanceType;
 
   final String? location;
-  final String? reason;
+
+  @MappableField(key: 'late_check_in_reason')
+  final String? lateCheckInReason;
+
+  @MappableField(key: 'late_check_in_by_minutes')
+  final int? lateCheckInByMinutes;
+
+  @MappableField(key: 'check_out_reason')
+  final String? checkOutReason;
+
+  @MappableField(key: 'late_check_out_by_minutes')
+  final int? lateCheckOutByMinutes;
+
+  @MappableField(key: 'is_late_check_out')
+  final bool? isLateCheckOut;
 
   @MappableField(key: 'check_in_selfie')
   final String? checkInSelfie;
@@ -131,6 +151,12 @@ class AttendanceItemModel with AttendanceItemModelMappable {
 
   final AttendanceShiftInfoModel? shift;
   final AttendanceApproverModel? approver;
+
+  @MappableField(key: 'check_in_reviewer')
+  final AttendanceApproverModel? checkInReviewer;
+
+  @MappableField(key: 'check_out_reviewer')
+  final AttendanceApproverModel? checkOutReviewer;
 
   static const fromJson = AttendanceItemModelMapper.fromJson;
 }
