@@ -28,6 +28,14 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   bool get _isCheckOutPhase =>
       _current.approvalStatus == AttendanceApprovalStatus.pendingCheckOut;
 
+  bool get _showCheckOutButton =>
+      _current.id != null &&
+      _current.checkInTime != null &&
+      _current.checkOutTime == null &&
+      _current.approvalStatus != AttendanceApprovalStatus.rejectedCheckIn &&
+      _current.approvalStatus != AttendanceApprovalStatus.rejected &&
+      _current.approvalStatus != AttendanceApprovalStatus.absent;
+
   DateTime get _defaultReviewDateTime =>
       (_isCheckOutPhase ? _current.checkOutTime : _current.checkInTime) ??
       DateTime.now();
@@ -44,6 +52,10 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
     ref
         .read(rejectAttendanceProvider.notifier)
         .reject(attendanceId: _current.id!);
+  }
+
+  void _onCheckOut(BuildContext context) {
+    context.pushNamed(Routes.shiftCheckOut, extra: _current.id);
   }
 
   void _showError(Object error) {
@@ -125,6 +137,30 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
                       ],
                     )
                   : const SizedBox.shrink(),
+            ),
+          if (_showCheckOutButton)
+            PermissionGate(
+              permissions: const [UserPermission.attendanceCheckOut],
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    context.dimensions.padding.p16,
+                    0,
+                    context.dimensions.padding.p16,
+                    context.dimensions.spacing.s16,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: context.dimensions.spacing.s44,
+                    child: FilledButton.icon(
+                      onPressed: () => _onCheckOut(context),
+                      icon: const Icon(Icons.logout_rounded),
+                      label: Text(context.locale.checkOut),
+                    ),
+                  ),
+                ),
+              ),
             ),
         ],
       ),
