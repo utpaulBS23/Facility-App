@@ -61,7 +61,7 @@ class _AttendanceDetailMainCard extends StatelessWidget {
           _DetailRow(
             icon: Icons.access_time_outlined,
             label: context.locale.hoursWorked,
-            value: detail.durationHours ?? '—',
+            value: DurationFormatter.hoursToHm(detail.durationHours),
           ),
           if (detail.shift != null) ...[
             Gap(spacing.s16),
