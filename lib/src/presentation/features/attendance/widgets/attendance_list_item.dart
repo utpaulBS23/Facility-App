@@ -73,7 +73,11 @@ class _AttendanceListItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
+          border: Border.all(
+            color: item.needsAttention
+                ? context.color.primary
+                : context.color.borderSubtle,
+          ),
           borderRadius: BorderRadius.circular(radius.r12),
         ),
         child: IntrinsicHeight(
@@ -86,9 +90,6 @@ class _AttendanceListItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: _iconBg(context),
                   borderRadius: BorderRadius.circular(radius.r10),
-                  border: item.needsAttention
-                      ? Border.all(color: context.color.primary)
-                      : null,
                 ),
                 child: Icon(_icon, color: _iconColor(context), size: 20),
               ),
