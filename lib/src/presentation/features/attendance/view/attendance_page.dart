@@ -14,6 +14,7 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/utils/duration_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/loading_indicator.dart';

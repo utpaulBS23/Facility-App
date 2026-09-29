@@ -85,50 +85,6 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
               ),
             ],
           ],
-          Gap(spacing.s10),
-          Row(
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.login_rounded,
-                    size: 14,
-                    color: context.color.text.secondary,
-                  ),
-                  Gap(spacing.s4),
-                  Text(
-                    detail.checkInTime != null
-                        ? DateFormatter.timeOnly(detail.checkInTime!)
-                        : '—',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              Gap(spacing.s16),
-              Row(
-                children: [
-                  Icon(
-                    Icons.logout_rounded,
-                    size: 14,
-                    color: context.color.text.secondary,
-                  ),
-                  Gap(spacing.s4),
-                  Text(
-                    detail.checkOutTime != null
-                        ? DateFormatter.timeOnly(detail.checkOutTime!)
-                        : '—',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
         ],
       ),
     );
