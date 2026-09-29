@@ -106,6 +106,22 @@ class AttendanceItemEntity {
         'absent' => AttendanceStatus.absent,
         _ => AttendanceStatus.pending,
       };
+
+  // WHY date-only compare: `date` is the shift's calendar date ('yyyy-MM-dd'),
+  // not a timestamp — a same-day open attendance is still in progress and
+  // shouldn't be flagged; only a prior day left open needs attention.
+  bool get needsAttention {
+    if (checkInTime == null || checkOutTime != null) return false;
+    final shiftDate = DateTime.tryParse(date);
+    if (shiftDate == null) return false;
+    final today = DateTime.now();
+    final todayDateOnly = DateTime(today.year, today.month, today.day);
+    return DateTime(
+      shiftDate.year,
+      shiftDate.month,
+      shiftDate.day,
+    ).isBefore(todayDateOnly);
+  }
 }
 
 class MonthlyAttendanceSummaryEntity {
