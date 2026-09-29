@@ -10,6 +10,7 @@ class CheckOutRequestModel with CheckOutRequestModelMappable {
     required this.lng,
     required this.selfieUrl,
     this.reason,
+    this.batteryLevel,
   });
 
   @MappableField(key: 'attendance_id')
@@ -19,6 +20,8 @@ class CheckOutRequestModel with CheckOutRequestModelMappable {
   @MappableField(key: 'selfie_url')
   final String selfieUrl;
   final String? reason;
+  @MappableField(key: 'battery_level')
+  final int? batteryLevel;
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)

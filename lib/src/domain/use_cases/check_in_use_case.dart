@@ -16,6 +16,7 @@ final class CheckInUseCase {
     required double lng,
     required String selfieUrl,
     String? lateCheckInReason,
+    int? batteryLevel,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -27,6 +28,7 @@ final class CheckInUseCase {
       lng: lng,
       selfieUrl: selfieUrl,
       lateCheckInReason: lateCheckInReason,
+      batteryLevel: batteryLevel,
     );
 
     return switch (result) {

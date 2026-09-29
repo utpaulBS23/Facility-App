@@ -11,5 +11,6 @@ abstract base class CheckInRepository extends Repository {
     required double lng,
     required String selfieUrl,
     String? lateCheckInReason,
+    int? batteryLevel,
   });
 }
