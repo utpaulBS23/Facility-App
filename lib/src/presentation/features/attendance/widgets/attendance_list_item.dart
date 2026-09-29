@@ -7,6 +7,7 @@ class _AttendanceListItem extends StatelessWidget {
   final VoidCallback onTap;
 
   Color _iconBg(BuildContext context) {
+    if (item.needsAttention) return context.color.errorAlt;
     if (item.isLate) return context.color.warningAlt;
     return switch (item.displayStatus) {
       AttendanceStatus.approved ||
@@ -18,6 +19,7 @@ class _AttendanceListItem extends StatelessWidget {
   }
 
   Color _iconColor(BuildContext context) {
+    if (item.needsAttention) return context.color.error;
     if (item.isLate) return context.color.warning;
     return switch (item.displayStatus) {
       AttendanceStatus.approved ||
@@ -29,6 +31,7 @@ class _AttendanceListItem extends StatelessWidget {
   }
 
   IconData get _icon {
+    if (item.needsAttention) return Icons.warning_rounded;
     if (item.isLate) return Icons.schedule_rounded;
     return switch (item.displayStatus) {
       AttendanceStatus.approved ||
@@ -70,7 +73,11 @@ class _AttendanceListItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
+          border: Border.all(
+            color: item.needsAttention
+                ? context.color.primary
+                : context.color.borderSubtle,
+          ),
           borderRadius: BorderRadius.circular(radius.r12),
         ),
         child: IntrinsicHeight(
