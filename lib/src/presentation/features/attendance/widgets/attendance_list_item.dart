@@ -7,6 +7,7 @@ class _AttendanceListItem extends StatelessWidget {
   final VoidCallback onTap;
 
   Color _iconBg(BuildContext context) {
+    if (item.needsAttention) return context.color.errorAlt;
     if (item.isLate) return context.color.warningAlt;
     return switch (item.displayStatus) {
       AttendanceStatus.approved ||
@@ -18,6 +19,7 @@ class _AttendanceListItem extends StatelessWidget {
   }
 
   Color _iconColor(BuildContext context) {
+    if (item.needsAttention) return context.color.error;
     if (item.isLate) return context.color.warning;
     return switch (item.displayStatus) {
       AttendanceStatus.approved ||
@@ -29,6 +31,7 @@ class _AttendanceListItem extends StatelessWidget {
   }
 
   IconData get _icon {
+    if (item.needsAttention) return Icons.warning_rounded;
     if (item.isLate) return Icons.schedule_rounded;
     return switch (item.displayStatus) {
       AttendanceStatus.approved ||
@@ -46,10 +49,6 @@ class _AttendanceListItem extends StatelessWidget {
     AttendanceStatus.rejected ||
     AttendanceStatus.absent => context.color.error,
   };
-
-  bool get _needsAttention =>
-      item.approvalStatus == AttendanceApprovalStatus.pendingCheckIn ||
-      item.approvalStatus == AttendanceApprovalStatus.pendingCheckOut;
 
   String _statusLabel(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.pending => context.locale.pending,
@@ -87,6 +86,9 @@ class _AttendanceListItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: _iconBg(context),
                   borderRadius: BorderRadius.circular(radius.r10),
+                  border: item.needsAttention
+                      ? Border.all(color: context.color.primary)
+                      : null,
                 ),
                 child: Icon(_icon, color: _iconColor(context), size: 20),
               ),
@@ -114,14 +116,6 @@ class _AttendanceListItem extends StatelessWidget {
                           label: _statusLabel(context),
                           dotColor: _dotColor(context),
                         ),
-                        if (_needsAttention) ...[
-                          Gap(spacing.s4),
-                          Icon(
-                            Icons.priority_high_rounded,
-                            size: 14,
-                            color: context.color.warning,
-                          ),
-                        ],
                       ],
                     ),
                     if (item.shift?.facilityName.trim().isNotEmpty == true) ...[
