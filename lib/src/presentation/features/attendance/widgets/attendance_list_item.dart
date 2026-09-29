@@ -47,6 +47,10 @@ class _AttendanceListItem extends StatelessWidget {
     AttendanceStatus.absent => context.color.error,
   };
 
+  bool get _needsAttention =>
+      item.approvalStatus == AttendanceApprovalStatus.pendingCheckIn ||
+      item.approvalStatus == AttendanceApprovalStatus.pendingCheckOut;
+
   String _statusLabel(BuildContext context) => switch (item.displayStatus) {
     AttendanceStatus.pending => context.locale.pending,
     AttendanceStatus.approved => context.locale.approved,
@@ -110,6 +114,14 @@ class _AttendanceListItem extends StatelessWidget {
                           label: _statusLabel(context),
                           dotColor: _dotColor(context),
                         ),
+                        if (_needsAttention) ...[
+                          Gap(spacing.s4),
+                          Icon(
+                            Icons.priority_high_rounded,
+                            size: 14,
+                            color: context.color.warning,
+                          ),
+                        ],
                       ],
                     ),
                     if (item.shift?.facilityName.trim().isNotEmpty == true) ...[

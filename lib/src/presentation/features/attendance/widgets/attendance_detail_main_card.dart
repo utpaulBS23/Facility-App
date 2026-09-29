@@ -77,7 +77,8 @@ class _AttendanceDetailMainCard extends StatelessWidget {
               value: detail.shift!.facilityName,
             ),
           ],
-          if (detail.lateCheckInReason != null) ...[
+          if (detail.lateCheckInReason != null &&
+              detail.lateCheckInByMinutes != null) ...[
             Gap(spacing.s16),
             _DetailRow(
               icon: Icons.comment_outlined,
@@ -87,7 +88,8 @@ class _AttendanceDetailMainCard extends StatelessWidget {
                   : detail.lateCheckInReason!,
             ),
           ],
-          if (detail.checkOutReason != null) ...[
+          if (detail.checkOutReason != null &&
+              detail.lateCheckOutByMinutes != null) ...[
             Gap(spacing.s16),
             _DetailRow(
               icon: Icons.comment_outlined,
