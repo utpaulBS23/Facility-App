@@ -428,28 +428,19 @@ class _AppTextFieldState extends State<AppTextField> {
             ],
           ),
         ),
-        // WHY always rendered, not conditional: reserves the error line's
-        // height up front so a field's box doesn't shift when an error
-        // appears/disappears — matters most side-by-side in a Row, where an
-        // unequal-height sibling under center alignment visibly bumps the
-        // shorter field.
-        Padding(
-          padding: EdgeInsets.only(
-            top: dimensions.spacing.s4,
-            left: dimensions.spacing.s4,
+        if (effectiveError != null)
+          Padding(
+            padding: EdgeInsets.only(
+              top: dimensions.spacing.s4,
+              left: dimensions.spacing.s4,
+            ),
+            child: Text(
+              effectiveError,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle.bodySmall.copyWith(color: colors.error),
+            ),
           ),
-          child: SizedBox(
-            height: dimensions.spacing.s16,
-            child: hasError
-                ? Text(
-                    effectiveError,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: textStyle.bodySmall.copyWith(color: colors.error),
-                  )
-                : null,
-          ),
-        ),
       ],
     );
   }
