@@ -1,9 +1,11 @@
+import 'package:battery_plus/battery_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
+import '../../../../core/logger/log.dart';
 import '../../../../domain/entities/app_permission.dart';
 
 part 'check_out_provider.g.dart';
@@ -30,6 +32,14 @@ class CheckOut extends _$CheckOut {
 
     state = const AsyncValue.loading();
 
+    int? batteryLevel;
+    try {
+      final battery = Battery();
+      batteryLevel = await battery.batteryLevel;
+    } catch (e) {
+      Log.error('Failed to get battery level: $e');
+    }
+
     final result = await ref
         .read(checkOutUseCaseProvider)
         .call(
@@ -39,6 +49,7 @@ class CheckOut extends _$CheckOut {
           selfieUrl: selfieUrl,
           reason: reason,
           checkOutTime: checkOutTime,
+          batteryLevel: batteryLevel,
         );
 
     state = switch (result) {

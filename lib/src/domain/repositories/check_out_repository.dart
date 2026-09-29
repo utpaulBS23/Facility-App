@@ -12,5 +12,6 @@ abstract base class CheckOutRepository extends Repository {
     required String selfieUrl,
     String? reason,
     DateTime? checkOutTime,
+    int? batteryLevel,
   });
 }

@@ -10,6 +10,7 @@ class CheckInRequestModel with CheckInRequestModelMappable {
     required this.lng,
     required this.selfieUrl,
     this.lateCheckInReason,
+    this.batteryLevel,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -20,6 +21,8 @@ class CheckInRequestModel with CheckInRequestModelMappable {
   final String selfieUrl;
   @MappableField(key: 'late_check_in_reason')
   final String? lateCheckInReason;
+  @MappableField(key: 'battery_level')
+  final int? batteryLevel;
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)

@@ -25,6 +25,7 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
     required String selfieUrl,
     String? reason,
     DateTime? checkOutTime,
+    int? batteryLevel,
   }) async {
     return asyncGuard(() async {
       final selfie = await MultipartFile.fromFile(
@@ -41,6 +42,7 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
         'selfie_url': selfie,
         'reason': ?reason,
         'check_out_time': ?checkOutTimeRaw,
+        'battery_level': ?batteryLevel,
       });
       final response = await remote.checkOut(partnerId, formData);
       return CheckOutResponseModel.fromJson(response.data).toEntity();
