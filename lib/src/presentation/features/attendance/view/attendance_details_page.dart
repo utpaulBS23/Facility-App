@@ -55,7 +55,10 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   }
 
   void _onCheckOut(BuildContext context) {
-    context.pushNamed(Routes.shiftCheckOut, extra: _current.id);
+    context.pushNamed(
+      Routes.shiftCheckOut,
+      extra: (attendanceId: _current.id!, checkInDate: _current.checkInTime),
+    );
   }
 
   void _showError(Object error) {

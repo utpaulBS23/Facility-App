@@ -4,9 +4,18 @@ part of 'shift_check_in_page.dart';
 /// just no manual-supervisor fallback, since there is no manual check-out
 /// path on the backend.
 class ShiftCheckOutPage extends ConsumerStatefulWidget {
-  const ShiftCheckOutPage({super.key, required this.attendanceId});
+  const ShiftCheckOutPage({
+    super.key,
+    required this.attendanceId,
+    this.checkInDate,
+  });
 
   final int attendanceId;
+
+  // WHY: a corrected check-out time must stay on the shift's own day — not
+  // today's date — so a checkout submitted late (e.g. the morning after a
+  // night shift) doesn't silently move the record to the wrong day.
+  final DateTime? checkInDate;
 
   @override
   ConsumerState<ShiftCheckOutPage> createState() => _ShiftCheckOutPageState();
@@ -52,7 +61,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     }
     // WHY: no upload-to-storage step exists yet — see the matching comment
     // in ShiftCheckInPage._onSubmit.
-    final now = DateTime.now();
+    final datePart = widget.checkInDate ?? DateTime.now();
     ref
         .read(checkOutProvider.notifier)
         .checkOut(
@@ -65,9 +74,9 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
               : _reasonController.text.trim(),
           checkOutTime: _checkOutTimeEdited
               ? DateTime(
-                  now.year,
-                  now.month,
-                  now.day,
+                  datePart.year,
+                  datePart.month,
+                  datePart.day,
                   _checkOutTime.hour,
                   _checkOutTime.minute,
                 )
@@ -114,6 +123,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         final entity = (next.value as Success<CheckOutEntity, Failure>).data;
         _showResult(entity);
         _refreshShiftSlots();
+        ref.invalidate(monthlyAttendanceOverviewProvider);
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(

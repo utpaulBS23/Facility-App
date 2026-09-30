@@ -19,21 +19,35 @@ class SlotDetailsPage extends ConsumerWidget {
     // which implies `me.attendance` (set by check-in) is present.
     final attendanceId = currentSlot.me?.attendance?.id;
     if (attendanceId == null) return;
-    context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
+    context.pushNamed(
+      Routes.shiftCheckOut,
+      extra: (
+        attendanceId: attendanceId,
+        checkInDate: currentSlot.me?.attendance?.checkInTime,
+      ),
+    );
   }
 
-  void _onAssignStaff(BuildContext context, WidgetRef ref, ShiftSlotEntity currentSlot) {
+  // WHY fallback search: in the multi-facility "All" view the day payload's
+  // top-level `facility` is null — the facility only resolves per-slot via
+  // the `facilities[]` grouping.
+  int? _resolveFacilityId(WidgetRef ref, ShiftSlotEntity currentSlot) {
     final slotsData = ref.read(shiftSlotsProvider).valueOrNull;
-    var facilityId = slotsData?.facility?.id;
+    final facilityId = slotsData?.facility?.id;
+    if (facilityId != null) return facilityId;
 
-    if (facilityId == null && slotsData != null && slotsData.facilities.isNotEmpty) {
+    if (slotsData != null && slotsData.facilities.isNotEmpty) {
       for (final fac in slotsData.facilities) {
         if (fac.slots.any((s) => s.shiftSlotId == currentSlot.shiftSlotId)) {
-          facilityId = fac.facilityId;
-          break;
+          return fac.facilityId;
         }
       }
     }
+    return null;
+  }
+
+  void _onAssignStaff(BuildContext context, WidgetRef ref, ShiftSlotEntity currentSlot) {
+    final facilityId = _resolveFacilityId(ref, currentSlot);
 
     if (facilityId == null) return;
     context.pushNamed(
@@ -49,7 +63,7 @@ class SlotDetailsPage extends ConsumerWidget {
     SlotAttendantEntity attendant,
   ) async {
     final rosterId = currentSlot.weeklyRosterId;
-    final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
+    final facilityId = _resolveFacilityId(ref, currentSlot);
     final assignmentId = attendant.assignmentId;
     if (rosterId == null || facilityId == null || assignmentId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,7 +94,7 @@ class SlotDetailsPage extends ConsumerWidget {
     SlotAttendantEntity attendant,
   ) async {
     final rosterId = currentSlot.weeklyRosterId;
-    final facilityId = ref.read(shiftSlotsProvider).valueOrNull?.facility?.id;
+    final facilityId = _resolveFacilityId(ref, currentSlot);
     final assignmentId = attendant.assignmentId;
     if (rosterId == null || facilityId == null || assignmentId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
