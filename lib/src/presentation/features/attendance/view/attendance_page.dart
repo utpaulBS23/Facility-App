@@ -47,7 +47,8 @@ class AttendancePage extends ConsumerStatefulWidget {
   ConsumerState<AttendancePage> createState() => _AttendancePageState();
 }
 
-class _AttendancePageState extends ConsumerState<AttendancePage> {
+class _AttendancePageState extends ConsumerState<AttendancePage>
+    with WidgetsBindingObserver {
   late String _selectedMonth;
   int? _selectedFacilityId;
   int? _selectedUserId;
@@ -55,9 +56,35 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final now = DateTime.now();
     _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
     _selectedFacilityId = _defaultFacilityId;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // WHY: the app can sit backgrounded for a while — check-ins/outs done
+  // elsewhere in that time (or on another device) would otherwise show stale
+  // until the user manually changes the month filter.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _onRefresh();
+  }
+
+  Future<void> _onRefresh() async {
+    ref.invalidate(monthlyAttendanceOverviewProvider);
+    await ref.read(
+      monthlyAttendanceOverviewProvider(
+        _selectedMonth,
+        facilityId: _selectedFacilityId,
+        userId: _selectedUserId,
+      ).future,
+    );
   }
 
   int? get _defaultFacilityId {
@@ -175,6 +202,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
             onItemTap: _onItemTap,
             onApplyLeave: _onApplyLeave,
             showApplyLeave: isGranted,
+            onRefresh: _onRefresh,
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),

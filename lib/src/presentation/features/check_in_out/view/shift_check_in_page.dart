@@ -26,6 +26,7 @@ import '../../../core/widgets/app_time_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../attendance/riverpod/attendance_provider.dart';
 import '../../shift/riverpod/shift_slots_provider.dart';
 import '../riverpod/check_in_info_provider.dart';
 import '../riverpod/check_in_provider.dart';
@@ -174,6 +175,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         final entity = (next.value as Success<CheckInEntity, Failure>).data;
         if (entity != null) _showWarnings(entity.warnings);
         _refreshShiftSlots();
+        ref.invalidate(monthlyAttendanceOverviewProvider);
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(

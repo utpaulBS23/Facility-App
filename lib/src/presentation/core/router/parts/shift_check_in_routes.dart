@@ -51,9 +51,12 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       path: Routes.shiftCheckOut,
       name: Routes.shiftCheckOut,
       pageBuilder: (context, state) {
-        final attendanceId = state.extra as int;
+        final args = state.extra as ({int attendanceId, DateTime? checkInDate});
         return MaterialPage(
-          child: ShiftCheckOutPage(attendanceId: attendanceId),
+          child: ShiftCheckOutPage(
+            attendanceId: args.attendanceId,
+            checkInDate: args.checkInDate,
+          ),
         );
       },
     ),
