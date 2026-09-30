@@ -67,21 +67,17 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
   }
 
   Future<void> _onCreateShift() async {
-    final created = await showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (_) => CreateShiftDialog(roster: widget.roster),
     );
-    if (created != true || !mounted) return;
-    _fetchShifts();
   }
 
   Future<void> _onAssignShift(ShiftEntity shift) async {
-    final assigned = await context.pushNamed<bool>(
+    await context.pushNamed<bool>(
       Routes.rosterAssignStaff,
       extra: (roster: widget.roster, shift: shift),
     );
-    if (assigned != true || !mounted) return;
-    _fetchShifts();
   }
 
   Future<void> _onUnassignStaff(ShiftAssignmentEntity assignment) async {
@@ -120,7 +116,6 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffUnassignedSuccessfully)),
         );
-        _fetchShifts();
       } else if (next case AsyncError(:final error)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.localizedMessage(context))),
@@ -133,7 +128,6 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.slotLeadUpdatedSuccessfully)),
         );
-        _fetchShifts();
       } else if (next case AsyncError(:final error)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.localizedMessage(context))),

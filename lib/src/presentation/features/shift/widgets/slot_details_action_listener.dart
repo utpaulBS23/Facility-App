@@ -12,7 +12,6 @@ class _SlotDetailsActionListener extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffUnassignedSuccessfully)),
         );
-        ref.read(shiftSlotsProvider.notifier).refresh();
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(next.error.localizedMessage(context))),
@@ -25,7 +24,6 @@ class _SlotDetailsActionListener extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.slotLeadUpdatedSuccessfully)),
         );
-        ref.read(shiftSlotsProvider.notifier).refresh();
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(next.error.localizedMessage(context))),

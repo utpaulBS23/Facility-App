@@ -75,7 +75,6 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
     ref.listen(approveAttendanceProvider, (_, next) {
       if (next is AsyncData && next.value != null) {
         setState(() => _current = next.value!);
-        ref.invalidate(monthlyAttendanceOverviewProvider);
       } else if (next is AsyncError) {
         _showError(next.error!);
       }
@@ -84,7 +83,6 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
     ref.listen(rejectAttendanceProvider, (_, next) {
       if (next is AsyncData && next.value != null) {
         setState(() => _current = next.value!);
-        ref.invalidate(monthlyAttendanceOverviewProvider);
       } else if (next is AsyncError) {
         _showError(next.error!);
       }

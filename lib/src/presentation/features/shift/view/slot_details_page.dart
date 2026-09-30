@@ -128,8 +128,18 @@ class SlotDetailsPage extends ConsumerWidget {
     final currentSlot =
         ref.watch(
           shiftSlotsProvider.select((state) {
-            for (final s in state.valueOrNull?.slots ?? const []) {
+            final data = state.valueOrNull;
+            if (data == null) return null;
+            for (final s in data.slots) {
               if (s.shiftSlotId == slot.shiftSlotId) return s;
+            }
+            // WHY also search facilities[]: in the multi-facility "All" view
+            // the day payload's top-level `slots` is empty — slots live
+            // grouped under `facilities[].slots` instead.
+            for (final fac in data.facilities) {
+              for (final s in fac.slots) {
+                if (s.shiftSlotId == slot.shiftSlotId) return s;
+              }
             }
             return null;
           }),

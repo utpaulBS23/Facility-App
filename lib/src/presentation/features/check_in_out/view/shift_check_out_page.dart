@@ -84,22 +84,6 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         );
   }
 
-  // WHY: the shift tab's slots list is fetched once on mount, so a check-out
-  // made from here would otherwise leave it showing pre-check-out state until
-  // the user manually changes the date.
-  void _refreshShiftSlots() {
-    // WHY facilityId re-sent: without it, a supervisor filtered to a
-    // non-default facility would have this refresh silently fall back to
-    // the session's primary facility (see GetShiftSlotsUseCase), discarding
-    // their filter selection.
-    ref
-        .read(shiftSlotsProvider.notifier)
-        .fetch(
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-          facilityId: ref.read(shiftSlotsProvider).valueOrNull?.facility?.id,
-        );
-  }
-
   void _showResult(CheckOutEntity? entity) {
     final messages = (entity?.warnings ?? const [])
         .map((warning) => warning.message)
@@ -122,8 +106,6 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       if (next.hasValue && next.value != null) {
         final entity = (next.value as Success<CheckOutEntity, Failure>).data;
         _showResult(entity);
-        _refreshShiftSlots();
-        ref.invalidate(monthlyAttendanceOverviewProvider);
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
