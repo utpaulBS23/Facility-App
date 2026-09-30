@@ -8,6 +8,8 @@ import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
+import '../../check_in_out/riverpod/check_in_provider.dart';
+import '../../check_in_out/riverpod/check_out_provider.dart';
 
 part 'attendance_provider.g.dart';
 
@@ -18,6 +20,23 @@ Future<MonthlyAttendanceSummaryEntity> monthlyAttendanceOverview(
   int? facilityId,
   int? userId,
 }) async {
+  // WHY self-refresh here rather than each caller invalidating this provider
+  // after the fact: every action below changes what this list should show —
+  // listening once in the data provider itself means a new caller can't
+  // forget to wire it.
+  ref.listen(checkInProvider, (_, next) {
+    if (next is AsyncData && next.value is Success) ref.invalidateSelf();
+  });
+  ref.listen(checkOutProvider, (_, next) {
+    if (next is AsyncData && next.value is Success) ref.invalidateSelf();
+  });
+  ref.listen(approveAttendanceProvider, (_, next) {
+    if (next is AsyncData && next.hasValue) ref.invalidateSelf();
+  });
+  ref.listen(rejectAttendanceProvider, (_, next) {
+    if (next is AsyncData && next.hasValue) ref.invalidateSelf();
+  });
+
   final result = await ref
       .read(getMonthlyAttendanceOverviewUseCaseProvider)
       .call(month: month, facilityId: facilityId, userId: userId);

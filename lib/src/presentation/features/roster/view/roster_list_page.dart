@@ -161,10 +161,6 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.rosterPublishedSuccessfully)),
         );
-        final facilityId = _selectedFacilityId;
-        if (facilityId != null) {
-          ref.read(rosterListProvider.notifier).fetch(facilityId: facilityId);
-        }
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(next.error!.localizedMessage(context))),

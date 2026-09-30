@@ -3,16 +3,18 @@ class ManualAttendanceRequestEntity {
     required this.shiftId,
     required this.reason,
     required this.checkInTime,
-    required this.lat,
-    required this.lng,
+    this.lat,
+    this.lng,
     required this.address,
   });
 
   final int shiftId;
   final String reason;
   final String checkInTime;
-  final double lat;
-  final double lng;
+  // WHY nullable: this is the escape hatch for when location detection
+  // itself failed — requiring coordinates here would defeat the purpose.
+  final double? lat;
+  final double? lng;
   final String address;
 }
 
