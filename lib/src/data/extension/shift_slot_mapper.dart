@@ -13,10 +13,20 @@ extension SlotAttendanceModelToEntity on SlotAttendanceModel {
     checkInTime: parseLocalIso(checkInTime),
     checkOutTime: parseLocalIso(checkOutTime),
     approvalStatus: approvalStatus ?? '',
-    lateByMinutes: lateByMinutes ?? 0,
+    isLate: isLate ?? false,
+    lateCheckInByMinutes: lateCheckInByMinutes,
     checkInDistanceMeters: checkInDistanceMeters,
     checkInSelfieUrl: checkInSelfieUrl,
     checkOutSelfieUrl: checkOutSelfieUrl,
+    lateCheckInReason: lateCheckInReason,
+    checkOutReason: checkOutReason,
+    lateCheckOutByMinutes: lateCheckOutByMinutes,
+    checkInReviewedBy: checkInReviewedBy,
+    checkInReviewerName: checkInReviewerName,
+    checkInReviewedAt: parseLocalIso(checkInReviewedAt),
+    checkOutReviewedBy: checkOutReviewedBy,
+    checkOutReviewerName: checkOutReviewerName,
+    checkOutReviewedAt: parseLocalIso(checkOutReviewedAt),
   );
 }
 

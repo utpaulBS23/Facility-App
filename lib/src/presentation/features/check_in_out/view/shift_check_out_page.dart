@@ -206,7 +206,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
                     onTap: onTakePhoto,
                   ),
                   Gap(dimensions.spacing.s16),
-                  const _AutoDetectedInfoCard(),
+                  const _AutoDetectedInfoCard(timeIsCheckOut: true),
                   Gap(dimensions.spacing.s16),
                   AppTimeField(
                     label: context.locale.checkOutTime,

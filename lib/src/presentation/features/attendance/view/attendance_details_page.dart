@@ -28,8 +28,12 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
   bool get _isCheckOutPhase =>
       _current.approvalStatus == AttendanceApprovalStatus.pendingCheckOut;
 
+  // WHY ownership check: check-out is self-only on the backend — a
+  // supervisor viewing an attendant's entry can never check out on their
+  // behalf, only the attendant themselves.
   bool get _showCheckOutButton =>
       _current.id != null &&
+      _current.userId == ref.read(getCurrentUserUseCaseProvider).call()?.id &&
       _current.checkInTime != null &&
       _current.checkOutTime == null &&
       _current.approvalStatus != AttendanceApprovalStatus.rejectedCheckIn &&
@@ -92,6 +96,23 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
     final isRejecting = ref.watch(rejectAttendanceProvider).isLoading;
     final isPending = _current.approvalStatus.isPendingStage;
     final allowReject = _current.approvalStatus.isRejectable;
+    // WHY independent checks instead of one OR-gate: a user holding only
+    // attendance.reject (no attendance.approve) must never see an Approve
+    // button they aren't allowed to press, and vice versa.
+    final canApprove = ref.watch(
+      userSessionProvider.select(
+        (session) =>
+            session?.canAny([UserPermission.attendanceApprove]) ?? false,
+      ),
+    );
+    final canReject = ref.watch(
+      userSessionProvider.select(
+        (session) =>
+            session?.canAny([UserPermission.attendanceReject]) ?? false,
+      ),
+    );
+    final showApprove = isPending && canApprove;
+    final showReject = allowReject && canReject;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -102,42 +123,36 @@ class _AttendanceDetailsPageState extends ConsumerState<AttendanceDetailsPage> {
           // WHY gate on the real backend permissions rather than inferring
           // "supervisor" from the absence of attendance.check_in — the backend
           // ships attendance.approve/.reject explicitly, so the proxy is
-          // obsolete.
-          if (isPending)
-            PermissionGate(
-              permissions: const [
-                UserPermission.attendanceApprove,
-                UserPermission.attendanceReject,
+          // obsolete. Approve and Reject are checked independently (see
+          // canApprove/canReject above) so a reject-only reviewer never sees
+          // an Approve button they can't press, and vice versa.
+          if (isPending && (showApprove || showReject))
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    context.dimensions.padding.p16,
+                    0,
+                    context.dimensions.padding.p16,
+                    context.dimensions.spacing.s8,
+                  ),
+                  child: AppTimeField(
+                    label: _isCheckOutPhase
+                        ? context.locale.checkOutTime
+                        : context.locale.checkInTime,
+                    time: _reviewTime,
+                    onChanged: (time) => setState(() => _reviewTime = time),
+                  ),
+                ),
+                _ApproveRejectBar(
+                  onApprove: _onApprove,
+                  onReject: _onReject,
+                  isApproving: isApproving,
+                  isRejecting: isRejecting,
+                  allowReject: showReject,
+                  allowApprove: showApprove,
+                ),
               ],
-              builder: (context, canReview) => canReview
-                  ? Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            context.dimensions.padding.p16,
-                            0,
-                            context.dimensions.padding.p16,
-                            context.dimensions.spacing.s8,
-                          ),
-                          child: AppTimeField(
-                            label: _isCheckOutPhase
-                                ? context.locale.checkOutTime
-                                : context.locale.checkInTime,
-                            time: _reviewTime,
-                            onChanged: (time) =>
-                                setState(() => _reviewTime = time),
-                          ),
-                        ),
-                        _ApproveRejectBar(
-                          onApprove: _onApprove,
-                          onReject: _onReject,
-                          isApproving: isApproving,
-                          isRejecting: isRejecting,
-                          allowReject: allowReject,
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
             ),
           if (_showCheckOutButton)
             PermissionGate(

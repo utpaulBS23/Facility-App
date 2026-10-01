@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
@@ -78,13 +79,21 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
 
   Future<void> _onRefresh() async {
     ref.invalidate(monthlyAttendanceOverviewProvider);
-    await ref.read(
-      monthlyAttendanceOverviewProvider(
-        _selectedMonth,
-        facilityId: _selectedFacilityId,
-        userId: _selectedUserId,
-      ).future,
-    );
+    try {
+      await ref.read(
+        monthlyAttendanceOverviewProvider(
+          _selectedMonth,
+          facilityId: _selectedFacilityId,
+          userId: _selectedUserId,
+        ).future,
+      );
+    } catch (_) {
+      // WHY swallowed: a failed background refresh (expired session, no
+      // network) shouldn't crash the app — a 401 is already handled globally
+      // by the token interceptor (logout/redirect); other failures just
+      // leave the list showing its last-known state, same as before this
+      // refresh was attempted.
+    }
   }
 
   int? get _defaultFacilityId {

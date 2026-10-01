@@ -25,6 +25,7 @@ class _AttendanceDetailsBody extends StatelessWidget {
             _AttendanceDetailApproverCard(
               approver: detail.checkInReviewer!,
               label: context.locale.checkInReviewedBy,
+              reviewedAt: detail.checkInReviewedAt,
             ),
           ],
           if (detail.checkOutReviewer != null) ...[
@@ -32,6 +33,7 @@ class _AttendanceDetailsBody extends StatelessWidget {
             _AttendanceDetailApproverCard(
               approver: detail.checkOutReviewer!,
               label: context.locale.checkOutReviewedBy,
+              reviewedAt: detail.checkOutReviewedAt,
             ),
           ],
           if (detail.approver != null) ...[

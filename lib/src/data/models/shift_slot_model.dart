@@ -20,10 +20,20 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
     this.checkInTime,
     this.checkOutTime,
     this.approvalStatus,
-    this.lateByMinutes,
+    this.isLate,
+    this.lateCheckInByMinutes,
     this.checkInDistanceMeters,
     this.checkInSelfieUrl,
     this.checkOutSelfieUrl,
+    this.lateCheckInReason,
+    this.checkOutReason,
+    this.lateCheckOutByMinutes,
+    this.checkInReviewedBy,
+    this.checkInReviewerName,
+    this.checkInReviewedAt,
+    this.checkOutReviewedBy,
+    this.checkOutReviewerName,
+    this.checkOutReviewedAt,
   });
 
   final int id;
@@ -33,14 +43,34 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
   final String? checkOutTime;
   @MappableField(key: 'approval_status')
   final String? approvalStatus;
-  @MappableField(key: 'late_by_minutes')
-  final int? lateByMinutes;
+  @MappableField(key: 'is_late')
+  final bool? isLate;
+  @MappableField(key: 'late_check_in_by_minutes')
+  final int? lateCheckInByMinutes;
   @MappableField(key: 'check_in_distance_meters')
   final int? checkInDistanceMeters;
   @MappableField(key: 'check_in_selfie_url')
   final String? checkInSelfieUrl;
   @MappableField(key: 'check_out_selfie_url')
   final String? checkOutSelfieUrl;
+  @MappableField(key: 'late_check_in_reason')
+  final String? lateCheckInReason;
+  @MappableField(key: 'check_out_reason')
+  final String? checkOutReason;
+  @MappableField(key: 'late_check_out_by_minutes')
+  final int? lateCheckOutByMinutes;
+  @MappableField(key: 'check_in_reviewed_by')
+  final int? checkInReviewedBy;
+  @MappableField(key: 'check_in_reviewer_name')
+  final String? checkInReviewerName;
+  @MappableField(key: 'check_in_reviewed_at')
+  final String? checkInReviewedAt;
+  @MappableField(key: 'check_out_reviewed_by')
+  final int? checkOutReviewedBy;
+  @MappableField(key: 'check_out_reviewer_name')
+  final String? checkOutReviewerName;
+  @MappableField(key: 'check_out_reviewed_at')
+  final String? checkOutReviewedAt;
 
   static const fromJson = SlotAttendanceModelMapper.fromJson;
 }

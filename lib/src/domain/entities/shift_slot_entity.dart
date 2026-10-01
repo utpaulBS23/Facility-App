@@ -42,22 +42,40 @@ class SlotAttendanceEntity {
     this.checkInTime,
     this.checkOutTime,
     required this.approvalStatus,
-    required this.lateByMinutes,
+    required this.isLate,
+    this.lateCheckInByMinutes,
     this.checkInDistanceMeters,
     this.checkInSelfieUrl,
     this.checkOutSelfieUrl,
+    this.lateCheckInReason,
+    this.checkOutReason,
+    this.lateCheckOutByMinutes,
+    this.checkInReviewedBy,
+    this.checkInReviewerName,
+    this.checkInReviewedAt,
+    this.checkOutReviewedBy,
+    this.checkOutReviewerName,
+    this.checkOutReviewedAt,
   });
 
   final int id;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
   final String approvalStatus;
-  final int lateByMinutes;
+  final bool isLate;
+  final int? lateCheckInByMinutes;
   final int? checkInDistanceMeters;
   final String? checkInSelfieUrl;
   final String? checkOutSelfieUrl;
-
-  bool get isLate => lateByMinutes > 0;
+  final String? lateCheckInReason;
+  final String? checkOutReason;
+  final int? lateCheckOutByMinutes;
+  final int? checkInReviewedBy;
+  final String? checkInReviewerName;
+  final DateTime? checkInReviewedAt;
+  final int? checkOutReviewedBy;
+  final String? checkOutReviewerName;
+  final DateTime? checkOutReviewedAt;
 }
 
 class SlotAttendantEntity {

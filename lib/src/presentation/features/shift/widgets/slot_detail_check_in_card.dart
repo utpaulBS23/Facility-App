@@ -25,6 +25,9 @@ class _SlotDetailCheckInCard extends StatelessWidget {
     final checkInSelfie = attendance.checkInSelfieUrl;
     final checkOutSelfie = attendance.checkOutSelfieUrl;
     final hasSelfie = checkInSelfie != null || checkOutSelfie != null;
+    final isPendingReview = AttendanceApprovalStatus.fromWireString(
+      attendance.approvalStatus,
+    ).isPendingStage;
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -42,11 +45,39 @@ class _SlotDetailCheckInCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            context.locale.attendantDetails,
-            style: context.textStyle.headline2xlTiny.copyWith(
-              color: context.color.text.primary,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  context.locale.attendantDetails,
+                  style: context.textStyle.headline2xlTiny.copyWith(
+                    color: context.color.text.primary,
+                  ),
+                ),
+              ),
+              if (isPendingReview) ...[
+                Gap(spacing.s8),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: spacing.s8,
+                    vertical: spacing.s4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.color.warningAlt,
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r6,
+                    ),
+                  ),
+                  child: Text(
+                    context.locale.pendingSupervisorApproval,
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.warning,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
           Gap(spacing.s16),
           Row(
