@@ -23,6 +23,14 @@ LocaleRepository localeRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+MenuConfigurationRepository menuConfigurationRepository(Ref ref) {
+  return MenuConfigurationRepositoryImpl(
+    ref.read(restClientServiceProvider),
+    ref.read(cacheServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 LocationRepository locationRepository(Ref ref) {
   return LocationRepositoryImpl(ref.read(locationServiceProvider));
 }

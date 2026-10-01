@@ -1,57 +1,60 @@
-import 'package:flutter/widgets.dart';
-
-import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/router/routes.dart';
+import '../../../core/utils/menu_item_icon.dart';
 
-/// One row in the Menu tab: icon, label, subtitle, destination route, and the
-/// permissions that unlock it.
+/// One row in the Menu tab: icon, destination route, and the hardcoded
+/// permissions. Title and subtitle come from the server, never from here.
 class MenuItemConfig {
   const MenuItemConfig({
-    required this.icon,
-    required this.label,
-    required this.subtitle,
     required this.route,
+    this.itemKey,
+    this.iconOverride,
+    this.isShellRoute = false,
     this.permissions = const [],
   });
 
-  final SvgGenImage icon;
-  final String Function(BuildContext context) label;
-  final String Function(BuildContext context) subtitle;
+  /// Key the backend's menu configuration uses for this row. A row only shows
+  /// when the server's drawer lists its key; null = never listed, so the row
+  /// is unreachable from the menu.
+  final MenuItemKey? itemKey;
+
+  /// Icon for rows without a [itemKey] (their key's icon wins otherwise).
+  final SvgGenImage? iconOverride;
+
+  /// True when [route] is a tab-bar branch (so it is opened with `go`, not
+  /// pushed on top of the shell).
+  final bool isShellRoute;
   final String route;
 
-  /// Holding any one of these shows the item — an OR, matching
-  /// [PermissionGate]. Empty = always visible.
+  /// Hardcoded gate, now only the route guard's fallback while no server
+  /// layout is loaded — the server's `permission_keys` decide the drawer.
+  /// Any one is enough (OR, matching [PermissionGate]); empty = no gate.
   final List<UserPermission> permissions;
+
+  SvgGenImage get icon =>
+      iconOverride ?? itemKey?.icon ?? genericMenuIcon;
 }
 
 final List<MenuItemConfig> menuItemConfigs = [
   MenuItemConfig(
-    icon: Assets.icons.customerIcon,
-    label: _profileLabel,
-    subtitle: _profileSubtitle,
+    itemKey: MenuItemKey.profile,
     route: Routes.myProfile,
     permissions: [UserPermission.profileView, UserPermission.profileUpdate],
   ),
   MenuItemConfig(
-    icon: Assets.icons.attendance,
-    label: _myAttendanceLabel,
-    subtitle: _myAttendanceSubtitle,
+    itemKey: MenuItemKey.myAttendance,
     route: Routes.myAttendance,
     permissions: [UserPermission.supervisorAttendanceView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.service,
-    label: _extraCollectionLabel,
-    subtitle: _extraCollectionSubtitle,
+    itemKey: MenuItemKey.extraCollection,
     route: Routes.additionalIncome,
     permissions: [UserPermission.additionalIncomeView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.route,
-    label: _supplyRequestLabel,
-    subtitle: _supplyRequestSubtitle,
+    itemKey: MenuItemKey.supplyRequest,
     route: Routes.supplyRequests,
     // WHY 3 keys: SupplyRequestPage folds delivery tracking and delivery
     // complaints into the same screen as sections (see that page's own WHY
@@ -61,9 +64,7 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
-    icon: Assets.icons.service,
-    label: _stockBalanceLabel,
-    subtitle: _stockBalanceSubtitle,
+    itemKey: MenuItemKey.stockBalance,
     route: Routes.stock,
     permissions: [
       UserPermission.facilityStockTargetView,
@@ -72,41 +73,35 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
-    icon: Assets.icons.service,
-    label: _stockAveragingMenuLabel,
-    subtitle: _stockAveragingMenuSubtitle,
+    itemKey: MenuItemKey.stockAveraging,
     route: Routes.stockAveraging,
     permissions: [
       UserPermission.facilityStockTargetView,
     ],
   ),
   MenuItemConfig(
-    icon: Assets.icons.pinIcon,
-    label: _leaveLabel,
-    subtitle: _leaveSubtitle,
+    itemKey: MenuItemKey.leave,
     route: Routes.leaveRequests,
     permissions: [
       UserPermission.leaveView,
     ],
   ),
+  // WHY not rendered from this table: Door Control needs an async facility
+  // lookup rather than a static route push, so the menu page draws it itself
+  // when the server's drawer lists this key. The entry still serves the
+  // route guard.
   MenuItemConfig(
-    icon: Assets.icons.passwordIcon,
-    label: _doorLockLabel,
-    subtitle: _doorLockSubtitle,
+    itemKey: MenuItemKey.doorLock,
     route: Routes.doorLock,
     permissions: [UserPermission.doorLockControl],
   ),
   MenuItemConfig(
-    icon: Assets.icons.edit,
-    label: _expenseEntryLabel,
-    subtitle: _expenseEntrySubtitle,
+    itemKey: MenuItemKey.expenseEntry,
     route: Routes.facilityExpense,
     permissions: [UserPermission.facilityExpenseView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.visit,
-    label: _claimExpenseLabel,
-    subtitle: _claimExpenseSubtitle,
+    itemKey: MenuItemKey.claimExpense,
     route: Routes.claimExpense,
     // WHY both keys: .view opens the list/page; .create is checked again
     // inside the page to gate the submit action itself (a viewer without
@@ -117,44 +112,38 @@ final List<MenuItemConfig> menuItemConfigs = [
     ],
   ),
   MenuItemConfig(
-    icon: Assets.icons.task,
-    label: _trainingLabel,
-    subtitle: _trainingSubtitle,
+    itemKey: MenuItemKey.training,
     route: Routes.trainingSessions,
     permissions: [UserPermission.trainingSessionView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.viewIcon,
-    label: _profitReportLabel,
-    subtitle: _profitReportSubtitle,
+    itemKey: MenuItemKey.profitReport,
     route: Routes.report,
     permissions: [UserPermission.reportExecutiveView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.viewIcon,
-    label: _consumptionReportLabel,
-    subtitle: _consumptionReportSubtitle,
+    iconOverride: Assets.icons.viewIcon,
     route: Routes.consumptionReport,
     permissions: [UserPermission.reportStockConsumptionView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.viewIcon,
-    label: _toiletLocationLabel,
-    subtitle: _toiletLocationSubtitle,
+    itemKey: MenuItemKey.toiletLocation,
     route: Routes.toiletLocation,
     permissions: [UserPermission.facilityView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.location,
-    label: _facilityLocationsLabel,
-    subtitle: _facilityLocationsSubtitle,
+    itemKey: MenuItemKey.facilityLocations,
     route: Routes.facilityMap,
     permissions: [UserPermission.facilityMapView],
   ),
   MenuItemConfig(
-    icon: Assets.icons.moreIcon,
-    label: _gatewayManagementLabel,
-    subtitle: _gatewayManagementSubtitle,
+    itemKey: MenuItemKey.issue,
+    route: Routes.issue,
+    isShellRoute: true,
+    permissions: [UserPermission.issueView],
+  ),
+  MenuItemConfig(
+    iconOverride: Assets.icons.moreIcon,
     route: Routes.gatewayManagement,
     permissions: [UserPermission.iotGatewayConfigure],
   ),
@@ -163,82 +152,8 @@ final List<MenuItemConfig> menuItemConfigs = [
 /// Pinned above the logout tile — kept out of [menuItemConfigs] so it stays
 /// fixed regardless of the permission-filtered list order.
 final notificationMenuItemConfig = MenuItemConfig(
-  icon: Assets.icons.notificationIcon,
-  label: _notificationLabel,
-  subtitle: _notificationSubtitle,
+  iconOverride: Assets.icons.notificationIcon,
   route: Routes.notification,
   permissions: [UserPermission.notificationSettings],
 );
 
-String _profileLabel(BuildContext context) => context.locale.profile;
-String _profileSubtitle(BuildContext context) => context.locale.profileSubtitle;
-
-String _myAttendanceLabel(BuildContext context) => context.locale.myAttendance;
-String _myAttendanceSubtitle(BuildContext context) =>
-    context.locale.myAttendanceSubtitle;
-
-String _extraCollectionLabel(BuildContext context) =>
-    context.locale.extraCollection;
-String _extraCollectionSubtitle(BuildContext context) =>
-    context.locale.extraCollectionSubtitle;
-
-String _supplyRequestLabel(BuildContext context) =>
-    context.locale.supplyRequest;
-String _supplyRequestSubtitle(BuildContext context) =>
-    context.locale.supplyRequestSubtitle;
-
-String _leaveLabel(BuildContext context) => context.locale.leave;
-String _leaveSubtitle(BuildContext context) => context.locale.leaveSubtitle;
-
-String _doorLockLabel(BuildContext context) => context.locale.doorLock;
-String _doorLockSubtitle(BuildContext context) =>
-    context.locale.doorLockSubtitle;
-
-String _expenseEntryLabel(BuildContext context) => context.locale.expenseEntry;
-String _expenseEntrySubtitle(BuildContext context) =>
-    context.locale.expenseEntrySubtitle;
-
-String _claimExpenseLabel(BuildContext context) => context.locale.claimExpense;
-String _claimExpenseSubtitle(BuildContext context) =>
-    context.locale.claimExpenseSubtitle;
-
-String _trainingLabel(BuildContext context) => context.locale.trainingSessions;
-String _trainingSubtitle(BuildContext context) =>
-    context.locale.trainingSessionsSubtitle;
-
-String _notificationLabel(BuildContext context) => context.locale.notification;
-String _notificationSubtitle(BuildContext context) =>
-    context.locale.notificationSubtitle;
-
-String _profitReportLabel(BuildContext context) => context.locale.profitReport;
-String _profitReportSubtitle(BuildContext context) =>
-    context.locale.profitReportSubtitle;
-
-String _consumptionReportLabel(BuildContext context) =>
-    context.locale.consumptionReport;
-String _consumptionReportSubtitle(BuildContext context) =>
-    context.locale.consumptionReportSubtitle;
-
-String _toiletLocationLabel(BuildContext context) =>
-    context.locale.toiletLocation;
-String _toiletLocationSubtitle(BuildContext context) =>
-    context.locale.toiletLocationSubtitle;
-
-String _facilityLocationsLabel(BuildContext context) =>
-    context.locale.facilityLocations;
-String _facilityLocationsSubtitle(BuildContext context) =>
-    context.locale.facilityLocationsSubtitle;
-
-String _gatewayManagementLabel(BuildContext context) =>
-    context.locale.gatewayManagement;
-String _gatewayManagementSubtitle(BuildContext context) =>
-    context.locale.gatewayManagementSubtitle;
-
-String _stockBalanceLabel(BuildContext context) => context.locale.stockBalance;
-String _stockBalanceSubtitle(BuildContext context) =>
-    context.locale.stockBalanceSubtitle;
-
-String _stockAveragingMenuLabel(BuildContext context) =>
-    context.locale.stockAveragingMenu;
-String _stockAveragingMenuSubtitle(BuildContext context) =>
-    context.locale.stockAveragingMenuSubtitle;

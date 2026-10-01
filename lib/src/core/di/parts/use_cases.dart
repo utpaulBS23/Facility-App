@@ -49,6 +49,27 @@ GetDeviceNameUseCase getDeviceNameUseCase(Ref ref) {
 }
 
 @riverpod
+GetCachedMenuConfigurationUseCase getCachedMenuConfigurationUseCase(Ref ref) {
+  return GetCachedMenuConfigurationUseCase(
+    ref.read(menuConfigurationRepositoryProvider),
+  );
+}
+
+@riverpod
+ClearMenuConfigurationUseCase clearMenuConfigurationUseCase(Ref ref) {
+  return ClearMenuConfigurationUseCase(
+    ref.read(menuConfigurationRepositoryProvider),
+  );
+}
+
+@riverpod
+RefreshMenuConfigurationUseCase refreshMenuConfigurationUseCase(Ref ref) {
+  return RefreshMenuConfigurationUseCase(
+    ref.read(menuConfigurationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetCurrentLocaleUseCase getCurrentLocaleUseCase(Ref ref) {
   return GetCurrentLocaleUseCase(ref.read(localeRepositoryProvider));
 }
