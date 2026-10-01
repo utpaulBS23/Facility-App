@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 enum ChecklistAnswerType { star, yesNo, repairWork }
 
 enum ChecklistProofPolicy { always, optional, none }
@@ -16,10 +18,12 @@ class ChecklistItemEntity {
     this.existingPointsAwarded,
     this.existingMediaUrls = const [],
     this.hasProof = false,
+    this.questionBn,
   });
 
   final int id;
   final String question;
+  final String? questionBn;
   final ChecklistAnswerType answerType;
   final int order;
   final int maxPoints;
@@ -30,6 +34,9 @@ class ChecklistItemEntity {
   final int? existingPointsAwarded;
   final List<String> existingMediaUrls;
   final bool hasProof;
+
+  String localizedQuestion(String languageCode) =>
+      localizedText(languageCode, question, questionBn);
 
   bool get isAnswered => switch (answerType) {
     ChecklistAnswerType.star => existingRating != null,
@@ -76,10 +83,12 @@ class ChecklistIssueEntity {
     this.dueDate,
     this.facilityName,
     this.dueDateString,
+    this.titleBn,
   });
 
   final int id;
   final String title;
+  final String? titleBn;
   final String category;
   final String location;
   final String priority;
@@ -89,6 +98,9 @@ class ChecklistIssueEntity {
   final DateTime? dueDate;
   final String? facilityName;
   final String? dueDateString;
+
+  String localizedTitle(String languageCode) =>
+      localizedText(languageCode, title, titleBn);
 }
 
 class ChecklistItemMediaEntity {

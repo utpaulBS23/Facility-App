@@ -14,6 +14,7 @@ extension LeavePolicyModelToEntity on LeavePolicyModel {
     return LeavePolicyEntity(
       id: id,
       name: name,
+      nameBn: nameBn,
       leaveType: LeaveType.fromWireString(leaveType),
       defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
       requiresApproval: requiresApproval ?? true,

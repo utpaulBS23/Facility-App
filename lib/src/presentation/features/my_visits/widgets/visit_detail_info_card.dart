@@ -52,8 +52,8 @@ class _VisitDetailInfoCard extends StatelessWidget {
             ],
           ),
           Gap(spacing.s12),
-          if (detail.title?.isNotEmpty == true) ...[
-            Headline2xlTinyText(detail.title!),
+          if (detail.localizedTitle(context.languageCode)?.isNotEmpty == true) ...[
+            Headline2xlTinyText(detail.localizedTitle(context.languageCode)!),
             Gap(spacing.s8),
             _InfoRow(
               icon: detail.locationType == 'external'

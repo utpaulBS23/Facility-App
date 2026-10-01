@@ -146,7 +146,7 @@ class _InspectionIssueCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      issue.title,
+                      issue.localizedTitle(context.languageCode),
                       style: context.textStyle.labelLarge.copyWith(
                         color: context.color.text.primary,
                         fontWeight: FontWeight.bold,

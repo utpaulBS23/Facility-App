@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 enum VisitStatus { scheduled, inProgress, completed, resolved, pending }
 
 enum VisitType { routineInspection, followUp }
@@ -26,6 +28,7 @@ class VisitSummaryEntity {
     required this.scheduledStartTime,
     required this.scheduledEndTime,
     this.title,
+    this.titleBn,
     this.facilityAddress,
     this.priority,
     this.travelOriginType,
@@ -42,6 +45,7 @@ class VisitSummaryEntity {
   final String? facilityName;
   final String? facilityAddress;
   final String? title;
+  final String? titleBn;
   final String? priority;
   final VisitStatus status;
   final VisitType type;
@@ -66,6 +70,9 @@ class VisitSummaryEntity {
   final int? officeId;
   final String? officeName;
   final String? visitType;
+
+  String? localizedTitle(String languageCode) =>
+      localizedTextOrNull(languageCode, title, titleBn);
 }
 
 class VisitListEntity {
@@ -102,6 +109,7 @@ class VisitDetailEntity {
     required this.scheduledStartTime,
     required this.scheduledEndTime,
     this.title,
+    this.titleBn,
     this.facilityAddress,
     this.facilityLatitude,
     this.facilityLongitude,
@@ -126,6 +134,7 @@ class VisitDetailEntity {
   final String? officeName;
   final String? facilityAddress;
   final String? title;
+  final String? titleBn;
   final double? facilityLatitude;
   final double? facilityLongitude;
   final double? inRangeThresholdMeters;
@@ -144,6 +153,9 @@ class VisitDetailEntity {
   final double? travelDistanceKm;
   final String? travelStartedAt;
   final String? submittedAt;
+
+  String? localizedTitle(String languageCode) =>
+      localizedTextOrNull(languageCode, title, titleBn);
 }
 
 class GpsVerificationEntity {

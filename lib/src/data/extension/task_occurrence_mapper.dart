@@ -66,6 +66,7 @@ extension TaskOccurrenceChecklistItemModelToEntity
       TaskOccurrenceChecklistItemEntity(
         id: id,
         label: label ?? '',
+        labelBn: labelBn,
         responseType: taskOccurrenceChecklistResponseTypeFromKey(responseType),
         response: response?.toEntity(mediaUrl: response?.photo?.url),
         proofRequiredOnComplete: proofRequiredOnComplete ?? false,

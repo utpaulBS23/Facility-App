@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 class IssueEntity {
   const IssueEntity({
     required this.id,
@@ -5,6 +7,7 @@ class IssueEntity {
     required this.priority,
     required this.status,
     this.facilityName,
+    this.titleBn,
     this.assignedToName,
     this.dueDate,
     this.problemCategory,
@@ -14,6 +17,7 @@ class IssueEntity {
 
   final int id;
   final String title;
+  final String? titleBn;
   final String priority;
   final String status;
   final String? facilityName;
@@ -22,4 +26,7 @@ class IssueEntity {
   final String? problemCategory;
   final String? issueStatus;
   final String? photoUrl;
+
+  String localizedTitle(String languageCode) =>
+      localizedText(languageCode, title, titleBn);
 }

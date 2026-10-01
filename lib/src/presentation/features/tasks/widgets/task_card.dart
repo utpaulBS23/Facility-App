@@ -95,7 +95,7 @@ class _TaskCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              task.title,
+                              task.localizedTitle(context.languageCode),
                               style: context.textStyle.labelLarge.copyWith(
                                 color: titleColor,
                                 fontWeight: FontWeight.bold,

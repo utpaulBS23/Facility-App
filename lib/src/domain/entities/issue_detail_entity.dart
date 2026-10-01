@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 class IssueDetailEntity {
   const IssueDetailEntity({
     required this.id,
@@ -5,6 +7,8 @@ class IssueDetailEntity {
     required this.priority,
     required this.status,
     this.description,
+    this.titleBn,
+    this.descriptionBn,
     this.assignedTo,
     this.assignedToName,
     this.problemCategory,
@@ -18,9 +22,11 @@ class IssueDetailEntity {
 
   final int id;
   final String title;
+  final String? titleBn;
   final String priority;
   final String status;
   final String? description;
+  final String? descriptionBn;
   final int? assignedTo;
   final String? assignedToName;
   final String? problemCategory;
@@ -30,6 +36,12 @@ class IssueDetailEntity {
   final DateTime? createdDate;
   final String? photoUrl;
   final List<IssueMediaEntity> media;
+
+  String localizedTitle(String languageCode) =>
+      localizedText(languageCode, title, titleBn);
+
+  String? localizedDescription(String languageCode) =>
+      localizedTextOrNull(languageCode, description, descriptionBn);
 }
 
 class IssueMediaEntity {

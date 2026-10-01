@@ -9,9 +9,11 @@ class IssueDataModel with IssueDataModelMappable {
   IssueDataModel({
     required this.id,
     required this.title,
+    this.titleBn,
     required this.priority,
     required this.status,
     this.description,
+    this.descriptionBn,
     this.assignedTo,
     this.assignedToName,
     this.problemCategory,
@@ -25,9 +27,15 @@ class IssueDataModel with IssueDataModelMappable {
 
   final int id;
   final String title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
   final String priority;
   final String status;
   final String? description;
+
+  @MappableField(key: 'description_bn')
+  final String? descriptionBn;
 
   @MappableField(key: 'assigned_to')
   final int? assignedTo;

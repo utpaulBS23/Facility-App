@@ -132,6 +132,8 @@ extension StockItemModelMapper on StockItemModel {
       partnerName: partnerName,
       itemCode: itemCode,
       name: name,
+
+      nameBn: nameBn,
       category: category,
       unit: unit,
       unitPrice: unitPrice,

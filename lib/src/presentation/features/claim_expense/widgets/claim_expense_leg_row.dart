@@ -27,7 +27,7 @@ class _ClaimExpenseLegRow extends StatelessWidget {
         title: context.locale.selectTransportMode,
         options: [
           for (final mode in transportModes)
-            (value: mode.id, label: mode.label),
+            (value: mode.id, label: mode.localizedLabel(context.languageCode)),
         ],
         isSelected: (value) => value == leg.vehicleTypeItemId,
       ),
@@ -38,10 +38,10 @@ class _ClaimExpenseLegRow extends StatelessWidget {
     onChanged();
   }
 
-  String? _selectedModeLabel() => transportModes
+  String? _selectedModeLabel(String languageCode) => transportModes
       .cast<MasterDataItemEntity?>()
       .firstWhere((m) => m?.id == leg.vehicleTypeItemId, orElse: () => null)
-      ?.label;
+      ?.localizedLabel(languageCode);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class _ClaimExpenseLegRow extends StatelessWidget {
               validator: (value) =>
                   value == null ? context.locale.selectTransportMode : null,
               builder: (state) {
-                final selectedLabel = _selectedModeLabel();
+                final selectedLabel = _selectedModeLabel(context.languageCode);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

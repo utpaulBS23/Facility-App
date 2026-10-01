@@ -1,3 +1,5 @@
+import '../../../core/utils/localized_text.dart';
+
 class StockItemEntity {
   const StockItemEntity({
     required this.id,
@@ -5,6 +7,7 @@ class StockItemEntity {
     this.partnerName,
     required this.itemCode,
     required this.name,
+    this.nameBn,
     required this.category,
     required this.unit,
     required this.unitPrice,
@@ -18,8 +21,12 @@ class StockItemEntity {
   final String? partnerName;
   final String itemCode;
   final String name;
+  final String? nameBn;
   final String category;
   final String unit;
   final double unitPrice;
   final bool isActive;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }

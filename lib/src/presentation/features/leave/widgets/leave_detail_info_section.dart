@@ -15,7 +15,7 @@ class _LeaveDetailInfoSection extends StatelessWidget {
     final reasonText = leaveRequest.reason ?? context.locale.optional;
 
     final typeLabel = leaveRequest.leavePolicy.name.isNotEmpty
-        ? leaveRequest.leavePolicy.name
+        ? leaveRequest.leavePolicy.localizedName(context.languageCode)
         : leaveRequest.leaveType.localizedLabel(context);
 
     return Container(

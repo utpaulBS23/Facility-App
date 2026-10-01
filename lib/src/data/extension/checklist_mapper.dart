@@ -17,6 +17,7 @@ extension ChecklistItemModelToEntity on ChecklistItemModel {
   ChecklistItemEntity toEntity() => ChecklistItemEntity(
     id: id,
     question: label ?? '',
+    questionBn: labelBn,
     answerType: _parseAnswerType(responseType),
     order: sortOrder ?? 0,
     maxPoints: maxPoints ?? 5,
@@ -50,6 +51,7 @@ extension ChecklistIssueModelToEntity on ChecklistIssueModel {
   ChecklistIssueEntity toEntity() => ChecklistIssueEntity(
     id: taskId,
     title: title ?? '',
+    titleBn: titleBn,
     category: problemCategory ?? '',
     location: '',
     priority: priority ?? '',

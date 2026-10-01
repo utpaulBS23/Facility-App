@@ -11,6 +11,7 @@ class LeavePolicyModel with LeavePolicyModelMappable {
     required this.id,
     this.partnerId,
     required this.name,
+    this.nameBn,
     this.leaveType,
     this.defaultDaysPerYear,
     this.maxConsecutiveDays,
@@ -26,6 +27,7 @@ class LeavePolicyModel with LeavePolicyModelMappable {
   final int id;
   final int? partnerId;
   final String name;
+  final String? nameBn;
   final String? leaveType;
   final double? defaultDaysPerYear;
   final int? maxConsecutiveDays;

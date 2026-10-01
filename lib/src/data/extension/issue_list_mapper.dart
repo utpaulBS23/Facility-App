@@ -6,6 +6,7 @@ extension IssueItemMapper on IssueItemModel {
     return IssueEntity(
       id: id,
       title: title,
+      titleBn: titleBn,
       priority: priority,
       status: status,
       facilityName: facilityName,

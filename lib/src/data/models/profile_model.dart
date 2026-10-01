@@ -10,11 +10,13 @@ class ProfilePartnerModel with ProfilePartnerModelMappable {
   ProfilePartnerModel({
     required this.id,
     this.name,
+    this.nameBn,
     this.brandName,
   });
 
   final int id;
   final String? name;
+  final String? nameBn;
   final String? brandName;
 
   static const fromJson = ProfilePartnerModelMapper.fromJson;

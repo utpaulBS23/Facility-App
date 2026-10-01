@@ -7,6 +7,7 @@ class IssueItemModel with IssueItemModelMappable {
   IssueItemModel({
     required this.id,
     required this.title,
+    this.titleBn,
     required this.priority,
     required this.status,
     this.facilityName,
@@ -19,6 +20,9 @@ class IssueItemModel with IssueItemModelMappable {
 
   final int id;
   final String title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
   final String priority;
   final String status;
 

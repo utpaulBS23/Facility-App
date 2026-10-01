@@ -36,7 +36,7 @@ class IssueCategoryPickerSheet extends ConsumerWidget {
           title: context.locale.specificProblem,
           options: [
             for (final category in categories)
-              (value: category, label: category.name),
+              (value: category, label: category.localizedName(context.languageCode)),
           ],
           isSelected: (value) => value.value == selected?.value,
         );

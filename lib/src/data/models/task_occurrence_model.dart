@@ -53,6 +53,7 @@ class TaskOccurrenceChecklistItemModel
   TaskOccurrenceChecklistItemModel({
     required this.id,
     this.label,
+    this.labelBn,
     this.responseType,
     this.response,
     this.proofRequiredOnComplete,
@@ -62,6 +63,9 @@ class TaskOccurrenceChecklistItemModel
 
   final int id;
   final String? label;
+
+  @MappableField(key: 'label_bn')
+  final String? labelBn;
 
   @MappableField(key: 'response_type')
   final String? responseType;

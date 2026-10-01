@@ -1,3 +1,4 @@
+import '../../../core/utils/localized_text.dart';
 import 'leave_type.dart';
 
 class LeavePolicyEntity {
@@ -8,12 +9,17 @@ class LeavePolicyEntity {
     required this.defaultDaysPerYear,
     required this.requiresApproval,
     required this.canCarryForward,
+    this.nameBn,
   });
 
   final int id;
   final String name;
+  final String? nameBn;
   final LeaveType leaveType;
   final double defaultDaysPerYear;
   final bool requiresApproval;
   final bool canCarryForward;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }

@@ -61,6 +61,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.facilityName,
     required this.status,
     this.title,
+    this.titleBn,
     this.visitType,
     required this.scheduledDate,
     this.scheduledStartTime,
@@ -103,6 +104,9 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   final String status;
 
   final String? title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
 
   @MappableField(key: 'visit_type')
   final String? visitType;
@@ -159,6 +163,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,
+        titleBn: titleBn,
         priority: priority,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
@@ -197,6 +202,7 @@ class VisitDetailModel with VisitDetailModelMappable {
     this.officeName,
     required this.status,
     this.title,
+    this.titleBn,
     this.visitType,
     required this.scheduledDate,
     this.scheduledStartTime,
@@ -246,6 +252,9 @@ class VisitDetailModel with VisitDetailModelMappable {
   final String status;
 
   final String? title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
 
   @MappableField(key: 'visit_type')
   final String? visitType;
@@ -327,6 +336,7 @@ class VisitDetailModel with VisitDetailModelMappable {
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,
+        titleBn: titleBn,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
