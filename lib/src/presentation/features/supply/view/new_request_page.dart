@@ -80,7 +80,7 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
     setState(() {
       _items[index] = _items[index].copyWith(
         stockItemId: item.id,
-        itemName: item.name,
+        itemName: item.localizedName(context.languageCode),
         unit: item.unit,
       );
     });

@@ -8,6 +8,7 @@ class PartnerStaffModel with PartnerStaffModelMappable {
     required this.id,
     this.uid,
     this.name,
+    this.nameBn,
     this.email,
     this.phoneNumber,
     this.userRole,
@@ -18,6 +19,8 @@ class PartnerStaffModel with PartnerStaffModelMappable {
   final int id;
   final String? uid;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   final String? email;
   @MappableField(key: 'phone_number')
   final String? phoneNumber;

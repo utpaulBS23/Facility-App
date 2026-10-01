@@ -43,7 +43,7 @@ class IssueCategorySelector extends StatelessWidget {
               children: [
                 Expanded(
                   child: BodyRegularText(
-                    selected?.name ?? context.locale.specificProblemHint,
+                    selected?.localizedName(context.languageCode) ?? context.locale.specificProblemHint,
                     color: selected != null
                         ? context.color.text.primary
                         : context.color.text.secondary,

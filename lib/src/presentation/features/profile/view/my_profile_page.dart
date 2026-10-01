@@ -72,7 +72,8 @@ class MyProfilePage extends ConsumerWidget {
           final email = profile.email;
           final phone = profile.phoneNumber.isEmpty ? '—' : profile.phoneNumber;
           final role = profile.userType;
-          final partner = profile.partnerName.isEmpty ? '—' : profile.partnerName;
+          final partnerName = profile.localizedPartnerName(context.languageCode);
+          final partner = partnerName.isEmpty ? '—' : partnerName;
 
           return RefreshIndicator(
             onRefresh: () async {

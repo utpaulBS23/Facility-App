@@ -5,6 +5,7 @@ extension ShiftTemplateDataModelToEntity on ShiftTemplateDataModel {
   ShiftTemplateEntity toEntity() => ShiftTemplateEntity(
     id: id,
     name: name ?? '',
+    nameBn: nameBn,
     startTime: startTime ?? '',
     endTime: endTime ?? '',
     durationHours: durationHours,

@@ -66,7 +66,7 @@ class _Card1Header extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            issue.title,
+            issue.localizedTitle(context.languageCode),
             style: context.textStyle.labelLarge.copyWith(
               color: context.color.text.primary,
               fontWeight: FontWeight.bold,
@@ -157,7 +157,7 @@ class _Card2Description extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
 
-    if (issue.description?.isEmpty ?? true) {
+    if (issue.localizedDescription(context.languageCode)?.isEmpty ?? true) {
       return const SizedBox.shrink();
     }
 
@@ -187,7 +187,7 @@ class _Card2Description extends StatelessWidget {
           ),
           Gap(spacing.s6),
           Text(
-            issue.description ?? '',
+            issue.localizedDescription(context.languageCode) ?? '',
             style: context.textStyle.bodyMedium.copyWith(
               color: context.color.text.primary,
             ),

@@ -87,7 +87,7 @@ const _technician = {
 };
 
 Set<String> _tabRoutes(Set<UserPermission> permissions) =>
-    permittedShellTabs(permissions).map((tab) => tab.route).toSet();
+    permittedShellTabs(permissions).map((tab) => tab.config.route).toSet();
 
 Set<String> _menuRoutes(Set<UserPermission> permissions) => {
   for (final item in menuItemConfigs)

@@ -438,6 +438,7 @@ class InspectionChecklist extends _$InspectionChecklist {
       return ChecklistItemEntity(
         id: item.id,
         question: item.question,
+        questionBn: item.questionBn,
         answerType: item.answerType,
         order: item.order,
         maxPoints: item.maxPoints,

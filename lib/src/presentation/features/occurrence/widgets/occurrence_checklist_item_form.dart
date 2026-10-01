@@ -298,7 +298,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.item.label,
+                        widget.item.localizedLabel(context.languageCode),
                         style: context.textStyle.labelLarge.copyWith(
                           color: context.color.text.primary,
                           fontWeight: FontWeight.bold,

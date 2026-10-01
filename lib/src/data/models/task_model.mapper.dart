@@ -69,9 +69,16 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
   static const Field<TaskModel, int> _f$id = Field('id', _$id);
   static String _$title(TaskModel v) => v.title;
   static const Field<TaskModel, String> _f$title = Field('title', _$title);
+  static String? _$titleBn(TaskModel v) => v.titleBn;
+  static const Field<TaskModel, String> _f$titleBn =
+      Field('titleBn', _$titleBn, key: r'title_bn', opt: true);
   static String? _$description(TaskModel v) => v.description;
   static const Field<TaskModel, String> _f$description =
       Field('description', _$description, opt: true);
+  static String? _$descriptionBn(TaskModel v) => v.descriptionBn;
+  static const Field<TaskModel, String> _f$descriptionBn = Field(
+      'descriptionBn', _$descriptionBn,
+      key: r'description_bn', opt: true);
   static int? _$facilityId(TaskModel v) => v.facilityId;
   static const Field<TaskModel, int> _f$facilityId =
       Field('facilityId', _$facilityId, key: r'facility_id', opt: true);
@@ -109,7 +116,9 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
   final MappableFields<TaskModel> fields = const {
     #id: _f$id,
     #title: _f$title,
+    #titleBn: _f$titleBn,
     #description: _f$description,
+    #descriptionBn: _f$descriptionBn,
     #facilityId: _f$facilityId,
     #facilityName: _f$facilityName,
     #facilityAddress: _f$facilityAddress,
@@ -126,7 +135,9 @@ class TaskModelMapper extends ClassMapperBase<TaskModel> {
     return TaskModel(
         id: data.dec(_f$id),
         title: data.dec(_f$title),
+        titleBn: data.dec(_f$titleBn),
         description: data.dec(_f$description),
+        descriptionBn: data.dec(_f$descriptionBn),
         facilityId: data.dec(_f$facilityId),
         facilityName: data.dec(_f$facilityName),
         facilityAddress: data.dec(_f$facilityAddress),
@@ -324,9 +335,16 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   static String _$title(TaskDetailModel v) => v.title;
   static const Field<TaskDetailModel, String> _f$title =
       Field('title', _$title);
+  static String? _$titleBn(TaskDetailModel v) => v.titleBn;
+  static const Field<TaskDetailModel, String> _f$titleBn =
+      Field('titleBn', _$titleBn, key: r'title_bn', opt: true);
   static String? _$description(TaskDetailModel v) => v.description;
   static const Field<TaskDetailModel, String> _f$description =
       Field('description', _$description, opt: true);
+  static String? _$descriptionBn(TaskDetailModel v) => v.descriptionBn;
+  static const Field<TaskDetailModel, String> _f$descriptionBn = Field(
+      'descriptionBn', _$descriptionBn,
+      key: r'description_bn', opt: true);
   static int? _$facilityId(TaskDetailModel v) => v.facilityId;
   static const Field<TaskDetailModel, int> _f$facilityId =
       Field('facilityId', _$facilityId, key: r'facility_id', opt: true);
@@ -379,7 +397,9 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
   final MappableFields<TaskDetailModel> fields = const {
     #id: _f$id,
     #title: _f$title,
+    #titleBn: _f$titleBn,
     #description: _f$description,
+    #descriptionBn: _f$descriptionBn,
     #facilityId: _f$facilityId,
     #facilityName: _f$facilityName,
     #facilityAddress: _f$facilityAddress,
@@ -400,7 +420,9 @@ class TaskDetailModelMapper extends ClassMapperBase<TaskDetailModel> {
     return TaskDetailModel(
         id: data.dec(_f$id),
         title: data.dec(_f$title),
+        titleBn: data.dec(_f$titleBn),
         description: data.dec(_f$description),
+        descriptionBn: data.dec(_f$descriptionBn),
         facilityId: data.dec(_f$facilityId),
         facilityName: data.dec(_f$facilityName),
         facilityAddress: data.dec(_f$facilityAddress),

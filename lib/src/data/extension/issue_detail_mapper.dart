@@ -7,9 +7,11 @@ extension IssueDetailMapper on IssueDetailModel {
     return IssueDetailEntity(
       id: data.id,
       title: data.title,
+      titleBn: data.titleBn,
       priority: data.priority,
       status: data.status,
       description: data.description,
+      descriptionBn: data.descriptionBn,
       assignedTo: data.assignedTo,
       assignedToName: data.assignedToName,
       problemCategory: data.problemCategory,

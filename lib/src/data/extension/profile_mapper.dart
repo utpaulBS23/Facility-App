@@ -10,6 +10,7 @@ extension UserProfileModelToEntity on UserProfileModel {
         phoneNumber: phoneNumber ?? '',
         userType: userType ?? '',
         partnerName: partner?.name ?? '',
+        partnerNameBn: partner?.nameBn,
         profileImageUrl: profileImageUrl ?? '',
       );
 }

@@ -7,6 +7,7 @@ class ProblemCategoryModel with ProblemCategoryModelMappable {
   ProblemCategoryModel({
     required this.value,
     this.label,
+    this.labelBn,
     this.color,
     this.isActive,
     this.proofRequiredOnComplete,
@@ -14,6 +15,9 @@ class ProblemCategoryModel with ProblemCategoryModelMappable {
 
   final String value;
   final String? label;
+
+  @MappableField(key: 'label_bn')
+  final String? labelBn;
   final String? color;
 
   @MappableField(key: 'is_active')

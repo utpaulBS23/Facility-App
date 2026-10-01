@@ -16,3 +16,8 @@ extension AppLocalizationExtension on AppLocalizations {
 extension BuildContextLocalizationExtension on BuildContext {
   AppLocalizations get locale => AppLocalizations.of(this);
 }
+
+extension BuildContextLanguageExtension on BuildContext {
+  /// Active app language, e.g. `en` / `bn`.
+  String get languageCode => Localizations.localeOf(this).languageCode;
+}

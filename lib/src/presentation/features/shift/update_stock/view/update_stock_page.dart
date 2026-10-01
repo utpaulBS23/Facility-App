@@ -103,7 +103,7 @@ class _UpdateStockPageState extends ConsumerState<UpdateStockPage> {
       item.id,
       () => ShiftStockCountItemFormEntry(
         stockItemId: item.id,
-        itemName: item.name,
+        itemName: item.localizedName(context.languageCode),
         unit: item.unit,
         initialQty: previousQty,
       ),

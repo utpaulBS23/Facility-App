@@ -42,7 +42,7 @@ class _CategorySection extends ConsumerWidget {
         color: context.color.error,
       ),
       data: (categories) => _DropdownField(
-        value: category?.label,
+        value: category?.localizedLabel(context.languageCode),
         hint: context.locale.selectExpenseCategory,
         hasError: hasError,
         onTap: enabled
