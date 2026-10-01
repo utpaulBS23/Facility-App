@@ -67,7 +67,9 @@ class AttendanceItemEntity {
     this.shift,
     this.approver,
     this.checkInReviewer,
+    this.checkInReviewedAt,
     this.checkOutReviewer,
+    this.checkOutReviewedAt,
     required this.approvalStatus,
   });
 
@@ -94,7 +96,9 @@ class AttendanceItemEntity {
   final AttendanceShiftInfoEntity? shift;
   final AttendanceApproverEntity? approver;
   final AttendanceApproverEntity? checkInReviewer;
+  final DateTime? checkInReviewedAt;
   final AttendanceApproverEntity? checkOutReviewer;
+  final DateTime? checkOutReviewedAt;
 
   // WHY: API returns raw `status` string ('pending', 'approved', 'auto_approved',
   // 'rejected', 'absent').

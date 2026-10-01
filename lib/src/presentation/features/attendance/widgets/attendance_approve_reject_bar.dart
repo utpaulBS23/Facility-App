@@ -7,6 +7,7 @@ class _ApproveRejectBar extends StatelessWidget {
     required this.isApproving,
     required this.isRejecting,
     this.allowReject = true,
+    this.allowApprove = true,
   });
 
   final VoidCallback onApprove;
@@ -14,6 +15,7 @@ class _ApproveRejectBar extends StatelessWidget {
   final bool isApproving;
   final bool isRejecting;
   final bool allowReject;
+  final bool allowApprove;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +56,15 @@ class _ApproveRejectBar extends StatelessWidget {
                 ),
                 Gap(spacing.s12),
               ],
-              Expanded(
-                child: FilledButton(
-                  onPressed: busy ? null : onApprove,
-                  child: isApproving
-                      ? const LoadingIndicator()
-                      : Text(context.locale.approve),
+              if (allowApprove)
+                Expanded(
+                  child: FilledButton(
+                    onPressed: busy ? null : onApprove,
+                    child: isApproving
+                        ? const LoadingIndicator()
+                        : Text(context.locale.approve),
+                  ),
                 ),
-              ),
             ],
           ),
         ),

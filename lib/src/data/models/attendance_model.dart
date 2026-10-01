@@ -94,7 +94,9 @@ class AttendanceItemModel with AttendanceItemModelMappable {
     this.shift,
     this.approver,
     this.checkInReviewer,
+    this.checkInReviewedAt,
     this.checkOutReviewer,
+    this.checkOutReviewedAt,
   });
 
   final int? id;
@@ -155,8 +157,14 @@ class AttendanceItemModel with AttendanceItemModelMappable {
   @MappableField(key: 'check_in_reviewer')
   final AttendanceApproverModel? checkInReviewer;
 
+  @MappableField(key: 'check_in_reviewed_at')
+  final String? checkInReviewedAt;
+
   @MappableField(key: 'check_out_reviewer')
   final AttendanceApproverModel? checkOutReviewer;
+
+  @MappableField(key: 'check_out_reviewed_at')
+  final String? checkOutReviewedAt;
 
   static const fromJson = AttendanceItemModelMapper.fromJson;
 }

@@ -12,12 +12,19 @@ part of '../view/shift_check_in_page.dart';
 ///   2. Check-In Time (with clock icon)
 ///   3. Supervisor Name (with person icon)
 class _AutoDetectedInfoCard extends ConsumerWidget {
-  const _AutoDetectedInfoCard({this.supervisorName});
+  const _AutoDetectedInfoCard({this.supervisorName, this.timeIsCheckOut = false});
 
   /// The active slot's supervisor, when the caller has one (see
   /// [ShiftCheckInPage.supervisorName]). Takes priority over the logged-in
   /// user's own supervisor field from [checkInInfoProvider].
   final String? supervisorName;
+
+  // WHY: [checkInInfoProvider]'s `checkInTime` is always the device's current
+  // clock (it's "the time this action is happening right now"), not the
+  // attendance record's real check-in timestamp. Reused as-is on the
+  // check-out page, labeling live "now" as "Check-In Time" there would read
+  // as the original check-in time being wrong, when it's just mislabeled.
+  final bool timeIsCheckOut;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,17 +39,26 @@ class _AutoDetectedInfoCard extends ConsumerWidget {
           _LocationDisabledBanner(failure: info!.locationFailure!),
           Gap(dimensions.spacing.s12),
         ],
-        _AutoDetectedInfoBody(info: info, supervisorName: supervisorName),
+        _AutoDetectedInfoBody(
+          info: info,
+          supervisorName: supervisorName,
+          timeIsCheckOut: timeIsCheckOut,
+        ),
       ],
     );
   }
 }
 
 class _AutoDetectedInfoBody extends StatelessWidget {
-  const _AutoDetectedInfoBody({required this.info, this.supervisorName});
+  const _AutoDetectedInfoBody({
+    required this.info,
+    this.supervisorName,
+    this.timeIsCheckOut = false,
+  });
 
   final CheckInInfoEntity? info;
   final String? supervisorName;
+  final bool timeIsCheckOut;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +95,9 @@ class _AutoDetectedInfoBody extends StatelessWidget {
           Gap(dimensions.spacing.s8),
           _ContactInfoItem(
             icon: Icons.access_time_outlined,
-            label: context.locale.checkInTime,
+            label: timeIsCheckOut
+                ? context.locale.checkOutTime
+                : context.locale.checkInTime,
             value: info?.checkInTime ?? context.locale.loading,
           ),
           Gap(dimensions.spacing.s8),

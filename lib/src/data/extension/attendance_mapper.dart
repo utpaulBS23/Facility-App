@@ -41,7 +41,9 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     shift: shift?.toEntity(),
     approver: approver?.toEntity(),
     checkInReviewer: checkInReviewer?.toEntity(),
+    checkInReviewedAt: parseLocalIso(checkInReviewedAt),
     checkOutReviewer: checkOutReviewer?.toEntity(),
+    checkOutReviewedAt: parseLocalIso(checkOutReviewedAt),
     approvalStatus: AttendanceApprovalStatus.fromWireString(status),
   );
 }
