@@ -2,8 +2,11 @@ import 'package:flutter/widgets.dart';
 
 import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/login_entity.dart';
+import '../../../domain/entities/menu_configuration_entity.dart';
+import '../../../domain/entities/menu_item_key.dart';
 import '../gen/assets.gen.dart';
-import '../widgets/permission_gate.dart';
+import '../utils/menu_config_resolver.dart';
+import '../utils/menu_item_icon.dart';
 import 'routes.dart';
 
 /// Single place that maps shell branches ↔ routes ↔ required permission ↔
@@ -19,19 +22,22 @@ class ShellTabConfig {
   const ShellTabConfig({
     required this.branchIndex,
     required this.route,
-    required this.icon,
-    required this.label,
+    this.itemKey,
     this.permissions = const [],
   });
 
+  /// Key the backend's menu configuration uses for this tab. Null = not
+  /// server-controlled (Menu): always shown, always last.
+  final MenuItemKey? itemKey;
   final int branchIndex;
   final String route;
-  final SvgGenImage icon;
-  final String Function(BuildContext context) label;
 
-  /// Holding any one of these makes the tab visible — an OR, never an AND,
-  /// matching [PermissionGate]'s semantics. Empty = visible to every logged-in
-  /// user.
+  /// From the key's icon; the Menu tab has no key, so it carries its own.
+  SvgGenImage get icon => itemKey?.icon ?? Assets.icons.menu;
+
+  /// Hardcoded gate, now only the route guard's fallback while no server
+  /// layout is loaded — the server's `permission_keys` decide the tab bar.
+  /// Any one is enough (OR, matching [PermissionGate]); empty = no gate.
   final List<UserPermission> permissions;
 }
 
@@ -39,15 +45,13 @@ final List<ShellTabConfig> shellTabConfigs = [
   ShellTabConfig(
     branchIndex: 0,
     route: Routes.dashboard,
-    icon: Assets.icons.homeIcon,
-    label: _dashboardLabel,
+    itemKey: MenuItemKey.dashboard,
     permissions: [UserPermission.insightsDashboardView],
   ),
   ShellTabConfig(
     branchIndex: 1,
     route: Routes.shift,
-    icon: Assets.icons.shift,
-    label: _shiftLabel,
+    itemKey: MenuItemKey.shift,
     // WHY both keys: `shift_slot.*` is the matrix's new resource family,
     // `shift.view` is the pre-existing one. Kept as an OR during rollout so a
     // session still carrying only the old key isn't locked out — see plan's
@@ -58,15 +62,13 @@ final List<ShellTabConfig> shellTabConfigs = [
   ShellTabConfig(
     branchIndex: 2,
     route: Routes.attendance,
-    icon: Assets.icons.attendance,
-    label: _attendanceLabel,
+    itemKey: MenuItemKey.attendance,
     permissions: [UserPermission.attendanceView],
   ),
   ShellTabConfig(
     branchIndex: 3,
     route: Routes.myVisits,
-    icon: Assets.icons.visit,
-    label: _visitLabel,
+    itemKey: MenuItemKey.myVisits,
     // WHY both keys: see shift branch above — visitTaskView is the matrix's
     // new key, checklistResponseView is the pre-existing gate for this tab.
     permissions: [
@@ -79,15 +81,13 @@ final List<ShellTabConfig> shellTabConfigs = [
   ShellTabConfig(
     branchIndex: 4,
     route: Routes.task,
-    icon: Assets.icons.task,
-    label: _taskLabel,
+    itemKey: MenuItemKey.task,
     permissions: [UserPermission.taskOccurrenceView],
   ),
   ShellTabConfig(
     branchIndex: 5,
     route: Routes.tracking,
-    icon: Assets.icons.route,
-    label: _trackingLabel,
+    itemKey: MenuItemKey.tracking,
     permissions: [UserPermission.supervisorTrackingView],
   ),
   // WHY permission: this slot now renders the task-list content that used
@@ -97,8 +97,7 @@ final List<ShellTabConfig> shellTabConfigs = [
   ShellTabConfig(
     branchIndex: 6,
     route: Routes.issue,
-    icon: Assets.icons.issue,
-    label: _issuesLabel,
+    itemKey: MenuItemKey.issue,
     permissions: [UserPermission.issueView],
   ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
@@ -106,29 +105,60 @@ final List<ShellTabConfig> shellTabConfigs = [
   ShellTabConfig(
     branchIndex: 7,
     route: Routes.menu,
-    icon: Assets.icons.menu,
-    label: _menuLabel,
   ),
 ];
 
-String _dashboardLabel(BuildContext context) => context.locale.dashboard;
-String _shiftLabel(BuildContext context) => context.locale.shift;
-String _attendanceLabel(BuildContext context) => context.locale.attendance;
-String _visitLabel(BuildContext context) => context.locale.visit;
-String _taskLabel(BuildContext context) => context.locale.task;
-String _trackingLabel(BuildContext context) => context.locale.tracking;
-String _issuesLabel(BuildContext context) => context.locale.issues;
-String _menuLabel(BuildContext context) => context.locale.menu;
+/// A tab to render: the app's own [config] (route, icon) plus the server entry
+/// that placed it, which supplies the label.
+class ResolvedShellTab {
+  const ResolvedShellTab({required this.config, this.item});
 
-List<ShellTabConfig> permittedShellTabs(Set<UserPermission> permissions) => [
-  for (final tab in shellTabConfigs)
-    if (hasAnyPermission(tab.permissions, permissions)) tab,
-];
+  final ShellTabConfig config;
 
-/// Menu has no permission requirement, so this never falls through in
-/// practice; login route is a defensive default.
-String firstPermittedShellRoute(Set<UserPermission> permissions) {
-  final tabs = permittedShellTabs(permissions);
+  /// Null for the Menu tab, which the server never sends.
+  final MenuConfigItemEntity? item;
 
-  return tabs.isEmpty ? Routes.login : tabs.first.route;
+  /// Server label only. The Menu tab is the sole exception: the server never
+  /// sends it, so the app names it.
+  String label(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+
+    return item?.localizedLabel(languageCode) ?? context.locale.menu;
+  }
+}
+
+/// Tabs to render, in server order, followed by the always-present Menu tab.
+///
+/// WHY server-only: the layout is whatever the backend sends. Entries whose
+/// key this build has no screen for are skipped; the user's own permissions
+/// still filter what remains.
+List<ResolvedShellTab> permittedShellTabs(
+  Set<UserPermission> permissions, {
+  MenuConfigurationEntity? menuConfig,
+}) {
+  final byKey = {
+    for (final tab in shellTabConfigs)
+      if (tab.itemKey != null) tab.itemKey!: tab,
+  };
+
+  return [
+    for (final item in permittedMenuItems(menuConfig?.tabs, permissions))
+      if (MenuItemKey.fromKey(item.itemKey) case final key?)
+        if (byKey[key] case final config?)
+        ResolvedShellTab(config: config, item: item),
+    ResolvedShellTab(
+      config: shellTabConfigs.firstWhere((tab) => tab.itemKey == null),
+    ),
+  ];
+}
+
+/// Menu is always present, so this never falls through in practice; login
+/// route is a defensive default.
+String firstPermittedShellRoute(
+  Set<UserPermission> permissions, {
+  MenuConfigurationEntity? menuConfig,
+}) {
+  final tabs = permittedShellTabs(permissions, menuConfig: menuConfig);
+
+  return tabs.isEmpty ? Routes.login : tabs.first.config.route;
 }

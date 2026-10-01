@@ -11,6 +11,8 @@ enum CacheKey {
   disabledNotificationChannels,
   doorLockStatusCache,
   doorLockPendingCommands,
+  menuConfigurationEtag,
+  menuConfigurationData,
 }
 
 abstract class CacheService {

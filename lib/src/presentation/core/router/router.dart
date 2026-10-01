@@ -16,6 +16,8 @@ import '../../../domain/entities/task_entity.dart';
 import '../../../domain/entities/task_occurrence_entity.dart';
 import '../../../domain/entities/visit_entity.dart';
 import '../../../domain/entities/leave/leave_request_entity.dart';
+import '../application_state/menu_configuration_provider/menu_configuration_provider.dart';
+import '../utils/menu_config_resolver.dart';
 import '../../features/attendance/view/attendance_page.dart';
 import '../../features/authentication/forgot_password/view/create_new_password_page.dart';
 import '../../features/authentication/forgot_password/view/otp_verification_page.dart';
@@ -167,18 +169,36 @@ GoRouter goRouter(Ref ref) {
       // the first permitted tab. Both tables share the same {route,
       // permissions} shape, so one loop covers both.
       if (session != null) {
+        // WHY the server layout is consulted here too: it decides what the
+        // menu offers, so a deep link to a screen the server doesn't list (or
+        // has gated away) must not get through either.
+        final menuConfig = ref.read(menuConfigProvider);
         for (final tab in shellTabConfigs) {
           if (tab.route == state.uri.path &&
-              tab.permissions.isNotEmpty &&
-              !session.canAny(tab.permissions)) {
-            return firstPermittedShellRoute(session.permissions);
+              !isMenuItemPermitted(
+                itemKey: tab.itemKey?.key,
+                fallback: tab.permissions,
+                held: session.permissions,
+                menuConfig: menuConfig,
+              )) {
+            return firstPermittedShellRoute(
+              session.permissions,
+              menuConfig: menuConfig,
+            );
           }
         }
         for (final item in menuItemConfigs) {
           if (item.route == state.uri.path &&
-              item.permissions.isNotEmpty &&
-              !session.canAny(item.permissions)) {
-            return firstPermittedShellRoute(session.permissions);
+              !isMenuItemPermitted(
+                itemKey: item.itemKey?.key,
+                fallback: item.permissions,
+                held: session.permissions,
+                menuConfig: menuConfig,
+              )) {
+            return firstPermittedShellRoute(
+              session.permissions,
+              menuConfig: menuConfig,
+            );
           }
         }
       }

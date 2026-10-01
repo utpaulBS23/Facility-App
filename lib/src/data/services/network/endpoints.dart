@@ -14,6 +14,9 @@ class Endpoints {
   static const String versionCheck = '/version-check';
   static const String updateAction = '/../app/update-action';
 
+  /// Menu
+  static const String menuConfiguration = '/menu-configuration';
+
   /// Attendance
   static const String checkIn = '/partners/{partnerId}/attendances/check-in';
 

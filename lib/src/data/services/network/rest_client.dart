@@ -33,6 +33,11 @@ abstract class RestClient {
     @Query('current_version_code') required int currentVersionCode,
   });
 
+  @GET(Endpoints.menuConfiguration)
+  Future<HttpResponse> getMenuConfiguration({
+    @Header('If-None-Match') String? ifNoneMatch,
+  });
+
   @PATCH(Endpoints.updateAction)
   Future<HttpResponse> reportUpdateAction({
     @Body() required Map<String, dynamic> request,

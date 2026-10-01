@@ -1,22 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/login_entity.dart';
+import '../../../domain/entities/menu_configuration_entity.dart';
+import '../application_state/menu_configuration_provider/menu_configuration_provider.dart';
 import '../gen/assets.gen.dart';
 import '../router/shell_tab_config.dart';
 import '../theme/theme.dart';
 import 'permission_gate.dart';
 
-class NavigationShell extends StatelessWidget {
+class NavigationShell extends ConsumerStatefulWidget {
   const NavigationShell({super.key, required this.statefulNavigationShell});
 
   final StatefulNavigationShell statefulNavigationShell;
 
+  @override
+  ConsumerState<NavigationShell> createState() => _NavigationShellState();
+}
+
+class _NavigationShellState extends ConsumerState<NavigationShell>
+    with WidgetsBindingObserver {
+  StatefulNavigationShell get statefulNavigationShell =>
+      widget.statefulNavigationShell;
+
+  // WHY here: the shell mounts once per authenticated session (fresh login or
+  // restored at cold start) and outlives tab switches, so it is the one place
+  // that covers "after login" without touching the login flow. The backend
+  // sends no push when a layout changes, hence the refresh on every resume.
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    ref.read(menuConfigProvider.notifier).refresh();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(menuConfigProvider.notifier).refresh();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   void _onTabSelected({
-    required List<ShellTabConfig> visibleTabs,
+    required List<ResolvedShellTab> visibleTabs,
     required int index,
   }) {
-    final tab = visibleTabs[index];
+    final tab = visibleTabs[index].config;
     statefulNavigationShell.goBranch(tab.branchIndex);
   }
 
@@ -52,18 +88,28 @@ class NavigationShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // WHY watched here, not inside the builder below: `ref.watch` is only valid
+    // during this widget's own build, and the builder runs later, inside
+    // PermissionSetScope's build.
+    final menuConfig = ref.watch(menuConfigProvider);
+
     return PermissionSetScope(
-      builder: (context, permissions) => _buildShell(context, permissions),
+      builder: (context, permissions) =>
+          _buildShell(context, permissions, menuConfig),
     );
   }
 
-  Widget _buildShell(BuildContext context, Set<UserPermission> permissions) {
-    final visibleTabs = permittedShellTabs(permissions);
+  Widget _buildShell(
+    BuildContext context,
+    Set<UserPermission> permissions,
+    MenuConfigurationEntity? menuConfig,
+  ) {
+    final visibleTabs = permittedShellTabs(permissions, menuConfig: menuConfig);
 
     // WHY: current branch may be outside the visible tabs for one frame while
     // the router redirect kicks in — clamp to 0 instead of crashing.
     final selectedIndex = visibleTabs.indexWhere(
-      (tab) => tab.branchIndex == statefulNavigationShell.currentIndex,
+      (tab) => tab.config.branchIndex == statefulNavigationShell.currentIndex,
     );
 
     return Scaffold(
@@ -80,7 +126,11 @@ class NavigationShell extends StatelessWidget {
                   _onTabSelected(visibleTabs: visibleTabs, index: index),
               items: [
                 for (final tab in visibleTabs)
-                  _navItem(context, asset: tab.icon, label: tab.label(context)),
+                  _navItem(
+                    context,
+                    asset: tab.config.icon,
+                    label: tab.label(context),
+                  ),
               ],
             ),
     );
