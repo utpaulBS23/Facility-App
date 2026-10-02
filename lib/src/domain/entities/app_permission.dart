@@ -148,7 +148,7 @@ enum UserPermission {
   userViewProfile('user.view_profile'),
 
   // Insights
-  insightsDashboardView('insights.dashboard.view'),
+  insightsDashboardView('insights_dashboard.view'),
 
   // Shift slot
   shiftSlotView('slot.view'),
@@ -207,7 +207,7 @@ enum UserPermission {
   facilityMapView('facility_map.view'),
 
   // Supervisor tracking
-  supervisorTrackingView('supervisor_tracking.view'),
+  currentPositionView('current_position.view'),
   travelRouteCheckIn('travel_route.check_in'),
   trackingSettingView('tracking_setting.view'),
   trackingSettingUpdate('tracking_setting.update'),
