@@ -63,7 +63,7 @@ class _CreateShiftDialogState extends ConsumerState<CreateShiftDialog> {
           facilityId: widget.roster.facilityId,
           rosterId: widget.roster.id,
           shiftTemplateId: templateId,
-          shiftDate: DateFormat('yyyy-MM-dd').format(_shiftDate),
+          shiftDate: ApiDate.date(_shiftDate),
           notes: _notesController.text.trim().isEmpty
               ? null
               : _notesController.text.trim(),

@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import '../../../core/utils/api_date.dart';
+
 final class DateFormatter {
   const DateFormatter._();
 
@@ -7,9 +9,8 @@ final class DateFormatter {
   static String shiftTime(String hms) {
     final trimmed = hms.trim();
     if (trimmed.isEmpty) return hms;
-    final pattern = trimmed.split(':').length == 3 ? 'HH:mm:ss' : 'HH:mm';
     try {
-      return DateFormat('h:mm a').format(DateFormat(pattern).parse(trimmed));
+      return DateFormat('h:mm a').format(ApiDate.parseTime(trimmed));
     } catch (_) {
       return hms;
     }
@@ -41,7 +42,7 @@ final class DateFormatter {
   /// `yyyy-MM-dd` string → `dd/MM/yyyy`.
   static String dayMonthYear(String ymd) {
     try {
-      return DateFormat('dd/MM/yyyy').format(DateFormat('yyyy-MM-dd').parse(ymd));
+      return DateFormat('dd/MM/yyyy').format(ApiDate.parseDate(ymd));
     } catch (_) {
       return ymd;
     }

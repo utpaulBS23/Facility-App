@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:intl/intl.dart';
 
+import '../../core/utils/api_date.dart';
 import '../../domain/entities/task_entity.dart';
 import '../../presentation/core/utils/date_formatter.dart';
 
@@ -9,7 +9,7 @@ part 'task_model.mapper.dart';
 String _formatDueTime(String? raw) {
   if (raw == null) return '';
   try {
-    final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
+    final dt = ApiDate.parseDateTime(raw);
     return DateFormatter.shiftDate(dt);
   } catch (_) {
     return raw;

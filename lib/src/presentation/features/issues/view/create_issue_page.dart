@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
@@ -18,6 +17,7 @@ import '../riverpod/create_issue_provider.dart';
 import '../widgets/issue_attendant_picker_sheet.dart';
 import '../widgets/issue_category_picker_sheet.dart';
 import '../widgets/issue_form_fields_list_view.dart';
+import '../../../../core/utils/api_date.dart';
 
 class CreateIssuePage extends ConsumerStatefulWidget {
   const CreateIssuePage({
@@ -151,7 +151,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
         photoPath: _photo?.path,
         assignedTo: _selectedAttendant?.id,
         dueAt: _dueDate != null
-            ? DateFormat('yyyy-MM-dd HH:mm:ss').format(_dueDate!)
+            ? ApiDate.dateTime(_dueDate!)
             : null,
       ),
       categoryName: _selectedCategory!.name,

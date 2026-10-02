@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
+import '../../../../core/utils/api_date.dart';
 
 part 'check_in_info_provider.g.dart';
 
@@ -36,7 +37,7 @@ class CheckInInfo extends _$CheckInInfo {
       locationResult.when(
         success: (data) => CheckInInfoEntity(
           checkInTime: DateFormat('EEE, MMM d, y, h:mm a').format(now),
-          checkInTimeRaw: DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
+          checkInTimeRaw: ApiDate.dateTime(now),
           supervisorName: user?.supervisor ?? '—',
           location: data?.address,
           latitude: data?.latitude,
@@ -44,7 +45,7 @@ class CheckInInfo extends _$CheckInInfo {
         ),
         error: (failure) => CheckInInfoEntity(
           checkInTime: DateFormat('EEE, MMM d, y, h:mm a').format(now),
-          checkInTimeRaw: DateFormat('yyyy-MM-dd HH:mm:ss').format(now),
+          checkInTimeRaw: ApiDate.dateTime(now),
           supervisorName: user?.supervisor ?? '—',
           locationFailure: failure,
         ),

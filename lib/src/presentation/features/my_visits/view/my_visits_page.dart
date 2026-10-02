@@ -17,6 +17,7 @@ import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/my_visits_provider.dart';
+import '../../../../core/utils/api_date.dart';
 
 part '../widgets/visit_card.dart';
 part '../widgets/visit_empty_state.dart';
@@ -59,7 +60,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
         _scrollController.position.maxScrollExtent - 500) {
       ref
           .read(myVisitsProvider.notifier)
-          .loadMore(date: DateFormat('yyyy-MM-dd').format(_selectedDate));
+          .loadMore(date: ApiDate.date(_selectedDate));
     }
   }
 
@@ -67,7 +68,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
     ref
         .read(myVisitsProvider.notifier)
         .fetch(
-          date: DateFormat('yyyy-MM-dd').format(date),
+          date: ApiDate.date(date),
           facilityId: _selectedFacilityId,
         );
   }
