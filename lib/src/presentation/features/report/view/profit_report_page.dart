@@ -13,11 +13,12 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/supervisor_filter_button.dart';
 import '../riverpod/incentive_fine_report_provider.dart';
 import '../riverpod/supervisor_options_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/facility_breakdown_card.dart';
 part '../widgets/incentive_result_card.dart';
@@ -91,8 +92,9 @@ class _ProfitReportPageState extends ConsumerState<ProfitReportPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.profitReport,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.profitReport,
+        fallbackTitle: context.locale.profitReport,
         actions: [
           MonthFilterButton(
             month: DateTime(

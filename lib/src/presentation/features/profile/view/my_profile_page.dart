@@ -20,6 +20,8 @@ import '../widgets/profile_info_divider.dart';
 import '../widgets/profile_info_row.dart';
 import '../widgets/profile_role_chip.dart';
 import '../widgets/settings_action_tile.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part 'edit_profile_page.dart';
 part 'change_password_page.dart';
@@ -39,25 +41,9 @@ class MyProfilePage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        backgroundColor: color.onPrimary,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: color.primary, size: 20),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            }
-          },
-        ),
-        title: Text(
-          context.locale.myProfile,
-          style: textStyle.titleMedium.copyWith(
-            color: color.text.primary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.profile,
+        fallbackTitle: context.locale.myProfile,
       ),
       body: profileState.when(
         loading: () => const Center(child: CircularProgressIndicator()),

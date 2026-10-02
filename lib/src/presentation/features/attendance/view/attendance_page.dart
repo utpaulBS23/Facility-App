@@ -22,9 +22,10 @@ import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../../../core/widgets/app_time_field.dart';
 import '../riverpod/attendance_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/attendance_approve_reject_bar.dart';
 part '../widgets/attendance_body.dart';
@@ -166,11 +167,10 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.attendance),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.attendance,
+        fallbackTitle: context.locale.attendance,
+        isTabByDefault: true,
         actions: [
           MonthFilterButton(
             month: DateTime(

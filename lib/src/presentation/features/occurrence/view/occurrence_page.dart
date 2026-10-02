@@ -26,6 +26,8 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/task_occurrence_reassign_provider.dart';
 import '../riverpod/task_occurrences_provider.dart';
 import '../../../../core/utils/api_date.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/occurrence_reassign_sheet.dart';
 part '../widgets/occurrence_stats_header.dart';
@@ -177,11 +179,10 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.task),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.task,
+        fallbackTitle: context.locale.task,
+        isTabByDefault: true,
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(

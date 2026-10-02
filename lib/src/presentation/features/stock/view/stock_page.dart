@@ -7,12 +7,12 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../widgets/facility_stock_balance_body.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 class StockPageArgs {
   const StockPageArgs({
@@ -73,13 +73,10 @@ class _StockPageState extends ConsumerState<StockPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: () => _onBack(context)),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.stock),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.stockBalance,
+        fallbackTitle: context.locale.stock,
+        onBack: () => _onBack(context),
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(

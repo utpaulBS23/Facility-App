@@ -15,11 +15,12 @@ import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/category_filter_chips.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../extensions/toilet_direction_extension.dart';
 import '../extensions/toilet_status_extension.dart';
 import '../riverpod/toilets_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/toilet_location_body.dart';
 part '../widgets/toilet_card.dart';
@@ -80,8 +81,9 @@ class _ToiletLocationPageState extends ConsumerState<ToiletLocationPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.toiletLocation,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.toiletLocation,
+        fallbackTitle: context.locale.toiletLocation,
         onBack: () => _onBack(context),
       ),
       body: _ToiletLocationBody(
