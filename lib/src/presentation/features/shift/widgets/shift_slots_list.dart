@@ -53,7 +53,7 @@ class _ShiftSlotsList extends StatelessWidget {
         items.add(
           Padding(
             padding: EdgeInsets.only(top: spacing.s8, bottom: spacing.s8),
-            child: Text(fac.facilityName, style: context.textStyle.titleSmall),
+            child: Text(fac.localizedFacilityName(context.languageCode), style: context.textStyle.titleSmall),
           ),
         );
         for (var i = 0; i < fac.slots.length; i++) {
@@ -62,7 +62,7 @@ class _ShiftSlotsList extends StatelessWidget {
           items.add(
             _SlotCard(
               slot: slot,
-              facility: SlotFacilityEntity(id: fac.facilityId, name: fac.facilityName, address: ''),
+              facility: SlotFacilityEntity(id: fac.facilityId, name: fac.localizedFacilityName(context.languageCode), address: ''),
               onTap: () => onSlotTap(slot),
               onAssignStaff: () => onAssignStaff(slot),
             ),

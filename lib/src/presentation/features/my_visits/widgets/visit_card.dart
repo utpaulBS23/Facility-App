@@ -123,8 +123,8 @@ class _VisitCard extends ConsumerWidget {
             _InfoRow(
               icon: Icons.apartment_outlined,
               label: visit.locationType == 'external'
-                  ? (visit.officeName ?? '')
-                  : (visit.facilityName ?? ''),
+                  ? (visit.localizedOfficeName(context.languageCode) ?? '')
+                  : (visit.localizedFacilityName(context.languageCode) ?? ''),
             ),
             Gap(spacing.s6),
             _InfoRow(

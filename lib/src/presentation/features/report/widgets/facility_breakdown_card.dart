@@ -53,7 +53,7 @@ class _FacilityBreakdownRow extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                facility.facilityName,
+                facility.localizedFacilityName(context.languageCode),
                 style: context.textStyle.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
                 ),

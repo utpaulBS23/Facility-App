@@ -16,8 +16,10 @@ class IssueDataModel with IssueDataModelMappable {
     this.descriptionBn,
     this.assignedTo,
     this.assignedToName,
+    this.assignedToNameBn,
     this.problemCategory,
     this.facilityName,
+    this.facilityNameBn,
     this.dueAt,
     this.issueStatus,
     this.resolvedAt,
@@ -42,12 +44,16 @@ class IssueDataModel with IssueDataModelMappable {
 
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
 
   @MappableField(key: 'problem_category')
   final String? problemCategory;
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
 
   @MappableField(key: 'due_at')
   final String? dueAt;

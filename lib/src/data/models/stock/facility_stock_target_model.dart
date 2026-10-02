@@ -11,26 +11,35 @@ class FacilityStockTargetModel with FacilityStockTargetModelMappable {
     required this.id,
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn,
     required this.stockItemId,
     this.itemCode,
     required this.itemName,
+    this.itemNameBn,
     this.unit,
     required this.monthlyTargetQty,
     this.updatedBy,
     this.updatedByName,
+    this.updatedByNameBn,
     this.updatedAt,
   });
 
   final int id;
   final int facilityId;
   final String facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final int stockItemId;
   final String? itemCode;
   final String itemName;
+  @MappableField(key: 'item_name_bn')
+  final String? itemNameBn;
   final String? unit;
   final double monthlyTargetQty;
   final int? updatedBy;
   final String? updatedByName;
+  @MappableField(key: 'updated_by_name_bn')
+  final String? updatedByNameBn;
   final String? updatedAt;
 
   static const fromJson = FacilityStockTargetModelMapper.fromJson;
@@ -45,6 +54,7 @@ class TopDemandItemModel with TopDemandItemModelMappable {
     required this.stockItemId,
     this.itemCode,
     required this.itemName,
+    this.itemNameBn,
     this.unit,
     required this.totalMonthlyDemandQty,
   });
@@ -52,6 +62,8 @@ class TopDemandItemModel with TopDemandItemModelMappable {
   final int stockItemId;
   final String? itemCode;
   final String itemName;
+  @MappableField(key: 'item_name_bn')
+  final String? itemNameBn;
   final String? unit;
   final double totalMonthlyDemandQty;
 

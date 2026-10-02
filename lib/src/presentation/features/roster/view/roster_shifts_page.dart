@@ -85,7 +85,7 @@ class _RosterShiftsPageState extends ConsumerState<RosterShiftsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) =>
-          UnassignStaffConfirmDialog(staffName: assignment.attendant.fullName),
+          UnassignStaffConfirmDialog(staffName: assignment.attendant.localizedFullName(context.languageCode)),
     );
     if (confirmed != true || !mounted) return;
 

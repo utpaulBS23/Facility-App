@@ -35,7 +35,7 @@ class FacilityDropdown extends StatelessWidget {
       ),
       items: [
         for (final facility in facilities)
-          DropdownMenuItem(value: facility.id, child: Text(facility.name)),
+          DropdownMenuItem(value: facility.id, child: Text(facility.localizedName(context.languageCode))),
       ],
       onChanged: (value) {
         if (value != null) onChanged(value);

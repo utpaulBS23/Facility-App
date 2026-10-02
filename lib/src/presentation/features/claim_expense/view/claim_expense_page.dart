@@ -301,12 +301,12 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
               if (selectedVisit != null) ...[
                 _ReadOnlyField(
                   label: context.locale.startLocation,
-                  value: selectedVisit.travelOriginName ?? '—',
+                  value: selectedVisit.localizedTravelOriginName(context.languageCode) ?? '—',
                 ),
                 Gap(spacing.s16),
                 _ReadOnlyField(
                   label: context.locale.destination,
-                  value: selectedVisit.facilityName ?? selectedVisit.officeName ?? '—',
+                  value: selectedVisit.localizedFacilityName(context.languageCode) ?? selectedVisit.localizedOfficeName(context.languageCode) ?? '—',
                 ),
                 Gap(spacing.s16),
               ] else ...[

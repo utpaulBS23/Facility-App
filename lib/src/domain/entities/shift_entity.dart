@@ -1,27 +1,39 @@
+import '../../core/utils/localized_text.dart';
+
 class ShiftAttendantEntity {
   const ShiftAttendantEntity({
     required this.id,
     required this.fullName,
+    this.fullNameBn = '',
     this.phone,
   });
 
   final int id;
   final String fullName;
+  final String fullNameBn;
   final String? phone;
+
+  String localizedFullName(String languageCode) =>
+      localizedText(languageCode, fullName, fullNameBn);
 }
 
 class ShiftSupervisorEntity {
   const ShiftSupervisorEntity({
     required this.id,
     required this.fullName,
+    this.fullNameBn = '',
     this.phone,
     required this.isPrimary,
   });
 
   final int id;
   final String fullName;
+  final String fullNameBn;
   final String? phone;
   final bool isPrimary;
+
+  String localizedFullName(String languageCode) =>
+      localizedText(languageCode, fullName, fullNameBn);
 }
 
 /// One attendant's assignment to a shift slot.
@@ -52,14 +64,19 @@ class ShiftFacilityEntity {
   const ShiftFacilityEntity({
     required this.id,
     required this.name,
+    this.nameBn = '',
     required this.address,
     this.supervisor,
   });
 
   final int id;
   final String name;
+  final String nameBn;
   final String address;
   final ShiftSupervisorEntity? supervisor;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }
 
 class ShiftEntity {
@@ -150,12 +167,12 @@ class RosterFacilityEntity {
   const RosterFacilityEntity({
     required this.id,
     required this.name,
-    this.nameBn,
+    this.nameBn = '',
   });
 
   final int id;
   final String name;
-  final String? nameBn;
+  final String nameBn;
 }
 
 class RosterCreatorEntity {

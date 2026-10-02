@@ -95,7 +95,7 @@ class _RosterAssignedStaffTable extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          assignment.attendant.fullName,
+                          assignment.attendant.localizedFullName(context.languageCode),
                           style: context.textStyle.bodySmall.copyWith(
                             color: context.color.text.primary,
                           ),

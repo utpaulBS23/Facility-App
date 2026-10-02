@@ -104,7 +104,7 @@ class _Card1Header extends StatelessWidget {
               Gap(spacing.s4),
               Expanded(
                 child: Text(
-                  issue.facilityName ?? '—',
+                  issue.localizedFacilityName(context.languageCode) ?? '—',
                   style: context.textStyle.bodySmall.copyWith(
                     color: context.color.text.secondary,
                   ),
@@ -291,7 +291,7 @@ class _Card3Details extends StatelessWidget {
             ),
             Gap(spacing.s8),
           ],
-          if (issue.assignedToName?.isNotEmpty ?? false) ...[
+          if (issue.localizedAssignedToName(context.languageCode)?.isNotEmpty ?? false) ...[
             Row(
               children: [
                 Icon(
@@ -312,7 +312,7 @@ class _Card3Details extends StatelessWidget {
                       ),
                       Gap(spacing.s2),
                       Text(
-                        issue.assignedToName ?? '—',
+                        issue.localizedAssignedToName(context.languageCode) ?? '—',
                         style: context.textStyle.bodyMedium.copyWith(
                           color: context.color.text.primary,
                         ),

@@ -68,7 +68,7 @@ class MyProfilePage extends ConsumerWidget {
           onRetry: () => ref.invalidate(profileProvider),
         ),
         data: (profile) {
-          final name = profile.name;
+          final name = profile.localizedName(context.languageCode);
           final email = profile.email;
           final phone = profile.phoneNumber.isEmpty ? '—' : profile.phoneNumber;
           final role = profile.userType;

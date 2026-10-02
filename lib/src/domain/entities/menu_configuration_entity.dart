@@ -6,16 +6,16 @@ class MenuConfigItemEntity {
     required this.permissions,
     required this.isGated,
     this.label,
-    this.labelBn,
+    this.labelBn = '',
     this.sublabel,
-    this.sublabelBn,
+    this.sublabelBn = '',
   });
 
   final String itemKey;
   final String? label;
-  final String? labelBn;
+  final String labelBn;
   final String? sublabel;
-  final String? sublabelBn;
+  final String sublabelBn;
   final Set<UserPermission> permissions;
 
   /// WHY separate from [permissions]: the server sends an empty key list for

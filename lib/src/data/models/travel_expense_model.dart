@@ -67,9 +67,11 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.taskId,
     this.facilityId,
     this.facilityName,
+    this.facilityNameBn,
     this.startType,
     this.startId,
     this.userName,
+    this.userNameBn,
     this.purpose,
     this.calculatedDistanceKm,
     this.calculatedAmount,
@@ -86,9 +88,13 @@ class TravelExpenseModel with TravelExpenseModelMappable {
   final int? taskId;
   final int? facilityId;
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final String? startType;
   final int? startId;
   final String? userName;
+  @MappableField(key: 'user_name_bn')
+  final String? userNameBn;
   final String? purpose;
   final double? calculatedDistanceKm;
   final double? calculatedAmount;

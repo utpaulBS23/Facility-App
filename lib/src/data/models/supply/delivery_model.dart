@@ -12,6 +12,7 @@ class DeliveryItemModel with DeliveryItemModelMappable {
     required this.stockItemId,
     required this.itemCode,
     required this.itemName,
+    this.itemNameBn,
     required this.unit,
     required this.qtyExpected,
     required this.qtyReceived,
@@ -23,6 +24,8 @@ class DeliveryItemModel with DeliveryItemModelMappable {
   final int stockItemId;
   final String itemCode;
   final String itemName;
+  @MappableField(key: 'item_name_bn')
+  final String? itemNameBn;
   final String unit;
   final double qtyExpected;
   final double qtyReceived;
@@ -43,8 +46,10 @@ class DeliveryModel with DeliveryModelMappable {
     required this.requestCode,
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn,
     this.receivedBy,
     this.receivedByName,
+    this.receivedByNameBn,
     this.receiptPhotoUrl,
     this.deliveryNotes,
     required this.status,
@@ -59,8 +64,12 @@ class DeliveryModel with DeliveryModelMappable {
   final String requestCode;
   final int facilityId;
   final String facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final int? receivedBy;
   final String? receivedByName;
+  @MappableField(key: 'received_by_name_bn')
+  final String? receivedByNameBn;
   final String? receiptPhotoUrl;
   final String? deliveryNotes;
   final String status;

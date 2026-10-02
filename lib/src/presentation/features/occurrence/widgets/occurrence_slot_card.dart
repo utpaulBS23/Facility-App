@@ -110,7 +110,7 @@ class _OccurrenceSlotCard extends StatelessWidget {
                                 Gap(spacing.s8),
                                 Expanded(
                                   child: BodySmallText(
-                                    occurrence.submittedByName ?? '—',
+                                    occurrence.localizedSubmittedByName(context.languageCode) ?? '—',
                                     color: context.color.text.secondary,
                                   ),
                                 ),

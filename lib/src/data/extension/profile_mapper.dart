@@ -6,11 +6,12 @@ extension UserProfileModelToEntity on UserProfileModel {
   UserProfileEntity toEntity() => UserProfileEntity(
         id: id,
         name: name,
+        nameBn: nameBn ?? '',
         email: email,
         phoneNumber: phoneNumber ?? '',
         userType: userType ?? '',
         partnerName: partner?.name ?? '',
-        partnerNameBn: partner?.nameBn,
+        partnerNameBn: partner?.nameBn ?? '',
         profileImageUrl: profileImageUrl ?? '',
       );
 }

@@ -11,8 +11,10 @@ class StockAllocationModel with StockAllocationModelMappable {
     required this.allocationCode,
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn,
     this.allocatedBy,
     this.allocatedByName,
+    this.allocatedByNameBn,
     this.sourceRequestId,
     this.sourceRequestCode,
     this.notes,
@@ -25,8 +27,12 @@ class StockAllocationModel with StockAllocationModelMappable {
   final String allocationCode;
   final int facilityId;
   final String facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final int? allocatedBy;
   final String? allocatedByName;
+  @MappableField(key: 'allocated_by_name_bn')
+  final String? allocatedByNameBn;
   final int? sourceRequestId;
   final String? sourceRequestCode;
   final String? notes;
@@ -44,6 +50,7 @@ class StockAllocationItemModel with StockAllocationItemModelMappable {
     required this.stockItemId,
     required this.itemCode,
     required this.itemName,
+    this.itemNameBn,
     required this.unit,
     required this.qty,
     required this.unitPrice,
@@ -54,6 +61,8 @@ class StockAllocationItemModel with StockAllocationItemModelMappable {
   final int stockItemId;
   final String itemCode;
   final String itemName;
+  @MappableField(key: 'item_name_bn')
+  final String? itemNameBn;
   final String unit;
   final double qty;
   final double unitPrice;

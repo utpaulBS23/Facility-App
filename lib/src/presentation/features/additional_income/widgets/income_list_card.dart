@@ -59,7 +59,7 @@ class _IncomeListCard extends ConsumerWidget {
               Gap(spacing.s4),
               Expanded(
                 child: BodySmallText(
-                  income.facilityName,
+                  income.localizedFacilityName(context.languageCode),
                   color: context.color.text.secondary,
                 ),
               ),
@@ -88,7 +88,7 @@ class _IncomeListCard extends ConsumerWidget {
               ),
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.submittedBy}: ${income.submittedByName}',
+                '${context.locale.submittedBy}: ${income.localizedSubmittedByName(context.languageCode)}',
                 color: context.color.text.secondary,
               ),
             ],

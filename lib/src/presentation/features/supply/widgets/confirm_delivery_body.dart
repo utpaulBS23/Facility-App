@@ -30,12 +30,12 @@ class _ConfirmDeliveryBody extends StatelessWidget {
         children: [
           RequestInfoCard(
             label: context.locale.facility,
-            title: delivery.facilityName,
+            title: delivery.localizedFacilityName(context.languageCode),
           ),
           Gap(spacing.s16),
           _OrderDetailsSummaryCard(
             requestId: delivery.requestCode,
-            requestedBy: request.requestedByName,
+            requestedBy: request.localizedRequestedByName(context.languageCode),
             urgency: request.urgency,
           ),
           Gap(spacing.s16),

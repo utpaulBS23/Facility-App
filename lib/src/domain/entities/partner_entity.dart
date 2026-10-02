@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 /// Tenant (partner) the logged-in user belongs to, with its branding.
 ///
 /// `null` partner means a platform-level (system) user.
@@ -5,12 +7,14 @@ class PartnerEntity {
   PartnerEntity({
     required this.id,
     required this.brandName,
+    this.brandNameBn = '',
     this.primaryColor,
     this.logoUrl,
   });
 
   final int id;
   final String brandName;
+  final String brandNameBn;
 
   /// Tenant brand colour as a hex string (e.g. `#1A73E8`).
   ///
@@ -20,4 +24,7 @@ class PartnerEntity {
 
   /// Tenant logo; null when the partner has not uploaded one.
   final String? logoUrl;
+
+  String localizedBrandName(String languageCode) =>
+      localizedText(languageCode, brandName, brandNameBn);
 }

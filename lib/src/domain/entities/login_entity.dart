@@ -1,6 +1,7 @@
 import 'accessible_facility_entity.dart';
 import 'app_permission.dart';
 import 'partner_entity.dart';
+import '../../core/utils/localized_text.dart';
 
 export 'accessible_facility_entity.dart';
 export 'app_permission.dart';
@@ -104,6 +105,7 @@ class UserEntity extends LoginEntity {
   UserEntity({
     required this.id,
     required this.name,
+    this.nameBn = '',
     required this.email,
     this.phoneNumber,
     required this.userType,
@@ -116,6 +118,7 @@ class UserEntity extends LoginEntity {
 
   final int id;
   final String name;
+  final String nameBn;
   final String email;
   final String? phoneNumber;
   final String userType;
@@ -124,6 +127,9 @@ class UserEntity extends LoginEntity {
   final int permissionVersion;
   final bool twoFactorEnabled;
   final String? profileImage;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }
 
 class LoginRequestEntity extends LoginEntity {

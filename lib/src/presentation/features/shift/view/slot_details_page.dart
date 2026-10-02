@@ -74,7 +74,7 @@ class SlotDetailsPage extends ConsumerWidget {
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => UnassignStaffConfirmDialog(staffName: attendant.name),
+      builder: (_) => UnassignStaffConfirmDialog(staffName: attendant.localizedName(context.languageCode)),
     );
     if (confirmed != true || !context.mounted) return;
 
@@ -157,7 +157,7 @@ class SlotDetailsPage extends ConsumerWidget {
         if (fac.slots.any((s) => s.shiftSlotId == currentSlot.shiftSlotId)) {
           facility = SlotFacilityEntity(
             id: fac.facilityId,
-            name: fac.facilityName,
+            name: fac.localizedFacilityName(context.languageCode),
             address: '',
           );
           break;

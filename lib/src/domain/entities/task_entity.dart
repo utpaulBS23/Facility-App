@@ -29,8 +29,8 @@ class TaskEntity {
     required this.dueTime,
     required this.priority,
     required this.status,
-    this.titleBn,
-    this.descriptionBn,
+    this.titleBn = '',
+    this.descriptionBn = '',
     this.facilityId,
     this.facilityAddress = '',
     this.assignedToId,
@@ -44,9 +44,9 @@ class TaskEntity {
 
   final int id;
   final String title;
-  final String? titleBn;
+  final String titleBn;
   final String description;
-  final String? descriptionBn;
+  final String descriptionBn;
   final String location;
   final String facilityAddress;
   final String dueTime;

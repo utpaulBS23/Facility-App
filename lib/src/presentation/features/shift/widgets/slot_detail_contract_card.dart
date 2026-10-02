@@ -17,7 +17,7 @@ class _SlotDetailContractCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final facilityName = facility?.name ?? '';
+    final facilityName = facility?.localizedName(context.languageCode) ?? '';
     final address = facility?.address ?? '';
     final timeRange =
         '${DateFormatter.shiftTime(slot.startTime)} – ${DateFormatter.shiftTime(slot.endTime)}';
@@ -47,10 +47,10 @@ class _SlotDetailContractCard extends StatelessWidget {
             _InfoRow(icon: Icons.location_on_outlined, label: address),
             Gap(spacing.s12),
           ],
-          if (slot.supervisorName.isNotEmpty) ...[
+          if (slot.localizedSupervisorName(context.languageCode).isNotEmpty) ...[
             _InfoRow(
               icon: Icons.person_outline_rounded,
-              label: slot.supervisorName,
+              label: slot.localizedSupervisorName(context.languageCode),
             ),
             Gap(spacing.s6),
           ],

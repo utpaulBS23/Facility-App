@@ -36,12 +36,15 @@ class IncentiveFineReportResponseModel
 class IncentiveFineFacilityModel with IncentiveFineFacilityModelMappable {
   const IncentiveFineFacilityModel({
     this.facilityName,
+    this.facilityNameBn,
     this.achievementRate,
     this.target,
     this.income,
   });
 
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final double? achievementRate;
   final double? target;
   final double? income;

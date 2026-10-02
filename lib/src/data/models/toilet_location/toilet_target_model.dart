@@ -10,7 +10,9 @@ class ToiletTargetModel with ToiletTargetModelMappable {
   const ToiletTargetModel({
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn,
     this.supervisorName,
+    this.supervisorNameBn,
     required this.targetRevenue,
     this.actualRevenue,
     this.targetProfit,
@@ -20,7 +22,11 @@ class ToiletTargetModel with ToiletTargetModelMappable {
 
   final int facilityId;
   final String facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final String? supervisorName;
+  @MappableField(key: 'supervisor_name_bn')
+  final String? supervisorNameBn;
   final double targetRevenue;
   final double? actualRevenue;
   final double? targetProfit;

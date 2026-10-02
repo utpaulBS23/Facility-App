@@ -106,9 +106,9 @@ class TaskModel with TaskModelMappable {
   TaskEntity toEntity() => TaskEntity(
     id: id,
     title: title,
-    titleBn: titleBn,
+    titleBn: titleBn ?? '',
     description: description ?? '',
-    descriptionBn: descriptionBn,
+    descriptionBn: descriptionBn ?? '',
     facilityId: facilityId,
     location: facilityName ?? '',
     facilityAddress: facilityAddress ?? '',
@@ -235,9 +235,9 @@ class TaskDetailModel with TaskDetailModelMappable {
     return TaskEntity(
       id: id,
       title: title,
-      titleBn: titleBn,
+      titleBn: titleBn ?? '',
       description: description ?? '',
-      descriptionBn: descriptionBn,
+      descriptionBn: descriptionBn ?? '',
       facilityId: facilityId,
       location: facilityName ?? '',
       facilityAddress: facilityAddress ?? '',

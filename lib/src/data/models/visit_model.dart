@@ -59,6 +59,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   VisitSummaryModel({
     required this.id,
     this.facilityName,
+    this.facilityNameBn,
     required this.status,
     this.title,
     this.titleBn,
@@ -74,20 +75,25 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
+    this.assignedToNameBn,
     this.travelOriginType,
     this.travelOriginId,
     this.travelOriginName,
+    this.travelOriginNameBn,
     this.facilityAddress,
     this.travelStartedAt,
     this.locationType,
     this.officeId,
     this.officeName,
+    this.officeNameBn,
   });
 
   final int id;
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
 
   @MappableField(key: 'facility_address')
   final String? facilityAddress;
@@ -100,6 +106,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
 
   @MappableField(key: 'office_name')
   final String? officeName;
+  @MappableField(key: 'office_name_bn')
+  final String? officeNameBn;
 
   final String status;
 
@@ -142,6 +150,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
 
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
 
   @MappableField(key: 'travel_origin_type')
   final String? travelOriginType;
@@ -151,6 +161,8 @@ class VisitSummaryModel with VisitSummaryModelMappable {
 
   @MappableField(key: 'travel_origin_name')
   final String? travelOriginName;
+  @MappableField(key: 'travel_origin_name_bn')
+  final String? travelOriginNameBn;
 
   @MappableField(key: 'travel_started_at')
   final String? travelStartedAt;
@@ -160,10 +172,11 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   VisitSummaryEntity toEntity() => VisitSummaryEntity(
         id: id,
         facilityName: facilityName ?? officeName,
+        facilityNameBn: facilityNameBn ?? officeNameBn ?? '',
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,
-        titleBn: titleBn,
+        titleBn: titleBn ?? '',
         priority: priority,
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
@@ -172,10 +185,12 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         travelOriginType: travelOriginType,
         travelOriginId: travelOriginId,
         travelOriginName: travelOriginName,
+        travelOriginNameBn: travelOriginNameBn ?? '',
         travelStartedAt: travelStartedAt,
         locationType: locationType ?? 'facility',
         officeId: officeId,
         officeName: officeName,
+        officeNameBn: officeNameBn ?? '',
         visitType: visitType,
       );
 }
@@ -196,10 +211,12 @@ class VisitDetailModel with VisitDetailModelMappable {
   VisitDetailModel({
     required this.id,
     this.facilityName,
+    this.facilityNameBn,
     this.facilityId,
     this.locationType,
     this.officeId,
     this.officeName,
+    this.officeNameBn,
     required this.status,
     this.title,
     this.titleBn,
@@ -208,6 +225,7 @@ class VisitDetailModel with VisitDetailModelMappable {
     this.scheduledStartTime,
     this.scheduledEndTime,
     this.createdByName,
+    this.createdByNameBn,
     this.createdByRole,
     this.locationVerified,
     this.checkInAt,
@@ -219,11 +237,13 @@ class VisitDetailModel with VisitDetailModelMappable {
     this.itemsCompleted,
     this.priority,
     this.assignedToName,
+    this.assignedToNameBn,
     this.facilityAddress,
     this.travelTrackingExcluded,
     this.travelOriginType,
     this.travelOriginId,
     this.travelOriginName,
+    this.travelOriginNameBn,
     this.travelDistanceKm,
     this.travelStartedAt,
     this.submittedAt,
@@ -233,6 +253,8 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
@@ -245,6 +267,8 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'office_name')
   final String? officeName;
+  @MappableField(key: 'office_name_bn')
+  final String? officeNameBn;
 
   @MappableField(key: 'facility_address')
   final String? facilityAddress;
@@ -270,6 +294,8 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'created_by_name')
   final String? createdByName;
+  @MappableField(key: 'created_by_name_bn')
+  final String? createdByNameBn;
 
   @MappableField(key: 'created_by_role')
   final String? createdByRole;
@@ -302,6 +328,8 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
 
   @MappableField(key: 'travel_tracking_excluded')
   final bool? travelTrackingExcluded;
@@ -314,6 +342,8 @@ class VisitDetailModel with VisitDetailModelMappable {
 
   @MappableField(key: 'travel_origin_name')
   final String? travelOriginName;
+  @MappableField(key: 'travel_origin_name_bn')
+  final String? travelOriginNameBn;
 
   @MappableField(key: 'travel_distance_km')
   final double? travelDistanceKm;
@@ -329,14 +359,16 @@ class VisitDetailModel with VisitDetailModelMappable {
   VisitDetailEntity toEntity() => VisitDetailEntity(
         id: id,
         facilityName: facilityName,
+        facilityNameBn: facilityNameBn ?? '',
         facilityId: facilityId,
         locationType: locationType ?? 'facility',
         officeId: officeId,
         officeName: officeName,
+        officeNameBn: officeNameBn ?? '',
         facilityAddress: facilityAddress,
         status: _parseStatus(status),
         title: title,
-        titleBn: titleBn,
+        titleBn: titleBn ?? '',
         type: _parseVisitType(visitType ?? ''),
         date: scheduledDate,
         scheduledStartTime: _trimTime(scheduledStartTime ?? ''),
@@ -353,6 +385,7 @@ class VisitDetailModel with VisitDetailModelMappable {
         travelOriginType: travelOriginType,
         travelOriginId: travelOriginId,
         travelOriginName: travelOriginName,
+        travelOriginNameBn: travelOriginNameBn ?? '',
         travelDistanceKm: travelDistanceKm,
         travelStartedAt: travelStartedAt,
         submittedAt: submittedAt,

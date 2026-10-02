@@ -74,7 +74,7 @@ class _AttendanceDetailMainCard extends StatelessWidget {
             _DetailRow(
               icon: Icons.business_outlined,
               label: context.locale.facilityName,
-              value: detail.shift!.facilityName,
+              value: detail.shift!.localizedFacilityName(context.languageCode),
             ),
           ],
           if (detail.lateCheckInReason != null &&

@@ -46,7 +46,7 @@ class _ExpenseListCard extends StatelessWidget {
               Gap(spacing.s4),
               Expanded(
                 child: BodySmallText(
-                  expense.facilityName,
+                  expense.localizedFacilityName(context.languageCode),
                   color: context.color.text.secondary,
                 ),
               ),
@@ -78,7 +78,7 @@ class _ExpenseListCard extends StatelessWidget {
               ),
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.recordedBy}: ${expense.recordedByName}',
+                '${context.locale.recordedBy}: ${expense.localizedRecordedByName(context.languageCode)}',
                 color: context.color.text.secondary,
               ),
             ],
