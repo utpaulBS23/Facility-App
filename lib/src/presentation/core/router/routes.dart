@@ -85,4 +85,20 @@ class Routes {
 
   static const String trainingSessions = '/training-sessions';
   static const String trainingSessionDetails = '/training-session-details/:id';
+  // Tab-hosted copies of menu pages, so the server can put any menu item in the
+  // bottom bar. The pushed routes above stay for the drawer.
+  static const String tabProfile = '/tab/profile';
+  static const String tabMyAttendance = '/tab/my-attendance';
+  static const String tabExtraCollection = '/tab/extra-collection';
+  static const String tabSupplyRequests = '/tab/supply-requests';
+  static const String tabStockBalance = '/tab/stock-balance';
+  static const String tabStockAveraging = '/tab/stock-averaging';
+  static const String tabLeave = '/tab/leave';
+  static const String tabDoorControl = '/tab/door-control';
+  static const String tabExpenseEntry = '/tab/expense-entry';
+  static const String tabClaimExpense = '/tab/claim-expense';
+  static const String tabTraining = '/tab/training';
+  static const String tabProfitReport = '/tab/profit-report';
+  static const String tabToiletLocation = '/tab/toilet-location';
+  static const String tabFacilityLocations = '/tab/facility-locations';
 }

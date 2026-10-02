@@ -71,9 +71,7 @@ final List<ShellTabConfig> shellTabConfigs = [
     itemKey: MenuItemKey.myVisits,
     // WHY both keys: see shift branch above — visitTaskView is the matrix's
     // new key, checklistResponseView is the pre-existing gate for this tab.
-    permissions: [
-      UserPermission.visitTaskView,
-    ],
+    permissions: [UserPermission.visitTaskView],
   ),
   // WHY permission: this slot now renders the board/occurrence content (see
   // shell_routes.dart) — gated on that content's permission, not the old
@@ -88,7 +86,7 @@ final List<ShellTabConfig> shellTabConfigs = [
     branchIndex: 5,
     route: Routes.tracking,
     itemKey: MenuItemKey.tracking,
-    permissions: [UserPermission.supervisorTrackingView],
+    permissions: [UserPermission.currentPositionView],
   ),
   // WHY permission: this slot now renders the task-list content that used
   // to live at Routes.task (see shell_routes.dart) — gated on that content's
@@ -102,9 +100,92 @@ final List<ShellTabConfig> shellTabConfigs = [
   ),
   // WHY: menu hosts profile/settings — always reachable; items inside it are
   // gated individually.
+  ShellTabConfig(branchIndex: 7, route: Routes.menu),
+  // WHY: tab-hosted copies of the menu pages (see _tabBranch), so the server can
+  // put any menu item in the bottom bar. Branch order matches shell_routes.dart.
   ShellTabConfig(
-    branchIndex: 7,
-    route: Routes.menu,
+    branchIndex: 8,
+    route: Routes.tabProfile,
+    itemKey: MenuItemKey.profile,
+    permissions: [UserPermission.profileView, UserPermission.profileUpdate],
+  ),
+  ShellTabConfig(
+    branchIndex: 9,
+    route: Routes.tabMyAttendance,
+    itemKey: MenuItemKey.myAttendance,
+    permissions: [UserPermission.supervisorAttendanceView],
+  ),
+  ShellTabConfig(
+    branchIndex: 10,
+    route: Routes.tabExtraCollection,
+    itemKey: MenuItemKey.extraCollection,
+    permissions: [UserPermission.additionalIncomeView],
+  ),
+  ShellTabConfig(
+    branchIndex: 11,
+    route: Routes.tabSupplyRequests,
+    itemKey: MenuItemKey.supplyRequest,
+    permissions: [UserPermission.supplyRequestView],
+  ),
+  ShellTabConfig(
+    branchIndex: 12,
+    route: Routes.tabStockBalance,
+    itemKey: MenuItemKey.stockBalance,
+    permissions: [UserPermission.facilityStockTargetView, UserPermission.stockItemView, UserPermission.stockAllocationView],
+  ),
+  ShellTabConfig(
+    branchIndex: 13,
+    route: Routes.tabStockAveraging,
+    itemKey: MenuItemKey.stockAveraging,
+    permissions: [UserPermission.facilityStockTargetView],
+  ),
+  ShellTabConfig(
+    branchIndex: 14,
+    route: Routes.tabLeave,
+    itemKey: MenuItemKey.leave,
+    permissions: [UserPermission.leaveView],
+  ),
+  ShellTabConfig(
+    branchIndex: 15,
+    route: Routes.tabDoorControl,
+    itemKey: MenuItemKey.doorLock,
+    permissions: [UserPermission.doorLockControl],
+  ),
+  ShellTabConfig(
+    branchIndex: 16,
+    route: Routes.tabExpenseEntry,
+    itemKey: MenuItemKey.expenseEntry,
+    permissions: [UserPermission.facilityExpenseView],
+  ),
+  ShellTabConfig(
+    branchIndex: 17,
+    route: Routes.tabClaimExpense,
+    itemKey: MenuItemKey.claimExpense,
+    permissions: [UserPermission.travelExpenseView, UserPermission.travelExpenseCreate],
+  ),
+  ShellTabConfig(
+    branchIndex: 18,
+    route: Routes.tabTraining,
+    itemKey: MenuItemKey.training,
+    permissions: [UserPermission.trainingSessionView],
+  ),
+  ShellTabConfig(
+    branchIndex: 19,
+    route: Routes.tabProfitReport,
+    itemKey: MenuItemKey.profitReport,
+    permissions: [UserPermission.reportExecutiveView],
+  ),
+  ShellTabConfig(
+    branchIndex: 20,
+    route: Routes.tabToiletLocation,
+    itemKey: MenuItemKey.toiletLocation,
+    permissions: [UserPermission.facilityView],
+  ),
+  ShellTabConfig(
+    branchIndex: 21,
+    route: Routes.tabFacilityLocations,
+    itemKey: MenuItemKey.facilityLocations,
+    permissions: [UserPermission.facilityMapView],
   ),
 ];
 
@@ -145,7 +226,7 @@ List<ResolvedShellTab> permittedShellTabs(
     for (final item in permittedMenuItems(menuConfig?.tabs, permissions))
       if (MenuItemKey.fromKey(item.itemKey) case final key?)
         if (byKey[key] case final config?)
-        ResolvedShellTab(config: config, item: item),
+          ResolvedShellTab(config: config, item: item),
     ResolvedShellTab(
       config: shellTabConfigs.firstWhere((tab) => tab.itemKey == null),
     ),
