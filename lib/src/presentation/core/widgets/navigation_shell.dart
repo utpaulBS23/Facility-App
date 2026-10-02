@@ -106,11 +106,13 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
   ) {
     final visibleTabs = permittedShellTabs(permissions, menuConfig: menuConfig);
 
-    // WHY: current branch may be outside the visible tabs for one frame while
-    // the router redirect kicks in — clamp to 0 instead of crashing.
-    final selectedIndex = visibleTabs.indexWhere(
+    // WHY: a branch the server did not put in the bar (a drawer row that opened
+    // a tab page) is reached from the Menu tab, so that tab stays highlighted.
+    final menuIndex = visibleTabs.indexWhere((tab) => tab.config.itemKey == null);
+    final branchIndex = visibleTabs.indexWhere(
       (tab) => tab.config.branchIndex == statefulNavigationShell.currentIndex,
     );
+    final selectedIndex = branchIndex >= 0 ? branchIndex : menuIndex;
 
     return Scaffold(
       body: statefulNavigationShell,

@@ -33,6 +33,7 @@ import '../../features/check_in_out/view/shift_check_in_page.dart';
 import '../../features/dashboard/view/dashboard_page.dart';
 import '../../features/door_lock/view/door_lock_page.dart';
 import '../../features/door_access/view/door_control_page.dart';
+import '../../features/door_access/view/door_control_tab_page.dart';
 import '../../features/claim_expense/view/claim_expense_page.dart';
 import '../../features/claim_expense/view/travel_expenses_page.dart';
 import '../../features/facility_expense/view/add_facility_expense_page.dart';

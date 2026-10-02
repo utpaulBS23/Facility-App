@@ -38,6 +38,44 @@ class MenuItemConfig {
 }
 
 final List<MenuItemConfig> menuItemConfigs = [
+  // WHY: keys that start life as tabs can sit in the drawer too; a row switches
+  // to the tab branch (goNamed), the page then shows its back-button look.
+  MenuItemConfig(
+    itemKey: MenuItemKey.dashboard,
+    route: Routes.dashboard,
+    isShellRoute: true,
+    permissions: [UserPermission.insightsDashboardView],
+  ),
+  MenuItemConfig(
+    itemKey: MenuItemKey.shift,
+    route: Routes.shift,
+    isShellRoute: true,
+    permissions: [UserPermission.shiftSlotView, UserPermission.shiftView],
+  ),
+  MenuItemConfig(
+    itemKey: MenuItemKey.attendance,
+    route: Routes.attendance,
+    isShellRoute: true,
+    permissions: [UserPermission.attendanceView],
+  ),
+  MenuItemConfig(
+    itemKey: MenuItemKey.myVisits,
+    route: Routes.myVisits,
+    isShellRoute: true,
+    permissions: [UserPermission.visitTaskView],
+  ),
+  MenuItemConfig(
+    itemKey: MenuItemKey.task,
+    route: Routes.task,
+    isShellRoute: true,
+    permissions: [UserPermission.taskOccurrenceView],
+  ),
+  MenuItemConfig(
+    itemKey: MenuItemKey.tracking,
+    route: Routes.tracking,
+    isShellRoute: true,
+    permissions: [UserPermission.currentPositionView],
+  ),
   MenuItemConfig(
     itemKey: MenuItemKey.profile,
     route: Routes.myProfile,
