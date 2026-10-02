@@ -17,7 +17,6 @@ import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
@@ -27,6 +26,8 @@ import '../riverpod/leave_summary_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 import '../widgets/shimmer/stat_tile_shimmer.dart';
 import '../widgets/stat_tile.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/leave_request_action_buttons.dart';
 part '../widgets/leave_request_action_card.dart';
@@ -79,8 +80,9 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.leaveRequests,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.leave,
+        fallbackTitle: context.locale.leaveRequests,
         onBack: () => _onBack(context),
         actions: [
           PermissionGate(

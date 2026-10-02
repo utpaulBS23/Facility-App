@@ -20,6 +20,8 @@ import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/task_card.dart';
 
@@ -184,11 +186,10 @@ class _TaskPageState extends ConsumerState<TaskPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.issues.trim()),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.issue,
+        fallbackTitle: context.locale.issues.trim(),
+        isTabByDefault: true,
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(

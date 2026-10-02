@@ -31,6 +31,8 @@ import '../../../core/widgets/unassign_staff_confirm_dialog.dart';
 import '../riverpod/make_slot_lead_provider.dart';
 import '../riverpod/shift_slots_provider.dart';
 import '../riverpod/unassign_shift_slot_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_fab.dart';
@@ -110,11 +112,10 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.shift),
-        titleSpacing: context.dimensions.spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.shift,
+        fallbackTitle: context.locale.shift,
+        isTabByDefault: true,
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(
