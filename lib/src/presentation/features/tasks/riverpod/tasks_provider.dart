@@ -17,19 +17,33 @@ class Tasks extends _$Tasks {
   @override
   AsyncValue<List<TaskEntity>> build() => const AsyncValue.loading();
 
-  Future<void> fetch({String? status, int? facilityId}) async {
-    state = const AsyncValue.loading();
+  /// [silent] keeps the current list on screen while refetching (pull to
+  /// refresh) and keeps it if the refetch fails. Returns the failure so the
+  /// caller can tell the user.
+  Future<Failure?> fetch({
+    String? status,
+    int? facilityId,
+    bool silent = false,
+  }) async {
+    if (!silent) state = const AsyncValue.loading();
 
     final Result<List<TaskEntity>, Failure> result = await ref
         .read(getIssuesUseCaseProvider)
         .call(status: status, facilityId: facilityId);
 
-    state = result.when(
+    Failure? failure;
+    final next = result.when(
       success: (data) => data != null
           ? AsyncValue.data(data)
-          : AsyncValue.error('No data', StackTrace.current),
-      error: (error) => AsyncValue.error(error, StackTrace.current),
+          : AsyncValue<List<TaskEntity>>.error('No data', StackTrace.current),
+      error: (error) {
+        failure = error;
+        return AsyncValue<List<TaskEntity>>.error(error, StackTrace.current);
+      },
     );
+    if (!silent || failure == null) state = next;
+
+    return failure;
   }
 
   Future<bool> startIssue({required int issueId}) async {

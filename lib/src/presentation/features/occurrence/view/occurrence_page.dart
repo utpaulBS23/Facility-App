@@ -80,6 +80,7 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
   late DateTime _selectedDate;
   int? _selectedFacilityId;
   _OccurrenceStatusFilter _selectedFilter = _OccurrenceStatusFilter.all;
+  bool _pullRefreshing = false;
 
   @override
   void initState() {
@@ -112,6 +113,22 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
   void _onDateChanged(DateTime date) {
     setState(() => _selectedDate = date);
     _fetch(date);
+  }
+
+  /// WHY [_pullRefreshing]: the board dims itself and shows a spinner while a
+  /// refetch is in flight; the pull indicator already says that, so the
+  /// overlay is suppressed for a pull.
+  Future<void> _onRefresh() async {
+    final facilityId = _selectedFacilityId;
+    if (facilityId == null) return;
+    setState(() => _pullRefreshing = true);
+    try {
+      await ref
+          .read(taskOccurrencesProvider.notifier)
+          .fetch(facilityId: facilityId, date: ApiDate.date(_selectedDate));
+    } finally {
+      if (mounted) setState(() => _pullRefreshing = false);
+    }
   }
 
   void _onFacilityChanged(int facilityId) {
@@ -214,6 +231,8 @@ class _OccurrencePageState extends ConsumerState<OccurrencePage> {
               selectedFilter: _selectedFilter,
               onDateChanged: _onDateChanged,
               onRetry: () => _fetch(_selectedDate),
+              onRefresh: _onRefresh,
+              isPullRefreshing: _pullRefreshing,
               onChecklist: (occurrence) => _openChecklist(context, occurrence),
             ),
     );
@@ -226,6 +245,8 @@ class _OccurrenceBoard extends ConsumerWidget {
     required this.selectedFilter,
     required this.onDateChanged,
     required this.onRetry,
+    required this.onRefresh,
+    required this.isPullRefreshing,
     required this.onChecklist,
   });
 
@@ -233,6 +254,8 @@ class _OccurrenceBoard extends ConsumerWidget {
   final _OccurrenceStatusFilter selectedFilter;
   final void Function(DateTime) onDateChanged;
   final VoidCallback onRetry;
+  final Future<void> Function() onRefresh;
+  final bool isPullRefreshing;
   final void Function(TaskOccurrenceEntity) onChecklist;
 
   @override
@@ -277,32 +300,51 @@ class _OccurrenceBoard extends ConsumerWidget {
                 selectedFilter,
               );
               if (occurrences.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(spacing.s24),
-                    child: Text(
-                      context.locale.occurrenceEmptyBoard,
-                      style: context.textStyle.bodyMedium.copyWith(
-                        color: context.color.text.secondary,
+                // WHY scrollable: pull to refresh needs a scroll view even
+                // when the board is empty.
+                return RefreshIndicator(
+                  onRefresh: onRefresh,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(spacing.s24),
+                            child: Text(
+                              context.locale.occurrenceEmptyBoard,
+                              style: context.textStyle.bodyMedium.copyWith(
+                                color: context.color.text.secondary,
+                              ),
+                              textAlign: .center,
+                            ),
+                          ),
+                        ),
                       ),
-                      textAlign: .center,
                     ),
                   ),
                 );
               }
               return Stack(
                 children: [
-                  ListView.separated(
-                    padding: EdgeInsets.all(spacing.s16),
-                    itemCount: occurrences.length,
-                    separatorBuilder: (context, i) => Gap(spacing.s12),
-                    itemBuilder: (_, i) => _OccurrenceSlotCard(
-                      occurrence: occurrences[i],
-                      onChecklist: () => onChecklist(occurrences[i]),
-                      isRefreshing: state.isLoading && state.hasValue,
+                  RefreshIndicator(
+                    onRefresh: onRefresh,
+                    child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.all(spacing.s16),
+                      itemCount: occurrences.length,
+                      separatorBuilder: (context, i) => Gap(spacing.s12),
+                      itemBuilder: (_, i) => _OccurrenceSlotCard(
+                        occurrence: occurrences[i],
+                        onChecklist: () => onChecklist(occurrences[i]),
+                        isRefreshing: state.isLoading && state.hasValue,
+                      ),
                     ),
                   ),
-                  if (state.isLoading && state.hasValue)
+                  if (state.isLoading && state.hasValue && !isPullRefreshing)
                     Positioned.fill(
                       child: IgnorePointer(
                         ignoring: true,
