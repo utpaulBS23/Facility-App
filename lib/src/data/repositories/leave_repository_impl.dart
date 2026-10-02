@@ -4,6 +4,7 @@ import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_request_entity.dart';
 import '../../domain/entities/leave/leave_status.dart';
+import '../../domain/entities/leave/leave_summary_entity.dart';
 import '../../domain/repositories/leave_repository.dart';
 import '../extension/leave_mapper.dart';
 import '../models/leave/leave_models.dart';
@@ -129,6 +130,22 @@ final class LeaveRepositoryImpl extends LeaveRepository {
       final responseModel = LeaveRequestListResponseModel.fromJson(
         response.data,
       );
+
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<LeaveSummaryEntity, Failure>> getLeaveApprovalsSummary(
+    int partnerId, {
+    int? facilityId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getLeaveApprovalsSummary(
+        partnerId: partnerId,
+        facilityId: facilityId,
+      );
+      final responseModel = LeaveSummaryResponseModel.fromJson(response.data);
 
       return responseModel.toEntity();
     });

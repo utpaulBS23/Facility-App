@@ -322,6 +322,40 @@ class LeaveRequestListResponseModel
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
+class LeaveSummaryModel with LeaveSummaryModelMappable {
+  const LeaveSummaryModel({
+    this.pending,
+    this.managerApproval,
+    this.approved,
+    this.rejected,
+  });
+
+  final int? pending;
+  final int? managerApproval;
+  final int? approved;
+  final int? rejected;
+
+  static const fromJson = LeaveSummaryModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class LeaveSummaryResponseModel with LeaveSummaryResponseModelMappable {
+  const LeaveSummaryResponseModel({this.success, this.message, this.summary});
+
+  final bool? success;
+  final String? message;
+  final LeaveSummaryModel? summary;
+
+  static const fromJson = LeaveSummaryResponseModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class LeaveAttendantListResponseModel
     with LeaveAttendantListResponseModelMappable {
   const LeaveAttendantListResponseModel({

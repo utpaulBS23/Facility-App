@@ -432,6 +432,12 @@ abstract class RestClient {
     @Query('status') String? status,
   });
 
+  @GET(Endpoints.leaveApprovalsSummary)
+  Future<HttpResponse> getLeaveApprovalsSummary({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+  });
+
   @POST(Endpoints.approveLeave)
   Future<HttpResponse> approveLeave({
     @Path('partnerId') required int partnerId,
