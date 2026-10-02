@@ -47,7 +47,7 @@ class _TravelExpenseListCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    expense.facilityName,
+                    expense.localizedFacilityName(context.languageCode),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textStyle.bodyLarge.copyWith(
@@ -110,7 +110,7 @@ class _TravelExpenseListCard extends StatelessWidget {
                 Gap(spacing.s4),
                 Expanded(
                   child: Text(
-                    expense.userName,
+                    expense.localizedUserName(context.languageCode),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textStyle.bodySmall.copyWith(

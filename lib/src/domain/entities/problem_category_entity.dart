@@ -6,12 +6,12 @@ class ProblemCategoryEntity {
     required this.name,
     this.color,
     this.proofRequiredOnComplete = false,
-    this.nameBn,
+    this.nameBn = '',
   });
 
   final String value;
   final String name;
-  final String? nameBn;
+  final String nameBn;
   final String? color;
   final bool proofRequiredOnComplete;
 

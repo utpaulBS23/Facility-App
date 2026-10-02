@@ -9,9 +9,9 @@ extension MenuConfigItemModelToEntity on MenuConfigItemModel {
     return MenuConfigItemEntity(
       itemKey: itemKey ?? '',
       label: label,
-      labelBn: labelBn,
+      labelBn: labelBn ?? '',
       sublabel: sublabel,
-      sublabelBn: sublabelBn,
+      sublabelBn: sublabelBn ?? '',
       permissions: UserPermission.setFromKeys(keys),
       isGated: keys.isNotEmpty,
     );

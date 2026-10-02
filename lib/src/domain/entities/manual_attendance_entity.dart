@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 class ManualAttendanceRequestEntity {
   ManualAttendanceRequestEntity({
     required this.shiftId,
@@ -24,22 +26,32 @@ class ManualAttendanceResponseEntity {
     required this.shiftId,
     required this.status,
     required this.userName,
+    this.userNameBn = '',
     required this.shiftDate,
     this.checkInTime,
     this.checkOutTime,
     required this.address,
     required this.reason,
     this.approverName,
+    this.approverNameBn = '',
   });
 
   final int id;
   final int shiftId;
   final String status;
   final String userName;
+  final String userNameBn;
   final String shiftDate;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
   final String address;
   final String reason;
   final String? approverName;
+  final String approverNameBn;
+
+  String localizedUserName(String languageCode) =>
+      localizedText(languageCode, userName, userNameBn);
+
+  String? localizedApproverName(String languageCode) =>
+      localizedTextOrNull(languageCode, approverName, approverNameBn);
 }

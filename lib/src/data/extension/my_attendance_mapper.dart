@@ -15,10 +15,13 @@ extension MyAttendanceItemModelToEntity on MyAttendanceItemModel {
   MyAttendanceItemEntity toEntity() => MyAttendanceItemEntity(
     userId: userId,
     supervisorName: supervisorName ?? '',
+    supervisorNameBn: supervisorNameBn ?? '',
     facilityId: facilityId,
     facilityName: facilityName ?? '',
+    facilityNameBn: facilityNameBn ?? '',
     officeId: officeId,
     officeName: officeName,
+    officeNameBn: officeNameBn ?? '',
     locationType: locationType,
     date: date ?? '',
     checkInAt: parseLocalIso(checkInAt),

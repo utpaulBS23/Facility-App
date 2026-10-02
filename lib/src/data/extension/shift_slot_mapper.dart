@@ -4,7 +4,12 @@ import 'date_time_parser.dart';
 
 extension SlotFacilityModelToEntity on SlotFacilityModel {
   SlotFacilityEntity toEntity() =>
-      SlotFacilityEntity(id: id, name: name ?? '', address: address ?? '');
+      SlotFacilityEntity(
+        id: id,
+        name: name ?? '',
+        nameBn: nameBn ?? '',
+        address: address ?? '',
+      );
 }
 
 extension SlotAttendanceModelToEntity on SlotAttendanceModel {
@@ -23,9 +28,11 @@ extension SlotAttendanceModelToEntity on SlotAttendanceModel {
     lateCheckOutByMinutes: lateCheckOutByMinutes,
     checkInReviewedBy: checkInReviewedBy,
     checkInReviewerName: checkInReviewerName,
+    checkInReviewerNameBn: checkInReviewerNameBn ?? '',
     checkInReviewedAt: parseLocalIso(checkInReviewedAt),
     checkOutReviewedBy: checkOutReviewedBy,
     checkOutReviewerName: checkOutReviewerName,
+    checkOutReviewerNameBn: checkOutReviewerNameBn ?? '',
     checkOutReviewedAt: parseLocalIso(checkOutReviewedAt),
   );
 }
@@ -35,6 +42,7 @@ extension SlotAttendantModelToEntity on SlotAttendantModel {
     userId: userId,
     assignmentId: shiftAssignmentId,
     name: name ?? '',
+    nameBn: nameBn ?? '',
     staffCode: staffCode ?? '',
     phoneNumber: phoneNumber ?? phone,
     isSlotLead: isSlotLead ?? false,
@@ -62,6 +70,7 @@ extension ShiftSlotModelToEntity on ShiftSlotModel {
     checkedInCount: checkedInCount ?? 0,
     checkedOutCount: checkedOutCount ?? 0,
     supervisorName: supervisorName ?? '',
+    supervisorNameBn: supervisorNameBn ?? '',
     attendants: attendants.map((a) => a.toEntity()).toList(),
     weeklyRosterId: weeklyRosterId,
   );
@@ -76,6 +85,7 @@ extension ActiveSlotModelToEntity on ActiveSlotModel {
     isSlotLead: isSlotLead ?? false,
     message: message ?? '',
     supervisorName: supervisorName ?? '',
+    supervisorNameBn: supervisorNameBn ?? '',
   );
 }
 
@@ -94,6 +104,7 @@ extension ShiftSlotsFacilityModelToEntity on ShiftSlotsFacilityModel {
   SlotsFacilityEntity toEntity() => SlotsFacilityEntity(
     facilityId: facilityId,
     facilityName: facilityName ?? '',
+    facilityNameBn: facilityNameBn ?? '',
     slots: slots.map((s) => s.toEntity()).toList(),
     isPrimary: isPrimary,
     isRelief: isRelief,

@@ -27,7 +27,7 @@ class _SlotCard extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final timeRange =
         '${DateFormatter.shiftTime(slot.startTime)} – ${DateFormatter.shiftTime(slot.endTime)}';
-    final facilityName = facility?.name ?? '';
+    final facilityName = facility?.localizedName(context.languageCode) ?? '';
     final address = facility?.address ?? '';
 
     return GestureDetector(
@@ -111,11 +111,11 @@ class _SlotCard extends StatelessWidget {
                 ],
               ),
             ],
-            if (slot.supervisorName.isNotEmpty) ...[
+            if (slot.localizedSupervisorName(context.languageCode).isNotEmpty) ...[
               Gap(spacing.s8),
               _InfoRow(
                 icon: Icons.person_outline_rounded,
-                label: slot.supervisorName,
+                label: slot.localizedSupervisorName(context.languageCode),
               ),
             ],
             if (address.isNotEmpty) ...[

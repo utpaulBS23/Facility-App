@@ -6,9 +6,11 @@ extension FacilityStockBalanceModelMapperExtension on FacilityStockBalanceModel 
     return FacilityStockBalanceEntity(
       facilityId: facilityId,
       facilityName: facilityName,
+      facilityNameBn: facilityNameBn ?? '',
       stockItemId: stockItemId,
       itemCode: itemCode,
       itemName: itemName,
+      itemNameBn: itemNameBn ?? '',
       unit: unit,
       currentQty: currentQty,
       thresholdQty: thresholdQty,

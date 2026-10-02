@@ -68,7 +68,7 @@ class _ProductLegRow extends StatelessWidget {
               enabled: products.isNotEmpty,
               onTap: () => _onPickProduct(context),
               content: Text(
-                product?.productName ?? context.locale.selectProduct,
+                product?.localizedProductName(context.languageCode) ?? context.locale.selectProduct,
                 overflow: TextOverflow.ellipsis,
                 style: product == null
                     ? context.textStyle.bodyMedium.copyWith(

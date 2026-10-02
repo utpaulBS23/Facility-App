@@ -103,7 +103,9 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
     this.title,
     this.titleBn,
     this.facilityName,
+    this.facilityNameBn,
     this.assignedToName,
+    this.assignedToNameBn,
     this.priority,
     this.status,
     this.problemCategory,
@@ -117,8 +119,12 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
   final String? titleBn;
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
   final String? priority;
   final String? status;
   @MappableField(key: 'problem_category')

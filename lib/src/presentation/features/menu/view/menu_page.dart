@@ -10,6 +10,7 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/facility_entity.dart';
 import '../../../../domain/entities/menu_item_key.dart';
+import '../../../../core/utils/localized_text.dart';
 import '../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/application_state/menu_configuration_provider/menu_configuration_provider.dart';
@@ -70,6 +71,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
       extra: FacilityEntity(
         id: selected.id,
         name: selected.name,
+        nameBn: selected.nameBn,
         address: '',
       ),
     );
@@ -109,9 +111,17 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _MenuHeaderSection(
-                  name: menuState.name,
+                  name: localizedText(
+                    context.languageCode,
+                    menuState.name,
+                    menuState.nameBn,
+                  ),
                   email: menuState.email,
-                  partnerName: menuState.partnerName,
+                  partnerName: localizedTextOrNull(
+                    context.languageCode,
+                    menuState.partnerName,
+                    menuState.partnerNameBn,
+                  ),
                   avatarUrl: menuState.avatarUrl,
                   appVersion: menuState.appVersion,
                   buildNumber: menuState.buildNumber,

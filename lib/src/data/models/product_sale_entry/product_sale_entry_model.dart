@@ -11,10 +11,12 @@ part 'product_sale_entry_model.mapper.dart';
   generateMethods: GenerateMethods.decode,
 )
 class ProductSaleEntryFacilityRefModel with ProductSaleEntryFacilityRefModelMappable {
-  const ProductSaleEntryFacilityRefModel({required this.id, this.name});
+  const ProductSaleEntryFacilityRefModel({required this.id, this.name, this.nameBn});
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
 
   static const fromJson = ProductSaleEntryFacilityRefModelMapper.fromJson;
 }
@@ -24,10 +26,12 @@ class ProductSaleEntryFacilityRefModel with ProductSaleEntryFacilityRefModelMapp
   generateMethods: GenerateMethods.decode,
 )
 class ProductSaleEntryProductRefModel with ProductSaleEntryProductRefModelMappable {
-  const ProductSaleEntryProductRefModel({required this.id, this.name, this.category});
+  const ProductSaleEntryProductRefModel({required this.id, this.name, this.nameBn, this.category});
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   final String? category;
 
   static const fromJson = ProductSaleEntryProductRefModelMapper.fromJson;
@@ -39,10 +43,12 @@ class ProductSaleEntryProductRefModel with ProductSaleEntryProductRefModelMappab
 )
 class ProductSaleEntryRecordedByRefModel
     with ProductSaleEntryRecordedByRefModelMappable {
-  const ProductSaleEntryRecordedByRefModel({required this.id, this.name});
+  const ProductSaleEntryRecordedByRefModel({required this.id, this.name, this.nameBn});
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
 
   static const fromJson = ProductSaleEntryRecordedByRefModelMapper.fromJson;
 }

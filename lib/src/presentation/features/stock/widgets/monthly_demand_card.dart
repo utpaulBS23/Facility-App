@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../domain/entities/stock/top_demand_item_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../../core/extensions/app_localization.dart';
 
 class MonthlyDemandCard extends StatelessWidget {
   const MonthlyDemandCard({super.key, required this.items});
@@ -87,7 +88,7 @@ class _DemandStatTile extends StatelessWidget {
               Gap(spacing.s4),
               Expanded(
                 child: Text(
-                  item.itemName,
+                  item.localizedItemName(context.languageCode),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: textStyle.bodySmall.copyWith(

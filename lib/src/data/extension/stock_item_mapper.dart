@@ -11,7 +11,7 @@ extension StockItemModelMapperExt on StockItemModel {
         itemCode: itemCode,
         name: name,
 
-        nameBn: nameBn,
+        nameBn: nameBn ?? '',
         category: category,
         unit: unit,
         unitPrice: unitPrice,

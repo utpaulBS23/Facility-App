@@ -9,12 +9,14 @@ extension FacilityExpenseModelMapper on FacilityExpenseModel {
     return FacilityExpenseEntity(
       id: id,
       facilityName: facility?.name ?? '',
+      facilityNameBn: facility?.nameBn ?? '',
       categoryName: category ?? '',
       amount: amount ?? 0,
       expenseDate: DateTime.tryParse(expenseDate ?? '') ?? DateTime.now(),
       paidBy: FacilityExpensePaidBy.fromWireString(paidBy),
       note: note,
       recordedByName: recordedBy?.name ?? '',
+      recordedByNameBn: recordedBy?.nameBn ?? '',
       createdAt: DateTime.tryParse(createdAt ?? '') ?? DateTime.now(),
     );
   }

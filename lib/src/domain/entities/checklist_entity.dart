@@ -18,12 +18,12 @@ class ChecklistItemEntity {
     this.existingPointsAwarded,
     this.existingMediaUrls = const [],
     this.hasProof = false,
-    this.questionBn,
+    this.questionBn = '',
   });
 
   final int id;
   final String question;
-  final String? questionBn;
+  final String questionBn;
   final ChecklistAnswerType answerType;
   final int order;
   final int maxPoints;
@@ -82,13 +82,14 @@ class ChecklistIssueEntity {
     this.photoUrl,
     this.dueDate,
     this.facilityName,
+    this.facilityNameBn = '',
     this.dueDateString,
-    this.titleBn,
+    this.titleBn = '',
   });
 
   final int id;
   final String title;
-  final String? titleBn;
+  final String titleBn;
   final String category;
   final String location;
   final String priority;
@@ -97,10 +98,14 @@ class ChecklistIssueEntity {
   final String? photoUrl;
   final DateTime? dueDate;
   final String? facilityName;
+  final String facilityNameBn;
   final String? dueDateString;
 
   String localizedTitle(String languageCode) =>
       localizedText(languageCode, title, titleBn);
+
+  String? localizedFacilityName(String languageCode) =>
+      localizedTextOrNull(languageCode, facilityName, facilityNameBn);
 }
 
 class ChecklistItemMediaEntity {

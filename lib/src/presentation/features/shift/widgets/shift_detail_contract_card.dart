@@ -40,7 +40,7 @@ class _ShiftDetailContractCard extends StatelessWidget {
           ),
           Gap(spacing.s20),
           Text(
-            entity.facility.name,
+            entity.facility.localizedName(context.languageCode),
             style: context.textStyle.headline2xlTiny.copyWith(
               color: context.color.text.primary,
             ),

@@ -60,14 +60,14 @@ class _VisitDetailInfoCard extends StatelessWidget {
                   ? Icons.business_outlined
                   : Icons.apartment_outlined,
               label: detail.locationType == 'external'
-                  ? (detail.officeName ?? '')
-                  : (detail.facilityName ?? ''),
+                  ? (detail.localizedOfficeName(context.languageCode) ?? '')
+                  : (detail.localizedFacilityName(context.languageCode) ?? ''),
             ),
           ] else
             Headline2xlTinyText(
               detail.locationType == 'external'
-                  ? (detail.officeName ?? '')
-                  : (detail.facilityName ?? ''),
+                  ? (detail.localizedOfficeName(context.languageCode) ?? '')
+                  : (detail.localizedFacilityName(context.languageCode) ?? ''),
             ),
           if (detail.facilityAddress?.isNotEmpty == true && detail.locationType != 'external') ...[
             Gap(spacing.s8),

@@ -6,7 +6,7 @@ extension MasterDataItemModelToEntity on MasterDataItemModel {
     id: id,
     value: value,
     label: label,
-    labelBn: labelBn,
+    labelBn: labelBn ?? '',
     color: color,
     isActive: isActive ?? true,
     sortOrder: sortOrder ?? 0,

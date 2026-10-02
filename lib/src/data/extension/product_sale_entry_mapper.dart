@@ -8,13 +8,16 @@ extension ProductSaleEntryModelMapper on ProductSaleEntryModel {
     return ProductSaleEntryEntity(
       id: id,
       facilityName: facility?.name ?? '',
+      facilityNameBn: facility?.nameBn ?? '',
       entryDate: DateTime.tryParse(entryDate ?? '') ?? DateTime.now(),
       productName: product?.name ?? '',
+      productNameBn: product?.nameBn ?? '',
       unitsSold: unitsSold ?? 0,
       unitPrice: unitPrice ?? 0,
       revenue: revenue ?? 0,
       profit: profit,
       recordedByName: recordedBy?.name ?? '',
+      recordedByNameBn: recordedBy?.nameBn ?? '',
       createdAt: DateTime.tryParse(createdAt ?? '') ?? DateTime.now(),
     );
   }
@@ -64,6 +67,7 @@ extension ProductSaleEntryByFacilityModelMapper on ProductSaleEntryByFacilityMod
   ProductSaleEntryByFacilityEntity toEntity() {
     return ProductSaleEntryByFacilityEntity(
       facilityName: facility?.name ?? '',
+      facilityNameBn: facility?.nameBn ?? '',
       units: units ?? 0,
       revenue: revenue ?? 0,
     );

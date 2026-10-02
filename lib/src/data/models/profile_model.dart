@@ -30,6 +30,7 @@ class UserProfileModel with UserProfileModelMappable {
   UserProfileModel({
     required this.id,
     required this.name,
+    this.nameBn,
     required this.email,
     this.phoneNumber,
     this.userType,
@@ -40,6 +41,7 @@ class UserProfileModel with UserProfileModelMappable {
 
   final int id;
   final String name;
+  final String? nameBn;
   final String email;
   final String? phoneNumber;
   final String? userType;

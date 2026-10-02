@@ -9,12 +9,15 @@ extension FacilityStockTargetModelMapperExtension on FacilityStockTargetModel {
       id: id,
       facilityId: facilityId,
       facilityName: facilityName,
+      facilityNameBn: facilityNameBn ?? '',
       stockItemId: stockItemId,
       itemCode: itemCode ?? '',
       itemName: itemName,
+      itemNameBn: itemNameBn ?? '',
       unit: unit ?? '',
       monthlyTargetQty: monthlyTargetQty,
       updatedByName: updatedByName ?? '',
+      updatedByNameBn: updatedByNameBn ?? '',
       updatedAt: updatedAt ?? '',
     );
   }
@@ -26,6 +29,7 @@ extension TopDemandItemModelMapperExtension on TopDemandItemModel {
       stockItemId: stockItemId,
       itemCode: itemCode ?? '',
       itemName: itemName,
+      itemNameBn: itemNameBn ?? '',
       unit: unit ?? '',
       totalMonthlyDemandQty: totalMonthlyDemandQty,
     );

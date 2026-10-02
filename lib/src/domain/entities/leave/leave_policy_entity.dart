@@ -9,12 +9,12 @@ class LeavePolicyEntity {
     required this.defaultDaysPerYear,
     required this.requiresApproval,
     required this.canCarryForward,
-    this.nameBn,
+    this.nameBn = '',
   });
 
   final int id;
   final String name;
-  final String? nameBn;
+  final String nameBn;
   final LeaveType leaveType;
   final double defaultDaysPerYear;
   final bool requiresApproval;

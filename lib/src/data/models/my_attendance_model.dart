@@ -28,10 +28,13 @@ class MyAttendanceItemModel with MyAttendanceItemModelMappable {
   MyAttendanceItemModel({
     required this.userId,
     this.supervisorName,
+    this.supervisorNameBn,
     this.facilityId,
     this.facilityName,
+    this.facilityNameBn,
     this.officeId,
     this.officeName,
+    this.officeNameBn,
     this.locationType,
     this.date,
     this.checkInAt,
@@ -45,18 +48,24 @@ class MyAttendanceItemModel with MyAttendanceItemModelMappable {
 
   @MappableField(key: 'supervisor_name')
   final String? supervisorName;
+  @MappableField(key: 'supervisor_name_bn')
+  final String? supervisorNameBn;
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
 
   @MappableField(key: 'office_id')
   final int? officeId;
 
   @MappableField(key: 'office_name')
   final String? officeName;
+  @MappableField(key: 'office_name_bn')
+  final String? officeNameBn;
 
   @MappableField(key: 'location_type')
   final String? locationType;

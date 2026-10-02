@@ -69,12 +69,12 @@ class TaskOccurrenceChecklistItemEntity {
     this.proofRequiredOnComplete = false,
     this.proofPolicy,
     this.isRequired,
-    this.labelBn,
+    this.labelBn = '',
   });
 
   final int id;
   final String label;
-  final String? labelBn;
+  final String labelBn;
   final TaskOccurrenceChecklistResponseType responseType;
   final ChecklistItemAnswerEntity? response;
   final bool proofRequiredOnComplete;
@@ -136,9 +136,11 @@ class TaskOccurrenceEntity {
     required this.status,
     this.assignedTo,
     this.assignedToName,
+    this.assignedToNameBn = '',
     this.submittedAt,
     this.submittedBy,
     this.submittedByName,
+    this.submittedByNameBn = '',
     this.lateByMinutes,
     this.checklistResponseId,
     this.checklistItems,
@@ -158,9 +160,11 @@ class TaskOccurrenceEntity {
   final TaskOccurrenceStatus status;
   final int? assignedTo;
   final String? assignedToName;
+  final String assignedToNameBn;
   final String? submittedAt;
   final int? submittedBy;
   final String? submittedByName;
+  final String submittedByNameBn;
   final int? lateByMinutes;
   final int? checklistResponseId;
 
@@ -207,6 +211,12 @@ class TaskOccurrenceEntity {
     missedAlertSent: missedAlertSent,
     supervisorNote: supervisorNote,
   );
+
+  String? localizedAssignedToName(String languageCode) =>
+      localizedTextOrNull(languageCode, assignedToName, assignedToNameBn);
+
+  String? localizedSubmittedByName(String languageCode) =>
+      localizedTextOrNull(languageCode, submittedByName, submittedByNameBn);
 }
 
 /// Live-computed board stats — recalculated on every list request, never

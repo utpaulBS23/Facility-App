@@ -54,7 +54,7 @@ class FacilityBalanceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.itemName,
+                        item.localizedItemName(context.languageCode),
                         style: context.textStyle.bodyLarge.copyWith(
                           color: color.text.primary,
                           fontWeight: FontWeight.bold,

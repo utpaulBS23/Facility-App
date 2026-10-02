@@ -4,7 +4,7 @@ class ShiftTemplateEntity {
   const ShiftTemplateEntity({
     required this.id,
     required this.name,
-    this.nameBn,
+    this.nameBn = '',
     required this.startTime,
     required this.endTime,
     this.durationHours,
@@ -14,7 +14,7 @@ class ShiftTemplateEntity {
 
   final int id;
   final String name;
-  final String? nameBn;
+  final String nameBn;
   final String startTime;
   final String endTime;
   final String? durationHours;

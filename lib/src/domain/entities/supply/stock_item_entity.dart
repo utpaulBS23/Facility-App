@@ -7,7 +7,7 @@ class StockItemEntity {
     this.partnerName,
     required this.itemCode,
     required this.name,
-    this.nameBn,
+    this.nameBn = '',
     required this.category,
     required this.unit,
     required this.unitPrice,
@@ -21,7 +21,7 @@ class StockItemEntity {
   final String? partnerName;
   final String itemCode;
   final String name;
-  final String? nameBn;
+  final String nameBn;
   final String category;
   final String unit;
   final double unitPrice;

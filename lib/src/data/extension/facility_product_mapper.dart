@@ -7,6 +7,7 @@ extension FacilityProductModelMapperExt on FacilityProductModel {
       id: id,
       productId: product?.id ?? 0,
       productName: product?.name ?? '',
+      productNameBn: product?.nameBn ?? '',
       category: product?.category ?? '',
       price: price ?? 0,
       stockQuantity: stockQuantity ?? 0,

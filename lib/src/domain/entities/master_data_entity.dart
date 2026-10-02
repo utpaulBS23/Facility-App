@@ -10,13 +10,13 @@ class MasterDataItemEntity {
     this.color,
     required this.isActive,
     required this.sortOrder,
-    this.labelBn,
+    this.labelBn = '',
   });
 
   final int id;
   final String value;
   final String label;
-  final String? labelBn;
+  final String labelBn;
   final String? color;
   final bool isActive;
   final int sortOrder;

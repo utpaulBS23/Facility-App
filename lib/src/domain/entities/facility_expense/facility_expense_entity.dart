@@ -1,5 +1,6 @@
 import '../common/paginated_list_entity.dart';
 import 'facility_expense_paid_by.dart';
+import '../../../core/utils/localized_text.dart';
 
 class FacilityExpenseSummaryEntity {
   const FacilityExpenseSummaryEntity({
@@ -17,24 +18,34 @@ class FacilityExpenseEntity {
   const FacilityExpenseEntity({
     required this.id,
     required this.facilityName,
+    this.facilityNameBn = '',
     required this.categoryName,
     required this.amount,
     required this.expenseDate,
     required this.paidBy,
     required this.note,
     required this.recordedByName,
+    this.recordedByNameBn = '',
     required this.createdAt,
   });
 
   final int id;
   final String facilityName;
+  final String facilityNameBn;
   final String categoryName;
   final double amount;
   final DateTime expenseDate;
   final FacilityExpensePaidBy paidBy;
   final String? note;
   final String recordedByName;
+  final String recordedByNameBn;
   final DateTime createdAt;
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
+
+  String localizedRecordedByName(String languageCode) =>
+      localizedText(languageCode, recordedByName, recordedByNameBn);
 }
 
 /// WHY a combined wrapper: unlike supply's summary (a separate

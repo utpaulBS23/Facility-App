@@ -7,10 +7,12 @@ part 'facility_product_model.mapper.dart';
   generateMethods: GenerateMethods.decode,
 )
 class FacilityProductProductRefModel with FacilityProductProductRefModelMappable {
-  const FacilityProductProductRefModel({required this.id, this.name, this.category});
+  const FacilityProductProductRefModel({required this.id, this.name, this.nameBn, this.category});
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   final String? category;
 
   static const fromJson = FacilityProductProductRefModelMapper.fromJson;
