@@ -46,7 +46,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   }
 
   void _fetchSlots(DateTime date) {
-    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    final formattedDate = ApiDate.date(date);
     Log.info('_fetchSlots: date=$formattedDate, facilityId=${widget.facilityId}');
     ref
         .read(shiftSlotsProvider.notifier)

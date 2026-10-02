@@ -2,7 +2,6 @@ import '../../../../core/base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -18,6 +17,7 @@ import '../riverpod/apply_leave_provider/submit_leave_request_provider.dart';
 import '../widgets/apply_leave_body.dart';
 import '../widgets/apply_leave_submit_button.dart';
 import '../widgets/apply_leave_type_switch.dart';
+import '../../../../core/utils/api_date.dart';
 
 class ApplyLeavePage extends ConsumerStatefulWidget {
   const ApplyLeavePage({super.key});
@@ -139,12 +139,11 @@ class _ApplyLeavePageState extends ConsumerState<ApplyLeavePage> {
 
     final selectedAttendant = ref.read(selectedLeaveAttendantProvider);
 
-    final formatter = DateFormat('yyyy-MM-dd');
     final reasonText = _reasonController.text.trim();
     final createLeaveRequestParams = CreateLeaveRequestEntity(
       leavePolicyId: selectedLeavePolicyId,
-      startDate: formatter.format(_startDate),
-      endDate: formatter.format(_endDate),
+      startDate: ApiDate.date(_startDate),
+      endDate: ApiDate.date(_endDate),
       reason: reasonText.isNotEmpty ? reasonText : null,
       attendantId: switch (_leaveApplicationType) {
         LeaveApplicationType.onBehalf => selectedAttendant?.id,

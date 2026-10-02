@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
 
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
@@ -10,6 +9,7 @@ import '../../domain/repositories/check_out_repository.dart';
 import '../extension/check_out_mapper.dart';
 import '../models/check_out_model.dart';
 import '../services/network/rest_client.dart';
+import '../../core/utils/api_date.dart';
 
 final class CheckOutRepositoryImpl extends CheckOutRepository {
   CheckOutRepositoryImpl(this.remote);
@@ -34,7 +34,7 @@ final class CheckOutRepositoryImpl extends CheckOutRepository {
       );
       final checkOutTimeRaw = checkOutTime == null
           ? null
-          : DateFormat('yyyy-MM-dd HH:mm:ss').format(checkOutTime);
+          : ApiDate.dateTime(checkOutTime);
       final formData = FormData.fromMap({
         'attendance_id': attendanceId,
         'lat': lat,

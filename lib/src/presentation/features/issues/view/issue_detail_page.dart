@@ -6,7 +6,6 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../../domain/entities/issue_detail_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/detail_app_bar.dart';
-import '../../../core/widgets/text/typography.dart';
 
 class IssueDetailPage extends StatelessWidget {
   const IssueDetailPage({super.key, required this.issue});
