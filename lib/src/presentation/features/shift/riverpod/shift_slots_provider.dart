@@ -41,19 +41,32 @@ class ShiftSlots extends _$ShiftSlots {
     return const AsyncValue.data(null);
   }
 
-  Future<void> fetch({required String date, int? facilityId}) async {
-    if (state.isLoading) return;
+  /// [silent] keeps the current list on screen while refetching (pull to
+  /// refresh) instead of swapping it for the loading spinner, and keeps it if
+  /// the refetch fails. Returns the failure so the caller can tell the user.
+  Future<Failure?> fetch({
+    required String date,
+    int? facilityId,
+    bool silent = false,
+  }) async {
+    if (state.isLoading) return null;
 
-    state = const AsyncValue.loading();
+    if (!silent) state = const AsyncValue.loading();
 
     final Result<ShiftSlotsEntity, Failure> result = await ref
         .read(getShiftSlotsUseCaseProvider)
         .call(date: date, facilityId: facilityId);
 
-    state = result.when(
-      success: AsyncValue.data,
-      error: (error) => AsyncValue.error(error, StackTrace.current),
-    );
+    switch (result) {
+      case Success(:final data):
+        state = AsyncValue.data(data);
+        return null;
+      case Error(:final error):
+        if (!silent) state = AsyncValue.error(error, StackTrace.current);
+        return error;
+      default:
+        return null;
+    }
   }
 
   /// Re-fetches the currently-loaded day/facility.

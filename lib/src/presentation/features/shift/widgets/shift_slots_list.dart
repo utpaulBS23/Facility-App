@@ -27,7 +27,16 @@ class _ShiftSlotsList extends StatelessWidget {
     final hasSlots = slots.isNotEmpty || hasMultipleFacilities;
 
     if (!hasSlots && activeSlot == null) {
-      return _ShiftSlotsMessage(message: context.locale.noShiftsFound);
+      // WHY scrollable: pull to refresh needs a scroll view even when empty.
+      return LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: _ShiftSlotsMessage(message: context.locale.noShiftsFound),
+          ),
+        ),
+      );
     }
 
     final spacing = context.dimensions.spacing;
@@ -85,6 +94,7 @@ class _ShiftSlotsList extends StatelessWidget {
     }
 
     return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(spacing.s16, spacing.s12, spacing.s16, spacing.s16),
       itemCount: items.length,
       itemBuilder: (context, index) => items[index],
