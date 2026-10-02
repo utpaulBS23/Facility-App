@@ -44,7 +44,8 @@ class StatTileShimmer extends StatelessWidget {
   }
 }
 
-/// Shimmer skeleton matching [_LeaveSupervisorSummaryCard] (Pending & Manager Approval tiles).
+/// Shimmer skeleton matching [_LeaveSupervisorSummaryCard] (Pending, Manager
+/// Approval, Approved and Rejected tiles).
 class LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
   const LeaveSupervisorSummaryCardShimmer({super.key});
 
@@ -74,7 +75,23 @@ class LeaveSupervisorSummaryCardShimmer extends StatelessWidget {
             child: StatTileShimmer(
               backgroundColor: color.info.withValues(alpha: 0.1),
               valueWidth: spacing.s30,
-              labelWidth: spacing.s100,
+              labelWidth: spacing.s66,
+            ),
+          ),
+          Gap(spacing.s6),
+          Expanded(
+            child: StatTileShimmer(
+              backgroundColor: color.successAlt,
+              valueWidth: spacing.s30,
+              labelWidth: spacing.s66,
+            ),
+          ),
+          Gap(spacing.s6),
+          Expanded(
+            child: StatTileShimmer(
+              backgroundColor: color.errorAlt,
+              valueWidth: spacing.s30,
+              labelWidth: spacing.s66,
             ),
           ),
         ],

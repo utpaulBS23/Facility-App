@@ -9,10 +9,11 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_filter.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
-import '../../../../domain/entities/leave/leave_status.dart';
+import '../../../../domain/entities/leave/leave_summary_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
+import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
@@ -22,6 +23,7 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../extensions/leave_presentation_extension.dart';
 import '../riverpod/leave_requests_provider.dart';
+import '../riverpod/leave_summary_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 import '../widgets/shimmer/stat_tile_shimmer.dart';
 import '../widgets/stat_tile.dart';
@@ -69,6 +71,11 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
 
     final leaveRequestsState = ref.watch(leaveRequestsProvider);
     final currentTab = ref.watch(selectedLeaveTabProvider);
+    // WHY only on the approvals tab: the endpoint needs an approval
+    // permission, which a plain attendant does not have.
+    final summaryState = currentTab == LeaveTab.leaveApprovals
+        ? ref.watch(leaveSummaryProvider)
+        : null;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -129,6 +136,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
               .search(_searchController.text.trim());
         },
         leaveRequestsState: leaveRequestsState,
+        summaryState: summaryState,
         onRetry: () => ref.read(leaveRequestsProvider.notifier).fetch(),
       ),
       floatingActionButton: PermissionGate(

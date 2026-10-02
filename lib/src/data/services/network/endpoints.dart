@@ -157,6 +157,8 @@ class Endpoints {
   static const String leaveAttendants =
       '/partners/{partnerId}/leave-attendants';
   static const String leaveApprovals = '/partners/{partnerId}/leave-approvals';
+  static const String leaveApprovalsSummary =
+      '/partners/{partnerId}/leave-approvals/summary';
   static const String approveLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/approve';
   static const String rejectLeave =
