@@ -162,6 +162,12 @@ class MyProfilePage extends ConsumerWidget {
                         ),
                         ProfileInfoDivider(),
                         ProfileInfoRow(
+                          icon: Icons.translate_outlined,
+                          label: context.locale.nameBangla,
+                          value: profile.nameBn.isEmpty ? '—' : profile.nameBn,
+                        ),
+                        ProfileInfoDivider(),
+                        ProfileInfoRow(
                           icon: Icons.email_outlined,
                           label: context.locale.email,
                           value: email,

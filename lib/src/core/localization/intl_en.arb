@@ -859,6 +859,7 @@
   "personalInformation": "Personal Information",
   "name": "Name",
   "phoneNumber": "Phone Number",
+  "nameBangla": "Name (Bangla)",
   "employeeId": "Employee ID",
   "joiningDate": "Joining Date",
   "saveChanges": "Save Changes",
