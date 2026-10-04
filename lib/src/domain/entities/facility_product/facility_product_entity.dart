@@ -1,3 +1,5 @@
+import '../../../core/utils/localized_text.dart';
+
 /// One row from the facility-scoped product offering list
 /// (`GET /partners/{partner}/facility-products?facility_id=...`) — the source
 /// for the "Select product" picker on the Product Sell flow, since a product
@@ -7,6 +9,7 @@ class FacilityProductEntity {
     required this.id,
     required this.productId,
     required this.productName,
+    this.productNameBn = '',
     required this.category,
     required this.price,
     required this.stockQuantity,
@@ -15,7 +18,11 @@ class FacilityProductEntity {
   final int id;
   final int productId;
   final String productName;
+  final String productNameBn;
   final String category;
   final double price;
   final int stockQuantity;
+
+  String localizedProductName(String languageCode) =>
+      localizedText(languageCode, productName, productNameBn);
 }

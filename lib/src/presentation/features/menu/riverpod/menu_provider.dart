@@ -16,13 +16,18 @@ class MenuNotifier extends _$MenuNotifier {
     final partnerName = ref.watch(
       userSessionProvider.select((session) => session?.partner?.brandName),
     );
+    final partnerNameBn = ref.watch(
+      userSessionProvider.select((session) => session?.partner?.brandNameBn ?? ''),
+    );
 
     _loadAppVersion();
 
     return MenuState(
       name: user?.name ?? partnerName ?? '',
+      nameBn: user?.nameBn ?? '',
       email: user?.email ?? '',
       partnerName: partnerName,
+      partnerNameBn: partnerNameBn,
       avatarUrl: user?.profileImage,
     );
   }

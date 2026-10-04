@@ -12,6 +12,7 @@ class SupplyRequestItemModel with SupplyRequestItemModelMappable {
     required this.stockItemId,
     required this.itemCode,
     required this.itemName,
+    this.itemNameBn,
     required this.unit,
     required this.qtyRequested,
     required this.unitPrice,
@@ -22,6 +23,8 @@ class SupplyRequestItemModel with SupplyRequestItemModelMappable {
   final int stockItemId;
   final String itemCode;
   final String itemName;
+  @MappableField(key: 'item_name_bn')
+  final String? itemNameBn;
   final String unit;
   final double qtyRequested;
   final double unitPrice;
@@ -39,6 +42,7 @@ class SupplyRequestApprovalModel with SupplyRequestApprovalModelMappable {
     required this.id,
     required this.approverId,
     required this.approverName,
+    this.approverNameBn,
     required this.approverRole,
     required this.action,
     this.notes,
@@ -48,6 +52,8 @@ class SupplyRequestApprovalModel with SupplyRequestApprovalModelMappable {
   final int id;
   final int approverId;
   final String approverName;
+  @MappableField(key: 'approver_name_bn')
+  final String? approverNameBn;
   final String approverRole;
   final String action;
   final String? notes;
@@ -66,8 +72,10 @@ class SupplyRequestModel with SupplyRequestModelMappable {
     required this.requestCode,
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn,
     required this.requestedBy,
     required this.requestedByName,
+    this.requestedByNameBn,
     required this.initiatedByRole,
     this.urgency,
     this.notes,
@@ -86,8 +94,12 @@ class SupplyRequestModel with SupplyRequestModelMappable {
   final String requestCode;
   final int facilityId;
   final String facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final int requestedBy;
   final String requestedByName;
+  @MappableField(key: 'requested_by_name_bn')
+  final String? requestedByNameBn;
   final String initiatedByRole;
   final String? urgency;
   final String? notes;

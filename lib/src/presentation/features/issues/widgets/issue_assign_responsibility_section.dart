@@ -68,7 +68,7 @@ class IssueAssignResponsibilitySection extends StatelessWidget {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            LabelLargeText(selected!.name),
+                            LabelLargeText(selected!.localizedName(context.languageCode)),
                             Gap(spacing.s2),
                             BodySmallText(
                               selected!.phoneNumber ?? selected!.email,

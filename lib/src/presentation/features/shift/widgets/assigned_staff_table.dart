@@ -88,7 +88,7 @@ class _AssignedStaffTable extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          attendant.name,
+                          attendant.localizedName(context.languageCode),
                           style: context.textStyle.bodySmall.copyWith(
                             color: context.color.text.primary,
                           ),

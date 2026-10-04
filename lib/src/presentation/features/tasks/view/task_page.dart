@@ -20,6 +20,8 @@ import '../../../core/widgets/status_pill.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/tasks_provider.dart';
 import '../widgets/task_proof_bottom_sheet.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/task_card.dart';
 
@@ -64,6 +66,21 @@ class _TaskPageState extends ConsumerState<TaskPage> {
 
 
   void _onRetry() => _fetch();
+
+  Future<void> _onRefresh() async {
+    final failure = await ref
+        .read(tasksProvider.notifier)
+        .fetch(
+          status: _selectedTab.apiStatus,
+          facilityId: _selectedFacilityId,
+          silent: true,
+        );
+    if (failure != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
+    }
+  }
 
   Future<void> _onPickFacility(List<AccessibleFacilityEntity> facilities) async {
     final result = await showModalBottomSheet<({int? facilityId})>(
@@ -169,11 +186,10 @@ class _TaskPageState extends ConsumerState<TaskPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.issues.trim()),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.issue,
+        fallbackTitle: context.locale.issues.trim(),
+        isTabByDefault: true,
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(
@@ -211,40 +227,60 @@ class _TaskPageState extends ConsumerState<TaskPage> {
               ),
               data: (tasks) {
                 if (tasks.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(spacing.s24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.task_alt_outlined,
-                            size: 48,
-                            color: context.color.icon,
+                  // WHY scrollable: pull to refresh needs a scroll view even
+                  // when the list is empty.
+                  return RefreshIndicator(
+                    onRefresh: _onRefresh,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
                           ),
-                          Gap(spacing.s16),
-                          Text(
-                            context.locale.noTasksFound,
-                            style: context.textStyle.bodyMedium.copyWith(
-                              color: context.color.text.secondary,
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(spacing.s24),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.task_alt_outlined,
+                                    size: 48,
+                                    color: context.color.icon,
+                                  ),
+                                  Gap(spacing.s16),
+                                  Text(
+                                    context.locale.noTasksFound,
+                                    style: context.textStyle.bodyMedium
+                                        .copyWith(
+                                          color: context.color.text.secondary,
+                                        ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
                             ),
-                            textAlign: TextAlign.center,
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   );
                 }
-                return ListView.separated(
-                  padding: EdgeInsets.all(spacing.s16),
-                  itemCount: tasks.length,
-                  separatorBuilder: (_, _) => Gap(spacing.s12),
-                  itemBuilder: (_, i) => _TaskCard(
-                    task: tasks[i],
-                    onTap: () => _onViewTap(tasks[i]),
-                    onStartTap: () => _onStartTap(tasks[i]),
-                    onCompleteTap: () => _onCompleteTap(tasks[i]),
-                    onAssignStaffTap: () async => _onAssignStaffTap(tasks[i]),
+                return RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  child: ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.all(spacing.s16),
+                    itemCount: tasks.length,
+                    separatorBuilder: (_, _) => Gap(spacing.s12),
+                    itemBuilder: (_, i) => _TaskCard(
+                      task: tasks[i],
+                      onTap: () => _onViewTap(tasks[i]),
+                      onStartTap: () => _onStartTap(tasks[i]),
+                      onCompleteTap: () => _onCompleteTap(tasks[i]),
+                      onAssignStaffTap: () async => _onAssignStaffTap(tasks[i]),
+                    ),
                   ),
                 );
               },

@@ -47,6 +47,7 @@ extension IncentiveFineFacilityModelMapper on IncentiveFineFacilityModel {
   IncentiveFineFacilityEntity toEntity() {
     return IncentiveFineFacilityEntity(
       facilityName: facilityName ?? '',
+      facilityNameBn: facilityNameBn ?? '',
       achievementRate: achievementRate ?? 0,
       target: target ?? 0,
       income: income ?? 0,

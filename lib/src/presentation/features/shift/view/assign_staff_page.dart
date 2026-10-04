@@ -16,7 +16,6 @@ import '../../../core/widgets/slot_lead_confirm_dialog.dart';
 import '../../../core/widgets/staff_tile.dart';
 import '../riverpod/assign_shift_slot_provider.dart';
 import '../riverpod/partner_staff_provider.dart';
-import '../riverpod/shift_slots_provider.dart';
 
 class AssignStaffPage extends ConsumerStatefulWidget {
   const AssignStaffPage({
@@ -98,7 +97,6 @@ class _AssignStaffPageState extends ConsumerState<AssignStaffPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.locale.staffAssignedSuccessfully)),
         );
-        ref.read(shiftSlotsProvider.notifier).refresh();
         context.pop();
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(

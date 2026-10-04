@@ -15,8 +15,10 @@ import '../../../core/theme/theme.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/horizontal_date_picker.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/my_visits_provider.dart';
+import '../../../../core/utils/api_date.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/visit_card.dart';
 part '../widgets/visit_empty_state.dart';
@@ -59,7 +61,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
         _scrollController.position.maxScrollExtent - 500) {
       ref
           .read(myVisitsProvider.notifier)
-          .loadMore(date: DateFormat('yyyy-MM-dd').format(_selectedDate));
+          .loadMore(date: ApiDate.date(_selectedDate));
     }
   }
 
@@ -67,7 +69,7 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
     ref
         .read(myVisitsProvider.notifier)
         .fetch(
-          date: DateFormat('yyyy-MM-dd').format(date),
+          date: ApiDate.date(date),
           facilityId: _selectedFacilityId,
         );
   }
@@ -132,11 +134,10 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.myVisits),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.myVisits,
+        fallbackTitle: context.locale.myVisits,
+        isTabByDefault: true,
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(

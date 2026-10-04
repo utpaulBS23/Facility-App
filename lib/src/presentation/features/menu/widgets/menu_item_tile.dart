@@ -1,15 +1,26 @@
 part of '../view/menu_page.dart';
 
 class _MenuItemTile extends StatelessWidget {
-  const _MenuItemTile({required this.config, this.showDivider = true});
+  const _MenuItemTile({
+    required this.config,
+    required this.title,
+    this.subtitle,
+    this.showDivider = true,
+  });
 
   final MenuItemConfig config;
+  final String title;
+  final String? subtitle;
   final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
+    final subtitle = this.subtitle;
+
     return InkWell(
-      onTap: () => context.pushNamed(config.route),
+      onTap: () => config.isShellRoute
+          ? context.goNamed(config.route)
+          : context.pushNamed(config.route),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: context.padding.p16,
@@ -38,18 +49,20 @@ class _MenuItemTile extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    config.label(context),
+                    title,
                     style: context.textStyle.bodyLarge.copyWith(
                       color: context.color.text.primary,
                     ),
                   ),
-                  Gap(context.spacing.s4),
-                  Text(
-                    config.subtitle(context),
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
+                  if (subtitle != null && subtitle.isNotEmpty) ...[
+                    Gap(context.spacing.s4),
+                    Text(
+                      subtitle,
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.text.secondary,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),

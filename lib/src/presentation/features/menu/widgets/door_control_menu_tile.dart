@@ -1,9 +1,10 @@
 part of '../view/menu_page.dart';
 
 class _DoorControlTile extends StatelessWidget {
-  const _DoorControlTile({required this.onTap});
+  const _DoorControlTile({required this.onTap, required this.title});
 
   final VoidCallback onTap;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +21,18 @@ class _DoorControlTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.sensor_door_outlined,
-              size: context.spacing.s20,
-              color: context.color.text.secondary,
+            MenuItemKey.doorLock.icon.svg(
+              width: context.spacing.s20,
+              height: context.spacing.s20,
+              colorFilter: ColorFilter.mode(
+                context.color.text.secondary,
+                BlendMode.srcIn,
+              ),
             ),
             Gap(context.spacing.s12),
             Expanded(
               child: Text(
-                context.locale.doorControl,
+                title,
                 style: context.textStyle.bodyLarge.copyWith(
                   color: context.color.text.primary,
                 ),

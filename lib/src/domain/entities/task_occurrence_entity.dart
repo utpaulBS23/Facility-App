@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 /// `task_occurrences.status` — never chosen by the caller. [pending] is the
 /// default from generation; [onTime]/[late] are set by submit (§7); [missed]
 /// is set only by the next midnight's cron, never by this app.
@@ -67,10 +69,12 @@ class TaskOccurrenceChecklistItemEntity {
     this.proofRequiredOnComplete = false,
     this.proofPolicy,
     this.isRequired,
+    this.labelBn = '',
   });
 
   final int id;
   final String label;
+  final String labelBn;
   final TaskOccurrenceChecklistResponseType responseType;
   final ChecklistItemAnswerEntity? response;
   final bool proofRequiredOnComplete;
@@ -78,6 +82,9 @@ class TaskOccurrenceChecklistItemEntity {
   final bool? isRequired;
 
   bool get isAnswered => response != null;
+
+  String localizedLabel(String languageCode) =>
+      localizedText(languageCode, label, labelBn);
 
   bool get needsProof =>
       (proofPolicy?.toLowerCase() == 'photo_required' ||
@@ -89,6 +96,7 @@ class TaskOccurrenceChecklistItemEntity {
   }) => TaskOccurrenceChecklistItemEntity(
     id: id,
     label: label,
+    labelBn: labelBn,
     responseType: responseType,
     response: response ?? this.response,
     proofRequiredOnComplete: proofRequiredOnComplete,
@@ -128,9 +136,11 @@ class TaskOccurrenceEntity {
     required this.status,
     this.assignedTo,
     this.assignedToName,
+    this.assignedToNameBn = '',
     this.submittedAt,
     this.submittedBy,
     this.submittedByName,
+    this.submittedByNameBn = '',
     this.lateByMinutes,
     this.checklistResponseId,
     this.checklistItems,
@@ -150,9 +160,11 @@ class TaskOccurrenceEntity {
   final TaskOccurrenceStatus status;
   final int? assignedTo;
   final String? assignedToName;
+  final String assignedToNameBn;
   final String? submittedAt;
   final int? submittedBy;
   final String? submittedByName;
+  final String submittedByNameBn;
   final int? lateByMinutes;
   final int? checklistResponseId;
 
@@ -199,6 +211,12 @@ class TaskOccurrenceEntity {
     missedAlertSent: missedAlertSent,
     supervisorNote: supervisorNote,
   );
+
+  String? localizedAssignedToName(String languageCode) =>
+      localizedTextOrNull(languageCode, assignedToName, assignedToNameBn);
+
+  String? localizedSubmittedByName(String languageCode) =>
+      localizedTextOrNull(languageCode, submittedByName, submittedByNameBn);
 }
 
 /// Live-computed board stats — recalculated on every list request, never

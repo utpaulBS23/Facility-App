@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/di/dependency_injection.dart';
+import '../../application_state/menu_configuration_provider/menu_configuration_provider.dart';
 import '../../application_state/startup_provider/app_startup_provider.dart';
 import '../routes.dart';
 import '../shell_tab_config.dart';
@@ -66,6 +67,9 @@ class RouterState extends _$RouterState {
     final session = ref.read(getUserSessionUseCaseProvider).call();
     state = session == null
         ? Routes.login
-        : firstPermittedShellRoute(session.permissions);
+        : firstPermittedShellRoute(
+            session.permissions,
+            menuConfig: ref.read(menuConfigProvider),
+          );
   }
 }

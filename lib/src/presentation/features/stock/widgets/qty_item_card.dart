@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../../core/extensions/app_localization.dart';
 
 class QtyItemCard extends StatefulWidget {
   const QtyItemCard({
@@ -75,7 +76,7 @@ class _QtyItemCardState extends State<QtyItemCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.itemName,
+                      item.localizedItemName(context.languageCode),
                       style: textStyle.bodyLarge.copyWith(
                         color: color.text.primary,
                         fontWeight: FontWeight.bold,

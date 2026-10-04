@@ -197,12 +197,12 @@ class _AttendanceInfoCard extends StatelessWidget {
             label: locale.reason,
             value: attendance.reason,
           ),
-          if (attendance.approverName != null) ...[
+          if (attendance.localizedApproverName(context.languageCode) != null) ...[
             Gap(dimensions.spacing.s8),
             _ContactInfoItem(
               icon: Icons.person_outline,
               label: locale.approvedBy,
-              value: attendance.approverName!,
+              value: attendance.localizedApproverName(context.languageCode)!,
             ),
           ],
         ],

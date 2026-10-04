@@ -6,10 +6,13 @@ extension IssueItemMapper on IssueItemModel {
     return IssueEntity(
       id: id,
       title: title,
+      titleBn: titleBn ?? '',
       priority: priority,
       status: status,
       facilityName: facilityName,
+      facilityNameBn: facilityNameBn ?? '',
       assignedToName: assignedToName,
+      assignedToNameBn: assignedToNameBn ?? '',
       dueDate: dueAt != null ? DateTime.tryParse(dueAt!) : null,
       problemCategory: problemCategory,
       issueStatus: issueStatus,

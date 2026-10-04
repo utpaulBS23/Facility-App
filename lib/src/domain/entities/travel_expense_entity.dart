@@ -1,4 +1,5 @@
 import 'travel_expense_status.dart';
+import '../../core/utils/localized_text.dart';
 
 /// Which table [CreateTravelExpenseRequestEntity.startId] refers to when
 /// [CreateTravelExpenseRequestEntity.taskId] is not given.
@@ -145,9 +146,11 @@ class TravelExpenseEntity {
   const TravelExpenseEntity({
     required this.id,
     required this.facilityName,
+    this.facilityNameBn = '',
     required this.startType,
     required this.startId,
     required this.userName,
+    this.userNameBn = '',
     required this.purpose,
     required this.claimedDistanceKm,
     required this.claimedAmount,
@@ -159,12 +162,14 @@ class TravelExpenseEntity {
 
   final int id;
   final String facilityName;
+  final String facilityNameBn;
 
   /// Where the trip started — `null` when the API didn't resolve one (e.g.
   /// an older claim). See [TravelExpenseStartType] for the type/id pairing.
   final TravelExpenseStartType? startType;
   final int? startId;
   final String userName;
+  final String userNameBn;
   final String purpose;
 
   /// Summed from the submitted legs against the partner's rate — or the
@@ -178,4 +183,10 @@ class TravelExpenseEntity {
   final String submittedAt;
   final String rejectionNote;
   final List<TravelExpenseLineEntity> transportLines;
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
+
+  String localizedUserName(String languageCode) =>
+      localizedText(languageCode, userName, userNameBn);
 }

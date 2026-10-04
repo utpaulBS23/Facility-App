@@ -101,7 +101,7 @@ class _InspectionItemTile extends ConsumerWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: item.question,
+                                    text: item.localizedQuestion(context.languageCode),
                                     style: context.textStyle.labelLarge.copyWith(
                                       color: context.color.text.primary,
                                     ),

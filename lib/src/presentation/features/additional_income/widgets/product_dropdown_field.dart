@@ -78,7 +78,7 @@ class _ProductListSheet extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               LabelLargeText(
-                                product.productName,
+                                product.localizedProductName(context.languageCode),
                                 color: isSelected
                                     ? context.color.primary
                                     : context.color.text.primary,

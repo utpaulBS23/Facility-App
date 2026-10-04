@@ -80,7 +80,7 @@ class _InspectionChecklistPageState
       extra: {
         'visitId': widget.detail.id,
         'facilityId': widget.detail.facilityId ?? 0,
-        'facilityName': widget.detail.facilityName,
+        'facilityName': widget.detail.localizedFacilityName(context.languageCode),
       },
     );
     if (result != null) {
@@ -94,7 +94,7 @@ class _InspectionChecklistPageState
       extra: {
         'visitId': widget.detail.id,
         'facilityId': widget.detail.facilityId ?? 0,
-        'facilityName': widget.detail.facilityName,
+        'facilityName': widget.detail.localizedFacilityName(context.languageCode),
         'issue': issue,
       },
     );
@@ -245,7 +245,7 @@ class _ChecklistBody extends StatelessWidget {
                       Divider(color: context.color.borderSubtle, height: 1),
                     ],
                   ),
-              if (detail.facilityName != null &&
+              if (detail.localizedFacilityName(context.languageCode) != null &&
                   (checklist.issues.isNotEmpty || checklistState.localIssues.isNotEmpty || !isResolved)) ...[
                 _InspectionRepairWorkSection(
                   issues: [...checklist.issues, ...checklistState.localIssues],

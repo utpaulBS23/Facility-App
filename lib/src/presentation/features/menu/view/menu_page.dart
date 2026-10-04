@@ -9,12 +9,17 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/facility_entity.dart';
+import '../../../../domain/entities/menu_item_key.dart';
+import '../../../../core/utils/localized_text.dart';
 import '../../../core/application_state/localization_provider/localization_provider.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
+import '../../../core/application_state/menu_configuration_provider/menu_configuration_provider.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
+import '../../../core/utils/menu_config_resolver.dart';
+import '../../../core/utils/menu_item_icon.dart';
 import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -66,6 +71,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
       extra: FacilityEntity(
         id: selected.id,
         name: selected.name,
+        nameBn: selected.nameBn,
         address: '',
       ),
     );
@@ -93,6 +99,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     final color = context.color;
     final menuState = ref.watch(menuNotifierProvider);
     final isLoggingOut = ref.watch(logoutProvider).isLoading;
+    final menuConfig = ref.watch(menuConfigProvider);
 
     return Stack(
       children: [
@@ -104,9 +111,17 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _MenuHeaderSection(
-                  name: menuState.name,
+                  name: localizedText(
+                    context.languageCode,
+                    menuState.name,
+                    menuState.nameBn,
+                  ),
                   email: menuState.email,
-                  partnerName: menuState.partnerName,
+                  partnerName: localizedTextOrNull(
+                    context.languageCode,
+                    menuState.partnerName,
+                    menuState.partnerNameBn,
+                  ),
                   avatarUrl: menuState.avatarUrl,
                   appVersion: menuState.appVersion,
                   buildNumber: menuState.buildNumber,
@@ -115,25 +130,35 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                 Expanded(
                   child: PermissionSetScope(
                     builder: (context, permissions) {
-                      final visibleItems = [
-                        for (final item in menuItemConfigs)
-                          if (hasAnyPermission(item.permissions, permissions))
-                            item,
+                      final languageCode = Localizations.localeOf(
+                        context,
+                      ).languageCode;
+                      final configByKey = {
+                        for (final config in menuItemConfigs)
+                          if (config.itemKey != null) config.itemKey!: config,
+                      };
+                      // WHY server list drives the rows: the drawer is exactly
+                      // what the backend sent. Keys this build has no screen
+                      // for are skipped.
+                      final rows = <Widget>[
+                        for (final item in permittedMenuItems(
+                          menuConfig?.drawer,
+                          permissions,
+                        ))
+                          if (MenuItemKey.fromKey(item.itemKey)
+                              case final key?)
+                            if (key == MenuItemKey.doorLock)
+                              _DoorControlTile(
+                                onTap: _onDoorControlTap,
+                                title: item.localizedLabel(languageCode),
+                              )
+                            else if (configByKey[key] case final config?)
+                              _MenuItemTile(
+                                config: config,
+                                title: item.localizedLabel(languageCode),
+                                subtitle: item.localizedSublabel(languageCode),
+                              ),
                       ];
-                      // WHY split here, not appended after the loop: Door
-                      // Control has no permission-gated MenuItemConfig entry
-                      // (it needs an async facility fetch, not a static
-                      // route push), so it's placed by splitting the list at
-                      // Expense Entry instead of being a config row.
-                      final expenseEntryIndex = visibleItems.indexWhere(
-                        (item) => item.route == Routes.facilityExpense,
-                      );
-                      final beforeTravelExpense = expenseEntryIndex == -1
-                          ? visibleItems
-                          : visibleItems.sublist(0, expenseEntryIndex);
-                      final fromTravelExpense = expenseEntryIndex == -1
-                          ? const <MenuItemConfig>[]
-                          : visibleItems.sublist(expenseEntryIndex);
 
                       // WHY SingleChildScrollView, not a bare Column: the
                       // menu list has grown past what fits on smaller
@@ -147,17 +172,15 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              for (final item in beforeTravelExpense)
-                                _MenuItemTile(config: item),
-                              _DoorControlTile(onTap: _onDoorControlTap),
-                              for (final item in fromTravelExpense)
-                                _MenuItemTile(config: item),
+                              ...rows,
                               // WHY: notificationView permission not yet
                               // granted by backend — show unconditionally
                               // until it is. It's always the last config
                               // row, so it's the only one with no divider.
                               _MenuItemTile(
                                 config: notificationMenuItemConfig,
+                                title: context.locale.notification,
+                                subtitle: context.locale.notificationSubtitle,
                                 showDivider: false,
                               ),
                               Gap(spacing.s8),

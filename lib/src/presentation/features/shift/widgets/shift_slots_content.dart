@@ -4,6 +4,7 @@ class _ShiftSlotsContent extends ConsumerWidget {
   const _ShiftSlotsContent({
     required this.canApplyLeave,
     required this.onDateChanged,
+    required this.onRefresh,
     required this.onApplyLeave,
     required this.onSlotTap,
     required this.onAssignStaff,
@@ -11,6 +12,7 @@ class _ShiftSlotsContent extends ConsumerWidget {
 
   final bool canApplyLeave;
   final ValueChanged<DateTime> onDateChanged;
+  final Future<void> Function() onRefresh;
   final VoidCallback onApplyLeave;
   final ValueChanged<ShiftSlotEntity> onSlotTap;
   final ValueChanged<ShiftSlotEntity> onAssignStaff;
@@ -38,13 +40,16 @@ class _ShiftSlotsContent extends ConsumerWidget {
                 const Center(child: CircularProgressIndicator.adaptive()),
             error: (err, _) =>
                 _ShiftSlotsMessage(message: err.localizedMessage(context)),
-            data: (data) => _ShiftSlotsList(
-              data: data,
-              facility: facility,
-              canApplyLeave: canApplyLeave,
-              onApplyLeave: onApplyLeave,
-              onSlotTap: onSlotTap,
-              onAssignStaff: onAssignStaff,
+            data: (data) => RefreshIndicator(
+              onRefresh: onRefresh,
+              child: _ShiftSlotsList(
+                data: data,
+                facility: facility,
+                canApplyLeave: canApplyLeave,
+                onApplyLeave: onApplyLeave,
+                onSlotTap: onSlotTap,
+                onAssignStaff: onAssignStaff,
+              ),
             ),
           ),
         ),

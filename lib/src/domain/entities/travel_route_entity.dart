@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 class TravelRouteCheckInRequestEntity {
   const TravelRouteCheckInRequestEntity({
     required this.taskId,
@@ -30,6 +32,7 @@ class TravelRouteCheckInEntity {
     this.originLat,
     this.originLng,
     this.originName,
+    this.originNameBn = '',
   });
 
   final int taskId;
@@ -41,4 +44,8 @@ class TravelRouteCheckInEntity {
   final double? originLat;
   final double? originLng;
   final String? originName;
+  final String originNameBn;
+
+  String? localizedOriginName(String languageCode) =>
+      localizedTextOrNull(languageCode, originName, originNameBn);
 }

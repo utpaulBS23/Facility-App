@@ -61,6 +61,7 @@ class ChecklistItemModel with ChecklistItemModelMappable {
   ChecklistItemModel({
     required this.id,
     this.label,
+    this.labelBn,
     this.responseType,
     this.maxPoints,
     this.proofPolicy,
@@ -71,6 +72,9 @@ class ChecklistItemModel with ChecklistItemModelMappable {
 
   final int id;
   final String? label;
+
+  @MappableField(key: 'label_bn')
+  final String? labelBn;
 
   @MappableField(key: 'response_type')
   final String? responseType;
@@ -97,8 +101,11 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
   ChecklistIssueModel({
     required this.taskId,
     this.title,
+    this.titleBn,
     this.facilityName,
+    this.facilityNameBn,
     this.assignedToName,
+    this.assignedToNameBn,
     this.priority,
     this.status,
     this.problemCategory,
@@ -108,10 +115,16 @@ class ChecklistIssueModel with ChecklistIssueModelMappable {
   @MappableField(key: 'task_id')
   final int taskId;
   final String? title;
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
   final String? priority;
   final String? status;
   @MappableField(key: 'problem_category')

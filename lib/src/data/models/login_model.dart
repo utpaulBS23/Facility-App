@@ -7,6 +7,7 @@ class UserModel with UserModelMappable {
   UserModel({
     required this.id,
     required this.name,
+    this.nameBn,
     required this.email,
     this.phoneNumber,
     required this.userType,
@@ -19,6 +20,8 @@ class UserModel with UserModelMappable {
 
   final int id;
   final String name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   final String email;
   @MappableField(key: 'phone_number')
   final String? phoneNumber;
@@ -53,6 +56,7 @@ class PartnerModel with PartnerModelMappable {
   PartnerModel({
     required this.id,
     this.brandName,
+    this.brandNameBn,
     this.primaryColor,
     this.logoUrl,
   });
@@ -60,6 +64,8 @@ class PartnerModel with PartnerModelMappable {
   final int id;
   @MappableField(key: 'brand_name')
   final String? brandName;
+  @MappableField(key: 'brand_name_bn')
+  final String? brandNameBn;
   @MappableField(key: 'primary_color')
   final String? primaryColor;
   @MappableField(key: 'logo_url')
@@ -70,10 +76,17 @@ class PartnerModel with PartnerModelMappable {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class AccessibleFacilityModel with AccessibleFacilityModelMappable {
-  AccessibleFacilityModel({required this.id, this.name, this.isPrimary});
+  AccessibleFacilityModel({
+    required this.id,
+    this.name,
+    this.nameBn,
+    this.isPrimary,
+  });
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   @MappableField(key: 'is_primary')
   final bool? isPrimary;
 

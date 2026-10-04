@@ -14,6 +14,9 @@ class Endpoints {
   static const String versionCheck = '/version-check';
   static const String updateAction = '/../app/update-action';
 
+  /// Menu
+  static const String menuConfiguration = '/menu-configuration';
+
   /// Attendance
   static const String checkIn = '/partners/{partnerId}/attendances/check-in';
 
@@ -154,6 +157,8 @@ class Endpoints {
   static const String leaveAttendants =
       '/partners/{partnerId}/leave-attendants';
   static const String leaveApprovals = '/partners/{partnerId}/leave-approvals';
+  static const String leaveApprovalsSummary =
+      '/partners/{partnerId}/leave-approvals/summary';
   static const String approveLeave =
       '/partners/{partnerId}/leave-requests/{leaveRequestId}/approve';
   static const String rejectLeave =

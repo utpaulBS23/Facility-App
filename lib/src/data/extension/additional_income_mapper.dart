@@ -8,12 +8,14 @@ extension AdditionalIncomeModelMapper on AdditionalIncomeModel {
     return AdditionalIncomeEntity(
       id: id,
       facilityName: facility?.name ?? '',
+      facilityNameBn: facility?.nameBn ?? '',
       incomeTypeName: incomeType ?? '',
       amount: amount ?? 0,
       description: description,
       evidencePhotoUrl: evidencePhotoUrl,
       isSelfApproved: isSelfApproved ?? false,
       submittedByName: submittedBy?.name ?? '',
+      submittedByNameBn: submittedBy?.nameBn ?? '',
       createdAt: DateTime.tryParse(createdAt ?? '') ?? DateTime.now(),
     );
   }

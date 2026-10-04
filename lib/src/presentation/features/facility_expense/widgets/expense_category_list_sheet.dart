@@ -71,7 +71,7 @@ class _CategoryListSheet extends StatelessWidget {
                       children: [
                         Expanded(
                           child: LabelLargeText(
-                            category.label,
+                            category.localizedLabel(context.languageCode),
                             color: isSelected
                                 ? context.color.primary
                                 : context.color.text.primary,

@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 /// What an attendant may do next on a slot.
 ///
 /// WHY typed: the app branches on this to decide which check-in/out flow to
@@ -25,15 +27,20 @@ class SlotFacilityEntity {
   const SlotFacilityEntity({
     required this.id,
     required this.name,
+    this.nameBn = '',
     required this.address,
   });
 
   final int id;
   final String name;
+  final String nameBn;
 
   /// Empty when the slots payload omits it — the address row is then hidden
   /// rather than rendered blank.
   final String address;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }
 
 class SlotAttendanceEntity {
@@ -42,22 +49,50 @@ class SlotAttendanceEntity {
     this.checkInTime,
     this.checkOutTime,
     required this.approvalStatus,
-    required this.lateByMinutes,
+    required this.isLate,
+    this.lateCheckInByMinutes,
     this.checkInDistanceMeters,
     this.checkInSelfieUrl,
     this.checkOutSelfieUrl,
+    this.lateCheckInReason,
+    this.checkOutReason,
+    this.lateCheckOutByMinutes,
+    this.checkInReviewedBy,
+    this.checkInReviewerName,
+    this.checkInReviewerNameBn = '',
+    this.checkInReviewedAt,
+    this.checkOutReviewedBy,
+    this.checkOutReviewerName,
+    this.checkOutReviewerNameBn = '',
+    this.checkOutReviewedAt,
   });
 
   final int id;
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
   final String approvalStatus;
-  final int lateByMinutes;
+  final bool isLate;
+  final int? lateCheckInByMinutes;
   final int? checkInDistanceMeters;
   final String? checkInSelfieUrl;
   final String? checkOutSelfieUrl;
+  final String? lateCheckInReason;
+  final String? checkOutReason;
+  final int? lateCheckOutByMinutes;
+  final int? checkInReviewedBy;
+  final String? checkInReviewerName;
+  final String checkInReviewerNameBn;
+  final DateTime? checkInReviewedAt;
+  final int? checkOutReviewedBy;
+  final String? checkOutReviewerName;
+  final String checkOutReviewerNameBn;
+  final DateTime? checkOutReviewedAt;
 
-  bool get isLate => lateByMinutes > 0;
+  String? localizedCheckInReviewerName(String languageCode) =>
+      localizedTextOrNull(languageCode, checkInReviewerName, checkInReviewerNameBn);
+
+  String? localizedCheckOutReviewerName(String languageCode) =>
+      localizedTextOrNull(languageCode, checkOutReviewerName, checkOutReviewerNameBn);
 }
 
 class SlotAttendantEntity {
@@ -65,6 +100,7 @@ class SlotAttendantEntity {
     required this.userId,
     this.assignmentId,
     required this.name,
+    this.nameBn = '',
     required this.staffCode,
     this.phoneNumber,
     required this.isSlotLead,
@@ -87,6 +123,7 @@ class SlotAttendantEntity {
   /// when it's absent — there is nothing to fall back to that would work.
   final int? assignmentId;
   final String name;
+  final String nameBn;
   final String staffCode;
   final String? phoneNumber;
   final bool isSlotLead;
@@ -101,6 +138,9 @@ class SlotAttendantEntity {
   /// Taken off the slot — excluded from active staffing.
   final bool isUnassigned;
   final String? unassignedReason;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }
 
 class ShiftSlotEntity {
@@ -115,6 +155,7 @@ class ShiftSlotEntity {
     required this.checkedInCount,
     required this.checkedOutCount,
     required this.supervisorName,
+    this.supervisorNameBn = '',
     this.attendants = const [],
     this.weeklyRosterId,
   });
@@ -134,6 +175,7 @@ class ShiftSlotEntity {
 
   /// Supervisor who owns this slot. Empty when the payload omits it.
   final String supervisorName;
+  final String supervisorNameBn;
   final List<SlotAttendantEntity> attendants;
 
   /// The roster this slot belongs to — required by the assign-attendant
@@ -158,6 +200,9 @@ class ShiftSlotEntity {
 
   bool get hasFreeCapacity =>
       maxAttendants > 0 && assignedCount < maxAttendants;
+
+  String localizedSupervisorName(String languageCode) =>
+      localizedText(languageCode, supervisorName, supervisorNameBn);
 }
 
 /// The caller's actionable slot for the day, as decided by the backend.
@@ -170,6 +215,7 @@ class ActiveSlotEntity {
     required this.isSlotLead,
     required this.message,
     required this.supervisorName,
+    this.supervisorNameBn = '',
   });
 
   final int shiftSlotId;
@@ -182,6 +228,10 @@ class ActiveSlotEntity {
   /// as-is — the server owns this copy.
   final String message;
   final String supervisorName;
+  final String supervisorNameBn;
+
+  String localizedSupervisorName(String languageCode) =>
+      localizedText(languageCode, supervisorName, supervisorNameBn);
 }
 
 class SlotSummaryEntity {
@@ -206,6 +256,7 @@ class SlotsFacilityEntity {
   const SlotsFacilityEntity({
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn = '',
     this.slots = const [],
     required this.isPrimary,
     required this.isRelief,
@@ -213,9 +264,13 @@ class SlotsFacilityEntity {
 
   final int facilityId;
   final String facilityName;
+  final String facilityNameBn;
   final List<ShiftSlotEntity> slots;
   final bool isPrimary;
   final bool isRelief;
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
 }
 
 /// All facilities' shift slots for one day.

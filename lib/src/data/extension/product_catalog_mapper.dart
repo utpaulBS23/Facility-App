@@ -6,6 +6,7 @@ extension ProductCatalogItemModelMapper on ProductCatalogItemModel {
     return ProductCatalogItemEntity(
       id: id,
       name: name ?? '',
+      nameBn: nameBn ?? '',
       category: category ?? '',
       defaultPrice: defaultPrice ?? 0,
     );

@@ -47,7 +47,7 @@ class _ShiftFab extends ConsumerWidget {
       Routes.shiftCheckIn,
       extra: (
         shiftSlotId: activeSlot.shiftSlotId,
-        supervisorName: activeSlot.supervisorName,
+        supervisorName: activeSlot.localizedSupervisorName(context.languageCode),
       ),
     );
   }

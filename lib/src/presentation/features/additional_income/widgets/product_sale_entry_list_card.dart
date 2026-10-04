@@ -46,14 +46,14 @@ class _ProductSaleEntryCard extends StatelessWidget {
               Gap(spacing.s4),
               Expanded(
                 child: BodySmallText(
-                  entry.facilityName,
+                  entry.localizedFacilityName(context.languageCode),
                   color: context.color.text.secondary,
                 ),
               ),
             ],
           ),
           Gap(spacing.s12),
-          Text(entry.productName, style: context.textStyle.bodyLarge),
+          Text(entry.localizedProductName(context.languageCode), style: context.textStyle.bodyLarge),
           Gap(spacing.s2),
           BodySmallText(
             '${entry.unitsSold} × ৳${NumberFormatter.format(entry.unitPrice)}',
@@ -86,7 +86,7 @@ class _ProductSaleEntryCard extends StatelessWidget {
               ),
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.submittedBy}: ${entry.recordedByName}',
+                '${context.locale.submittedBy}: ${entry.localizedRecordedByName(context.languageCode)}',
                 color: context.color.text.secondary,
               ),
             ],

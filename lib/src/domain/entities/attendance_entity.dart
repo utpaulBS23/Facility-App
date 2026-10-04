@@ -1,4 +1,5 @@
 import 'attendance/attendance_approval_status.dart';
+import '../../core/utils/localized_text.dart';
 
 export 'attendance/attendance_approval_status.dart';
 
@@ -22,6 +23,7 @@ class AttendanceShiftInfoEntity {
     required this.startTime,
     required this.endTime,
     required this.facilityName,
+    this.facilityNameBn = '',
   });
 
   final int id;
@@ -29,6 +31,10 @@ class AttendanceShiftInfoEntity {
   final String startTime;
   final String endTime;
   final String facilityName;
+  final String facilityNameBn;
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
 }
 
 class AttendanceApproverEntity {
@@ -48,6 +54,7 @@ class AttendanceItemEntity {
     this.id,
     required this.userId,
     required this.userName,
+    this.userNameBn = '',
     required this.userUid,
     required this.date,
     required this.status,
@@ -67,13 +74,16 @@ class AttendanceItemEntity {
     this.shift,
     this.approver,
     this.checkInReviewer,
+    this.checkInReviewedAt,
     this.checkOutReviewer,
+    this.checkOutReviewedAt,
     required this.approvalStatus,
   });
 
   final int? id;
   final int userId;
   final String userName;
+  final String userNameBn;
   final String userUid;
   final String date;
   final String status;
@@ -94,7 +104,9 @@ class AttendanceItemEntity {
   final AttendanceShiftInfoEntity? shift;
   final AttendanceApproverEntity? approver;
   final AttendanceApproverEntity? checkInReviewer;
+  final DateTime? checkInReviewedAt;
   final AttendanceApproverEntity? checkOutReviewer;
+  final DateTime? checkOutReviewedAt;
 
   // WHY: API returns raw `status` string ('pending', 'approved', 'auto_approved',
   // 'rejected', 'absent').
@@ -122,6 +134,9 @@ class AttendanceItemEntity {
       shiftDate.day,
     ).isBefore(todayDateOnly);
   }
+
+  String localizedUserName(String languageCode) =>
+      localizedText(languageCode, userName, userNameBn);
 }
 
 class MonthlyAttendanceSummaryEntity {

@@ -49,6 +49,7 @@ class AttendanceShiftInfoModel with AttendanceShiftInfoModelMappable {
     this.startTime,
     this.endTime,
     this.facilityName,
+    this.facilityNameBn,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -65,6 +66,8 @@ class AttendanceShiftInfoModel with AttendanceShiftInfoModelMappable {
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
 
   static const fromJson = AttendanceShiftInfoModelMapper.fromJson;
 }
@@ -75,6 +78,7 @@ class AttendanceItemModel with AttendanceItemModelMappable {
     this.id,
     required this.userId,
     this.userName,
+    this.userNameBn,
     this.userUid,
     this.date,
     this.status,
@@ -94,7 +98,9 @@ class AttendanceItemModel with AttendanceItemModelMappable {
     this.shift,
     this.approver,
     this.checkInReviewer,
+    this.checkInReviewedAt,
     this.checkOutReviewer,
+    this.checkOutReviewedAt,
   });
 
   final int? id;
@@ -104,6 +110,8 @@ class AttendanceItemModel with AttendanceItemModelMappable {
 
   @MappableField(key: 'user_name')
   final String? userName;
+  @MappableField(key: 'user_name_bn')
+  final String? userNameBn;
 
   @MappableField(key: 'user_uid')
   final String? userUid;
@@ -155,8 +163,14 @@ class AttendanceItemModel with AttendanceItemModelMappable {
   @MappableField(key: 'check_in_reviewer')
   final AttendanceApproverModel? checkInReviewer;
 
+  @MappableField(key: 'check_in_reviewed_at')
+  final String? checkInReviewedAt;
+
   @MappableField(key: 'check_out_reviewer')
   final AttendanceApproverModel? checkOutReviewer;
+
+  @MappableField(key: 'check_out_reviewed_at')
+  final String? checkOutReviewedAt;
 
   static const fromJson = AttendanceItemModelMapper.fromJson;
 }

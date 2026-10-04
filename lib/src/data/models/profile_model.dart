@@ -10,11 +10,13 @@ class ProfilePartnerModel with ProfilePartnerModelMappable {
   ProfilePartnerModel({
     required this.id,
     this.name,
+    this.nameBn,
     this.brandName,
   });
 
   final int id;
   final String? name;
+  final String? nameBn;
   final String? brandName;
 
   static const fromJson = ProfilePartnerModelMapper.fromJson;
@@ -28,6 +30,7 @@ class UserProfileModel with UserProfileModelMappable {
   UserProfileModel({
     required this.id,
     required this.name,
+    this.nameBn,
     required this.email,
     this.phoneNumber,
     this.userType,
@@ -38,6 +41,7 @@ class UserProfileModel with UserProfileModelMappable {
 
   final int id;
   final String name;
+  final String? nameBn;
   final String email;
   final String? phoneNumber;
   final String? userType;
@@ -55,6 +59,7 @@ class UserProfileModel with UserProfileModelMappable {
 class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
   UpdateProfileRequestModel({
     this.name,
+    this.nameBn,
     this.email,
     this.phoneNumber,
     this.currentPassword,
@@ -63,6 +68,7 @@ class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
   });
 
   final String? name;
+  final String? nameBn;
   final String? email;
   final String? phoneNumber;
   final String? currentPassword;

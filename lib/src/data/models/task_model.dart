@@ -1,6 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:intl/intl.dart';
 
+import '../../core/utils/api_date.dart';
 import '../../domain/entities/task_entity.dart';
 import '../../presentation/core/utils/date_formatter.dart';
 
@@ -9,7 +9,7 @@ part 'task_model.mapper.dart';
 String _formatDueTime(String? raw) {
   if (raw == null) return '';
   try {
-    final dt = DateFormat('yyyy-MM-dd HH:mm:ss').parse(raw);
+    final dt = ApiDate.parseDateTime(raw);
     return DateFormatter.shiftDate(dt);
   } catch (_) {
     return raw;
@@ -49,7 +49,9 @@ class TaskModel with TaskModelMappable {
   TaskModel({
     required this.id,
     required this.title,
+    this.titleBn,
     this.description,
+    this.descriptionBn,
     this.facilityId,
     this.facilityName,
     this.facilityAddress,
@@ -64,7 +66,14 @@ class TaskModel with TaskModelMappable {
 
   final int id;
   final String title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
+
   final String? description;
+
+  @MappableField(key: 'description_bn')
+  final String? descriptionBn;
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
@@ -97,7 +106,9 @@ class TaskModel with TaskModelMappable {
   TaskEntity toEntity() => TaskEntity(
     id: id,
     title: title,
+    titleBn: titleBn ?? '',
     description: description ?? '',
+    descriptionBn: descriptionBn ?? '',
     facilityId: facilityId,
     location: facilityName ?? '',
     facilityAddress: facilityAddress ?? '',
@@ -149,7 +160,9 @@ class TaskDetailModel with TaskDetailModelMappable {
   TaskDetailModel({
     required this.id,
     required this.title,
+    this.titleBn,
     this.description,
+    this.descriptionBn,
     this.facilityId,
     this.facilityName,
     this.facilityAddress,
@@ -168,7 +181,14 @@ class TaskDetailModel with TaskDetailModelMappable {
 
   final int id;
   final String title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
+
   final String? description;
+
+  @MappableField(key: 'description_bn')
+  final String? descriptionBn;
 
   @MappableField(key: 'facility_id')
   final int? facilityId;
@@ -215,7 +235,9 @@ class TaskDetailModel with TaskDetailModelMappable {
     return TaskEntity(
       id: id,
       title: title,
+      titleBn: titleBn ?? '',
       description: description ?? '',
+      descriptionBn: descriptionBn ?? '',
       facilityId: facilityId,
       location: facilityName ?? '',
       facilityAddress: facilityAddress ?? '',

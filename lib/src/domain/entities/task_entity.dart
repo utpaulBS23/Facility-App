@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 enum TaskPriority { high, medium, low }
 
 // WHY: mirrors task_issues.status (the Issue List/Show API's own vocabulary),
@@ -27,6 +29,8 @@ class TaskEntity {
     required this.dueTime,
     required this.priority,
     required this.status,
+    this.titleBn = '',
+    this.descriptionBn = '',
     this.facilityId,
     this.facilityAddress = '',
     this.assignedToId,
@@ -40,7 +44,9 @@ class TaskEntity {
 
   final int id;
   final String title;
+  final String titleBn;
   final String description;
+  final String descriptionBn;
   final String location;
   final String facilityAddress;
   final String dueTime;
@@ -55,10 +61,18 @@ class TaskEntity {
   final DateTime? createdDate;
   final DateTime? resolvedDate;
 
+  String localizedTitle(String languageCode) =>
+      localizedText(languageCode, title, titleBn);
+
+  String localizedDescription(String languageCode) =>
+      localizedText(languageCode, description, descriptionBn);
+
   TaskEntity copyWith({
     int? id,
     String? title,
+    String? titleBn,
     String? description,
+    String? descriptionBn,
     String? location,
     String? facilityAddress,
     String? dueTime,
@@ -76,7 +90,9 @@ class TaskEntity {
     return TaskEntity(
       id: id ?? this.id,
       title: title ?? this.title,
+      titleBn: titleBn ?? this.titleBn,
       description: description ?? this.description,
+      descriptionBn: descriptionBn ?? this.descriptionBn,
       location: location ?? this.location,
       facilityAddress: facilityAddress ?? this.facilityAddress,
       dueTime: dueTime ?? this.dueTime,

@@ -72,12 +72,12 @@ class _RequestDetailsBody extends ConsumerWidget {
             Gap(spacing.s24),
             RequestInfoCard(
               label: context.locale.facility,
-              title: request.facilityName,
+              title: request.localizedFacilityName(context.languageCode),
             ),
             Gap(spacing.s12),
             _RequestUserCard(
               headerLabel: context.locale.requestedByLabel,
-              userName: request.requestedByName,
+              userName: request.localizedRequestedByName(context.languageCode),
               userRole: _capitalizeRole(request.initiatedByRole),
               timestampLabel: context.locale.submittedOn(
                 _formatDate(request.createdAt),
@@ -97,7 +97,7 @@ class _RequestDetailsBody extends ConsumerWidget {
               Gap(spacing.s12),
               _RequestUserCard(
                 headerLabel: context.locale.receivedBy,
-                userName: delivery.receivedByName,
+                userName: delivery.localizedReceivedByName(context.languageCode),
                 userRole: '',
                 timestampLabel: context.locale.receivedOn(
                   _formatDate(delivery.confirmedAt),

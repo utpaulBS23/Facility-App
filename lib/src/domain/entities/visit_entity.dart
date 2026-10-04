@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 enum VisitStatus { scheduled, inProgress, completed, resolved, pending }
 
 enum VisitType { routineInspection, followUp }
@@ -20,28 +22,34 @@ class VisitSummaryEntity {
   const VisitSummaryEntity({
     required this.id,
     required this.facilityName,
+    this.facilityNameBn = '',
     required this.status,
     required this.type,
     required this.date,
     required this.scheduledStartTime,
     required this.scheduledEndTime,
     this.title,
+    this.titleBn = '',
     this.facilityAddress,
     this.priority,
     this.travelOriginType,
     this.travelOriginId,
     this.travelOriginName,
+    this.travelOriginNameBn = '',
     this.travelStartedAt,
     this.locationType,
     this.officeId,
     this.officeName,
+    this.officeNameBn = '',
     this.visitType,
   });
 
   final int id;
   final String? facilityName;
+  final String facilityNameBn;
   final String? facilityAddress;
   final String? title;
+  final String titleBn;
   final String? priority;
   final VisitStatus status;
   final VisitType type;
@@ -61,11 +69,25 @@ class VisitSummaryEntity {
   /// travel origin has been recorded yet for this visit — a visit in that
   /// state cannot be used as a travel-expense claim's reference visit.
   final String? travelOriginName;
+  final String travelOriginNameBn;
   final String? travelStartedAt;
   final String? locationType;
   final int? officeId;
   final String? officeName;
+  final String officeNameBn;
   final String? visitType;
+
+  String? localizedTitle(String languageCode) =>
+      localizedTextOrNull(languageCode, title, titleBn);
+
+  String? localizedFacilityName(String languageCode) =>
+      localizedTextOrNull(languageCode, facilityName, facilityNameBn);
+
+  String? localizedOfficeName(String languageCode) =>
+      localizedTextOrNull(languageCode, officeName, officeNameBn);
+
+  String? localizedTravelOriginName(String languageCode) =>
+      localizedTextOrNull(languageCode, travelOriginName, travelOriginNameBn);
 }
 
 class VisitListEntity {
@@ -92,16 +114,19 @@ class VisitDetailEntity {
   const VisitDetailEntity({
     required this.id,
     this.facilityName,
+    this.facilityNameBn = '',
     this.facilityId,
     this.locationType = 'facility',
     this.officeId,
     this.officeName,
+    this.officeNameBn = '',
     required this.status,
     required this.type,
     required this.date,
     required this.scheduledStartTime,
     required this.scheduledEndTime,
     this.title,
+    this.titleBn = '',
     this.facilityAddress,
     this.facilityLatitude,
     this.facilityLongitude,
@@ -113,6 +138,7 @@ class VisitDetailEntity {
     this.travelOriginType,
     this.travelOriginId,
     this.travelOriginName,
+    this.travelOriginNameBn = '',
     this.travelDistanceKm,
     this.travelStartedAt,
     this.submittedAt,
@@ -120,12 +146,15 @@ class VisitDetailEntity {
 
   final int id;
   final String? facilityName;
+  final String facilityNameBn;
   final int? facilityId;
   final String locationType;
   final int? officeId;
   final String? officeName;
+  final String officeNameBn;
   final String? facilityAddress;
   final String? title;
+  final String titleBn;
   final double? facilityLatitude;
   final double? facilityLongitude;
   final double? inRangeThresholdMeters;
@@ -141,9 +170,22 @@ class VisitDetailEntity {
   final String? travelOriginType;
   final int? travelOriginId;
   final String? travelOriginName;
+  final String travelOriginNameBn;
   final double? travelDistanceKm;
   final String? travelStartedAt;
   final String? submittedAt;
+
+  String? localizedTitle(String languageCode) =>
+      localizedTextOrNull(languageCode, title, titleBn);
+
+  String? localizedFacilityName(String languageCode) =>
+      localizedTextOrNull(languageCode, facilityName, facilityNameBn);
+
+  String? localizedOfficeName(String languageCode) =>
+      localizedTextOrNull(languageCode, officeName, officeNameBn);
+
+  String? localizedTravelOriginName(String languageCode) =>
+      localizedTextOrNull(languageCode, travelOriginName, travelOriginNameBn);
 }
 
 class GpsVerificationEntity {

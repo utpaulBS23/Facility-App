@@ -68,7 +68,7 @@ class _PrimaryDeviceCard extends StatelessWidget {
           ),
           Gap(dimensions.spacing.s6),
           Text(
-            facility.name,
+            facility.localizedName(context.languageCode),
             style: context.textStyle.titleLarge.copyWith(
               color: colors.text.primary,
               fontWeight: TextWeight.bold,

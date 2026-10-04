@@ -4,6 +4,7 @@ import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
 import '../entities/leave/leave_status.dart';
+import '../entities/leave/leave_summary_entity.dart';
 
 abstract base class LeaveRepository extends Repository {
 
@@ -41,6 +42,11 @@ abstract base class LeaveRepository extends Repository {
   Future<Result<List<LeaveRequestEntity>, Failure>> getLeaveApprovals(
     int partnerId, {
     LeaveStatus? status,
+  });
+
+  Future<Result<LeaveSummaryEntity, Failure>> getLeaveApprovalsSummary(
+    int partnerId, {
+    int? facilityId,
   });
 
   Future<Result<LeaveRequestEntity, Failure>> approveLeave(

@@ -7,11 +7,11 @@ import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/door_lock_entity.dart';
 import '../../../../domain/entities/facility_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/loading_indicator.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/door_lock_action_provider.dart';
 import '../riverpod/door_status_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/door_action_buttons.dart';
 part '../widgets/door_status_card.dart';
@@ -125,13 +125,9 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        leading: const AppBackButton(),
-        leadingWidth: AppBackButton.width,
-        title: Headline2xlTinyText(context.locale.doorControl),
-        centerTitle: true,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.doorLock,
+        fallbackTitle: context.locale.doorControl,
       ),
       body: statusAsync.when(
         data: (status) => _buildBody(context, status, actionState),

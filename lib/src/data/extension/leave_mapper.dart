@@ -5,6 +5,7 @@ import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_policy_entity.dart';
 import '../../domain/entities/leave/leave_request_entity.dart';
 import '../../domain/entities/leave/leave_status.dart';
+import '../../domain/entities/leave/leave_summary_entity.dart';
 import '../../domain/entities/leave/leave_type.dart';
 import '../../domain/entities/leave/shift_status.dart';
 import '../models/leave/leave_models.dart';
@@ -14,6 +15,7 @@ extension LeavePolicyModelToEntity on LeavePolicyModel {
     return LeavePolicyEntity(
       id: id,
       name: name,
+      nameBn: nameBn ?? '',
       leaveType: LeaveType.fromWireString(leaveType),
       defaultDaysPerYear: defaultDaysPerYear ?? 0.0,
       requiresApproval: requiresApproval ?? true,
@@ -187,5 +189,27 @@ extension CreateLeaveRequestToModelMapper on CreateLeaveRequestEntity {
       coverAttendantId: coverAttendantId,
       attachments: attachments,
     );
+  }
+}
+
+extension LeaveSummaryModelToEntity on LeaveSummaryModel {
+  LeaveSummaryEntity toEntity() => LeaveSummaryEntity(
+    pending: pending,
+    managerApproval: managerApproval,
+    approved: approved,
+    rejected: rejected,
+  );
+}
+
+extension LeaveSummaryResponseModelToEntity on LeaveSummaryResponseModel {
+  LeaveSummaryEntity toEntity() {
+    final payload = summary;
+    if (payload == null) {
+      throw const FormatException(
+        'Missing summary payload in LeaveSummaryResponseModel',
+      );
+    }
+
+    return payload.toEntity();
   }
 }

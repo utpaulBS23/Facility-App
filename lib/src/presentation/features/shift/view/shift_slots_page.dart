@@ -46,7 +46,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   }
 
   void _fetchSlots(DateTime date) {
-    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    final formattedDate = ApiDate.date(date);
     Log.info('_fetchSlots: date=$formattedDate, facilityId=${widget.facilityId}');
     ref
         .read(shiftSlotsProvider.notifier)
@@ -59,6 +59,21 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
   void _onDateChanged(DateTime date) {
     _selectedDate = date;
     _fetchSlots(date);
+  }
+
+  Future<void> _onRefresh() async {
+    final failure = await ref
+        .read(shiftSlotsProvider.notifier)
+        .fetch(
+          date: ApiDate.date(_selectedDate),
+          facilityId: widget.facilityId,
+          silent: true,
+        );
+    if (failure != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(failure.localizedMessage(context))),
+      );
+    }
   }
 
   void _onAssignStaff(BuildContext context, ShiftSlotEntity slot) {
@@ -101,6 +116,7 @@ class _ShiftSlotsViewState extends ConsumerState<_ShiftSlotsView> {
       builder: (context, canApplyLeave) => _ShiftSlotsContent(
         canApplyLeave: canApplyLeave,
         onDateChanged: _onDateChanged,
+        onRefresh: _onRefresh,
         onApplyLeave: widget.onApplyLeave,
         onSlotTap: widget.onSlotTap,
         onAssignStaff: (slot) => _onAssignStaff(context, slot),

@@ -46,7 +46,7 @@ class IssueAttendantPickerTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  LabelLargeText(attendant.name),
+                  LabelLargeText(attendant.localizedName(context.languageCode)),
                   Gap(spacing.s2),
                   BodySmallText(
                     attendant.phoneNumber ?? attendant.email,

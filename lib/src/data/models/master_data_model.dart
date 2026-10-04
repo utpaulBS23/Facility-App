@@ -8,6 +8,7 @@ class MasterDataItemModel with MasterDataItemModelMappable {
     required this.id,
     required this.value,
     required this.label,
+    this.labelBn,
     this.color,
     this.isActive,
     this.sortOrder,
@@ -16,6 +17,10 @@ class MasterDataItemModel with MasterDataItemModelMappable {
   final int id;
   final String value;
   final String label;
+
+  @MappableField(key: 'label_bn')
+  final String? labelBn;
+
   final String? color;
 
   @MappableField(key: 'is_active')

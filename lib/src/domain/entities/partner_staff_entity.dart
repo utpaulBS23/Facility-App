@@ -1,3 +1,5 @@
+import '../../core/utils/localized_text.dart';
+
 /// A partner's staff member, listed as a candidate when assigning someone to
 /// a shift slot.
 class PartnerStaffEntity {
@@ -10,6 +12,7 @@ class PartnerStaffEntity {
     this.userRole,
     required this.isActive,
     this.profileImageUrl,
+    this.nameBn = '',
   });
 
   final int id;
@@ -20,4 +23,8 @@ class PartnerStaffEntity {
   final String? userRole;
   final bool isActive;
   final String? profileImageUrl;
+  final String nameBn;
+
+  String localizedName(String languageCode) =>
+      localizedText(languageCode, name, nameBn);
 }

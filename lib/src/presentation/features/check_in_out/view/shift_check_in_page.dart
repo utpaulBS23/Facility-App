@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/base/failure.dart';
 import '../../../../core/base/result.dart';
@@ -26,7 +25,7 @@ import '../../../core/widgets/app_time_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../shift/riverpod/shift_slots_provider.dart';
+import '../riverpod/check_in_failure_provider.dart';
 import '../riverpod/check_in_info_provider.dart';
 import '../riverpod/check_in_provider.dart';
 import '../riverpod/check_out_provider.dart';
@@ -115,22 +114,6 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     ref.read(selfiePickerProvider.notifier).capturePhoto(path);
   }
 
-  // WHY: the shift tab's slots list is fetched once on mount, so a check-in
-  // made from here would otherwise leave it showing pre-check-in state until
-  // the user manually changes the date.
-  void _refreshShiftSlots() {
-    // WHY facilityId re-sent: without it, a supervisor filtered to a
-    // non-default facility would have this refresh silently fall back to
-    // the session's primary facility (see GetShiftSlotsUseCase), discarding
-    // their filter selection.
-    ref
-        .read(shiftSlotsProvider.notifier)
-        .fetch(
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-          facilityId: ref.read(shiftSlotsProvider).valueOrNull?.facility?.id,
-        );
-  }
-
   void _showWarnings(List<CheckInWarningEntity> warnings) {
     final messages = warnings
         .map((warning) => warning.message)
@@ -144,12 +127,10 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
 
   void _onManualAttendance() {
     final checkInInfo = ref.read(checkInInfoProvider).valueOrNull;
-    if (checkInInfo == null || !checkInInfo.hasLocation) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.locale.locationUnavailable)),
-      );
-      return;
-    }
+    // WHY no hasLocation check: this is the fallback for when detection
+    // itself failed — location or camera — so requiring location here would
+    // strand anyone whose location is the thing that's broken.
+    if (checkInInfo == null) return;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -161,6 +142,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       ),
       builder: (_) => _ManualAttendanceBottomSheet(
         checkInInfo: checkInInfo,
+        failureType: ref.read(checkInFailureTypeProvider),
         shiftSlotId: widget.shiftSlotId,
         withdrawRoute: Routes.shiftCheckIn,
       ),
@@ -173,7 +155,6 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
       if (next.hasValue && next.value != null) {
         final entity = (next.value as Success<CheckInEntity, Failure>).data;
         if (entity != null) _showWarnings(entity.warnings);
-        _refreshShiftSlots();
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -190,6 +171,11 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
     final validationState = ref.watch(checkInProvider);
     final selfieError = selfieState.error;
     final isNoFace = selfieError is Failure && selfieError.code == 'no_face_detected';
+    final locationFailure = ref
+        .watch(checkInInfoProvider)
+        .valueOrNull
+        ?.locationFailure;
+    final failureType = ref.watch(checkInFailureTypeProvider);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -198,8 +184,10 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
         isValidating: validationState.isLoading,
-        hasError: selfieState.hasError && !isNoFace,
-        errorMessage: selfieError?.localizedMessage(context),
+        hasError: failureType.any,
+        errorMessage:
+            selfieError?.localizedMessage(context) ??
+            locationFailure?.localizedMessage(context),
         faceValidationError: isNoFace ? context.locale.noFaceDetected : null,
         onTakePhoto: _onTakePhoto,
         onRequestSupervisor: _onManualAttendance,

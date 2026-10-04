@@ -5,6 +5,7 @@ extension UserModelToEntity on UserModel {
   UserEntity toEntity() => UserEntity(
     id: id,
     name: name,
+    nameBn: nameBn ?? '',
     email: email,
     phoneNumber: phoneNumber,
     userType: userType,
@@ -20,6 +21,7 @@ extension PartnerModelToEntity on PartnerModel {
   PartnerEntity toEntity() => PartnerEntity(
     id: id,
     brandName: brandName ?? '',
+    brandNameBn: brandNameBn ?? '',
     primaryColor: primaryColor,
     logoUrl: logoUrl,
   );
@@ -29,6 +31,7 @@ extension AccessibleFacilityModelToEntity on AccessibleFacilityModel {
   AccessibleFacilityEntity toEntity() => AccessibleFacilityEntity(
     id: id,
     name: name ?? '',
+    nameBn: nameBn ?? '',
     isPrimary: isPrimary ?? false,
   );
 }

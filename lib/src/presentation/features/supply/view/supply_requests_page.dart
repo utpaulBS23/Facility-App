@@ -14,7 +14,6 @@ import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_summary_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -23,6 +22,8 @@ import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_summary_provider.dart';
 import '../riverpod/supply_requests_list_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/pending_delivery_alert.dart';
 part '../widgets/shimmer/supply_request_shimmer.dart';
@@ -77,8 +78,9 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.supplyRequests,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.supplyRequest,
+        fallbackTitle: context.locale.supplyRequests,
         onBack: () => _onBack(context),
       ),
       body: _SupplyRequestsBody(

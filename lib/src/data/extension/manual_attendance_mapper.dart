@@ -8,11 +8,13 @@ extension ManualAttendanceDataModelToEntity on ManualAttendanceDataModel {
     shiftId: shiftId,
     status: status ?? 'pending',
     userName: userName ?? '',
+    userNameBn: userNameBn ?? '',
     shiftDate: shiftDate ?? '',
     checkInTime: parseLocalIso(checkInTime),
     checkOutTime: parseLocalIso(checkOutTime),
     address: address ?? '',
     reason: reason ?? '',
     approverName: approverName,
+    approverNameBn: approverNameBn ?? '',
   );
 }

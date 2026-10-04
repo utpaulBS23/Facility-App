@@ -9,13 +9,16 @@ extension ShiftStockCountModelToEntity on ShiftStockCountModel {
         shiftAssignmentId: shiftAssignmentId,
         facilityId: facilityId,
         facilityName: facilityName,
+        facilityNameBn: facilityNameBn ?? '',
         stockItemId: stockItemId,
         itemCode: itemCode,
         itemName: itemName,
+        itemNameBn: itemNameBn ?? '',
         unit: unit,
         qtyOnHand: qtyOnHand,
         photoUrl: photoUrl,
         reportedByName: reportedByName,
+        reportedByNameBn: reportedByNameBn ?? '',
         reportedAt: reportedAt,
       );
 }

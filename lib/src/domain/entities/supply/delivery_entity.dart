@@ -1,4 +1,5 @@
 import 'delivery_status.dart';
+import '../../../core/utils/localized_text.dart';
 
 class DeliveryItemEntity {
   const DeliveryItemEntity({
@@ -6,6 +7,7 @@ class DeliveryItemEntity {
     required this.stockItemId,
     required this.itemCode,
     required this.itemName,
+    this.itemNameBn = '',
     required this.unit,
     required this.qtyExpected,
     required this.qtyReceived,
@@ -17,6 +19,7 @@ class DeliveryItemEntity {
   final int stockItemId;
   final String itemCode;
   final String itemName;
+  final String itemNameBn;
   final String unit;
   final double qtyExpected;
   final double qtyReceived;
@@ -46,6 +49,9 @@ class DeliveryItemEntity {
       hasShortage: hasShortage ?? this.hasShortage,
     );
   }
+
+  String localizedItemName(String languageCode) =>
+      localizedText(languageCode, itemName, itemNameBn);
 }
 
 class DeliveryEntity {
@@ -55,7 +61,9 @@ class DeliveryEntity {
     required this.requestCode,
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn = '',
     required this.receivedByName,
+    this.receivedByNameBn = '',
     required this.receiptPhotoUrl,
     required this.deliveryNotes,
     required this.status,
@@ -70,7 +78,9 @@ class DeliveryEntity {
   final String requestCode;
   final int facilityId;
   final String facilityName;
+  final String facilityNameBn;
   final String receivedByName;
+  final String receivedByNameBn;
   final String receiptPhotoUrl;
   final String deliveryNotes;
   final DeliveryStatus status;
@@ -110,4 +120,10 @@ class DeliveryEntity {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
+
+  String localizedReceivedByName(String languageCode) =>
+      localizedText(languageCode, receivedByName, receivedByNameBn);
 }

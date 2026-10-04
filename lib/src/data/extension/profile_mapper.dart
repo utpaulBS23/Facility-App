@@ -6,10 +6,12 @@ extension UserProfileModelToEntity on UserProfileModel {
   UserProfileEntity toEntity() => UserProfileEntity(
         id: id,
         name: name,
+        nameBn: nameBn ?? '',
         email: email,
         phoneNumber: phoneNumber ?? '',
         userType: userType ?? '',
         partnerName: partner?.name ?? '',
+        partnerNameBn: partner?.nameBn ?? '',
         profileImageUrl: profileImageUrl ?? '',
       );
 }
@@ -17,6 +19,7 @@ extension UserProfileModelToEntity on UserProfileModel {
 extension UpdateProfileEntityToModelMapper on UpdateProfileEntity {
   UpdateProfileRequestModel toModel() => UpdateProfileRequestModel(
         name: name,
+        nameBn: nameBn,
         email: email,
         phoneNumber: phoneNumber,
         currentPassword: currentPassword,

@@ -9,12 +9,14 @@ class ManualAttendanceDataModel with ManualAttendanceDataModelMappable {
     required this.shiftId,
     this.status,
     this.userName,
+    this.userNameBn,
     this.shiftDate,
     this.checkInTime,
     this.checkOutTime,
     this.address,
     this.reason,
     this.approverName,
+    this.approverNameBn,
   });
 
   final int id;
@@ -26,6 +28,8 @@ class ManualAttendanceDataModel with ManualAttendanceDataModelMappable {
 
   @MappableField(key: 'user_name')
   final String? userName;
+  @MappableField(key: 'user_name_bn')
+  final String? userNameBn;
 
   @MappableField(key: 'shift_date')
   final String? shiftDate;
@@ -41,6 +45,8 @@ class ManualAttendanceDataModel with ManualAttendanceDataModelMappable {
 
   @MappableField(key: 'approver_name')
   final String? approverName;
+  @MappableField(key: 'approver_name_bn')
+  final String? approverNameBn;
 
   static const fromJson = ManualAttendanceDataModelMapper.fromJson;
 }

@@ -8,6 +8,7 @@ class ShiftTemplateDataModel with ShiftTemplateDataModelMappable {
     required this.id,
     this.partnerId,
     this.name,
+    this.nameBn,
     this.startTime,
     this.endTime,
     this.durationHours,
@@ -21,6 +22,10 @@ class ShiftTemplateDataModel with ShiftTemplateDataModelMappable {
   @MappableField(key: 'partner_id')
   final int? partnerId;
   final String? name;
+
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
+
   @MappableField(key: 'start_time')
   final String? startTime;
   @MappableField(key: 'end_time')
