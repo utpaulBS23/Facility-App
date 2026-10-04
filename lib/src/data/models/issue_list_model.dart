@@ -7,10 +7,13 @@ class IssueItemModel with IssueItemModelMappable {
   IssueItemModel({
     required this.id,
     required this.title,
+    this.titleBn,
     required this.priority,
     required this.status,
     this.facilityName,
+    this.facilityNameBn,
     this.assignedToName,
+    this.assignedToNameBn,
     this.dueAt,
     this.problemCategory,
     this.issueStatus,
@@ -19,14 +22,21 @@ class IssueItemModel with IssueItemModelMappable {
 
   final int id;
   final String title;
+
+  @MappableField(key: 'title_bn')
+  final String? titleBn;
   final String priority;
   final String status;
 
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
 
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
 
   @MappableField(key: 'due_at')
   final String? dueAt;

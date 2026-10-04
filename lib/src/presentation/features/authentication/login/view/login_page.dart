@@ -11,6 +11,7 @@ import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../core/extensions/failure_localization.dart';
 import '../../../../../domain/entities/login_entity.dart';
 import '../../../../core/application_state/localization_provider/localization_provider.dart';
+import '../../../../core/application_state/menu_configuration_provider/menu_configuration_provider.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/router/shell_tab_config.dart';
 import '../../../../core/theme/theme.dart';
@@ -52,6 +53,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  // WHY refresh first: the tabs are exactly what the server sends, so the
+  // first tab is unknown until the layout for this login has arrived.
+  Future<void> _landOnFirstTab(Set<UserPermission> permissions) async {
+    await ref.read(menuConfigProvider.notifier).refresh();
+    if (!mounted) return;
+
+    context.goNamed(
+      firstPermittedShellRoute(
+        permissions,
+        menuConfig: ref.read(menuConfigProvider),
+      ),
+    );
+  }
+
   void _onLoginStateChanged(AsyncValue? previous, AsyncValue next) {
     switch (next) {
       case AsyncData(:final value) when value != null:
@@ -62,7 +77,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         // below only applies to shift-capable attendants.
         if (permissions.contains(UserPermission.shiftView) ||
             permissions.contains(UserPermission.shiftSlotView)) {
-          context.goNamed(firstPermittedShellRoute(permissions));
+          _landOnFirstTab(permissions);
           return;
         }
       case AsyncError(:final error):

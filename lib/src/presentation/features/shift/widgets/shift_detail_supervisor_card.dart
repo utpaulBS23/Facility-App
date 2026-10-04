@@ -45,7 +45,7 @@ class _ShiftDetailSupervisorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      supervisor?.fullName ?? na,
+                      supervisor?.localizedFullName(context.languageCode) ?? na,
                       style: context.textStyle.headline2xlTiny.copyWith(
                         color: context.color.text.primary,
                       ),

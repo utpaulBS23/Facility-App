@@ -20,6 +20,10 @@ class ManualAttendance extends _$ManualAttendance {
     required int shiftSlotId,
     required String reason,
     required CheckInInfoEntity checkInInfo,
+    // WHY: when GPS itself is the failure, checkInInfo.location is empty —
+    // this lets the attendant type where they are so the supervisor has
+    // something to review against, instead of a blank field.
+    String? manualLocation,
   }) async {
     if (state.isLoading) return;
 
@@ -34,9 +38,9 @@ class ManualAttendance extends _$ManualAttendance {
       shiftId: shiftSlotId,
       reason: reason,
       checkInTime: checkInInfo.checkInTimeRaw,
-      lat: checkInInfo.latitude!,
-      lng: checkInInfo.longitude!,
-      address: checkInInfo.location ?? '',
+      lat: checkInInfo.latitude,
+      lng: checkInInfo.longitude,
+      address: manualLocation ?? checkInInfo.location ?? '',
     );
 
     final result = await ref

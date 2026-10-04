@@ -4,10 +4,12 @@ part 'shift_slot_model.mapper.dart';
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class SlotFacilityModel with SlotFacilityModelMappable {
-  SlotFacilityModel({required this.id, this.name, this.address});
+  SlotFacilityModel({required this.id, this.name, this.nameBn, this.address});
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   final String? address;
 
   static const fromJson = SlotFacilityModelMapper.fromJson;
@@ -20,10 +22,22 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
     this.checkInTime,
     this.checkOutTime,
     this.approvalStatus,
-    this.lateByMinutes,
+    this.isLate,
+    this.lateCheckInByMinutes,
     this.checkInDistanceMeters,
     this.checkInSelfieUrl,
     this.checkOutSelfieUrl,
+    this.lateCheckInReason,
+    this.checkOutReason,
+    this.lateCheckOutByMinutes,
+    this.checkInReviewedBy,
+    this.checkInReviewerName,
+    this.checkInReviewerNameBn,
+    this.checkInReviewedAt,
+    this.checkOutReviewedBy,
+    this.checkOutReviewerName,
+    this.checkOutReviewerNameBn,
+    this.checkOutReviewedAt,
   });
 
   final int id;
@@ -33,14 +47,38 @@ class SlotAttendanceModel with SlotAttendanceModelMappable {
   final String? checkOutTime;
   @MappableField(key: 'approval_status')
   final String? approvalStatus;
-  @MappableField(key: 'late_by_minutes')
-  final int? lateByMinutes;
+  @MappableField(key: 'is_late')
+  final bool? isLate;
+  @MappableField(key: 'late_check_in_by_minutes')
+  final int? lateCheckInByMinutes;
   @MappableField(key: 'check_in_distance_meters')
   final int? checkInDistanceMeters;
   @MappableField(key: 'check_in_selfie_url')
   final String? checkInSelfieUrl;
   @MappableField(key: 'check_out_selfie_url')
   final String? checkOutSelfieUrl;
+  @MappableField(key: 'late_check_in_reason')
+  final String? lateCheckInReason;
+  @MappableField(key: 'check_out_reason')
+  final String? checkOutReason;
+  @MappableField(key: 'late_check_out_by_minutes')
+  final int? lateCheckOutByMinutes;
+  @MappableField(key: 'check_in_reviewed_by')
+  final int? checkInReviewedBy;
+  @MappableField(key: 'check_in_reviewer_name')
+  final String? checkInReviewerName;
+  @MappableField(key: 'check_in_reviewer_name_bn')
+  final String? checkInReviewerNameBn;
+  @MappableField(key: 'check_in_reviewed_at')
+  final String? checkInReviewedAt;
+  @MappableField(key: 'check_out_reviewed_by')
+  final int? checkOutReviewedBy;
+  @MappableField(key: 'check_out_reviewer_name')
+  final String? checkOutReviewerName;
+  @MappableField(key: 'check_out_reviewer_name_bn')
+  final String? checkOutReviewerNameBn;
+  @MappableField(key: 'check_out_reviewed_at')
+  final String? checkOutReviewedAt;
 
   static const fromJson = SlotAttendanceModelMapper.fromJson;
 }
@@ -51,6 +89,7 @@ class SlotAttendantModel with SlotAttendantModelMappable {
     required this.userId,
     this.shiftAssignmentId,
     this.name,
+    this.nameBn,
     this.staffCode,
     this.phoneNumber,
     this.phone,
@@ -69,6 +108,8 @@ class SlotAttendantModel with SlotAttendantModelMappable {
   @MappableField(key: 'shift_assignment_id')
   final int? shiftAssignmentId;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   @MappableField(key: 'staff_code')
   final String? staffCode;
   @MappableField(key: 'phone_number')
@@ -113,6 +154,7 @@ class ShiftSlotModel with ShiftSlotModelMappable {
     this.checkedInCount,
     this.checkedOutCount,
     this.supervisorName,
+    this.supervisorNameBn,
     this.attendants = const [],
     this.weeklyRosterId,
   });
@@ -137,6 +179,8 @@ class ShiftSlotModel with ShiftSlotModelMappable {
   final int? checkedOutCount;
   @MappableField(key: 'supervisor_name')
   final String? supervisorName;
+  @MappableField(key: 'supervisor_name_bn')
+  final String? supervisorNameBn;
   final List<SlotAttendantModel> attendants;
   @MappableField(key: 'roster_id')
   final int? weeklyRosterId;
@@ -154,6 +198,7 @@ class ActiveSlotModel with ActiveSlotModelMappable {
     this.isSlotLead,
     this.message,
     this.supervisorName,
+    this.supervisorNameBn,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -168,6 +213,8 @@ class ActiveSlotModel with ActiveSlotModelMappable {
   final String? message;
   @MappableField(key: 'supervisor_name')
   final String? supervisorName;
+  @MappableField(key: 'supervisor_name_bn')
+  final String? supervisorNameBn;
 
   static const fromJson = ActiveSlotModelMapper.fromJson;
 }
@@ -202,6 +249,7 @@ class ShiftSlotsFacilityModel with ShiftSlotsFacilityModelMappable {
   ShiftSlotsFacilityModel({
     required this.facilityId,
     this.facilityName,
+    this.facilityNameBn,
     this.slots = const [],
     this.isPrimary = false,
     this.isRelief = false,
@@ -211,6 +259,8 @@ class ShiftSlotsFacilityModel with ShiftSlotsFacilityModelMappable {
   final int facilityId;
   @MappableField(key: 'facility_name')
   final String? facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final List<ShiftSlotModel> slots;
   @MappableField(key: 'is_primary')
   final bool isPrimary;

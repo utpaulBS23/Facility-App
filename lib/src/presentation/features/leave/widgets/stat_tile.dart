@@ -36,6 +36,7 @@ class StatTile extends StatelessWidget {
           Gap(spacing.s4),
           Text(
             label,
+            textAlign: TextAlign.center,
             style: context.textStyle.bodySmall.copyWith(
               color: context.color.text.secondary,
             ),

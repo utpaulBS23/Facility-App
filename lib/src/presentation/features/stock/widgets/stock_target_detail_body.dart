@@ -6,6 +6,7 @@ import '../../../core/theme/theme.dart';
 import 'average_demand_list_card.dart';
 import 'facility_metadata_card.dart';
 import 'monthly_total_summary_card.dart';
+import '../../../../core/extensions/app_localization.dart';
 
 class StockTargetDetailBody extends StatelessWidget {
   const StockTargetDetailBody({
@@ -22,7 +23,7 @@ class StockTargetDetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
-    final updatedByName = detail.targets.isNotEmpty ? detail.targets.first.updatedByName : '';
+    final updatedByName = detail.targets.isNotEmpty ? detail.targets.first.localizedUpdatedByName(context.languageCode) : '';
     final updatedAt = detail.targets.isNotEmpty ? detail.targets.first.updatedAt : '';
 
     if (isEditing) {
@@ -32,7 +33,7 @@ class StockTargetDetailBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             FacilityMetadataCard(
-              facilityName: detail.facilityName,
+              facilityName: detail.localizedFacilityName(context.languageCode),
               updatedByName: updatedByName,
               updatedAt: updatedAt,
             ),
@@ -53,7 +54,7 @@ class StockTargetDetailBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FacilityMetadataCard(
-            facilityName: detail.facilityName,
+            facilityName: detail.localizedFacilityName(context.languageCode),
             updatedByName: updatedByName,
             updatedAt: updatedAt,
           ),

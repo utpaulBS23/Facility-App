@@ -9,6 +9,7 @@ class EditProfilePage extends ConsumerStatefulWidget {
 
 class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   late final TextEditingController _nameController;
+  late final TextEditingController _nameBnController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
 
@@ -17,6 +18,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     super.initState();
     final profile = ref.read(profileProvider).valueOrNull;
     _nameController = TextEditingController(text: profile?.name ?? '');
+    _nameBnController = TextEditingController(text: profile?.nameBn ?? '');
     _emailController = TextEditingController(text: profile?.email ?? '');
     _phoneController = TextEditingController(text: profile?.phoneNumber ?? '');
   }
@@ -24,6 +26,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   @override
   void dispose() {
     _nameController.dispose();
+    _nameBnController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
@@ -31,12 +34,14 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
   Future<void> _submit() async {
     final name = _nameController.text.trim();
+    final nameBn = _nameBnController.text.trim();
     final email = _emailController.text.trim();
     final phone = _phoneController.text.trim();
 
     await ref.read(editProfileProvider.notifier).updateProfile(
           UpdateProfileEntity(
             name: name.isNotEmpty ? name : null,
+            nameBn: nameBn.isNotEmpty ? nameBn : null,
             email: email.isNotEmpty ? email : null,
             phoneNumber: phone.isNotEmpty ? phone : null,
           ),
@@ -130,6 +135,13 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     label: context.locale.name,
                     hint: context.locale.name,
                     prefixIcon: const Icon(Icons.person_outline),
+                  ),
+                  Gap(spacing.s16),
+                  AppTextField.text(
+                    controller: _nameBnController,
+                    label: context.locale.nameBangla,
+                    hint: context.locale.nameBangla,
+                    prefixIcon: const Icon(Icons.translate_outlined),
                   ),
                   Gap(spacing.s16),
                   AppTextField.email(

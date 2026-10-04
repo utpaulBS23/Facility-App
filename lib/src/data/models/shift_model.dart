@@ -7,6 +7,7 @@ class ShiftSupervisorModel with ShiftSupervisorModelMappable {
   ShiftSupervisorModel({
     required this.id,
     this.fullName,
+    this.fullNameBn,
     this.phone,
     this.isPrimary,
   });
@@ -16,6 +17,8 @@ class ShiftSupervisorModel with ShiftSupervisorModelMappable {
   // objects in the same payload which use `full_name`/`phone`.
   @MappableField(key: 'name')
   final String? fullName;
+  @MappableField(key: 'name_bn')
+  final String? fullNameBn;
   @MappableField(key: 'phone_number')
   final String? phone;
   @MappableField(key: 'is_primary')
@@ -62,12 +65,15 @@ class ShiftAttendantModel with ShiftAttendantModelMappable {
   ShiftAttendantModel({
     required this.id,
     this.fullName,
+    this.fullNameBn,
     this.phone,
   });
 
   final int id;
   @MappableField(key: 'full_name')
   final String? fullName;
+  @MappableField(key: 'full_name_bn')
+  final String? fullNameBn;
   final String? phone;
 
   static const fromJson = ShiftAttendantModelMapper.fromJson;

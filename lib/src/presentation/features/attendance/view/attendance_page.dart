@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
@@ -21,9 +22,10 @@ import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../../../core/widgets/app_time_field.dart';
 import '../riverpod/attendance_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/attendance_approve_reject_bar.dart';
 part '../widgets/attendance_body.dart';
@@ -47,7 +49,8 @@ class AttendancePage extends ConsumerStatefulWidget {
   ConsumerState<AttendancePage> createState() => _AttendancePageState();
 }
 
-class _AttendancePageState extends ConsumerState<AttendancePage> {
+class _AttendancePageState extends ConsumerState<AttendancePage>
+    with WidgetsBindingObserver {
   late String _selectedMonth;
   int? _selectedFacilityId;
   int? _selectedUserId;
@@ -55,9 +58,43 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final now = DateTime.now();
     _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
     _selectedFacilityId = _defaultFacilityId;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // WHY: the app can sit backgrounded for a while — check-ins/outs done
+  // elsewhere in that time (or on another device) would otherwise show stale
+  // until the user manually changes the month filter.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _onRefresh();
+  }
+
+  Future<void> _onRefresh() async {
+    ref.invalidate(monthlyAttendanceOverviewProvider);
+    try {
+      await ref.read(
+        monthlyAttendanceOverviewProvider(
+          _selectedMonth,
+          facilityId: _selectedFacilityId,
+          userId: _selectedUserId,
+        ).future,
+      );
+    } catch (_) {
+      // WHY swallowed: a failed background refresh (expired session, no
+      // network) shouldn't crash the app — a 401 is already handled globally
+      // by the token interceptor (logout/redirect); other failures just
+      // leave the list showing its last-known state, same as before this
+      // refresh was attempted.
+    }
   }
 
   int? get _defaultFacilityId {
@@ -130,11 +167,10 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.attendance),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.attendance,
+        fallbackTitle: context.locale.attendance,
+        isTabByDefault: true,
         actions: [
           MonthFilterButton(
             month: DateTime(
@@ -175,6 +211,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage> {
             onItemTap: _onItemTap,
             onApplyLeave: _onApplyLeave,
             showApplyLeave: isGranted,
+            onRefresh: _onRefresh,
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),

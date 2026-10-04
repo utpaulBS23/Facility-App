@@ -27,7 +27,16 @@ class _ShiftSlotsList extends StatelessWidget {
     final hasSlots = slots.isNotEmpty || hasMultipleFacilities;
 
     if (!hasSlots && activeSlot == null) {
-      return _ShiftSlotsMessage(message: context.locale.noShiftsFound);
+      // WHY scrollable: pull to refresh needs a scroll view even when empty.
+      return LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: _ShiftSlotsMessage(message: context.locale.noShiftsFound),
+          ),
+        ),
+      );
     }
 
     final spacing = context.dimensions.spacing;
@@ -53,7 +62,7 @@ class _ShiftSlotsList extends StatelessWidget {
         items.add(
           Padding(
             padding: EdgeInsets.only(top: spacing.s8, bottom: spacing.s8),
-            child: Text(fac.facilityName, style: context.textStyle.titleSmall),
+            child: Text(fac.localizedFacilityName(context.languageCode), style: context.textStyle.titleSmall),
           ),
         );
         for (var i = 0; i < fac.slots.length; i++) {
@@ -62,7 +71,7 @@ class _ShiftSlotsList extends StatelessWidget {
           items.add(
             _SlotCard(
               slot: slot,
-              facility: SlotFacilityEntity(id: fac.facilityId, name: fac.facilityName, address: ''),
+              facility: SlotFacilityEntity(id: fac.facilityId, name: fac.localizedFacilityName(context.languageCode), address: ''),
               onTap: () => onSlotTap(slot),
               onAssignStaff: () => onAssignStaff(slot),
             ),
@@ -85,6 +94,7 @@ class _ShiftSlotsList extends StatelessWidget {
     }
 
     return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(spacing.s16, spacing.s12, spacing.s16, spacing.s16),
       itemCount: items.length,
       itemBuilder: (context, index) => items[index],

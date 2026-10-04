@@ -14,11 +14,12 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../extensions/travel_expense_status_extension.dart';
 import '../riverpod/travel_expenses_list_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/travel_expense_list_card.dart';
 part '../widgets/travel_expense_stats_row.dart';
@@ -64,7 +65,9 @@ class _TravelExpensesPageState extends ConsumerState<TravelExpensesPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.claimExpense),
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.claimExpense,
+        fallbackTitle: context.locale.claimExpense),
       floatingActionButton: PermissionGate(
         permissions: const [UserPermission.travelExpenseCreate],
         child: FloatingActionButton(

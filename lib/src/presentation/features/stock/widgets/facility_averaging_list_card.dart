@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../domain/entities/stock/facility_stock_averaging_overview_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../../core/extensions/app_localization.dart';
 
 class FacilityAveragingListCard extends StatelessWidget {
   const FacilityAveragingListCard({
@@ -54,7 +55,7 @@ class FacilityAveragingListCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  facility.facilityName,
+                  facility.localizedFacilityName(context.languageCode),
                   style: textStyle.bodyLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color.text.primary,

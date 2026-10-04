@@ -211,7 +211,7 @@ class _TaskDetailBody extends StatelessWidget {
         children: [
           Row(children: [Container(width: 8, height: 8, decoration: BoxDecoration(color: _priorityColor(context), shape: BoxShape.circle)), Gap(spacing.s6), Text(_priorityLabel(context), style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))]),
           Gap(spacing.s8),
-          Text(task.title, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 2),
+          Text(task.localizedTitle(context.languageCode), style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 2),
           Gap(spacing.s6),
           Row(children: [Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary), Gap(spacing.s4), Expanded(child: Text(task.location, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary), overflow: TextOverflow.ellipsis))]),
           if (task.problemCategory.isNotEmpty) ...[
@@ -282,12 +282,12 @@ class _TaskDetailBody extends StatelessWidget {
   Widget _buildCard2Description(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    if (task.description.isEmpty) return const SizedBox.shrink();
+    if (task.localizedDescription(context.languageCode).isEmpty) return const SizedBox.shrink();
     return Container(
       width: double.infinity,
       decoration: _cardDecoration(context),
       padding: EdgeInsets.all(spacing.s16),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.taskDetails, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold)), Gap(spacing.s8), Text(task.description, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.secondary))]),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(context.locale.taskDetails, style: context.textStyle.labelLarge.copyWith(color: context.color.text.primary, fontWeight: FontWeight.bold)), Gap(spacing.s8), Text(task.localizedDescription(context.languageCode), style: context.textStyle.bodyMedium.copyWith(color: context.color.text.secondary))]),
     );
   }
 

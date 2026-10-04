@@ -146,7 +146,7 @@ class _InspectionIssueCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      issue.title,
+                      issue.localizedTitle(context.languageCode),
                       style: context.textStyle.labelLarge.copyWith(
                         color: context.color.text.primary,
                         fontWeight: FontWeight.bold,
@@ -155,12 +155,12 @@ class _InspectionIssueCard extends ConsumerWidget {
                       maxLines: 2,
                     ),
                     SizedBox(height: spacing.s8),
-                    if (issue.facilityName?.isNotEmpty ?? false) ...[
+                    if (issue.localizedFacilityName(context.languageCode)?.isNotEmpty ?? false) ...[
                       Row(
                         children: [
                           Icon(Icons.apartment_outlined, size: 14, color: context.color.text.secondary),
                           SizedBox(width: spacing.s4),
-                          Expanded(child: BodySmallText(issue.facilityName!, color: context.color.text.secondary, overflow: TextOverflow.ellipsis)),
+                          Expanded(child: BodySmallText(issue.localizedFacilityName(context.languageCode)!, color: context.color.text.secondary, overflow: TextOverflow.ellipsis)),
                         ],
                       ),
                       SizedBox(height: spacing.s6),

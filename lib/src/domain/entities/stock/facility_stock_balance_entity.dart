@@ -1,3 +1,5 @@
+import '../../../core/utils/localized_text.dart';
+
 enum FacilityStockStatus {
   ok,
   low,
@@ -27,9 +29,11 @@ class FacilityStockBalanceEntity {
   const FacilityStockBalanceEntity({
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn = '',
     required this.stockItemId,
     required this.itemCode,
     required this.itemName,
+    this.itemNameBn = '',
     required this.unit,
     required this.currentQty,
     this.thresholdQty,
@@ -41,9 +45,11 @@ class FacilityStockBalanceEntity {
 
   final int facilityId;
   final String facilityName;
+  final String facilityNameBn;
   final int stockItemId;
   final String itemCode;
   final String itemName;
+  final String itemNameBn;
   final String unit;
   final double currentQty;
   final double? thresholdQty;
@@ -51,6 +57,12 @@ class FacilityStockBalanceEntity {
   final String? lastCountedAt;
   final String? thresholdUpdatedBy;
   final String? thresholdUpdatedAt;
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
+
+  String localizedItemName(String languageCode) =>
+      localizedText(languageCode, itemName, itemNameBn);
 }
 
 class FacilityStockBalanceSummaryEntity {

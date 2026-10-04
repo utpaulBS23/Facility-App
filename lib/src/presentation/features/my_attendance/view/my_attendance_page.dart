@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/my_attendance_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../riverpod/my_attendance_provider.dart';
+import '../../../../core/utils/api_date.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/my_attendance_item.dart';
 part '../widgets/my_attendance_stats_card.dart';
@@ -43,8 +44,8 @@ class _MyAttendancePageState extends ConsumerState<MyAttendancePage> {
     ref
         .read(myAttendanceProvider.notifier)
         .fetch(
-          fromDay: DateFormat('yyyy-MM-dd').format(_monthStart),
-          toDay: DateFormat('yyyy-MM-dd').format(toDay),
+          fromDay: ApiDate.date(_monthStart),
+          toDay: ApiDate.date(toDay),
         );
   }
 
@@ -60,8 +61,9 @@ class _MyAttendancePageState extends ConsumerState<MyAttendancePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.myAttendance,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.myAttendance,
+        fallbackTitle: context.locale.myAttendance,
         actions: [
           MonthFilterButton(
             month: _monthStart,

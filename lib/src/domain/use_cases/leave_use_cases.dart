@@ -4,6 +4,7 @@ import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
 import '../entities/leave/leave_status.dart';
+import '../entities/leave/leave_summary_entity.dart';
 import '../repositories/leave_repository.dart';
 import 'partner_use_case.dart';
 
@@ -221,6 +222,29 @@ final class RejectLeaveUseCase extends PartnerUseCase {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error),
       _ => Error(Failure.emptyResponse('reject leave')),
+    };
+  }
+}
+
+final class GetLeaveApprovalsSummaryUseCase extends PartnerUseCase {
+  GetLeaveApprovalsSummaryUseCase({
+    required this.leaveRepository,
+    required super.authRepository,
+  });
+
+  final LeaveRepository leaveRepository;
+
+  Future<Result<LeaveSummaryEntity, Failure>> call({int? facilityId}) async {
+    final partnerId = getPartnerId();
+    final result = await leaveRepository.getLeaveApprovalsSummary(
+      partnerId,
+      facilityId: facilityId,
+    );
+
+    return switch (result) {
+      Success(:final data) when data != null => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('load leave summary')),
     };
   }
 }

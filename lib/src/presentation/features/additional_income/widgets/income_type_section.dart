@@ -44,7 +44,7 @@ class _IncomeTypeSection extends ConsumerWidget {
         color: context.color.error,
       ),
       data: (options) => _DropdownField(
-        value: incomeType?.label,
+        value: incomeType?.localizedLabel(context.languageCode),
         hint: context.locale.selectIncomeType,
         hasError: hasError,
         onTap: enabled && options.isNotEmpty
@@ -123,7 +123,7 @@ class _IncomeTypePickerSheet extends StatelessWidget {
                       children: [
                         Expanded(
                           child: LabelLargeText(
-                            option.label,
+                            option.localizedLabel(context.languageCode),
                             color: isSelected
                                 ? context.color.primary
                                 : context.color.text.primary,

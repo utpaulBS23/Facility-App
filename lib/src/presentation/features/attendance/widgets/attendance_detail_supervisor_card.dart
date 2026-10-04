@@ -1,10 +1,15 @@
 part of '../view/attendance_page.dart';
 
 class _AttendanceDetailApproverCard extends StatelessWidget {
-  const _AttendanceDetailApproverCard({required this.approver, this.label});
+  const _AttendanceDetailApproverCard({
+    required this.approver,
+    this.label,
+    this.reviewedAt,
+  });
 
   final AttendanceApproverEntity approver;
   final String? label;
+  final DateTime? reviewedAt;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,15 @@ class _AttendanceDetailApproverCard extends StatelessWidget {
                     color: context.color.text.primary,
                   ),
                 ),
+                if (reviewedAt != null) ...[
+                  Gap(spacing.s4),
+                  Text(
+                    DateFormatter.timestamp(reviewedAt!),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: context.color.text.secondary,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

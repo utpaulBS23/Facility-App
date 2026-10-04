@@ -33,6 +33,11 @@ abstract class RestClient {
     @Query('current_version_code') required int currentVersionCode,
   });
 
+  @GET(Endpoints.menuConfiguration)
+  Future<HttpResponse> getMenuConfiguration({
+    @Header('If-None-Match') String? ifNoneMatch,
+  });
+
   @PATCH(Endpoints.updateAction)
   Future<HttpResponse> reportUpdateAction({
     @Body() required Map<String, dynamic> request,
@@ -425,6 +430,12 @@ abstract class RestClient {
   Future<HttpResponse> getLeaveApprovals({
     @Path('partnerId') required int partnerId,
     @Query('status') String? status,
+  });
+
+  @GET(Endpoints.leaveApprovalsSummary)
+  Future<HttpResponse> getLeaveApprovalsSummary({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
   });
 
   @POST(Endpoints.approveLeave)

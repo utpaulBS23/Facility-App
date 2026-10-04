@@ -4,6 +4,8 @@ import 'package:gap/gap.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -15,12 +17,10 @@ class DashboardPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(locale.dashboard),
-        titleSpacing: spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.dashboard,
+        fallbackTitle: locale.dashboard,
+        isTabByDefault: true,
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -24,13 +24,14 @@ class _VisitCard extends ConsumerWidget {
 
   String _getVisitTypeLabel(
     List<MasterDataItemEntity> taskTypes,
+    String languageCode,
   ) {
     if (visit.visitType != null && visit.visitType!.isNotEmpty) {
       try {
         final match = taskTypes.firstWhere(
           (item) => item.value == visit.visitType,
         );
-        return match.label;
+        return match.localizedLabel(languageCode);
       } catch (_) {
         return visit.visitType!;
       }
@@ -103,7 +104,7 @@ class _VisitCard extends ConsumerWidget {
                   _StatusChip(
                     color: context.color.icon,
                     label: taskTypesState.maybeWhen(
-                      data: (taskTypes) => _getVisitTypeLabel(taskTypes),
+                      data: (taskTypes) => _getVisitTypeLabel(taskTypes, context.languageCode),
                       orElse: () => visit.visitType ?? 'Task',
                     ),
                   ),
@@ -111,9 +112,9 @@ class _VisitCard extends ConsumerWidget {
               ),
             ),
             Gap(spacing.s12),
-            if (visit.title?.isNotEmpty == true)
+            if (visit.localizedTitle(context.languageCode)?.isNotEmpty == true)
               Text(
-                visit.title!,
+                visit.localizedTitle(context.languageCode)!,
                 style: context.textStyle.titleMedium.copyWith(
                   color: context.color.text.primary,
                 ),
@@ -122,8 +123,8 @@ class _VisitCard extends ConsumerWidget {
             _InfoRow(
               icon: Icons.apartment_outlined,
               label: visit.locationType == 'external'
-                  ? (visit.officeName ?? '')
-                  : (visit.facilityName ?? ''),
+                  ? (visit.localizedOfficeName(context.languageCode) ?? '')
+                  : (visit.localizedFacilityName(context.languageCode) ?? ''),
             ),
             Gap(spacing.s6),
             _InfoRow(

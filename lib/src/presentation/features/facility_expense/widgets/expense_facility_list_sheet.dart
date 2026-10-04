@@ -71,7 +71,7 @@ class _FacilityListSheet extends StatelessWidget {
                       children: [
                         Expanded(
                           child: LabelLargeText(
-                            facility.name,
+                            facility.localizedName(context.languageCode),
                             color: isSelected
                                 ? context.color.primary
                                 : context.color.text.primary,

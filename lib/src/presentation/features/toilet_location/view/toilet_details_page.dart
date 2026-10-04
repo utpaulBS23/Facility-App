@@ -78,7 +78,7 @@ class ToiletDetailsPage extends ConsumerWidget {
                   targetAsync.when(
                     data: (target) => _ToiletSupervisorCard(
                       facilityName: toilet.name,
-                      supervisorName: target.supervisorName,
+                      supervisorName: target.localizedSupervisorName(context.languageCode),
                     ),
                     loading: () => const _ToiletSupervisorCardShimmer(),
                     error: (err, _) => _ToiletSupervisorCard(

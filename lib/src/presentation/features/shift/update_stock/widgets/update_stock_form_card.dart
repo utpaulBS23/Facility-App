@@ -42,7 +42,7 @@ class _UpdateStockFormCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.name,
+                      item.localizedName(context.languageCode),
                       style: context.textStyle.bodyLarge.copyWith(
                         color: color.text.primary,
                         fontWeight: FontWeight.bold,

@@ -9,10 +9,12 @@ part 'named_ref_model.mapper.dart';
   generateMethods: GenerateMethods.decode,
 )
 class NamedRefModel with NamedRefModelMappable {
-  const NamedRefModel({required this.id, required this.name});
+  const NamedRefModel({required this.id, required this.name, this.nameBn});
 
   final int id;
   final String name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
 
   static const fromJson = NamedRefModelMapper.fromJson;
 }

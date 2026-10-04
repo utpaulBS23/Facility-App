@@ -49,6 +49,27 @@ GetDeviceNameUseCase getDeviceNameUseCase(Ref ref) {
 }
 
 @riverpod
+GetCachedMenuConfigurationUseCase getCachedMenuConfigurationUseCase(Ref ref) {
+  return GetCachedMenuConfigurationUseCase(
+    ref.read(menuConfigurationRepositoryProvider),
+  );
+}
+
+@riverpod
+ClearMenuConfigurationUseCase clearMenuConfigurationUseCase(Ref ref) {
+  return ClearMenuConfigurationUseCase(
+    ref.read(menuConfigurationRepositoryProvider),
+  );
+}
+
+@riverpod
+RefreshMenuConfigurationUseCase refreshMenuConfigurationUseCase(Ref ref) {
+  return RefreshMenuConfigurationUseCase(
+    ref.read(menuConfigurationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetCurrentLocaleUseCase getCurrentLocaleUseCase(Ref ref) {
   return GetCurrentLocaleUseCase(ref.read(localeRepositoryProvider));
 }
@@ -552,6 +573,14 @@ GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
 @riverpod
 GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
   return GetLeaveApprovalsUseCase(
+    leaveRepository: ref.read(leaveRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveApprovalsSummaryUseCase getLeaveApprovalsSummaryUseCase(Ref ref) {
+  return GetLeaveApprovalsSummaryUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );

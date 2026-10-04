@@ -13,6 +13,7 @@ class StockItemModel with StockItemModelMappable {
     this.partnerName,
     required this.itemCode,
     required this.name,
+    this.nameBn,
     required this.category,
     required this.unit,
     required this.unitPrice,
@@ -24,6 +25,7 @@ class StockItemModel with StockItemModelMappable {
   final String? partnerName;
   final String itemCode;
   final String name;
+  final String? nameBn;
   final String category;
   final String unit;
   final double unitPrice;

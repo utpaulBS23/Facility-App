@@ -88,14 +88,12 @@ class _CreateRosterDialogState extends ConsumerState<CreateRosterDialog> {
       for (var day = 1; day <= _weekLength; day++)
         if (!_activeDays.contains(day)) day,
     ];
-    final apiFormat = DateFormat('yyyy-MM-dd');
-
     ref
         .read(createRosterProvider.notifier)
         .create(
           facilityId: facilityId,
-          weekStartDate: apiFormat.format(_weekStart),
-          weekEndDate: apiFormat.format(_weekEnd),
+          weekStartDate: ApiDate.date(_weekStart),
+          weekEndDate: ApiDate.date(_weekEnd),
           offDays: offDays,
         );
   }

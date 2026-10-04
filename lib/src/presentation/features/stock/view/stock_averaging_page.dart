@@ -6,13 +6,13 @@ import 'package:go_router/go_router.dart';
 import '../../../../domain/entities/stock/stock_averaging_overview_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/stock_averaging_provider.dart';
 import '../widgets/facility_averaging_list_card.dart';
 import '../widgets/monthly_demand_card.dart';
 import '../widgets/stock_averaging_shimmer.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 class StockAveragingPage extends ConsumerWidget {
   const StockAveragingPage({super.key});
@@ -22,13 +22,10 @@ class StockAveragingPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
-      appBar: AppBar(
-        leading: AppBackButton(onTap: () => context.goNamed(Routes.shift)),
-        leadingWidth: AppBackButton.width,
-        title: const Headline2xlTinyText('Stock Averaging'),
-        centerTitle: true,
-        backgroundColor: color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.stockAveraging,
+        fallbackTitle: 'Stock Averaging',
+        onBack: () => context.goNamed(Routes.shift),
       ),
       body: body,
     );

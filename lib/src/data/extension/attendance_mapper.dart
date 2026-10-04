@@ -14,6 +14,7 @@ extension AttendanceShiftInfoModelToEntity on AttendanceShiftInfoModel {
     startTime: startTime ?? '',
     endTime: endTime ?? '',
     facilityName: facilityName ?? '',
+    facilityNameBn: facilityNameBn ?? '',
   );
 }
 
@@ -22,6 +23,7 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     id: id,
     userId: userId,
     userName: userName ?? '',
+    userNameBn: userNameBn ?? '',
     userUid: userUid ?? '',
     date: date ?? '',
     status: status ?? 'pending',
@@ -41,7 +43,9 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     shift: shift?.toEntity(),
     approver: approver?.toEntity(),
     checkInReviewer: checkInReviewer?.toEntity(),
+    checkInReviewedAt: parseLocalIso(checkInReviewedAt),
     checkOutReviewer: checkOutReviewer?.toEntity(),
+    checkOutReviewedAt: parseLocalIso(checkOutReviewedAt),
     approvalStatus: AttendanceApprovalStatus.fromWireString(status),
   );
 }

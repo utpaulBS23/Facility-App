@@ -41,7 +41,7 @@ class _ShiftTemplateField extends StatelessWidget {
                 DropdownMenuItem(
                   value: template.id,
                   child: Text(
-                    '${template.name} (${template.startTime}–${template.endTime})',
+                    '${template.localizedName(context.languageCode)} (${template.startTime}–${template.endTime})',
                   ),
                 ),
             ],

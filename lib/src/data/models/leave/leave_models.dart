@@ -11,6 +11,7 @@ class LeavePolicyModel with LeavePolicyModelMappable {
     required this.id,
     this.partnerId,
     required this.name,
+    this.nameBn,
     this.leaveType,
     this.defaultDaysPerYear,
     this.maxConsecutiveDays,
@@ -26,6 +27,7 @@ class LeavePolicyModel with LeavePolicyModelMappable {
   final int id;
   final int? partnerId;
   final String name;
+  final String? nameBn;
   final String? leaveType;
   final double? defaultDaysPerYear;
   final int? maxConsecutiveDays;
@@ -314,6 +316,40 @@ class LeaveRequestListResponseModel
   final List<LeaveRequestModel> data;
 
   static const fromJson = LeaveRequestListResponseModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class LeaveSummaryModel with LeaveSummaryModelMappable {
+  const LeaveSummaryModel({
+    this.pending,
+    this.managerApproval,
+    this.approved,
+    this.rejected,
+  });
+
+  final int? pending;
+  final int? managerApproval;
+  final int? approved;
+  final int? rejected;
+
+  static const fromJson = LeaveSummaryModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class LeaveSummaryResponseModel with LeaveSummaryResponseModelMappable {
+  const LeaveSummaryResponseModel({this.success, this.message, this.summary});
+
+  final bool? success;
+  final String? message;
+  final LeaveSummaryModel? summary;
+
+  static const fromJson = LeaveSummaryResponseModelMapper.fromJson;
 }
 
 @MappableClass(

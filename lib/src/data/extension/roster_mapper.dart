@@ -8,7 +8,7 @@ extension ShiftGlobalConfigDataModelToEntity on ShiftGlobalConfigDataModel {
 
 extension RosterFacilityModelToEntity on RosterFacilityModel {
   RosterFacilityEntity toEntity() =>
-      RosterFacilityEntity(id: id, name: name ?? '', nameBn: nameBn);
+      RosterFacilityEntity(id: id, name: name ?? '', nameBn: nameBn ?? '');
 }
 
 extension RosterCreatorModelToEntity on RosterCreatorModel {

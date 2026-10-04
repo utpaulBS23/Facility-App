@@ -59,7 +59,7 @@ class _SupplyRequestListCard extends StatelessWidget {
                   ),
                   Gap(spacing.s6),
                   Text(
-                    request.facilityName,
+                    request.localizedFacilityName(context.languageCode),
                     style: context.textStyle.titleMedium.copyWith(
                       color: context.color.text.primary,
                       fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class _SupplyRequestListCard extends StatelessWidget {
                       ),
                       Gap(spacing.s4),
                       Text(
-                        request.requestedByName,
+                        request.localizedRequestedByName(context.languageCode),
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.text.secondary,
                         ),

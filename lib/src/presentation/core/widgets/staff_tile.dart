@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../core/extensions/app_localization.dart';
 import '../../../domain/entities/partner_staff_entity.dart';
 import '../theme/theme.dart';
 
@@ -57,7 +58,7 @@ class StaffTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    staff.name,
+                    staff.localizedName(context.languageCode),
                     style: context.textStyle.labelLarge.copyWith(
                       color: context.color.text.primary,
                     ),

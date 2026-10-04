@@ -35,8 +35,8 @@ final class ManualAttendanceRepositoryImpl extends ManualAttendanceRepository {
           'shift_slot_id': request.shiftId,
           'reason': request.reason,
           'check_in_time': request.checkInTime,
-          'lat': request.lat,
-          'lng': request.lng,
+          if (request.lat != null) 'lat': request.lat,
+          if (request.lng != null) 'lng': request.lng,
           'address': request.address,
         },
       );

@@ -8,7 +8,6 @@ class _RosterInfoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final apiFormat = DateFormat('yyyy-MM-dd');
     final spacing = context.dimensions.spacing;
 
     return Container(
@@ -33,8 +32,8 @@ class _RosterInfoBox extends StatelessWidget {
           Expanded(
             child: Text(
               context.locale.rosterCoversMessage(
-                apiFormat.format(weekStart),
-                apiFormat.format(weekEnd),
+                ApiDate.date(weekStart),
+                ApiDate.date(weekEnd),
               ),
               style: context.textStyle.bodySmall.copyWith(
                 color: context.color.primary,

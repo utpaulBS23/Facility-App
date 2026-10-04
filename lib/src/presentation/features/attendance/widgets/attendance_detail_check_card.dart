@@ -64,9 +64,9 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
           ),
           if (detail.shift != null) ...[
             Gap(spacing.s10),
-            if (detail.shift!.facilityName.trim().isNotEmpty) ...[
+            if (detail.shift!.localizedFacilityName(context.languageCode).trim().isNotEmpty) ...[
               Text(
-                detail.shift!.facilityName,
+                detail.shift!.localizedFacilityName(context.languageCode),
                 style: context.textStyle.titleMedium.copyWith(
                   fontWeight: FontWeight.w600,
                   color: context.color.text.primary,

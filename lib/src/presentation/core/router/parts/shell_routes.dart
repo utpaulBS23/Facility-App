@@ -105,6 +105,35 @@ StatefulShellRoute _shellRoutes(Ref ref) {
           ),
         ],
       ),
+      // WHY: tab-hosted copies of the menu pages, so the server can place any
+      // menu item in the bottom bar. Each reuses the page its pushed route
+      // shows; sub-pages still push on top of the shell.
+      _tabBranch(Routes.tabProfile, const MyProfilePage()),
+      _tabBranch(Routes.tabMyAttendance, const MyAttendancePage()),
+      _tabBranch(Routes.tabExtraCollection, const AdditionalIncomePage()),
+      _tabBranch(Routes.tabSupplyRequests, const SupplyRequestsPage()),
+      _tabBranch(Routes.tabStockBalance, const StockPage()),
+      _tabBranch(Routes.tabStockAveraging, const StockAveragingPage()),
+      _tabBranch(Routes.tabLeave, const LeaveRequestsPage()),
+      _tabBranch(Routes.tabDoorControl, const DoorControlTabPage()),
+      _tabBranch(Routes.tabExpenseEntry, const FacilityExpensePage()),
+      _tabBranch(Routes.tabClaimExpense, const TravelExpensesPage()),
+      _tabBranch(Routes.tabTraining, const TrainingSessionsPage()),
+      _tabBranch(Routes.tabProfitReport, const ProfitReportPage()),
+      _tabBranch(Routes.tabToiletLocation, const ToiletLocationPage()),
+      _tabBranch(Routes.tabFacilityLocations, const FacilityMapPage()),
+    ],
+  );
+}
+
+StatefulShellBranch _tabBranch(String route, Widget page) {
+  return StatefulShellBranch(
+    routes: [
+      GoRoute(
+        path: route,
+        name: route,
+        pageBuilder: (context, state) => MaterialPage(child: page),
+      ),
     ],
   );
 }

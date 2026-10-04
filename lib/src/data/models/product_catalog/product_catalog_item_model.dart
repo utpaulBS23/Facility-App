@@ -10,12 +10,15 @@ class ProductCatalogItemModel with ProductCatalogItemModelMappable {
   const ProductCatalogItemModel({
     required this.id,
     this.name,
+    this.nameBn,
     this.category,
     this.defaultPrice,
   });
 
   final int id;
   final String? name;
+  @MappableField(key: 'name_bn')
+  final String? nameBn;
   final String? category;
   final double? defaultPrice;
 

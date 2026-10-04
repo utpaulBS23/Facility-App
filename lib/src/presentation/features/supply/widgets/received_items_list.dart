@@ -47,7 +47,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
       _getItemData(int index) =>
           switch ((widget.deliveryItems, widget.requestItems)) {
             (final deliveryItems?, _) when index < deliveryItems.length => (
-                deliveryItems[index].itemName,
+                deliveryItems[index].localizedItemName(context.languageCode),
                 deliveryItems[index].itemCode,
                 deliveryItems[index].qtyExpected.round(),
                 deliveryItems[index].qtyReceived.round(),
@@ -55,7 +55,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                 deliveryItems[index].stockItemId,
               ),
             (_, final requestItems) when index < requestItems.length => (
-                requestItems[index].itemName,
+                requestItems[index].localizedItemName(context.languageCode),
                 requestItems[index].itemCode,
                 requestItems[index].qtyRequested.round(),
                 requestItems[index].qtyRequested.round(),

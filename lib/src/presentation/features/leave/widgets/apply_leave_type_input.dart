@@ -61,14 +61,14 @@ class LeaveTypeInput extends ConsumerWidget {
 
     final balances = balanceState.valueOrNull ?? [];
     final options = balances
-        .map((b) => (value: b.leavePolicy.id, label: b.leavePolicy.name))
+        .map((b) => (value: b.leavePolicy.id, label: b.leavePolicy.localizedName(context.languageCode)))
         .toList();
 
     final selectedBalance = balances
         .where((b) => b.leavePolicy.id == selectedLeavePolicyId)
         .firstOrNull;
 
-    final selectedName = selectedBalance?.leavePolicy.name;
+    final selectedName = selectedBalance?.leavePolicy.localizedName(context.languageCode);
 
     return FormSelectorCard(
       title: context.locale.leaveType,

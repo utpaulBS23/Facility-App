@@ -102,8 +102,8 @@ class _AttendanceListItem extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            item.userName.trim().isNotEmpty
-                                ? item.userName
+                            item.localizedUserName(context.languageCode).trim().isNotEmpty
+                                ? item.localizedUserName(context.languageCode)
                                 : date,
                             style: context.textStyle.labelLarge.copyWith(
                               color: context.color.text.primary,
@@ -119,7 +119,7 @@ class _AttendanceListItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    if (item.shift?.facilityName.trim().isNotEmpty == true) ...[
+                    if (item.shift?.localizedFacilityName(context.languageCode).trim().isNotEmpty == true) ...[
                       Gap(spacing.s6),
                       Row(
                         children: [
@@ -131,7 +131,7 @@ class _AttendanceListItem extends StatelessWidget {
                           Gap(spacing.s4),
                           Flexible(
                             child: Text(
-                              item.shift!.facilityName,
+                              item.shift!.localizedFacilityName(context.languageCode),
                               style: context.textStyle.titleSmall.copyWith(
                                 color: context.color.text.secondary,
                               ),
@@ -165,7 +165,7 @@ class _AttendanceListItem extends StatelessWidget {
                         ],
                       ),
                     ],
-                    if (item.userName.trim().isNotEmpty) ...[
+                    if (item.localizedUserName(context.languageCode).trim().isNotEmpty) ...[
                       Gap(spacing.s6),
                       Row(
                         children: [

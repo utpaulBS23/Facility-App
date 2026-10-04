@@ -52,22 +52,22 @@ class _VisitDetailInfoCard extends StatelessWidget {
             ],
           ),
           Gap(spacing.s12),
-          if (detail.title?.isNotEmpty == true) ...[
-            Headline2xlTinyText(detail.title!),
+          if (detail.localizedTitle(context.languageCode)?.isNotEmpty == true) ...[
+            Headline2xlTinyText(detail.localizedTitle(context.languageCode)!),
             Gap(spacing.s8),
             _InfoRow(
               icon: detail.locationType == 'external'
                   ? Icons.business_outlined
                   : Icons.apartment_outlined,
               label: detail.locationType == 'external'
-                  ? (detail.officeName ?? '')
-                  : (detail.facilityName ?? ''),
+                  ? (detail.localizedOfficeName(context.languageCode) ?? '')
+                  : (detail.localizedFacilityName(context.languageCode) ?? ''),
             ),
           ] else
             Headline2xlTinyText(
               detail.locationType == 'external'
-                  ? (detail.officeName ?? '')
-                  : (detail.facilityName ?? ''),
+                  ? (detail.localizedOfficeName(context.languageCode) ?? '')
+                  : (detail.localizedFacilityName(context.languageCode) ?? ''),
             ),
           if (detail.facilityAddress?.isNotEmpty == true && detail.locationType != 'external') ...[
             Gap(spacing.s8),

@@ -6,6 +6,7 @@ extension ShiftSupervisorModelToEntity on ShiftSupervisorModel {
   ShiftSupervisorEntity toEntity() => ShiftSupervisorEntity(
     id: id,
     fullName: fullName ?? '',
+    fullNameBn: fullNameBn ?? '',
     phone: phone,
     isPrimary: isPrimary ?? false,
   );
@@ -15,6 +16,7 @@ extension ShiftFacilityModelToEntity on ShiftFacilityModel {
   ShiftFacilityEntity toEntity() => ShiftFacilityEntity(
     id: id,
     name: name ?? '',
+    nameBn: nameBn ?? '',
     address: address ?? '',
     supervisor: supervisor?.toEntity(),
   );
@@ -22,7 +24,12 @@ extension ShiftFacilityModelToEntity on ShiftFacilityModel {
 
 extension ShiftAttendantModelToEntity on ShiftAttendantModel {
   ShiftAttendantEntity toEntity() =>
-      ShiftAttendantEntity(id: id, fullName: fullName ?? '', phone: phone);
+      ShiftAttendantEntity(
+        id: id,
+        fullName: fullName ?? '',
+        fullNameBn: fullNameBn ?? '',
+        phone: phone,
+      );
 }
 
 extension ShiftAssignmentModelToEntity on ShiftAssignmentModel {

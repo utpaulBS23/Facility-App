@@ -17,7 +17,6 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/month_filter_button.dart';
@@ -27,6 +26,8 @@ import '../riverpod/additional_income_list_provider.dart';
 import '../riverpod/product_sale_entry_list_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/income_body.dart';
 part '../widgets/income_list_card.dart';
@@ -137,8 +138,9 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.extraCollection,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.extraCollection,
+        fallbackTitle: context.locale.extraCollection,
         actions: [
           MonthFilterButton(
             month: _month,

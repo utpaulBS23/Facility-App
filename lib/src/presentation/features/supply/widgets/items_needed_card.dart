@@ -29,7 +29,7 @@ class _ItemsNeededCard extends StatelessWidget {
       builder: (_) => SelectionPickerSheet<StockItemEntity>(
         title: context.locale.selectItem,
         options: [
-          for (final item in availableItems) (value: item, label: item.name),
+          for (final item in availableItems) (value: item, label: item.localizedName(context.languageCode)),
         ],
         isSelected: (value) => value.id == selected?.id,
       ),

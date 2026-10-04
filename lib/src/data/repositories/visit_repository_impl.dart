@@ -216,6 +216,7 @@ final class VisitRepositoryImpl extends VisitRepository {
         .map((m) => ProblemCategoryEntity(
               value: m.value,
               name: m.label ?? m.value,
+              nameBn: m.labelBn ?? '',
               color: m.color,
               proofRequiredOnComplete: m.proofRequiredOnComplete ?? false,
             ))

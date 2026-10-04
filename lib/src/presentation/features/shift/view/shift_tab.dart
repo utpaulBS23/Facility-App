@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
+import '../../../../core/utils/api_date.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../core/logger/log.dart';
+import '../../../../domain/entities/attendance/attendance_approval_status.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/shift_entity.dart';
 import '../../../../domain/entities/shift_slot_entity.dart';
@@ -30,6 +31,8 @@ import '../../../core/widgets/unassign_staff_confirm_dialog.dart';
 import '../riverpod/make_slot_lead_provider.dart';
 import '../riverpod/shift_slots_provider.dart';
 import '../riverpod/unassign_shift_slot_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/shift_action_buttons.dart';
 part '../widgets/shift_fab.dart';
@@ -109,11 +112,10 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: AppBar(
-        title: DisplaySmallText(context.locale.shift),
-        titleSpacing: context.dimensions.spacing.s16,
-        backgroundColor: context.color.onPrimary,
-        surfaceTintColor: Colors.transparent,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.shift,
+        fallbackTitle: context.locale.shift,
+        isTabByDefault: true,
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(

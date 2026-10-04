@@ -32,7 +32,7 @@ class _MyAttendanceItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.supervisorName,
+                      item.localizedSupervisorName(context.languageCode),
                       style: context.textStyle.labelLarge.copyWith(
                         color: context.color.text.primary,
                         fontWeight: FontWeight.bold,
@@ -53,8 +53,8 @@ class _MyAttendanceItem extends StatelessWidget {
                         Expanded(
                           child: Text(
                             item.locationType == 'external'
-                                ? (item.officeName ?? item.facilityName)
-                                : item.facilityName,
+                                ? (item.localizedOfficeName(context.languageCode) ?? item.localizedFacilityName(context.languageCode))
+                                : item.localizedFacilityName(context.languageCode),
                             style: context.textStyle.bodySmall.copyWith(
                               color: context.color.text.secondary,
                             ),

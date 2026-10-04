@@ -1,6 +1,9 @@
+import '../../../core/utils/localized_text.dart';
+
 class ToiletTargetEntity {
   const ToiletTargetEntity({
     required this.supervisorName,
+    this.supervisorNameBn = '',
     required this.targetRevenue,
     required this.actualRevenue,
     required this.hasActuals,
@@ -11,6 +14,7 @@ class ToiletTargetEntity {
   });
 
   final String supervisorName;
+  final String supervisorNameBn;
   final double targetRevenue;
 
   /// Defaults to 0 in the mapper when the API sends `null` — no KPI engine
@@ -30,4 +34,7 @@ class ToiletTargetEntity {
 
   double get remainingAmount =>
       (targetRevenue - actualRevenue).clamp(0, double.infinity);
+
+  String localizedSupervisorName(String languageCode) =>
+      localizedText(languageCode, supervisorName, supervisorNameBn);
 }

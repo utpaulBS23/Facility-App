@@ -1,4 +1,5 @@
 import 'facility_stock_target_entity.dart';
+import '../../../core/utils/localized_text.dart';
 
 /// One facility's full set of stock-averaging targets, for the edit screen.
 ///
@@ -10,12 +11,17 @@ class FacilityStockTargetDetailEntity {
   const FacilityStockTargetDetailEntity({
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn = '',
     required this.monthlyTotalDemandQty,
     required this.targets,
   });
 
   final int facilityId;
   final String facilityName;
+  final String facilityNameBn;
   final double monthlyTotalDemandQty;
   final List<FacilityStockTargetEntity> targets;
+
+  String localizedFacilityName(String languageCode) =>
+      localizedText(languageCode, facilityName, facilityNameBn);
 }

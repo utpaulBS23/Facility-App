@@ -14,11 +14,12 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../supply/widgets/shimmer/shimmer_box.dart';
 import '../extensions/training_status_extension.dart';
 import '../riverpod/training_sessions_list_provider.dart';
+import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/shimmer/training_session_shimmer.dart';
 part '../widgets/training_session_list_card.dart';
@@ -66,8 +67,9 @@ class _TrainingSessionsPageState extends ConsumerState<TrainingSessionsPage> {
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: context.locale.trainingSessions,
+      appBar: MenuItemAppBar(
+        itemKey: MenuItemKey.training,
+        fallbackTitle: context.locale.trainingSessions,
         onBack: () => _onBack(context),
       ),
       body: _TrainingSessionsBody(

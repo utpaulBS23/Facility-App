@@ -9,6 +9,7 @@ class _LeaveRequestsBody extends StatelessWidget {
     required this.onFilterSelected,
     required this.onSearchChanged,
     required this.leaveRequestsState,
+    required this.summaryState,
     required this.onRetry,
   });
 
@@ -19,6 +20,9 @@ class _LeaveRequestsBody extends StatelessWidget {
   final ValueChanged<LeaveFilter> onFilterSelected;
   final VoidCallback onSearchChanged;
   final AsyncValue<List<LeaveRequestEntity>> leaveRequestsState;
+
+  /// Null outside the approvals tab, where the summary is not fetched.
+  final AsyncValue<LeaveSummaryEntity>? summaryState;
   final VoidCallback onRetry;
 
   @override
@@ -28,15 +32,8 @@ class _LeaveRequestsBody extends StatelessWidget {
         if (currentTab == LeaveTab.leaveApprovals)
           Padding(
             padding: padding,
-            child: leaveRequestsState.when(
-              data: (requests) => _LeaveSupervisorSummaryCard(
-                pendingCount: requests
-                    .where((request) => request.status == LeaveStatus.pendingSupervisor)
-                    .length,
-                managerCount: requests
-                    .where((request) => request.status == LeaveStatus.pendingManager)
-                    .length,
-              ),
+            child: (summaryState ?? const AsyncValue<LeaveSummaryEntity>.loading()).when(
+              data: (summary) => _LeaveSupervisorSummaryCard(summary: summary),
               loading: () => const LeaveSupervisorSummaryCardShimmer(),
               error: (err, stack) => const SizedBox.shrink(),
             ),

@@ -102,7 +102,7 @@ class _MasterDataOptionCard extends StatelessWidget {
           ),
         ),
         child: Text(
-          option.label,
+          option.localizedLabel(context.languageCode),
           textAlign: TextAlign.center,
           style: context.textStyle.bodySmall.copyWith(
             color: !enabled

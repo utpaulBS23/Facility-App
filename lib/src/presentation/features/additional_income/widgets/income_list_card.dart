@@ -9,13 +9,13 @@ class _IncomeListCard extends ConsumerWidget {
   // `income_type` as the raw master-data code (e.g. "rent_device"), not a
   // display label — cross-reference against the extraEarningType options
   // (already fetched for the Add Income form) to show the human label.
-  String _incomeTypeLabel(WidgetRef ref) {
+  String _incomeTypeLabel(WidgetRef ref, String languageCode) {
     final options =
         ref.watch(incomeTypeOptionsProvider).valueOrNull ?? const [];
     final match = options
         .cast<MasterDataItemEntity?>()
         .firstWhere((o) => o?.value == income.incomeTypeName, orElse: () => null);
-    return match?.label ?? income.incomeTypeName;
+    return match?.localizedLabel(languageCode) ?? income.incomeTypeName;
   }
 
   @override
@@ -59,14 +59,14 @@ class _IncomeListCard extends ConsumerWidget {
               Gap(spacing.s4),
               Expanded(
                 child: BodySmallText(
-                  income.facilityName,
+                  income.localizedFacilityName(context.languageCode),
                   color: context.color.text.secondary,
                 ),
               ),
             ],
           ),
           Gap(spacing.s12),
-          Text(_incomeTypeLabel(ref), style: context.textStyle.bodyLarge),
+          Text(_incomeTypeLabel(ref, context.languageCode), style: context.textStyle.bodyLarge),
           if (description != null && description.isNotEmpty) ...[
             Gap(spacing.s2),
             BodySmallText(description, color: context.color.text.secondary),
@@ -88,7 +88,7 @@ class _IncomeListCard extends ConsumerWidget {
               ),
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.submittedBy}: ${income.submittedByName}',
+                '${context.locale.submittedBy}: ${income.localizedSubmittedByName(context.languageCode)}',
                 color: context.color.text.secondary,
               ),
             ],

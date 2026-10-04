@@ -10,9 +10,11 @@ class FacilityStockBalanceModel with FacilityStockBalanceModelMappable {
   const FacilityStockBalanceModel({
     required this.facilityId,
     required this.facilityName,
+    this.facilityNameBn,
     required this.stockItemId,
     required this.itemCode,
     required this.itemName,
+    this.itemNameBn,
     required this.unit,
     required this.currentQty,
     this.thresholdQty,
@@ -24,9 +26,13 @@ class FacilityStockBalanceModel with FacilityStockBalanceModelMappable {
 
   final int facilityId;
   final String facilityName;
+  @MappableField(key: 'facility_name_bn')
+  final String? facilityNameBn;
   final int stockItemId;
   final String itemCode;
   final String itemName;
+  @MappableField(key: 'item_name_bn')
+  final String? itemNameBn;
   final String unit;
   final double currentQty;
   final double? thresholdQty;

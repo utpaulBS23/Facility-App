@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 
 import '../../../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../../core/extensions/app_localization.dart';
 
 class MonthlyTotalSummaryCard extends StatelessWidget {
   const MonthlyTotalSummaryCard({
@@ -59,7 +60,7 @@ class MonthlyTotalSummaryCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    targets[i].itemName,
+                    targets[i].localizedItemName(context.languageCode),
                     style: textStyle.bodyMedium.copyWith(
                       color: color.text.secondary,
                     ),

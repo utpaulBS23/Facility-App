@@ -28,6 +28,7 @@ class TravelRouteCheckInModel with TravelRouteCheckInModelMappable {
     this.originLat,
     this.originLng,
     this.originName,
+    this.originNameBn,
   });
 
   @MappableField(key: 'task_id')
@@ -56,6 +57,8 @@ class TravelRouteCheckInModel with TravelRouteCheckInModelMappable {
 
   @MappableField(key: 'origin_name')
   final String? originName;
+  @MappableField(key: 'origin_name_bn')
+  final String? originNameBn;
 
   static const fromJson = TravelRouteCheckInModelMapper.fromJson;
 
@@ -69,5 +72,6 @@ class TravelRouteCheckInModel with TravelRouteCheckInModelMappable {
         originLat: originLat,
         originLng: originLng,
         originName: originName,
+        originNameBn: originNameBn ?? '',
       );
 }

@@ -55,6 +55,7 @@ extension ToiletTargetModelMapper on ToiletTargetModel {
   ToiletTargetEntity toEntity() {
     return ToiletTargetEntity(
       supervisorName: supervisorName ?? '',
+      supervisorNameBn: supervisorNameBn ?? '',
       targetRevenue: targetRevenue,
       actualRevenue: actualRevenue ?? 0,
       hasActuals: actualRevenue != null,

@@ -4,9 +4,18 @@ part of 'shift_check_in_page.dart';
 /// just no manual-supervisor fallback, since there is no manual check-out
 /// path on the backend.
 class ShiftCheckOutPage extends ConsumerStatefulWidget {
-  const ShiftCheckOutPage({super.key, required this.attendanceId});
+  const ShiftCheckOutPage({
+    super.key,
+    required this.attendanceId,
+    this.checkInDate,
+  });
 
   final int attendanceId;
+
+  // WHY: a corrected check-out time must stay on the shift's own day — not
+  // today's date — so a checkout submitted late (e.g. the morning after a
+  // night shift) doesn't silently move the record to the wrong day.
+  final DateTime? checkInDate;
 
   @override
   ConsumerState<ShiftCheckOutPage> createState() => _ShiftCheckOutPageState();
@@ -52,7 +61,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     }
     // WHY: no upload-to-storage step exists yet — see the matching comment
     // in ShiftCheckInPage._onSubmit.
-    final now = DateTime.now();
+    final datePart = widget.checkInDate ?? DateTime.now();
     ref
         .read(checkOutProvider.notifier)
         .checkOut(
@@ -65,29 +74,13 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
               : _reasonController.text.trim(),
           checkOutTime: _checkOutTimeEdited
               ? DateTime(
-                  now.year,
-                  now.month,
-                  now.day,
+                  datePart.year,
+                  datePart.month,
+                  datePart.day,
                   _checkOutTime.hour,
                   _checkOutTime.minute,
                 )
               : null,
-        );
-  }
-
-  // WHY: the shift tab's slots list is fetched once on mount, so a check-out
-  // made from here would otherwise leave it showing pre-check-out state until
-  // the user manually changes the date.
-  void _refreshShiftSlots() {
-    // WHY facilityId re-sent: without it, a supervisor filtered to a
-    // non-default facility would have this refresh silently fall back to
-    // the session's primary facility (see GetShiftSlotsUseCase), discarding
-    // their filter selection.
-    ref
-        .read(shiftSlotsProvider.notifier)
-        .fetch(
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-          facilityId: ref.read(shiftSlotsProvider).valueOrNull?.facility?.id,
         );
   }
 
@@ -113,7 +106,6 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
       if (next.hasValue && next.value != null) {
         final entity = (next.value as Success<CheckOutEntity, Failure>).data;
         _showResult(entity);
-        _refreshShiftSlots();
         context.goNamed(Routes.shift);
       } else if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -214,7 +206,7 @@ class _ShiftCheckOutBody extends StatelessWidget {
                     onTap: onTakePhoto,
                   ),
                   Gap(dimensions.spacing.s16),
-                  const _AutoDetectedInfoCard(),
+                  const _AutoDetectedInfoCard(timeIsCheckOut: true),
                   Gap(dimensions.spacing.s16),
                   AppTimeField(
                     label: context.locale.checkOutTime,

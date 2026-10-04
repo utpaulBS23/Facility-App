@@ -58,11 +58,11 @@ class _RosterShiftCard extends StatelessWidget {
             label:
                 '${context.locale.shiftTemplate}: ${shift.shiftTemplateName}',
           ),
-          if (shift.facility.name.isNotEmpty) ...[
+          if (shift.facility.localizedName(context.languageCode).isNotEmpty) ...[
             Gap(spacing.s6),
             _RosterShiftInfoRow(
               icon: Icons.apartment_outlined,
-              label: shift.facility.name,
+              label: shift.facility.localizedName(context.languageCode),
             ),
           ],
           if (shift.facility.address.isNotEmpty) ...[
@@ -72,11 +72,11 @@ class _RosterShiftCard extends StatelessWidget {
               label: shift.facility.address,
             ),
           ],
-          if (supervisor != null && supervisor.fullName.isNotEmpty) ...[
+          if (supervisor != null && supervisor.localizedFullName(context.languageCode).isNotEmpty) ...[
             Gap(spacing.s6),
             _RosterShiftInfoRow(
               icon: Icons.person_outline_rounded,
-              label: supervisor.fullName,
+              label: supervisor.localizedFullName(context.languageCode),
             ),
           ],
           if (supervisorPhone != null && supervisorPhone.isNotEmpty) ...[

@@ -6,6 +6,7 @@ extension PartnerStaffModelToEntity on PartnerStaffModel {
     id: id,
     uid: uid,
     name: name ?? '',
+    nameBn: nameBn ?? '',
     email: email ?? '',
     phoneNumber: phoneNumber,
     userRole: userRole,

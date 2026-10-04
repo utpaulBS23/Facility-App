@@ -53,6 +53,7 @@ class TaskOccurrenceChecklistItemModel
   TaskOccurrenceChecklistItemModel({
     required this.id,
     this.label,
+    this.labelBn,
     this.responseType,
     this.response,
     this.proofRequiredOnComplete,
@@ -62,6 +63,9 @@ class TaskOccurrenceChecklistItemModel
 
   final int id;
   final String? label;
+
+  @MappableField(key: 'label_bn')
+  final String? labelBn;
 
   @MappableField(key: 'response_type')
   final String? responseType;
@@ -94,10 +98,12 @@ class TaskOccurrenceModel with TaskOccurrenceModelMappable {
     this.timeRange,
     this.assignedTo,
     this.assignedToName,
+    this.assignedToNameBn,
     this.status,
     this.submittedAt,
     this.submittedBy,
     this.submittedByName,
+    this.submittedByNameBn,
     this.lateByMinutes,
     this.checklistResponseId,
     this.checklistItems,
@@ -136,6 +142,8 @@ class TaskOccurrenceModel with TaskOccurrenceModelMappable {
 
   @MappableField(key: 'assigned_to_name')
   final String? assignedToName;
+  @MappableField(key: 'assigned_to_name_bn')
+  final String? assignedToNameBn;
 
   final String? status;
 
@@ -147,6 +155,8 @@ class TaskOccurrenceModel with TaskOccurrenceModelMappable {
 
   @MappableField(key: 'submitted_by_name')
   final String? submittedByName;
+  @MappableField(key: 'submitted_by_name_bn')
+  final String? submittedByNameBn;
 
   @MappableField(key: 'late_by_minutes')
   final int? lateByMinutes;
