@@ -1,6 +1,7 @@
 class UpdateProfileEntity {
   const UpdateProfileEntity({
     this.name,
+    this.nameBn,
     this.email,
     this.phoneNumber,
     this.currentPassword,
@@ -9,6 +10,7 @@ class UpdateProfileEntity {
   });
 
   final String? name;
+  final String? nameBn;
   final String? email;
   final String? phoneNumber;
   final String? currentPassword;

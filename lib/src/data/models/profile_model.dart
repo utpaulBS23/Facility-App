@@ -59,6 +59,7 @@ class UserProfileModel with UserProfileModelMappable {
 class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
   UpdateProfileRequestModel({
     this.name,
+    this.nameBn,
     this.email,
     this.phoneNumber,
     this.currentPassword,
@@ -67,6 +68,7 @@ class UpdateProfileRequestModel with UpdateProfileRequestModelMappable {
   });
 
   final String? name;
+  final String? nameBn;
   final String? email;
   final String? phoneNumber;
   final String? currentPassword;

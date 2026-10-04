@@ -19,6 +19,7 @@ extension UserProfileModelToEntity on UserProfileModel {
 extension UpdateProfileEntityToModelMapper on UpdateProfileEntity {
   UpdateProfileRequestModel toModel() => UpdateProfileRequestModel(
         name: name,
+        nameBn: nameBn,
         email: email,
         phoneNumber: phoneNumber,
         currentPassword: currentPassword,
