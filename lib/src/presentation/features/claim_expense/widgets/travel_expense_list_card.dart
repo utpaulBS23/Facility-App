@@ -141,7 +141,7 @@ class _TravelExpenseListCard extends StatelessWidget {
             ],
             Divider(height: spacing.s24, color: color.borderSubtle),
             Text(
-              '৳${expense.claimedAmount.toStringAsFixed(0)}',
+              context.numbers.currency(expense.claimedAmount.round()),
               style: context.textStyle.headlineSmall.copyWith(
                 color: color.primary,
               ),
