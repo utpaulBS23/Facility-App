@@ -67,7 +67,7 @@ class MonthlyTotalSummaryCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${_fmtQty(targets[i].monthlyTargetQty)} ${targets[i].unit}',
+                  '${context.numbers.number(targets[i].monthlyTargetQty)} ${targets[i].unit}',
                   style: textStyle.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color.text.primary,
@@ -102,7 +102,4 @@ class MonthlyTotalSummaryCard extends StatelessWidget {
       ),
     );
   }
-
-  String _fmtQty(double qty) =>
-      qty % 1 == 0 ? qty.toInt().toString() : qty.toString();
 }

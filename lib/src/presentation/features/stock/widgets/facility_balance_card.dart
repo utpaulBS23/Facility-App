@@ -71,7 +71,7 @@ class FacilityBalanceCard extends StatelessWidget {
                       if (item.thresholdQty != null) ...[
                         Gap(spacing.s2),
                         Text(
-                          '${context.locale.threshold}: ${item.thresholdQty!.toInt()} ${item.unit}',
+                          '${context.locale.threshold}: ${context.numbers.number(item.thresholdQty)} ${item.unit}',
                           style: context.textStyle.bodySmall.copyWith(
                             color: color.text.secondary,
                           ),

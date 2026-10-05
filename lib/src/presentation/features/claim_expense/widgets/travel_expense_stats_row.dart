@@ -66,14 +66,14 @@ class _TravelExpenseStatsRow extends StatelessWidget {
             Expanded(
               child: _StatCard(
                 label: context.locale.pending,
-                value: '${stats.waitingCount}',
+                value: context.numbers.integer(stats.waitingCount),
               ),
             ),
             Gap(spacing.s12),
             Expanded(
               child: _StatCard(
                 label: context.locale.approved,
-                value: '${stats.approvedCount}',
+                value: context.numbers.integer(stats.approvedCount),
               ),
             ),
           ],

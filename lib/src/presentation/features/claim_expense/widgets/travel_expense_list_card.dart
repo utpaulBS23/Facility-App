@@ -128,7 +128,7 @@ class _TravelExpenseListCard extends StatelessWidget {
                   if (expense.purpose.isNotEmpty) expense.purpose,
                   if (_transportModeLabel.isNotEmpty)
                     if (expense.claimedDistanceKm > 0)
-                      '${expense.claimedDistanceKm} km · $_transportModeLabel'
+                      '${context.locale.distanceKmValue(context.numbers.number(expense.claimedDistanceKm))} · $_transportModeLabel'
                     else
                       _transportModeLabel,
                 ].join(' • '),
