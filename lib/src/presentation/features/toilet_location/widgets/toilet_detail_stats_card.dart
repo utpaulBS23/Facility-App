@@ -60,7 +60,7 @@ class _ToiletDetailStatsCard extends StatelessWidget {
               child: _StatBox(
                 title: context.locale.attendanceTarget,
                 value: target.hasTarget
-                    ? '${target.targetAttendancePct.toStringAsFixed(0)}%'
+                    ? context.numbers.percent(target.targetAttendancePct, fractionDigits: 0)
                     : context.locale.notAvailable,
                 valueColor: color.info,
                 background: color.brandSubtle,
@@ -71,7 +71,7 @@ class _ToiletDetailStatsCard extends StatelessWidget {
               child: _StatBox(
                 title: context.locale.complianceTarget,
                 value: target.hasTarget
-                    ? '${target.targetCompliancePct.toStringAsFixed(0)}%'
+                    ? context.numbers.percent(target.targetCompliancePct, fractionDigits: 0)
                     : context.locale.notAvailable,
                 valueColor: color.success,
                 background: color.successAlt,

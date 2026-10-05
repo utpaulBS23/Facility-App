@@ -92,7 +92,7 @@ class _ToiletDetailHeaderCard extends StatelessWidget {
                     Icon(Icons.star, size: spacing.s14, color: color.warning),
                     Gap(spacing.s4),
                     Text(
-                      toilet.averageRating.toStringAsFixed(1),
+                      context.numbers.decimal(toilet.averageRating, 1),
                       style: textStyle.bodySmall.copyWith(
                         color: color.text.secondary,
                       ),
