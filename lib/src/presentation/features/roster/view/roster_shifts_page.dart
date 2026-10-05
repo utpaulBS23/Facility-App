@@ -25,6 +25,7 @@ import '../riverpod/make_roster_slot_lead_provider.dart';
 import '../riverpod/roster_shifts_provider.dart';
 import '../riverpod/shift_template_list_provider.dart';
 import '../riverpod/unassign_roster_shift_provider.dart';
+import '../../../../core/utils/digits.dart';
 
 part '../widgets/create_shift_dialog.dart';
 part '../widgets/create_shift_dialog_attendant_count_field.dart';

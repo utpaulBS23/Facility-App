@@ -24,6 +24,7 @@ import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_facility_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_type_provider.dart';
 import '../riverpod/submit_income_provider/submit_income_provider.dart';
+import '../../../../core/utils/digits.dart';
 
 part '../widgets/add_income_action_buttons.dart';
 part '../widgets/add_income_body.dart';
@@ -109,7 +110,7 @@ class _AddAdditionalIncomePageState
   void _onSubmitAdditionalIncome() {
     final incomeType = ref.read(selectedIncomeTypeProvider);
     final facilityId = ref.read(selectedIncomeFacilityProvider);
-    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
+    final amount = Digits.parseDouble(_amountController.text.trim()) ?? 0;
 
     final incomeTypeOk = incomeType != null;
     final facilityOk = facilityId != null;

@@ -21,6 +21,7 @@ import '../riverpod/submit_expense_provider/selected_expense_category_provider.d
 import '../riverpod/submit_expense_provider/selected_expense_facility_provider.dart';
 import '../riverpod/submit_expense_provider/selected_expense_paid_by_provider.dart';
 import '../riverpod/submit_expense_provider/submit_facility_expense_provider.dart';
+import '../../../../core/utils/digits.dart';
 
 part '../widgets/add_expense_action_buttons.dart';
 part '../widgets/add_expense_body.dart';
@@ -73,7 +74,7 @@ class _AddFacilityExpensePageState
     final category = ref.read(selectedExpenseCategoryProvider);
     final facilityId = ref.read(selectedExpenseFacilityProvider);
     final paidBy = ref.read(selectedExpensePaidByProvider);
-    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
+    final amount = Digits.parseDouble(_amountController.text.trim()) ?? 0;
 
     final categoryOk = category != null;
     final facilityOk = facilityId != null;

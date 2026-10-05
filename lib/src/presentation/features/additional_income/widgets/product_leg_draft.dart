@@ -12,9 +12,9 @@ class _ProductLegDraft {
   final TextEditingController unitsSoldController;
   final TextEditingController unitPriceController;
 
-  int get unitsSold => int.tryParse(unitsSoldController.text.trim()) ?? 0;
+  int get unitsSold => Digits.parseInt(unitsSoldController.text.trim()) ?? 0;
 
-  double get unitPrice => double.tryParse(unitPriceController.text.trim()) ?? 0;
+  double get unitPrice => Digits.parseDouble(unitPriceController.text.trim()) ?? 0;
 
   bool get isValid {
     final selected = product;

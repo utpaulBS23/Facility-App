@@ -24,6 +24,7 @@ import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/claim_expense_provider.dart';
+import '../../../../core/utils/digits.dart';
 
 part '../widgets/claim_expense_leg_draft.dart';
 part '../widgets/claim_expense_leg_row.dart';
