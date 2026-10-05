@@ -10,7 +10,6 @@ import '../../../../domain/entities/report/incentive_fine_facility_entity.dart';
 import '../../../../domain/entities/report/incentive_fine_report_entity.dart';
 import '../../../../domain/entities/report/profit_report_period.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/month_filter_button.dart';
