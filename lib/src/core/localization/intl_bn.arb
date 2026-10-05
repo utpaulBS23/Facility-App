@@ -36,6 +36,7 @@
     "description": "ন্যূনতম দৈর্ঘ্য যাচাইকরণের জন্য ত্রুটি বার্তা",
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "৩"
       }
@@ -46,6 +47,7 @@
     "description": "সর্বোচ্চ দৈর্ঘ্য যাচাইকরণের জন্য ত্রুটি বার্তা",
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "২০"
       }
@@ -271,10 +273,12 @@
   "@slotCapacity": {
     "placeholders": {
       "assigned": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       },
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -284,6 +288,7 @@
   "@belowMinimumStaff": {
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -303,6 +308,7 @@
   "@checkedInCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       }
@@ -312,6 +318,7 @@
   "@checkedOutCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -370,6 +377,7 @@
     "description": "নির্বাচিত তারিখের শিফট সংখ্যা",
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -402,6 +410,7 @@
   "@outOf": {
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -501,6 +510,7 @@
   "@daysCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -774,9 +784,11 @@
   "@verifiedCount": {
     "placeholders": {
       "verified": {
+        "format": "decimalPattern",
         "type": "int"
       },
       "total": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -953,6 +965,16 @@
     "proofRequiredMessage": "এই সমস্যা সমাধানের জন্য আপনাকে প্রমাণ জমা দিতে হবে",
   "durationHours": "{count} ঘণ্টা",
   "durationMinutes": "{count} মিনিট",
+  "resendIn": "{seconds} সেকেন্ডে আবার পাঠান",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "format": "decimalPattern",
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
   "settings": "সেটিংস",
   "retry": "পুনরায় চেষ্টা করুন"
 }
