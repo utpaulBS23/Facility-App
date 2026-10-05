@@ -6,6 +6,7 @@ class _MenuItemTile extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.showDivider = true,
+    this.onTap,
   });
 
   final MenuItemConfig config;
@@ -13,14 +14,20 @@ class _MenuItemTile extends StatelessWidget {
   final String? subtitle;
   final bool showDivider;
 
+  /// Replaces the default navigation to [MenuItemConfig.route] — for rows
+  /// that need work before they can open (Door Control picks a facility).
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final subtitle = this.subtitle;
 
     return InkWell(
-      onTap: () => config.isShellRoute
-          ? context.goNamed(config.route)
-          : context.pushNamed(config.route),
+      onTap:
+          onTap ??
+          () => config.isShellRoute
+              ? context.goNamed(config.route)
+              : context.pushNamed(config.route),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: context.padding.p16,
