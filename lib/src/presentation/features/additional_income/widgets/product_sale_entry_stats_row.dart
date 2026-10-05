@@ -21,7 +21,7 @@ class _ProductSaleStatsRow extends StatelessWidget {
       child: Row(
         children: [
           _SummaryTile(
-            valueText: '৳${NumberFormatter.format(summary.totalIncome)}',
+            valueText: context.numbers.currency(summary.totalIncome),
             label: context.locale.totalIncome,
             background: color.successAlt,
             textColor: color.success,
@@ -35,7 +35,7 @@ class _ProductSaleStatsRow extends StatelessWidget {
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: profit == null ? '—' : '৳${NumberFormatter.format(profit)}',
+            valueText: profit == null ? '—' : context.numbers.currency(profit),
             label: context.locale.totalProfit,
             background: color.warningAlt,
             textColor: color.warning,

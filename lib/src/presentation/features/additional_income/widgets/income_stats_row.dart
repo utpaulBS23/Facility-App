@@ -20,7 +20,7 @@ class _IncomeStatsRow extends StatelessWidget {
       child: Row(
         children: [
           _SummaryTile(
-            valueText: '৳${NumberFormatter.format(summary.approvedTotal)}',
+            valueText: context.numbers.currency(summary.approvedTotal),
             label: context.locale.approvedTotal,
             background: color.successAlt,
             textColor: color.success,

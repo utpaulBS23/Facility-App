@@ -63,7 +63,7 @@ class _ExpenseListCard extends StatelessWidget {
           ],
           Gap(spacing.s8),
           Text(
-            '৳${NumberFormatter.format(expense.amount)}',
+            context.numbers.currency(expense.amount),
             style: context.textStyle.headlineTiny.copyWith(
               color: context.color.primary,
             ),

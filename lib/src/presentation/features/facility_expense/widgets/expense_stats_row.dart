@@ -66,7 +66,7 @@ class _StatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '৳${NumberFormatter.format(amount)}',
+            context.numbers.currency(amount),
             style: context.textStyle.labelLarge.copyWith(
               color: emphasize ? context.color.error : context.color.text.primary,
               fontWeight: FontWeight.w600,
