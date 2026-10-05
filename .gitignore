@@ -160,3 +160,4 @@ app.*.symbols
 /.claude/*
 !/.claude/skills/
 /graphify-out/
+.env

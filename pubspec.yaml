@@ -62,6 +62,8 @@ dependencies:
   connectivity_plus: ^6.1.0
   flutter_map: ^8.3.2
   latlong2: ^0.10.1
+  flutter_dotenv: ^6.0.1
+  vector_map_tiles: ^9.0.0-beta.13
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -85,6 +87,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - .env
   fonts:
     - family: MyriadPro
       fonts:
