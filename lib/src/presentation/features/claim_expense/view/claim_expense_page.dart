@@ -421,7 +421,7 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
       facilities
           .cast<AccessibleFacilityEntity?>()
           .firstWhere((f) => f?.id == id, orElse: () => null)
-          ?.name;
+          ?.localizedName(context.languageCode);
 }
 
 String _visitTypeLabel(BuildContext context, VisitType type) => switch (type) {
