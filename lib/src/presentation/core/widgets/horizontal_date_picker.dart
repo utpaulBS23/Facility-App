@@ -124,7 +124,7 @@ class _HorizontalDatePickerState extends State<HorizontalDatePicker> {
                       ),
                     ),
                   TextSpan(
-                    text: DateFormat('E, MMM d yyyy').format(_selectedDate),
+                    text: DateFormat('E, MMM d, yyyy').format(_selectedDate),
                     style: context.textStyle.bodyMedium.copyWith(
                       color: context.color.text.secondary,
                     ),

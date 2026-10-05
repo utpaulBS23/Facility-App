@@ -59,7 +59,7 @@ class _SlotDetailContractCard extends StatelessWidget {
             _DateTimeTile(
               icon: Icons.calendar_today_outlined,
               label: context.locale.date,
-              value: DateFormatter.shiftDate(parsedDate),
+              value: DateFormatter.shiftDateWithYear(parsedDate),
             ),
             Gap(spacing.s8),
           ],
