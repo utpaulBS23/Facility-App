@@ -27,14 +27,14 @@ class _IncomeStatsRow extends StatelessWidget {
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: '${summary.pendingCount}',
+            valueText: context.numbers.integer(summary.pendingCount),
             label: context.locale.pending,
             background: color.warningAlt,
             textColor: color.warning,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: '${summary.totalSubmissions}',
+            valueText: context.numbers.integer(summary.totalSubmissions),
             label: context.locale.totalSubmissions,
             background: color.scaffoldBackground,
             textColor: color.text.primary,

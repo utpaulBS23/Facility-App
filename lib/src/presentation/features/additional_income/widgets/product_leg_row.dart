@@ -116,7 +116,7 @@ class _ProductLegRow extends StatelessWidget {
             if (product != null) ...[
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.availableStock}: ${product.stockQuantity}',
+                '${context.locale.availableStock}: ${context.numbers.number(product.stockQuantity)}',
                 color: context.color.text.secondary,
               ),
             ],

@@ -28,7 +28,7 @@ class _ProductSaleStatsRow extends StatelessWidget {
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: '${summary.totalUnits}',
+            valueText: context.numbers.integer(summary.totalUnits),
             label: context.locale.unitsSold,
             background: color.scaffoldBackground,
             textColor: color.text.primary,
