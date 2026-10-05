@@ -36,7 +36,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     final name = _nameController.text.trim();
     final nameBn = _nameBnController.text.trim();
     final email = _emailController.text.trim();
-    final phone = _phoneController.text.trim();
+    final phone = Digits.toLatin(_phoneController.text.trim());
 
     await ref.read(editProfileProvider.notifier).updateProfile(
           UpdateProfileEntity(

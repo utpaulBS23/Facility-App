@@ -10,6 +10,7 @@ import 'package:pinput/pinput.dart';
 import '../../../../../core/base/failure.dart';
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../core/extensions/failure_localization.dart';
+import '../../../../../core/utils/digits.dart';
 import '../../../../../domain/entities/forgot_password/forgot_password_entities.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
@@ -50,7 +51,7 @@ class _ForgotPasswordOtpVerificationPageState
     ref.read(verifyOtpProvider.notifier).verifyOtp(
           VerifyOtpEntity(
             phoneNumber: phone,
-            otp: otp,
+            otp: Digits.toLatin(otp),
           ),
         );
   }
