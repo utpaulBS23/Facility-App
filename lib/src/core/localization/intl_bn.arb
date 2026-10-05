@@ -986,6 +986,24 @@
       "demand": { "type": "String" }
     }
   },
+  "facilityTracking": "ফ্যাসিলিটি ট্র্যাকিং",
+  "facilityTrackingSubtitle": "ফ্যাসিলিটি ও অ্যাটেন্ড্যান্টের অবস্থান",
+  "allFacilities": "সব ফ্যাসিলিটি",
+  "clearFilters": "ফিল্টার মুছুন",
+  "mapLegend": "লেজেন্ড",
+  "facilityStatusMaintenance": "রক্ষণাবেক্ষণ",
+  "attendantWorkingNow": "এখন কর্মরত",
+  "attendantFreeOffShift": "ফ্রি / শিফটের বাইরে",
+  "attendantContractEnded": "চুক্তি শেষ",
+  "attendantsWorking": "কর্মরত অ্যাটেন্ড্যান্ট",
+  "attendantsFree": "ফ্রি অ্যাটেন্ড্যান্ট",
+  "searchAttendantHint": "নাম বা আইডি দিয়ে খুঁজুন",
+  "noLocationsToShow": "দেখানোর মতো কোনো অবস্থান নেই",
+  "openInMaps": "ম্যাপে খুলুন",
+  "callAttendant": "কল করুন",
+  "uidLabel": "ইউআইডি",
+  "partnerLabel": "পার্টনার",
+  "addressLabel": "ঠিকানা",
   "settings": "সেটিংস",
   "retry": "পুনরায় চেষ্টা করুন"
 }

@@ -1046,6 +1046,24 @@
       "demand": { "type": "String", "example": "300" }
     }
   },
+  "facilityTracking": "Facility Tracking",
+  "facilityTrackingSubtitle": "Facility and attendant locations",
+  "allFacilities": "All facilities",
+  "clearFilters": "Clear filters",
+  "mapLegend": "Legend",
+  "facilityStatusMaintenance": "Maintenance",
+  "attendantWorkingNow": "Working now",
+  "attendantFreeOffShift": "Free / off shift",
+  "attendantContractEnded": "Contract ended",
+  "attendantsWorking": "Attendants working",
+  "attendantsFree": "Attendants free",
+  "searchAttendantHint": "Search by name or ID",
+  "noLocationsToShow": "No locations to show",
+  "openInMaps": "Open in Maps",
+  "callAttendant": "Call",
+  "uidLabel": "UID",
+  "partnerLabel": "Partner",
+  "addressLabel": "Address",
   "settings": "Settings",
   "retry": "Retry"
 }
