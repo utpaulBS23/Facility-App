@@ -74,11 +74,11 @@ class _AttendanceDetailHeaderCard extends StatelessWidget {
               ),
               Gap(spacing.s2),
             ],
-            if (detail.shift!.shiftType.trim().isNotEmpty) ...[
+            if (detail.shift!.localizedShiftType(context.languageCode).trim().isNotEmpty) ...[
               Text(
                 detail.shift!.startTime.isNotEmpty && detail.shift!.endTime.isNotEmpty
-                    ? '${detail.shift!.shiftType} (${DateFormatter.shiftTime(detail.shift!.startTime)} – ${DateFormatter.shiftTime(detail.shift!.endTime)})'
-                    : detail.shift!.shiftType,
+                    ? '${detail.shift!.localizedShiftType(context.languageCode)} (${DateFormatter.shiftTime(detail.shift!.startTime)} – ${DateFormatter.shiftTime(detail.shift!.endTime)})'
+                    : detail.shift!.localizedShiftType(context.languageCode),
                 style: context.textStyle.bodySmall.copyWith(
                   color: context.color.text.secondary,
                 ),

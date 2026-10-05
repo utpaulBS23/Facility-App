@@ -46,6 +46,7 @@ class AttendanceShiftInfoModel with AttendanceShiftInfoModelMappable {
   AttendanceShiftInfoModel({
     required this.id,
     this.shiftType,
+    this.shiftTypeBn,
     this.startTime,
     this.endTime,
     this.facilityName,
@@ -57,6 +58,9 @@ class AttendanceShiftInfoModel with AttendanceShiftInfoModelMappable {
 
   @MappableField(key: 'shift_type')
   final String? shiftType;
+
+  @MappableField(key: 'shift_type_bn')
+  final String? shiftTypeBn;
 
   @MappableField(key: 'start_time')
   final String? startTime;

@@ -141,7 +141,7 @@ class _AttendanceListItem extends StatelessWidget {
                         ],
                       ),
                     ],
-                    if (item.shift?.shiftType.trim().isNotEmpty == true) ...[
+                    if (item.shift?.localizedShiftType(context.languageCode).trim().isNotEmpty == true) ...[
                       Gap(spacing.s6),
                       Row(
                         children: [
@@ -154,8 +154,8 @@ class _AttendanceListItem extends StatelessWidget {
                           Flexible(
                             child: Text(
                               item.shift!.startTime.isNotEmpty && item.shift!.endTime.isNotEmpty
-                                  ? '${item.shift!.shiftType} (${DateFormatter.shiftTime(item.shift!.startTime)} – ${DateFormatter.shiftTime(item.shift!.endTime)})'
-                                  : item.shift!.shiftType,
+                                  ? '${item.shift!.localizedShiftType(context.languageCode)} (${DateFormatter.shiftTime(item.shift!.startTime)} – ${DateFormatter.shiftTime(item.shift!.endTime)})'
+                                  : item.shift!.localizedShiftType(context.languageCode),
                               style: context.textStyle.bodySmall.copyWith(
                                 color: context.color.text.secondary,
                               ),
