@@ -51,7 +51,11 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       path: Routes.shiftCheckOut,
       name: Routes.shiftCheckOut,
       pageBuilder: (context, state) {
-        final args = state.extra as ({int attendanceId, DateTime? checkInDate});
+        // WHY the int branch: older call sites passed the bare attendance id.
+        final extra = state.extra;
+        final args = extra is int
+            ? (attendanceId: extra, checkInDate: null as DateTime?)
+            : extra as ({int attendanceId, DateTime? checkInDate});
         return MaterialPage(
           child: ShiftCheckOutPage(
             attendanceId: args.attendanceId,

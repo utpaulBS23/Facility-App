@@ -9,7 +9,10 @@ class ShiftDetailsPage extends StatelessWidget {
       entity.checkInTime != null && entity.checkOutTime == null;
 
   void _onCheckOut(BuildContext context) {
-    context.pushNamed(Routes.shiftCheckOut, extra: entity.id);
+    context.pushNamed(
+      Routes.shiftCheckOut,
+      extra: (attendanceId: entity.id, checkInDate: entity.checkInTime),
+    );
   }
 
   void _onUpdateStock(BuildContext context) {
