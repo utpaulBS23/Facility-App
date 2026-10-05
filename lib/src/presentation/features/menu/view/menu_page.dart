@@ -27,7 +27,6 @@ import '../../../core/widgets/text/typography.dart';
 import '../riverpod/menu_provider.dart';
 import '../widgets/menu_item_config.dart';
 
-part '../widgets/door_control_menu_tile.dart';
 part '../widgets/menu_header_section.dart';
 part '../widgets/menu_item_tile.dart';
 part '../widgets/menu_language_toggle.dart';
@@ -147,16 +146,14 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                         ))
                           if (MenuItemKey.fromKey(item.itemKey)
                               case final key?)
-                            if (key == MenuItemKey.doorLock)
-                              _DoorControlTile(
-                                onTap: _onDoorControlTap,
-                                title: item.localizedLabel(languageCode),
-                              )
-                            else if (configByKey[key] case final config?)
+                            if (configByKey[key] case final config?)
                               _MenuItemTile(
                                 config: config,
                                 title: item.localizedLabel(languageCode),
                                 subtitle: item.localizedSublabel(languageCode),
+                                onTap: key == MenuItemKey.doorLock
+                                    ? _onDoorControlTap
+                                    : null,
                               ),
                       ];
 
