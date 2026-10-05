@@ -11,7 +11,6 @@ import '../../../../domain/entities/toilet_location/toilet_filter.dart';
 import '../../../../domain/entities/toilet_location/toilet_list_page_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/category_filter_chips.dart';

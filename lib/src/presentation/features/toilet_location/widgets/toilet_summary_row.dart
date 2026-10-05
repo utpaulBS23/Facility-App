@@ -55,7 +55,7 @@ class _SummaryTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            NumberFormatter.format(count),
+            context.numbers.number(count),
             style: context.textStyle.headline2xlTiny.copyWith(
               color: context.color.error,
               fontWeight: FontWeight.bold,

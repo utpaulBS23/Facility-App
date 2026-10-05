@@ -44,7 +44,7 @@ class _ToiletTargetCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '৳${NumberFormatter.format(target.targetRevenue)}',
+                  context.numbers.currency(target.targetRevenue),
                   style: context.textStyle.titleMedium.copyWith(
                     color: color.text.primary,
                     fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class _ToiletTargetCard extends StatelessWidget {
             Text(
               target.hasActuals
                   ? context.locale.amountLeft(
-                      '৳${NumberFormatter.format(target.remainingAmount)}',
+                      context.numbers.currency(target.remainingAmount),
                     )
                   : context.locale.notAvailable,
               style: context.textStyle.bodySmall.copyWith(
