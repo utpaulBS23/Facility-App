@@ -1,5 +1,3 @@
-import 'dart:ui' show PlatformDispatcher;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,10 +11,6 @@ import 'src/presentation/core/theme/theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AppEnv.load();
-  // WHY: the vector map tile loader cancels in-flight tiles on every zoom or
-  // pan and leaves the cancellation unhandled. It is expected, not an error.
-  PlatformDispatcher.instance.onError = (error, stack) =>
-      error.runtimeType.toString() == 'CancellationException';
   runApp(ProviderScope(observers: [RiverpodObserver()], child: const MyApp()));
 }
 

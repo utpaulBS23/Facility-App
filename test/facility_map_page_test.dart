@@ -2,6 +2,7 @@ import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart
 import 'package:facility_management_app/src/domain/entities/facility_map_entity.dart';
 import 'package:facility_management_app/src/domain/entities/login_entity.dart';
 import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';
+import 'package:facility_management_app/src/presentation/core/map/app_map.dart';
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
 import 'package:facility_management_app/src/presentation/features/facility_map/riverpod/facility_map_provider.dart';
 import 'package:facility_management_app/src/presentation/features/facility_map/view/facility_map_page.dart';
@@ -71,6 +72,9 @@ Future<void> _pumpPage(WidgetTester tester, Locale locale) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        appMapBuilderProvider.overrideWithValue(
+          (context, controller, markers) => const SizedBox.expand(),
+        ),
         userSessionProvider.overrideWith(_FakeSession.new),
         facilityMapProvider(facilityId: null).overrideWith((ref) async => _all),
         facilityMapProvider(
