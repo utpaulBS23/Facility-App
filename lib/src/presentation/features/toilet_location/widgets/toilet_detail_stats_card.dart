@@ -22,7 +22,7 @@ class _ToiletDetailStatsCard extends StatelessWidget {
               child: _StatBox(
                 title: context.locale.incomeTarget,
                 value: target.hasTarget
-                    ? '৳${NumberFormatter.format(target.targetRevenue)}'
+                    ? context.numbers.currency(target.targetRevenue)
                     : context.locale.notAvailable,
                 valueColor: color.info,
                 background: color.brandSubtle,
@@ -33,7 +33,7 @@ class _ToiletDetailStatsCard extends StatelessWidget {
               child: _StatBox(
                 title: context.locale.monthlyIncome,
                 value: target.hasActuals
-                    ? '৳${NumberFormatter.format(target.actualRevenue)}'
+                    ? context.numbers.currency(target.actualRevenue)
                     : context.locale.notAvailable,
                 valueColor: color.success,
                 background: color.successAlt,
@@ -49,7 +49,7 @@ class _ToiletDetailStatsCard extends StatelessWidget {
               child: _StatBox(
                 title: context.locale.profitTarget,
                 value: target.hasTarget
-                    ? '৳${NumberFormatter.format(target.targetProfit)}'
+                    ? context.numbers.currency(target.targetProfit)
                     : context.locale.notAvailable,
                 valueColor: color.warning,
                 background: color.warningAlt,

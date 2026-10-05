@@ -9,7 +9,6 @@ import '../../../../domain/entities/toilet_location/toilet_entity.dart';
 import '../../../../domain/entities/toilet_location/toilet_target_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../extensions/toilet_direction_extension.dart';
 import '../extensions/toilet_status_extension.dart';
