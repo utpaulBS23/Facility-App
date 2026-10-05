@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/base/failure.dart';
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../core/extensions/failure_localization.dart';
+import '../../../../../core/utils/digits.dart';
 import '../../../../../domain/entities/forgot_password/forgot_password_entities.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/theme.dart';
@@ -39,7 +40,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
 
   void _onContinue() {
     if (!formKey.currentState!.validate()) return;
-    final phone = phoneController.text.trim();
+    final phone = Digits.toLatin(phoneController.text.trim());
     ref.read(sendOtpProvider.notifier).sendOtp(
           SendOtpEntity(phoneNumber: phone),
         );
@@ -51,7 +52,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
       if (previous is AsyncLoading && next is AsyncData && next.value != null) {
         context.pushNamed(
           Routes.emailVerification,
-          extra: phoneController.text.trim(),
+          extra: Digits.toLatin(phoneController.text.trim()),
         );
       } else if (next is AsyncError) {
         final err = next.error;

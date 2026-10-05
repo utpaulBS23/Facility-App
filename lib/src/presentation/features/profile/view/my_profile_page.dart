@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/base/failure.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/utils/digits.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/profile_payloads.dart';
 import '../../../core/router/routes.dart';
