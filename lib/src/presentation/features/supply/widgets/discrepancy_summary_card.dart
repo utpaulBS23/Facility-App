@@ -79,7 +79,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
                     ),
                     Gap(spacing.s4),
                     Text(
-                      '-$missing',
+                      '-${context.numbers.number(missing)}',
                       style: context.textStyle.labelSmall.copyWith(
                         color: color.warning,
                         fontWeight: FontWeight.bold,
@@ -96,7 +96,7 @@ class _DiscrepancySummaryCard extends StatelessWidget {
               Expanded(
                 child: _QtyBox(
                   label: context.locale.expectedLabel,
-                  value: '$expected ${item.unit}',
+                  value: '${context.numbers.number(expected)} ${item.unit}',
                 ),
               ),
               Gap(spacing.s8),
