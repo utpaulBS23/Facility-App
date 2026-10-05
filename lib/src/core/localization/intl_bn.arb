@@ -975,6 +975,17 @@
       }
     }
   },
+  "distanceKmValue": "{km} কিমি",
+  "@distanceKmValue": {
+    "placeholders": { "km": { "type": "String" } }
+  },
+  "facilityAveragingSummary": "{items}টি আইটেম  •  মাসিক চাহিদা {demand}",
+  "@facilityAveragingSummary": {
+    "placeholders": {
+      "items": { "type": "String" },
+      "demand": { "type": "String" }
+    }
+  },
   "settings": "সেটিংস",
   "retry": "পুনরায় চেষ্টা করুন"
 }

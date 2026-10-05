@@ -1035,6 +1035,17 @@
   "@durationMinutes": {
     "placeholders": { "count": { "type": "String", "example": "30" } }
   },
+  "distanceKmValue": "{km} km",
+  "@distanceKmValue": {
+    "placeholders": { "km": { "type": "String", "example": "12.5" } }
+  },
+  "facilityAveragingSummary": "{items} items  •  {demand} monthly demand",
+  "@facilityAveragingSummary": {
+    "placeholders": {
+      "items": { "type": "String", "example": "12" },
+      "demand": { "type": "String", "example": "300" }
+    }
+  },
   "settings": "Settings",
   "retry": "Retry"
 }

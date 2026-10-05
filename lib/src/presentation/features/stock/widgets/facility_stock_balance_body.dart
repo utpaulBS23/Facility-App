@@ -60,21 +60,21 @@ class FacilityStockBalanceBody extends ConsumerWidget {
               children: [
                 Expanded(
                   child: StockStatTile(
-                    value: '${summary.outCount}',
+                    value: context.numbers.integer(summary.outCount),
                     label: context.locale.outOfStock,
                   ),
                 ),
                 Gap(spacing.s12),
                 Expanded(
                   child: StockStatTile(
-                    value: '${summary.lowCount}',
+                    value: context.numbers.integer(summary.lowCount),
                     label: context.locale.lowStock,
                   ),
                 ),
                 Gap(spacing.s12),
                 Expanded(
                   child: StockStatTile(
-                    value: '${summary.okCount}',
+                    value: context.numbers.integer(summary.okCount),
                     label: context.locale.healthy,
                   ),
                 ),
