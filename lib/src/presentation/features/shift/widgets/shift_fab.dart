@@ -21,26 +21,30 @@ class _ShiftFab extends ConsumerWidget {
       // scoped to the currently filtered facility, so the active slot (which
       // isn't filter-scoped) can live only under `data.facilities` — same gap
       // `SlotDetailsPage._onAssignStaff` already works around.
-      int? attendanceId;
+      SlotAttendanceEntity? attendance;
       for (final slot in data.slots) {
         if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-          attendanceId = slot.me?.attendance?.id;
+          attendance = slot.me?.attendance;
           break;
         }
       }
-      if (attendanceId == null) {
+      if (attendance?.id == null) {
         outer:
         for (final facility in data.facilities) {
           for (final slot in facility.slots) {
             if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-              attendanceId = slot.me?.attendance?.id;
+              attendance = slot.me?.attendance;
               break outer;
             }
           }
         }
       }
+      final attendanceId = attendance?.id;
       if (attendanceId == null) return;
-      context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
+      context.pushNamed(
+        Routes.shiftCheckOut,
+        extra: (attendanceId: attendanceId, checkInDate: attendance?.checkInTime),
+      );
       return;
     }
     context.pushNamed(
