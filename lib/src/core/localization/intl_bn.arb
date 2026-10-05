@@ -626,8 +626,8 @@
   "occurrenceChecklistItemsCompleted": "{answered}/{total} উত্তর দেওয়া হয়েছে",
   "@occurrenceChecklistItemsCompleted": {
     "placeholders": {
-      "answered": {"type": "int"},
-      "total": {"type": "int"}
+      "answered": {"type": "int", "format": "decimalPattern"},
+      "total": {"type": "int", "format": "decimalPattern"}
     }
   },
   "occurrenceAnswerSaved": "উত্তর সংরক্ষিত হয়েছে।",
