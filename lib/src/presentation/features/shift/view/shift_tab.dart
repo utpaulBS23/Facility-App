@@ -105,37 +105,11 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
     setState(() => _selectedFacilityId = result.facilityId);
   }
 
-  /// WHY: login's `accessible_facilities` carries no Bangla name, but the
-  /// slots payload does — so the filter takes `facility_name_bn` from there.
-  List<AccessibleFacilityEntity> _withSlotNames(
-    List<AccessibleFacilityEntity> facilities,
-    ShiftSlotsEntity? slots,
-  ) {
-    final bnById = {
-      for (final f in slots?.facilities ?? const <SlotsFacilityEntity>[])
-        if (f.facilityNameBn.isNotEmpty) f.facilityId: f.facilityNameBn,
-    };
-    return [
-      for (final f in facilities)
-        if (f.nameBn.isEmpty && bnById.containsKey(f.id))
-          AccessibleFacilityEntity(
-            id: f.id,
-            name: f.name,
-            nameBn: bnById[f.id]!,
-            isPrimary: f.isPrimary,
-          )
-        else
-          f,
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
-    final facilities = _withSlotNames(
-      ref.watch(userSessionProvider)?.accessibleFacilities ??
-          const <AccessibleFacilityEntity>[],
-      ref.watch(shiftSlotsProvider).valueOrNull,
-    );
+    final facilities =
+        ref.watch(userSessionProvider)?.accessibleFacilities ??
+        const <AccessibleFacilityEntity>[];
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
