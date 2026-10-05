@@ -1014,6 +1014,14 @@
     "description": "Description",
     "assignedTo": "Assigned To",
     "proofRequiredMessage": "For resolving this issue you have to submit proof",
+  "durationHours": "{count}h",
+  "@durationHours": {
+    "placeholders": { "count": { "type": "String", "example": "8" } }
+  },
+  "durationMinutes": "{count}m",
+  "@durationMinutes": {
+    "placeholders": { "count": { "type": "String", "example": "30" } }
+  },
   "settings": "Settings",
   "retry": "Retry"
 }

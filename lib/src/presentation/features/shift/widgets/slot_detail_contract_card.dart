@@ -77,7 +77,7 @@ class _SlotDetailContractCard extends StatelessWidget {
                 child: _DateTimeTile(
                   icon: Icons.hourglass_bottom_outlined,
                   label: context.locale.duration,
-                  value: '${slot.durationHours}h',
+                  value: DurationFormatter.localized(context, slot.durationHours),
                 ),
               ),
             ],

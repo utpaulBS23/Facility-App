@@ -951,6 +951,8 @@
     "description": "বর্ণনা",
     "assignedTo": "নিয়োজিত করা হয়েছে",
     "proofRequiredMessage": "এই সমস্যা সমাধানের জন্য আপনাকে প্রমাণ জমা দিতে হবে",
+  "durationHours": "{count} ঘণ্টা",
+  "durationMinutes": "{count} মিনিট",
   "settings": "সেটিংস",
   "retry": "পুনরায় চেষ্টা করুন"
 }
