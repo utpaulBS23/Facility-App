@@ -42,6 +42,7 @@ import '../../features/facility_expense/view/facility_expense_page.dart';
 import '../../features/toilet_location/view/toilet_details_page.dart';
 import '../../features/toilet_location/view/toilet_location_page.dart';
 import '../../features/facility_map/view/facility_map_page.dart';
+import '../../features/facility_tracking/view/facility_tracking_page.dart';
 import '../../features/gateway_management/view/gateway_management_page.dart';
 import '../../features/leave/view/apply_leave_page.dart';
 import '../../features/leave/view/leave_details_page.dart';
