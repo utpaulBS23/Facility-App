@@ -71,7 +71,9 @@ class IssueAssignResponsibilitySection extends StatelessWidget {
                             LabelLargeText(selected!.localizedName(context.languageCode)),
                             Gap(spacing.s2),
                             BodySmallText(
-                              selected!.phoneNumber ?? selected!.email,
+                              selected!.phoneNumber != null
+                                  ? context.numbers.phone(selected!.phoneNumber)
+                                  : selected!.email,
                               color: context.color.text.secondary,
                             ),
                           ],

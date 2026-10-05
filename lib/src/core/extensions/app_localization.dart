@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../gen/l10n/app_localizations.dart';
 
+// WHY re-exported: `context.numbers` should be there wherever `context.locale` is.
+export 'app_numbers.dart';
+
 extension AppLocalizationExtension on AppLocalizations {
   String getLanguageName(String languageCode) {
     return switch (languageCode) {

@@ -1,5 +1,5 @@
 import 'package:facility_management_app/src/core/utils/digits.dart';
-import 'package:facility_management_app/src/presentation/core/utils/number_formatter.dart';
+import 'package:facility_management_app/src/core/extensions/app_numbers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

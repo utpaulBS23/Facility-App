@@ -52,7 +52,9 @@ class _ShiftDetailSupervisorCard extends StatelessWidget {
                     ),
                     Gap(spacing.s4),
                     Text(
-                      supervisor?.phone ?? na,
+                      supervisor?.phone != null
+                          ? context.numbers.phone(supervisor!.phone)
+                          : na,
                       style: context.textStyle.titleSmall.copyWith(
                         color: context.color.text.secondary,
                       ),
