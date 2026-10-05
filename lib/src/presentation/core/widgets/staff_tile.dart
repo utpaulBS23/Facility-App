@@ -65,7 +65,9 @@ class StaffTile extends StatelessWidget {
                   ),
                   Gap(spacing.s2),
                   Text(
-                    staff.phoneNumber ?? staff.email,
+                    staff.phoneNumber != null
+                        ? context.numbers.phone(staff.phoneNumber)
+                        : staff.email,
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.text.secondary,
                     ),

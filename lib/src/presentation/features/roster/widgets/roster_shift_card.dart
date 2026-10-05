@@ -26,7 +26,9 @@ class _RosterShiftCard extends StatelessWidget {
         ? shift.shiftDate
         : DateFormat('EEE, d MMM yyyy').format(parsedDate);
     final supervisor = shift.facility.supervisor;
-    final supervisorPhone = supervisor?.phone;
+    final supervisorPhone = supervisor?.phone == null
+        ? null
+        : context.numbers.phone(supervisor!.phone);
     final activeAssignments = [
       for (final assignment in shift.assignments)
         if (assignment.isActive) assignment,

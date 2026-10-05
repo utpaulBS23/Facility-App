@@ -52,7 +52,7 @@ class _OtpVerificationBody extends StatelessWidget {
     );
 
     final phoneStr = phoneNumber != null && phoneNumber!.isNotEmpty
-        ? phoneNumber
+        ? context.numbers.phone(phoneNumber)
         : '';
 
     return SafeArea(

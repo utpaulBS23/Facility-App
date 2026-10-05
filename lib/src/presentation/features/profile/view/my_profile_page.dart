@@ -56,7 +56,9 @@ class MyProfilePage extends ConsumerWidget {
         data: (profile) {
           final name = profile.localizedName(context.languageCode);
           final email = profile.email;
-          final phone = profile.phoneNumber.isEmpty ? '—' : profile.phoneNumber;
+          final phone = profile.phoneNumber.isEmpty
+              ? '—'
+              : context.numbers.phone(profile.phoneNumber);
           final role = profile.userType;
           final partnerName = profile.localizedPartnerName(context.languageCode);
           final partner = partnerName.isEmpty ? '—' : partnerName;

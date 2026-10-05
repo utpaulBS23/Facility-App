@@ -49,7 +49,9 @@ class IssueAttendantPickerTile extends StatelessWidget {
                   LabelLargeText(attendant.localizedName(context.languageCode)),
                   Gap(spacing.s2),
                   BodySmallText(
-                    attendant.phoneNumber ?? attendant.email,
+                    attendant.phoneNumber != null
+                        ? context.numbers.phone(attendant.phoneNumber)
+                        : attendant.email,
                     color: context.color.text.secondary,
                   ),
                 ],
