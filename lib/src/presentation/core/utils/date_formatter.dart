@@ -42,6 +42,10 @@ final class DateFormatter {
 
   static String shiftDate(DateTime d) => DateFormat('EEE, MMM d').format(d);
 
+  /// `EEE, MMM d, yyyy`.
+  static String shiftDateWithYear(DateTime d) =>
+      DateFormat('EEE, MMM d, yyyy').format(d);
+
   /// Date string (yyyy-MM-dd or datetime) → `EEE, MMM d`.
   static String formatDateOnly(String dateStr) {
     if (dateStr.isEmpty) return dateStr;

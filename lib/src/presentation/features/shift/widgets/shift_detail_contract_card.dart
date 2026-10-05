@@ -57,7 +57,7 @@ class _ShiftDetailContractCard extends StatelessWidget {
                 child: _DateTimeTile(
                   icon: Icons.calendar_today_outlined,
                   label: context.locale.date,
-                  value: DateFormatter.shiftDate(date),
+                  value: DateFormatter.shiftDateWithYear(date),
                 ),
               ),
               Gap(spacing.s8),
