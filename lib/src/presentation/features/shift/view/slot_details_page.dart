@@ -172,6 +172,8 @@ class SlotDetailsPage extends ConsumerWidget {
     final showCheckOut = me?.action == SlotAction.checkOut;
     final facilityId = facility?.id;
     final shiftAssignmentId = me?.assignmentId;
+    // WHY: stock can only be counted once the user's own check-in is recorded.
+    final hasCheckedIn = me?.attendance?.checkInTime != null;
 
     return _SlotDetailsActionListener(
       child: Scaffold(
@@ -191,7 +193,7 @@ class SlotDetailsPage extends ConsumerWidget {
                     _onMakeLead(context, ref, currentSlot, attendant),
               ),
             ),
-            if (facilityId != null && shiftAssignmentId != null)
+            if (hasCheckedIn && facilityId != null && shiftAssignmentId != null)
               PermissionGate(
                 permissions: const [UserPermission.shiftStockCountCreate],
                 child: SafeArea(
