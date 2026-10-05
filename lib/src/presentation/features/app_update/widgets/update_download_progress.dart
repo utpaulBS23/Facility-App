@@ -73,7 +73,7 @@ class _UpdateDownloadProgress extends StatelessWidget {
             ),
             if (progress.isDownloading && progress.totalBytes > 0)
               Text(
-                '${progress.progressPercent}%',
+                context.numbers.percent(progress.progressPercent),
                 style: context.textStyle.labelSmall.copyWith(
                   color: context.color.primary,
                   fontWeight: FontWeight.bold,

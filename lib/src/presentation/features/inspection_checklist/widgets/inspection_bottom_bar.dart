@@ -135,7 +135,7 @@ class _ScoreRow extends StatelessWidget {
                 '${context.locale.outOf(maxScore)}  ',
                 color: context.color.text.secondary,
               ),
-              Headline2xlTinyText('$score', color: context.color.text.primary),
+              Headline2xlTinyText(context.numbers.number(score), color: context.color.text.primary),
             ],
           ),
         ],
