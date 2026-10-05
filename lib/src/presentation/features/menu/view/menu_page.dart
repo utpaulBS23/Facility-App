@@ -19,7 +19,6 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/menu_config_resolver.dart';
-import '../../../core/utils/menu_item_icon.dart';
 import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/widgets/logout_confirm_dialog.dart';
 import '../../../core/widgets/permission_gate.dart';
