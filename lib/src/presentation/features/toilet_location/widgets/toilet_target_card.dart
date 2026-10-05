@@ -52,7 +52,7 @@ class _ToiletTargetCard extends StatelessWidget {
                 ),
                 if (target.hasActuals)
                   Text(
-                    '${target.achievedPercent.toStringAsFixed(1)}%',
+                    context.numbers.percent(target.achievedPercent, fractionDigits: 1),
                     style: context.textStyle.bodySmall.copyWith(
                       color: color.primary,
                       fontWeight: FontWeight.w600,
