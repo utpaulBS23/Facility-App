@@ -25,7 +25,6 @@ class StockAveragingPage extends ConsumerWidget {
       appBar: MenuItemAppBar(
         itemKey: MenuItemKey.stockAveraging,
         fallbackTitle: 'Stock Averaging',
-        onBack: () => context.goNamed(Routes.shift),
       ),
       body: body,
     );

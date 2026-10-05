@@ -157,7 +157,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.goNamed(Routes.shift);
+      context.goNamed(Routes.supplyRequests);
     }
   }
 
