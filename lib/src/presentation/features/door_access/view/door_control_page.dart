@@ -84,7 +84,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
   String _summary(BuildContext context) => switch (_usageType) {
     _UsageType.customer =>
       '${context.locale.customerUse} '
-          '(${_serviceType!.label(context)} — ৳${_serviceType!.price})',
+          '(${_serviceType!.label(context)} — ${context.numbers.currency(_serviceType!.price)})',
     _UsageType.personal =>
       '${context.locale.personalUse} (${_reason!.label(context)})',
   };

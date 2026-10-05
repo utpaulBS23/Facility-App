@@ -30,11 +30,11 @@ class _RosterShiftMetrics extends StatelessWidget {
         ),
         _RosterShiftMetricPill(
           icon: Icons.rule_folder_outlined,
-          label: '${context.locale.minAttendants}: ${shift.minAttendants}',
+          label: '${context.locale.minAttendants}: ${context.numbers.integer(shift.minAttendants)}',
         ),
         _RosterShiftMetricPill(
           icon: Icons.group_add_outlined,
-          label: '${context.locale.maxAttendants}: ${shift.maxAttendants}',
+          label: '${context.locale.maxAttendants}: ${context.numbers.integer(shift.maxAttendants)}',
         ),
       ],
     );
