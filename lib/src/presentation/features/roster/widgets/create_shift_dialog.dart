@@ -53,8 +53,8 @@ class _CreateShiftDialogState extends ConsumerState<CreateShiftDialog> {
 
   void _onSubmit() {
     final templateId = _shiftTemplateId;
-    final min = int.tryParse(_minController.text);
-    final max = int.tryParse(_maxController.text);
+    final min = Digits.parseInt(_minController.text);
+    final max = Digits.parseInt(_maxController.text);
     if (templateId == null || min == null || max == null || max < min) return;
 
     ref
@@ -84,8 +84,8 @@ class _CreateShiftDialogState extends ConsumerState<CreateShiftDialog> {
       }
     });
 
-    final min = int.tryParse(_minController.text);
-    final max = int.tryParse(_maxController.text);
+    final min = Digits.parseInt(_minController.text);
+    final max = Digits.parseInt(_maxController.text);
     final isMinMaxValid = min != null && max != null && min > 0 && max >= min;
     final isSubmitEnabled =
         _shiftTemplateId != null && isMinMaxValid && !createState.isLoading;

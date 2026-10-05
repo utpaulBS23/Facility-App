@@ -4,6 +4,7 @@ import '../../../../../core/base/base.dart';
 import '../../../../../core/di/dependency_injection.dart';
 import '../../../../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../widgets/update_stock_form_entry.dart';
+import '../../../../../core/utils/digits.dart';
 
 part 'submit_shift_stock_count_provider.g.dart';
 
@@ -23,7 +24,7 @@ class SubmitShiftStockCount extends _$SubmitShiftStockCount {
     state = const AsyncLoading();
 
     final params = items.map((entry) {
-      final qty = double.tryParse(entry.qtyController.text) ?? 0.0;
+      final qty = Digits.parseDouble(entry.qtyController.text) ?? 0.0;
       return SubmitStockCountItemEntity(
         stockItemId: entry.stockItemId,
         qtyOnHand: qty,
