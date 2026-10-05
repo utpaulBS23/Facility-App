@@ -662,6 +662,14 @@ GetFacilityMapUseCase getFacilityMapUseCase(Ref ref) {
 }
 
 @riverpod
+GetLivePositionsUseCase getLivePositionsUseCase(Ref ref) {
+  return GetLivePositionsUseCase(
+    userTrackingRepository: ref.read(userTrackingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetToiletsUseCase getToiletsUseCase(Ref ref) {
   return GetToiletsUseCase(
     toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),

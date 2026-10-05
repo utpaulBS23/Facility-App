@@ -492,6 +492,13 @@ abstract class RestClient {
     @Query('facility_id') int? facilityId,
   });
 
+  @GET(Endpoints.livePositions)
+  Future<HttpResponse> getLivePositions({
+    @Path('partnerId') required int partnerId,
+    @Query('per_page') int? perPage,
+    @Query('page') int? page,
+  });
+
   @GET(Endpoints.facilityWiseTargets)
   Future<HttpResponse> getFacilityWiseTargets({
     @Path('partnerId') required int partnerId,
