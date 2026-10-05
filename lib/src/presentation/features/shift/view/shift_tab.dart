@@ -17,6 +17,7 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/utils/duration_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_filter_button.dart';
