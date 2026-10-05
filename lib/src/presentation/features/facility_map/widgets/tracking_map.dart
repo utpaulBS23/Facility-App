@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../../../../domain/entities/facility_map_entity.dart';
-import '../../../core/map/base_map_layer.dart';
+import '../../../core/map/app_map.dart';
+import '../../../core/map/map_control_button.dart';
 import '../../../core/theme/theme.dart';
 import 'tracking_legend.dart';
 import 'tracking_markers.dart';
@@ -11,8 +10,9 @@ import 'tracking_markers.dart';
 /// The map with facility pins, attendant markers, zoom/recenter controls and
 /// the legend.
 ///
-/// The camera fits every visible pin whenever the set of pins changes (first
-/// load, a filter change, a refresh).
+/// The camera fits every pin whenever the set of pins changes (first load, a
+/// filter change, a refresh), and moves to the selected attendant when one is
+/// picked.
 class TrackingMap extends StatefulWidget {
   const TrackingMap({
     super.key,
@@ -36,16 +36,18 @@ class TrackingMap extends StatefulWidget {
 }
 
 class _TrackingMapState extends State<TrackingMap> {
-  // Central Dhaka, shown until the first fit.
-  static const _fallbackCenter = LatLng(23.8103, 90.4125);
+  final _controller = AppMapController();
 
-  final _controller = MapController();
-  bool _ready = false;
-
-  List<LatLng> get _points => [
-    for (final f in widget.facilities) LatLng(f.lat, f.lng),
-    for (final s in widget.staff) LatLng(s.lat, s.lng),
+  List<MapPoint> get _points => [
+    for (final f in widget.facilities) (lat: f.lat, lng: f.lng),
+    for (final s in widget.staff) (lat: s.lat, lng: s.lng),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.selectedStaffId == null ? _fit() : _focusSelected();
+  }
 
   @override
   void didUpdateWidget(TrackingMap oldWidget) {
@@ -56,15 +58,6 @@ class _TrackingMapState extends State<TrackingMap> {
     } else if (!_samePins(oldWidget)) {
       _fit();
     }
-  }
-
-  void _focusSelected() {
-    if (!_ready) return;
-    final staff = widget.staff
-        .where((s) => s.id == widget.selectedStaffId)
-        .firstOrNull;
-    if (staff == null) return;
-    _controller.move(LatLng(staff.lat, staff.lng), 16);
   }
 
   bool _samePins(TrackingMap other) {
@@ -79,28 +72,18 @@ class _TrackingMapState extends State<TrackingMap> {
     return oldIds.length == newIds.length && oldIds.containsAll(newIds);
   }
 
-  void _fit() {
-    if (!_ready) return;
-    final points = _points;
-    if (points.isEmpty) return;
-
-    if (points.length == 1) {
-      _controller.move(points.first, 15);
+  void _focusSelected() {
+    final staff = widget.staff
+        .where((s) => s.id == widget.selectedStaffId)
+        .firstOrNull;
+    if (staff == null) {
+      _fit();
       return;
     }
-    _controller.fitCamera(
-      CameraFit.coordinates(
-        coordinates: points,
-        padding: const EdgeInsets.fromLTRB(48, 64, 48, 64),
-        maxZoom: 16,
-      ),
-    );
+    _controller.moveTo((lat: staff.lat, lng: staff.lng));
   }
 
-  void _zoomBy(double delta) {
-    final camera = _controller.camera;
-    _controller.move(camera.center, camera.zoom + delta);
-  }
+  void _fit() => _controller.fit(_points);
 
   @override
   Widget build(BuildContext context) {
@@ -108,51 +91,32 @@ class _TrackingMapState extends State<TrackingMap> {
 
     return Stack(
       children: [
-        FlutterMap(
-          mapController: _controller,
-          options: MapOptions(
-            initialCenter: _fallbackCenter,
-            initialZoom: 10,
-            // WHY: keep within the vector tiles' range (BaseMapLayer renders
-            // up to 18); zooming past it was crashing the map.
-            minZoom: 5,
-            maxZoom: 18,
-            onMapReady: () {
-              _ready = true;
-              widget.selectedStaffId == null ? _fit() : _focusSelected();
-            },
-          ),
-          children: [
-            const BaseMapLayer(),
-            MarkerLayer(
-              alignment: Alignment.topCenter,
-              markers: [
-                for (final facility in widget.facilities)
-                  Marker(
-                    point: LatLng(facility.lat, facility.lng),
-                    width: 44,
-                    height: 44,
-                    child: FacilityMarker(
-                      facility: facility,
-                      onTap: () => widget.onFacilityTap(facility),
-                    ),
-                  ),
-              ],
-            ),
-            MarkerLayer(
-              markers: [
-                for (final staff in widget.staff)
-                  Marker(
-                    point: LatLng(staff.lat, staff.lng),
-                    width: 40,
-                    height: 40,
-                    child: StaffMarker(
-                      staff: staff,
-                      onTap: () => widget.onStaffTap(staff),
-                    ),
-                  ),
-              ],
-            ),
+        AppMap(
+          controller: _controller,
+          markers: [
+            for (final facility in widget.facilities)
+              MapMarker(
+                id: 'f${facility.id}',
+                lat: facility.lat,
+                lng: facility.lng,
+                size: const Size(44, 44),
+                // The pin's tip marks the spot.
+                anchor: Alignment.bottomCenter,
+                child: FacilityMarker(
+                  facility: facility,
+                  onTap: () => widget.onFacilityTap(facility),
+                ),
+              ),
+            for (final staff in widget.staff)
+              MapMarker(
+                id: 's${staff.id}',
+                lat: staff.lat,
+                lng: staff.lng,
+                child: StaffMarker(
+                  staff: staff,
+                  onTap: () => widget.onStaffTap(staff),
+                ),
+              ),
           ],
         ),
         Positioned(
@@ -166,39 +130,21 @@ class _TrackingMapState extends State<TrackingMap> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _MapButton(icon: Icons.add_rounded, onTap: () => _zoomBy(1)),
+              MapControlButton(
+                icon: Icons.add_rounded,
+                onTap: () => _controller.zoomBy(1),
+              ),
               SizedBox(height: spacing.s8),
-              _MapButton(icon: Icons.remove_rounded, onTap: () => _zoomBy(-1)),
+              MapControlButton(
+                icon: Icons.remove_rounded,
+                onTap: () => _controller.zoomBy(-1),
+              ),
               SizedBox(height: spacing.s8),
-              _MapButton(icon: Icons.my_location_rounded, onTap: _fit),
+              MapControlButton(icon: Icons.my_location_rounded, onTap: _fit),
             ],
           ),
         ),
       ],
-    );
-  }
-}
-
-class _MapButton extends StatelessWidget {
-  const _MapButton({required this.icon, required this.onTap});
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: context.color.onPrimary,
-      shape: CircleBorder(side: BorderSide(color: context.color.borderSubtle)),
-      elevation: 1,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(context.dimensions.spacing.s8),
-          child: Icon(icon, size: 20, color: context.color.text.primary),
-        ),
-      ),
     );
   }
 }
