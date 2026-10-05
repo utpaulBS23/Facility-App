@@ -56,7 +56,7 @@ class _ProductSaleEntryCard extends StatelessWidget {
           Text(entry.localizedProductName(context.languageCode), style: context.textStyle.bodyLarge),
           Gap(spacing.s2),
           BodySmallText(
-            '${entry.unitsSold} × ৳${NumberFormatter.format(entry.unitPrice)}',
+            '${entry.unitsSold} × ${context.numbers.currency(entry.unitPrice)}',
             color: context.color.text.secondary,
           ),
           Gap(spacing.s8),
@@ -64,14 +64,14 @@ class _ProductSaleEntryCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '৳${NumberFormatter.format(entry.revenue)}',
+                context.numbers.currency(entry.revenue),
                 style: context.textStyle.headlineTiny.copyWith(
                   color: context.color.primary,
                 ),
               ),
               if (profit != null)
                 BodySmallText(
-                  '${context.locale.totalProfit}: ৳${NumberFormatter.format(profit)}',
+                  '${context.locale.totalProfit}: ${context.numbers.currency(profit)}',
                   color: context.color.success,
                 ),
             ],
