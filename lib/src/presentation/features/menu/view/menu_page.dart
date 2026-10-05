@@ -169,12 +169,6 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                           child: Column(
                             children: [
                               ...rows,
-                              _MenuItemTile(
-                                config: facilityTrackingMenuItemConfig,
-                                title: context.locale.facilityTracking,
-                                subtitle:
-                                    context.locale.facilityTrackingSubtitle,
-                              ),
                               // WHY: notificationView permission not yet
                               // granted by backend — show unconditionally
                               // until it is. It's always the last config

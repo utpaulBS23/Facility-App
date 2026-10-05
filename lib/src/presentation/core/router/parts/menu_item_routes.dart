@@ -81,13 +81,6 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
-      path: Routes.facilityTracking,
-      name: Routes.facilityTracking,
-      pageBuilder: (context, state) {
-        return const MaterialPage(child: FacilityTrackingPage());
-      },
-    ),
-    GoRoute(
       path: Routes.notification,
       name: Routes.notification,
       pageBuilder: (context, state) {

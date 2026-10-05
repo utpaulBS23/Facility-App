@@ -187,15 +187,6 @@ final List<MenuItemConfig> menuItemConfigs = [
   ),
 ];
 
-/// Facility Tracking map, always listed above Notification.
-///
-/// WHY hardcoded: not in the server's menu catalog yet, so the drawer layout
-/// can't place it. Remove this row once the catalog has an item key for it.
-final facilityTrackingMenuItemConfig = MenuItemConfig(
-  iconOverride: Assets.icons.location,
-  route: Routes.facilityTracking,
-);
-
 /// Pinned above the logout tile — kept out of [menuItemConfigs] so it stays
 /// fixed regardless of the permission-filtered list order.
 final notificationMenuItemConfig = MenuItemConfig(

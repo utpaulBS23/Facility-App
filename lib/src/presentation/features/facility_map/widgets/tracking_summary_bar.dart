@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/facility_map_entity.dart';
 import '../../../core/theme/theme.dart';
 import 'tracking_status_style.dart';
 
 /// Attendant counts by status, shown under the map.
 class TrackingSummaryBar extends StatelessWidget {
-  const TrackingSummaryBar({super.key, required this.staff});
+  const TrackingSummaryBar({super.key, required this.summary});
 
-  final List<StaffPinEntity> staff;
-
-  int _count(StaffPinStatus status) =>
-      staff.where((s) => s.status == status).length;
+  final FacilityMapSummary summary;
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +30,17 @@ class TrackingSummaryBar extends StatelessWidget {
           children: [
             _SummaryChip(
               status: StaffPinStatus.working,
-              count: _count(StaffPinStatus.working),
+              count: summary.working,
               label: context.locale.attendantsWorking,
             ),
             _SummaryChip(
               status: StaffPinStatus.free,
-              count: _count(StaffPinStatus.free),
+              count: summary.free,
               label: context.locale.attendantsFree,
             ),
             _SummaryChip(
               status: StaffPinStatus.contractEnded,
-              count: _count(StaffPinStatus.contractEnded),
+              count: summary.contractEnded,
               label: context.locale.attendantContractEnded,
             ),
           ],

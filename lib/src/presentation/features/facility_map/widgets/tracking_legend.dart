@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/facility_map_entity.dart';
 import '../../../core/theme/theme.dart';
 import 'tracking_status_style.dart';
 
@@ -81,11 +81,10 @@ class _TrackingLegendState extends State<TrackingLegend> {
               color: context.color.text.secondary,
             ),
           ),
-          for (final status in FacilityPinStatus.values)
-            _LegendRow(
-              color: status.color(context),
-              label: status.label(context),
-            ),
+          _LegendRow(
+            color: context.color.primary,
+            label: context.locale.active,
+          ),
           SizedBox(height: spacing.s8),
           Text(
             context.locale.attendant,

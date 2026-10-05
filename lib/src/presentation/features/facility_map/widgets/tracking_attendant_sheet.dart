@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/text/typography.dart';
 import 'tracking_markers.dart';
-import 'tracking_status_style.dart';
 
-/// Attendant picker with a search box, filtered locally from the attendants
-/// already loaded for the map.
+/// Attendant picker with a search box over the partner's attendants (all of
+/// them, including attendants who have no position on the map).
 ///
 /// Pops a `({int? staffId})` record, like the shared facility picker, so
 /// "All" can be told apart from a dismissed sheet.
@@ -20,7 +19,7 @@ class TrackingAttendantSheet extends StatefulWidget {
     required this.selectedStaffId,
   });
 
-  final List<StaffPinEntity> staff;
+  final List<PartnerStaffEntity> staff;
   final int? selectedStaffId;
 
   @override
@@ -42,7 +41,7 @@ class _TrackingAttendantSheetState extends State<TrackingAttendantSheet> {
         if (query.isEmpty ||
             s.name.toLowerCase().contains(query) ||
             s.nameBn.toLowerCase().contains(query) ||
-            s.uid.toLowerCase().contains(query))
+            (s.uid ?? '').toLowerCase().contains(query))
           s,
     ];
 
@@ -118,13 +117,11 @@ class _TrackingAttendantSheetState extends State<TrackingAttendantSheet> {
                         staffId: s.id,
                         leading: StaffAvatar(
                           name: s.localizedName(languageCode),
-                          imageUrl: s.imageUrl,
+                          imageUrl: s.profileImageUrl,
                           radius: 18,
                         ),
                         title: Text(s.localizedName(languageCode)),
-                        subtitle: Text(
-                          '${s.uid} · ${s.status.label(context)}',
-                        ),
+                        subtitle: (s.uid ?? '').isEmpty ? null : Text(s.uid!),
                       ),
                     ],
                   ],
