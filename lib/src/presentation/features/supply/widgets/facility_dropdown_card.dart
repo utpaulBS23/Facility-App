@@ -36,7 +36,7 @@ class _FacilityDropdownCard extends StatelessWidget {
     final selectedName = facilities
         .where((f) => f.id == selectedFacilityId)
         .firstOrNull
-        ?.name;
+        ?.localizedName(context.languageCode);
 
     return GestureDetector(
       onTap: () => _onTap(context),

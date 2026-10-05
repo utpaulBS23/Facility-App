@@ -39,7 +39,7 @@ class _FacilitySection extends ConsumerWidget {
     final facilityName = facilities
         .cast<AccessibleFacilityEntity?>()
         .firstWhere((f) => f?.id == facilityId, orElse: () => null)
-        ?.name;
+        ?.localizedName(context.languageCode);
 
     return _DropdownField(
       value: facilityName,

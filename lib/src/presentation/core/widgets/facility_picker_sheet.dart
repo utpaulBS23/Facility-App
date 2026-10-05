@@ -96,7 +96,7 @@ class FacilityPickerSheet extends StatelessWidget {
                     final facilityId = facility?.id;
                     final label = isAllRow
                         ? context.locale.all
-                        : facility!.name;
+                        : facility!.localizedName(context.languageCode);
                     final isSelected = facilityId == selectedFacilityId;
                     return ListTile(
                       onTap: () =>

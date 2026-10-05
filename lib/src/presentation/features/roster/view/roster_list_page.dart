@@ -153,7 +153,7 @@ class _RosterListPageState extends ConsumerState<RosterListPage> {
     final selectedFacilityName = facilities
         .cast<AccessibleFacilityEntity?>()
         .firstWhere((f) => f?.id == _selectedFacilityId, orElse: () => null)
-        ?.name;
+        ?.localizedName(context.languageCode);
     final rosterState = ref.watch(rosterListProvider);
     final shiftGlobalConfigState = ref.watch(shiftGlobalConfigProvider);
 
