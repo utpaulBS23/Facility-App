@@ -11,6 +11,7 @@ extension AttendanceShiftInfoModelToEntity on AttendanceShiftInfoModel {
   AttendanceShiftInfoEntity toEntity() => AttendanceShiftInfoEntity(
     id: id,
     shiftType: shiftType ?? '',
+    shiftTypeBn: shiftTypeBn ?? '',
     startTime: startTime ?? '',
     endTime: endTime ?? '',
     facilityName: facilityName ?? '',

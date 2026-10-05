@@ -68,7 +68,7 @@ class _AttendanceDetailMainCard extends StatelessWidget {
             _DetailRow(
               icon: Icons.work_outline_rounded,
               label: context.locale.shiftType,
-              value: detail.shift!.shiftType,
+              value: detail.shift!.localizedShiftType(context.languageCode),
             ),
             Gap(spacing.s16),
             _DetailRow(
