@@ -129,7 +129,7 @@ class _VerifyItemsCard extends StatelessWidget {
                           ),
                           Gap(spacing.s8),
                           Text(
-                            '${item.qtyReceived.toInt()}/${item.qtyExpected.toInt()}',
+                            '${context.numbers.integer(item.qtyReceived)}/${context.numbers.integer(item.qtyExpected)}',
                             style: context.textStyle.titleMedium.copyWith(
                               color: color.text.primary,
                               fontWeight: FontWeight.bold,

@@ -93,7 +93,7 @@ class _RosterCard extends ConsumerWidget {
                   ),
                   Gap(spacing.s8),
                   Text(
-                    '${roster.filledShifts}/${roster.totalShifts}',
+                    '${context.numbers.integer(roster.filledShifts)}/${context.numbers.integer(roster.totalShifts)}',
                     style: context.textStyle.labelMedium.copyWith(
                       color: context.color.text.secondary,
                     ),

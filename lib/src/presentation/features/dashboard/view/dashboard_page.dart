@@ -295,7 +295,7 @@ class _FacilityCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               BodySmallText('', color: context.color.text.secondary),
-              BodySmallText('${uptimeRate}%', color: context.color.text.secondary),
+              BodySmallText(context.numbers.percent(uptimeRate), color: context.color.text.secondary),
             ],
           ),
         ],
