@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/menu_item_key.dart';
 import '../../../../domain/entities/user_tracking_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/loading_indicator.dart';
-import '../../../core/widgets/menu_item_app_bar.dart';
+import '../../../core/router/routes.dart';
+import '../../../core/widgets/detail_app_bar.dart';
 import '../riverpod/user_tracking_provider.dart';
 import '../widgets/user_position_card.dart';
 import '../widgets/user_position_sheet.dart';
@@ -64,10 +65,11 @@ class _SupervisorTrackingPageState extends ConsumerState<SupervisorTrackingPage>
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: MenuItemAppBar(
-        itemKey: MenuItemKey.tracking,
-        fallbackTitle: context.locale.tracking,
-        isTabByDefault: true,
+      // WHY: the bottom bar is hidden on this screen (see NavigationShell), so
+      // the back button is the way out, to the Menu tab.
+      appBar: DetailAppBar(
+        title: context.locale.tracking,
+        onBack: () => context.goNamed(Routes.menu),
         actions: [
           IconButton(
             onPressed: _refresh,
