@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/facility_map_entity.dart';
 import '../../../core/theme/theme.dart';
 import 'tracking_status_style.dart';
 
-/// Map pin for a facility, tinted by its status.
+/// Map pin for an active facility.
 class FacilityMarker extends StatelessWidget {
-  const FacilityMarker({super.key, required this.facility, required this.onTap});
+  const FacilityMarker({
+    super.key,
+    required this.facility,
+    required this.onTap,
+  });
 
   final FacilityPinEntity facility;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final color = facility.status.color(context);
+    final color = context.color.primary;
 
     return GestureDetector(
       onTap: onTap,
@@ -43,18 +47,10 @@ class FacilityMarker extends StatelessWidget {
 
 /// Map marker for an attendant: avatar (or initials) ringed by its status.
 class StaffMarker extends StatelessWidget {
-  const StaffMarker({
-    super.key,
-    required this.staff,
-    required this.onTap,
-    this.dimmed = false,
-  });
+  const StaffMarker({super.key, required this.staff, required this.onTap});
 
   final StaffPinEntity staff;
   final VoidCallback onTap;
-
-  /// True while another attendant is selected.
-  final bool dimmed;
 
   @override
   Widget build(BuildContext context) {
@@ -64,20 +60,17 @@ class StaffMarker extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: Opacity(
-        opacity: dimmed ? 0.35 : 1,
-        child: Container(
-          width: 40,
-          height: 40,
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: staff.status.color(context), width: 3),
-            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)],
-          ),
-          child: StaffAvatar(name: name, imageUrl: imageUrl),
+      child: Container(
+        width: 40,
+        height: 40,
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: staff.status.color(context), width: 3),
+          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4)],
         ),
+        child: StaffAvatar(name: name, imageUrl: imageUrl),
       ),
     );
   }
@@ -85,7 +78,12 @@ class StaffMarker extends StatelessWidget {
 
 /// Round avatar: the photo when there is one, otherwise the name's initials.
 class StaffAvatar extends StatelessWidget {
-  const StaffAvatar({super.key, required this.name, this.imageUrl, this.radius});
+  const StaffAvatar({
+    super.key,
+    required this.name,
+    this.imageUrl,
+    this.radius,
+  });
 
   final String name;
   final String? imageUrl;

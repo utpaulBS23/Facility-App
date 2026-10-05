@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/facility_map_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../../../core/widgets/text/typography.dart';
@@ -23,17 +23,14 @@ class FacilityPinSheet extends StatelessWidget {
     return _PinSheetShell(
       header: Row(
         children: [
-          Icon(
-            Icons.apartment_rounded,
-            color: facility.status.color(context),
-          ),
+          Icon(Icons.apartment_rounded, color: context.color.primary),
           Gap(spacing.s8),
           Expanded(
             child: LabelLargeText(facility.localizedName(context.languageCode)),
           ),
           StatusDotTag(
-            label: facility.status.label(context),
-            dotColor: facility.status.color(context),
+            label: context.locale.active,
+            dotColor: context.color.primary,
           ),
         ],
       ),

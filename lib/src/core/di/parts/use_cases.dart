@@ -654,6 +654,14 @@ InstallApkUseCase installApkUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilityMapUseCase getFacilityMapUseCase(Ref ref) {
+  return GetFacilityMapUseCase(
+    facilityMapRepository: ref.read(facilityMapRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetToiletsUseCase getToiletsUseCase(Ref ref) {
   return GetToiletsUseCase(
     toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),

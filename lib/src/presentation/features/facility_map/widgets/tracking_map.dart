@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/facility_map_entity.dart';
+import '../../../core/map/base_map_layer.dart';
 import '../../../core/theme/theme.dart';
 import 'tracking_legend.dart';
 import 'tracking_markers.dart';
@@ -27,7 +28,7 @@ class TrackingMap extends StatefulWidget {
   final ValueChanged<FacilityPinEntity> onFacilityTap;
   final ValueChanged<StaffPinEntity> onStaffTap;
 
-  /// When set, every other attendant is dimmed.
+  /// When set, the camera moves to this attendant's pin.
   final int? selectedStaffId;
 
   @override
@@ -49,7 +50,21 @@ class _TrackingMapState extends State<TrackingMap> {
   @override
   void didUpdateWidget(TrackingMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!_samePins(oldWidget)) _fit();
+    if (widget.selectedStaffId != null &&
+        widget.selectedStaffId != oldWidget.selectedStaffId) {
+      _focusSelected();
+    } else if (!_samePins(oldWidget)) {
+      _fit();
+    }
+  }
+
+  void _focusSelected() {
+    if (!_ready) return;
+    final staff = widget.staff
+        .where((s) => s.id == widget.selectedStaffId)
+        .firstOrNull;
+    if (staff == null) return;
+    _controller.move(LatLng(staff.lat, staff.lng), 16);
   }
 
   bool _samePins(TrackingMap other) {
@@ -98,18 +113,17 @@ class _TrackingMapState extends State<TrackingMap> {
           options: MapOptions(
             initialCenter: _fallbackCenter,
             initialZoom: 10,
-            minZoom: 3,
-            maxZoom: 19,
+            // WHY: keep within the vector tiles' range (BaseMapLayer renders
+            // up to 18); zooming past it was crashing the map.
+            minZoom: 5,
+            maxZoom: 18,
             onMapReady: () {
               _ready = true;
-              _fit();
+              widget.selectedStaffId == null ? _fit() : _focusSelected();
             },
           ),
           children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.bhumijo.facilityapp',
-            ),
+            const BaseMapLayer(),
             MarkerLayer(
               alignment: Alignment.topCenter,
               markers: [
@@ -134,16 +148,10 @@ class _TrackingMapState extends State<TrackingMap> {
                     height: 40,
                     child: StaffMarker(
                       staff: staff,
-                      dimmed:
-                          widget.selectedStaffId != null &&
-                          widget.selectedStaffId != staff.id,
                       onTap: () => widget.onStaffTap(staff),
                     ),
                   ),
               ],
-            ),
-            const SimpleAttributionWidget(
-              source: Text('OpenStreetMap contributors'),
             ),
           ],
         ),

@@ -1,22 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/facility_tracking_entity.dart';
+import '../../../../domain/entities/facility_map_entity.dart';
 import '../../../core/theme/theme.dart';
-
-extension FacilityPinStatusStyle on FacilityPinStatus {
-  Color color(BuildContext context) => switch (this) {
-    FacilityPinStatus.active => context.color.primary,
-    FacilityPinStatus.maintenance => context.color.warning,
-    FacilityPinStatus.inactive => context.color.text.muted,
-  };
-
-  String label(BuildContext context) => switch (this) {
-    FacilityPinStatus.active => context.locale.active,
-    FacilityPinStatus.maintenance => context.locale.facilityStatusMaintenance,
-    FacilityPinStatus.inactive => context.locale.inactive,
-  };
-}
 
 extension StaffPinStatusStyle on StaffPinStatus {
   Color color(BuildContext context) => switch (this) {
