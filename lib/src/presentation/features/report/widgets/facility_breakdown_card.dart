@@ -92,13 +92,13 @@ class _FacilityBreakdownRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${context.locale.target}: ৳${NumberFormatter.format(facility.target)}',
+              '${context.locale.target}: ${context.numbers.currency(facility.target)}',
               style: context.textStyle.bodySmall.copyWith(
                 color: color.text.secondary,
               ),
             ),
             Text(
-              '৳${NumberFormatter.format(facility.income)}',
+              context.numbers.currency(facility.income),
               style: context.textStyle.bodyMedium.copyWith(
                 color: statusColor,
                 fontWeight: FontWeight.w600,

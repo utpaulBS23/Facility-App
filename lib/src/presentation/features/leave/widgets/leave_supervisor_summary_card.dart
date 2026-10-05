@@ -6,7 +6,7 @@ class _LeaveSupervisorSummaryCard extends StatelessWidget {
   final LeaveSummaryEntity summary;
 
   String _count(BuildContext context, int? value) => value != null
-      ? NumberFormatter.format(value)
+      ? context.numbers.number(value)
       : context.locale.notAvailable;
 
   @override

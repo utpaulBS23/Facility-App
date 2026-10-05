@@ -94,7 +94,7 @@ class _ProfitSummaryCard extends StatelessWidget {
               Expanded(
                 child: _SummaryFigureTile(
                   label: context.locale.target,
-                  value: '৳${NumberFormatter.format(report.target)}',
+                  value: context.numbers.currency(report.target),
                   background: color.warningAlt,
                   valueColor: color.warning,
                 ),
@@ -103,7 +103,7 @@ class _ProfitSummaryCard extends StatelessWidget {
               Expanded(
                 child: _SummaryFigureTile(
                   label: context.locale.totalIncome,
-                  value: '৳${NumberFormatter.format(report.totalIncome)}',
+                  value: context.numbers.currency(report.totalIncome),
                   background: color.successAlt,
                   valueColor: color.success,
                 ),

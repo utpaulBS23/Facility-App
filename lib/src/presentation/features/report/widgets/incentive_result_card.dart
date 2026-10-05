@@ -99,7 +99,7 @@ class _IncentiveResultCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '৳${NumberFormatter.format(calc.amount)}',
+                  context.numbers.currency(calc.amount),
                   style: context.textStyle.titleMedium.copyWith(
                     color: color.onPrimary,
                     fontWeight: FontWeight.bold,
