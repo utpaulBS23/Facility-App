@@ -32,7 +32,10 @@ class _OccurrenceChecklistProgressHeader extends StatelessWidget {
                 context.locale.occurrenceChecklist,
                 color: context.color.text.primary,
               ),
-              LabelMediumText('$answered/$total', color: context.color.primary),
+              LabelMediumText(
+                '${context.numbers.integer(answered)}/${context.numbers.integer(total)}',
+                color: context.color.primary,
+              ),
             ],
           ),
           SizedBox(height: spacing.s12),
