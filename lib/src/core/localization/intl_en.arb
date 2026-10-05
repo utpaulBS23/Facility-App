@@ -662,8 +662,8 @@
   "occurrenceChecklistItemsCompleted": "{answered}/{total} answered",
   "@occurrenceChecklistItemsCompleted": {
     "placeholders": {
-      "answered": {"type": "int"},
-      "total": {"type": "int"}
+      "answered": {"type": "int", "format": "decimalPattern"},
+      "total": {"type": "int", "format": "decimalPattern"}
     }
   },
   "occurrenceAnswerSaved": "Answer saved.",
