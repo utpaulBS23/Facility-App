@@ -198,6 +198,7 @@ class Endpoints {
   /// Facility List
   static const String facilities = '/partners/{partnerId}/facilities';
   static const String facilityMap = '/partners/{partnerId}/facility-map';
+  static const String livePositions = '/partners/{partnerId}/live-positions';
   static const String facilityWiseTargets =
       '/partners/{partnerId}/facility-wise-targets';
 
