@@ -32,6 +32,14 @@ class AppNumbers {
     return format.format(number);
   }
 
+  /// Number with grouping and up to three decimals, trailing zeros dropped:
+  /// `১,২৩৪.৫`. For values whose precision isn't fixed, like quantities.
+  String number(Object? value) {
+    final number = _toNum(value);
+    if (number == null) return value?.toString() ?? '';
+    return NumberFormat.decimalPattern(languageCode).format(number);
+  }
+
   /// Whole number with grouping: `১২,৩৪,৫৬৭`.
   String integer(Object? value) => _fixed(value, 0);
 

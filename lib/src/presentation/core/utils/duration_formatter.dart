@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../core/extensions/app_localization.dart';
-import 'number_formatter.dart';
 
 abstract final class DurationFormatter {
   /// Decimal hours (`num` or numeric `String`, e.g. `7.5`) → localized
@@ -21,8 +20,8 @@ abstract final class DurationFormatter {
     final l = context.locale;
 
     final parts = [
-      if (h > 0) l.durationHours(NumberFormatter.format(h)),
-      if (m > 0 || h == 0) l.durationMinutes(NumberFormatter.format(m)),
+      if (h > 0) l.durationHours(context.numbers.integer(h)),
+      if (m > 0 || h == 0) l.durationMinutes(context.numbers.integer(m)),
     ];
     return parts.join(' ');
   }
