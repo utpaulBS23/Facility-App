@@ -36,6 +36,7 @@
     "description": "Error message for minimum length validation",
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -46,6 +47,7 @@
     "description": "Error message for maximum length validation",
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "20"
       }
@@ -258,10 +260,12 @@
   "@slotCapacity": {
     "placeholders": {
       "assigned": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       },
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -271,6 +275,7 @@
   "@belowMinimumStaff": {
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -290,6 +295,7 @@
   "@checkedInCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       }
@@ -299,6 +305,7 @@
   "@checkedOutCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -357,6 +364,7 @@
     "description": "Label showing number of shifts for the selected date",
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -391,6 +399,7 @@
   "@outOf": {
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -520,6 +529,7 @@
   "@daysCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -805,9 +815,11 @@
   "@verifiedCount": {
     "placeholders": {
       "verified": {
+        "format": "decimalPattern",
         "type": "int"
       },
       "total": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -869,6 +881,7 @@
   "@resendIn": {
     "placeholders": {
       "seconds": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
