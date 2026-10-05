@@ -6,6 +6,7 @@ import '../../../domain/entities/login_entity.dart';
 import '../../../domain/entities/menu_configuration_entity.dart';
 import '../application_state/menu_configuration_provider/menu_configuration_provider.dart';
 import '../gen/assets.gen.dart';
+import '../router/routes.dart';
 import '../router/shell_tab_config.dart';
 import '../theme/theme.dart';
 import 'permission_gate.dart';
@@ -108,15 +109,25 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
 
     // WHY: a branch the server did not put in the bar (a drawer row that opened
     // a tab page) is reached from the Menu tab, so that tab stays highlighted.
-    final menuIndex = visibleTabs.indexWhere((tab) => tab.config.itemKey == null);
+    final menuIndex = visibleTabs.indexWhere(
+      (tab) => tab.config.itemKey == null,
+    );
     final branchIndex = visibleTabs.indexWhere(
       (tab) => tab.config.branchIndex == statefulNavigationShell.currentIndex,
     );
     final selectedIndex = branchIndex >= 0 ? branchIndex : menuIndex;
 
+    // WHY: the Tracking screen is a full-screen map, so it hides the bar and
+    // brings its own back button (to the Menu tab).
+    final isFullScreenBranch =
+        statefulNavigationShell.currentIndex ==
+        shellTabConfigs
+            .firstWhere((tab) => tab.route == Routes.tracking)
+            .branchIndex;
+
     return Scaffold(
       body: statefulNavigationShell,
-      bottomNavigationBar: visibleTabs.length < 2
+      bottomNavigationBar: visibleTabs.length < 2 || isFullScreenBranch
           ? null
           : BottomNavigationBar(
               selectedItemColor: context.color.primary,
