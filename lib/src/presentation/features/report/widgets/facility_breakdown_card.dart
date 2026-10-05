@@ -69,7 +69,7 @@ class _FacilityBreakdownRow extends StatelessWidget {
             ),
             Gap(spacing.s6),
             Text(
-              '${facility.achievementRate.toStringAsFixed(0)}%',
+              context.numbers.percent(facility.achievementRate, fractionDigits: 0),
               style: context.textStyle.bodyMedium.copyWith(
                 color: statusColor,
                 fontWeight: FontWeight.bold,

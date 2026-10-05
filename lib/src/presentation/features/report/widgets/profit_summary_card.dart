@@ -61,7 +61,7 @@ class _ProfitSummaryCard extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '${report.achievementRate.toStringAsFixed(1)}%',
+                    text: context.numbers.percent(report.achievementRate, fractionDigits: 1),
                     style: context.textStyle.bodyLarge.copyWith(
                       color: color.primary,
                       fontWeight: FontWeight.bold,

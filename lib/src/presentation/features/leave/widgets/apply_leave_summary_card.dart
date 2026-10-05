@@ -67,8 +67,8 @@ class LeaveSummaryCard extends ConsumerWidget {
             : balances.first;
 
         return (
-          selectedBalance.remainingDays.toStringAsFixed(0),
-          selectedBalance.pendingDays.toStringAsFixed(0),
+          context.numbers.decimal(selectedBalance.remainingDays, 0),
+          context.numbers.decimal(selectedBalance.pendingDays, 0),
         );
       },
       orElse: () => (context.locale.notAvailable, context.locale.notAvailable),
