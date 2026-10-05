@@ -53,14 +53,6 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
     super.dispose();
   }
 
-  void _onBack(BuildContext context) {
-    if (context.canPop()) {
-      context.pop();
-    } else {
-      context.goNamed(Routes.shift);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
@@ -83,7 +75,6 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
       appBar: MenuItemAppBar(
         itemKey: MenuItemKey.leave,
         fallbackTitle: context.locale.leaveRequests,
-        onBack: () => _onBack(context),
         actions: [
           PermissionGate(
             permissions: const [

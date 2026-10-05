@@ -67,14 +67,6 @@ class _ToiletLocationPageState extends ConsumerState<ToiletLocationPage> {
     );
   }
 
-  void _onBack(BuildContext context) {
-    if (context.canPop()) {
-      context.pop();
-    } else {
-      context.goNamed(Routes.shift);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final toiletsAsync = ref.watch(toiletsProvider);
@@ -84,7 +76,6 @@ class _ToiletLocationPageState extends ConsumerState<ToiletLocationPage> {
       appBar: MenuItemAppBar(
         itemKey: MenuItemKey.toiletLocation,
         fallbackTitle: context.locale.toiletLocation,
-        onBack: () => _onBack(context),
       ),
       body: _ToiletLocationBody(
         toiletsAsync: toiletsAsync,

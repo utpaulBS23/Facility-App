@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/accessible_facility_entity.dart';
-import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
@@ -42,10 +40,6 @@ class _StockPageState extends ConsumerState<StockPage> {
     _selectedFacilityId = widget.args?.facilityId;
   }
 
-  void _onBack(BuildContext context) {
-    context.goNamed(Routes.shift);
-  }
-
   Future<void> _showFacilitySelector(
     BuildContext context,
     List<AccessibleFacilityEntity> facilities,
@@ -76,7 +70,6 @@ class _StockPageState extends ConsumerState<StockPage> {
       appBar: MenuItemAppBar(
         itemKey: MenuItemKey.stockBalance,
         fallbackTitle: context.locale.stock,
-        onBack: () => _onBack(context),
         actions: [
           if (facilities.length > 1)
             FacilityFilterButton(
