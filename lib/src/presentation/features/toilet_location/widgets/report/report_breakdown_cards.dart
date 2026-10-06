@@ -162,7 +162,7 @@ class ReportRevenueCard extends StatelessWidget {
     ];
 
     return ToiletSectionCard(
-      title: 'Revenue (Rs.)',
+      title: 'Revenue (Tk)',
       child: Column(
         children: [
           for (var i = 0; i < lines.length; i++)
@@ -195,7 +195,7 @@ class ReportServiceCostCard extends StatelessWidget {
     final lines = report.expenseLines;
 
     return ToiletSectionCard(
-      title: 'Service cost (Rs.)',
+      title: 'Service cost (Tk)',
       child: Column(
         children: [
           for (var i = 0; i < lines.length; i++)
