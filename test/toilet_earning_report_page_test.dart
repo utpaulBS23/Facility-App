@@ -108,8 +108,8 @@ void main() {
     for (final text in [
       'Number of subscribers',
       'Digital system',
-      'Revenue (Rs.)',
-      'Service cost (Rs.)',
+      'Revenue (Tk)',
+      'Service cost (Tk)',
       'Water bill',
       'Sanitary pad',
       'Profit/Loss',
@@ -148,7 +148,7 @@ void main() {
     await _pump(tester, load: () async => _empty);
 
     await tester.scrollUntilVisible(
-      find.text('Revenue (Rs.)'),
+      find.text('Revenue (Tk)'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
