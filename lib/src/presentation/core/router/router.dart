@@ -169,6 +169,11 @@ GoRouter goRouter(Ref ref) {
       // menu-pushed route the user lacks permission for. Redirect those to
       // the first permitted tab. Both tables share the same {route,
       // permissions} shape, so one loop covers both.
+      // TODO: temporary, remove with the hardcoded Dashboard menu row once the
+      // backend lists `dashboard`. Without this the guard below sends the
+      // Dashboard route to the first permitted tab (Shift).
+      if (state.uri.path == Routes.dashboard) return null;
+
       if (session != null) {
         // WHY the server layout is consulted here too: it decides what the
         // menu offers, so a deep link to a screen the server doesn't list (or

@@ -1036,6 +1036,34 @@
     "placeholders": { "count": { "type": "String", "example": "12" } }
   },
   "travelClaimFiled": "ভ্রমণ দাবি দাখিল করা হয়েছে",
+  "staffShortage": "কর্মী সংকট",
+  "assign": "নিয়োগ দিন",
+  "seeAll": "সব দেখুন",
+  "showLess": "কম দেখান",
+  "showMoreFacilities": "আরও {count}টি সুবিধা দেখান",
+  "@showMoreFacilities": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "male": "পুরুষ",
+  "female": "মহিলা",
+  "alwaysOn": "সবসময় চালু",
+  "toggleOn": "চালু",
+  "toggleOff": "বন্ধ",
+  "digestOnly": "শুধু ডাইজেস্ট",
+  "pushChannel": "পুশ",
+  "severityCritical": "জরুরি",
+  "targetVsAchievement": "মাসিক লক্ষ্য বনাম অর্জন",
+  "facilityExpense": "সুবিধার খরচ",
+  "airQuality": "বাতাসের মান",
+  "issueSummary": "সমস্যার সারসংক্ষেপ",
+  "visitorsPerDay": "প্রতিদিনের দর্শনার্থী",
+  "executive": "নির্বাহী",
+  "totalFacility": "মোট সুবিধা",
+  "monthlyTarget": "মাসিক লক্ষ্য",
+  "percentOfTarget": "লক্ষ্যের {percent}",
+  "@percentOfTarget": {
+    "placeholders": { "percent": { "type": "String", "example": "৮৩%" } }
+  },
   "settings": "সেটিংস",
   "retry": "পুনরায় চেষ্টা করুন"
 }

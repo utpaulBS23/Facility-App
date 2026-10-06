@@ -3,6 +3,24 @@ import 'package:intl/intl.dart';
 
 import '../theme/theme.dart';
 
+/// Opens the month picker dialog; [onSelected] gets the first day of the
+/// chosen month.
+Future<void> showMonthPickerDialog(
+  BuildContext context, {
+  required DateTime month,
+  required DateTime lastDate,
+  required ValueChanged<DateTime> onSelected,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (_) => _MonthPickerDialog(
+      initialDate: month,
+      lastDate: lastDate,
+      onSelected: onSelected,
+    ),
+  );
+}
+
 /// Month filter trigger + picker dialog, shared by any list page that scopes
 /// its data to a calendar month (My Attendance, Additional Income, ...).
 class MonthFilterButton extends StatelessWidget {
@@ -21,13 +39,11 @@ class MonthFilterButton extends StatelessWidget {
   final ValueChanged<DateTime> onSelected;
 
   Future<void> _pickMonth(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      builder: (_) => _MonthPickerDialog(
-        initialDate: month,
-        lastDate: lastDate,
-        onSelected: onSelected,
-      ),
+    await showMonthPickerDialog(
+      context,
+      month: month,
+      lastDate: lastDate,
+      onSelected: onSelected,
     );
   }
 

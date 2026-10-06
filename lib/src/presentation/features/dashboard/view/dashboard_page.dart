@@ -1,548 +1,366 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
-import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/text/typography.dart';
-import '../../../core/widgets/menu_item_app_bar.dart';
-import '../../../../domain/entities/menu_item_key.dart';
+import '../../../core/widgets/category_filter_chips.dart';
+import '../../../core/widgets/month_filter_button.dart';
+import '../widgets/check_in_out_card.dart';
+import '../widgets/column_chart.dart';
+import '../widgets/dashboard_filter_chips.dart';
+import '../widgets/dashboard_header.dart';
+import '../widgets/dashboard_meter.dart';
+import '../widgets/dashboard_section_header.dart';
+import '../widgets/dashboard_stat_tile.dart';
+import '../widgets/dashboard_tone.dart';
+import '../widgets/donut_chart.dart';
+import '../widgets/executive_card.dart';
+import '../widgets/facility_card.dart';
+import '../widgets/facility_row.dart';
+import '../widgets/issue_row.dart';
+import '../widgets/issue_summary_card.dart';
+import '../widgets/kpi_hero_card.dart';
+import '../widgets/revenue_row.dart';
+import '../widgets/staff_shortage_alert.dart';
+import '../widgets/trend_chart.dart';
+import 'dashboard_sample_data.dart';
 
-class DashboardPage extends StatelessWidget {
+const _allFacilities = 'All facilities';
+const _allExecutives = 'All executives';
+const _topRevenue = 'Top revenue';
+const _lowRevenue = 'Lowest revenue';
+
+/// The Dashboard tab, with every role's components on one page: the
+/// supervisor's day (check in, shortage, counts, charts, facility cards), the
+/// operations manager's executives and issues, and the owner's revenue.
+///
+/// TODO: sample content, see dashboard_sample_data.dart.
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
   @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  String _facility = _allFacilities;
+  String _executive = _allExecutives;
+  String _revenue = _topRevenue;
+  DateTime _facilityMonth = _thisMonth();
+  DateTime _executiveMonth = _thisMonth();
+
+  static DateTime _thisMonth() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month);
+  }
+
+  String _monthLabel(DateTime month) => DateFormat(
+    'MMM yyyy',
+    Localizations.localeOf(context).languageCode,
+  ).format(month);
+
+  void _pickMonth(DateTime current, ValueChanged<DateTime> onPicked) {
+    showMonthPickerDialog(
+      context,
+      month: current,
+      lastDate: DateTime.now(),
+      onSelected: (m) => setState(() => onPicked(m)),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final locale = context.locale;
+    final gap = SizedBox(height: context.dimensions.spacing.s12);
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: MenuItemAppBar(
-        itemKey: MenuItemKey.dashboard,
-        fallbackTitle: locale.dashboard,
-        isTabByDefault: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(spacing.s16),
+      body: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Welcome Section
-              _WelcomeCard(context: context),
-              Gap(spacing.s20),
+              const DashboardHeader(
+                greeting: 'Welcome, Rahim',
+                initial: 'R',
+                role: 'Supervisor',
+                dateText: 'Mon, 5 Oct',
+                unreadText: '3',
+                bellLabel: 'Notifications, 3 unread',
+              ),
+              Padding(
+                padding: EdgeInsets.all(context.dimensions.spacing.s16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // My day. Not checked in yet: Check In is live, Check Out
+                    // is not.
+                    CheckInOutCard(
+                      checkInText: '--:--',
+                      checkOutText: '--:--',
+                      statusText: 'Mirpur morning shift · not checked in yet',
+                      statusTone: DashboardTone.neutral,
+                      onCheckIn: () {},
+                    ),
+                    gap,
+                    StaffShortageAlert(
+                      totalText: '7',
+                      summary: '7 people short across 4 facilities',
+                      rows: sampleShortages,
+                      onAssign: (_) {},
+                    ),
+                    gap,
+                    const _CountTiles(),
+                    gap,
 
-              // Monthly Expenditure Summary
-              _ExpenditureSummary(context: context),
-              Gap(spacing.s20),
+                    // Revenue
+                    const KpiHeroCard(
+                      label: 'Total revenue · Oct 2026',
+                      value: '৳ 45,000',
+                      deltaText: '▲ 4% vs last month',
+                      deltaPositive: true,
+                      footnote: 'across 6 facilities',
+                    ),
+                    gap,
+                    const TrendChart(
+                      title: 'Revenue trend',
+                      subtitle: 'Last 6 months vs monthly target',
+                      labels: sampleMonths,
+                      valuePrefix: '৳ ',
+                      series: sampleRevenueSeries,
+                    ),
+                    gap,
+                    const DashboardSectionHeader(
+                      title: 'Revenue by facility',
+                      subtitle: 'Share of monthly target reached',
+                      actionLabel: 'View all',
+                    ),
+                    gap,
+                    DashboardFilterChips(
+                      style: DashboardFilterStyle.segmented,
+                      options: const [_topRevenue, _lowRevenue],
+                      selected: _revenue,
+                      onSelected: (v) => setState(() => _revenue = v),
+                    ),
+                    for (final r
+                        in _revenue == _topRevenue
+                            ? sampleTopRevenue
+                            : sampleLowRevenue) ...[
+                      SizedBox(height: context.dimensions.spacing.s8),
+                      RevenueRow(
+                        rank: '${r.rank}',
+                        name: r.name,
+                        amountText: '৳ ${sampleMoney(r.amount)}',
+                        percent: r.percent,
+                        percentText: '${r.percent}%',
+                        deltaText:
+                            '${r.delta >= 0 ? '▲' : '▼'} ${r.delta.abs()}% '
+                            'vs last month',
+                        deltaPositive: r.delta >= 0,
+                        tone: r.tone,
+                      ),
+                    ],
+                    gap,
 
-              // Staff Shortage Alert
-              _StaffShortageAlert(context: context),
-              Gap(spacing.s20),
+                    // Collection and visitors
+                    const TrendChart(
+                      title: 'Collection this week',
+                      subtitle: 'Achieved vs daily target · all facilities',
+                      labels: sampleDays,
+                      valuePrefix: '৳ ',
+                      series: sampleCollectionSeries,
+                    ),
+                    gap,
+                    const ColumnChart(
+                      title: 'Visitors per day',
+                      subtitle: 'Male and female, last 7 days',
+                      labels: sampleDays,
+                      series: sampleVisitorSeries,
+                    ),
+                    gap,
 
-              // Facilities Overview
-              _FacilitiesOverview(context: context),
-              Gap(spacing.s20),
+                    // Executives
+                    const ColumnChart(
+                      title: 'Target vs achievement',
+                      subtitle: 'Monthly, by executive',
+                      labels: sampleExecutiveLabels,
+                      mode: ColumnChartMode.grouped,
+                      valuePrefix: '৳ ',
+                      series: sampleExecutiveSeries,
+                    ),
+                    gap,
+                    ..._executiveSection(),
+                    gap,
 
-              // Air Quality Section
-              _AirQualitySection(context: context),
-              Gap(spacing.s20),
+                    // Facilities
+                    ..._facilitySection(),
+                    gap,
 
-              // Cost Summary
-              _CostSummarySection(context: context),
-              Gap(spacing.s20),
+                    // Issues
+                    const DonutChart(
+                      title: 'Issues by status',
+                      subtitle: 'All facilities, this month',
+                      centerLabel: 'issues',
+                      slices: sampleIssueSlices,
+                    ),
+                    gap,
+                    const IssueSummaryCard(
+                      title: 'Issue summary',
+                      counts: sampleIssueCounts,
+                    ),
+                    gap,
+                    RecentIssuesCard(
+                      title: 'Recent issues',
+                      issues: [
+                        for (final i in sampleRecentIssues)
+                          IssueRow(
+                            title: i.title,
+                            facility: i.facility,
+                            status: i.status,
+                            tone: i.tone,
+                          ),
+                      ],
+                    ),
+                    SizedBox(height: context.dimensions.spacing.s16),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class _WelcomeCard extends StatelessWidget {
-  const _WelcomeCard({required this.context});
-
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
+  List<Widget> _executiveSection() {
     final spacing = context.dimensions.spacing;
+    final visible = [
+      for (final e in sampleExecutives)
+        if (_executive == _allExecutives || e.name == _executive) e,
+    ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LabelLargeText('Welcome, Rahium'),
-        Gap(spacing.s8),
-        BodySmallText(
-          'Monthly expenditure summary',
-          color: context.color.text.secondary,
-        ),
-      ],
-    );
-  }
-}
-
-class _ExpenditureSummary extends StatelessWidget {
-  const _ExpenditureSummary({required this.context});
-
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.color.success.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(radius.r12),
-            ),
-            padding: EdgeInsets.all(spacing.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.check_circle_outline, color: context.color.success, size: 24),
-                Gap(spacing.s8),
-                BodySmallText('Check In', color: context.color.text.secondary),
-                Gap(spacing.s4),
-                DisplaySmallText('---', color: context.color.success),
-              ],
-            ),
-          ),
-        ),
-        Gap(spacing.s12),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.color.error.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(radius.r12),
-            ),
-            padding: EdgeInsets.all(spacing.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.close_rounded, color: context.color.error, size: 24),
-                Gap(spacing.s8),
-                BodySmallText('Check Out', color: context.color.text.secondary),
-                Gap(spacing.s4),
-                DisplaySmallText('---', color: context.color.error),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StaffShortageAlert extends StatelessWidget {
-  const _StaffShortageAlert({required this.context});
-
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: context.color.warning.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(radius.r12),
-        border: Border.all(color: context.color.warning.withValues(alpha: 0.3)),
+    return [
+      DashboardSectionHeader(
+        title: 'Executive details',
+        subtitle:
+            'Showing ${visible.length} of ${sampleExecutives.length} '
+            'executives',
+        actionLabel: _monthLabel(_executiveMonth),
+        onAction: () => _pickMonth(_executiveMonth, (m) => _executiveMonth = m),
       ),
-      padding: EdgeInsets.all(spacing.s16),
+      SizedBox(height: spacing.s12),
+      CategoryFilterChips<String>(
+        categories: [_allExecutives, for (final e in sampleExecutives) e.name],
+        selectedCategory: _executive,
+        onSelected: (v) => setState(() => _executive = v),
+      ),
+      for (final e in visible) ...[
+        SizedBox(height: spacing.s12),
+        ExecutiveCard(
+          name: e.name,
+          facilityCountText: '${e.facilities.length}',
+          targetText: '৳ ${sampleMoney(e.target)}',
+          facilities: [
+            for (final f in e.facilities)
+              FacilityRow(
+                name: f.name,
+                meterLabel: 'Target vs achievement',
+                percent: f.pct,
+                pctText: '${f.pct}%',
+                footLeft: 'Expense ৳ ${sampleMoney(f.expense)}',
+                footRight: 'M ${f.male} · F ${f.female} per day',
+              ),
+          ],
+        ),
+      ],
+    ];
+  }
+
+  List<Widget> _facilitySection() {
+    final spacing = context.dimensions.spacing;
+    final visible = [
+      for (final f in sampleFacilities)
+        if (_facility == _allFacilities || f.name == _facility) f,
+    ];
+
+    return [
+      DashboardSectionHeader(
+        title: 'Facility summary',
+        subtitle: '${visible.length} of ${sampleFacilities.length} facilities',
+        actionLabel: _monthLabel(_facilityMonth),
+        onAction: () => _pickMonth(_facilityMonth, (m) => _facilityMonth = m),
+      ),
+      SizedBox(height: spacing.s12),
+      CategoryFilterChips<String>(
+        categories: [_allFacilities, for (final f in sampleFacilities) f.name],
+        selectedCategory: _facility,
+        onSelected: (v) => setState(() => _facility = v),
+      ),
+      for (final f in visible) ...[
+        SizedBox(height: spacing.s12),
+        FacilityCard(data: f.toCard()),
+      ],
+    ];
+  }
+}
+
+class _CountTiles extends StatelessWidget {
+  const _CountTiles();
+
+  @override
+  Widget build(BuildContext context) {
+    final gap = context.dimensions.spacing.s10;
+
+    Widget row(Widget a, Widget b) => IntrinsicHeight(
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            width: spacing.s40,
-            height: spacing.s40,
-            decoration: BoxDecoration(
-              color: context.color.warning,
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: LabelLargeText('2', color: context.color.onPrimary),
-          ),
-          Gap(spacing.s12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LabelLargeText('Staff shortage'),
-                Gap(spacing.s4),
-                BodySmallText(
-                  '2 staff shortage not assigned to the facility',
-                  color: context.color.text.secondary,
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: a),
+          SizedBox(width: gap),
+          Expanded(child: b),
         ],
       ),
     );
-  }
-}
-
-class _FacilitiesOverview extends StatelessWidget {
-  const _FacilitiesOverview({required this.context});
-
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LabelLargeText('Facilities'),
-        Gap(spacing.s12),
-        _FacilityCard(
-          context: context,
-          name: 'Mirpur-10 Public Toilet Complex',
-          total: 8,
-          open: 1,
-          inProcess: 3,
-          close: 1,
-          uptimeRate: 63,
-        ),
-        Gap(spacing.s12),
-        _FacilityCard(
-          context: context,
-          name: 'Hammondi Market Restrooms',
-          total: 5,
-          open: 2,
-          inProcess: 1,
-          close: 2,
-          uptimeRate: 72,
-        ),
-      ],
-    );
-  }
-}
-
-class _FacilityCard extends StatelessWidget {
-  const _FacilityCard({
-    required this.context,
-    required this.name,
-    required this.total,
-    required this.open,
-    required this.inProcess,
-    required this.close,
-    required this.uptimeRate,
-  });
-
-  final BuildContext context;
-  final String name;
-  final int total;
-  final int open;
-  final int inProcess;
-  final int close;
-  final int uptimeRate;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        borderRadius: BorderRadius.circular(radius.r12),
-        border: Border.all(color: context.color.borderSubtle),
-      ),
-      padding: EdgeInsets.all(spacing.s16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.location_on_rounded, color: context.color.primary, size: 20),
-              Gap(spacing.s8),
-              Expanded(child: LabelLargeText(name)),
-              Icon(Icons.arrow_forward_ios_rounded, size: 16, color: context.color.text.secondary),
-            ],
-          ),
-          Gap(spacing.s16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _StatItem(context: context, value: total.toString(), label: 'Total'),
-              _StatItem(context: context, value: open.toString(), label: 'Open', color: context.color.success),
-              _StatItem(context: context, value: inProcess.toString(), label: 'In process', color: context.color.warning),
-              _StatItem(context: context, value: close.toString(), label: 'Close', color: context.color.error),
-            ],
-          ),
-          Gap(spacing.s16),
-          BodySmallText('Uptime rate', color: context.color.text.secondary),
-          Gap(spacing.s8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(radius.r4),
-            child: LinearProgressIndicator(
-              value: uptimeRate / 100,
-              minHeight: spacing.s6,
-              backgroundColor: context.color.borderSubtle,
-              color: context.color.primary,
-            ),
-          ),
-          Gap(spacing.s8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              BodySmallText('', color: context.color.text.secondary),
-              BodySmallText(context.numbers.percent(uptimeRate), color: context.color.text.secondary),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatItem extends StatelessWidget {
-  const _StatItem({
-    required this.context,
-    required this.value,
-    required this.label,
-    this.color,
-  });
-
-  final BuildContext context;
-  final String value;
-  final String label;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
 
     return Column(
       children: [
-        Container(
-          width: spacing.s40,
-          height: spacing.s40,
-          decoration: BoxDecoration(
-            color: (color ?? context.color.text.secondary).withValues(alpha: 0.1),
-            shape: BoxShape.circle,
+        row(
+          const DashboardStatTile(
+            value: '18',
+            label: 'Today working',
+            tone: DashboardTone.green,
+            hint: 'of 23 rostered',
           ),
-          alignment: Alignment.center,
-          child: LabelLargeText(
-            value,
-            color: color ?? context.color.text.secondary,
-          ),
-        ),
-        Gap(spacing.s4),
-        BodySmallText(label, color: context.color.text.secondary),
-      ],
-    );
-  }
-}
-
-class _AirQualitySection extends StatelessWidget {
-  const _AirQualitySection({required this.context});
-
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.air_rounded, color: context.color.primary, size: 20),
-            Gap(spacing.s8),
-            LabelLargeText('Air Quality'),
-          ],
-        ),
-        Gap(spacing.s12),
-        _AirQualityItem(context: context, facility: 'Mirpur-10 Public Toilet', aqi: 10, status: 'Good'),
-        Gap(spacing.s12),
-        _AirQualityItem(context: context, facility: 'Hammondi Park Restroom', aqi: 35, status: 'Medium'),
-        Gap(spacing.s12),
-        _AirQualityItem(context: context, facility: 'Gulshan-2 Market Toilet', aqi: 42, status: 'Bad'),
-      ],
-    );
-  }
-}
-
-class _AirQualityItem extends StatelessWidget {
-  const _AirQualityItem({
-    required this.context,
-    required this.facility,
-    required this.aqi,
-    required this.status,
-  });
-
-  final BuildContext context;
-  final String facility;
-  final int aqi;
-  final String status;
-
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'Good':
-        return context.color.success;
-      case 'Medium':
-        return context.color.warning;
-      case 'Bad':
-        return context.color.error;
-      default:
-        return context.color.text.secondary;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BodySmallText(facility),
-              Gap(spacing.s4),
-              BodySmallText('AQI: $aqi', color: context.color.text.secondary),
-            ],
+          const DashboardStatTile(
+            value: '4',
+            label: 'Pending approval',
+            tone: DashboardTone.orange,
+            hint: 'Needs your review',
           ),
         ),
-        Gap(spacing.s12),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: spacing.s12, vertical: spacing.s6),
-          decoration: BoxDecoration(
-            color: _getStatusColor(status).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(spacing.s4),
+        SizedBox(height: gap),
+        row(
+          const DashboardStatTile(
+            value: '3',
+            label: 'Not checked in',
+            tone: DashboardTone.blue,
+            hint: 'Shift not started',
           ),
-          child: Row(
-            children: [
-              Container(
-                width: spacing.s8,
-                height: spacing.s8,
-                decoration: BoxDecoration(
-                  color: _getStatusColor(status),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Gap(spacing.s4),
-              BodySmallText(status, color: _getStatusColor(status)),
-            ],
+          const DashboardStatTile(
+            value: '2',
+            label: 'Late',
+            tone: DashboardTone.red,
+            hint: 'Past start time',
           ),
         ),
-        Icon(Icons.arrow_forward_ios_rounded, size: 14, color: context.color.text.secondary),
-      ],
-    );
-  }
-}
-
-class _CostSummarySection extends StatelessWidget {
-  const _CostSummarySection({required this.context});
-
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.receipt_long_rounded, color: context.color.primary, size: 20),
-                Gap(spacing.s8),
-                LabelLargeText('Cost Summary for Each Facility'),
-              ],
-            ),
-            BodySmallText('View', color: context.color.primary),
-          ],
+        SizedBox(height: gap),
+        const DashboardMeter(
+          label: 'Monthly target vs achievement',
+          valueText: '63%',
+          percent: 63,
+          tone: DashboardTone.orange,
+          footLeft: '৳ 9,450 achieved',
+          footRight: 'Target ৳ 15,000',
         ),
-        Gap(spacing.s12),
-        _CostItem(
-          context: context,
-          facility: 'Hammondi Market Restrooms',
-          acquired: '৳ 12,500',
-          target: '৳ 15,000',
-        ),
-        Gap(spacing.s12),
-        _CostItem(
-          context: context,
-          facility: 'Banani Square Restrooms',
-          acquired: '৳ 9,750',
-          target: '৳ 12,000',
-        ),
-      ],
-    );
-  }
-}
-
-class _CostItem extends StatelessWidget {
-  const _CostItem({
-    required this.context,
-    required this.facility,
-    required this.acquired,
-    required this.target,
-  });
-
-  final BuildContext context;
-  final String facility;
-  final String acquired;
-  final String target;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.location_on_rounded, color: context.color.primary, size: 16),
-                  Gap(spacing.s4),
-                  Expanded(child: BodySmallText(facility)),
-                ],
-              ),
-              Gap(spacing.s8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BodySmallText('Acquired:', color: context.color.text.secondary),
-                      BodySmallText(acquired),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BodySmallText('Target', color: context.color.text.secondary),
-                      BodySmallText(target),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Icon(Icons.arrow_forward_ios_rounded, size: 14, color: context.color.text.secondary),
       ],
     );
   }

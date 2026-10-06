@@ -138,13 +138,21 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       // WHY server list drives the rows: the drawer is exactly
                       // what the backend sent. Keys this build has no screen
                       // for are skipped.
+                      final serverListsDashboard = (menuConfig?.drawer ?? [])
+                          .any((i) => i.itemKey == MenuItemKey.dashboard.key);
                       final rows = <Widget>[
+                        // TODO: temporary hardcoded row, remove once the
+                        // backend lists `dashboard` in the drawer.
+                        if (!serverListsDashboard)
+                          _MenuItemTile(
+                            config: configByKey[MenuItemKey.dashboard]!,
+                            title: context.locale.dashboard,
+                          ),
                         for (final item in permittedMenuItems(
                           menuConfig?.drawer,
                           permissions,
                         ))
-                          if (MenuItemKey.fromKey(item.itemKey)
-                              case final key?)
+                          if (MenuItemKey.fromKey(item.itemKey) case final key?)
                             if (configByKey[key] case final config?)
                               _MenuItemTile(
                                 config: config,

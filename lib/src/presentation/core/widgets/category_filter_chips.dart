@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-class CategoryFilterChips<T extends Enum> extends StatelessWidget {
+/// A pill-segmented single choice. [T] is usually an enum; any type works when
+/// [labelBuilder] is given, or when it is a String.
+class CategoryFilterChips<T> extends StatelessWidget {
   const CategoryFilterChips({
     super.key,
     required this.categories,
@@ -20,7 +22,7 @@ class CategoryFilterChips<T extends Enum> extends StatelessWidget {
     if (labelBuilder != null) {
       return labelBuilder!(context, category);
     }
-    return category.name;
+    return category is Enum ? category.name : category.toString();
   }
 
   @override
@@ -49,12 +51,12 @@ class CategoryFilterChips<T extends Enum> extends StatelessWidget {
             };
             final boxShadow = switch (isSelected) {
               true => [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
               false => null,
             };
             final fontWeight = switch (isSelected) {
