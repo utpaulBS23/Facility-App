@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/extensions/app_numbers.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
-import '../../../../domain/entities/toilet_location/facility_wise_report_entity.dart';
+import '../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -16,18 +16,18 @@ import '../../../core/widgets/loading_indicator.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
 import '../riverpod/toilet_earning_report_provider.dart';
 import '../widgets/details/toilet_section_card.dart';
+import '../widgets/report/report_breakdown_cards.dart';
 import '../widgets/report/report_filter_widgets.dart';
-import '../widgets/report/report_line_widgets.dart';
 import '../widgets/report/report_summary_widgets.dart';
 
 // TODO: texts are English only until the next localisation pass.
 
-/// One toilet's monthly report for a closed month: income, cost, cash moved to
-/// bKash or the bank, and the profit or loss.
+/// One toilet's monthly report: people served, income and cost by source, the
+/// digital system, and the profit or loss.
 ///
-/// WHY only these figures: the facility-wise report API carries nothing else.
-/// The design's subscriber, digital system and revenue-by-type tables are left
-/// out until the API sends them.
+/// WHY it is added up here and not read from one report API: the figures come
+/// from the day-to-day records, exactly as the admin web's Facility Wise
+/// Report PDF adds them (see [buildFacilityMonthlyReport]).
 class ToiletEarningReportPage extends ConsumerStatefulWidget {
   const ToiletEarningReportPage({super.key, required this.facilityId});
 
@@ -41,17 +41,8 @@ class ToiletEarningReportPage extends ConsumerStatefulWidget {
 class _ToiletEarningReportPageState
     extends ConsumerState<ToiletEarningReportPage> {
   late int _facilityId = widget.facilityId;
-
-  // WHY last month first: only closed months have data, and the current one
-  // is almost never closed yet.
-  late int _year = _lastMonth().year;
-  late int _month = _lastMonth().month;
-
-  static DateTime _lastMonth() {
-    final now = DateTime.now();
-
-    return DateTime(now.year, now.month - 1);
-  }
+  late int _year = DateTime.now().year;
+  late int _month = DateTime.now().month;
 
   String get _monthParam =>
       '${_year.toString().padLeft(4, '0')}-'
@@ -95,10 +86,7 @@ class _ToiletEarningReportPageState
       for (final f in accessible ?? const <AccessibleFacilityEntity>[])
         f.id: f.localizedName(language),
     };
-    toilets.putIfAbsent(
-      _facilityId,
-      () => report.valueOrNull?.first?.facilityName ?? '—',
-    );
+    toilets.putIfAbsent(_facilityId, () => '—');
 
     return Scaffold(
       backgroundColor: c.scaffoldBackground,
@@ -164,12 +152,7 @@ class _ToiletEarningReportPageState
                   ),
                 ),
               ),
-              data: (data) {
-                final row = data.first;
-                if (row == null) return const _NotClosedYet();
-
-                return _ReportBody(row: row);
-              },
+              data: (data) => _ReportBody(report: data),
             ),
             SizedBox(height: spacing.s16),
           ],
@@ -179,28 +162,10 @@ class _ToiletEarningReportPageState
   }
 }
 
-class _NotClosedYet extends StatelessWidget {
-  const _NotClosedYet();
-
-  @override
-  Widget build(BuildContext context) {
-    return ToiletSectionCard(
-      title: 'Nothing closed yet',
-      child: Text(
-        'This month has not been closed for this toilet, so there is no '
-        'report yet. Pick an earlier month.',
-        style: context.textStyle.bodyMedium.copyWith(
-          color: context.color.text.secondary,
-        ),
-      ),
-    );
-  }
-}
-
 class _ReportBody extends StatelessWidget {
-  const _ReportBody({required this.row});
+  const _ReportBody({required this.report});
 
-  final FacilityWiseRowEntity row;
+  final FacilityMonthlyReportEntity report;
 
   @override
   Widget build(BuildContext context) {
@@ -215,86 +180,45 @@ class _ReportBody extends StatelessWidget {
         ToiletTileRow(
           children: [
             ReportSummaryTile(
+              icon: Icons.groups_outlined,
+              value: n.integer(report.totalUsers),
+              label: 'User',
+              tone: DashboardTone.blue,
+            ),
+            ReportSummaryTile(
               icon: Icons.trending_up_rounded,
-              value: money(row.income),
+              value: money(report.totalIncome),
               label: 'Total income',
               tone: DashboardTone.green,
             ),
             ReportSummaryTile(
-              icon: Icons.trending_down_rounded,
-              value: money(row.expense),
-              label: 'Total expense',
-              tone: DashboardTone.red,
-            ),
-            ReportSummaryTile(
-              icon: Icons.account_balance_wallet_outlined,
-              value: money(row.cashBalance),
-              label: 'Cash balance',
-              tone: DashboardTone.blue,
+              icon: Icons.trending_up_rounded,
+              value: money(report.profitLoss),
+              label: 'Total profit',
+              tone: report.profitLoss < 0
+                  ? DashboardTone.red
+                  : DashboardTone.green,
             ),
           ],
         ),
+        gap,
+        ReportSubscribersCard(report: report),
+        gap,
+        ReportDigitalSystemCard(report: report),
         gap,
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: ToiletSectionCard(
-                title: 'Service cost (Rs.)',
-                child: Column(
-                  children: [
-                    ReportLineRow(
-                      compact: true,
-                      label: 'Accounts paid',
-                      value: money(row.accountsPaid),
-                    ),
-                    ReportLineRow(
-                      compact: true,
-                      label: 'Operation department',
-                      value: money(row.operationDepartment),
-                      showDivider: false,
-                    ),
-                    ReportTotalRow(
-                      compact: true,
-                      label: 'TOTAL',
-                      value: money(row.expense),
-                      tone: DashboardTone.red,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            Expanded(child: ReportRevenueCard(report: report)),
             SizedBox(width: spacing.s12),
-            Expanded(
-              child: ToiletSectionCard(
-                title: 'Cash moved (Rs.)',
-                child: Column(
-                  children: [
-                    ReportLineRow(
-                      compact: true,
-                      label: 'To bKash',
-                      value: money(row.toBkash),
-                    ),
-                    ReportLineRow(
-                      compact: true,
-                      label: 'To bank',
-                      value: money(row.toBank),
-                      showDivider: false,
-                    ),
-                    ReportTotalRow(
-                      compact: true,
-                      label: 'TOTAL',
-                      value: money(row.converted),
-                      tone: DashboardTone.blue,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            Expanded(child: ReportServiceCostCard(report: report)),
           ],
         ),
         gap,
-        ReportProfitBanner(label: 'Profit/Loss', value: money(row.profitLoss)),
+        ReportProfitBanner(
+          label: 'Profit/Loss',
+          value: money(report.profitLoss),
+        ),
       ],
     );
   }

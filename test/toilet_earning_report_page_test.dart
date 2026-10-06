@@ -1,9 +1,9 @@
 import 'package:facility_management_app/src/core/base/failure.dart';
 import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart';
-import 'package:facility_management_app/src/data/extension/facility_wise_report_mapper.dart';
-import 'package:facility_management_app/src/data/models/toilet_location/facility_wise_report_model.dart';
+import 'package:facility_management_app/src/data/extension/facility_report_sources_mapper.dart';
+import 'package:facility_management_app/src/data/models/facility_report/facility_report_source_models.dart';
 import 'package:facility_management_app/src/domain/entities/login_entity.dart';
-import 'package:facility_management_app/src/domain/entities/toilet_location/facility_wise_report_entity.dart';
+import 'package:facility_management_app/src/domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/riverpod/toilet_earning_report_provider.dart';
@@ -26,36 +26,58 @@ class _FakeSession extends UserSession {
   );
 }
 
-const _row = FacilityWiseRowEntity(
-  facilityId: 38,
-  facilityName: 'Gulshan Public Toilet',
-  income: 2600,
-  accountsPaid: 980,
-  operationDepartment: 0,
-  expense: 980,
-  toBkash: 0,
-  toBank: 1600,
-  cashBalance: 1600,
-  profitLoss: 1620,
+const _report = FacilityMonthlyReportEntity(
+  month: '2026-08',
+  toiletUsers: ReportUserCount(women: 9, men: 8),
+  urinalUsers: ReportUserCount(women: 0, men: 0),
+  showerUsers: ReportUserCount(women: 9, men: 8),
+  drinkingWaterUsers: ReportUserCount(women: 0, men: 0),
+  incomeLines: [
+    ReportAmountLine('toilet', 17),
+    ReportAmountLine('shower', 17),
+    ReportAmountLine('laundry', 800),
+    ReportAmountLine('product_sales', 40),
+    ReportAmountLine('sanitary_pad', 25),
+  ],
+  expenseLines: [ReportAmountLine('water_bill', 1100)],
+  appIncome: 0,
+  packageIncome: 0,
+  bkashCollected: 0,
 );
 
-String _lastMonthYear() => DateTime(
-  DateTime.now().year,
-  DateTime.now().month - 1,
-).year.toString().padLeft(4, '0');
+const _empty = FacilityMonthlyReportEntity(
+  month: '2026-08',
+  toiletUsers: ReportUserCount(women: 0, men: 0),
+  urinalUsers: ReportUserCount(women: 0, men: 0),
+  showerUsers: ReportUserCount(women: 0, men: 0),
+  drinkingWaterUsers: ReportUserCount(women: 0, men: 0),
+  incomeLines: [ReportAmountLine('toilet', 100)],
+  expenseLines: [],
+  appIncome: 0,
+  packageIncome: 0,
+  bkashCollected: 0,
+);
 
-String _lastMonth() {
-  final now = DateTime.now();
-  final d = DateTime(now.year, now.month - 1);
+String _month(DateTime d) =>
+    '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}';
 
-  return '${d.year.toString().padLeft(4, '0')}-'
-      '${d.month.toString().padLeft(2, '0')}';
-}
+String _thisMonth() => _month(DateTime.now());
+
+Widget _app(List<Override> overrides, Locale locale) => ProviderScope(
+  overrides: [userSessionProvider.overrideWith(_FakeSession.new), ...overrides],
+  child: MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    locale: locale,
+    theme: $LightThemeData('').call(),
+    home: const ToiletEarningReportPage(facilityId: 38),
+  ),
+);
 
 Future<void> _pump(
   WidgetTester tester, {
   Locale locale = const Locale('en'),
-  required Future<FacilityWiseReportEntity> Function() load,
+  required Future<FacilityMonthlyReportEntity> Function() load,
 }) async {
   tester.view.physicalSize = const Size(390 * 3, 900 * 3);
   tester.view.devicePixelRatio = 3;
@@ -63,54 +85,76 @@ Future<void> _pump(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   await tester.pumpWidget(
-    ProviderScope(
-      overrides: [
-        userSessionProvider.overrideWith(_FakeSession.new),
-        toiletEarningReportProvider(
-          facilityId: 38,
-          month: _lastMonth(),
-        ).overrideWith((ref) => load()),
-      ],
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: locale,
-        theme: $LightThemeData('').call(),
-        home: const ToiletEarningReportPage(facilityId: 38),
-      ),
-    ),
+    _app([
+      toiletEarningReportProvider(
+        facilityId: 38,
+        month: _thisMonth(),
+      ).overrideWith((ref) => load()),
+    ], locale),
   );
   await tester.pump();
   await tester.pump();
 }
 
 void main() {
-  testWidgets('shows the closed month figures', (tester) async {
-    await _pump(
-      tester,
-      load: () async => const FacilityWiseReportEntity(facilities: [_row]),
-    );
+  testWidgets('shows every section of the breakdown', (tester) async {
+    await _pump(tester, load: () async => _report);
 
     expect(find.text('Gulshan Public Toilet'), findsOneWidget);
     expect(find.text('Total income'), findsOneWidget);
-    expect(find.text('৳ 2,600'), findsOneWidget);
-    expect(find.text('Service cost (Rs.)'), findsOneWidget);
-    expect(find.text('Cash moved (Rs.)'), findsOneWidget);
-    expect(find.text('Profit/Loss'), findsOneWidget);
-    expect(find.text('৳ 1,620'), findsOneWidget);
+    // 17 + 17 + 800 + 40 + 25
+    expect(find.text('৳ 899'), findsWidgets);
+
+    for (final text in [
+      'Number of subscribers',
+      'Digital system',
+      'Revenue (Rs.)',
+      'Service cost (Rs.)',
+      'Water bill',
+      'Sanitary pad',
+      'Profit/Loss',
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(text),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text(text), findsOneWidget);
+    }
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('a month with nothing closed shows the empty state', (
-    tester,
-  ) async {
+  testWidgets('a loss shows a minus sign', (tester) async {
     await _pump(
       tester,
-      load: () async => const FacilityWiseReportEntity(facilities: []),
+      load: () async => const FacilityMonthlyReportEntity(
+        month: '2026-08',
+        toiletUsers: ReportUserCount(women: 0, men: 0),
+        urinalUsers: ReportUserCount(women: 0, men: 0),
+        showerUsers: ReportUserCount(women: 0, men: 0),
+        drinkingWaterUsers: ReportUserCount(women: 0, men: 0),
+        incomeLines: [ReportAmountLine('toilet', 100)],
+        expenseLines: [ReportAmountLine('rent', 400)],
+        appIncome: 0,
+        packageIncome: 0,
+        bkashCollected: 0,
+      ),
     );
 
-    expect(find.text('Nothing closed yet'), findsOneWidget);
-    expect(find.text('Total income'), findsNothing);
+    expect(find.text('-৳ 300'), findsWidgets);
+  });
+
+  testWidgets('optional revenue lines stay hidden while empty', (tester) async {
+    await _pump(tester, load: () async => _empty);
+
+    await tester.scrollUntilVisible(
+      find.text('Revenue (Rs.)'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Sanitary pad'), findsNothing);
+    expect(find.text('Income via app'), findsNothing);
+    expect(find.text('Laundry'), findsOneWidget);
   });
 
   testWidgets('a failed load shows retry', (tester) async {
@@ -120,100 +164,89 @@ void main() {
   });
 
   testWidgets('renders in Bangla', (tester) async {
-    await _pump(
-      tester,
-      locale: const Locale('bn'),
-      load: () async => const FacilityWiseReportEntity(facilities: [_row]),
-    );
+    await _pump(tester, locale: const Locale('bn'), load: () async => _report);
 
-    expect(find.textContaining('২,৬০০'), findsWidgets);
+    expect(find.textContaining('৮৯৯'), findsWidgets);
     // The test font is wider than the real one; layout overflow is not the
     // point here.
     tester.takeException();
   });
 
-  testWidgets('tapping the month box opens the list and reloads', (
-    tester,
-  ) async {
-    final loaded = <String>[];
+  testWidgets('changing the month reloads', (tester) async {
     tester.view.physicalSize = const Size(390 * 3, 900 * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
+    final loaded = <String>[];
+    final now = DateTime.now();
+    final other = now.month == 3 ? 4 : 3;
+    final otherMonth = _month(DateTime(now.year, other));
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          userSessionProvider.overrideWith(_FakeSession.new),
-          toiletEarningReportProvider(
-            facilityId: 38,
-            month: _lastMonth(),
-          ).overrideWith((ref) async {
-            loaded.add(_lastMonth());
-            return const FacilityWiseReportEntity(facilities: []);
-          }),
-          toiletEarningReportProvider(
-            facilityId: 38,
-            month: '${_lastMonthYear()}-03',
-          ).overrideWith((ref) async {
-            loaded.add('${_lastMonthYear()}-03');
-            return const FacilityWiseReportEntity(facilities: []);
-          }),
-        ],
-        child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('en'),
-          theme: $LightThemeData('').call(),
-          home: const ToiletEarningReportPage(facilityId: 38),
-        ),
-      ),
+      _app([
+        toiletEarningReportProvider(
+          facilityId: 38,
+          month: _thisMonth(),
+        ).overrideWith((ref) async {
+          loaded.add(_thisMonth());
+          return _report;
+        }),
+        toiletEarningReportProvider(
+          facilityId: 38,
+          month: otherMonth,
+        ).overrideWith((ref) async {
+          loaded.add(otherMonth);
+          return _report;
+        }),
+      ], const Locale('en')),
     );
     await tester.pump();
     await tester.pump();
-    expect(loaded, [_lastMonth()]);
+    expect(loaded, [_thisMonth()]);
 
     // The caption, not the arrow: the whole box must react.
     await tester.tap(find.text('Select month'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('March').last);
+    await tester.tap(find.text(other == 3 ? 'March' : 'April').last);
     await tester.pumpAndSettle();
 
-    expect(loaded, [_lastMonth(), '${_lastMonthYear()}-03']);
+    expect(loaded, [_thisMonth(), otherMonth]);
   });
 
-  test('maps the API response', () {
-    final report = FacilityWiseReportResponseModel.fromJson({
-      'summary': {'total_income': 2600},
-      'facilities': [
+  test('source models decode numbers sent as strings and facility shapes', () {
+    final cash = ReportCashCollectionModel.fromJson({
+      'facility': {'id': 44, 'name': 'A'},
+      'collection_date': '2026-08-10',
+      'product_selling_amount': '200.50',
+      'renting_others_amount': 300,
+      'items': [
         {
-          'facility_id': 38,
-          'facility_name': 'Gulshan Public Toilet',
-          'group_code': '—',
-          'income': 2600,
-          'accounts_paid': 980,
-          'operation_department': 0,
-          'expense': 980,
-          'to_bkash': 0,
-          'to_bank': 1600,
-          'cash_balance': 1600,
-          'profit_loss': -20.5,
-          'month_closed': true,
+          'facility_service': {'service_name': 'Toilet'},
+          'gender': 'female',
+          'quantity': 2,
+          'amount': '2.00',
         },
       ],
-      'meta': {'current_page': 1},
-    }).toEntity();
+    }).toRecord();
+    expect(cash.facilityId, 44);
+    expect(cash.productSelling, 200.5);
+    expect(cash.items.single.amount, 2);
 
-    final row = report.first!;
-    expect(row.facilityId, 38);
-    expect(row.income, 2600);
-    expect(row.converted, 1600);
-    expect(row.profitLoss, -20.5);
-    expect(
-      FacilityWiseReportResponseModel.fromJson({
-        'facilities': [],
-      }).toEntity().first,
-      isNull,
-    );
+    final access = ReportAccessModel.fromJson({
+      'facility_id': 7,
+      'unlocked_via': 'user_app',
+      'price': '5.00',
+    }).toRecord();
+    expect(access.facilityId, 7);
+    expect(access.price, 5);
+
+    final expense = ReportExpenseModel.fromJson({
+      'facility': 'ABM Uttara Relief Zone',
+      'category': 'water_bill',
+      'amount': 100,
+      'expense_date': '2026-08-03',
+    }).toRecord();
+    expect(expense.facilityId, isNull);
   });
 }

@@ -366,6 +366,9 @@ abstract class RestClient {
   Future<HttpResponse> getAdditionalIncomes({
     @Path('partnerId') required int partnerId,
     @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('from') String? from,
+    @Query('to') String? to,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
@@ -508,6 +511,40 @@ abstract class RestClient {
     @Query('user_id') required int userId,
     @Query('date') required String date,
     @Query('task_id') int? taskId,
+  });
+
+  @GET(Endpoints.cashCollections)
+  Future<HttpResponse> getCashCollections({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.facilityAccesses)
+  Future<HttpResponse> getFacilityAccesses({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.centerCollections)
+  Future<HttpResponse> getCenterCollections({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.transactions)
+  Future<HttpResponse> getTransactions({
+    @Path('partnerId') required int partnerId,
+    @Query('type') String? type,
+    @Query('from') String? from,
+    @Query('to') String? to,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.facilityWiseReport)

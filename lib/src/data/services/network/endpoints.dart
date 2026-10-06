@@ -203,6 +203,11 @@ class Endpoints {
   static const String facilityMap = '/partners/{partnerId}/facility-map';
   static const String livePositions = '/partners/{partnerId}/live-positions';
   static const String userRoutes = '/partners/{partnerId}/user-routes';
+  static const String cashCollections = '/partners/{partnerId}/cash-collections';
+  static const String facilityAccesses = '/partners/{partnerId}/facility-accesses';
+  static const String centerCollections =
+      '/partners/{partnerId}/center-collections';
+  static const String transactions = '/partners/{partnerId}/transactions';
   static const String facilityWiseReport =
       '/partners/{partnerId}/report/facility-wise';
   static const String facilityWiseTargets =
