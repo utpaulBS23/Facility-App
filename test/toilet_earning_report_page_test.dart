@@ -39,6 +39,11 @@ const _row = FacilityWiseRowEntity(
   profitLoss: 1620,
 );
 
+String _lastMonthYear() => DateTime(
+  DateTime.now().year,
+  DateTime.now().month - 1,
+).year.toString().padLeft(4, '0');
+
 String _lastMonth() {
   final now = DateTime.now();
   final d = DateTime(now.year, now.month - 1);
@@ -125,6 +130,56 @@ void main() {
     // The test font is wider than the real one; layout overflow is not the
     // point here.
     tester.takeException();
+  });
+
+  testWidgets('tapping the month box opens the list and reloads', (
+    tester,
+  ) async {
+    final loaded = <String>[];
+    tester.view.physicalSize = const Size(390 * 3, 900 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          userSessionProvider.overrideWith(_FakeSession.new),
+          toiletEarningReportProvider(
+            facilityId: 38,
+            month: _lastMonth(),
+          ).overrideWith((ref) async {
+            loaded.add(_lastMonth());
+            return const FacilityWiseReportEntity(facilities: []);
+          }),
+          toiletEarningReportProvider(
+            facilityId: 38,
+            month: '${_lastMonthYear()}-03',
+          ).overrideWith((ref) async {
+            loaded.add('${_lastMonthYear()}-03');
+            return const FacilityWiseReportEntity(facilities: []);
+          }),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          theme: $LightThemeData('').call(),
+          home: const ToiletEarningReportPage(facilityId: 38),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+    expect(loaded, [_lastMonth()]);
+
+    // The caption, not the arrow: the whole box must react.
+    await tester.tap(find.text('Select month'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('March').last);
+    await tester.pumpAndSettle();
+
+    expect(loaded, [_lastMonth(), '${_lastMonthYear()}-03']);
   });
 
   test('maps the API response', () {
