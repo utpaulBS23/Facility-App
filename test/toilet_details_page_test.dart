@@ -2,8 +2,19 @@ import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/view/toilet_details_page.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/widgets/details/hourly_visitors_chart.dart';
+import 'package:facility_management_app/src/domain/entities/login_entity.dart';
+import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+class _FakeSession extends UserSession {
+  @override
+  UserSessionEntity? build() => UserSessionEntity(
+    permissions: const {UserPermission.reportFacilityWiseView},
+    accessibleFacilities: const [],
+  );
+}
 
 Future<void> _pump(WidgetTester tester, Locale locale) async {
   tester.view.physicalSize = const Size(390 * 3, 900 * 3);
@@ -12,12 +23,15 @@ Future<void> _pump(WidgetTester tester, Locale locale) async {
   addTearDown(tester.view.resetDevicePixelRatio);
 
   await tester.pumpWidget(
-    MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: locale,
-      theme: $LightThemeData('').call(),
-      home: const ToiletDetailsPage(facilityId: 1),
+    ProviderScope(
+      overrides: [userSessionProvider.overrideWith(_FakeSession.new)],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: locale,
+        theme: $LightThemeData('').call(),
+        home: const ToiletDetailsPage(facilityId: 1),
+      ),
     ),
   );
   await tester.pump();

@@ -136,6 +136,7 @@ import '../../domain/use_cases/leave_use_cases.dart';
 import '../../domain/use_cases/travel_expense_use_case.dart';
 import '../../domain/use_cases/master_data_use_case.dart';
 import '../../domain/use_cases/facility_map/get_facility_map_use_case.dart';
+import '../../domain/use_cases/toilet_location/get_facility_wise_report_use_case.dart';
 import '../../domain/use_cases/toilet_location/get_toilets_use_case.dart';
 import '../../domain/use_cases/dashboard_use_case.dart';
 import '../../domain/use_cases/user_tracking/get_live_positions_use_case.dart';

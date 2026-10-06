@@ -693,6 +693,14 @@ GetToiletsUseCase getToiletsUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilityWiseReportUseCase getFacilityWiseReportUseCase(Ref ref) {
+  return GetFacilityWiseReportUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetToiletTargetUseCase getToiletTargetUseCase(Ref ref) {
   return GetToiletTargetUseCase(
     toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
