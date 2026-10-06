@@ -27,7 +27,11 @@ void main() {
       expect(ApiDate.date(d), '2026-10-02');
       expect(ApiDate.dateTime(d), '2026-10-02 09:05:07');
       expect(ApiDate.month(d), '2026-10');
-      for (final s in [ApiDate.date(d), ApiDate.dateTime(d), ApiDate.month(d)]) {
+      for (final s in [
+        ApiDate.date(d),
+        ApiDate.dateTime(d),
+        ApiDate.month(d),
+      ]) {
         expect(asciiOnly.hasMatch(s), isTrue, reason: s);
       }
     });
