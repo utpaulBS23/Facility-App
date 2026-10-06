@@ -2,13 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/theme.dart';
 
-/// A bordered box with a small caption over its value, the look of every
-/// selector on the report.
-class _SelectShell extends StatelessWidget {
-  const _SelectShell({required this.caption, required this.child});
+/// A bordered dropdown whose whole box opens the menu.
+///
+/// WHY the box is the dropdown: a [DropdownButton] only reacts to taps on its
+/// own content, so the border and padding sit inside it, via
+/// [selectedBuilder], and a tap anywhere on the box opens the list.
+class _BoxDropdown<T> extends StatelessWidget {
+  const _BoxDropdown({
+    required this.value,
+    required this.items,
+    required this.selectedBuilder,
+    required this.onChanged,
+    required this.minHeight,
+  });
 
-  final String caption;
-  final Widget child;
+  final T value;
+
+  /// Value to its menu label.
+  final Map<T, String> items;
+  final Widget Function(BuildContext context, T value) selectedBuilder;
+  final ValueChanged<T>? onChanged;
+  final double minHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -16,52 +30,63 @@ class _SelectShell extends StatelessWidget {
     final spacing = context.dimensions.spacing;
     final radius = BorderRadius.circular(context.dimensions.radius.r12);
 
-    return Material(
-      color: c.onPrimary,
-      borderRadius: radius,
-      child: InkWell(
+    return Container(
+      constraints: BoxConstraints(minHeight: minHeight),
+      decoration: BoxDecoration(
+        color: c.onPrimary,
         borderRadius: radius,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 56),
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.s12,
-            vertical: spacing.s8,
+        border: Border.all(color: c.border),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          isExpanded: true,
+          itemHeight: minHeight,
+          borderRadius: radius,
+          padding: EdgeInsets.symmetric(horizontal: spacing.s12),
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: onChanged == null ? Colors.transparent : c.text.primary,
           ),
-          decoration: BoxDecoration(
-            borderRadius: radius,
-            border: Border.all(color: c.border),
+          style: context.textStyle.labelLarge.copyWith(
+            color: c.text.primary,
+            fontWeight: FontWeight.w700,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                caption,
-                style: context.textStyle.bodySmall.copyWith(
-                  color: c.text.secondary,
-                ),
-              ),
-              child,
-            ],
-          ),
+          selectedItemBuilder: (context) => [
+            for (final key in items.keys) selectedBuilder(context, key),
+          ],
+          items: [
+            for (final e in items.entries)
+              DropdownMenuItem<T>(value: e.key, child: Text(e.value)),
+          ],
+          onChanged: onChanged == null
+              ? null
+              : (v) {
+                  if (v != null) onChanged!(v);
+                },
         ),
       ),
     );
   }
 }
 
-/// The toilet being reported, shown with a building icon and a chevron.
+/// The toilet being reported, with a building icon. With more than one toilet
+/// to choose from it is a dropdown; with one it is plain.
 class ReportToiletSelector extends StatelessWidget {
   const ReportToiletSelector({
     super.key,
     required this.caption,
-    required this.name,
-    this.onTap,
+    required this.value,
+    required this.toilets,
+    required this.onChanged,
   });
 
   final String caption;
-  final String name;
-  final VoidCallback? onTap;
+  final int value;
+
+  /// Facility id to its name. Holds at least [value].
+  final Map<int, String> toilets;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -76,41 +101,26 @@ class ReportToiletSelector extends StatelessWidget {
           style: context.textStyle.bodySmall.copyWith(color: c.text.secondary),
         ),
         SizedBox(height: spacing.s8),
-        Material(
-          color: c.onPrimary,
-          borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 48),
-              padding: EdgeInsets.symmetric(horizontal: spacing.s12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  context.dimensions.radius.r12,
+        _BoxDropdown<int>(
+          value: value,
+          items: toilets,
+          minHeight: 48,
+          onChanged: toilets.length > 1 ? onChanged : null,
+          selectedBuilder: (context, key) => Row(
+            children: [
+              Icon(Icons.domain_rounded, size: 20, color: c.primary),
+              SizedBox(width: spacing.s8),
+              Expanded(
+                child: Text(
+                  toilets[key] ?? '—',
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textStyle.labelLarge.copyWith(
+                    color: c.text.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                border: Border.all(color: c.border),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.domain_rounded, size: 20, color: c.primary),
-                  SizedBox(width: spacing.s8),
-                  Expanded(
-                    child: Text(
-                      name,
-                      style: context.textStyle.labelLarge.copyWith(
-                        color: c.text.primary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: c.text.secondary,
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
       ],
@@ -139,26 +149,30 @@ class ReportDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.color;
 
-    return _SelectShell(
-      caption: caption,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          isExpanded: true,
-          isDense: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: c.text.primary),
-          style: context.textStyle.labelLarge.copyWith(
-            color: c.text.primary,
-            fontWeight: FontWeight.w700,
+    return _BoxDropdown<T>(
+      value: value,
+      items: items,
+      minHeight: 56,
+      onChanged: onChanged,
+      selectedBuilder: (context, key) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            caption,
+            style: context.textStyle.bodySmall.copyWith(
+              color: c.text.secondary,
+            ),
           ),
-          items: [
-            for (final e in items.entries)
-              DropdownMenuItem<T>(value: e.key, child: Text(e.value)),
-          ],
-          onChanged: (v) {
-            if (v != null) onChanged(v);
-          },
-        ),
+          Text(
+            items[key] ?? '',
+            overflow: TextOverflow.ellipsis,
+            style: context.textStyle.labelLarge.copyWith(
+              color: c.text.primary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

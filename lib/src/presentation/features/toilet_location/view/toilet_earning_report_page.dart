@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_numbers.dart';
 import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/toilet_location/facility_wise_report_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
@@ -39,6 +40,8 @@ class ToiletEarningReportPage extends ConsumerStatefulWidget {
 
 class _ToiletEarningReportPageState
     extends ConsumerState<ToiletEarningReportPage> {
+  late int _facilityId = widget.facilityId;
+
   // WHY last month first: only closed months have data, and the current one
   // is almost never closed yet.
   late int _year = _lastMonth().year;
@@ -81,21 +84,21 @@ class _ToiletEarningReportPageState
     };
 
     final report = ref.watch(
-      toiletEarningReportProvider(
-        facilityId: widget.facilityId,
-        month: _monthParam,
-      ),
+      toiletEarningReportProvider(facilityId: _facilityId, month: _monthParam),
     );
-    final sessionName = ref.watch(
-      userSessionProvider.select(
-        (s) => s?.accessibleFacilities
-            .where((f) => f.id == widget.facilityId)
-            .map((f) => f.localizedName(language))
-            .firstOrNull,
-      ),
+    // The toilets the user can switch between: their accessible facilities,
+    // plus the one the page was opened for.
+    final accessible = ref.watch(
+      userSessionProvider.select((s) => s?.accessibleFacilities),
     );
-    final toiletName =
-        sessionName ?? report.valueOrNull?.first?.facilityName ?? '—';
+    final toilets = <int, String>{
+      for (final f in accessible ?? const <AccessibleFacilityEntity>[])
+        f.id: f.localizedName(language),
+    };
+    toilets.putIfAbsent(
+      _facilityId,
+      () => report.valueOrNull?.first?.facilityName ?? '—',
+    );
 
     return Scaffold(
       backgroundColor: c.scaffoldBackground,
@@ -126,7 +129,9 @@ class _ToiletEarningReportPageState
             ReportFilterCard(
               toilet: ReportToiletSelector(
                 caption: 'Public toilet name',
-                name: toiletName,
+                value: _facilityId,
+                toilets: toilets,
+                onChanged: (v) => setState(() => _facilityId = v),
               ),
               month: ReportDropdown<int>(
                 caption: 'Select month',
@@ -153,7 +158,7 @@ class _ToiletEarningReportPageState
                   message: e.localizedMessage(context),
                   onRetry: () => ref.invalidate(
                     toiletEarningReportProvider(
-                      facilityId: widget.facilityId,
+                      facilityId: _facilityId,
                       month: _monthParam,
                     ),
                   ),
