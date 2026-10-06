@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/toilet_location/toilet_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -11,88 +13,59 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../dashboard/widgets/dashboard_meter.dart';
 import '../../dashboard/widgets/dashboard_stat_tile.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
+import '../extensions/toilet_direction_extension.dart';
+import '../extensions/toilet_status_extension.dart';
+import '../riverpod/toilet_by_id_provider.dart';
 import '../riverpod/toilet_name.dart';
-import '../widgets/details/hourly_visitors_chart.dart';
 import '../widgets/details/toilet_action_bar.dart';
-import '../widgets/details/toilet_attendee_tile.dart';
 import '../widgets/details/toilet_hero_card.dart';
 import '../widgets/details/toilet_info_widgets.dart';
 import '../widgets/details/toilet_section_card.dart';
 
-// TODO: hardcoded sample content. Replace with API data when the toilet
-// details endpoints are documented; texts are English only until then.
-const _visits = [
-  HourlyVisit(hour: 6, count: 12),
-  HourlyVisit(hour: 7, count: 22),
-  HourlyVisit(hour: 8, count: 58, peak: true),
-  HourlyVisit(hour: 9, count: 66, peak: true),
-  HourlyVisit(hour: 10, count: 34),
-  HourlyVisit(hour: 11, count: 26),
-  HourlyVisit(hour: 12, count: 30),
-  HourlyVisit(hour: 13, count: 28),
-  HourlyVisit(hour: 14, count: 24),
-  HourlyVisit(hour: 15, count: 36),
-  HourlyVisit(hour: 16, count: 50),
-  HourlyVisit(hour: 17, count: 62, peak: true),
-  HourlyVisit(hour: 18, count: 68, peak: true),
-  HourlyVisit(hour: 19, count: 42),
-  HourlyVisit(hour: 20, count: 28),
-  HourlyVisit(hour: 21, count: 18),
-  HourlyVisit(hour: 22, count: 10),
-];
+// TODO: the name, status, address, rating, today's visits and income,
+// management facts and direction come from the toilet list. Everything else
+// has no endpoint yet and shows "$_none"; texts are English only until then.
+const _none = '-';
 
-class _Attendee {
-  const _Attendee(
-    this.initials,
-    this.name,
-    this.status,
-    this.tone,
-    this.roleAndPhone,
-    this.note,
-  );
+String _time(BuildContext context, String? hms) {
+  final parts = (hms ?? '').split(':');
+  final h = parts.isNotEmpty ? int.tryParse(parts[0]) : null;
+  final m = parts.length > 1 ? int.tryParse(parts[1]) : null;
+  if (h == null || m == null) return _none;
+  final hour = h % 12 == 0 ? 12 : h % 12;
+  final clock = m == 0 ? '$hour' : '$hour:${m.toString().padLeft(2, '0')}';
 
-  final String initials;
-  final String name;
-  final String status;
-  final DashboardTone tone;
-  final String roleAndPhone;
-  final String note;
+  return context.numbers.phone('$clock ${h < 12 ? 'AM' : 'PM'}');
 }
 
-const _attendees = [
-  _Attendee(
-    'SA',
-    'Shafiqul Alam',
-    'Present',
-    DashboardTone.green,
-    'Lead Attendant · +880 1712-345001',
-    'Checked in 6:02 AM',
-  ),
-  _Attendee(
-    'KM',
-    'Karim Mia',
-    'Present',
-    DashboardTone.green,
-    'Supervisor · +880 1712-345002',
-    'Checked in 5:55 AM',
-  ),
-  _Attendee(
-    'KH',
-    'Kamal Hossain',
-    'Late',
-    DashboardTone.orange,
-    'Attendant · +880 1712-345003',
-    'Checked in 7:38 AM · 18 min late',
-  ),
-  _Attendee(
-    'RA',
-    'Rahima Akter',
-    'Not checked in',
-    DashboardTone.blue,
-    'Attendant · +880 1712-345004',
-    'Shift starts 8:20 AM',
-  ),
-];
+String _openingHours(BuildContext context, ToiletEntity t) {
+  if (t.is24Hours) return 'Open 24 hours';
+
+  return '${_time(context, t.openingTime)} – ${_time(context, t.closingTime)}';
+}
+
+String _operatingDays(BuildContext context, ToiletEntity t) {
+  const weekday = {
+    'mon': 1,
+    'tue': 2,
+    'wed': 3,
+    'thu': 4,
+    'fri': 5,
+    'sat': 6,
+    'sun': 7,
+  };
+  final days = [
+    for (final d in t.operatingDays)
+      if (weekday[d.toLowerCase()] != null) weekday[d.toLowerCase()]!,
+  ];
+  if (days.isEmpty) return _none;
+  if (days.length == 7) return 'Every day';
+  final language = Localizations.localeOf(context).languageCode;
+  // 2024-01-01 is a Monday.
+  final format = DateFormat.E(language);
+
+  return days.map((d) => format.format(DateTime(2024, 1, d))).join(', ');
+}
 
 /// Everything about one toilet: access numbers, income goal, management info,
 /// supply stock and who is on shift.
@@ -113,6 +86,8 @@ class ToiletDetailsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gap = SizedBox(height: context.dimensions.spacing.s12);
     // WHY gated: the earning report needs report.facility_wise.view.
+    final toilet = ref.watch(toiletByIdProvider(facilityId));
+    final n = context.numbers;
     final canOpenReport = ref.watch(
       userSessionProvider.select(
         (s) => s?.can(UserPermission.reportFacilityWiseView) ?? false,
@@ -137,12 +112,14 @@ class ToiletDetailsPage extends ConsumerWidget {
                     facilityId,
                     Localizations.localeOf(context).languageCode,
                   ) ??
-                  '—',
-              statusLabel: 'Open',
-              address: 'Mirpur-10 Roundabout, Dhaka 1216',
-              ratingText: '4.2',
-              distanceText: '1.2 km',
-              codeText: 'IDTL-001',
+                  _none,
+              statusLabel: toilet?.status.localizedName(context) ?? _none,
+              address: toilet?.address ?? _none,
+              ratingText: toilet == null
+                  ? _none
+                  : n.decimal(toilet.averageRating, 1),
+              distanceText: _none,
+              codeText: _none,
             ),
             gap,
             ToiletSectionCard(
@@ -150,58 +127,65 @@ class ToiletDetailsPage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const ToiletTileRow(
+                  ToiletTileRow(
                     children: [
                       DashboardStatTile(
-                        value: '342',
+                        value: toilet == null
+                            ? _none
+                            : n.integer(toilet.visitsToday),
                         label: 'Today',
                         tone: DashboardTone.blue,
                       ),
-                      DashboardStatTile(
-                        value: '2,156',
+                      const DashboardStatTile(
+                        value: _none,
                         label: 'This week',
                         tone: DashboardTone.green,
                       ),
-                      DashboardStatTile(
-                        value: '8,943',
+                      const DashboardStatTile(
+                        value: _none,
                         label: 'This month',
                         tone: DashboardTone.red,
                       ),
                     ],
                   ),
                   gap,
-                  const HourlyVisitorsChart(
-                    title: 'Visitors by hour, today',
-                    peakLabel: 'Peak',
-                    visits: _visits,
+                  ToiletInfoNote(
+                    icon: Icons.bar_chart_rounded,
+                    child: ToiletInfoNote.labelled(
+                      context,
+                      'Visitors by hour, today:',
+                      _none,
+                    ),
                   ),
-                  gap,
+                  SizedBox(height: context.dimensions.spacing.s8),
                   ToiletInfoNote(
                     icon: Icons.info_outline,
                     child: ToiletInfoNote.labelled(
                       context,
                       'Peak hours:',
-                      '8–10 am, 5–7 pm',
+                      _none,
                     ),
                   ),
                 ],
               ),
             ),
             gap,
-            const ToiletSectionCard(
+            ToiletSectionCard(
               title: 'Income target and goal',
               child: ToiletTileRow(
                 children: [
                   ToiletGoalBox(
                     label: 'Daily income target',
-                    value: '৳ 8,000',
-                    footnote: 'Today: ৳ 6,840',
+                    value: _none,
+                    footnote: toilet == null
+                        ? 'Today: $_none'
+                        : 'Today: ৳ ${n.integer(toilet.revenue)}',
                     tone: DashboardTone.blue,
                   ),
-                  ToiletGoalBox(
+                  const ToiletGoalBox(
                     label: 'Monthly goal',
-                    value: '৳ 2,00,000',
-                    footnote: 'This month: ৳ 1,78,860',
+                    value: _none,
+                    footnote: 'This month: $_none',
                     tone: DashboardTone.green,
                   ),
                 ],
@@ -210,47 +194,37 @@ class ToiletDetailsPage extends ConsumerWidget {
             gap,
             ToiletSectionCard(
               title: 'Monthly progress',
-              trailing: 'Oct 2026',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const DashboardMeter(
                     label: 'Goal complete',
-                    valueText: '89.4%',
-                    percent: 89.4,
-                    tone: DashboardTone.green,
-                    footLeft: '৳ 1,78,860 achieved',
-                    footRight: '৳ 21,140 left',
+                    valueText: _none,
+                    percent: 0,
+                    tone: DashboardTone.neutral,
                   ),
                   gap,
                   const ToiletTileRow(
                     children: [
                       DashboardStatTile(
-                        value: '৳ 1,78,860',
+                        value: _none,
                         label: 'Achieved',
                         tone: DashboardTone.green,
                         compact: true,
                       ),
                       DashboardStatTile(
-                        value: '৳ 21,140',
+                        value: _none,
                         label: 'Remaining',
                         tone: DashboardTone.orange,
                         compact: true,
                       ),
                       DashboardStatTile(
-                        value: '25',
+                        value: _none,
                         label: 'Days left',
                         tone: DashboardTone.blue,
                         compact: true,
                       ),
                     ],
-                  ),
-                  gap,
-                  Text(
-                    'Needs about ৳ 846 a day to reach the goal.',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
                   ),
                 ],
               ),
@@ -261,35 +235,58 @@ class ToiletDetailsPage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  if (toilet != null) ...[
+                    if (toilet.supervisorName.isNotEmpty) ...[
+                      ToiletInfoRow(
+                        icon: Icons.person_outline_rounded,
+                        label: 'Supervisor',
+                        value: toilet.supervisorName,
+                      ),
+                      SizedBox(height: context.dimensions.spacing.s10),
+                    ],
+                    ToiletInfoRow(
+                      icon: Icons.access_time_rounded,
+                      label: 'Opening hours',
+                      value: _openingHours(context, toilet),
+                    ),
+                    SizedBox(height: context.dimensions.spacing.s10),
+                    ToiletInfoRow(
+                      icon: Icons.calendar_today_outlined,
+                      label: 'Open days',
+                      value: _operatingDays(context, toilet),
+                    ),
+                    SizedBox(height: context.dimensions.spacing.s10),
+                    ToiletInfoRow(
+                      icon: Icons.payments_outlined,
+                      label: 'Entry fee',
+                      value: toilet.isFree
+                          ? 'Free'
+                          : n.currency(toilet.usageFee),
+                    ),
+                    SizedBox(height: context.dimensions.spacing.s10),
+                    ToiletInfoRow(
+                      icon: Icons.accessible_rounded,
+                      label: 'Disability friendly',
+                      value: toilet.disableFriendly ? 'Yes' : 'No',
+                    ),
+                    SizedBox(height: context.dimensions.spacing.s10),
+                  ],
                   const ToiletInfoRow(
                     icon: Icons.air_rounded,
                     label: 'Air quality score',
-                    value: 'Good',
-                    valueTone: DashboardTone.green,
+                    value: _none,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
                   const ToiletInfoRow(
                     icon: Icons.bar_chart_rounded,
                     label: 'Frequency of cleaning',
-                    value: '8×/day',
+                    value: _none,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
                   const ToiletInfoRow(
                     icon: Icons.schedule_rounded,
                     label: 'Last cleaning',
-                    value: '2 hours ago',
-                  ),
-                  SizedBox(height: context.dimensions.spacing.s10),
-                  ToiletInfoNote(
-                    icon: Icons.check_rounded,
-                    tone: DashboardTone.green,
-                    child: Text(
-                      'Real-time air tracking is enabled',
-                      style: context.textStyle.labelMedium.copyWith(
-                        color: DashboardTone.green.foreground(context),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                    value: _none,
                   ),
                   gap,
                   Text(
@@ -302,37 +299,30 @@ class ToiletDetailsPage extends ConsumerWidget {
                   SizedBox(height: context.dimensions.spacing.s10),
                   const DashboardMeter(
                     label: 'Tissue',
-                    valueText: '75%',
-                    percent: 75,
-                    tone: DashboardTone.green,
+                    valueText: _none,
+                    percent: 0,
+                    tone: DashboardTone.neutral,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
                   const DashboardMeter(
                     label: 'Soap',
-                    valueText: '60%',
-                    percent: 60,
-                    tone: DashboardTone.green,
+                    valueText: _none,
+                    percent: 0,
+                    tone: DashboardTone.neutral,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
                   const DashboardMeter(
                     label: 'Sanitizer',
-                    valueText: '85%',
-                    percent: 85,
-                    tone: DashboardTone.green,
+                    valueText: _none,
+                    percent: 0,
+                    tone: DashboardTone.neutral,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
                   const DashboardMeter(
                     label: 'Hand towel',
-                    valueText: '22%',
-                    percent: 22,
-                    tone: DashboardTone.red,
-                  ),
-                  SizedBox(height: context.dimensions.spacing.s10),
-                  Text(
-                    'Low stock, reorder soon',
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
+                    valueText: _none,
+                    percent: 0,
+                    tone: DashboardTone.neutral,
                   ),
                 ],
               ),
@@ -340,41 +330,23 @@ class ToiletDetailsPage extends ConsumerWidget {
             gap,
             ToiletSectionCard(
               title: 'Attendance',
-              subtitle: 'Morning shift · 6:00 AM – 2:00 PM · 3 of 4 checked in',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: const ToiletTileRow(
                 children: [
-                  const ToiletTileRow(
-                    children: [
-                      DashboardStatTile(
-                        value: '2',
-                        label: 'Present',
-                        tone: DashboardTone.green,
-                      ),
-                      DashboardStatTile(
-                        value: '1',
-                        label: 'Late',
-                        tone: DashboardTone.orange,
-                      ),
-                      DashboardStatTile(
-                        value: '1',
-                        label: 'Not in yet',
-                        tone: DashboardTone.blue,
-                      ),
-                    ],
+                  DashboardStatTile(
+                    value: _none,
+                    label: 'Present',
+                    tone: DashboardTone.green,
                   ),
-                  SizedBox(height: context.dimensions.spacing.s8),
-                  for (var i = 0; i < _attendees.length; i++)
-                    ToiletAttendeeTile(
-                      initials: _attendees[i].initials,
-                      name: _attendees[i].name,
-                      statusLabel: _attendees[i].status,
-                      statusTone: _attendees[i].tone,
-                      roleAndPhone: _attendees[i].roleAndPhone,
-                      note: _attendees[i].note,
-                      onCall: () {},
-                      showDivider: i < _attendees.length - 1,
-                    ),
+                  DashboardStatTile(
+                    value: _none,
+                    label: 'Late',
+                    tone: DashboardTone.orange,
+                  ),
+                  DashboardStatTile(
+                    value: _none,
+                    label: 'Not in yet',
+                    tone: DashboardTone.blue,
+                  ),
                 ],
               ),
             ),
@@ -386,7 +358,7 @@ class ToiletDetailsPage extends ConsumerWidget {
         primaryLabel: context.locale.direction,
         secondaryLabel: 'Earning Report',
         showSecondary: canOpenReport,
-        onPrimary: () {},
+        onPrimary: () => toilet?.openDirection(),
         onSecondary: () => context.pushNamed(
           Routes.toiletEarningReport,
           pathParameters: {'id': '$facilityId'},

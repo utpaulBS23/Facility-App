@@ -173,6 +173,7 @@ class ToiletInfoRow extends StatelessWidget {
           ),
           SizedBox(width: spacing.s12),
           Expanded(
+            flex: 3,
             child: Text(
               label,
               style: context.textStyle.bodyMedium.copyWith(
@@ -191,11 +192,17 @@ class ToiletInfoRow extends StatelessWidget {
             ),
             SizedBox(width: spacing.s6),
           ],
-          Text(
-            value,
-            style: context.textStyle.labelLarge.copyWith(
-              color: valueColor,
-              fontWeight: FontWeight.w700,
+          // WHY a share and right-aligned: a long value (opening hours, open
+          // days) wraps instead of overflowing the row.
+          Expanded(
+            flex: 2,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: context.textStyle.labelLarge.copyWith(
+                color: valueColor,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],

@@ -1,5 +1,8 @@
 import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart';
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
+import 'package:facility_management_app/src/domain/entities/toilet_location/toilet_entity.dart';
+import 'package:facility_management_app/src/domain/entities/toilet_location/toilet_status.dart';
+import 'package:facility_management_app/src/presentation/features/toilet_location/riverpod/toilet_by_id_provider.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/view/toilet_details_page.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/widgets/details/hourly_visitors_chart.dart';
 import 'package:facility_management_app/src/domain/entities/login_entity.dart';
@@ -22,7 +25,11 @@ class _FakeSession extends UserSession {
   );
 }
 
-Future<void> _pump(WidgetTester tester, Locale locale) async {
+Future<void> _pump(
+  WidgetTester tester,
+  Locale locale, {
+  ToiletEntity? toilet,
+}) async {
   tester.view.physicalSize = const Size(390 * 3, 900 * 3);
   tester.view.devicePixelRatio = 3;
   addTearDown(tester.view.resetPhysicalSize);
@@ -30,7 +37,10 @@ Future<void> _pump(WidgetTester tester, Locale locale) async {
 
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [userSessionProvider.overrideWith(_FakeSession.new)],
+      overrides: [
+        userSessionProvider.overrideWith(_FakeSession.new),
+        toiletByIdProvider(1).overrideWithValue(toilet),
+      ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -58,7 +68,6 @@ void main() {
       'Management information',
       'Supply stock',
       'Attendance',
-      'Rahima Akter',
     ]) {
       await tester.scrollUntilVisible(
         find.text(text),
@@ -68,6 +77,45 @@ void main() {
       expect(find.text(text), findsOneWidget);
     }
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('shows what the toilet list sent', (tester) async {
+    await _pump(
+      tester,
+      const Locale('en'),
+      toilet: const ToiletEntity(
+        id: 1,
+        name: 'Uttara North Facility',
+        address: 'Sector 7, Uttara',
+        status: ToiletStatus.active,
+        averageRating: 4.5,
+        lat: 23,
+        lng: 90,
+        mapsLink: '',
+        supervisorName: 'Abdul Noman',
+        openingTime: '06:00:00',
+        closingTime: '22:00:00',
+        operatingDays: ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'],
+        usageFee: 10,
+        disableFriendly: true,
+        visitsToday: 5,
+        revenue: 120,
+      ),
+    );
+
+    expect(find.text('Sector 7, Uttara'), findsOneWidget);
+    expect(find.text('4.5'), findsOneWidget);
+    expect(find.text('Today: ৳ 120'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Abdul Noman'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Abdul Noman'), findsOneWidget);
+    expect(find.text('6 AM – 10 PM'), findsOneWidget);
+    expect(find.text('Every day'), findsOneWidget);
+    expect(find.text('Disability friendly'), findsOneWidget);
   });
 
   testWidgets('renders in Bangla without crashing', (tester) async {
