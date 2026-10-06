@@ -70,64 +70,6 @@ class _BoxDropdown<T> extends StatelessWidget {
   }
 }
 
-/// The toilet being reported, with a building icon. With more than one toilet
-/// to choose from it is a dropdown; with one it is plain.
-class ReportToiletSelector extends StatelessWidget {
-  const ReportToiletSelector({
-    super.key,
-    required this.caption,
-    required this.value,
-    required this.toilets,
-    required this.onChanged,
-  });
-
-  final String caption;
-  final int value;
-
-  /// Facility id to its name. Holds at least [value].
-  final Map<int, String> toilets;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.color;
-    final spacing = context.dimensions.spacing;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          caption,
-          style: context.textStyle.bodySmall.copyWith(color: c.text.secondary),
-        ),
-        SizedBox(height: spacing.s8),
-        _BoxDropdown<int>(
-          value: value,
-          items: toilets,
-          minHeight: 48,
-          onChanged: toilets.length > 1 ? onChanged : null,
-          selectedBuilder: (context, key) => Row(
-            children: [
-              Icon(Icons.domain_rounded, size: 20, color: c.primary),
-              SizedBox(width: spacing.s8),
-              Expanded(
-                child: Text(
-                  toilets[key] ?? '—',
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: c.text.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 /// A captioned dropdown, for the month and the year.
 class ReportDropdown<T> extends StatelessWidget {
   const ReportDropdown({
@@ -178,16 +120,16 @@ class ReportDropdown<T> extends StatelessWidget {
   }
 }
 
-/// The white card that holds the toilet selector and the month and year.
+/// The white card that holds the month and year pickers.
 class ReportFilterCard extends StatelessWidget {
   const ReportFilterCard({
     super.key,
-    required this.toilet,
+    required this.title,
     required this.month,
     required this.year,
   });
 
-  final Widget toilet;
+  final String title;
   final Widget month;
   final Widget year;
 
@@ -205,8 +147,15 @@ class ReportFilterCard extends StatelessWidget {
         border: Border.all(color: c.borderSubtle),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          toilet,
+          Text(
+            title,
+            style: context.textStyle.labelLarge.copyWith(
+              color: c.text.primary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           SizedBox(height: spacing.s12),
           Row(
             children: [

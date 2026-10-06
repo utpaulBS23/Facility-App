@@ -61,16 +61,19 @@ class ReportSummaryTile extends StatelessWidget {
   }
 }
 
-/// The red bar at the bottom: a round icon, "Profit/Loss" and the amount.
+/// The bar at the bottom: a round icon, "Profit/Loss" and the amount. Green
+/// with an upward icon for a profit, red with a downward one for a loss.
 class ReportProfitBanner extends StatelessWidget {
   const ReportProfitBanner({
     super.key,
     required this.label,
     required this.value,
+    required this.isLoss,
   });
 
   final String label;
   final String value;
+  final bool isLoss;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,7 @@ class ReportProfitBanner extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(spacing.s16),
       decoration: BoxDecoration(
-        color: c.primary,
+        color: isLoss ? c.primary : DashboardTone.green.foreground(context),
         borderRadius: BorderRadius.circular(context.dimensions.radius.r16),
       ),
       child: Row(
@@ -93,7 +96,10 @@ class ReportProfitBanner extends StatelessWidget {
               color: Colors.black.withValues(alpha: 0.25),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.trending_up_rounded, color: c.onPrimary),
+            child: Icon(
+              isLoss ? Icons.trending_down_rounded : Icons.trending_up_rounded,
+              color: c.onPrimary,
+            ),
           ),
           SizedBox(width: spacing.s12),
           Expanded(
