@@ -16,8 +16,5 @@ Future<ToiletTargetEntity> toiletTarget(Ref ref, int facilityId) async {
       .read(getToiletTargetUseCaseProvider)
       .call(facilityId: facilityId, yearMonth: yearMonth);
 
-  return result.when(
-    success: (data) => data!,
-    error: (error) => throw error,
-  );
+  return result.when(success: (data) => data!, error: (error) => throw error);
 }

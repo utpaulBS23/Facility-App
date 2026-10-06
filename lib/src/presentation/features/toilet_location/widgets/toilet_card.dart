@@ -1,10 +1,7 @@
 part of '../view/toilet_location_page.dart';
 
 class _ToiletCard extends StatelessWidget {
-  const _ToiletCard({
-    required this.toilet,
-    required this.onTap,
-  });
+  const _ToiletCard({required this.toilet, required this.onTap});
 
   final ToiletEntity toilet;
   final VoidCallback onTap;
@@ -76,7 +73,11 @@ class _ToiletCard extends StatelessWidget {
                     Gap(spacing.s4),
                     Row(
                       children: [
-                        Icon(Icons.star, size: spacing.s14, color: color.warning),
+                        Icon(
+                          Icons.star,
+                          size: spacing.s14,
+                          color: color.warning,
+                        ),
                         Gap(spacing.s4),
                         Text(
                           context.numbers.decimal(toilet.averageRating, 1),
