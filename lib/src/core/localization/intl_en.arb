@@ -1085,6 +1085,17 @@
   "uidLabel": "UID",
   "partnerLabel": "Partner",
   "addressLabel": "Address",
+  "currentLocationTab": "Current location",
+  "visitedRouteTab": "Visited route",
+  "selectUser": "Select user",
+  "selectUserToViewRoute": "Select a user to see their route",
+  "noTravelData": "No travel data for this day",
+  "noGpsTrail": "No GPS trail recorded",
+  "gpsPointsCount": "{count} GPS points",
+  "@gpsPointsCount": {
+    "placeholders": { "count": { "type": "String", "example": "12" } }
+  },
+  "travelClaimFiled": "Travel claim filed",
   "settings": "Settings",
   "retry": "Retry"
 }

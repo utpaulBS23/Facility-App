@@ -15,8 +15,11 @@ import '../widgets/user_position_sheet.dart';
 import '../widgets/user_status_chips.dart';
 import '../widgets/user_tracking_map.dart';
 import '../widgets/user_tracking_style.dart';
+import '../widgets/visited_route_view.dart';
 
-/// The Tracking tab: where users are right now, with their status.
+enum _TrackingTab { currentLocation, visitedRoute }
+
+/// The Tracking tab: where users are right now, and where they have been.
 class SupervisorTrackingPage extends ConsumerStatefulWidget {
   const SupervisorTrackingPage({super.key});
 
@@ -27,6 +30,7 @@ class SupervisorTrackingPage extends ConsumerStatefulWidget {
 
 class _SupervisorTrackingPageState extends ConsumerState<SupervisorTrackingPage>
     with WidgetsBindingObserver {
+  _TrackingTab _tab = _TrackingTab.currentLocation;
   UserStatusFilter _filter = UserStatusFilter.all;
   int? _selectedUserId;
 
@@ -83,7 +87,22 @@ class _SupervisorTrackingPageState extends ConsumerState<SupervisorTrackingPage>
           message: context.locale.somethingWentWrong,
           onRetry: _refresh,
         ),
-        data: _buildData,
+        data: (data) => Column(
+          children: [
+            _TabBar(
+              selected: _tab,
+              onSelected: (tab) => setState(() => _tab = tab),
+            ),
+            Expanded(
+              child: switch (_tab) {
+                _TrackingTab.currentLocation => _buildData(data),
+                _TrackingTab.visitedRoute => VisitedRouteView(
+                  users: data.positions,
+                ),
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -163,6 +182,57 @@ class _SupervisorTrackingPageState extends ConsumerState<SupervisorTrackingPage>
                 ),
         ),
       ],
+    );
+  }
+}
+
+class _TabBar extends StatelessWidget {
+  const _TabBar({required this.selected, required this.onSelected});
+
+  final _TrackingTab selected;
+  final ValueChanged<_TrackingTab> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    Widget tab(_TrackingTab value, String label) {
+      final active = selected == value;
+      return Expanded(
+        child: InkWell(
+          onTap: () => onSelected(value),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: spacing.s12),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: active ? context.color.primary : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+            ),
+            child: Text(
+              label,
+              style: context.textStyle.labelLarge.copyWith(
+                color: active
+                    ? context.color.primary
+                    : context.color.text.secondary,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      color: context.color.onPrimary,
+      child: Row(
+        children: [
+          tab(_TrackingTab.currentLocation, context.locale.currentLocationTab),
+          tab(_TrackingTab.visitedRoute, context.locale.visitedRouteTab),
+        ],
+      ),
     );
   }
 }

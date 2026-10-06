@@ -499,6 +499,14 @@ abstract class RestClient {
     @Query('page') int? page,
   });
 
+  @GET(Endpoints.userRoutes)
+  Future<HttpResponse> getUserRoutes({
+    @Path('partnerId') required int partnerId,
+    @Query('user_id') required int userId,
+    @Query('date') required String date,
+    @Query('task_id') int? taskId,
+  });
+
   @GET(Endpoints.facilityWiseTargets)
   Future<HttpResponse> getFacilityWiseTargets({
     @Path('partnerId') required int partnerId,

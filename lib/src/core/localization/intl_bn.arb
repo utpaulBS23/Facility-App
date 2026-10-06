@@ -1025,6 +1025,17 @@
   "uidLabel": "ইউআইডি",
   "partnerLabel": "পার্টনার",
   "addressLabel": "ঠিকানা",
+  "currentLocationTab": "বর্তমান অবস্থান",
+  "visitedRouteTab": "পরিদর্শিত রুট",
+  "selectUser": "ব্যবহারকারী নির্বাচন করুন",
+  "selectUserToViewRoute": "রুট দেখতে একজন ব্যবহারকারী নির্বাচন করুন",
+  "noTravelData": "এই দিনের কোনো ভ্রমণ তথ্য নেই",
+  "noGpsTrail": "কোনো জিপিএস ট্রেইল রেকর্ড করা হয়নি",
+  "gpsPointsCount": "{count}টি জিপিএস পয়েন্ট",
+  "@gpsPointsCount": {
+    "placeholders": { "count": { "type": "String", "example": "12" } }
+  },
+  "travelClaimFiled": "ভ্রমণ দাবি দাখিল করা হয়েছে",
   "settings": "সেটিংস",
   "retry": "পুনরায় চেষ্টা করুন"
 }
