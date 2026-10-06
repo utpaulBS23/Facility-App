@@ -89,13 +89,18 @@ class _LeaveRequestActionCardState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  applicantName,
-                  style: textStyle.bodyLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: color.text.primary,
+                Expanded(
+                  child: Text(
+                    applicantName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textStyle.bodyLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: color.text.primary,
+                    ),
                   ),
                 ),
+                Gap(spacing.s8),
                 StatusDotTag(label: statusLabel, dotColor: dotColor),
               ],
             ),
