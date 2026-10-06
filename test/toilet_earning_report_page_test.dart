@@ -5,7 +5,9 @@ import 'package:facility_management_app/src/data/models/facility_report/facility
 import 'package:facility_management_app/src/domain/entities/login_entity.dart';
 import 'package:facility_management_app/src/domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';
+import 'package:facility_management_app/src/domain/entities/master_data_entity.dart';
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
+import 'package:facility_management_app/src/presentation/features/facility_expense/riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/riverpod/toilet_earning_report_provider.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/view/toilet_earning_report_page.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +66,28 @@ String _month(DateTime d) =>
 String _thisMonth() => _month(DateTime.now());
 
 Widget _app(List<Override> overrides, Locale locale) => ProviderScope(
-  overrides: [userSessionProvider.overrideWith(_FakeSession.new), ...overrides],
+  overrides: [
+    userSessionProvider.overrideWith(_FakeSession.new),
+    expenseCategoryOptionsProvider.overrideWith(
+      (ref) async => const [
+        MasterDataItemEntity(
+          id: 1,
+          value: 'cleaner',
+          label: 'Cleaner',
+          isActive: true,
+          sortOrder: 1,
+        ),
+        MasterDataItemEntity(
+          id: 2,
+          value: 'water_bill',
+          label: 'Water bill',
+          isActive: true,
+          sortOrder: 2,
+        ),
+      ],
+    ),
+    ...overrides,
+  ],
   child: MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
@@ -110,7 +133,6 @@ void main() {
       'Digital system',
       'Revenue (Tk)',
       'Service cost (Tk)',
-      'Water bill',
       'Sanitary pad',
       'Profit/Loss',
     ]) {
@@ -121,6 +143,33 @@ void main() {
       );
       expect(find.text(text), findsOneWidget);
     }
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('shows the web report tables', (tester) async {
+    await _pump(tester, load: () async => _report);
+
+    Future<void> see(String text) async {
+      await tester.scrollUntilVisible(
+        find.text(text),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text(text), findsOneWidget);
+    }
+
+    await see('Income items');
+    await see('Additional Revenue (Laundry, Shop)');
+    await see('Expense items');
+    // Unused catalog categories are listed too, as in the web report.
+    await see('Cleaner');
+    await see('Total Expense');
+    await see('Customer numbers');
+    await see('Pay per user Toilet — women');
+    await see('Manual Subscribed user (Toilet use)');
+    await see('Total user');
+    await see('Bkash collections');
+    await see('Income gap / due');
     expect(tester.takeException(), isNull);
   });
 
