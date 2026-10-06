@@ -7,7 +7,6 @@ import '../../../../core/extensions/app_numbers.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
-import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_error_widget.dart';
@@ -17,6 +16,7 @@ import '../../dashboard/widgets/dashboard_tone.dart';
 import '../../facility_expense/riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
 import '../../additional_income/riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../riverpod/toilet_earning_report_provider.dart';
+import '../riverpod/toilet_name.dart';
 import '../widgets/details/toilet_section_card.dart';
 import '../widgets/report/report_breakdown_cards.dart';
 import '../widgets/report/report_detail_cards.dart';
@@ -82,14 +82,7 @@ class _ToiletEarningReportPageState
         month: _monthParam,
       ),
     );
-    final toiletName = ref.watch(
-      userSessionProvider.select(
-        (s) => s?.accessibleFacilities
-            .where((f) => f.id == widget.facilityId)
-            .firstOrNull
-            ?.localizedName(language),
-      ),
-    );
+    final toiletName = toiletNameOf(ref, widget.facilityId, language);
 
     return Scaffold(
       backgroundColor: c.scaffoldBackground,

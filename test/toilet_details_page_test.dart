@@ -12,7 +12,13 @@ class _FakeSession extends UserSession {
   @override
   UserSessionEntity? build() => UserSessionEntity(
     permissions: const {UserPermission.reportFacilityWiseView},
-    accessibleFacilities: const [],
+    accessibleFacilities: const [
+      AccessibleFacilityEntity(
+        id: 1,
+        name: 'Uttara North Facility',
+        isPrimary: true,
+      ),
+    ],
   );
 }
 
@@ -41,7 +47,7 @@ void main() {
   testWidgets('shows every section down the page', (tester) async {
     await _pump(tester, const Locale('en'));
 
-    expect(find.text('Mirpur-10 Public Toilet'), findsOneWidget);
+    expect(find.text('Uttara North Facility'), findsOneWidget);
     expect(find.text('Consumer access'), findsOneWidget);
     expect(find.text('Direction'), findsOneWidget);
     expect(find.text('Earning Report'), findsOneWidget);

@@ -11,6 +11,7 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../dashboard/widgets/dashboard_meter.dart';
 import '../../dashboard/widgets/dashboard_stat_tile.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
+import '../riverpod/toilet_name.dart';
 import '../widgets/details/hourly_visitors_chart.dart';
 import '../widgets/details/toilet_action_bar.dart';
 import '../widgets/details/toilet_attendee_tile.dart';
@@ -129,8 +130,14 @@ class ToiletDetailsPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const ToiletHeroCard(
-              name: 'Mirpur-10 Public Toilet',
+            ToiletHeroCard(
+              name:
+                  toiletNameOf(
+                    ref,
+                    facilityId,
+                    Localizations.localeOf(context).languageCode,
+                  ) ??
+                  '—',
               statusLabel: 'Open',
               address: 'Mirpur-10 Roundabout, Dhaka 1216',
               ratingText: '4.2',
