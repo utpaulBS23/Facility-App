@@ -105,6 +105,7 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
       // without touching any consumer.
       activePartnerId: entity.user.partnerId,
       trackingSettings: entity.trackingSettings,
+      role: entity.user.role,
     );
     _sessionController.add(_session);
   }

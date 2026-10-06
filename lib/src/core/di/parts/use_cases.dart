@@ -678,6 +678,13 @@ GetUserRouteUseCase getUserRouteUseCase(Ref ref) {
 }
 
 @riverpod
+GetDashboardUseCase getDashboardUseCase(Ref ref) {
+  return GetDashboardUseCase(
+    dashboardRepository: ref.read(dashboardRepositoryProvider),
+  );
+}
+
+@riverpod
 GetToiletsUseCase getToiletsUseCase(Ref ref) {
   return GetToiletsUseCase(
     toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),

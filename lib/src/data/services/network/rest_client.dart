@@ -499,6 +499,9 @@ abstract class RestClient {
     @Query('page') int? page,
   });
 
+  @GET(Endpoints.dashboard)
+  Future<HttpResponse> getDashboard({@Query('month') String? month});
+
   @GET(Endpoints.userRoutes)
   Future<HttpResponse> getUserRoutes({
     @Path('partnerId') required int partnerId,

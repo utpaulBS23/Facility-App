@@ -149,6 +149,11 @@ UserTrackingRepository userTrackingRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+DashboardRepository dashboardRepository(Ref ref) {
+  return DashboardRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 ToiletLocationRepository toiletLocationRepository(Ref ref) {
   return ToiletLocationRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
