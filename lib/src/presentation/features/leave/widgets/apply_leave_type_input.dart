@@ -47,7 +47,6 @@ class LeaveTypeInput extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedLeavePolicyId = ref.watch(selectedLeavePolicyIdProvider);
     final balanceState = ref.watch(leaveBalanceProvider(attendantId));
-    final color = context.color;
     final dimensions = context.dimensions;
     final spacing = dimensions.spacing;
 
@@ -70,7 +69,7 @@ class LeaveTypeInput extends ConsumerWidget {
 
     final selectedName = selectedBalance?.leavePolicy.localizedName(context.languageCode);
 
-    return FormSelectorCard(
+    return FormSelectorCard.text(
       title: context.locale.leaveType,
       icon: Icons.category_outlined,
       enabled: isEnabled,
@@ -80,17 +79,8 @@ class LeaveTypeInput extends ConsumerWidget {
         selectedId: selectedLeavePolicyId,
         options: options,
       ),
-      content: Text(
-        selectedName ?? context.locale.leaveType,
-        style: selectedName == null
-            ? context.textStyle.titleSmall.copyWith(
-                color: color.backgroundMuted,
-              )
-            : context.textStyle.titleSmall.copyWith(
-                color: color.text.secondary,
-              ),
-        overflow: TextOverflow.ellipsis,
-      ),
+      value: selectedName,
+      placeholder: context.locale.leaveType,
     );
   }
 }

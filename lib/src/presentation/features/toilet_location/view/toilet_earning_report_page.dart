@@ -106,12 +106,14 @@ class _ToiletEarningReportPageState
               title: 'Select month and year',
               month: ReportDropdown<int>(
                 caption: 'Select month',
+                icon: Icons.calendar_month_outlined,
                 value: _month,
                 items: months,
                 onChanged: (v) => setState(() => _month = v),
               ),
               year: ReportDropdown<int>(
                 caption: 'Select year',
+                icon: Icons.event_outlined,
                 value: _year,
                 items: years,
                 onChanged: (v) => setState(() => _year = v),

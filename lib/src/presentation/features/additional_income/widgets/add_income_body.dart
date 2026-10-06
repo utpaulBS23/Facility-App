@@ -71,8 +71,6 @@ class _AddIncomeBody extends ConsumerWidget {
             onTypeChanged: onIncomeEntryTypeChanged,
           ),
           Gap(spacing.s16),
-          LabelLargeText(context.locale.selectFacility),
-          Gap(spacing.s8),
           _IncomeFacilitySection(
             enabled: true,
             hasError: facilityError,
@@ -80,8 +78,6 @@ class _AddIncomeBody extends ConsumerWidget {
           ),
           if (!isProductSell) ...[
             Gap(spacing.s16),
-            LabelLargeText(context.locale.selectIncomeType),
-            Gap(spacing.s8),
             _IncomeTypeSection(
               enabled: facilitySelected,
               hasError: incomeTypeError,
@@ -97,11 +93,11 @@ class _AddIncomeBody extends ConsumerWidget {
           ],
           if (isProductSell) ...[
             Gap(spacing.s16),
-            LabelLargeText(context.locale.entryDate),
-            Gap(spacing.s8),
-            _DropdownField(
+            FormSelectorCard.text(
+              title: context.locale.entryDate,
+              icon: Icons.calendar_today_outlined,
               value: DateFormatter.shortDate(entryDate),
-              hint: context.locale.entryDate,
+              placeholder: context.locale.entryDate,
               onTap: facilitySelected ? onPickEntryDate : null,
             ),
             Gap(spacing.s16),
