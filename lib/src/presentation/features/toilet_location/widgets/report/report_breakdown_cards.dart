@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/extensions/app_numbers.dart';
+import '../../../../../core/extensions/app_localization.dart';
+import '../../../../../domain/entities/master_data_entity.dart';
 import '../../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import '../../../dashboard/widgets/dashboard_tone.dart';
 import '../details/toilet_section_card.dart';
+import 'report_labels.dart';
 import 'report_line_widgets.dart';
 
-// TODO: labels are English only until the next localisation pass.
+// TODO: card titles are English only until the next localisation pass. Every
+// line inside them is named by the data.
 
 String _money(BuildContext context, num v) {
   final n = context.numbers;
@@ -14,15 +17,8 @@ String _money(BuildContext context, num v) {
   return v < 0 ? '-৳ ${n.integer(-v)}' : '৳ ${n.integer(v)}';
 }
 
-/// "water_bill" to "Water bill".
-String _categoryLabel(String key) {
-  final text = key.replaceAll('_', ' ').trim();
-  if (text.isEmpty) return text;
-
-  return text[0].toUpperCase() + text.substring(1);
-}
-
-/// How many people used each service, with the women among them.
+/// How many people used each service, with the women among them. Services are
+/// the ones the records name, two to a row.
 class ReportSubscribersCard extends StatelessWidget {
   const ReportSubscribersCard({super.key, required this.report});
 
@@ -31,61 +27,45 @@ class ReportSubscribersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final n = context.numbers;
-    // The records do not track subscriptions, so those read as a dash.
-    const untracked = '—';
+    final services = report.services;
+    const blank = ReportStat(label: '', value: '');
 
     return ToiletSectionCard(
       title: 'Number of subscribers',
       child: Column(
         children: [
-          ReportStatPairRow(
-            left: ReportStat(
-              label: 'Pay per user toilet',
-              value: n.integer(report.toiletUsers.total),
+          for (var i = 0; i < services.length; i += 2) ...[
+            ReportStatPairRow(
+              left: ReportStat(
+                label: services[i].label,
+                value: n.integer(services[i].total),
+              ),
+              right: i + 1 < services.length
+                  ? ReportStat(
+                      label: services[i + 1].label,
+                      value: n.integer(services[i + 1].total),
+                    )
+                  : blank,
+              showDivider: false,
             ),
-            right: ReportStat(
-              label: 'Pay per user shower',
-              value: n.integer(report.showerUsers.total),
+            ReportStatPairRow(
+              left: ReportStat(
+                label: context.locale.female,
+                value: n.integer(services[i].women),
+                strong: false,
+              ),
+              right: i + 1 < services.length
+                  ? ReportStat(
+                      label: context.locale.female,
+                      value: n.integer(services[i + 1].women),
+                      strong: false,
+                    )
+                  : blank,
+              showDivider: i + 2 < services.length,
             ),
-            showDivider: false,
-          ),
-          ReportStatPairRow(
-            left: ReportStat(
-              label: 'Including women',
-              value: n.integer(report.toiletUsers.women),
-              strong: false,
-            ),
-            right: ReportStat(
-              label: 'Including women',
-              value: n.integer(report.showerUsers.women),
-              strong: false,
-            ),
-          ),
-          const ReportStatPairRow(
-            left: ReportStat(
-              label: 'Subscribe user (toilet)',
-              value: untracked,
-            ),
-            right: ReportStat(
-              label: 'Subscribed user (water)',
-              value: untracked,
-            ),
-            showDivider: false,
-          ),
-          const ReportStatPairRow(
-            left: ReportStat(
-              label: 'Including women',
-              value: untracked,
-              strong: false,
-            ),
-            right: ReportStat(
-              label: 'Including women',
-              value: untracked,
-              strong: false,
-            ),
-          ),
+          ],
           ReportTotalRow(
-            label: 'TOTAL USERS (SUBSCRIPTION + PAY PER USE)',
+            label: 'TOTAL USERS',
             value: n.integer(report.totalUsers),
           ),
         ],
@@ -113,15 +93,11 @@ class ReportDigitalSystemCard extends StatelessWidget {
           ReportLineRow(
             label: 'Package income',
             value: _money(context, report.packageIncome),
-          ),
-          ReportLineRow(
-            label: 'Pay as you go income',
-            value: _money(context, 0),
-          ),
-          ReportLineRow(
-            label: 'Income from Digital system',
-            value: _money(context, report.digitalIncome),
             showDivider: false,
+          ),
+          ReportTotalRow(
+            label: 'INCOME FROM DIGITAL SYSTEM',
+            value: _money(context, report.digitalIncome),
           ),
           ReportTotalRow(
             label: 'DIFFERENCE — DIGITAL SYSTEM VS ACTUAL INCOME',
@@ -133,37 +109,25 @@ class ReportDigitalSystemCard extends StatelessWidget {
   }
 }
 
-/// Income by source. Lines the design always shows are always listed; the
-/// rest appear only when they hold money, so the total still adds up.
+/// Income by source, one row per service, extra-income type or product the
+/// records name.
 class ReportRevenueCard extends StatelessWidget {
-  const ReportRevenueCard({super.key, required this.report});
+  const ReportRevenueCard({
+    super.key,
+    required this.report,
+    required this.incomeTypes,
+    required this.languageCode,
+  });
 
   final FacilityMonthlyReportEntity report;
 
-  static const _always = <String, String>{
-    'toilet': 'Pay per use toilet',
-    'shower': 'Pay per use shower',
-    'drinking_water': 'Drinking water',
-    'subscription': 'Subscription (toilet use)',
-    'laundry': 'Laundry',
-    'product_sales': 'Product sales',
-    'locker': 'Locker',
-    'other_income': 'Other income',
-  };
-
-  static const _whenPresent = <String, String>{
-    'urinal': 'Pay per use urine',
-    'sanitary_pad': 'Sanitary pad',
-    'app': 'Income via app',
-  };
+  /// The partner's extra-income types, for their labels; may be empty.
+  final List<MasterDataItemEntity> incomeTypes;
+  final String languageCode;
 
   @override
   Widget build(BuildContext context) {
-    final lines = <(String, num)>[
-      for (final e in _always.entries) (e.value, report.incomeOf(e.key)),
-      for (final e in _whenPresent.entries)
-        if (report.incomeOf(e.key) != 0) (e.value, report.incomeOf(e.key)),
-    ];
+    final lines = report.incomeLines;
 
     return ToiletSectionCard(
       title: 'Revenue (Tk)',
@@ -172,8 +136,13 @@ class ReportRevenueCard extends StatelessWidget {
           for (var i = 0; i < lines.length; i++)
             ReportLineRow(
               compact: true,
-              label: lines[i].$1,
-              value: _money(context, lines[i].$2),
+              label: reportIncomeLabel(
+                context,
+                lines[i],
+                incomeTypes: incomeTypes,
+                languageCode: languageCode,
+              ),
+              value: _money(context, lines[i].value),
               showDivider: i < lines.length - 1,
             ),
           ReportTotalRow(
@@ -205,7 +174,7 @@ class ReportServiceCostCard extends StatelessWidget {
           for (var i = 0; i < lines.length; i++)
             ReportLineRow(
               compact: true,
-              label: _categoryLabel(lines[i].key),
+              label: prettyKey(lines[i].key),
               value: _money(context, lines[i].value),
               showDivider: i < lines.length - 1,
             ),

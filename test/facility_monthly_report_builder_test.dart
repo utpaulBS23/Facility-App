@@ -1,3 +1,4 @@
+import 'package:facility_management_app/src/domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import 'package:facility_management_app/src/domain/entities/toilet_location/facility_report_sources_entity.dart';
 import 'package:facility_management_app/src/domain/use_cases/toilet_location/build_facility_monthly_report.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -122,6 +123,9 @@ FacilityReportSources _august() => FacilityReportSources(
   ],
 );
 
+({String label, num value}) _line(ReportIncomeLine l) =>
+    (label: l.label, value: l.value);
+
 void main() {
   test('matches the web PDF for August 2026', () {
     final r = buildFacilityMonthlyReport(
@@ -130,20 +134,53 @@ void main() {
       month: '2026-08',
     );
 
-    expect(r.incomeOf('toilet'), 17);
-    expect(r.incomeOf('shower'), 17);
-    expect(r.incomeOf('laundry'), 800);
-    expect(r.incomeOf('product_sales'), 40);
-    expect(r.incomeOf('locker'), 0);
+    // Named by the records: two services, one extra-income type, one product.
+    expect(r.incomeLines.map(_line).toList(), [
+      (label: 'Shower', value: 17),
+      (label: 'Toilet', value: 17),
+      (label: 'laundry', value: 800),
+      (label: 'Water', value: 40),
+    ]);
     expect(r.totalIncome, 874);
     expect(r.totalExpense, 1100);
     expect(r.profitLoss, -226);
 
-    expect(r.toiletUsers.women, 9);
-    expect(r.toiletUsers.men, 8);
-    expect(r.showerUsers.women, 9);
-    expect(r.showerUsers.men, 8);
+    final toilet = r.services.firstWhere((s) => s.label == 'Toilet');
+    final shower = r.services.firstWhere((s) => s.label == 'Shower');
+    expect((toilet.women, toilet.men), (9, 8));
+    expect((shower.women, shower.men), (9, 8));
     expect(r.totalUsers, 34);
+    expect(r.hasRecords, isTrue);
+  });
+
+  test('a service or income type nobody listed shows up by itself', () {
+    final r = buildFacilityMonthlyReport(
+      FacilityReportSources(
+        cash: [
+          CashCollectionRecord(
+            facilityId: 1,
+            date: '2026-08-01',
+            productSelling: 0,
+            rentingOthers: 0,
+            items: [_item('Sauna', 'male', 3)],
+          ),
+        ],
+        extras: const [
+          ExtraIncomeRecord(
+            facilityId: 1,
+            type: 'advertisement',
+            amount: 500,
+            status: 'approved',
+            submittedAt: '2026-08-02 10:00:00',
+          ),
+        ],
+      ),
+      facilityId: 1,
+      month: '2026-08',
+    );
+
+    expect(r.incomeLines.map((l) => l.label), ['Sauna', 'advertisement']);
+    expect(r.totalIncome, 503);
   });
 
   test('expense is grouped by category', () {
@@ -167,7 +204,19 @@ void main() {
 
     expect(r.totalUsers, 50);
     expect(r.totalExpense, 0);
-    expect(r.incomeOf('laundry'), 0);
+    expect(r.incomeLines.map((l) => l.label), ['Toilet']);
+  });
+
+  test('a facility with no records says so', () {
+    final r = buildFacilityMonthlyReport(
+      _august(),
+      facilityId: 99,
+      month: '2026-08',
+    );
+
+    expect(r.hasRecords, isFalse);
+    expect(r.incomeLines, isEmpty);
+    expect(r.totalIncome, 0);
   });
 
   test('cash sheet product and renting amounts stand in when nothing else '
@@ -188,8 +237,10 @@ void main() {
       month: '2026-08',
     );
 
-    expect(r.incomeOf('product_sales'), 200);
-    expect(r.incomeOf('other_income'), 300);
+    expect(r.incomeLines.map((l) => (l.kind, l.value)).toList(), [
+      (ReportIncomeKind.cashProduct, 200),
+      (ReportIncomeKind.rentingOthers, 300),
+    ]);
   });
 
   test('app income and package purchases feed the digital system', () {
@@ -215,7 +266,8 @@ void main() {
       month: '2026-08',
     );
 
-    expect(r.incomeOf('app'), 10);
+    expect(r.incomeLines.single.kind, ReportIncomeKind.app);
+    expect(r.incomeLines.single.value, 10);
     expect(r.appIncome, 15);
     expect(r.packageIncome, 100);
     expect(r.digitalIncome, 115);

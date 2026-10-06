@@ -16,6 +16,7 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
 import '../../facility_expense/riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
+import '../../additional_income/riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../riverpod/toilet_earning_report_provider.dart';
 import '../widgets/details/toilet_section_card.dart';
 import '../widgets/report/report_breakdown_cards.dart';
@@ -162,6 +163,11 @@ class _ToiletEarningReportPageState
                 expenseCatalog:
                     ref.watch(expenseCategoryOptionsProvider).valueOrNull ??
                     const [],
+                // The partner's extra-income types name the extra income
+                // lines; the report still shows without them.
+                incomeTypes:
+                    ref.watch(incomeTypeOptionsProvider).valueOrNull ??
+                    const [],
                 languageCode: language,
               ),
             ),
@@ -177,11 +183,13 @@ class _ReportBody extends StatelessWidget {
   const _ReportBody({
     required this.report,
     required this.expenseCatalog,
+    required this.incomeTypes,
     required this.languageCode,
   });
 
   final FacilityMonthlyReportEntity report;
   final List<MasterDataItemEntity> expenseCatalog;
+  final List<MasterDataItemEntity> incomeTypes;
   final String languageCode;
 
   @override
@@ -194,6 +202,19 @@ class _ReportBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (!report.hasRecords) ...[
+          ToiletSectionCard(
+            title: 'No records',
+            child: Text(
+              'This toilet has no collections, income or expenses recorded '
+              'for this month. Pick another month or toilet.',
+              style: context.textStyle.bodyMedium.copyWith(
+                color: context.color.text.secondary,
+              ),
+            ),
+          ),
+          gap,
+        ],
         ToiletTileRow(
           children: [
             ReportSummaryTile(
@@ -226,13 +247,23 @@ class _ReportBody extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: ReportRevenueCard(report: report)),
+            Expanded(
+              child: ReportRevenueCard(
+                report: report,
+                incomeTypes: incomeTypes,
+                languageCode: languageCode,
+              ),
+            ),
             SizedBox(width: spacing.s12),
             Expanded(child: ReportServiceCostCard(report: report)),
           ],
         ),
         gap,
-        ReportIncomeItemsCard(report: report),
+        ReportIncomeItemsCard(
+          report: report,
+          incomeTypes: incomeTypes,
+          languageCode: languageCode,
+        ),
         gap,
         ReportExpenseItemsCard(
           report: report,

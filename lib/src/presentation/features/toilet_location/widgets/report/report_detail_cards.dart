@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/extensions/app_numbers.dart';
+import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../domain/entities/master_data_entity.dart';
 import '../../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import '../../../dashboard/widgets/dashboard_tone.dart';
 import '../details/toilet_section_card.dart';
+import 'report_labels.dart';
 import 'report_line_widgets.dart';
 
-// The detail tables of the admin web's monthly report, in its order and with
-// its wording: income items, expense items, customer numbers and the bKash
-// collection.
+// The detail tables of the admin web's monthly report: income items, expense
+// items, customer numbers and the bKash collection. Rows are named by the
+// data the server sent.
 
-// TODO: labels are English only until the next localisation pass.
+// TODO: card titles and total labels are English only until the next
+// localisation pass.
 
 String _money(BuildContext context, num v) {
   final n = context.numbers;
@@ -19,7 +21,7 @@ String _money(BuildContext context, num v) {
   return v < 0 ? '-৳ ${n.integer(-v)}' : '৳ ${n.integer(v)}';
 }
 
-/// A card of label/amount rows. Every row but the last has a hairline.
+/// A card body of label/amount rows. Every row but the last has a hairline.
 class _Lines extends StatelessWidget {
   const _Lines({required this.rows, this.total});
 
@@ -42,34 +44,38 @@ class _Lines extends StatelessWidget {
   }
 }
 
-/// Every income source, zeros included.
+/// One row per income source the records name: each service, each
+/// extra-income type, each product.
 class ReportIncomeItemsCard extends StatelessWidget {
-  const ReportIncomeItemsCard({super.key, required this.report});
+  const ReportIncomeItemsCard({
+    super.key,
+    required this.report,
+    required this.incomeTypes,
+    required this.languageCode,
+  });
 
   final FacilityMonthlyReportEntity report;
 
+  /// The partner's extra-income types, for their labels; may be empty.
+  final List<MasterDataItemEntity> incomeTypes;
+  final String languageCode;
+
   @override
   Widget build(BuildContext context) {
-    String m(String key) => _money(context, report.incomeOf(key));
-    // The web adds laundry, shop sales and other extras into one line.
-    final additional =
-        report.incomeOf('laundry') +
-        report.incomeOf('product_sales') +
-        report.incomeOf('other_income');
-
     return ToiletSectionCard(
       title: 'Income items',
       child: _Lines(
         rows: [
-          ('Pay per use toilet', m('toilet')),
-          ('Pay per use Urine', m('urinal')),
-          ('Pay per use Showers', m('shower')),
-          ('Drinking Water', m('drinking_water')),
-          ('Manual Subscription', m('subscription')),
-          ('Income Via App', m('app')),
-          ('Additional Revenue (Laundry, Shop)', _money(context, additional)),
-          ('Sanitary Pad', m('sanitary_pad')),
-          ('Locker', m('locker')),
+          for (final line in report.incomeLines)
+            (
+              reportIncomeLabel(
+                context,
+                line,
+                incomeTypes: incomeTypes,
+                languageCode: languageCode,
+              ),
+              _money(context, line.value),
+            ),
         ],
         total: ReportTotalRow(
           label: 'Total Income',
@@ -98,12 +104,6 @@ class ReportExpenseItemsCard extends StatelessWidget {
   final List<MasterDataItemEntity> catalog;
   final String languageCode;
 
-  static String _fallbackLabel(String key) {
-    final text = key.replaceAll('_', ' ').trim();
-
-    return text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
-  }
-
   @override
   Widget build(BuildContext context) {
     final spend = {for (final l in report.expenseLines) l.key: l.value};
@@ -116,7 +116,7 @@ class ReportExpenseItemsCard extends StatelessWidget {
         (c.localizedLabel(languageCode), _money(context, spend[c.value] ?? 0)),
       for (final e in spend.entries)
         if (!known.contains(e.key))
-          (_fallbackLabel(e.key), _money(context, e.value)),
+          (prettyKey(e.key), _money(context, e.value)),
     ];
 
     return ToiletSectionCard(
@@ -133,7 +133,7 @@ class ReportExpenseItemsCard extends StatelessWidget {
   }
 }
 
-/// Users by service and gender, and the total.
+/// Users of each service the records name, by gender, and the total.
 class ReportCustomerNumbersCard extends StatelessWidget {
   const ReportCustomerNumbersCard({super.key, required this.report});
 
@@ -142,31 +142,21 @@ class ReportCustomerNumbersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final n = context.numbers;
-    String c(num v) => n.integer(v);
-    const untracked = 'Not tracked';
+    final locale = context.locale;
 
     return ToiletSectionCard(
       title: 'Customer numbers',
       child: _Lines(
         rows: [
-          ('Pay per user Toilet — women', c(report.toiletUsers.women)),
-          ('Pay per user Toilet — men', c(report.toiletUsers.men)),
-          ('Pay per user Urine — women', c(report.urinalUsers.women)),
-          ('Pay per user Urine — men', c(report.urinalUsers.men)),
-          ('Pay per user Shower — women', c(report.showerUsers.women)),
-          ('Pay per user Shower — men', c(report.showerUsers.men)),
-          (
-            'Pay per user Drinking Water — women',
-            c(report.drinkingWaterUsers.women),
-          ),
-          (
-            'Pay per user Drinking Water — men',
-            c(report.drinkingWaterUsers.men),
-          ),
-          ('Manual Subscribed user (Toilet use)', untracked),
-          ('Subscribed user (water)', untracked),
+          for (final s in report.services) ...[
+            ('${s.label} — ${locale.female}', n.integer(s.women)),
+            ('${s.label} — ${locale.male}', n.integer(s.men)),
+          ],
         ],
-        total: ReportTotalRow(label: 'Total user', value: c(report.totalUsers)),
+        total: ReportTotalRow(
+          label: 'Total user',
+          value: n.integer(report.totalUsers),
+        ),
       ),
     );
   }
