@@ -510,6 +510,16 @@ abstract class RestClient {
     @Query('task_id') int? taskId,
   });
 
+  @GET(Endpoints.facilityWiseReport)
+  Future<HttpResponse> getFacilityWiseReport({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('facility_id') int? facilityId,
+    @Query('group_id') int? groupId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.facilityWiseTargets)
   Future<HttpResponse> getFacilityWiseTargets({
     @Path('partnerId') required int partnerId,

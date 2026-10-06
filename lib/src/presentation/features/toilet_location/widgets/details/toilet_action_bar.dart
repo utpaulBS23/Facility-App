@@ -11,10 +11,15 @@ class ToiletActionBar extends StatelessWidget {
     required this.secondaryLabel,
     this.onPrimary,
     this.onSecondary,
+    this.showSecondary = true,
   });
 
   final String primaryLabel;
   final String secondaryLabel;
+
+  /// False when the user may not open the secondary action: only the primary
+  /// button shows, full width.
+  final bool showSecondary;
   final VoidCallback? onPrimary;
   final VoidCallback? onSecondary;
 
@@ -54,21 +59,23 @@ class ToiletActionBar extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: spacing.s12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: onSecondary,
-                  icon: const Icon(Icons.bar_chart_rounded, size: 20),
-                  label: Text(secondaryLabel),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
-                    foregroundColor: c.primary,
-                    side: BorderSide(color: c.borderBrand, width: 1.5),
-                    shape: shape,
-                    textStyle: label,
+              if (showSecondary) ...[
+                SizedBox(width: spacing.s12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onSecondary,
+                    icon: const Icon(Icons.bar_chart_rounded, size: 20),
+                    label: Text(secondaryLabel),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(52),
+                      foregroundColor: c.primary,
+                      side: BorderSide(color: c.borderBrand, width: 1.5),
+                      shape: shape,
+                      textStyle: label,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

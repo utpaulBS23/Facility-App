@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/login_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/detail_app_bar.dart';
@@ -92,7 +95,7 @@ const _attendees = [
 
 /// Everything about one toilet: access numbers, income goal, management info,
 /// supply stock and who is on shift.
-class ToiletDetailsPage extends StatelessWidget {
+class ToiletDetailsPage extends ConsumerWidget {
   const ToiletDetailsPage({super.key, required this.facilityId});
 
   final int facilityId;
@@ -106,8 +109,14 @@ class ToiletDetailsPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final gap = SizedBox(height: context.dimensions.spacing.s12);
+    // WHY gated: the earning report needs report.facility_wise.view.
+    final canOpenReport = ref.watch(
+      userSessionProvider.select(
+        (s) => s?.can(UserPermission.reportFacilityWiseView) ?? false,
+      ),
+    );
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -369,6 +378,7 @@ class ToiletDetailsPage extends StatelessWidget {
       bottomNavigationBar: ToiletActionBar(
         primaryLabel: context.locale.direction,
         secondaryLabel: 'Earning Report',
+        showSecondary: canOpenReport,
         onPrimary: () {},
         onSecondary: () => context.pushNamed(
           Routes.toiletEarningReport,

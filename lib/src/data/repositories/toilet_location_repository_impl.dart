@@ -4,7 +4,10 @@ import '../../domain/entities/toilet_location/toilet_filter.dart';
 import '../../domain/entities/toilet_location/toilet_list_page_entity.dart';
 import '../../domain/entities/toilet_location/toilet_target_entity.dart';
 import '../../domain/repositories/toilet_location_repository.dart';
+import '../extension/facility_wise_report_mapper.dart';
 import '../extension/toilet_location_mapper.dart';
+import '../../domain/entities/toilet_location/facility_wise_report_entity.dart';
+import '../models/toilet_location/facility_wise_report_model.dart';
 import '../models/toilet_location/toilet_response_model.dart';
 import '../models/toilet_location/toilet_target_model.dart';
 import '../services/network/rest_client.dart';
@@ -46,6 +49,22 @@ final class ToiletLocationRepositoryImpl extends ToiletLocationRepository {
         response.data,
       );
       return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<FacilityWiseReportEntity, Failure>> getFacilityWiseReport({
+    required int partnerId,
+    required int facilityId,
+    required String month,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getFacilityWiseReport(
+        partnerId: partnerId,
+        month: month,
+        facilityId: facilityId,
+      );
+      return FacilityWiseReportResponseModel.fromJson(response.data).toEntity();
     });
   }
 }

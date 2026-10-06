@@ -1,37 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_numbers.dart';
+import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/toilet_location/facility_wise_report_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/loading_indicator.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
+import '../riverpod/toilet_earning_report_provider.dart';
 import '../widgets/details/toilet_section_card.dart';
 import '../widgets/report/report_filter_widgets.dart';
 import '../widgets/report/report_line_widgets.dart';
 import '../widgets/report/report_summary_widgets.dart';
 
-// TODO: hardcoded sample figures. Replace with the facility-wise report API
-// (GET .../report/facility-wise) once it is wired; texts are English only
-// until then.
-const _sampleToilet = 'Gulshan-1 Public Toilet';
+// TODO: texts are English only until the next localisation pass.
 
-/// One toilet's monthly report: people served, income and cost for the month,
-/// and the profit or loss.
-class ToiletEarningReportPage extends StatefulWidget {
+/// One toilet's monthly report for a closed month: income, cost, cash moved to
+/// bKash or the bank, and the profit or loss.
+///
+/// WHY only these figures: the facility-wise report API carries nothing else.
+/// The design's subscriber, digital system and revenue-by-type tables are left
+/// out until the API sends them.
+class ToiletEarningReportPage extends ConsumerStatefulWidget {
   const ToiletEarningReportPage({super.key, required this.facilityId});
 
   final int facilityId;
 
   @override
-  State<ToiletEarningReportPage> createState() =>
+  ConsumerState<ToiletEarningReportPage> createState() =>
       _ToiletEarningReportPageState();
 }
 
-class _ToiletEarningReportPageState extends State<ToiletEarningReportPage> {
-  late int _month = DateTime.now().month;
-  late int _year = DateTime.now().year;
+class _ToiletEarningReportPageState
+    extends ConsumerState<ToiletEarningReportPage> {
+  // WHY last month first: only closed months have data, and the current one
+  // is almost never closed yet.
+  late int _year = _lastMonth().year;
+  late int _month = _lastMonth().month;
+
+  static DateTime _lastMonth() {
+    final now = DateTime.now();
+
+    return DateTime(now.year, now.month - 1);
+  }
+
+  String get _monthParam =>
+      '${_year.toString().padLeft(4, '0')}-'
+      '${_month.toString().padLeft(2, '0')}';
 
   void _onBack() {
     if (context.canPop()) {
@@ -48,7 +69,6 @@ class _ToiletEarningReportPageState extends State<ToiletEarningReportPage> {
     final spacing = context.dimensions.spacing;
     final language = Localizations.localeOf(context).languageCode;
     final gap = SizedBox(height: spacing.s12);
-    String money(num v) => '৳ ${n.integer(v)}';
 
     final now = DateTime.now();
     final months = {
@@ -59,6 +79,23 @@ class _ToiletEarningReportPageState extends State<ToiletEarningReportPage> {
       for (var y = now.year; y > now.year - 5; y--)
         y: n.number(y).replaceAll(',', ''),
     };
+
+    final report = ref.watch(
+      toiletEarningReportProvider(
+        facilityId: widget.facilityId,
+        month: _monthParam,
+      ),
+    );
+    final sessionName = ref.watch(
+      userSessionProvider.select(
+        (s) => s?.accessibleFacilities
+            .where((f) => f.id == widget.facilityId)
+            .map((f) => f.localizedName(language))
+            .firstOrNull,
+      ),
+    );
+    final toiletName =
+        sessionName ?? report.valueOrNull?.first?.facilityName ?? '—';
 
     return Scaffold(
       backgroundColor: c.scaffoldBackground,
@@ -87,9 +124,9 @@ class _ToiletEarningReportPageState extends State<ToiletEarningReportPage> {
             ),
             gap,
             ReportFilterCard(
-              toilet: const ReportToiletSelector(
+              toilet: ReportToiletSelector(
                 caption: 'Public toilet name',
-                name: _sampleToilet,
+                name: toiletName,
               ),
               month: ReportDropdown<int>(
                 caption: 'Select month',
@@ -105,214 +142,155 @@ class _ToiletEarningReportPageState extends State<ToiletEarningReportPage> {
               ),
             ),
             gap,
-            ToiletTileRow(
-              children: [
-                ReportSummaryTile(
-                  icon: Icons.groups_outlined,
-                  value: n.integer(10762),
-                  label: 'User',
-                  tone: DashboardTone.blue,
-                ),
-                ReportSummaryTile(
-                  icon: Icons.trending_up_rounded,
-                  value: money(75420),
-                  label: 'Total income',
-                  tone: DashboardTone.green,
-                ),
-                ReportSummaryTile(
-                  icon: Icons.trending_up_rounded,
-                  value: money(32297),
-                  label: 'Total profit',
-                  tone: DashboardTone.green,
-                ),
-              ],
-            ),
-            gap,
-            ToiletSectionCard(
-              title: 'Number of subscribers',
-              child: Column(
-                children: [
-                  ReportStatPairRow(
-                    left: ReportStat(
-                      label: 'Pay per user toilet',
-                      value: n.integer(10762),
-                    ),
-                    right: ReportStat(
-                      label: 'Pay per user shower',
-                      value: n.integer(0),
-                    ),
-                    showDivider: false,
-                  ),
-                  ReportStatPairRow(
-                    left: ReportStat(
-                      label: 'Including women',
-                      value: n.integer(659),
-                      strong: false,
-                    ),
-                    right: ReportStat(
-                      label: 'Including women',
-                      value: n.integer(0),
-                      strong: false,
-                    ),
-                  ),
-                  ReportStatPairRow(
-                    left: ReportStat(
-                      label: 'Subscribe user (toilet)',
-                      value: n.integer(0),
-                    ),
-                    right: ReportStat(
-                      label: 'Subscribed user (water)',
-                      value: n.integer(0),
-                    ),
-                    showDivider: false,
-                  ),
-                  ReportStatPairRow(
-                    left: ReportStat(
-                      label: 'Including women',
-                      value: n.integer(0),
-                      strong: false,
-                    ),
-                    right: ReportStat(
-                      label: 'Including women',
-                      value: n.integer(0),
-                      strong: false,
-                    ),
-                  ),
-                  ReportTotalRow(
-                    label: 'TOTAL USERS (SUBSCRIPTION + PAY PER USE)',
-                    value: n.integer(10762),
-                  ),
-                ],
+            report.when(
+              loading: () => Padding(
+                padding: EdgeInsets.symmetric(vertical: spacing.s32),
+                child: const Center(child: LoadingIndicator()),
               ),
-            ),
-            gap,
-            ToiletSectionCard(
-              title: 'Digital system',
-              child: Column(
-                children: [
-                  ReportLineRow(
-                    label: 'Pay Per/Manager Apps Income',
-                    value: money(21034),
+              error: (e, _) => SizedBox(
+                height: 240,
+                child: AppErrorWidget(
+                  message: e.localizedMessage(context),
+                  onRetry: () => ref.invalidate(
+                    toiletEarningReportProvider(
+                      facilityId: widget.facilityId,
+                      month: _monthParam,
+                    ),
                   ),
-                  ReportLineRow(label: 'Package income', value: money(1568)),
-                  ReportLineRow(label: 'Pay as you go', value: money(100)),
-                  ReportTotalRow(label: 'TOTAL', value: money(22702)),
-                ],
+                ),
               ),
+              data: (data) {
+                final row = data.first;
+                if (row == null) return const _NotClosedYet();
+
+                return _ReportBody(row: row);
+              },
             ),
-            gap,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ToiletSectionCard(
-                    title: 'Revenue (Rs.)',
-                    child: Column(
-                      children: [
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Pay per use toilet',
-                          value: money(67220),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Pay per use shower',
-                          value: money(0),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Drinking water',
-                          value: money(0),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Subscription (toilet use)',
-                          value: money(8100),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Laundry',
-                          value: money(0),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Product sales',
-                          value: money(0),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Locker',
-                          value: money(0),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Advertisement',
-                          value: money(100),
-                        ),
-                        ReportTotalRow(
-                          compact: true,
-                          label: 'TOTAL',
-                          value: money(75420),
-                          tone: DashboardTone.green,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: spacing.s12),
-                Expanded(
-                  child: ToiletSectionCard(
-                    title: 'Service cost (Rs.)',
-                    child: Column(
-                      children: [
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Asset rental',
-                          value: money(6000),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Employee salary',
-                          value: money(15532),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Utilities (water, electricity, internet)',
-                          value: money(12500),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Cleaning supplies',
-                          value: money(5561),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Other O&M',
-                          value: money(3530),
-                        ),
-                        ReportLineRow(
-                          compact: true,
-                          label: 'Laundry costs',
-                          value: money(0),
-                        ),
-                        ReportTotalRow(
-                          compact: true,
-                          label: 'TOTAL',
-                          value: money(43123),
-                          tone: DashboardTone.red,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            gap,
-            ReportProfitBanner(label: 'Profit/Loss', value: money(32297)),
             SizedBox(height: spacing.s16),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _NotClosedYet extends StatelessWidget {
+  const _NotClosedYet();
+
+  @override
+  Widget build(BuildContext context) {
+    return ToiletSectionCard(
+      title: 'Nothing closed yet',
+      child: Text(
+        'This month has not been closed for this toilet, so there is no '
+        'report yet. Pick an earlier month.',
+        style: context.textStyle.bodyMedium.copyWith(
+          color: context.color.text.secondary,
+        ),
+      ),
+    );
+  }
+}
+
+class _ReportBody extends StatelessWidget {
+  const _ReportBody({required this.row});
+
+  final FacilityWiseRowEntity row;
+
+  @override
+  Widget build(BuildContext context) {
+    final n = context.numbers;
+    final spacing = context.dimensions.spacing;
+    final gap = SizedBox(height: spacing.s12);
+    String money(num v) => v < 0 ? '-৳ ${n.integer(-v)}' : '৳ ${n.integer(v)}';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ToiletTileRow(
+          children: [
+            ReportSummaryTile(
+              icon: Icons.trending_up_rounded,
+              value: money(row.income),
+              label: 'Total income',
+              tone: DashboardTone.green,
+            ),
+            ReportSummaryTile(
+              icon: Icons.trending_down_rounded,
+              value: money(row.expense),
+              label: 'Total expense',
+              tone: DashboardTone.red,
+            ),
+            ReportSummaryTile(
+              icon: Icons.account_balance_wallet_outlined,
+              value: money(row.cashBalance),
+              label: 'Cash balance',
+              tone: DashboardTone.blue,
+            ),
+          ],
+        ),
+        gap,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ToiletSectionCard(
+                title: 'Service cost (Rs.)',
+                child: Column(
+                  children: [
+                    ReportLineRow(
+                      compact: true,
+                      label: 'Accounts paid',
+                      value: money(row.accountsPaid),
+                    ),
+                    ReportLineRow(
+                      compact: true,
+                      label: 'Operation department',
+                      value: money(row.operationDepartment),
+                      showDivider: false,
+                    ),
+                    ReportTotalRow(
+                      compact: true,
+                      label: 'TOTAL',
+                      value: money(row.expense),
+                      tone: DashboardTone.red,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: spacing.s12),
+            Expanded(
+              child: ToiletSectionCard(
+                title: 'Cash moved (Rs.)',
+                child: Column(
+                  children: [
+                    ReportLineRow(
+                      compact: true,
+                      label: 'To bKash',
+                      value: money(row.toBkash),
+                    ),
+                    ReportLineRow(
+                      compact: true,
+                      label: 'To bank',
+                      value: money(row.toBank),
+                      showDivider: false,
+                    ),
+                    ReportTotalRow(
+                      compact: true,
+                      label: 'TOTAL',
+                      value: money(row.converted),
+                      tone: DashboardTone.blue,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        gap,
+        ReportProfitBanner(label: 'Profit/Loss', value: money(row.profitLoss)),
+      ],
     );
   }
 }

@@ -203,6 +203,8 @@ class Endpoints {
   static const String facilityMap = '/partners/{partnerId}/facility-map';
   static const String livePositions = '/partners/{partnerId}/live-positions';
   static const String userRoutes = '/partners/{partnerId}/user-routes';
+  static const String facilityWiseReport =
+      '/partners/{partnerId}/report/facility-wise';
   static const String facilityWiseTargets =
       '/partners/{partnerId}/facility-wise-targets';
 
