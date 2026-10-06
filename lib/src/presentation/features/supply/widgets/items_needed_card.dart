@@ -78,62 +78,17 @@ class _ItemsNeededCard extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: GestureDetector(
+                        child: FormSelectorCard.text(
+                          title: context.locale.item,
+                          icon: Icons.inventory_2_outlined,
+                          value: item.itemName,
+                          placeholder: context.locale.selectItem,
                           onTap: () => _onPickItem(
                             context,
                             index,
                             availableItems
                                 .where((s) => s.id == item.stockItemId)
                                 .firstOrNull,
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: spacing.s12,
-                              vertical: spacing.s8,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: color.borderSubtle),
-                              borderRadius: BorderRadius.circular(radius.r10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  context.locale.item,
-                                  style: context.textStyle.bodySmall.copyWith(
-                                    color: color.text.secondary,
-                                  ),
-                                ),
-                                Gap(spacing.s2),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        item.itemName ??
-                                            context.locale.selectItem,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: item.itemName == null
-                                            ? context.textStyle.bodyMedium
-                                                  .copyWith(
-                                                    color:
-                                                        color.text.secondary,
-                                                  )
-                                            : context.textStyle.labelLarge
-                                                  .copyWith(
-                                                    color: color.text.primary,
-                                                    fontWeight:
-                                                        FontWeight.bold,
-                                                  ),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      color: color.text.secondary,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
                           ),
                         ),
                       ),

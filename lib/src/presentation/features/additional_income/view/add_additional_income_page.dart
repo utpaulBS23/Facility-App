@@ -28,7 +28,6 @@ import '../../../../core/utils/digits.dart';
 
 part '../widgets/add_income_action_buttons.dart';
 part '../widgets/add_income_body.dart';
-part '../widgets/income_dropdown_field.dart';
 part '../widgets/income_entry_type_switch.dart';
 part '../widgets/income_facility_list_sheet.dart';
 part '../widgets/income_facility_section.dart';

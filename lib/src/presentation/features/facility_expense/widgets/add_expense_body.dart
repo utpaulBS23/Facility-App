@@ -52,16 +52,12 @@ class _AddExpenseBody extends ConsumerWidget {
           vertical: spacing.s20,
         ),
         children: [
-          LabelLargeText(context.locale.selectFacility),
-          Gap(spacing.s8),
           _FacilitySection(
             enabled: true,
             hasError: facilityError,
             onSelected: onFacilitySelected,
           ),
           Gap(spacing.s16),
-          LabelLargeText(context.locale.selectTypeOfExpense),
-          Gap(spacing.s8),
           _CategorySection(
             enabled: categoryEnabled,
             hasError: categoryError,
@@ -86,11 +82,11 @@ class _AddExpenseBody extends ConsumerWidget {
             onSelected: onPaidBySelected,
           ),
           Gap(spacing.s16),
-          LabelLargeText(context.locale.expenseDate),
-          Gap(spacing.s8),
-          _DropdownField(
+          FormSelectorCard.text(
+            title: context.locale.expenseDate,
+            icon: Icons.calendar_today_outlined,
             value: DateFormatter.shortDate(expenseDate),
-            hint: context.locale.expenseDate,
+            placeholder: context.locale.expenseDate,
             onTap: dateEnabled ? onPickDate : null,
           ),
           Gap(spacing.s16),

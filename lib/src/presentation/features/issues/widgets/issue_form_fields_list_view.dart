@@ -88,8 +88,6 @@ class IssueFormFieldsListView extends StatelessWidget {
         IssueLocationInputSection(controller: locationController),
         Gap(spacing.s16),
         // 2. Problem Category
-        IssueSectionLabel('Problem Category'),
-        Gap(spacing.s2),
         IssueCategorySelector(
           selected: selectedCategory,
           hasError: categoryError,

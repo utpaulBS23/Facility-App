@@ -41,10 +41,12 @@ class _CategorySection extends ConsumerWidget {
         context.locale.selectExpenseCategory,
         color: context.color.error,
       ),
-      data: (categories) => _DropdownField(
+      data: (categories) => FormSelectorCard.text(
+      title: context.locale.selectTypeOfExpense,
+      icon: Icons.category_outlined,
         value: category?.localizedLabel(context.languageCode),
-        hint: context.locale.selectExpenseCategory,
-        hasError: hasError,
+        placeholder: context.locale.selectExpenseCategory,
+        errorText: hasError ? context.locale.fieldRequired : null,
         onTap: enabled
             ? () => _onPickCategory(context, ref, categories)
             : null,

@@ -154,7 +154,7 @@ class _FacilityMapPageState extends ConsumerState<FacilityMapPage>
                 context.locale.allFacilities,
             attendantLabel:
                 selectedAttendant?.localizedName(languageCode) ??
-                context.locale.attendant,
+                context.locale.all,
             hasFilters: _facilityId != null || _staffId != null,
             onFacilityTap: _pickFacility,
             onAttendantTap: () => _pickAttendant(state.valueOrNull),

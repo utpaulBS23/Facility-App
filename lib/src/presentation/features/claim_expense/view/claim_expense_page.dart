@@ -262,13 +262,11 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
           child: ListView(
             padding: EdgeInsets.all(spacing.s16),
             children: [
-              Text(
-                context.locale.facilityName,
-                style: context.textStyle.labelLarge,
-              ),
-              Gap(spacing.s8),
-              _FacilitySelector(
-                facilityName: _facilityName(facilities, facilityId),
+              FormSelectorCard.text(
+                title: context.locale.facilityName,
+                icon: Icons.location_on_outlined,
+                value: _facilityName(facilities, facilityId),
+                placeholder: context.locale.selectFacility,
                 // WHY disabled: a single-facility session has nothing to
                 // pick between — opening the sheet would just show one row
                 // and force a redundant tap to confirm what's already set.
@@ -280,22 +278,15 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
               visitsAsync.when(
                 loading: () => const LinearProgressIndicator(),
                 error: (_, _) => const SizedBox.shrink(),
-                data: (visits) => FormSelectorCard(
+                data: (visits) => FormSelectorCard.text(
                   title: context.locale.referenceVisitOptional,
                   icon: Icons.event_note_outlined,
                   enabled: facilityId != null && visits.isNotEmpty,
                   onTap: () => _onPickVisit(visits),
-                  content: Text(
-                    selectedVisit == null
-                        ? context.locale.none
-                        : _referenceVisitLabel(context, selectedVisit),
-                    overflow: TextOverflow.ellipsis,
-                    style: selectedVisit == null
-                        ? context.textStyle.bodyMedium.copyWith(
-                            color: context.color.text.secondary,
-                          )
-                        : context.textStyle.bodyMedium,
-                  ),
+                  value: selectedVisit == null
+                      ? null
+                      : _referenceVisitLabel(context, selectedVisit),
+                  placeholder: context.locale.none,
                 ),
               ),
               Gap(spacing.s16),
@@ -323,9 +314,11 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                 ),
                 if (_startType == TravelExpenseStartType.facility) ...[
                   Gap(spacing.s12),
-                  _FacilitySelector(
-                    facilityName: _facilityName(facilities, _startFacilityId),
-                    hint: context.locale.startFacility,
+                  FormSelectorCard.text(
+                    title: context.locale.startFacility,
+                    icon: Icons.location_on_outlined,
+                    value: _facilityName(facilities, _startFacilityId),
+                    placeholder: context.locale.startFacility,
                     onTap: () => _onPickStartFacility(facilities),
                   ),
                 ],
@@ -435,58 +428,6 @@ String _referenceVisitLabel(BuildContext context, VisitSummaryEntity visit) {
       ? title
       : _visitTypeLabel(context, visit.type);
   return '$name · ${DateFormatter.dayMonthYear(visit.date)}';
-}
-
-class _FacilitySelector extends StatelessWidget {
-  const _FacilitySelector({
-    required this.facilityName,
-    required this.onTap,
-    this.hint,
-  });
-
-  final String? facilityName;
-  final VoidCallback? onTap;
-  final String? hint;
-
-  @override
-  Widget build(BuildContext context) {
-    final radius = context.dimensions.radius;
-    final spacing = context.dimensions.spacing;
-    final isDisabled = onTap == null;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 52,
-        decoration: BoxDecoration(
-          color: isDisabled ? context.color.subtle : null,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r12),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: spacing.s16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                facilityName ?? hint ?? context.locale.selectFacility,
-                overflow: TextOverflow.ellipsis,
-                style: facilityName == null
-                    ? context.textStyle.bodyMedium.copyWith(
-                        color: context.color.text.secondary,
-                      )
-                    : context.textStyle.bodyMedium,
-              ),
-            ),
-            if (!isDisabled)
-              Icon(
-                Icons.keyboard_arrow_down_rounded,
-                color: context.color.text.secondary,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 // WHY tap-to-select-and-pop, not a native dropdown: mirrors
