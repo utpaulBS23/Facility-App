@@ -115,13 +115,17 @@ class ReportDigitalSystemCard extends StatelessWidget {
             value: _money(context, report.packageIncome),
           ),
           ReportLineRow(
-            label: 'Pay as you go',
+            label: 'Pay as you go income',
             value: _money(context, 0),
+          ),
+          ReportLineRow(
+            label: 'Income from Digital system',
+            value: _money(context, report.digitalIncome),
             showDivider: false,
           ),
           ReportTotalRow(
-            label: 'TOTAL',
-            value: _money(context, report.digitalIncome),
+            label: 'DIFFERENCE — DIGITAL SYSTEM VS ACTUAL INCOME',
+            value: _money(context, report.totalIncome - report.digitalIncome),
           ),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/extensions/app_numbers.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
@@ -14,9 +15,11 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
+import '../../facility_expense/riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
 import '../riverpod/toilet_earning_report_provider.dart';
 import '../widgets/details/toilet_section_card.dart';
 import '../widgets/report/report_breakdown_cards.dart';
+import '../widgets/report/report_detail_cards.dart';
 import '../widgets/report/report_filter_widgets.dart';
 import '../widgets/report/report_summary_widgets.dart';
 
@@ -152,7 +155,15 @@ class _ToiletEarningReportPageState
                   ),
                 ),
               ),
-              data: (data) => _ReportBody(report: data),
+              data: (data) => _ReportBody(
+                report: data,
+                // The partner's expense categories, to list unused ones as
+                // the web report does; the report still shows without them.
+                expenseCatalog:
+                    ref.watch(expenseCategoryOptionsProvider).valueOrNull ??
+                    const [],
+                languageCode: language,
+              ),
             ),
             SizedBox(height: spacing.s16),
           ],
@@ -163,9 +174,15 @@ class _ToiletEarningReportPageState
 }
 
 class _ReportBody extends StatelessWidget {
-  const _ReportBody({required this.report});
+  const _ReportBody({
+    required this.report,
+    required this.expenseCatalog,
+    required this.languageCode,
+  });
 
   final FacilityMonthlyReportEntity report;
+  final List<MasterDataItemEntity> expenseCatalog;
+  final String languageCode;
 
   @override
   Widget build(BuildContext context) {
@@ -214,6 +231,18 @@ class _ReportBody extends StatelessWidget {
             Expanded(child: ReportServiceCostCard(report: report)),
           ],
         ),
+        gap,
+        ReportIncomeItemsCard(report: report),
+        gap,
+        ReportExpenseItemsCard(
+          report: report,
+          catalog: expenseCatalog,
+          languageCode: languageCode,
+        ),
+        gap,
+        ReportCustomerNumbersCard(report: report),
+        gap,
+        ReportBkashCard(report: report),
         gap,
         ReportProfitBanner(
           label: 'Profit/Loss',
