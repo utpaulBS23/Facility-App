@@ -3,19 +3,25 @@ part of '../router.dart';
 List<GoRoute> _shiftRoutes(Ref ref) {
   return [
     GoRoute(
-      path: Routes.shiftDetails,
+      // WHY path params: ids only, so any screen (or a deep link) can open a
+      // slot; SlotDetailsLoader fetches it. `date` is `yyyy-MM-dd`.
+      path: '${Routes.shiftDetails}/:facilityId/:date/:slotId',
       name: Routes.shiftDetails,
-      // WHY: the attendant list is migrated to shift-slots while the
-      // supervisor list still uses the older shift endpoints, so this route
-      // serves both payloads until the supervisor side can follow (blocked on
-      // weekly_roster_id, which the slots response does not carry).
       pageBuilder: (context, state) {
-        final extra = state.extra;
-        if (extra is ShiftSlotEntity) {
-          return MaterialPage(child: SlotDetailsPage(slot: extra));
+        final params = state.pathParameters;
+        final facilityId = int.tryParse(params['facilityId'] ?? '');
+        final slotId = int.tryParse(params['slotId'] ?? '');
+        final date = params['date'];
+        if (facilityId == null || slotId == null || date == null) {
+          return const MaterialPage(child: SizedBox.shrink());
         }
+
         return MaterialPage(
-          child: ShiftDetailsPage(entity: extra as ShiftEntity),
+          child: SlotDetailsLoader(
+            facilityId: facilityId,
+            date: date,
+            slotId: slotId,
+          ),
         );
       },
     ),

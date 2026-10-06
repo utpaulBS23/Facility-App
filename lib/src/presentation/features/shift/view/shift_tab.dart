@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/base/failure.dart';
 import '../../../../core/utils/api_date.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -19,6 +20,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/duration_formatter.dart';
 import '../../../core/widgets/app_back_button.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
@@ -58,6 +60,7 @@ part '../widgets/slot_detail_staffing_card.dart';
 part '../widgets/slot_details_action_listener.dart';
 part '../widgets/slot_details_check_out_bar.dart';
 part '../widgets/slot_details_content.dart';
+part '../widgets/slot_details_loader.dart';
 part '../widgets/slot_roster_section.dart';
 part '../widgets/slot_selfie_avatar.dart';
 part '../widgets/slot_selfie_entry.dart';
@@ -87,7 +90,17 @@ class _ShiftTabState extends ConsumerState<ShiftTab> {
   }
 
   void _onSlotTap(BuildContext context, ShiftSlotEntity slot) {
-    context.pushNamed(Routes.shiftDetails, extra: slot);
+    final data = ref.read(shiftSlotsProvider).valueOrNull;
+    final facilityId = data?.facilityIdOf(slot.shiftSlotId);
+    if (data == null || facilityId == null) return;
+    context.pushNamed(
+      Routes.shiftDetails,
+      pathParameters: {
+        'facilityId': '$facilityId',
+        'date': data.date,
+        'slotId': '${slot.shiftSlotId}',
+      },
+    );
   }
 
   Future<void> _pickFacility(List<AccessibleFacilityEntity> facilities) async {
