@@ -14,6 +14,7 @@ class MenuConfigItemModel with MenuConfigItemModelMappable {
     this.sublabel,
     this.sublabelBn,
     this.permissionKeys,
+    this.defaultOrder,
   });
 
   final String? itemKey;
@@ -22,6 +23,7 @@ class MenuConfigItemModel with MenuConfigItemModelMappable {
   final String? sublabel;
   final String? sublabelBn;
   final List<String>? permissionKeys;
+  final int? defaultOrder;
 
   static const fromJson = MenuConfigItemModelMapper.fromJson;
 }
