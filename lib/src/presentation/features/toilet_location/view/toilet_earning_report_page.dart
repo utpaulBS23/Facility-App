@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_numbers.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
@@ -44,7 +43,6 @@ class ToiletEarningReportPage extends ConsumerStatefulWidget {
 
 class _ToiletEarningReportPageState
     extends ConsumerState<ToiletEarningReportPage> {
-  late int _facilityId = widget.facilityId;
   late int _year = DateTime.now().year;
   late int _month = DateTime.now().month;
 
@@ -79,52 +77,40 @@ class _ToiletEarningReportPageState
     };
 
     final report = ref.watch(
-      toiletEarningReportProvider(facilityId: _facilityId, month: _monthParam),
+      toiletEarningReportProvider(
+        facilityId: widget.facilityId,
+        month: _monthParam,
+      ),
     );
-    // The toilets the user can switch between: their accessible facilities,
-    // plus the one the page was opened for.
-    final accessible = ref.watch(
-      userSessionProvider.select((s) => s?.accessibleFacilities),
+    final toiletName = ref.watch(
+      userSessionProvider.select(
+        (s) => s?.accessibleFacilities
+            .where((f) => f.id == widget.facilityId)
+            .firstOrNull
+            ?.localizedName(language),
+      ),
     );
-    final toilets = <int, String>{
-      for (final f in accessible ?? const <AccessibleFacilityEntity>[])
-        f.id: f.localizedName(language),
-    };
-    toilets.putIfAbsent(_facilityId, () => '—');
 
     return Scaffold(
       backgroundColor: c.scaffoldBackground,
-      appBar: DetailAppBar(
-        title: 'Public facilities monthly report',
-        onBack: _onBack,
-      ),
+      appBar: DetailAppBar(title: 'Monthly report', onBack: _onBack),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(spacing.s16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Public facilities monthly report',
-              style: context.textStyle.labelXl.copyWith(
-                color: c.text.primary,
-                fontWeight: FontWeight.w700,
+            if (toiletName != null) ...[
+              Text(
+                toiletName,
+                style: context.textStyle.labelXl.copyWith(
+                  color: c.text.primary,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            SizedBox(height: spacing.s2),
-            Text(
-              'Financial and management reports',
-              style: context.textStyle.bodySmall.copyWith(
-                color: c.text.secondary,
-              ),
-            ),
-            gap,
+              gap,
+            ],
             ReportFilterCard(
-              toilet: ReportToiletSelector(
-                caption: 'Public toilet name',
-                value: _facilityId,
-                toilets: toilets,
-                onChanged: (v) => setState(() => _facilityId = v),
-              ),
+              title: 'Select month and year',
               month: ReportDropdown<int>(
                 caption: 'Select month',
                 value: _month,
@@ -150,7 +136,7 @@ class _ToiletEarningReportPageState
                   message: e.localizedMessage(context),
                   onRetry: () => ref.invalidate(
                     toiletEarningReportProvider(
-                      facilityId: _facilityId,
+                      facilityId: widget.facilityId,
                       month: _monthParam,
                     ),
                   ),
@@ -230,7 +216,9 @@ class _ReportBody extends StatelessWidget {
               tone: DashboardTone.green,
             ),
             ReportSummaryTile(
-              icon: Icons.trending_up_rounded,
+              icon: report.profitLoss < 0
+                  ? Icons.trending_down_rounded
+                  : Icons.trending_up_rounded,
               value: money(report.profitLoss),
               label: 'Total profit',
               tone: report.profitLoss < 0
@@ -278,6 +266,7 @@ class _ReportBody extends StatelessWidget {
         ReportProfitBanner(
           label: 'Profit/Loss',
           value: money(report.profitLoss),
+          isLoss: report.profitLoss < 0,
         ),
       ],
     );
