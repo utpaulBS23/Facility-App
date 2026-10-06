@@ -45,14 +45,19 @@ void main() {
     }).toEntity();
     expect(item.localizedName('bn'), 'হ্যান্ড সোপ');
 
-    final template = ShiftTemplateDataModel.fromJson(
-      {'id': 1, 'name': 'Morning Shift', 'name_bn': 'সকালের শিফট'},
-    );
+    final template = ShiftTemplateDataModel.fromJson({
+      'id': 1,
+      'name': 'Morning Shift',
+      'name_bn': 'সকালের শিফট',
+    });
     expect(template.nameBn, 'সকালের শিফট');
 
-    final master = MasterDataItemModel.fromJson(
-      {'id': 1, 'value': 'v', 'label': 'Mop Handle', 'label_bn': 'মপ হ্যান্ডেল'},
-    );
+    final master = MasterDataItemModel.fromJson({
+      'id': 1,
+      'value': 'v',
+      'label': 'Mop Handle',
+      'label_bn': 'মপ হ্যান্ডেল',
+    });
     expect(master.labelBn, 'মপ হ্যান্ডেল');
   });
 

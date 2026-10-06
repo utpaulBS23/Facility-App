@@ -12,16 +12,18 @@ final class FakeAppUpdateRepository extends AppUpdateRepository {
     String? deviceModel,
     String? osVersion,
     required int currentVersionCode,
-  })? onCheckVersion;
+  })?
+  onCheckVersion;
 
   Future<Result<bool, Failure>> Function(AppUpdateActionRequestEntity request)?
-      onReportUpdateAction;
+  onReportUpdateAction;
 
   Stream<DownloadProgressEntity> Function({
     required String downloadUrl,
     required String fileName,
     String? expectedChecksumSha256,
-  })? onDownloadAndVerifyApk;
+  })?
+  onDownloadAndVerifyApk;
 
   Future<Result<bool, Failure>> Function(String filePath)? onInstallApk;
 
@@ -119,16 +121,17 @@ void main() {
         latestVersionCode: 125,
       );
 
-      updateRepository.onCheckVersion = ({
-        required deviceId,
-        deviceModel,
-        osVersion,
-        required currentVersionCode,
-      }) async {
-        expect(deviceId, 'device_123');
-        expect(currentVersionCode, 100);
-        return const Success(data: expectedEntity);
-      };
+      updateRepository.onCheckVersion =
+          ({
+            required deviceId,
+            deviceModel,
+            osVersion,
+            required currentVersionCode,
+          }) async {
+            expect(deviceId, 'device_123');
+            expect(currentVersionCode, 100);
+            return const Success(data: expectedEntity);
+          };
 
       final useCase = CheckAppVersionUseCase(updateRepository);
       final result = await useCase.call(
@@ -152,12 +155,13 @@ void main() {
         message: 'No connection',
       );
 
-      updateRepository.onCheckVersion = ({
-        required deviceId,
-        deviceModel,
-        osVersion,
-        required currentVersionCode,
-      }) async => const Error(failure);
+      updateRepository.onCheckVersion =
+          ({
+            required deviceId,
+            deviceModel,
+            osVersion,
+            required currentVersionCode,
+          }) async => const Error(failure);
 
       final useCase = CheckAppVersionUseCase(updateRepository);
       final result = await useCase.call(
@@ -192,16 +196,20 @@ void main() {
 
   group('DownloadApkUseCase', () {
     test('emits download progress events from repository', () async {
-      updateRepository.onDownloadAndVerifyApk = ({
-        required downloadUrl,
-        required fileName,
-        expectedChecksumSha256,
-      }) {
-        return Stream.fromIterable([
-          const DownloadProgressEntity(status: DownloadStatus.downloading, receivedBytes: 50, totalBytes: 100),
-          const DownloadProgressEntity(status: DownloadStatus.completed, filePath: '/path/to/apk'),
-        ]);
-      };
+      updateRepository.onDownloadAndVerifyApk =
+          ({required downloadUrl, required fileName, expectedChecksumSha256}) {
+            return Stream.fromIterable([
+              const DownloadProgressEntity(
+                status: DownloadStatus.downloading,
+                receivedBytes: 50,
+                totalBytes: 100,
+              ),
+              const DownloadProgressEntity(
+                status: DownloadStatus.completed,
+                filePath: '/path/to/apk',
+              ),
+            ]);
+          };
 
       final useCase = DownloadApkUseCase(updateRepository);
       final stream = useCase.call(
@@ -242,13 +250,16 @@ void main() {
         versionName: '2.4.0',
       );
 
-      deviceInfoRepository.onGetDeviceInfo =
-          () async => const Success(data: deviceInfo);
+      deviceInfoRepository.onGetDeviceInfo = () async =>
+          const Success(data: deviceInfo);
 
       final useCase = GetDeviceInfoUseCase(deviceInfoRepository);
       final result = await useCase.call();
 
-      expect(result, const Success<DeviceInfoEntity, Failure>(data: deviceInfo));
+      expect(
+        result,
+        const Success<DeviceInfoEntity, Failure>(data: deviceInfo),
+      );
     });
   });
 }
