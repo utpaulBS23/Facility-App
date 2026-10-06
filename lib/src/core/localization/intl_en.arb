@@ -1096,6 +1096,34 @@
     "placeholders": { "count": { "type": "String", "example": "12" } }
   },
   "travelClaimFiled": "Travel claim filed",
+  "staffShortage": "Staff shortage",
+  "assign": "Assign",
+  "seeAll": "See all",
+  "showLess": "Show less",
+  "showMoreFacilities": "Show {count} more {count, plural, =1{facility} other{facilities}}",
+  "@showMoreFacilities": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "male": "Male",
+  "female": "Female",
+  "alwaysOn": "Always on",
+  "toggleOn": "On",
+  "toggleOff": "Off",
+  "digestOnly": "Digest only",
+  "pushChannel": "Push",
+  "severityCritical": "Critical",
+  "targetVsAchievement": "Monthly target vs achievement",
+  "facilityExpense": "Facility expense",
+  "airQuality": "Air quality",
+  "issueSummary": "Issue summary",
+  "visitorsPerDay": "Visitors per day",
+  "executive": "Executive",
+  "totalFacility": "Total facility",
+  "monthlyTarget": "Monthly target",
+  "percentOfTarget": "{percent} of target",
+  "@percentOfTarget": {
+    "placeholders": { "percent": { "type": "String", "example": "83%" } }
+  },
   "settings": "Settings",
   "retry": "Retry"
 }
