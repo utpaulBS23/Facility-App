@@ -1,10 +1,12 @@
 import 'accessible_facility_entity.dart';
+import 'dashboard_entity.dart';
 import 'app_permission.dart';
 import 'partner_entity.dart';
 import '../../core/utils/localized_text.dart';
 
 export 'accessible_facility_entity.dart';
 export 'app_permission.dart';
+export 'dashboard_entity.dart' show UserRole;
 export 'partner_entity.dart';
 
 class UserSessionEntity {
@@ -14,9 +16,13 @@ class UserSessionEntity {
     this.partner,
     this.activePartnerId,
     this.trackingSettings,
+    this.role,
   });
 
   final Set<UserPermission> permissions;
+
+  /// The user's role from login, only a hint for which screen shell to mount.
+  final UserRole? role;
   final List<AccessibleFacilityEntity> accessibleFacilities;
   final PartnerEntity? partner;
   final TrackingSettingsEntity? trackingSettings;
@@ -114,6 +120,7 @@ class UserEntity extends LoginEntity {
     required this.permissionVersion,
     required this.twoFactorEnabled,
     this.profileImage,
+    this.role,
   });
 
   final int id;
@@ -127,6 +134,9 @@ class UserEntity extends LoginEntity {
   final int permissionVersion;
   final bool twoFactorEnabled;
   final String? profileImage;
+
+  /// Null for a session saved before `role_key` existed, or an unknown key.
+  final UserRole? role;
 
   String localizedName(String languageCode) =>
       localizedText(languageCode, name, nameBn);

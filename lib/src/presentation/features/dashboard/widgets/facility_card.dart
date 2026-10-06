@@ -25,9 +25,9 @@ class FacilityCardData {
     required this.inProgressText,
     required this.completedText,
     required this.pendingText,
-    required this.aqiText,
-    required this.aqiLabel,
-    required this.aqiTone,
+    this.aqiText,
+    this.aqiLabel,
+    this.aqiTone,
   });
 
   final String name;
@@ -48,9 +48,12 @@ class FacilityCardData {
   final String inProgressText;
   final String completedText;
   final String pendingText;
-  final String aqiText;
-  final String aqiLabel;
-  final DashboardTone aqiTone;
+
+  /// Air quality is optional: the API sends only a placeholder for now, so a
+  /// null [aqiText] hides the box and the expense box takes the full row.
+  final String? aqiText;
+  final String? aqiLabel;
+  final DashboardTone? aqiTone;
 }
 
 /// Full facility card: target meter, expense, air quality, visitor split and
@@ -68,7 +71,8 @@ class FacilityCard extends StatelessWidget {
     final locale = context.locale;
     final total = data.maleCount + data.femaleCount;
     final malePct = total == 0 ? 0 : (data.maleCount / total * 100).round();
-    final aqTone = data.aqiTone;
+    final aqTone = data.aqiTone ?? DashboardTone.neutral;
+    final aqText = data.aqiText;
 
     return Container(
       width: double.infinity,
@@ -132,17 +136,19 @@ class FacilityCard extends StatelessWidget {
                   value: data.expenseText,
                 ),
               ),
-              SizedBox(width: spacing.s10),
-              Expanded(
-                child: _InfoBox(
-                  label: locale.airQuality,
-                  background: aqTone.background(context),
-                  foreground: aqTone.foreground(context),
-                  labelColor: aqTone.foreground(context),
-                  value: data.aqiText,
-                  suffix: data.aqiLabel,
+              if (aqText != null) ...[
+                SizedBox(width: spacing.s10),
+                Expanded(
+                  child: _InfoBox(
+                    label: locale.airQuality,
+                    background: aqTone.background(context),
+                    foreground: aqTone.foreground(context),
+                    labelColor: aqTone.foreground(context),
+                    value: aqText,
+                    suffix: data.aqiLabel,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
           SizedBox(height: spacing.s14),

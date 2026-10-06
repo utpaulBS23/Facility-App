@@ -8,7 +8,9 @@ import 'dashboard_tone.dart';
 /// Two big buttons, Check In and Check Out, with the shift status below.
 ///
 /// WHY stateless: whether the user has checked in lives in the attendance
-/// state, not here. A null callback disables that button.
+/// state, not here. [canCheckIn] / [canCheckOut] only pick the look, as in
+/// the design: the step that is next is tinted (green in, red out), the
+/// other is grey. They default to whether the callback is set.
 class CheckInOutCard extends StatelessWidget {
   const CheckInOutCard({
     super.key,
@@ -18,7 +20,10 @@ class CheckInOutCard extends StatelessWidget {
     required this.statusTone,
     this.onCheckIn,
     this.onCheckOut,
-  });
+    bool? canCheckIn,
+    bool? canCheckOut,
+  }) : canCheckIn = canCheckIn ?? onCheckIn != null,
+       canCheckOut = canCheckOut ?? onCheckOut != null;
 
   /// Shown under "Check In", e.g. "08:02 AM" or "--:--".
   final String checkInText;
@@ -31,6 +36,10 @@ class CheckInOutCard extends StatelessWidget {
   final DashboardTone statusTone;
   final VoidCallback? onCheckIn;
   final VoidCallback? onCheckOut;
+
+  /// Whether Check In / Check Out is the next step, which tints it.
+  final bool canCheckIn;
+  final bool canCheckOut;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +64,7 @@ class CheckInOutCard extends StatelessWidget {
                   label: context.locale.checkIn,
                   time: checkInText,
                   tone: DashboardTone.green,
+                  active: canCheckIn,
                   onTap: onCheckIn,
                 ),
               ),
@@ -65,6 +75,7 @@ class CheckInOutCard extends StatelessWidget {
                   label: context.locale.checkOut,
                   time: checkOutText,
                   tone: DashboardTone.red,
+                  active: canCheckOut,
                   onTap: onCheckOut,
                 ),
               ),
@@ -104,6 +115,7 @@ class _ActionButton extends StatelessWidget {
     required this.label,
     required this.time,
     required this.tone,
+    required this.active,
     required this.onTap,
   });
 
@@ -111,11 +123,12 @@ class _ActionButton extends StatelessWidget {
   final String label;
   final String time;
   final DashboardTone tone;
+  final bool active;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final enabled = onTap != null;
+    final enabled = active;
     final spacing = context.dimensions.spacing;
     final radius = BorderRadius.circular(context.dimensions.radius.r12);
     final bg = enabled
