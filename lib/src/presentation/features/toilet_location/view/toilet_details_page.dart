@@ -370,7 +370,10 @@ class ToiletDetailsPage extends StatelessWidget {
         primaryLabel: context.locale.direction,
         secondaryLabel: 'Earning Report',
         onPrimary: () {},
-        onSecondary: () {},
+        onSecondary: () => context.pushNamed(
+          Routes.toiletEarningReport,
+          pathParameters: {'id': '$facilityId'},
+        ),
       ),
     );
   }
