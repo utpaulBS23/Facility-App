@@ -28,10 +28,12 @@ class MapLibreAppMap extends StatefulWidget {
     super.key,
     required this.controller,
     required this.markers,
+    this.lines = const [],
   });
 
   final AppMapController controller;
   final List<MapMarker> markers;
+  final List<MapLine> lines;
 
   @override
   State<MapLibreAppMap> createState() => _MapLibreAppMapState();
@@ -47,6 +49,8 @@ class _MapLibreAppMapState extends State<MapLibreAppMap>
   List<Offset> _offsets = const [];
   bool _projecting = false;
   bool _projectAgain = false;
+  bool _drawingLines = false;
+  bool _drawLinesAgain = false;
 
   @override
   bool get ready => _ready;
@@ -71,12 +75,47 @@ class _MapLibreAppMapState extends State<MapLibreAppMap>
       widget.controller.attach(this);
     }
     if (!identical(oldWidget.markers, widget.markers)) _project();
+    if (!identical(oldWidget.lines, widget.lines)) _drawLines();
   }
 
   void _onStyleLoaded() {
     _ready = true;
     widget.controller.flushPending();
     _project();
+    _drawLines();
+  }
+
+  @override
+  void setLines(List<MapLine> lines) => _drawLines();
+
+  Future<void> _drawLines() async {
+    final map = _map;
+    if (map == null || !_ready || !mounted) return;
+    if (_drawingLines) {
+      _drawLinesAgain = true;
+      return;
+    }
+    _drawingLines = true;
+    try {
+      do {
+        _drawLinesAgain = false;
+        await map.clearLines();
+        for (final line in widget.lines) {
+          if (line.points.length < 2) continue;
+          await map.addLine(
+            LineOptions(
+              geometry: [for (final p in line.points) LatLng(p.lat, p.lng)],
+              lineColor:
+                  '#${(line.color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}',
+              lineWidth: line.width,
+              lineJoin: 'round',
+            ),
+          );
+        }
+      } while (_drawLinesAgain && mounted);
+    } finally {
+      _drawingLines = false;
+    }
   }
 
   Future<void> _project() async {

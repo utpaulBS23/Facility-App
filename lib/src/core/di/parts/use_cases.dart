@@ -670,6 +670,14 @@ GetLivePositionsUseCase getLivePositionsUseCase(Ref ref) {
 }
 
 @riverpod
+GetUserRouteUseCase getUserRouteUseCase(Ref ref) {
+  return GetUserRouteUseCase(
+    userTrackingRepository: ref.read(userTrackingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetToiletsUseCase getToiletsUseCase(Ref ref) {
   return GetToiletsUseCase(
     toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),

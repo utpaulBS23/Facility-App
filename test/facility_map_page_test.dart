@@ -73,7 +73,7 @@ Future<void> _pumpPage(WidgetTester tester, Locale locale) async {
     ProviderScope(
       overrides: [
         appMapBuilderProvider.overrideWithValue(
-          (context, controller, markers) => const SizedBox.expand(),
+          (context, controller, markers, lines) => const SizedBox.expand(),
         ),
         userSessionProvider.overrideWith(_FakeSession.new),
         facilityMapProvider(facilityId: null).overrideWith((ref) async => _all),

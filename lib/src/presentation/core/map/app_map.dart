@@ -28,9 +28,25 @@ class MapMarker {
   final Alignment anchor;
 }
 
+/// A line drawn on the map through [points].
+class MapLine {
+  const MapLine({
+    required this.id,
+    required this.points,
+    required this.color,
+    this.width = 4,
+  });
+
+  final String id;
+  final List<MapPoint> points;
+  final Color color;
+  final double width;
+}
+
 /// What the map implementation offers the screen that owns it.
 abstract interface class AppMapDriver {
   bool get ready;
+  void setLines(List<MapLine> lines);
   void fit(List<MapPoint> points);
   void moveTo(MapPoint point, double zoom);
   void zoomBy(double delta);
@@ -86,25 +102,40 @@ typedef AppMapBuilder =
       BuildContext context,
       AppMapController controller,
       List<MapMarker> markers,
+      List<MapLine> lines,
     );
 
 /// WHY a provider: the real map is a native platform view, which widget tests
 /// cannot build. Tests override this with a plain widget.
 final appMapBuilderProvider = Provider<AppMapBuilder>(
   (ref) =>
-      (context, controller, markers) =>
-          MapLibreAppMap(controller: controller, markers: markers),
+      (context, controller, markers, lines) => MapLibreAppMap(
+        controller: controller,
+        markers: markers,
+        lines: lines,
+      ),
 );
 
 /// The base map for every map screen, with [markers] drawn on top.
 class AppMap extends ConsumerWidget {
-  const AppMap({super.key, required this.controller, required this.markers});
+  const AppMap({
+    super.key,
+    required this.controller,
+    required this.markers,
+    this.lines = const [],
+  });
 
   final AppMapController controller;
   final List<MapMarker> markers;
+  final List<MapLine> lines;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(appMapBuilderProvider)(context, controller, markers);
+    return ref.watch(appMapBuilderProvider)(
+      context,
+      controller,
+      markers,
+      lines,
+    );
   }
 }

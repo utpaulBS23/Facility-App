@@ -1,9 +1,11 @@
 import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart';
 import 'package:facility_management_app/src/domain/entities/menu_configuration_entity.dart';
+import 'package:facility_management_app/src/domain/entities/user_route_entity.dart';
 import 'package:facility_management_app/src/domain/entities/user_tracking_entity.dart';
 import 'package:facility_management_app/src/presentation/core/application_state/menu_configuration_provider/menu_configuration_provider.dart';
 import 'package:facility_management_app/src/presentation/core/map/app_map.dart';
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
+import 'package:facility_management_app/src/presentation/features/supervisor_tracking/riverpod/user_route_provider.dart';
 import 'package:facility_management_app/src/presentation/features/supervisor_tracking/riverpod/user_tracking_provider.dart';
 import 'package:facility_management_app/src/presentation/features/supervisor_tracking/view/supervisor_tracking_page.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,12 @@ class _FakeMenuConfig extends MenuConfig {
   @override
   MenuConfigurationEntity? build() => null;
 }
+
+final _today = DateTime(
+  DateTime.now().year,
+  DateTime.now().month,
+  DateTime.now().day,
+);
 
 final _data = UserTrackingEntity(
   positions: [
@@ -54,10 +62,30 @@ Future<void> _pumpPage(WidgetTester tester, Locale locale) async {
     ProviderScope(
       overrides: [
         appMapBuilderProvider.overrideWithValue(
-          (context, controller, markers) => const SizedBox.expand(),
+          (context, controller, markers, lines) => const SizedBox.expand(),
         ),
         menuConfigProvider.overrideWith(_FakeMenuConfig.new),
         userTrackingProvider.overrideWith((ref) async => _data),
+        userRouteProvider(userId: 1, date: _today).overrideWith(
+          (ref) async => const UserRouteEntity(
+            legs: [
+              RouteLegEntity(
+                id: 10,
+                fromName: 'Brainstation 23',
+                toName: 'Gulshan Toilet',
+                trail: [
+                  RoutePointEntity(lat: 23.78, lng: 90.41),
+                  RoutePointEntity(lat: 23.79, lng: 90.42),
+                ],
+                hasTravelExpense: true,
+              ),
+            ],
+          ),
+        ),
+        userRouteProvider(
+          userId: 2,
+          date: _today,
+        ).overrideWith((ref) async => const UserRouteEntity()),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -110,5 +138,41 @@ void main() {
     // WHY not asserted: the test font gives every Bangla glyph a full em, so
     // fixed-width widgets overflow here but not on a device.
     tester.takeException();
+  });
+
+  testWidgets('Visited route tab shows legs of the picked user', (
+    tester,
+  ) async {
+    await _pumpPage(tester, const Locale('en'));
+
+    await tester.tap(find.text('Visited route'));
+    await tester.pumpAndSettle();
+    expect(find.text('Select a user to see their route'), findsOneWidget);
+
+    await tester.tap(find.byType(DropdownButton<int>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Shakib Hasan').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Brainstation 23 → Gulshan Toilet'), findsOneWidget);
+    expect(find.text('2 GPS points'), findsOneWidget);
+    expect(find.text('Travel claim filed'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Visited route tab says so when a day has no travel', (
+    tester,
+  ) async {
+    await _pumpPage(tester, const Locale('en'));
+
+    await tester.tap(find.text('Visited route'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButton<int>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Shahin Bashar').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('No travel data for this day'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
