@@ -8,11 +8,11 @@ enum ToiletListFilter {
   maintenance;
 
   ToiletStatus? get status => switch (this) {
-        ToiletListFilter.all => null,
-        ToiletListFilter.active => ToiletStatus.active,
-        ToiletListFilter.inactive => ToiletStatus.inactive,
-        ToiletListFilter.maintenance => ToiletStatus.maintenance,
-      };
+    ToiletListFilter.all => null,
+    ToiletListFilter.active => ToiletStatus.active,
+    ToiletListFilter.inactive => ToiletStatus.inactive,
+    ToiletListFilter.maintenance => ToiletStatus.maintenance,
+  };
 }
 
 /// Filter query parameters for the toilet list (`GET /facilities`).
