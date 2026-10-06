@@ -18,6 +18,17 @@ extension ToiletModelMapper on ToiletModel {
       lat: lat ?? 0,
       lng: lng ?? 0,
       mapsLink: mapsLink ?? '',
+      facilityType: facilityType ?? '',
+      supervisorName: supervisor?['name']?.toString() ?? '',
+      openingTime: openingTime,
+      closingTime: closingTime,
+      is24Hours: is24Hours ?? false,
+      operatingDays: operatingDays ?? const [],
+      isFree: isFree ?? false,
+      usageFee: usageFee ?? 0,
+      disableFriendly: disableFriendly ?? false,
+      visitsToday: visitsToday ?? 0,
+      revenue: revenue ?? 0,
     );
   }
 }
@@ -67,7 +78,8 @@ extension ToiletTargetModelMapper on ToiletTargetModel {
   }
 }
 
-extension ToiletTargetListResponseModelToEntity on ToiletTargetListResponseModel {
+extension ToiletTargetListResponseModelToEntity
+    on ToiletTargetListResponseModel {
   /// Empty `data` means no target has been set for this facility/month yet
   /// — not an error, so this returns a "not set" entity instead of `null`.
   ToiletTargetEntity toEntity() {
