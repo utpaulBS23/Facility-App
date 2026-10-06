@@ -89,10 +89,18 @@ class SlotAttendanceEntity {
   final DateTime? checkOutReviewedAt;
 
   String? localizedCheckInReviewerName(String languageCode) =>
-      localizedTextOrNull(languageCode, checkInReviewerName, checkInReviewerNameBn);
+      localizedTextOrNull(
+        languageCode,
+        checkInReviewerName,
+        checkInReviewerNameBn,
+      );
 
   String? localizedCheckOutReviewerName(String languageCode) =>
-      localizedTextOrNull(languageCode, checkOutReviewerName, checkOutReviewerNameBn);
+      localizedTextOrNull(
+        languageCode,
+        checkOutReviewerName,
+        checkOutReviewerNameBn,
+      );
 }
 
 class SlotAttendantEntity {
@@ -292,6 +300,36 @@ class ShiftSlotsEntity {
   final List<ShiftSlotEntity> slots;
   final SlotSummaryEntity? summary;
   final List<SlotsFacilityEntity> facilities;
+
+  /// The slot with [slotId]. A single-facility day lists it in [slots]; the
+  /// "All facilities" day leaves [slots] empty and groups it under
+  /// [facilities].
+  ShiftSlotEntity? findSlot(int slotId) {
+    for (final slot in slots) {
+      if (slot.shiftSlotId == slotId) return slot;
+    }
+    for (final facility in facilities) {
+      for (final slot in facility.slots) {
+        if (slot.shiftSlotId == slotId) return slot;
+      }
+    }
+
+    return null;
+  }
+
+  /// Facility that owns [slotId]: the day's single facility, else the group
+  /// holding the slot.
+  int? facilityIdOf(int slotId) {
+    final single = facility?.id;
+    if (single != null) return single;
+    for (final group in facilities) {
+      if (group.slots.any((s) => s.shiftSlotId == slotId)) {
+        return group.facilityId;
+      }
+    }
+
+    return null;
+  }
 
   /// Slots the caller is personally assigned to — the attendant experience.
   List<ShiftSlotEntity> get mySlots => [
