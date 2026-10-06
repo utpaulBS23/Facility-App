@@ -7,12 +7,26 @@ import 'package:facility_management_app/src/domain/entities/toilet_location/faci
 import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';
 import 'package:facility_management_app/src/domain/entities/master_data_entity.dart';
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
+import 'package:facility_management_app/src/presentation/features/additional_income/riverpod/submit_income_provider/income_type_options_provider.dart';
 import 'package:facility_management_app/src/presentation/features/facility_expense/riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/riverpod/toilet_earning_report_provider.dart';
 import 'package:facility_management_app/src/presentation/features/toilet_location/view/toilet_earning_report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+class _FakeIncomeTypes extends IncomeTypeOptions {
+  @override
+  Future<List<MasterDataItemEntity>> build() async => const [
+    MasterDataItemEntity(
+      id: 9,
+      value: 'kiosk_rent',
+      label: 'Kiosk rental',
+      isActive: true,
+      sortOrder: 1,
+    ),
+  ];
+}
 
 class _FakeSession extends UserSession {
   @override
@@ -30,16 +44,33 @@ class _FakeSession extends UserSession {
 
 const _report = FacilityMonthlyReportEntity(
   month: '2026-08',
-  toiletUsers: ReportUserCount(women: 9, men: 8),
-  urinalUsers: ReportUserCount(women: 0, men: 0),
-  showerUsers: ReportUserCount(women: 9, men: 8),
-  drinkingWaterUsers: ReportUserCount(women: 0, men: 0),
+  hasRecords: true,
+  services: [
+    ReportServiceUsers(label: 'Toilet', women: 9, men: 8),
+    ReportServiceUsers(label: 'Shower', women: 9, men: 8),
+  ],
   incomeLines: [
-    ReportAmountLine('toilet', 17),
-    ReportAmountLine('shower', 17),
-    ReportAmountLine('laundry', 800),
-    ReportAmountLine('product_sales', 40),
-    ReportAmountLine('sanitary_pad', 25),
+    ReportIncomeLine(
+      kind: ReportIncomeKind.service,
+      label: 'Toilet',
+      value: 17,
+    ),
+    ReportIncomeLine(
+      kind: ReportIncomeKind.service,
+      label: 'Shower',
+      value: 17,
+    ),
+    ReportIncomeLine(
+      kind: ReportIncomeKind.extra,
+      label: 'laundry',
+      value: 800,
+    ),
+    ReportIncomeLine(
+      kind: ReportIncomeKind.extra,
+      label: 'kiosk_rent',
+      value: 25,
+    ),
+    ReportIncomeLine(kind: ReportIncomeKind.product, label: 'Water', value: 40),
   ],
   expenseLines: [ReportAmountLine('water_bill', 1100)],
   appIncome: 0,
@@ -49,11 +80,9 @@ const _report = FacilityMonthlyReportEntity(
 
 const _empty = FacilityMonthlyReportEntity(
   month: '2026-08',
-  toiletUsers: ReportUserCount(women: 0, men: 0),
-  urinalUsers: ReportUserCount(women: 0, men: 0),
-  showerUsers: ReportUserCount(women: 0, men: 0),
-  drinkingWaterUsers: ReportUserCount(women: 0, men: 0),
-  incomeLines: [ReportAmountLine('toilet', 100)],
+  hasRecords: false,
+  services: [],
+  incomeLines: [],
   expenseLines: [],
   appIncome: 0,
   packageIncome: 0,
@@ -68,6 +97,7 @@ String _thisMonth() => _month(DateTime.now());
 Widget _app(List<Override> overrides, Locale locale) => ProviderScope(
   overrides: [
     userSessionProvider.overrideWith(_FakeSession.new),
+    incomeTypeOptionsProvider.overrideWith(_FakeIncomeTypes.new),
     expenseCategoryOptionsProvider.overrideWith(
       (ref) async => const [
         MasterDataItemEntity(
@@ -133,7 +163,6 @@ void main() {
       'Digital system',
       'Revenue (Tk)',
       'Service cost (Tk)',
-      'Sanitary pad',
       'Profit/Loss',
     ]) {
       await tester.scrollUntilVisible(
@@ -159,14 +188,12 @@ void main() {
     }
 
     await see('Income items');
-    await see('Additional Revenue (Laundry, Shop)');
     await see('Expense items');
     // Unused catalog categories are listed too, as in the web report.
     await see('Cleaner');
     await see('Total Expense');
     await see('Customer numbers');
-    await see('Pay per user Toilet — women');
-    await see('Manual Subscribed user (Toilet use)');
+    await see('Toilet — Female');
     await see('Total user');
     await see('Bkash collections');
     await see('Income gap / due');
@@ -178,11 +205,15 @@ void main() {
       tester,
       load: () async => const FacilityMonthlyReportEntity(
         month: '2026-08',
-        toiletUsers: ReportUserCount(women: 0, men: 0),
-        urinalUsers: ReportUserCount(women: 0, men: 0),
-        showerUsers: ReportUserCount(women: 0, men: 0),
-        drinkingWaterUsers: ReportUserCount(women: 0, men: 0),
-        incomeLines: [ReportAmountLine('toilet', 100)],
+        hasRecords: true,
+        services: [],
+        incomeLines: [
+          ReportIncomeLine(
+            kind: ReportIncomeKind.service,
+            label: 'Toilet',
+            value: 100,
+          ),
+        ],
         expenseLines: [ReportAmountLine('rent', 400)],
         appIncome: 0,
         packageIncome: 0,
@@ -193,17 +224,29 @@ void main() {
     expect(find.text('-৳ 300'), findsWidgets);
   });
 
-  testWidgets('optional revenue lines stay hidden while empty', (tester) async {
+  testWidgets('income rows are named by what the server sent', (tester) async {
+    await _pump(tester, load: () async => _report);
+
+    // A service and a product by the name in the record; an extra income by
+    // the label master data gives its type; an unlabelled type made readable.
+    expect(find.text('Toilet'), findsWidgets);
+    expect(find.text('Water'), findsWidgets);
+    expect(find.text('Kiosk rental'), findsWidgets);
+    expect(find.text('Laundry'), findsWidgets);
+    // Nothing is listed that the records did not name.
+    expect(find.text('Locker'), findsNothing);
+    expect(find.text('Sanitary Pad'), findsNothing);
+    expect(find.text('Manual Subscription'), findsNothing);
+  });
+
+  testWidgets('a toilet with no records says so and lists no income', (
+    tester,
+  ) async {
     await _pump(tester, load: () async => _empty);
 
-    await tester.scrollUntilVisible(
-      find.text('Revenue (Tk)'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('Sanitary pad'), findsNothing);
-    expect(find.text('Income via app'), findsNothing);
-    expect(find.text('Laundry'), findsOneWidget);
+    expect(find.text('No records'), findsOneWidget);
+    expect(find.text('Laundry'), findsNothing);
+    expect(find.text('Toilet'), findsNothing);
   });
 
   testWidgets('a failed load shows retry', (tester) async {
