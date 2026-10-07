@@ -12,9 +12,13 @@ class IssueAssignResponsibilitySection extends StatelessWidget {
     required this.selected,
     required this.onTap,
     required this.onClear,
+    this.isRequired = false,
   });
 
   final PartnerStaffEntity? selected;
+
+  /// Marks the section with a red star while nobody is picked.
+  final bool isRequired;
   final VoidCallback onTap;
   final VoidCallback onClear;
 
@@ -35,9 +39,17 @@ class IssueAssignResponsibilitySection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (selected == null)
-              BodySmallText(
-                context.locale.noResponsibilityAdded,
-                color: context.color.text.secondary,
+              Row(
+                children: [
+                  BodySmallText(
+                    context.locale.noResponsibilityAdded,
+                    color: context.color.text.secondary,
+                  ),
+                  if (isRequired) ...[
+                    Gap(spacing.s4),
+                    BodySmallText('*', color: context.color.error),
+                  ],
+                ],
               )
             else
               BodySmallText(
