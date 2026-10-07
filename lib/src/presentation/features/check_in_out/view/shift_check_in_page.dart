@@ -17,6 +17,7 @@ import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/check_out_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
 import '../../../../core/utils/shift_lateness.dart';
+import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';

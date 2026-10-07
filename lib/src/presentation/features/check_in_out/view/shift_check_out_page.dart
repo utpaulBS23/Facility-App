@@ -62,12 +62,27 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     );
   }
 
-  /// The moment on-time check-out ends for the slot, or null when the slot is
-  /// not known.
+  ShiftSlotEntity? _slot(ShiftSlotsEntity? data) {
+    final slotId = widget.shiftSlotId;
+
+    return slotId == null ? null : data?.findSlot(slotId);
+  }
+
+  /// When check-out opens (the shift's end), or null when the slot is not
+  /// known.
+  DateTime? get _opens {
+    final data = ref.read(shiftSlotsProvider).valueOrNull;
+    final slot = _slot(data);
+    if (data == null || slot == null) return null;
+
+    return checkOutOpens(date: data.date, endTime: slot.endTime);
+  }
+
+  /// The moment on-time check-out ends (the shift's end plus the grace
+  /// period), or null when the slot is not known.
   DateTime? get _deadline {
     final data = ref.read(shiftSlotsProvider).valueOrNull;
-    final slotId = widget.shiftSlotId;
-    final slot = slotId == null ? null : data?.findSlot(slotId);
+    final slot = _slot(data);
     if (data == null || slot == null) return null;
 
     return checkOutDeadline(
@@ -77,13 +92,15 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     );
   }
 
-  _ReasonMode get _reasonMode {
-    final deadline = _deadline;
-    if (deadline == null) return _ReasonMode.optional;
+  bool get _isEarly => isBefore(_opens, _checkOutMoment());
+  bool get _isLate => isPast(_deadline, _checkOutMoment());
 
-    return isPast(deadline, _checkOutMoment())
-        ? _ReasonMode.required
-        : _ReasonMode.hidden;
+  // WHY a reason on both sides: check-out opens when the shift ends, so one
+  // before that, or after the grace period, has to be explained.
+  _ReasonMode get _reasonMode {
+    if (_opens == null) return _ReasonMode.optional;
+
+    return _isEarly || _isLate ? _ReasonMode.required : _ReasonMode.hidden;
   }
 
   void _onSubmit(String? photoPath) {
@@ -172,6 +189,7 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     // payload; the page rebuilds if that loads or refreshes.
     ref.watch(shiftSlotsProvider);
     final deadline = _deadline;
+    final opens = _opens;
     final reasonMode = _reasonMode;
 
     return Scaffold(
@@ -188,11 +206,17 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         onSubmit: () => _onSubmit(photoPath),
         reasonController: _reasonController,
         reasonMode: reasonMode,
-        lateNotice: reasonMode == _ReasonMode.required && deadline != null
-            ? context.locale.lateCheckOutNotice(
-                context.numbers.phone(wallClockHm(deadline)),
-              )
-            : null,
+        lateNotice: switch (reasonMode) {
+          _ when opens != null && _isEarly =>
+            context.locale.earlyCheckOutNotice(
+              context.numbers.phone(wallClockHm(opens)),
+            ),
+          _ when deadline != null && _isLate =>
+            context.locale.lateCheckOutNotice(
+              context.numbers.phone(wallClockHm(deadline)),
+            ),
+          _ => null,
+        },
         checkOutTime: _checkOutTime,
         onCheckOutTimeChanged: (time) => setState(() {
           _checkOutTime = time;
