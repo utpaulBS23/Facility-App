@@ -16,6 +16,8 @@ class _ShiftCheckInBody extends StatelessWidget {
     required this.onSubmit,
     this.supervisorName,
     required this.reasonController,
+    this.reasonMode = _ReasonMode.optional,
+    this.lateNotice,
   });
 
   final String? capturedPhotoPath;
@@ -31,6 +33,8 @@ class _ShiftCheckInBody extends StatelessWidget {
   final VoidCallback onSubmit;
   final String? supervisorName;
   final TextEditingController reasonController;
+  final _ReasonMode reasonMode;
+  final String? lateNotice;
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +75,11 @@ class _ShiftCheckInBody extends StatelessWidget {
                   Gap(dimensions.spacing.s16),
                   _AutoDetectedInfoCard(supervisorName: supervisorName),
                   Gap(dimensions.spacing.s16),
-                  AppTextField.description(
+                  _ReasonSection(
+                    mode: reasonMode,
                     controller: reasonController,
-                    label: context.locale.reason,
+                    lateNotice: lateNotice,
                   ),
-                  Gap(dimensions.spacing.s16),
                 ],
               ),
             ),
@@ -99,7 +103,16 @@ class _ShiftCheckInBody extends StatelessWidget {
                       child: Text(context.locale.requestSupervisor),
                     ),
                   )
-                : _SubmitButton(onSubmit: onSubmit, isLoading: isValidating),
+                : ListenableBuilder(
+                    listenable: reasonController,
+                    builder: (context, _) => _SubmitButton(
+                      onSubmit: onSubmit,
+                      isLoading: isValidating,
+                      canSubmit:
+                          reasonMode != _ReasonMode.required ||
+                          reasonController.text.trim().isNotEmpty,
+                    ),
+                  ),
           ),
         ),
       ],
