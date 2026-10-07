@@ -153,6 +153,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
         dueAt: _dueDate != null
             ? ApiDate.dateTime(_dueDate!)
             : null,
+      issueId: isEditing ? widget.issue.id as int : null,
       ),
       categoryName: _selectedCategory!.name,
       facilityName: widget.facilityName,
@@ -165,7 +166,11 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
     if (issueState.createdIssue != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(context.locale.issueReportedSuccessfully),
+          content: Text(
+            isEditing
+                ? context.locale.issueUpdatedSuccessfully
+                : context.locale.issueReportedSuccessfully,
+          ),
           backgroundColor: context.color.success,
         ),
       );

@@ -608,6 +608,11 @@ ReportIssueUseCase reportIssueUseCase(Ref ref) {
 }
 
 @riverpod
+UpdateIssueUseCase updateIssueUseCase(Ref ref) {
+  return UpdateIssueUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
 GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
   return GetProblemCategoriesUseCase(ref.read(visitRepositoryProvider));
 }

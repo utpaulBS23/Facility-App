@@ -308,6 +308,20 @@ abstract class RestClient {
   });
 
   @PATCH(Endpoints.issueDetail)
+  Future<HttpResponse> updateIssue({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.issueDetail)
+  Future<HttpResponse> updateIssueWithPhoto({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+    @Body() required FormData formData,
+  });
+
+  @PATCH(Endpoints.issueDetail)
   Future<HttpResponse> updateIssueAssignment({
     @Path('partnerId') required int partnerId,
     @Path('issueId') required int issueId,

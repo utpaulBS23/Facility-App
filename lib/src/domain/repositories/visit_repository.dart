@@ -53,6 +53,13 @@ abstract base class VisitRepository extends Repository {
     required ReportIssueRequestEntity request,
   });
 
+  /// Edits an issue. A new photo makes this a multipart request.
+  Future<Result<ReportIssueResponseEntity, Failure>> updateIssue({
+    required int partnerId,
+    required int issueId,
+    required ReportIssueRequestEntity request,
+  });
+
   Future<Result<IssueDetailEntity, Failure>> getIssueDetail({
     required int partnerId,
     required int issueId,

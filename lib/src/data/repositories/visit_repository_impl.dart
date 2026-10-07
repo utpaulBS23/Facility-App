@@ -169,7 +169,11 @@ final class VisitRepositoryImpl extends VisitRepository {
       visitId: visitId,
       request: formData,
     );
-    final raw = response.data['data'] ?? response.data;
+    return _issueResponse(response.data);
+  });
+
+  static ReportIssueResponseEntity _issueResponse(dynamic body) {
+    final raw = body['data'] ?? body;
     final data = raw as Map<String, dynamic>;
     return ReportIssueResponseEntity(
       id: data['id'] as int,
@@ -177,6 +181,49 @@ final class VisitRepositoryImpl extends VisitRepository {
       priority: data['priority'] as String? ?? '',
       status: data['status'] as String? ?? '',
     );
+  }
+
+  @override
+  Future<Result<ReportIssueResponseEntity, Failure>> updateIssue({
+    required int partnerId,
+    required int issueId,
+    required ReportIssueRequestEntity request,
+  }) => asyncGuard(() async {
+    // WHY only what is set: assigned_to and due_at are left out when the
+    // person did not pick them, so an edit never wipes what is already there.
+    final fields = <String, dynamic>{
+      'problem_category': request.categoryValue,
+      'title': request.title,
+      'priority': request.priority,
+      'description': request.description ?? '',
+      if (request.assignedTo != null) 'assigned_to': request.assignedTo,
+      if (request.dueAt != null) 'due_at': request.dueAt,
+    };
+    final photoPath = request.photoPath;
+
+    // WHY POST with _method: the PHP backend does not read a multipart PATCH
+    // body, so a photo goes as a POST that Laravel treats as a PATCH. Without
+    // a photo it is a plain JSON PATCH.
+    final response = photoPath == null
+        ? await _client.updateIssue(
+            partnerId: partnerId,
+            issueId: issueId,
+            body: fields,
+          )
+        : await _client.updateIssueWithPhoto(
+            partnerId: partnerId,
+            issueId: issueId,
+            formData: FormData.fromMap({
+              '_method': 'PATCH',
+              for (final e in fields.entries) e.key: e.value.toString(),
+              'photo': await MultipartFile.fromFile(
+                photoPath,
+                filename: File(photoPath).uri.pathSegments.last,
+              ),
+              'alt': request.title,
+            }),
+          );
+    return _issueResponse(response.data);
   });
 
   @override

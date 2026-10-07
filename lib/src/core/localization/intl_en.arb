@@ -1125,6 +1125,7 @@
     "placeholders": { "percent": { "type": "String", "example": "83%" } }
   },
   "settings": "Settings",
+  "issueUpdatedSuccessfully": "Issue updated successfully",
   "locationAlwaysAllowMessage": "Live location sharing needs location permission set to \"Allow all the time\".",
   "openAppSettings": "Open app settings",
   "retry": "Retry"
