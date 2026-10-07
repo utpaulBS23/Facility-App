@@ -57,11 +57,9 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
           _LeaveAction.cancel => context.locale.cancelled,
         };
         AppSnackBar.showSuccess(context, msg);
-        if (context.canPop()) {
-          context.pop();
-        } else {
-          context.goNamed(Routes.leaveRequests);
-        }
+        // WHY not pop: the page may have been opened from a notification or a
+        // deep link, where popping leaves the leave pages altogether.
+        context.goNamed(Routes.leaveRequests);
       },
       error: (e, _) {
         AppSnackBar.showError(context, e.localizedMessage(context));

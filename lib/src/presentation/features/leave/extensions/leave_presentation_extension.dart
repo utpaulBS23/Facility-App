@@ -50,7 +50,8 @@ extension LeaveRequestStatusPresentation on LeaveRequestEntity {
   (String label, Color dotColor) statusLabelAndDotColor(BuildContext context) {
     final (label, dotColor) = status.labelAndDotColor(context);
     final stepLabel = currentStepLabel?.trim();
-    final isPending = currentStep != null;
+    // WHY the status, not currentStep: a terminal request is meant to carry
+    // no step, but a cancelled one has come back with its old step and label.
     if (!isPending || stepLabel == null || stepLabel.isEmpty) {
       return (label, dotColor);
     }
