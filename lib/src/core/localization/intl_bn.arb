@@ -1065,6 +1065,17 @@
     "placeholders": { "percent": { "type": "String", "example": "৮৩%" } }
   },
   "settings": "সেটিংস",
+  "checkInWindowMessage": "চেক-ইন শুরু {opens} থেকে। {deadline} পর্যন্ত সময়মতো; এরপর অনুমোদন লাগবে।",
+  "@checkInWindowMessage": {
+    "placeholders": {
+      "opens": {
+        "type": "String"
+      },
+      "deadline": {
+        "type": "String"
+      }
+    }
+  },
   "lateCheckInNotice": "সময়মতো চেক-ইনের সময় ({time} পর্যন্ত) পেরিয়ে গেছে। এই চেক-ইন সুপারভাইজারকে অনুমোদন করতে হবে এবং কারণ দেওয়া বাধ্যতামূলক।",
   "@lateCheckInNotice": {
     "placeholders": {
