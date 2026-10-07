@@ -120,6 +120,14 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
     };
   }
 
+  Future<void> _onRefresh() => ref
+      .read(myVisitsProvider.notifier)
+      .fetch(
+        date: ApiDate.date(_selectedDate),
+        facilityId: _selectedFacilityId,
+        silent: true,
+      );
+
   void _onVisitTap(VisitSummaryEntity visit) {
     context.pushNamed(Routes.visitDetail, extra: visit);
   }
@@ -184,18 +192,33 @@ class _MyVisitsPageState extends ConsumerState<MyVisitsPage> {
               ),
               data: (entity) {
                 final filtered = _filteredVisits(entity.visits);
-                if (filtered.isEmpty) {
-                  return _VisitEmptyState(tab: _selectedTab);
-                }
-                return ListView.separated(
-                  controller: _scrollController,
-                  padding: EdgeInsets.all(spacing.s16),
-                  itemCount: filtered.length,
-                  separatorBuilder: (context, i) => Gap(spacing.s12),
-                  itemBuilder: (_, i) => _VisitCard(
-                    visit: filtered[i],
-                    onTap: () => _onVisitTap(filtered[i]),
-                  ),
+                // WHY a scrollable even when empty: the pull gesture needs
+                // something to scroll, so an empty day can be refreshed too.
+                return RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  child: filtered.isEmpty
+                      ? LayoutBuilder(
+                          builder: (context, constraints) => ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(
+                                height: constraints.maxHeight,
+                                child: _VisitEmptyState(tab: _selectedTab),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          controller: _scrollController,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.all(spacing.s16),
+                          itemCount: filtered.length,
+                          separatorBuilder: (context, i) => Gap(spacing.s12),
+                          itemBuilder: (_, i) => _VisitCard(
+                            visit: filtered[i],
+                            onTap: () => _onVisitTap(filtered[i]),
+                          ),
+                        ),
                 );
               },
             ),
