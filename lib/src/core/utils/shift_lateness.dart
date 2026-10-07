@@ -39,6 +39,15 @@ DateTime? checkOutDeadline({
   required int graceMinutes,
 }) => shiftMoment(date, endTime)?.add(Duration(minutes: graceMinutes));
 
+/// When check-out opens: the shift's end.
+DateTime? checkOutOpens({required String date, required String endTime}) =>
+    shiftMoment(date, endTime);
+
+/// True while [at] (the Dhaka wall clock now, by default) is before [moment].
+/// False when the moment is unknown.
+bool isBefore(DateTime? moment, [DateTime? at]) =>
+    moment != null && (at ?? dhakaWallClock()).isBefore(moment);
+
 /// True once [at] (the Dhaka wall clock now, by default) is past [deadline].
 /// False when the deadline is unknown: nothing is claimed about a late one.
 bool isPast(DateTime? deadline, [DateTime? at]) =>

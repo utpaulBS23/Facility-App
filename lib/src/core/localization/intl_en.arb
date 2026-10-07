@@ -1125,6 +1125,14 @@
     "placeholders": { "percent": { "type": "String", "example": "83%" } }
   },
   "settings": "Settings",
+  "earlyCheckOutNotice": "Your shift ends at {time}. Checking out before then needs a reason.",
+  "@earlyCheckOutNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "checkInWindowMessage": "Check-in opens at {opens}. On time until {deadline}; later needs approval.",
   "@checkInWindowMessage": {
     "placeholders": {

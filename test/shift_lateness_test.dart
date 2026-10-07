@@ -62,6 +62,24 @@ void main() {
     });
   });
 
+  group('early check-out', () {
+    final opens = checkOutOpens(date: '2026-10-07', endTime: '14:00:00');
+
+    test('check-out opens when the shift ends', () {
+      expect(opens, DateTime.utc(2026, 10, 7, 14));
+    });
+
+    test('before the end is early, from the end on it is not', () {
+      expect(isBefore(opens, DateTime.utc(2026, 10, 7, 13, 59)), isTrue);
+      expect(isBefore(opens, DateTime.utc(2026, 10, 7, 14)), isFalse);
+      expect(isBefore(opens, DateTime.utc(2026, 10, 7, 14, 20)), isFalse);
+    });
+
+    test('an unknown end claims nothing', () {
+      expect(isBefore(null, DateTime.utc(2020)), isFalse);
+    });
+  });
+
   test('a wall clock is written as HH:mm', () {
     expect(wallClockHm(DateTime.utc(2026, 10, 7, 6, 5)), '06:05');
   });

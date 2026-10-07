@@ -1065,6 +1065,14 @@
     "placeholders": { "percent": { "type": "String", "example": "৮৩%" } }
   },
   "settings": "সেটিংস",
+  "earlyCheckOutNotice": "আপনার শিফট {time} এ শেষ হবে। তার আগে চেক-আউট করতে কারণ দিতে হবে।",
+  "@earlyCheckOutNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "checkInWindowMessage": "চেক-ইন শুরু {opens} থেকে। {deadline} পর্যন্ত সময়মতো; এরপর অনুমোদন লাগবে।",
   "@checkInWindowMessage": {
     "placeholders": {
