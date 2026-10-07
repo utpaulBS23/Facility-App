@@ -76,11 +76,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
         fallbackTitle: context.locale.leaveRequests,
         actions: [
           PermissionGate(
-            permissions: const [
-              UserPermission.leaveApproveStep1,
-              UserPermission.leaveApproveStep2,
-              UserPermission.leaveApproveStep3,
-            ],
+            permissions: leaveApprovalPermissions,
             builder: (context, canSeeApprovals) {
               if (!canSeeApprovals) {
                 if (currentTab != LeaveTab.myLeave) {
