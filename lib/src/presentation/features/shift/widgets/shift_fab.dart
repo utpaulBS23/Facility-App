@@ -58,6 +58,10 @@ class _ShiftFab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // WHY heroTag null: the Scaffold keeps the old and the new FAB alive
+    // together while it swaps them (check-in, check-out, rosters), and the
+    // default tag is shared, so a push in that window throws "multiple heroes
+    // share the same tag". This FAB never needs a hero flight.
     final data = ref.watch(shiftSlotsProvider).valueOrNull;
     final activeSlot = data?.activeSlot;
     final requiredPermission = switch (activeSlot?.action) {
@@ -70,6 +74,7 @@ class _ShiftFab extends ConsumerWidget {
       return PermissionGate(
         permissions: [requiredPermission],
         child: FloatingActionButton.extended(
+          heroTag: null,
           onPressed: () => _onActiveSlotAction(context, data!),
           icon: Icon(
             activeSlot.action == SlotAction.checkIn
@@ -88,6 +93,7 @@ class _ShiftFab extends ConsumerWidget {
     return PermissionGate(
       permissions: [UserPermission.rosterView],
       child: FloatingActionButton(
+        heroTag: null,
         onPressed: onOpenRosters,
         child: const Icon(Icons.calendar_view_week_rounded),
       ),
