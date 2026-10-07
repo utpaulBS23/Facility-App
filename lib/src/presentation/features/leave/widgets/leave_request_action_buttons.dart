@@ -26,65 +26,52 @@ class _LeaveRequestActionButtons extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: PermissionGate(
-                permissions: const [
-                  UserPermission.leaveApproveSupervisor,
-                  UserPermission.leaveApproveManager,
-                ],
-                child: FilledButton(
-                  onPressed: isBusy ? null : onApprove,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: color.primary,
-                    foregroundColor: color.onPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        context.dimensions.radius.r10,
-                      ),
+              child: FilledButton(
+                onPressed: isBusy ? null : onApprove,
+                style: FilledButton.styleFrom(
+                  backgroundColor: color.primary,
+                  foregroundColor: color.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r10,
                     ),
                   ),
-                  child: isApproving
-                      ? SizedBox(
-                          width: spacing.s20,
-                          height: spacing.s20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: spacing.s2,
-                            color: color.onPrimary,
-                          ),
-                        )
-                      : Text(context.locale.approved),
                 ),
+                child: isApproving
+                    ? SizedBox(
+                        width: spacing.s20,
+                        height: spacing.s20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: spacing.s2,
+                          color: color.onPrimary,
+                        ),
+                      )
+                    : Text(context.locale.approved),
               ),
             ),
             Gap(spacing.s12),
             Expanded(
-              child: PermissionGate(
-                permissions: const [
-                  UserPermission.leaveReject,
-                  UserPermission.leaveApproveSupervisor,
-                  UserPermission.leaveApproveManager,
-                ],
-                child: OutlinedButton(
-                  onPressed: isBusy ? null : onReject,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: color.primary,
-                    side: BorderSide(color: color.primary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        context.dimensions.radius.r10,
-                      ),
+              child: OutlinedButton(
+                onPressed: isBusy ? null : onReject,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: color.primary,
+                  side: BorderSide(color: color.primary),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      context.dimensions.radius.r10,
                     ),
                   ),
-                  child: isRejecting
-                      ? SizedBox(
-                          width: spacing.s20,
-                          height: spacing.s20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: spacing.s2,
-                            color: color.primary,
-                          ),
-                        )
-                      : Text(context.locale.rejection),
                 ),
+                child: isRejecting
+                    ? SizedBox(
+                        width: spacing.s20,
+                        height: spacing.s20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: spacing.s2,
+                          color: color.primary,
+                        ),
+                      )
+                    : Text(context.locale.rejection),
               ),
             ),
           ],

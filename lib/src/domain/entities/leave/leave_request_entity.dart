@@ -74,6 +74,9 @@ class LeaveRequestEntity {
     this.approvalSteps = const [],
     required this.createdAt,
     required this.canAction,
+    this.currentStep,
+    this.currentPermission,
+    this.currentStepLabel,
   });
 
   final int id;
@@ -97,6 +100,27 @@ class LeaveRequestEntity {
   /// reject this request right now. Treat as display-only — the server
   /// re-checks authorization on the actual approve/reject endpoints.
   final bool canAction;
+
+  /// Which approval step the request waits on; null once it is terminal.
+  final int? currentStep;
+
+  /// Permission needed to act on the current step; null once terminal.
+  final String? currentPermission;
+
+  /// Server-written text for the current step, e.g. "Waiting for Ops Manager
+  /// approval". Null once terminal.
+  final String? currentStepLabel;
+
+  /// True while the request still waits on an approval step.
+  bool get isPending =>
+      status == LeaveStatus.pendingSupervisor ||
+      status == LeaveStatus.pendingManager ||
+      status == LeaveStatus.pendingOwner;
+
+  /// Only the applicant can cancel, and only while the request is pending.
+  /// The server re-checks ownership and answers 403 otherwise.
+  bool canCancel(int? userId) =>
+      isPending && userId != null && applicant?.id == userId;
 
   bool isFiledOnBehalf() {
     if (createdBy == null || applicant == null) return false;

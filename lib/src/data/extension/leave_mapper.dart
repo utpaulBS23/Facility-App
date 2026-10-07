@@ -111,6 +111,9 @@ extension LeaveRequestModelToEntity on LeaveRequestModel {
       approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
       createdAt: createdAt,
       canAction: canAction ?? false,
+      currentStep: currentStep,
+      currentPermission: currentPermission,
+      currentStepLabel: currentStepLabel,
     );
   }
 }
