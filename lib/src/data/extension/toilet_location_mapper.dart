@@ -3,6 +3,8 @@ import '../../domain/entities/toilet_location/toilet_entity.dart';
 import '../../domain/entities/toilet_location/toilet_list_page_entity.dart';
 import '../../domain/entities/toilet_location/toilet_status.dart';
 import '../../domain/entities/toilet_location/toilet_target_entity.dart';
+import '../../domain/entities/toilet_location/toilet_details_entity.dart';
+import '../models/toilet_location/toilet_details_model.dart';
 import '../models/toilet_location/toilet_model.dart';
 import '../models/toilet_location/toilet_response_model.dart';
 import '../models/toilet_location/toilet_target_model.dart';
@@ -96,5 +98,87 @@ extension ToiletTargetListResponseModelToEntity
       );
     }
     return data.first.toEntity();
+  }
+}
+
+extension ToiletPlaceholderValueMapper on ToiletPlaceholderValueModel? {
+  /// The label (or the value) as text, or null while the server marks it as a
+  /// placeholder or sends nothing.
+  String? get text {
+    final model = this;
+    if (model == null || model.isPlaceholder == true) return null;
+    final label = model.label;
+    if (label != null && label.isNotEmpty) return label;
+    final value = model.value;
+
+    return value == null ? null : value.toString();
+  }
+}
+
+extension ToiletDetailsModelToEntity on ToiletDetailsModel {
+  ToiletDetailsEntity toEntity() {
+    final access = consumerAccess;
+    final income = incomeTargetAndGoal;
+    final progress = monthlyProgress;
+    final management = managementInformation;
+    final summary = attendance?.summary;
+    final distance = distanceKm;
+
+    return ToiletDetailsEntity(
+      id: id,
+      code: code.text,
+      distanceKm: distance == null || distance.isPlaceholder == true
+          ? null
+          : distance.value is num
+          ? distance.value as num
+          : null,
+      visitsToday: access?.today ?? 0,
+      visitsThisWeek: access?.thisWeek ?? 0,
+      visitsThisMonth: access?.thisMonth ?? 0,
+      hourly: [
+        for (final h in access?.hourly ?? const <ToiletHourlyModel>[])
+          ToiletHourlyVisit(
+            hour: h.hour,
+            count: h.count ?? 0,
+            isPeak: h.isPeak ?? false,
+          ),
+      ],
+      peakHoursLabel: access?.peakHoursLabel,
+      dailyTarget: income?.dailyTarget ?? 0,
+      todayAchieved: income?.todayAchieved ?? 0,
+      monthlyTarget: income?.monthlyTarget ?? 0,
+      monthAchieved: income?.monthAchieved ?? 0,
+      progressTarget: progress?.target ?? 0,
+      progressAchieved: progress?.achieved ?? 0,
+      progressRemaining: progress?.remaining ?? 0,
+      percentComplete: progress?.percentComplete ?? 0,
+      daysLeft: progress?.daysLeft ?? 0,
+      airQuality: management?.airQuality.text,
+      cleaningFrequency: management?.cleaningFrequency.text,
+      lastCleaningAt: management?.lastCleaningAt.text,
+      supplyStock: [
+        for (final s in supplyStock)
+          if ((s.itemName ?? '').isNotEmpty)
+            ToiletSupplyItem(
+              name: s.itemName!,
+              level: ToiletSupplyLevel.fromWire(s.status),
+              unit: s.unit ?? '',
+              quantity: s.currentQty,
+            ),
+      ],
+      present: summary?.present ?? 0,
+      late: summary?.late ?? 0,
+      notCheckedIn: summary?.notCheckedIn ?? 0,
+      staff: [
+        for (final p in attendance?.staff ?? const <ToiletStaffModel>[])
+          ToiletStaffMember(
+            name: p.name ?? '',
+            phone: p.phone ?? '',
+            role: p.role ?? '',
+            status: ToiletStaffStatus.fromWire(p.status),
+            checkInTime: p.checkInTime,
+          ),
+      ],
+    );
   }
 }

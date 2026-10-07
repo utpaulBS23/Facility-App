@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/toilet_location/toilet_details_entity.dart';
 import '../../../../domain/entities/toilet_location/toilet_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
@@ -16,15 +18,19 @@ import '../../dashboard/widgets/dashboard_tone.dart';
 import '../extensions/toilet_direction_extension.dart';
 import '../extensions/toilet_status_extension.dart';
 import '../riverpod/toilet_by_id_provider.dart';
+import '../riverpod/toilet_details_provider.dart';
 import '../riverpod/toilet_name.dart';
+import '../widgets/details/hourly_visitors_chart.dart';
 import '../widgets/details/toilet_action_bar.dart';
+import '../widgets/details/toilet_attendee_tile.dart';
 import '../widgets/details/toilet_hero_card.dart';
 import '../widgets/details/toilet_info_widgets.dart';
 import '../widgets/details/toilet_section_card.dart';
 
-// TODO: the name, status, address, rating, today's visits and income,
-// management facts and direction come from the toilet list. Everything else
-// has no endpoint yet and shows "$_none"; texts are English only until then.
+// TODO: the name, status, address, rating, management facts and direction come
+// from the toilet list, the rest from the facility details call. What the
+// server does not send (or marks as a placeholder) shows "$_none"; texts are
+// English only until then.
 const _none = '-';
 
 String _time(BuildContext context, String? hms) {
@@ -36,6 +42,24 @@ String _time(BuildContext context, String? hms) {
   final clock = m == 0 ? '$hour' : '$hour:${m.toString().padLeft(2, '0')}';
 
   return context.numbers.phone('$clock ${h < 12 ? 'AM' : 'PM'}');
+}
+
+String _initials(String name) {
+  final words = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+
+  return words.take(2).map((w) => w.characters.first.toUpperCase()).join();
+}
+
+/// "Checked in 6:02 AM"; the server sends a date time or `HH:mm:ss`.
+String _checkIn(BuildContext context, String? raw) {
+  if (raw == null || raw.isEmpty) return 'Not checked in yet';
+  final parsed = DateTime.tryParse(raw)?.toLocal();
+  final hms = parsed == null
+      ? raw
+      : '${parsed.hour}:${parsed.minute.toString().padLeft(2, '0')}';
+  final time = _time(context, hms);
+
+  return time == _none ? 'Checked in $raw' : 'Checked in $time';
 }
 
 String _openingHours(BuildContext context, ToiletEntity t) {
@@ -87,7 +111,11 @@ class ToiletDetailsPage extends ConsumerWidget {
     final gap = SizedBox(height: context.dimensions.spacing.s12);
     // WHY gated: the earning report needs report.facility_wise.view.
     final toilet = ref.watch(toiletByIdProvider(facilityId));
+    // WHY valueOrNull: while loading, or if the call fails, every number shows
+    // "-" (or what the toilet list already knows).
+    final d = ref.watch(toiletDetailsProvider(facilityId)).valueOrNull;
     final n = context.numbers;
+    String money(num value) => '৳ ${n.integer(value)}';
     final canOpenReport = ref.watch(
       userSessionProvider.select(
         (s) => s?.can(UserPermission.reportFacilityWiseView) ?? false,
@@ -118,8 +146,10 @@ class ToiletDetailsPage extends ConsumerWidget {
               ratingText: toilet == null
                   ? _none
                   : n.decimal(toilet.averageRating, 1),
-              distanceText: _none,
-              codeText: _none,
+              distanceText: d?.distanceKm == null
+                  ? _none
+                  : '${n.decimal(d!.distanceKm!, 1)} km',
+              codeText: d?.code ?? _none,
             ),
             gap,
             ToiletSectionCard(
@@ -130,40 +160,56 @@ class ToiletDetailsPage extends ConsumerWidget {
                   ToiletTileRow(
                     children: [
                       DashboardStatTile(
-                        value: toilet == null
+                        value: d != null
+                            ? n.integer(d.visitsToday)
+                            : toilet == null
                             ? _none
                             : n.integer(toilet.visitsToday),
                         label: 'Today',
                         tone: DashboardTone.blue,
                       ),
-                      const DashboardStatTile(
-                        value: _none,
+                      DashboardStatTile(
+                        value: d == null ? _none : n.integer(d.visitsThisWeek),
                         label: 'This week',
                         tone: DashboardTone.green,
                       ),
-                      const DashboardStatTile(
-                        value: _none,
+                      DashboardStatTile(
+                        value: d == null ? _none : n.integer(d.visitsThisMonth),
                         label: 'This month',
                         tone: DashboardTone.red,
                       ),
                     ],
                   ),
                   gap,
-                  ToiletInfoNote(
-                    icon: Icons.bar_chart_rounded,
-                    child: ToiletInfoNote.labelled(
-                      context,
-                      'Visitors by hour, today:',
-                      _none,
+                  if (d != null && d.hourly.isNotEmpty)
+                    HourlyVisitorsChart(
+                      title: 'Visitors by hour, today',
+                      peakLabel: 'Peak',
+                      visits: [
+                        for (final h in d.hourly)
+                          HourlyVisit(
+                            hour: h.hour,
+                            count: h.count,
+                            peak: h.isPeak,
+                          ),
+                      ],
+                    )
+                  else
+                    ToiletInfoNote(
+                      icon: Icons.bar_chart_rounded,
+                      child: ToiletInfoNote.labelled(
+                        context,
+                        'Visitors by hour, today:',
+                        _none,
+                      ),
                     ),
-                  ),
                   SizedBox(height: context.dimensions.spacing.s8),
                   ToiletInfoNote(
                     icon: Icons.info_outline,
                     child: ToiletInfoNote.labelled(
                       context,
                       'Peak hours:',
-                      _none,
+                      d?.peakHoursLabel ?? _none,
                     ),
                   ),
                 ],
@@ -176,16 +222,20 @@ class ToiletDetailsPage extends ConsumerWidget {
                 children: [
                   ToiletGoalBox(
                     label: 'Daily income target',
-                    value: _none,
-                    footnote: toilet == null
-                        ? 'Today: $_none'
-                        : 'Today: ৳ ${n.integer(toilet.revenue)}',
+                    value: d == null ? _none : money(d.dailyTarget),
+                    footnote:
+                        'Today: ${d != null
+                            ? money(d.todayAchieved)
+                            : toilet == null
+                            ? _none
+                            : money(toilet.revenue)}',
                     tone: DashboardTone.blue,
                   ),
-                  const ToiletGoalBox(
+                  ToiletGoalBox(
                     label: 'Monthly goal',
-                    value: _none,
-                    footnote: 'This month: $_none',
+                    value: d == null ? _none : money(d.monthlyTarget),
+                    footnote:
+                        'This month: ${d == null ? _none : money(d.monthAchieved)}',
                     tone: DashboardTone.green,
                   ),
                 ],
@@ -197,29 +247,33 @@ class ToiletDetailsPage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const DashboardMeter(
+                  DashboardMeter(
                     label: 'Goal complete',
-                    valueText: _none,
-                    percent: 0,
-                    tone: DashboardTone.neutral,
+                    valueText: d == null
+                        ? _none
+                        : '${n.integer(d.percentComplete.round())}%',
+                    percent: d?.percentComplete ?? 0,
+                    tone: d != null && d.hasProgressTarget
+                        ? DashboardMeter.toneForPercent(d.percentComplete)
+                        : DashboardTone.neutral,
                   ),
                   gap,
-                  const ToiletTileRow(
+                  ToiletTileRow(
                     children: [
                       DashboardStatTile(
-                        value: _none,
+                        value: d == null ? _none : money(d.progressAchieved),
                         label: 'Achieved',
                         tone: DashboardTone.green,
                         compact: true,
                       ),
                       DashboardStatTile(
-                        value: _none,
+                        value: d == null ? _none : money(d.progressRemaining),
                         label: 'Remaining',
                         tone: DashboardTone.orange,
                         compact: true,
                       ),
                       DashboardStatTile(
-                        value: _none,
+                        value: d == null ? _none : n.integer(d.daysLeft),
                         label: 'Days left',
                         tone: DashboardTone.blue,
                         compact: true,
@@ -271,22 +325,22 @@ class ToiletDetailsPage extends ConsumerWidget {
                     ),
                     SizedBox(height: context.dimensions.spacing.s10),
                   ],
-                  const ToiletInfoRow(
+                  ToiletInfoRow(
                     icon: Icons.air_rounded,
                     label: 'Air quality score',
-                    value: _none,
+                    value: d?.airQuality ?? _none,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
-                  const ToiletInfoRow(
+                  ToiletInfoRow(
                     icon: Icons.bar_chart_rounded,
                     label: 'Frequency of cleaning',
-                    value: _none,
+                    value: d?.cleaningFrequency ?? _none,
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
-                  const ToiletInfoRow(
+                  ToiletInfoRow(
                     icon: Icons.schedule_rounded,
                     label: 'Last cleaning',
-                    value: _none,
+                    value: d?.lastCleaningAt ?? _none,
                   ),
                   gap,
                   Text(
@@ -297,56 +351,89 @@ class ToiletDetailsPage extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(height: context.dimensions.spacing.s10),
-                  const DashboardMeter(
-                    label: 'Tissue',
-                    valueText: _none,
-                    percent: 0,
-                    tone: DashboardTone.neutral,
-                  ),
-                  SizedBox(height: context.dimensions.spacing.s10),
-                  const DashboardMeter(
-                    label: 'Soap',
-                    valueText: _none,
-                    percent: 0,
-                    tone: DashboardTone.neutral,
-                  ),
-                  SizedBox(height: context.dimensions.spacing.s10),
-                  const DashboardMeter(
-                    label: 'Sanitizer',
-                    valueText: _none,
-                    percent: 0,
-                    tone: DashboardTone.neutral,
-                  ),
-                  SizedBox(height: context.dimensions.spacing.s10),
-                  const DashboardMeter(
-                    label: 'Hand towel',
-                    valueText: _none,
-                    percent: 0,
-                    tone: DashboardTone.neutral,
-                  ),
+                  if (d == null || d.supplyStock.isEmpty)
+                    const ToiletInfoRow(
+                      icon: Icons.inventory_2_outlined,
+                      label: 'Stock',
+                      value: _none,
+                    )
+                  else
+                    for (final (i, item) in d.supplyStock.indexed) ...[
+                      if (i > 0)
+                        SizedBox(height: context.dimensions.spacing.s10),
+                      ToiletInfoRow(
+                        icon: Icons.inventory_2_outlined,
+                        label: item.name,
+                        value: [
+                          if (item.quantity != null)
+                            '${n.integer(item.quantity!)} ${item.unit}'.trim(),
+                          switch (item.level) {
+                            ToiletSupplyLevel.ok => 'In stock',
+                            ToiletSupplyLevel.low => 'Low',
+                            ToiletSupplyLevel.out => 'Out',
+                          },
+                        ].join(' · '),
+                        valueTone: switch (item.level) {
+                          ToiletSupplyLevel.ok => DashboardTone.green,
+                          ToiletSupplyLevel.low => DashboardTone.orange,
+                          ToiletSupplyLevel.out => DashboardTone.red,
+                        },
+                      ),
+                    ],
                 ],
               ),
             ),
             gap,
             ToiletSectionCard(
               title: 'Attendance',
-              child: const ToiletTileRow(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  DashboardStatTile(
-                    value: _none,
-                    label: 'Present',
-                    tone: DashboardTone.green,
+                  ToiletTileRow(
+                    children: [
+                      DashboardStatTile(
+                        value: d == null ? _none : n.integer(d.present),
+                        label: 'Present',
+                        tone: DashboardTone.green,
+                      ),
+                      DashboardStatTile(
+                        value: d == null ? _none : n.integer(d.late),
+                        label: 'Late',
+                        tone: DashboardTone.orange,
+                      ),
+                      DashboardStatTile(
+                        value: d == null ? _none : n.integer(d.notCheckedIn),
+                        label: 'Not in yet',
+                        tone: DashboardTone.blue,
+                      ),
+                    ],
                   ),
-                  DashboardStatTile(
-                    value: _none,
-                    label: 'Late',
-                    tone: DashboardTone.orange,
-                  ),
-                  DashboardStatTile(
-                    value: _none,
-                    label: 'Not in yet',
-                    tone: DashboardTone.blue,
-                  ),
+                  if (d != null)
+                    for (final (i, person) in d.staff.indexed)
+                      ToiletAttendeeTile(
+                        initials: _initials(person.name),
+                        name: person.name,
+                        statusLabel: switch (person.status) {
+                          ToiletStaffStatus.present => 'Present',
+                          ToiletStaffStatus.late => 'Late',
+                          ToiletStaffStatus.notCheckedIn => 'Not in yet',
+                        },
+                        statusTone: switch (person.status) {
+                          ToiletStaffStatus.present => DashboardTone.green,
+                          ToiletStaffStatus.late => DashboardTone.orange,
+                          ToiletStaffStatus.notCheckedIn => DashboardTone.blue,
+                        },
+                        roleAndPhone: [
+                          if (person.role.isNotEmpty) person.role,
+                          if (person.phone.isNotEmpty)
+                            context.numbers.phone(person.phone),
+                        ].join(' · '),
+                        note: _checkIn(context, person.checkInTime),
+                        onCall: person.phone.isEmpty
+                            ? null
+                            : () => launchUrl(Uri(scheme: 'tel', path: person.phone)),
+                        showDivider: i < d.staff.length - 1,
+                      ),
                 ],
               ),
             ),

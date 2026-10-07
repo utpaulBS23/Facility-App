@@ -489,6 +489,12 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
+  @GET(Endpoints.facilityDetails)
+  Future<HttpResponse> getFacilityDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+  });
+
   @GET(Endpoints.facilityMap)
   Future<HttpResponse> getFacilityMap({
     @Path('partnerId') required int partnerId,

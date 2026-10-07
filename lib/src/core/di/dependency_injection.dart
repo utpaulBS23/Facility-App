@@ -142,6 +142,7 @@ import '../../domain/use_cases/toilet_location/get_toilets_use_case.dart';
 import '../../domain/use_cases/dashboard_use_case.dart';
 import '../../domain/use_cases/user_tracking/get_live_positions_use_case.dart';
 import '../../domain/use_cases/user_tracking/get_user_route_use_case.dart';
+import '../../domain/use_cases/toilet_location/get_toilet_details_use_case.dart';
 import '../../domain/use_cases/toilet_location/get_toilet_target_use_case.dart';
 import '../../domain/use_cases/supply/create_supply_request_use_case.dart';
 import '../../domain/use_cases/supply/get_item_catalog_use_case.dart';

@@ -3,6 +3,7 @@ import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
 import '../entities/toilet_location/facility_report_sources_entity.dart';
 import '../entities/toilet_location/facility_wise_report_entity.dart';
+import '../entities/toilet_location/toilet_details_entity.dart';
 import '../entities/toilet_location/toilet_filter.dart';
 import '../entities/toilet_location/toilet_list_page_entity.dart';
 import '../entities/toilet_location/toilet_target_entity.dart';
@@ -11,6 +12,11 @@ abstract base class ToiletLocationRepository extends Repository {
   Future<Result<ToiletListPageEntity, Failure>> getToilets(
     ToiletListQueryFilter filter,
   );
+
+  Future<Result<ToiletDetailsEntity, Failure>> getToiletDetails({
+    required int partnerId,
+    required int facilityId,
+  });
 
   Future<Result<ToiletTargetEntity, Failure>> getToiletTarget({
     required int partnerId,
