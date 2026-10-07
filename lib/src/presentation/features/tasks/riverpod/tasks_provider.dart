@@ -14,6 +14,11 @@ part 'tasks_provider.g.dart';
 
 @riverpod
 class Tasks extends _$Tasks {
+  // The filters of the last fetch, so refresh() can repeat it.
+  bool _hasFetched = false;
+  String? _status;
+  int? _facilityId;
+
   @override
   AsyncValue<List<TaskEntity>> build() => const AsyncValue.loading();
 
@@ -25,6 +30,9 @@ class Tasks extends _$Tasks {
     int? facilityId,
     bool silent = false,
   }) async {
+    _hasFetched = true;
+    _status = status;
+    _facilityId = facilityId;
     if (!silent) state = const AsyncValue.loading();
 
     final Result<List<TaskEntity>, Failure> result = await ref
@@ -44,6 +52,17 @@ class Tasks extends _$Tasks {
     if (!silent || failure == null) state = next;
 
     return failure;
+  }
+
+  /// Refetches the list with the filters of the last fetch, keeping the
+  /// current list on screen. Does nothing while the list was never loaded.
+  ///
+  /// WHY not ref.invalidate: build() only returns "loading" and never
+  /// fetches, so an invalidated list would stay on its spinner.
+  Future<Failure?> refresh() async {
+    if (!_hasFetched) return null;
+
+    return fetch(status: _status, facilityId: _facilityId, silent: true);
   }
 
   Future<bool> startIssue({required int issueId}) async {

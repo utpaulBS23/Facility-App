@@ -8,6 +8,7 @@ import '../../../core/widgets/staff_tile.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
 import '../../issues/riverpod/create_issue_provider.dart';
 import '../riverpod/task_detail_provider.dart';
+import '../riverpod/tasks_provider.dart';
 
 Future<void> showTaskAssignStaffSheet(
   BuildContext context, {
@@ -68,6 +69,8 @@ class _TaskAssignStaffSheetState
         taskId: widget.taskId,
         assignedTo: staff.id,
       );
+      // WHY: the assignee shows on the list rows, so the list is reloaded too.
+      ref.read(tasksProvider.notifier).refresh();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
