@@ -13,6 +13,8 @@ import '../models/facility_report/facility_report_source_models.dart';
 import '../extension/toilet_location_mapper.dart';
 import '../../domain/entities/toilet_location/facility_wise_report_entity.dart';
 import '../models/toilet_location/facility_wise_report_model.dart';
+import '../../domain/entities/toilet_location/toilet_details_entity.dart';
+import '../models/toilet_location/toilet_details_model.dart';
 import '../models/toilet_location/toilet_response_model.dart';
 import '../models/toilet_location/toilet_target_model.dart';
 import '../services/network/rest_client.dart';
@@ -35,6 +37,20 @@ final class ToiletLocationRepositoryImpl extends ToiletLocationRepository {
       );
       final responseModel = ToiletListResponseModel.fromJson(response.data);
       return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<ToiletDetailsEntity, Failure>> getToiletDetails({
+    required int partnerId,
+    required int facilityId,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.getFacilityDetails(
+        partnerId: partnerId,
+        facilityId: facilityId,
+      );
+      return ToiletDetailsModel.fromJson(response.data).toEntity();
     });
   }
 
