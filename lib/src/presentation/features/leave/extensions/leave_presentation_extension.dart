@@ -32,7 +32,7 @@ extension LeaveStatusPresentation on LeaveStatus {
           context.color.error,
         ),
       LeaveStatus.cancelled => (
-          context.locale.cancel,
+          context.locale.cancelled,
           context.color.text.secondary,
         ),
       LeaveStatus.unknown => (
