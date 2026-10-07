@@ -18,6 +18,7 @@ import '../riverpod/visit_detail_provider.dart';
 part '../widgets/visit_detail_info_card.dart';
 part '../widgets/visit_detail_purpose_card.dart';
 part '../widgets/visit_check_in_location_card.dart';
+part '../widgets/location_permission_notice.dart';
 
 class VisitDetailPage extends ConsumerStatefulWidget {
   const VisitDetailPage({
@@ -193,6 +194,10 @@ class _DetailBody extends StatelessWidget {
         Gap(spacing.s12),
         _VisitDetailPurposeCard(detail: detail),
         Gap(spacing.s12),
+        if (!detail.travelTrackingExcluded) ...[
+          const _LocationPermissionNotice(),
+          Gap(spacing.s12),
+        ],
         if (checkInState.isBusy)
           Container(
             height: 44,
@@ -380,6 +385,10 @@ class _ReshareLocationBody extends StatelessWidget {
         Gap(spacing.s12),
         _VisitDetailPurposeCard(detail: detail),
         Gap(spacing.s12),
+        if (!detail.travelTrackingExcluded) ...[
+          const _LocationPermissionNotice(),
+          Gap(spacing.s12),
+        ],
         if (checkInState.isBusy)
           Container(
             height: 44,
@@ -566,7 +575,10 @@ class _CheckInBody extends StatelessWidget {
       children: [
         _VisitDetailInfoCard(detail: detail),
         Gap(spacing.s12),
-        _VisitCheckInLocationCard(state: checkInState),
+        _VisitCheckInLocationCard(
+          state: checkInState,
+          showPermissionNotice: !detail.travelTrackingExcluded,
+        ),
         Gap(spacing.s12),
         if (checkInState.checkInError != null) ...[
           Container(
