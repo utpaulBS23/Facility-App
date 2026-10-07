@@ -31,23 +31,35 @@ class MyVisits extends _$MyVisits {
     return const AsyncValue.loading();
   }
 
-  Future<void> fetch({required String date, int? facilityId}) async {
+  /// [silent] keeps the current list on screen while refetching (pull to
+  /// refresh, or a visit submitted elsewhere) and keeps it if the refetch
+  /// fails; the person can pull again.
+  Future<void> fetch({
+    required String date,
+    int? facilityId,
+    bool silent = false,
+  }) async {
     _lastFetchedDate = date;
     _lastFetchedFacilityId = facilityId;
     _currentPage = 1;
     _hasMorePages = true;
-    state = const AsyncValue.loading();
+    if (!silent) state = const AsyncValue.loading();
 
     final Result<VisitListEntity, Failure> result = await ref
         .read(getMyVisitsUseCaseProvider)
         .call(date: date, facilityId: facilityId, page: 1, perPage: 10);
 
-    state = result.when(
+    final next = result.when(
       success: (data) => data != null
           ? AsyncValue.data(data)
-          : AsyncValue.error(Failure.emptyResponse('load visits'), StackTrace.current),
-      error: (error) => AsyncValue.error(error, StackTrace.current),
+          : AsyncValue<VisitListEntity>.error(
+              Failure.emptyResponse('load visits'),
+              StackTrace.current,
+            ),
+      error: (error) =>
+          AsyncValue<VisitListEntity>.error(error, StackTrace.current),
     );
+    if (!silent || !next.hasError) state = next;
   }
 
   Future<void> loadMore({required String date}) async {
@@ -91,7 +103,7 @@ class MyVisits extends _$MyVisits {
   Future<void> refresh() async {
     final date = _lastFetchedDate;
     if (date == null) return;
-    await fetch(date: date, facilityId: _lastFetchedFacilityId);
+    await fetch(date: date, facilityId: _lastFetchedFacilityId, silent: true);
   }
 }
 
