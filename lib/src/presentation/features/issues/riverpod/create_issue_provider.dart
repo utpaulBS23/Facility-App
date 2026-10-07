@@ -49,12 +49,23 @@ class CreateIssue extends _$CreateIssue {
     required String facilityName,
     String? photoUrl,
     DateTime? dueDate,
+
+    /// Set when editing: the issue is updated, not reported again.
+    int? issueId,
   }) async {
     state = state.copyWith(isSubmitting: true, clearError: true);
 
-    final result = await ref
-        .read(reportIssueUseCaseProvider)
-        .call(partnerId: partnerId, visitId: request.visitId, request: request);
+    final result = issueId == null
+        ? await ref
+              .read(reportIssueUseCaseProvider)
+              .call(
+                partnerId: partnerId,
+                visitId: request.visitId,
+                request: request,
+              )
+        : await ref
+              .read(updateIssueUseCaseProvider)
+              .call(partnerId: partnerId, issueId: issueId, request: request);
 
     state = result.when(
       success: (response) => state.copyWith(

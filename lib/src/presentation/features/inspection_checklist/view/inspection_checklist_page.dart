@@ -248,7 +248,7 @@ class _ChecklistBody extends StatelessWidget {
               if (detail.localizedFacilityName(context.languageCode) != null &&
                   (checklist.issues.isNotEmpty || checklistState.localIssues.isNotEmpty || !isResolved)) ...[
                 _InspectionRepairWorkSection(
-                  issues: [...checklist.issues, ...checklistState.localIssues],
+                  issues: checklistState.mergedIssues(checklist.issues),
                   onNewIssue: onNewIssue,
                   onEditIssue: onEditIssue,
                   canAddIssue: !isResolved,
