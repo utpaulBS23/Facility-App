@@ -18,6 +18,10 @@ class TaskMediaEntity {
   final String url;
   final String? alt;
   final String purpose;
+
+  /// The proof photo taken when completing, as opposed to the one the
+  /// reporter attached when creating the issue.
+  bool get isCompletionProof => purpose == 'completion';
 }
 
 class TaskEntity {
@@ -58,6 +62,10 @@ class TaskEntity {
   final String problemCategory;
   final bool proofRequiredOnComplete;
   final List<TaskMediaEntity> media;
+
+  /// A photo from whoever completes the task. The reporter's creation photo
+  /// does not count: completing still asks for its own proof.
+  bool get hasCompletionProof => media.any((m) => m.isCompletionProof);
   final DateTime? createdDate;
   final DateTime? resolvedDate;
 

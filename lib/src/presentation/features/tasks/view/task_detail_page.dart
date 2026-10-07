@@ -49,7 +49,9 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
   }
 
   Future<void> _onCompleteTap(TaskEntity task) async {
-    if (!task.proofRequiredOnComplete || task.status != TaskStatus.inProgress || task.media.isNotEmpty) {
+    if (!task.proofRequiredOnComplete ||
+        task.status != TaskStatus.inProgress ||
+        task.hasCompletionProof) {
       try {
         final completedTask = await ref
             .read(taskDetailProvider.notifier)
