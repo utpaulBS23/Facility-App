@@ -77,9 +77,9 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
         actions: [
           PermissionGate(
             permissions: const [
-              UserPermission.leaveApproveSupervisor,
-              UserPermission.leaveApproveManager,
-              UserPermission.leaveApproveOwner,
+              UserPermission.leaveApproveStep1,
+              UserPermission.leaveApproveStep2,
+              UserPermission.leaveApproveStep3,
             ],
             builder: (context, canSeeApprovals) {
               if (!canSeeApprovals) {

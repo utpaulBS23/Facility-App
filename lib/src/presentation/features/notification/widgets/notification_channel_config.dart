@@ -37,9 +37,9 @@ final List<NotificationChannelConfig> notificationChannelConfigs = [
     subtitle: (context) => context.locale.attendanceLeaveChannelSubtitle,
     permissions: [
       UserPermission.attendanceView,
-      UserPermission.leaveApproveSupervisor,
-      UserPermission.leaveApproveManager,
-      UserPermission.leaveApproveOwner,
+      UserPermission.leaveApproveStep1,
+      UserPermission.leaveApproveStep2,
+      UserPermission.leaveApproveStep3,
       UserPermission.leaveRequestView,
       UserPermission.leaveRequestCreateOwn,
       UserPermission.leaveRequestCreateForOthers,
