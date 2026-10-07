@@ -79,6 +79,7 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
             permissions: const [
               UserPermission.leaveApproveSupervisor,
               UserPermission.leaveApproveManager,
+              UserPermission.leaveApproveOwner,
             ],
             builder: (context, canSeeApprovals) {
               if (!canSeeApprovals) {
