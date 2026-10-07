@@ -166,7 +166,12 @@ class ShiftSlotEntity {
     this.supervisorNameBn = '',
     this.attendants = const [],
     this.weeklyRosterId,
+    this.checkInWindowAfterMinutes = defaultGraceMinutes,
+    this.checkOutWindowAfterMinutes = defaultGraceMinutes,
   });
+
+  /// Grace period used when the server does not send one.
+  static const defaultGraceMinutes = 60;
 
   final int shiftSlotId;
   final String startTime;
@@ -189,6 +194,13 @@ class ShiftSlotEntity {
   /// The roster this slot belongs to — required by the assign-attendant
   /// endpoint's URL. Nullable until the shift-slots response carries it.
   final int? weeklyRosterId;
+
+  /// A check-in later than start plus this is late: it needs a reason and a
+  /// supervisor's approval.
+  final int checkInWindowAfterMinutes;
+
+  /// A check-out later than end plus this is late and needs a reason.
+  final int checkOutWindowAfterMinutes;
 
   /// Attendants still on the slot.
   List<SlotAttendantEntity> get activeAttendants => [
