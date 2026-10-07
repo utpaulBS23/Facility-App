@@ -31,11 +31,11 @@ void main() {
         'supply_request.approve_step_2',
       ]);
       expect(set, {
-        UserPermission.leaveApproveSupervisor,
-        UserPermission.leaveApproveManager,
-        UserPermission.leaveApproveOwner,
-        UserPermission.supplyRequestApproveSupervisor,
-        UserPermission.supplyRequestApproveOperationManager,
+        UserPermission.leaveApproveStep1,
+        UserPermission.leaveApproveStep2,
+        UserPermission.leaveApproveStep3,
+        UserPermission.supplyRequestApproveStep1,
+        UserPermission.supplyRequestApproveStep2,
       });
     });
 
