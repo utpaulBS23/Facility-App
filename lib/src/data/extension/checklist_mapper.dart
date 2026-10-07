@@ -1,10 +1,12 @@
 import '../../domain/entities/checklist_entity.dart';
 import '../models/checklist_model.dart';
 
-ChecklistAnswerType _parseAnswerType(String? raw) => switch (raw) {
+/// The answer types the checklist supports, or null for any other type.
+ChecklistAnswerType? _parseAnswerType(String? raw) => switch (raw) {
+  'rating' => ChecklistAnswerType.star,
   'boolean' => ChecklistAnswerType.yesNo,
   'repair_work' => ChecklistAnswerType.repairWork,
-  _ => ChecklistAnswerType.star,
+  _ => null,
 };
 
 ChecklistProofPolicy _parseProofPolicy(String? raw) => switch (raw) {
@@ -14,11 +16,16 @@ ChecklistProofPolicy _parseProofPolicy(String? raw) => switch (raw) {
 };
 
 extension ChecklistItemModelToEntity on ChecklistItemModel {
+  /// False for an item type the page cannot answer (text, or one that does not
+  /// exist yet): the item is left out, so it is not shown and cannot block the
+  /// submit.
+  bool get isSupported => _parseAnswerType(responseType) != null;
+
   ChecklistItemEntity toEntity() => ChecklistItemEntity(
     id: id,
     question: label ?? '',
     questionBn: labelBn ?? '',
-    answerType: _parseAnswerType(responseType),
+    answerType: _parseAnswerType(responseType)!,
     order: sortOrder ?? 0,
     maxPoints: maxPoints ?? 5,
     proofPolicy: _parseProofPolicy(proofPolicy),
@@ -65,7 +72,10 @@ extension ChecklistIssueModelToEntity on ChecklistIssueModel {
 extension ChecklistModelToEntity on ChecklistModel {
   ChecklistEntity toEntity() => ChecklistEntity(
     maxScore: meta?.maxScore ?? 0,
-    items: (data ?? []).map((i) => i.toEntity()).toList(),
+    items: [
+      for (final i in data ?? const <ChecklistItemModel>[])
+        if (i.isSupported) i.toEntity(),
+    ],
     issues: (issues ?? []).map((i) => i.toEntity()).toList(),
   );
 }
