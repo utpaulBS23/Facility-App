@@ -8,9 +8,14 @@ class ShiftCheckOutPage extends ConsumerStatefulWidget {
     super.key,
     required this.attendanceId,
     this.checkInDate,
+    this.shiftSlotId,
   });
 
   final int attendanceId;
+
+  /// The slot being checked out of, when the entry point knows it. Without it
+  /// the page cannot tell a late check-out, and keeps an optional reason box.
+  final int? shiftSlotId;
 
   // WHY: a corrected check-out time must stay on the shift's own day — not
   // today's date — so a checkout submitted late (e.g. the morning after a
@@ -42,6 +47,45 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     ref.read(selfiePickerProvider.notifier).capturePhoto(path);
   }
 
+  /// The check-out time as the server will read it, a Dhaka wall clock: the
+  /// corrected time on the shift's day, else now.
+  DateTime _checkOutMoment() {
+    if (!_checkOutTimeEdited) return dhakaWallClock();
+    final day = widget.checkInDate ?? DateTime.now();
+
+    return DateTime.utc(
+      day.year,
+      day.month,
+      day.day,
+      _checkOutTime.hour,
+      _checkOutTime.minute,
+    );
+  }
+
+  /// The moment on-time check-out ends for the slot, or null when the slot is
+  /// not known.
+  DateTime? get _deadline {
+    final data = ref.read(shiftSlotsProvider).valueOrNull;
+    final slotId = widget.shiftSlotId;
+    final slot = slotId == null ? null : data?.findSlot(slotId);
+    if (data == null || slot == null) return null;
+
+    return checkOutDeadline(
+      date: data.date,
+      endTime: slot.endTime,
+      graceMinutes: slot.checkOutWindowAfterMinutes,
+    );
+  }
+
+  _ReasonMode get _reasonMode {
+    final deadline = _deadline;
+    if (deadline == null) return _ReasonMode.optional;
+
+    return isPast(deadline, _checkOutMoment())
+        ? _ReasonMode.required
+        : _ReasonMode.hidden;
+  }
+
   void _onSubmit(String? photoPath) {
     if (photoPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +113,9 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
           lat: checkInInfo.latitude!,
           lng: checkInInfo.longitude!,
           selfieUrl: photoPath,
-          reason: _reasonController.text.trim().isEmpty
+          reason:
+              _reasonMode == _ReasonMode.hidden ||
+                  _reasonController.text.trim().isEmpty
               ? null
               : _reasonController.text.trim(),
           checkOutTime: _checkOutTimeEdited
@@ -122,6 +168,11 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
     final checkOutState = ref.watch(checkOutProvider);
     final selfieError = selfieState.error;
     final isNoFace = selfieError is Failure && selfieError.code == 'no_face_detected';
+    // WHY watched: the slot (and its grace period) come from the shifts
+    // payload; the page rebuilds if that loads or refreshes.
+    ref.watch(shiftSlotsProvider);
+    final deadline = _deadline;
+    final reasonMode = _reasonMode;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -136,6 +187,12 @@ class _ShiftCheckOutPageState extends ConsumerState<ShiftCheckOutPage> {
         onTakePhoto: _onTakePhoto,
         onSubmit: () => _onSubmit(photoPath),
         reasonController: _reasonController,
+        reasonMode: reasonMode,
+        lateNotice: reasonMode == _ReasonMode.required && deadline != null
+            ? context.locale.lateCheckOutNotice(
+                context.numbers.phone(wallClockHm(deadline)),
+              )
+            : null,
         checkOutTime: _checkOutTime,
         onCheckOutTimeChanged: (time) => setState(() {
           _checkOutTime = time;
@@ -159,6 +216,8 @@ class _ShiftCheckOutBody extends StatelessWidget {
     required this.reasonController,
     required this.checkOutTime,
     required this.onCheckOutTimeChanged,
+    this.reasonMode = _ReasonMode.optional,
+    this.lateNotice,
   });
 
   final String? capturedPhotoPath;
@@ -170,6 +229,8 @@ class _ShiftCheckOutBody extends StatelessWidget {
   final VoidCallback onTakePhoto;
   final VoidCallback onSubmit;
   final TextEditingController reasonController;
+  final _ReasonMode reasonMode;
+  final String? lateNotice;
   final TimeOfDay checkOutTime;
   final ValueChanged<TimeOfDay> onCheckOutTimeChanged;
 
@@ -214,11 +275,11 @@ class _ShiftCheckOutBody extends StatelessWidget {
                     onChanged: onCheckOutTimeChanged,
                   ),
                   Gap(dimensions.spacing.s16),
-                  AppTextField.description(
+                  _ReasonSection(
+                    mode: reasonMode,
                     controller: reasonController,
-                    label: context.locale.reason,
+                    lateNotice: lateNotice,
                   ),
-                  Gap(dimensions.spacing.s16),
                 ],
               ),
             ),
@@ -233,7 +294,16 @@ class _ShiftCheckOutBody extends StatelessWidget {
               dimensions.padding.p16,
               dimensions.spacing.s16,
             ),
-            child: _SubmitButton(onSubmit: onSubmit, isLoading: isSubmitting),
+            child: ListenableBuilder(
+              listenable: reasonController,
+              builder: (context, _) => _SubmitButton(
+                onSubmit: onSubmit,
+                isLoading: isSubmitting,
+                canSubmit:
+                    reasonMode != _ReasonMode.required ||
+                    reasonController.text.trim().isNotEmpty,
+              ),
+            ),
           ),
         ),
       ],

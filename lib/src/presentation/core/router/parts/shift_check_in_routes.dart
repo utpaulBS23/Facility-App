@@ -52,14 +52,28 @@ List<GoRoute> _shiftCheckInRoutes(Ref ref) {
       name: Routes.shiftCheckOut,
       pageBuilder: (context, state) {
         // WHY the int branch: older call sites passed the bare attendance id.
+        // WHY the slot id is optional: only the entry points that know the
+        // slot pass it, and with it the page can tell a late check-out.
         final extra = state.extra;
-        final args = extra is int
-            ? (attendanceId: extra, checkInDate: null as DateTime?)
-            : extra as ({int attendanceId, DateTime? checkInDate});
+        final args = switch (extra) {
+          int() => (
+            attendanceId: extra,
+            checkInDate: null as DateTime?,
+            shiftSlotId: null as int?,
+          ),
+          ({int attendanceId, DateTime? checkInDate, int? shiftSlotId}) r => r,
+          ({int attendanceId, DateTime? checkInDate}) r => (
+            attendanceId: r.attendanceId,
+            checkInDate: r.checkInDate,
+            shiftSlotId: null as int?,
+          ),
+          _ => throw ArgumentError('Unexpected check-out arguments: $extra'),
+        };
         return MaterialPage(
           child: ShiftCheckOutPage(
             attendanceId: args.attendanceId,
             checkInDate: args.checkInDate,
+            shiftSlotId: args.shiftSlotId,
           ),
         );
       },
