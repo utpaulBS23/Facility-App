@@ -43,7 +43,11 @@ class _ShiftFab extends ConsumerWidget {
       if (attendanceId == null) return;
       context.pushNamed(
         Routes.shiftCheckOut,
-        extra: (attendanceId: attendanceId, checkInDate: attendance?.checkInTime),
+        extra: (
+          attendanceId: attendanceId,
+          checkInDate: attendance?.checkInTime,
+          shiftSlotId: activeSlot.shiftSlotId,
+        ),
       );
       return;
     }

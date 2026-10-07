@@ -24,6 +24,7 @@ class SlotDetailsPage extends ConsumerWidget {
       extra: (
         attendanceId: attendanceId,
         checkInDate: currentSlot.me?.attendance?.checkInTime,
+        shiftSlotId: currentSlot.shiftSlotId,
       ),
     );
   }
