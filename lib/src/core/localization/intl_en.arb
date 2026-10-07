@@ -1125,6 +1125,17 @@
     "placeholders": { "percent": { "type": "String", "example": "83%" } }
   },
   "settings": "Settings",
+  "checkInWindowMessage": "Check-in opens at {opens}. On time until {deadline}; later needs approval.",
+  "@checkInWindowMessage": {
+    "placeholders": {
+      "opens": {
+        "type": "String"
+      },
+      "deadline": {
+        "type": "String"
+      }
+    }
+  },
   "lateCheckInNotice": "You are past the on-time check-in window (until {time}). A supervisor must approve this check-in, and a reason is required.",
   "@lateCheckInNotice": {
     "placeholders": {
