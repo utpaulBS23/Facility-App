@@ -41,7 +41,11 @@ extension SupplyRequestStatusLabel on SupplyRequestEntity {
   /// chain reads right without a client-side mapping.
   String statusLabel(BuildContext context) {
     final stepLabel = currentStepLabel?.trim();
-    if (currentStep == null || stepLabel == null || stepLabel.isEmpty) {
+    // WHY the status, not currentStep: a terminal request may still carry its
+    // old step and label.
+    final isPending = status == SupplyRequestStatus.pendingSupervisor ||
+        status == SupplyRequestStatus.pendingOperationManager;
+    if (!isPending || stepLabel == null || stepLabel.isEmpty) {
       return status.localizedName(context);
     }
 
