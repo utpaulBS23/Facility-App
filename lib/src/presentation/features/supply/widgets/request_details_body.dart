@@ -116,12 +116,14 @@ class _RequestDetailsBody extends ConsumerWidget {
       ),
       bottomNavigationBar: switch (request.status) {
         SupplyRequestStatus.pendingSupervisor ||
-        SupplyRequestStatus.pendingOperationManager => _PendingActionButtons(
-          status: request.status,
-          isApproveAction: lastAction == _DetailsAction.approve,
-          onReject: onReject,
-          onApprove: onApprove,
-        ),
+        SupplyRequestStatus.pendingOperationManager =>
+          request.canAction
+              ? _PendingActionButtons(
+                  isApproveAction: lastAction == _DetailsAction.approve,
+                  onReject: onReject,
+                  onApprove: onApprove,
+                )
+              : null,
         SupplyRequestStatus.operationManagerApproved => _DispatchActionButton(
           onDispatch: onDispatch,
         ),
