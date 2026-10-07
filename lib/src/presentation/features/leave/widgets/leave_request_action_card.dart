@@ -70,7 +70,7 @@ class _LeaveRequestActionCardState
     final applicantName = leaveRequest.applicant?.name ?? leaveRequest.leavePolicy.name;
     final dateRange = '${leaveRequest.startDate} → ${leaveRequest.endDate}';
 
-    final (statusLabel, dotColor) = leaveRequest.status.labelAndDotColor(context);
+    final (statusLabel, dotColor) = leaveRequest.statusLabelAndDotColor(context);
     final typeLabel = leaveRequest.leaveType.localizedLabel(context);
 
     return InkWell(

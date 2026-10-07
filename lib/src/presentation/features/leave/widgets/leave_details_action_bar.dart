@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/permission_gate.dart';
 import '../riverpod/leave_requests_provider.dart';
 
 class LeaveDetailsActionBar extends ConsumerStatefulWidget {
@@ -80,67 +78,54 @@ class _LeaveDetailsActionBarState
       child: Row(
         children: [
           Expanded(
-            child: PermissionGate(
-              permissions: const [
-                UserPermission.leaveApproveSupervisor,
-                UserPermission.leaveApproveManager,
-              ],
-              child: FilledButton(
-                onPressed: isLoading ? null : _onApprove,
-                style: FilledButton.styleFrom(
-                  backgroundColor: color.primary,
-                  foregroundColor: color.onPrimary,
-                  minimumSize: Size(double.infinity, spacing.s44),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      context.dimensions.radius.r10,
-                    ),
+            child: FilledButton(
+              onPressed: isLoading ? null : _onApprove,
+              style: FilledButton.styleFrom(
+                backgroundColor: color.primary,
+                foregroundColor: color.onPrimary,
+                minimumSize: Size(double.infinity, spacing.s44),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    context.dimensions.radius.r10,
                   ),
                 ),
-                child: _isApproving
-                    ? SizedBox(
-                        width: spacing.s20,
-                        height: spacing.s20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: spacing.s2,
-                          color: color.onPrimary,
-                        ),
-                      )
-                    : Text(context.locale.approved),
               ),
+              child: _isApproving
+                  ? SizedBox(
+                      width: spacing.s20,
+                      height: spacing.s20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: spacing.s2,
+                        color: color.onPrimary,
+                      ),
+                    )
+                  : Text(context.locale.approved),
             ),
           ),
           Gap(spacing.s12),
           Expanded(
-            child: PermissionGate(
-              permissions: const [
-                UserPermission.leaveReject,
-                UserPermission.leaveApproveSupervisor,
-                UserPermission.leaveApproveManager,
-              ],
-              child: OutlinedButton(
-                onPressed: isLoading ? null : _onReject,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: color.primary,
-                  side: BorderSide(color: color.primary),
-                  minimumSize: Size(double.infinity, spacing.s44),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      context.dimensions.radius.r10,
-                    ),
+            child: OutlinedButton(
+              onPressed: isLoading ? null : _onReject,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: color.primary,
+                side: BorderSide(color: color.primary),
+                minimumSize: Size(double.infinity, spacing.s44),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    context.dimensions.radius.r10,
                   ),
                 ),
-                child: _isRejecting
-                    ? SizedBox(
-                        width: spacing.s20,
-                        height: spacing.s20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: spacing.s2,
-                          color: color.primary,
-                        ),
-                      )
-                    : Text(context.locale.rejection),
               ),
+              child: _isRejecting
+                  ? SizedBox(
+                      width: spacing.s20,
+                      height: spacing.s20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: spacing.s2,
+                        color: color.primary,
+                      ),
+                    )
+                  : Text(context.locale.rejection),
             ),
           ),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../../domain/entities/leave/leave_type.dart';
 import '../../../core/theme/theme.dart';
@@ -39,6 +40,22 @@ extension LeaveStatusPresentation on LeaveStatus {
           context.color.text.secondary,
         ),
     };
+  }
+}
+
+extension LeaveRequestStatusPresentation on LeaveRequestEntity {
+  /// Status label and dot colour. While the request is pending, the server's
+  /// own step text wins ("Waiting for Ops Manager approval"), so custom
+  /// approval chains read right without a client-side mapping.
+  (String label, Color dotColor) statusLabelAndDotColor(BuildContext context) {
+    final (label, dotColor) = status.labelAndDotColor(context);
+    final stepLabel = currentStepLabel?.trim();
+    final isPending = currentStep != null;
+    if (!isPending || stepLabel == null || stepLabel.isEmpty) {
+      return (label, dotColor);
+    }
+
+    return (stepLabel, dotColor);
   }
 }
 
