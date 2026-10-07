@@ -128,6 +128,8 @@ class AttendanceItemEntity {
   // not a timestamp — a same-day open attendance is still in progress and
   // shouldn't be flagged; only a prior day left open needs attention.
   bool get needsAttention {
+    // WHY: a rejected check-in is settled, nothing is left open to act on.
+    if (displayStatus == AttendanceStatus.rejected) return false;
     if (checkInTime == null || checkOutTime != null) return false;
     final shiftDate = DateTime.tryParse(date);
     if (shiftDate == null) return false;
