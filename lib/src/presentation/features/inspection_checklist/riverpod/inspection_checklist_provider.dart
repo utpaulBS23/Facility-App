@@ -62,13 +62,12 @@ class InspectionChecklistState {
       final hasExistingAnswer = item.isAnswered;
       final hasAnswered = hasLocalAnswer || hasExistingAnswer;
 
-      // Items with proof_policy: "required" need both answer AND proof
+      // Items with proof_policy: "required" need both answer AND proof.
+      // WHY item.hasProof only: a photo that is only picked is not submitted
+      // yet, so the item does not count until the server has the proof.
       if (item.proofPolicy == ChecklistProofPolicy.always) {
-        if (hasAnswered) {
-          final hasProof = (proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
-          if (hasProof) {
-            count++;
-          }
+        if (hasAnswered && item.hasProof) {
+          count++;
         }
       } else {
         // Other items only need answer
