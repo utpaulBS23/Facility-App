@@ -6,15 +6,22 @@ part of '../view/shift_check_in_page.dart';
 /// Full-width submit button matching the Figma "Button" component
 /// (node 13045:27268). Height 56px, brand background, white label.
 class _SubmitButton extends StatelessWidget {
-  const _SubmitButton({required this.onSubmit, required this.isLoading});
+  const _SubmitButton({
+    required this.onSubmit,
+    required this.isLoading,
+    this.canSubmit = true,
+  });
 
   final VoidCallback onSubmit;
   final bool isLoading;
 
+  /// False while a required field (the late reason) is still empty.
+  final bool canSubmit;
+
   @override
   Widget build(BuildContext context) {
     return FilledButton(
-      onPressed: isLoading ? null : onSubmit,
+      onPressed: isLoading || !canSubmit ? null : onSubmit,
       child: isLoading
           ? const SizedBox(
               width: 20,
