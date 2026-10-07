@@ -39,6 +39,7 @@ final List<NotificationChannelConfig> notificationChannelConfigs = [
       UserPermission.attendanceView,
       UserPermission.leaveApproveSupervisor,
       UserPermission.leaveApproveManager,
+      UserPermission.leaveApproveOwner,
       UserPermission.leaveRequestView,
       UserPermission.leaveRequestCreateOwn,
       UserPermission.leaveRequestCreateForOthers,
