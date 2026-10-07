@@ -59,6 +59,7 @@ class _LeaveRequestsBody extends StatelessWidget {
               LeaveFilter.pendingManager => context.locale.managerApproval,
               LeaveFilter.approved => context.locale.approved,
               LeaveFilter.rejected => context.locale.rejected,
+              LeaveFilter.cancelled => context.locale.cancelled,
             },
           ),
         ),
@@ -66,7 +67,8 @@ class _LeaveRequestsBody extends StatelessWidget {
           child: leaveRequestsState.when(
             loading: () => _LeaveRequestListShimmer(
               showActionButtons: selectedFilter != LeaveFilter.approved &&
-                  selectedFilter != LeaveFilter.rejected,
+                  selectedFilter != LeaveFilter.rejected &&
+                  selectedFilter != LeaveFilter.cancelled,
             ),
             error: (err, _) => AppErrorWidget(
               message: err.localizedMessage(context),

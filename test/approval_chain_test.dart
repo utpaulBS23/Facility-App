@@ -5,6 +5,7 @@ import 'package:facility_management_app/src/data/extension/supply_request_mapper
 import 'package:facility_management_app/src/data/models/leave/leave_models.dart';
 import 'package:facility_management_app/src/data/models/supply/supply_request_model.dart';
 import 'package:facility_management_app/src/domain/entities/app_permission.dart';
+import 'package:facility_management_app/src/domain/entities/leave/leave_filter.dart';
 import 'package:facility_management_app/src/domain/entities/leave/leave_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -107,6 +108,23 @@ void main() {
       expect(r.canAction, isFalse);
       expect(r.currentStep, isNull);
       expect(r.currentStepLabel, isNull);
+    });
+  });
+
+  group('cancelled leave', () {
+    test('the cancelled filter matches only cancelled requests', () {
+      expect(LeaveFilter.cancelled.status, LeaveStatus.cancelled);
+      expect(LeaveFilter.cancelled.matches(LeaveStatus.cancelled), isTrue);
+      expect(LeaveFilter.cancelled.matches(LeaveStatus.rejected), isFalse);
+      expect(LeaveFilter.all.matches(LeaveStatus.cancelled), isTrue);
+    });
+
+    test('a cancelled response reads as cancelled and sends cancelled', () {
+      final r = LeaveRequestModel.fromJson(jsonDecode(
+        _leave().replaceFirst('pending_manager', 'cancelled'),
+      )).toEntity();
+      expect(r.status, LeaveStatus.cancelled);
+      expect(LeaveStatus.cancelled.toWireString(), 'cancelled');
     });
   });
 }
