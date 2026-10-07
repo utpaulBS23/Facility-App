@@ -1065,6 +1065,8 @@
     "placeholders": { "percent": { "type": "String", "example": "৮৩%" } }
   },
   "settings": "সেটিংস",
+  "locationAlwaysAllowMessage": "লাইভ লোকেশন শেয়ারিংয়ের জন্য লোকেশন অনুমতি \"সবসময় অনুমতি দিন\" করতে হবে।",
+  "openAppSettings": "অ্যাপ সেটিংস খুলুন",
   "retry": "পুনরায় চেষ্টা করুন"
 }
 

@@ -1,9 +1,15 @@
 part of '../view/visit_detail_page.dart';
 
 class _VisitCheckInLocationCard extends StatelessWidget {
-  const _VisitCheckInLocationCard({required this.state});
+  const _VisitCheckInLocationCard({
+    required this.state,
+    this.showPermissionNotice = true,
+  });
 
   final VisitCheckInState state;
+
+  /// False for a visit that has no travel leg, so no live tracking to permit.
+  final bool showPermissionNotice;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +66,10 @@ class _VisitCheckInLocationCard extends StatelessWidget {
               ),
             ],
           ),
+          if (showPermissionNotice) ...[
+            Gap(spacing.s16),
+            const _LocationPermissionNotice(),
+          ],
         ],
       ),
     );
