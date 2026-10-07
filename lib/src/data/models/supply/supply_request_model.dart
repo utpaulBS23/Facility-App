@@ -88,6 +88,10 @@ class SupplyRequestModel with SupplyRequestModelMappable {
     this.allocationCode,
     required this.createdAt,
     this.updatedAt,
+    this.currentStep,
+    this.currentPermission,
+    this.currentStepLabel,
+    this.canAction,
   });
 
   final int id;
@@ -112,6 +116,10 @@ class SupplyRequestModel with SupplyRequestModelMappable {
   final String? allocationCode;
   final String createdAt;
   final String? updatedAt;
+  final int? currentStep;
+  final String? currentPermission;
+  final String? currentStepLabel;
+  final bool? canAction;
 
   static const fromJson = SupplyRequestModelMapper.fromJson;
 }

@@ -2,24 +2,14 @@ part of '../view/request_details_page.dart';
 
 class _PendingActionButtons extends ConsumerWidget {
   const _PendingActionButtons({
-    required this.status,
     required this.onReject,
     required this.onApprove,
     required this.isApproveAction,
   });
 
-  final SupplyRequestStatus status;
   final VoidCallback onReject;
   final VoidCallback onApprove;
   final bool isApproveAction;
-
-  UserPermission get _permission => switch (status) {
-        SupplyRequestStatus.pendingSupervisor =>
-          UserPermission.supplyRequestApproveSupervisor,
-        SupplyRequestStatus.pendingOperationManager =>
-          UserPermission.supplyRequestApproveOperationManager,
-        _ => UserPermission.supplyRequestApprove,
-      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,60 +20,57 @@ class _PendingActionButtons extends ConsumerWidget {
     final isApproving = isBusy && isApproveAction;
     final isRejecting = isBusy && !isApproveAction;
 
-    return PermissionGate(
-      permissions: [_permission],
-      child: Container(
-        padding: EdgeInsets.all(spacing.s16),
-        decoration: BoxDecoration(
-          color: color.onPrimary,
-          border: Border(top: BorderSide(color: color.borderSubtle)),
-        ),
-        child: SafeArea(
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: spacing.s44,
-                  child: OutlinedButton(
-                    onPressed: isBusy ? null : onReject,
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: color.primary),
-                      foregroundColor: color.primary,
-                    ),
-                    child: isRejecting
-                        ? SizedBox(
-                            width: spacing.s20,
-                            height: spacing.s20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: spacing.s2,
-                              color: color.primary,
-                            ),
-                          )
-                        : Text(context.locale.reject),
+    return Container(
+      padding: EdgeInsets.all(spacing.s16),
+      decoration: BoxDecoration(
+        color: color.onPrimary,
+        border: Border(top: BorderSide(color: color.borderSubtle)),
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: spacing.s44,
+                child: OutlinedButton(
+                  onPressed: isBusy ? null : onReject,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: color.primary),
+                    foregroundColor: color.primary,
                   ),
+                  child: isRejecting
+                      ? SizedBox(
+                          width: spacing.s20,
+                          height: spacing.s20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: spacing.s2,
+                            color: color.primary,
+                          ),
+                        )
+                      : Text(context.locale.reject),
                 ),
               ),
-              Gap(spacing.s12),
-              Expanded(
-                child: SizedBox(
-                  height: spacing.s44,
-                  child: FilledButton(
-                    onPressed: isBusy ? null : onApprove,
-                    child: isApproving
-                        ? SizedBox(
-                            width: spacing.s20,
-                            height: spacing.s20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: spacing.s2,
-                              color: color.onPrimary,
-                            ),
-                          )
-                        : Text(context.locale.approve),
-                  ),
+            ),
+            Gap(spacing.s12),
+            Expanded(
+              child: SizedBox(
+                height: spacing.s44,
+                child: FilledButton(
+                  onPressed: isBusy ? null : onApprove,
+                  child: isApproving
+                      ? SizedBox(
+                          width: spacing.s20,
+                          height: spacing.s20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: spacing.s2,
+                            color: color.onPrimary,
+                          ),
+                        )
+                      : Text(context.locale.approve),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -67,6 +67,10 @@ extension SupplyRequestModelMapper on SupplyRequestModel {
       allocationCode: allocationCode ?? '',
       createdAt: createdAt,
       updatedAt: updatedAt ?? createdAt,
+      canAction: canAction ?? false,
+      currentStep: currentStep,
+      currentPermission: currentPermission,
+      currentStepLabel: currentStepLabel,
     );
   }
 }
