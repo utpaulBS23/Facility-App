@@ -23,7 +23,7 @@ extension FailureLocalization on Failure {
       // wins when populated; `Failure.permissionDenied` (the client-side
       // gate) carries a dev string that must never reach the UI.
       FailureType.forbidden => !isClientGate && message.isNotEmpty
-          ? message
+          ? serverText(context)
           : locale.errorPermissionDenied,
       FailureType.unauthorized => locale.errorSessionExpired,
 
@@ -36,7 +36,8 @@ extension FailureLocalization on Failure {
       // WHY: on a 4xx/5xx the backend's own `message` is the most specific
       // thing available and is already user-facing, so it wins over a generic
       // string — but only when it is actually populated.
-      FailureType.badResponse => message.isNotEmpty ? message : locale.errorGeneric,
+      FailureType.badResponse =>
+        message.isNotEmpty ? serverText(context) : locale.errorGeneric,
 
       // Bugs and empty payloads: never show the internal text.
       FailureType.parsing ||
@@ -46,6 +47,21 @@ extension FailureLocalization on Failure {
       FailureType.validation ||
       FailureType.unknown => locale.errorGeneric,
     };
+  }
+}
+
+/// The backend's own copy in the user's language.
+///
+/// WHY: the backend sends a Bangla sibling for each English text. A 422's
+/// first field error is more specific than its generic message, so it wins.
+/// Anything the backend has no Bangla for falls back to its English text.
+extension FailureServerText on Failure {
+  String serverText(BuildContext context) {
+    final bn = context.languageCode == 'bn';
+    final detailText = bn ? (detailBn ?? detail) : detail;
+    if (detailText != null && detailText.isNotEmpty) return detailText;
+
+    return bn && messageBn != null ? messageBn! : message;
   }
 }
 
