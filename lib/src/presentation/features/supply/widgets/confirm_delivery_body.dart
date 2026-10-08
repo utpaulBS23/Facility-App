@@ -6,6 +6,8 @@ class _ConfirmDeliveryBody extends StatelessWidget {
     required this.delivery,
     required this.items,
     required this.notesController,
+    required this.receiptPhoto,
+    required this.onReceiptPhotoChanged,
     required this.onItemToggled,
     required this.onQuantityChanged,
     required this.onToggleAll,
@@ -15,6 +17,8 @@ class _ConfirmDeliveryBody extends StatelessWidget {
   final DeliveryEntity delivery;
   final List<DeliveryItemEntity> items;
   final TextEditingController notesController;
+  final XFile? receiptPhoto;
+  final ValueChanged<XFile?> onReceiptPhotoChanged;
   final ValueChanged<int> onItemToggled;
   final void Function(int index, int quantity) onQuantityChanged;
   final VoidCallback onToggleAll;
@@ -48,7 +52,11 @@ class _ConfirmDeliveryBody extends StatelessWidget {
           Gap(spacing.s16),
           _NotesInputCard(controller: notesController),
           Gap(spacing.s16),
-          const _DeliveryPhotoCard(),
+          PhotoPickerCard(
+            title: context.locale.deliveryReceiptPhotoOptional,
+            photo: receiptPhoto,
+            onChanged: onReceiptPhotoChanged,
+          ),
           Gap(spacing.s24),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../../core/extensions/app_localization.dart';
 import '../../../../../core/extensions/failure_localization.dart';
@@ -13,6 +14,7 @@ import '../../../../core/utils/app_snackbar.dart';
 import '../../../../core/widgets/app_back_button.dart';
 import '../../../../core/widgets/app_error_widget.dart';
 import '../../../../core/widgets/permission_gate.dart';
+import '../../../../core/widgets/photo_picker_card.dart';
 import '../../../../core/widgets/text/typography.dart';
 import '../riverpod/shift_stock_counts_provider.dart';
 import '../utils/stock_count_utils.dart';
