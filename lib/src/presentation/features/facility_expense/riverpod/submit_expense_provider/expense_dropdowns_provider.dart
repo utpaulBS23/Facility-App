@@ -15,7 +15,7 @@ Future<List<MasterDataItemEntity>> expenseCategoryOptions(Ref ref) async {
 
   return switch (result) {
     Success(:final data) => data ?? const [],
-    Error(:final error) => throw Exception(error.message),
+    Error(:final error) => throw error,
     _ => throw Exception('Failed to load master data'),
   };
 }
@@ -28,7 +28,7 @@ Future<List<MasterDataItemEntity>> paymentMethodOptions(Ref ref) async {
 
   return switch (result) {
     Success(:final data) => data ?? const [],
-    Error(:final error) => throw Exception(error.message),
+    Error(:final error) => throw error,
     _ => throw Exception('Failed to load master data'),
   };
 }

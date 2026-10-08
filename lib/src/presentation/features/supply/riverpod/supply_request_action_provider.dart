@@ -27,7 +27,7 @@ class SupplyRequestAction extends _$SupplyRequestAction {
 
     state = result.when(
       success: (_) => const AsyncValue.data(null),
-      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
 
@@ -47,7 +47,7 @@ class SupplyRequestAction extends _$SupplyRequestAction {
 
     state = result.when(
       success: (_) => const AsyncValue.data(null),
-      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
 
@@ -62,7 +62,7 @@ class SupplyRequestAction extends _$SupplyRequestAction {
 
     state = result.when(
       success: (_) => const AsyncValue.data(null),
-      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
 
@@ -76,7 +76,7 @@ class SupplyRequestAction extends _$SupplyRequestAction {
 
     state = result.when(
       success: (_) => const AsyncValue.data(null),
-      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
 
@@ -92,7 +92,7 @@ class SupplyRequestAction extends _$SupplyRequestAction {
 
     state = result.when(
       success: (_) => const AsyncValue.data(null),
-      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
 }

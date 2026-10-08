@@ -30,7 +30,7 @@ class UpdateStockTargetAction extends _$UpdateStockTargetAction {
       );
       if (result is Error) {
         final error = (result as Error).error;
-        state = AsyncValue.error(error.message, StackTrace.current);
+        state = AsyncValue.error(error, StackTrace.current);
         return false;
       }
     }

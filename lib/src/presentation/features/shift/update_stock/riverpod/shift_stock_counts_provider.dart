@@ -22,7 +22,7 @@ class ShiftStockCounts extends _$ShiftStockCounts {
 
     return result.when(
       success: (data) => data ?? const [],
-      error: (error) => throw Exception(error.message),
+      error: (error) => throw error,
     );
   }
 }
