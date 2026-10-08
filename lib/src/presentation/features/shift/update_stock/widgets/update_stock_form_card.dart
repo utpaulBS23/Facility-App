@@ -121,6 +121,16 @@ class _UpdateStockFormCard extends StatelessWidget {
               ],
             ),
           ),
+          Gap(spacing.s16),
+          ValueListenableBuilder<XFile?>(
+            valueListenable: entry.photo,
+            builder: (context, photo, _) => PhotoPickerCard(
+              title: context.locale.photoOptional,
+              photo: photo,
+              bordered: false,
+              onChanged: (value) => entry.photo.value = value,
+            ),
+          ),
         ],
       ),
     );

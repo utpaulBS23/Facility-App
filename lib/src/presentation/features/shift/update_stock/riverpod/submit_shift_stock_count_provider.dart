@@ -28,6 +28,7 @@ class SubmitShiftStockCount extends _$SubmitShiftStockCount {
       return SubmitStockCountItemEntity(
         stockItemId: entry.stockItemId,
         qtyOnHand: qty,
+        photoPath: entry.photo.value?.path,
       );
     }).toList();
 

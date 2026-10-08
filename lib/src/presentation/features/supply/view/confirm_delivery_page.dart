@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
@@ -14,6 +15,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/photo_picker_card.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
@@ -22,7 +24,6 @@ import 'request_details_page.dart';
 
 part '../widgets/confirm_delivery_body.dart';
 part '../widgets/confirm_delivery_footer_bar.dart';
-part '../widgets/delivery_photo_card.dart';
 part '../widgets/notes_input_card.dart';
 part '../widgets/order_details_summary_card.dart';
 part '../widgets/verify_items_card.dart';
@@ -44,6 +45,7 @@ class ConfirmDeliveryPage extends ConsumerStatefulWidget {
 
 class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
   final _notesController = TextEditingController();
+  XFile? _receiptPhoto;
 
   late List<DeliveryItemEntity> _items;
 
@@ -107,7 +109,7 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
     final request = ConfirmDeliveryRequestEntity(
       deliveryId: widget.delivery.id,
       items: requestItems,
-      receiptPhotoUrl: '',
+      receiptPhotoPath: _receiptPhoto?.path,
       deliveryNotes: _notesController.text.trim(),
     );
 
@@ -129,6 +131,8 @@ class _ConfirmDeliveryPageState extends ConsumerState<ConfirmDeliveryPage> {
         delivery: widget.delivery,
         items: _items,
         notesController: _notesController,
+        receiptPhoto: _receiptPhoto,
+        onReceiptPhotoChanged: (photo) => setState(() => _receiptPhoto = photo),
         onItemToggled: _onItemToggled,
         onQuantityChanged: _onQuantityChanged,
         onToggleAll: _onToggleAll,

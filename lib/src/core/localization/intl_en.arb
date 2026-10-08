@@ -157,6 +157,7 @@
   "noFaceDetected": "No face detected. Please retake the photo.",
   "photoCaptureFailed": "Photo capture failed",
   "tryAgain": "Try Again",
+  "photoTooLarge": "Photo must be 5 MB or smaller",
   "retry": "Retry",
   "manualAttendance": "Manual Attendance",
   "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
