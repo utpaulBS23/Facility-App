@@ -2753,13 +2753,12 @@ class _RestClient implements RestClient {
   Future<HttpResponse<dynamic>> confirmDelivery({
     required int partnerId,
     required int deliveryId,
-    Map<String, dynamic> body = const {},
+    required FormData formData,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    final _data = formData;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
@@ -2841,13 +2840,12 @@ class _RestClient implements RestClient {
   Future<HttpResponse<dynamic>> fileDeliveryComplaint({
     required int partnerId,
     required int deliveryId,
-    required Map<String, dynamic> body,
+    required FormData formData,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    final _data = formData;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
@@ -2981,13 +2979,12 @@ class _RestClient implements RestClient {
   Future<HttpResponse<dynamic>> submitShiftStockCount({
     required int partnerId,
     required int shiftAssignmentId,
-    required Map<String, dynamic> body,
+    required FormData formData,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    final _data = formData;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

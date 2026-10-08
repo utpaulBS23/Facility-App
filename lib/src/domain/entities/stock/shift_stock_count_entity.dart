@@ -57,10 +57,12 @@ class SubmitStockCountItemEntity {
   const SubmitStockCountItemEntity({
     required this.stockItemId,
     required this.qtyOnHand,
-    this.photoUrl,
+    this.photoPath,
   });
 
   final int stockItemId;
   final double qtyOnHand;
-  final String? photoUrl;
+
+  /// Local path of the photo to upload for this line; null when none was picked.
+  final String? photoPath;
 }

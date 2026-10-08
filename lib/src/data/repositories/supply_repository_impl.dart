@@ -195,7 +195,7 @@ final class SupplyRepositoryImpl extends SupplyRepository {
       final response = await remote.confirmDelivery(
         partnerId: request.partnerId!,
         deliveryId: request.deliveryId,
-        body: request.toBody(),
+        formData: await request.toFormData(),
       );
       final responseModel = DeliveryResponseModel.fromJson(response.data);
       return responseModel.toEntity();
@@ -253,7 +253,7 @@ final class SupplyRepositoryImpl extends SupplyRepository {
       final response = await remote.fileDeliveryComplaint(
         partnerId: partnerId,
         deliveryId: request.deliveryId,
-        body: request.toBody(),
+        formData: await request.toFormData(),
       );
       final responseModel = DeliveryComplaintResponseModel.fromJson(
         response.data,
