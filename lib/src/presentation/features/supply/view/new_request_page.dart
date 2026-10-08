@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/stock_item_entity.dart';
@@ -72,7 +73,7 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
       },
       error: (e, _) {
         if (!mounted) return;
-        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+        AppSnackBar.showError(context, e.localizedMessage(context));
       },
     );
   }

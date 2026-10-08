@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/delivery_entity.dart';
 import '../../../../domain/entities/supply/supply_request_payloads.dart';
@@ -54,7 +55,7 @@ class _DeliveryComplaintPageState extends ConsumerState<DeliveryComplaintPage> {
       );
       context.pop(true);
     } else if (next.hasError && mounted) {
-      AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      AppSnackBar.showError(context, next.error!.localizedMessage(context));
     }
   }
 

@@ -21,7 +21,7 @@ class CreateSupplyRequest extends _$CreateSupplyRequest {
 
     state = result.when(
       success: (data) => AsyncValue.data(data),
-      error: (error) => AsyncValue.error(error.message, StackTrace.current),
+      error: (error) => AsyncValue.error(error, StackTrace.current),
     );
   }
 }

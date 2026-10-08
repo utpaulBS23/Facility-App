@@ -14,6 +14,6 @@ final itemCatalogProvider = FutureProvider.family<
 
   return result.when(
     success: (data) => data ?? const PaginatedListEntity.empty(),
-    error: (error) => throw Exception(error.message),
+    error: (error) => throw error,
   );
 });

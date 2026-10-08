@@ -18,6 +18,6 @@ Future<DeliveryEntity?> supplyRequestDelivery(
 
   return result.when(
     success: (data) => data,
-    error: (error) => throw Exception(error.message),
+    error: (error) => throw error,
   );
 }

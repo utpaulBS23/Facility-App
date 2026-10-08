@@ -79,7 +79,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
       context.pop();
     } else if (next.hasError) {
       if (!mounted) return;
-      AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      AppSnackBar.showError(context, next.error!.localizedMessage(context));
     }
   }
 

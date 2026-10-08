@@ -25,6 +25,6 @@ Future<SupplyRequestEntity> supplyRequestDetails(
 
   return result.when(
     success: (data) => data!,
-    error: (error) => throw Exception(error.message),
+    error: (error) => throw error,
   );
 }
