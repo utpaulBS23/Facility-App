@@ -684,7 +684,7 @@ abstract class RestClient {
   Future<HttpResponse> confirmDelivery({
     @Path('partnerId') required int partnerId,
     @Path('deliveryId') required int deliveryId,
-    @Body() Map<String, dynamic> body = const {},
+    @Body() required FormData formData,
   });
 
   @GET(Endpoints.deliveryComplaints)
@@ -707,7 +707,7 @@ abstract class RestClient {
   Future<HttpResponse> fileDeliveryComplaint({
     @Path('partnerId') required int partnerId,
     @Path('deliveryId') required int deliveryId,
-    @Body() required Map<String, dynamic> body,
+    @Body() required FormData formData,
   });
 
   @POST(Endpoints.approveDeliveryComplaint)
@@ -743,7 +743,7 @@ abstract class RestClient {
   Future<HttpResponse> submitShiftStockCount({
     @Path('partnerId') required int partnerId,
     @Path('shiftAssignmentId') required int shiftAssignmentId,
-    @Body() required Map<String, dynamic> body,
+    @Body() required FormData formData,
   });
 
   @GET(Endpoints.shiftStockCounts)

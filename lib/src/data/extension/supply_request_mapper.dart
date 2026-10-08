@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/supply/delivery_complaint_entity.dart';
 import '../../domain/entities/supply/delivery_complaint_status.dart';
@@ -18,6 +20,7 @@ import '../models/supply/stock_item_model.dart';
 import '../models/supply/stock_item_response_model.dart';
 import '../models/supply/supply_request_model.dart';
 import '../models/supply/supply_response_model.dart';
+import 'multipart_photo.dart';
 
 extension SupplyRequestItemModelMapper on SupplyRequestItemModel {
   SupplyRequestItemEntity toEntity() {
@@ -390,26 +393,43 @@ extension ApproveSupplyRequestEntityMapper on ApproveSupplyRequestEntity {
 }
 
 extension ConfirmDeliveryRequestEntityMapper on ConfirmDeliveryRequestEntity {
-  Map<String, dynamic> toBody() => {
-    if (receiptPhotoUrl.isNotEmpty) 'receipt_photo_url': receiptPhotoUrl,
-    if (deliveryNotes.isNotEmpty) 'delivery_notes': deliveryNotes,
-    if (items.isNotEmpty)
-      'items': items.map((item) => {
-        'stock_item_id': item.stockItemId,
-        'qty_received': item.qtyReceived,
-        'is_verified': item.isVerified,
-      }).toList(),
-  };
+  /// Multipart body: the server takes the receipt photo as a file, and
+  /// `is_verified` as 1/0 (a "true"/"false" string fails its boolean rule).
+  Future<FormData> toFormData() async {
+    final formData = FormData();
+    if (deliveryNotes.isNotEmpty) {
+      formData.fields.add(MapEntry('delivery_notes', deliveryNotes));
+    }
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+      formData.fields
+        ..add(MapEntry('items[$i][stock_item_id]', '${item.stockItemId}'))
+        ..add(MapEntry('items[$i][qty_received]', '${item.qtyReceived}'))
+        ..add(MapEntry('items[$i][is_verified]', item.isVerified ? '1' : '0'));
+    }
+    final photo = receiptPhotoPath;
+    if (photo != null && photo.isNotEmpty) {
+      formData.files.add(MapEntry('receipt_photo', await photoPart(photo)));
+    }
+    return formData;
+  }
 }
 
 extension FileDeliveryComplaintRequestEntityMapper
     on FileDeliveryComplaintRequestEntity {
-  Map<String, dynamic> toBody() => {
-    'delivery_item_id': deliveryItemId,
-    'reported_qty_received': reportedQtyReceived,
-    'reason': reason,
-    if (evidencePhotoUrl.isNotEmpty) 'evidence_photo_url': evidencePhotoUrl,
-  };
+  Future<FormData> toFormData() async {
+    final formData = FormData()
+      ..fields.addAll([
+        MapEntry('delivery_item_id', '$deliveryItemId'),
+        MapEntry('reported_qty_received', '$reportedQtyReceived'),
+        MapEntry('reason', reason),
+      ]);
+    final photo = evidencePhotoPath;
+    if (photo != null && photo.isNotEmpty) {
+      formData.files.add(MapEntry('evidence_photo', await photoPart(photo)));
+    }
+    return formData;
+  }
 }
 
 extension ApproveDeliveryComplaintRequestEntityMapper
