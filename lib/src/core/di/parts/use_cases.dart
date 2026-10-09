@@ -483,6 +483,22 @@ GetTravelExpenseDetailUseCase getTravelExpenseDetailUseCase(Ref ref) {
 }
 
 @riverpod
+ApproveTravelExpenseUseCase approveTravelExpenseUseCase(Ref ref) {
+  return ApproveTravelExpenseUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RejectTravelExpenseUseCase rejectTravelExpenseUseCase(Ref ref) {
+  return RejectTravelExpenseUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
   return GetMasterDataItemsUseCase(
     ref.read(masterDataRepositoryProvider),
