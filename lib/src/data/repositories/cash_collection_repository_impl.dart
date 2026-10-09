@@ -56,8 +56,10 @@ final class CashCollectionRepositoryImpl extends CashCollectionRepository {
         partnerId: partnerId,
         facilityId: facilityId,
       );
-      // WHY a bare list: this endpoint is not wrapped in `{data: ...}`.
-      final rows = response.data as List;
+      // WHY both: the doc says a bare list, but the server wraps it in
+      // `{data: [...]}`; accept either so a doc-style response still works.
+      final body = response.data;
+      final rows = (body is Map ? body['data'] : body) as List? ?? const [];
 
       return rows
           .map(
