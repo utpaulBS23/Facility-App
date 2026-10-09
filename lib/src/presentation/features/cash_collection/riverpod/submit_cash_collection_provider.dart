@@ -33,6 +33,6 @@ class SubmitCashCollection extends _$SubmitCashCollection {
     };
 
     // WHY: the list tab shows this entry once saved.
-    if (state.value != null) ref.invalidate(cashCollectionsProvider);
+    if (state.valueOrNull != null) ref.invalidate(cashCollectionsProvider);
   }
 }
