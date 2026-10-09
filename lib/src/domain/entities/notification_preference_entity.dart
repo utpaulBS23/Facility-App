@@ -8,122 +8,133 @@ enum NotificationChannelMode {
 
   /// Not sent on its own, only inside the digest email. Nothing to switch.
   digestOnly,
-
-  /// The category has no such channel.
-  none,
 }
 
 enum NotificationChannel { push, email }
 
-/// An alert category the user can tune, with how each channel behaves and its
-/// default. The delivery rules (which channels are locked or digest-only) are
-/// product rules, not user choices, so they live here and not in the UI.
-enum NotificationCategory {
-  cameraDown(
-    'camera_down',
-    push: NotificationChannelMode.alwaysOn,
-    email: NotificationChannelMode.toggle,
-    emailDefault: true,
-  ),
-  odourBreach(
-    'odour_breach',
-    push: NotificationChannelMode.alwaysOn,
-    email: NotificationChannelMode.toggle,
-    emailDefault: true,
-  ),
-  understaffedSlot(
-    'understaffed_slot',
-    push: NotificationChannelMode.toggle,
-    email: NotificationChannelMode.toggle,
-    emailDefault: false,
-  ),
-  issueRaised(
-    'issue_raised',
-    push: NotificationChannelMode.toggle,
-    email: NotificationChannelMode.toggle,
-    emailDefault: false,
-  ),
-  collectionVariance(
-    'collection_variance',
-    push: NotificationChannelMode.toggle,
-    email: NotificationChannelMode.toggle,
-    emailDefault: true,
-  ),
-  stockLow(
-    'stock_low',
-    push: NotificationChannelMode.toggle,
-    email: NotificationChannelMode.digestOnly,
-    emailDefault: false,
-  ),
-  weeklyDigest(
-    'weekly_digest',
-    push: NotificationChannelMode.none,
-    email: NotificationChannelMode.toggle,
-    emailDefault: true,
-  );
-
-  const NotificationCategory(
-    this.key, {
-    required this.push,
-    required this.email,
-    required this.emailDefault,
+/// One channel's switch as the server reports it.
+class NotificationChannelSettingEntity {
+  const NotificationChannelSettingEntity({
+    required this.enabled,
+    required this.locked,
   });
 
-  final String key;
-  final NotificationChannelMode push;
-  final NotificationChannelMode email;
-  final bool emailDefault;
+  final bool enabled;
 
-  NotificationChannelMode modeOf(NotificationChannel channel) =>
-      channel == NotificationChannel.push ? push : email;
+  /// True when the server refuses changes to this switch.
+  final bool locked;
 
-  static NotificationCategory? fromKey(String key) {
-    for (final category in values) {
-      if (category.key == key) return category;
-    }
-
-    return null;
-  }
+  NotificationChannelSettingEntity withEnabled(bool value) =>
+      NotificationChannelSettingEntity(enabled: value, locked: locked);
 }
 
-/// The user's choice per channel for one [category].
-///
-/// A channel that is not [NotificationChannelMode.toggle] never reads as
-/// switched off by the user: locked ones are always delivered, the others are
-/// not a user choice at all.
-class NotificationPreferenceEntity {
-  const NotificationPreferenceEntity({
-    required this.category,
-    required this.pushEnabled,
-    required this.emailEnabled,
+/// An alert category on the settings screen, with the channels the user's
+/// role has for it.
+class NotificationCategorySettingEntity {
+  const NotificationCategorySettingEntity({
+    required this.key,
+    required this.title,
+    required this.description,
+    required this.push,
+    required this.email,
   });
 
-  /// The category's defaults, before the user changed anything.
-  factory NotificationPreferenceEntity.defaults(NotificationCategory category) {
-    return NotificationPreferenceEntity(
-      category: category,
-      pushEnabled: true,
-      emailEnabled: category.emailDefault,
-    );
+  /// The settings key, e.g. `staffing`; also the push channel id.
+  final String key;
+  final String title;
+  final String description;
+  final NotificationChannelSettingEntity push;
+
+  /// Null when this role never gets email for the category.
+  final NotificationChannelSettingEntity? email;
+
+  NotificationChannelSettingEntity? of(NotificationChannel channel) =>
+      channel == NotificationChannel.push ? push : email;
+
+  /// What the tile for [channel] should do; null when there is no such tile.
+  NotificationChannelMode? modeOf(NotificationChannel channel) {
+    final setting = of(channel);
+    if (setting == null) return null;
+    if (!setting.locked) return NotificationChannelMode.toggle;
+
+    // WHY by channel: a locked push is a critical alert that is always sent; a
+    // locked email is only ever part of the digest.
+    return channel == NotificationChannel.push
+        ? NotificationChannelMode.alwaysOn
+        : NotificationChannelMode.digestOnly;
   }
 
-  final NotificationCategory category;
-  final bool pushEnabled;
-  final bool emailEnabled;
-
-  bool isEnabled(NotificationChannel channel) =>
-      channel == NotificationChannel.push ? pushEnabled : emailEnabled;
-
-  NotificationPreferenceEntity withChannel(
+  NotificationCategorySettingEntity withChannel(
     NotificationChannel channel,
     bool enabled,
   ) {
-    return NotificationPreferenceEntity(
-      category: category,
-      pushEnabled: channel == NotificationChannel.push ? enabled : pushEnabled,
-      emailEnabled: channel == NotificationChannel.email
-          ? enabled
-          : emailEnabled,
+    return NotificationCategorySettingEntity(
+      key: key,
+      title: title,
+      description: description,
+      push: channel == NotificationChannel.push
+          ? push.withEnabled(enabled)
+          : push,
+      email: channel == NotificationChannel.email
+          ? email?.withEnabled(enabled)
+          : email,
+    );
+  }
+}
+
+/// The weekly digest email switch.
+class NotificationDigestEntity {
+  const NotificationDigestEntity({
+    required this.enabled,
+    required this.cadence,
+  });
+
+  final bool enabled;
+
+  /// When it is sent, e.g. "Weekly, Monday 10:00 AM".
+  final String cadence;
+}
+
+/// Everything the settings screen shows.
+class NotificationPreferencesEntity {
+  const NotificationPreferencesEntity({
+    required this.banner,
+    required this.categories,
+    required this.digest,
+    required this.retentionDays,
+  });
+
+  /// The category name the server uses for the weekly digest switch.
+  static const digestKey = 'digest';
+
+  final String banner;
+  final List<NotificationCategorySettingEntity> categories;
+
+  /// Null when the role has no digest.
+  final NotificationDigestEntity? digest;
+  final int retentionDays;
+
+  /// [category] is a category key or [digestKey].
+  NotificationPreferencesEntity withChannel(
+    String category,
+    NotificationChannel channel,
+    bool enabled,
+  ) {
+    final currentDigest = digest;
+
+    return NotificationPreferencesEntity(
+      banner: banner,
+      categories: [
+        for (final item in categories)
+          item.key == category ? item.withChannel(channel, enabled) : item,
+      ],
+      digest: category == digestKey && currentDigest != null
+          ? NotificationDigestEntity(
+              enabled: enabled,
+              cadence: currentDigest.cadence,
+            )
+          : currentDigest,
+      retentionDays: retentionDays,
     );
   }
 }

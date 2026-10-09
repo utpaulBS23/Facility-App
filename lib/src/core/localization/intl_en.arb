@@ -199,7 +199,16 @@
   "weeklyDigestDescription": "One summary email every Monday at 10:00 AM.",
   "milestonesTitle": "Milestones and info",
   "milestonesDescription": "Delivered in-app and in the 8:00 AM daily digest. These cannot be set per channel.",
-  "notificationRetention": "Notifications are kept for 90 days.",
+  "notificationRetention": "Notifications are kept for {days} days.",
+  "@notificationRetention": {
+    "description": "Footer of the notification settings: how long notifications are kept",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "partnerOwnerRole": "Partner Owner",
   "opsManagerRole": "Operations Manager",
   "notificationSettingsSubtitle": "{role} · push and email",
@@ -1321,6 +1330,10 @@
   "notifFieldLastSeen": "Last seen",
   "notifFieldOfflineSince": "Offline since",
   "notifFieldOfflineMinutes": "Offline (min)",
-  "notificationDetails": "Notification"
+  "notificationDetails": "Notification",
+  "approvalsTitle": "Approvals",
+  "approvalsDescription": "A leave or supply request needs your approval, or has waited more than 24 hours.",
+  "ownRecordTitle": "My tasks and attendance",
+  "ownRecordDescription": "Updates about your own attendance records."
 }
 
