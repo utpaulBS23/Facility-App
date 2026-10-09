@@ -284,6 +284,11 @@
     }
   },
   "noNotifications": "কোনো নোটিফিকেশন নেই",
+  "rejectClaim": "দাবি প্রত্যাখ্যান করুন",
+  "rejectionNote": "প্রত্যাখ্যানের কারণ",
+  "rejectionNoteHint": "কেন প্রত্যাখ্যান করা হলো তা জানান",
+  "claimApprovedSuccess": "দাবি অনুমোদিত হয়েছে",
+  "claimRejectedSuccess": "দাবি প্রত্যাখ্যাত হয়েছে",
   "retry": "পুনরায় চেষ্টা করুণ",
   "manualAttendance": "ম্যানুয়াল উপস্থিতি",
   "manualAttendanceDescription": "ক্যামেরা অনুপলব্ধ হলে ম্যানুয়ালি উপস্থিতি জমা দিন",

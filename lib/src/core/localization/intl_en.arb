@@ -283,6 +283,11 @@
     }
   },
   "noNotifications": "No notifications",
+  "rejectClaim": "Reject claim",
+  "rejectionNote": "Rejection note",
+  "rejectionNoteHint": "Tell the claimant why it was rejected",
+  "claimApprovedSuccess": "Claim approved",
+  "claimRejectedSuccess": "Claim rejected",
   "retry": "Retry",
   "manualAttendance": "Manual Attendance",
   "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
