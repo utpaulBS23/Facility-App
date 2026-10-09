@@ -15,6 +15,7 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../riverpod/app_notifications_provider.dart';
+import '../widgets/notification_details_sheet.dart';
 import '../widgets/notification_filter.dart';
 import '../widgets/notification_group_header.dart';
 import '../widgets/notification_list_item.dart';
@@ -28,7 +29,37 @@ class NotificationsPage extends ConsumerStatefulWidget {
 }
 
 class _NotificationsPageState extends ConsumerState<NotificationsPage> {
-  NotificationFilter _filter = NotificationFilter.all;
+  final _scroll = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(_onScroll);
+    // WHY refresh: the provider is kept alive, so opening the page must pick up
+    // what arrived since it last loaded.
+    Future.microtask(
+      () => ref.read(appNotificationsProvider.notifier).refresh(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final position = _scroll.position;
+    if (position.pixels >= position.maxScrollExtent - 240) {
+      ref.read(appNotificationsProvider.notifier).loadMore();
+    }
+  }
+
+  Future<void> _open(AppNotificationEntity item) async {
+    final notifier = ref.read(appNotificationsProvider.notifier);
+    NotificationDetailsSheet.show(context, item);
+    await _run(() => notifier.markRead(item.id));
+  }
 
   Future<void> _run(Future<Failure?> Function() action) async {
     final failure = await action();
@@ -75,6 +106,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final inbox = ref.watch(appNotificationsProvider);
+    final filter = ref.read(appNotificationsProvider.notifier).filter;
     final unread = inbox.valueOrNull?.unreadCount;
 
     return Scaffold(
@@ -97,98 +129,99 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
           onRetry: () => ref.invalidate(appNotificationsProvider),
         ),
         data: (list) {
-          final visible = list.items.where(_filter.matches).toList();
-          final groups = _byDay(visible);
+          final groups = _byDay(list.items);
 
-          // WHY unread counts only: a count on a category chip says how much
-          // is waiting there, and read items are not waiting.
-          int waiting(NotificationFilter filter) => list.items
-              .where((item) => !item.isRead && filter.matches(item))
-              .length;
-
-          return ListView(
-            padding: EdgeInsets.all(spacing.s16),
-            children: [
-              CategoryFilterChips<NotificationFilter>(
-                categories: NotificationFilter.values,
-                selectedCategory: _filter,
-                onSelected: (filter) => setState(() => _filter = filter),
-                labelBuilder: (context, filter) =>
-                    filter == NotificationFilter.all
-                    ? filter.label(context)
-                    : '${filter.label(context)} '
-                          '${context.numbers.number(waiting(filter))}',
-              ),
-              Gap(spacing.s12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _filter == NotificationFilter.all
-                          ? context.locale.notificationsShowing(
-                              visible.length,
-                              list.total,
-                            )
-                          : context.locale.notificationsShowingFiltered(
-                              visible.length,
-                            ),
-                      style: context.textStyle.bodySmall.copyWith(
-                        color: color.text.secondary,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: list.unreadCount == 0
-                        ? null
-                        : () => _run(
-                            ref
-                                .read(appNotificationsProvider.notifier)
-                                .markAllRead,
-                          ),
-                    child: Text(
-                      context.locale.markAllRead,
-                      style: context.textStyle.labelLarge.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              if (groups.isEmpty)
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: spacing.s48),
-                  child: Center(
-                    child: Text(
-                      context.locale.noNotifications,
-                      style: context.textStyle.bodyMedium.copyWith(
-                        color: color.text.secondary,
-                      ),
-                    ),
-                  ),
-                ),
-              for (final (day, items) in groups) ...[
-                Gap(spacing.s16),
-                NotificationGroupHeader(
-                  label: _dayLabel(day),
-                  count: items.length,
+          return RefreshIndicator(
+            onRefresh: () =>
+                ref.read(appNotificationsProvider.notifier).refresh(),
+            child: ListView(
+              controller: _scroll,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(spacing.s16),
+              children: [
+                CategoryFilterChips<AppNotificationFilter>(
+                  categories: AppNotificationFilter.values,
+                  selectedCategory: filter,
+                  onSelected: (next) => ref
+                      .read(appNotificationsProvider.notifier)
+                      .selectFilter(next),
+                  // WHY a count on Unread only: the server counts unread
+                  // across everything, not per filter.
+                  labelBuilder: (context, next) =>
+                      next == AppNotificationFilter.unread
+                      ? '${next.label(context)} '
+                            '${context.numbers.number(list.unreadCount)}'
+                      : next.label(context),
                 ),
                 Gap(spacing.s12),
-                for (final item in items) ...[
-                  NotificationListItem(
-                    notification: item,
-                    onTap: () {
-                      if (item.isRead) return;
-                      _run(
-                        () => ref
-                            .read(appNotificationsProvider.notifier)
-                            .markRead(item.id),
-                      );
-                    },
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        filter == AppNotificationFilter.all
+                            ? context.locale.notificationsShowing(
+                                list.items.length,
+                                list.total,
+                              )
+                            : context.locale.notificationsShowingFiltered(
+                                list.items.length,
+                              ),
+                        style: context.textStyle.bodySmall.copyWith(
+                          color: color.text.secondary,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: list.unreadCount == 0
+                          ? null
+                          : () => _run(
+                              ref
+                                  .read(appNotificationsProvider.notifier)
+                                  .markAllRead,
+                            ),
+                      child: Text(
+                        context.locale.markAllRead,
+                        style: context.textStyle.labelLarge.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (groups.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: spacing.s48),
+                    child: Center(
+                      child: Text(
+                        context.locale.noNotifications,
+                        style: context.textStyle.bodyMedium.copyWith(
+                          color: color.text.secondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                for (final (day, items) in groups) ...[
+                  Gap(spacing.s16),
+                  NotificationGroupHeader(
+                    label: _dayLabel(day),
+                    count: items.length,
                   ),
                   Gap(spacing.s12),
+                  for (final item in items) ...[
+                    NotificationListItem(
+                      notification: item,
+                      onTap: () => _open(item),
+                    ),
+                    Gap(spacing.s12),
+                  ],
                 ],
+                if (list.hasMore)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: spacing.s16),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
               ],
-            ],
+            ),
           );
         },
       ),

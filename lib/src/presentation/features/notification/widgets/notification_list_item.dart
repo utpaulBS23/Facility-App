@@ -17,14 +17,26 @@ class NotificationListItem extends StatelessWidget {
   final AppNotificationEntity notification;
   final VoidCallback onTap;
 
-  /// Critical and high are red, medium orange and low green.
-  static DashboardTone _tone(AppNotificationSeverity severity) =>
-      switch (severity) {
-        AppNotificationSeverity.critical ||
-        AppNotificationSeverity.high => DashboardTone.red,
-        AppNotificationSeverity.medium => DashboardTone.orange,
-        AppNotificationSeverity.low => DashboardTone.green,
-      };
+  /// Error is red, warning orange, success green and info blue.
+  static DashboardTone _tone(AppNotificationType type) => switch (type) {
+    AppNotificationType.error => DashboardTone.red,
+    AppNotificationType.warning => DashboardTone.orange,
+    AppNotificationType.success => DashboardTone.green,
+    AppNotificationType.info => DashboardTone.blue,
+  };
+
+  /// The icon key for a settings category; no category is the daily digest.
+  static String iconKind(String? category) => switch (category) {
+    'camera_down' => 'camera',
+    'odour_breach' => 'odour',
+    'staffing' => 'staffing',
+    'issue' => 'issue',
+    'variance' => 'variance',
+    'stock_low' => 'stock',
+    'approvals' => 'approval',
+    'own_record' => 'attendance',
+    _ => 'digest',
+  };
 
   static NotificationSeverity _severity(AppNotificationSeverity severity) =>
       switch (severity) {
@@ -54,8 +66,8 @@ class NotificationListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NotificationItem(
-      kind: notification.kind,
-      tone: _tone(notification.severity),
+      kind: iconKind(notification.category),
+      tone: _tone(notification.type),
       severity: _severity(notification.severity),
       title: notification.title,
       body: notification.body,

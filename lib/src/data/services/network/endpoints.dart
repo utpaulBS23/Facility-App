@@ -291,4 +291,13 @@ class Endpoints {
 
   /// Profile
   static const String profile = '/profile';
+
+  /// Notifications
+  static const String notifications = '/notifications';
+  static const String notificationRead = '/notifications/{id}/read';
+  static const String notificationsReadAll = '/notifications/read-all';
+  static const String notificationPreferences = '/notification-preferences';
+  static const String deviceTokens = '/device-tokens';
+  static const String deviceToken = '/device-tokens/{id}';
+  static const String deviceTokenTopicsSync = '/device-tokens/{id}/topics/sync';
 }
