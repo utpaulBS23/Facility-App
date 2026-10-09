@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/extensions/app_numbers.dart';
+import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../core/utils/api_date.dart';
 import '../../../../domain/entities/dashboard_entity.dart';
@@ -14,6 +14,7 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/month_filter_button.dart';
+import '../../notification/riverpod/app_notifications_provider.dart';
 import '../riverpod/dashboard_provider.dart';
 import '../widgets/check_in_out_card.dart';
 import '../widgets/column_chart.dart';
@@ -85,11 +86,19 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     final language = Localizations.localeOf(context).languageCode;
     final name = user?.localizedName(language) ?? '';
 
+    final unreadNotifications = ref.watch(
+      appNotificationsProvider.select((inbox) => inbox.valueOrNull?.unreadCount ?? 0),
+    );
     final header = DashboardHeader(
       greeting: name.isEmpty ? 'Welcome' : 'Welcome, $name',
       initial: name.isEmpty ? '?' : name.characters.first.toUpperCase(),
       role: _roleLabel(role),
       dateText: DateFormat('EEE, d MMM', language).format(DateTime.now()),
+      unreadText: unreadNotifications > 0
+          ? context.numbers.number(unreadNotifications)
+          : null,
+      onBellTap: () => context.pushNamed(Routes.notifications),
+      bellLabel: context.locale.notificationsTitle,
     );
 
     // An attendant has no dashboard; other roles, and a session saved before
