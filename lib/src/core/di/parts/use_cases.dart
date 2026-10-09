@@ -545,6 +545,29 @@ SetNotificationPreferenceUseCase setNotificationPreferenceUseCase(Ref ref) {
 }
 
 @riverpod
+GetAppNotificationsUseCase getAppNotificationsUseCase(Ref ref) {
+  return GetAppNotificationsUseCase(
+    ref.read(appNotificationsRepositoryProvider),
+  );
+}
+
+@riverpod
+MarkAppNotificationReadUseCase markAppNotificationReadUseCase(Ref ref) {
+  return MarkAppNotificationReadUseCase(
+    ref.read(appNotificationsRepositoryProvider),
+  );
+}
+
+@riverpod
+MarkAllAppNotificationsReadUseCase markAllAppNotificationsReadUseCase(
+  Ref ref,
+) {
+  return MarkAllAppNotificationsReadUseCase(
+    ref.read(appNotificationsRepositoryProvider),
+  );
+}
+
+@riverpod
 GetProductCatalogDropdownUseCase getProductCatalogDropdownUseCase(Ref ref) {
   return GetProductCatalogDropdownUseCase(
     productCatalogRepository: ref.read(productCatalogRepositoryProvider),
