@@ -12,8 +12,10 @@ class ItemStepperInput extends StatelessWidget {
     required this.onChanged,
     this.min = 1,
     this.max,
+    this.enabled = true,
   });
 
+  final bool enabled;
   final int quantity;
   final ValueChanged<int> onChanged;
   final int? min;
@@ -25,8 +27,8 @@ class ItemStepperInput extends StatelessWidget {
     final radius = context.dimensions.radius;
     final color = context.color;
 
-    final canDecrement = min == null || quantity > min!;
-    final canIncrement = max == null || quantity < max!;
+    final canDecrement = enabled && (min == null || quantity > min!);
+    final canIncrement = enabled && (max == null || quantity < max!);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
