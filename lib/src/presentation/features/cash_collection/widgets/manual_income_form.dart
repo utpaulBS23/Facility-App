@@ -119,11 +119,7 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
   void _onSubmit(List<FacilityServiceEntity> services) {
     final facilityId = _facilityId;
     final photo = _photo;
-    if (facilityId == null || services.isEmpty) return;
-    if (photo == null) {
-      AppSnackBar.showError(context, context.locale.evidencePhotoRequired);
-      return;
-    }
+    if (facilityId == null || photo == null || services.isEmpty) return;
 
     ref
         .read(submitCashCollectionProvider.notifier)
