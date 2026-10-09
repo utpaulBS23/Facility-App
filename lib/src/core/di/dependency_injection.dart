@@ -42,7 +42,7 @@ import '../../data/repositories/supply_repository_impl.dart';
 import '../../data/repositories/report_repository_impl.dart';
 import '../../data/repositories/additional_income_repository_impl.dart';
 import '../../data/repositories/cash_collection_repository_impl.dart';
-import '../../data/repositories/mock_app_notifications_repository_impl.dart';
+import '../../data/repositories/app_notifications_repository_impl.dart';
 import '../../data/repositories/notification_preferences_repository_impl.dart';
 import '../../data/repositories/facility_product_repository_impl.dart';
 import '../../data/repositories/product_catalog_repository_impl.dart';

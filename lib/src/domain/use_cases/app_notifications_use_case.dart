@@ -8,8 +8,10 @@ final class GetAppNotificationsUseCase {
 
   final AppNotificationsRepository _repository;
 
-  Future<Result<AppNotificationListEntity, Failure>> call() =>
-      _repository.getNotifications();
+  Future<Result<AppNotificationListEntity, Failure>> call({
+    required AppNotificationFilter filter,
+    required int page,
+  }) => _repository.getNotifications(filter: filter, page: page);
 }
 
 final class MarkAppNotificationReadUseCase {
