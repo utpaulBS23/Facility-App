@@ -368,6 +368,20 @@ abstract class RestClient {
     @Path('travelExpenseId') required int travelExpenseId,
   });
 
+  @PATCH(Endpoints.approveTravelExpense)
+  Future<HttpResponse> approveTravelExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('travelExpenseId') required int travelExpenseId,
+    @Body() Map<String, dynamic> body = const {},
+  });
+
+  @PATCH(Endpoints.rejectTravelExpense)
+  Future<HttpResponse> rejectTravelExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('travelExpenseId') required int travelExpenseId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @GET(Endpoints.masterDataItems)
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,

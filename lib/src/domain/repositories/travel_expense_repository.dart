@@ -14,4 +14,17 @@ abstract base class TravelExpenseRepository extends Repository {
     required int partnerId,
     required int travelExpenseId,
   });
+
+  /// Approves the claim at its claimed amount.
+  Future<Result<void, Failure>> approveTravelExpense({
+    required int partnerId,
+    required int travelExpenseId,
+  });
+
+  /// [note] is required by the server and at most 255 characters.
+  Future<Result<void, Failure>> rejectTravelExpense({
+    required int partnerId,
+    required int travelExpenseId,
+    required String note,
+  });
 }

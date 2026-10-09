@@ -193,6 +193,7 @@ enum UserPermission {
   // viewer without .create can open the page but not save a claim.
   travelExpenseView('travel_expense.view'),
   travelExpenseCreate('travel_expense.create'),
+  travelExpenseReview('travel_expense.review'),
   travelExpenseSettingView('travel_expense_setting.view'),
 
   // Notification

@@ -167,6 +167,10 @@ class Endpoints {
   static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
   static const String travelExpenseDetail =
       '/partners/{partnerId}/travel-expenses/{travelExpenseId}';
+  static const String approveTravelExpense =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}/approve';
+  static const String rejectTravelExpense =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}/reject';
 
   /// Master Data — generic partner/global configurable dropdown items,
   /// filtered by `category` (e.g. `transportMode`).
