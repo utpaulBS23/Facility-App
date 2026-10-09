@@ -211,6 +211,78 @@
       }
     }
   },
+  "notificationsTitle": "Notifications",
+  "unreadCount": "{count} unread",
+  "@unreadCount": {
+    "description": "Number of unread notifications",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "filterUnread": "Unread",
+  "filterAlerts": "Alerts",
+  "filterWarnings": "Warnings",
+  "filterInfo": "Info",
+  "notificationsShowing": "Showing {shown} of {total} from the last 90 days",
+  "@notificationsShowing": {
+    "description": "How many notifications are listed out of all",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "total": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "notificationsShowingFiltered": "Showing {shown} from the last 90 days",
+  "@notificationsShowingFiltered": {
+    "description": "How many notifications match the filter",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "markAllRead": "Mark all read",
+  "yesterday": "Yesterday",
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "description": "Number of items in a group",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "description": "Minutes since a notification",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "description": "Hours since a notification",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "noNotifications": "No notifications",
   "retry": "Retry",
   "manualAttendance": "Manual Attendance",
   "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",

@@ -212,6 +212,78 @@
       }
     }
   },
+  "notificationsTitle": "নোটিফিকেশন",
+  "unreadCount": "{count}টি অপঠিত",
+  "@unreadCount": {
+    "description": "Number of unread notifications",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "filterUnread": "অপঠিত",
+  "filterAlerts": "জরুরি",
+  "filterWarnings": "সতর্কবার্তা",
+  "filterInfo": "তথ্য",
+  "notificationsShowing": "গত ৯০ দিনের {total}টির মধ্যে {shown}টি দেখানো হচ্ছে",
+  "@notificationsShowing": {
+    "description": "How many notifications are listed out of all",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "total": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "notificationsShowingFiltered": "গত ৯০ দিনের {shown}টি দেখানো হচ্ছে",
+  "@notificationsShowingFiltered": {
+    "description": "How many notifications match the filter",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "markAllRead": "সব পঠিত করুন",
+  "yesterday": "গতকাল",
+  "itemsCount": "{count}টি",
+  "@itemsCount": {
+    "description": "Number of items in a group",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "minutesAgo": "{minutes} মিনিট আগে",
+  "@minutesAgo": {
+    "description": "Minutes since a notification",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "hoursAgo": "{hours} ঘণ্টা আগে",
+  "@hoursAgo": {
+    "description": "Hours since a notification",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "noNotifications": "কোনো নোটিফিকেশন নেই",
   "retry": "পুনরায় চেষ্টা করুণ",
   "manualAttendance": "ম্যানুয়াল উপস্থিতি",
   "manualAttendanceDescription": "ক্যামেরা অনুপলব্ধ হলে ম্যানুয়ালি উপস্থিতি জমা দিন",
