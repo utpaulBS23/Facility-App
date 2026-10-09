@@ -32,6 +32,7 @@ import '../../../core/widgets/menu_item_app_bar.dart';
 import '../../../../domain/entities/menu_item_key.dart';
 
 part '../widgets/income_body.dart';
+part '../widgets/income_details_sheet.dart';
 part '../widgets/income_list_card.dart';
 part '../widgets/income_list_section.dart';
 part '../widgets/income_list_tab_switch.dart';
