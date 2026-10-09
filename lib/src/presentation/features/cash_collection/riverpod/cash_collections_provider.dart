@@ -5,6 +5,7 @@ import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/cash_collection/cash_collection_entity.dart';
 import '../../../../domain/entities/cash_collection/cash_collection_filter.dart';
+import 'submit_cash_collection_provider.dart';
 
 part 'cash_collections_provider.g.dart';
 
@@ -19,6 +20,14 @@ Future<CashCollectionListResultEntity> cashCollections(
   int? facilityId,
   String? month,
 }) async {
+  // WHY here and not in the submit provider: the list owns when it reloads, as
+  // the other income and expense lists do.
+  ref.listen(submitCashCollectionProvider, (previous, next) {
+    if (previous?.isLoading == true && next.valueOrNull != null) {
+      ref.invalidateSelf();
+    }
+  });
+
   final result = await ref
       .read(getCashCollectionsUseCaseProvider)
       .call(

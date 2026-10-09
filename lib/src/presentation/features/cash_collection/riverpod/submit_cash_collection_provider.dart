@@ -5,7 +5,6 @@ import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/cash_collection/cash_collection_entity.dart';
 import '../../../../domain/entities/cash_collection/cash_collection_payloads.dart';
-import 'cash_collections_provider.dart';
 
 part 'submit_cash_collection_provider.g.dart';
 
@@ -31,8 +30,5 @@ class SubmitCashCollection extends _$SubmitCashCollection {
         StackTrace.current,
       ),
     };
-
-    // WHY: the list tab shows this entry once saved.
-    if (state.valueOrNull != null) ref.invalidate(cashCollectionsProvider);
   }
 }
