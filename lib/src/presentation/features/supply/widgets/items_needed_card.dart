@@ -118,6 +118,9 @@ class _ItemsNeededCard extends StatelessWidget {
                       const Spacer(),
                       ItemStepperInput(
                         quantity: item.quantity,
+                        // WHY: quantity means nothing until an item (and its
+                        // unit) is chosen.
+                        enabled: item.stockItemId != null,
                         onChanged: (qty) => onQuantityChanged(index, qty),
                       ),
                       Gap(spacing.s8),
