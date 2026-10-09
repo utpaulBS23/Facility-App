@@ -531,6 +531,20 @@ GetFacilityServicesUseCase getFacilityServicesUseCase(Ref ref) {
 }
 
 @riverpod
+GetNotificationPreferencesUseCase getNotificationPreferencesUseCase(Ref ref) {
+  return GetNotificationPreferencesUseCase(
+    ref.read(notificationPreferencesRepositoryProvider),
+  );
+}
+
+@riverpod
+SetNotificationPreferenceUseCase setNotificationPreferenceUseCase(Ref ref) {
+  return SetNotificationPreferenceUseCase(
+    ref.read(notificationPreferencesRepositoryProvider),
+  );
+}
+
+@riverpod
 GetProductCatalogDropdownUseCase getProductCatalogDropdownUseCase(Ref ref) {
   return GetProductCatalogDropdownUseCase(
     productCatalogRepository: ref.read(productCatalogRepositoryProvider),

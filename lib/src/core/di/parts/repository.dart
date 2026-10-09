@@ -173,6 +173,13 @@ CashCollectionRepository cashCollectionRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+NotificationPreferencesRepository notificationPreferencesRepository(Ref ref) {
+  return NotificationPreferencesRepositoryImpl(
+    local: ref.read(cacheServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 ReportRepository reportRepository(Ref ref) {
   return ReportRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
