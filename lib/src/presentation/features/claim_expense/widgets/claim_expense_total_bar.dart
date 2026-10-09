@@ -35,7 +35,9 @@ class _ClaimExpenseTotalBar extends StatelessWidget {
                 ),
               ),
               Text(
-                context.locale.distanceKmValue(context.numbers.decimal(totalDistanceKm, 1)),
+                context.locale.distanceKmValue(
+                  context.numbers.decimal(totalDistanceKm, 1),
+                ),
                 style: context.textStyle.titleMedium.copyWith(
                   color: context.color.text.primary,
                 ),

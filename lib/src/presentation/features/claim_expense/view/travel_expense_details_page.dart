@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/travel_expense_entity.dart';
+import '../../../../domain/entities/travel_expense_status.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
@@ -14,6 +16,7 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../extensions/travel_expense_status_extension.dart';
 import '../riverpod/travel_expense_detail_provider.dart';
+import '../widgets/travel_expense_review_bar.dart';
 
 part '../widgets/travel_expense_travel_info_card.dart';
 
@@ -21,6 +24,21 @@ class TravelExpenseDetailsPage extends ConsumerWidget {
   const TravelExpenseDetailsPage({super.key, required this.travelExpenseId});
 
   final int travelExpenseId;
+
+  /// A claim can be reviewed while it is waiting, by someone holding the review
+  /// permission, and never by whoever filed it (the server refuses that too).
+  bool _canReview(WidgetRef ref, TravelExpenseEntity expense) {
+    if (expense.status != TravelExpenseStatus.waiting) return false;
+    final canReview =
+        ref
+            .watch(userSessionProvider)
+            ?.can(UserPermission.travelExpenseReview) ??
+        false;
+    final currentUserId = ref.read(getCurrentUserUseCaseProvider).call()?.id;
+
+    return canReview &&
+        (expense.userId == null || expense.userId != currentUserId);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,6 +49,11 @@ class TravelExpenseDetailsPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
       appBar: DetailAppBar(title: context.locale.transportationDetails),
+      bottomNavigationBar: switch (detailAsync.valueOrNull) {
+        final expense? when _canReview(ref, expense) =>
+          TravelExpenseReviewBar(travelExpenseId: expense.id),
+        _ => null,
+      },
       body: detailAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => AppErrorWidget(
@@ -136,6 +159,13 @@ class _TravelExpenseDetailsBody extends StatelessWidget {
                     icon: Icons.person_outline_rounded,
                     label: context.locale.purposeLabel,
                     value: expense.purpose,
+                  ),
+                if (expense.status == TravelExpenseStatus.rejected &&
+                    expense.rejectionNote.isNotEmpty)
+                  _DetailRow(
+                    icon: Icons.block_rounded,
+                    label: context.locale.rejectionNote,
+                    value: expense.rejectionNote,
                   ),
               ],
             ),

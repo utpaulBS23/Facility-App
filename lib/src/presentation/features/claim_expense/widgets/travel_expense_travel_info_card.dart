@@ -18,7 +18,8 @@ class _TravelExpenseTravelInfoCard extends ConsumerWidget {
         final facility = facilities
             .cast<AccessibleFacilityEntity?>()
             .firstWhere((f) => f?.id == expense.startId, orElse: () => null);
-        return facility?.localizedName(context.languageCode) ?? context.locale.notAvailable;
+        return facility?.localizedName(context.languageCode) ??
+            context.locale.notAvailable;
       case TravelExpenseStartType.office:
         return context.locale.office;
       case null:
@@ -107,10 +108,7 @@ class _TravelPoint extends StatelessWidget {
           child: Container(
             width: spacing.s8,
             height: spacing.s8,
-            decoration: BoxDecoration(
-              color: dotColor,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
           ),
         ),
         Gap(spacing.s8),
