@@ -139,6 +139,21 @@ SupplyRepository supplyRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+FacilityMapRepository facilityMapRepository(Ref ref) {
+  return FacilityMapRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+UserTrackingRepository userTrackingRepository(Ref ref) {
+  return UserTrackingRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+DashboardRepository dashboardRepository(Ref ref) {
+  return DashboardRepositoryImpl(remote: ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 ToiletLocationRepository toiletLocationRepository(Ref ref) {
   return ToiletLocationRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
@@ -148,6 +163,25 @@ AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
   return AdditionalIncomeRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
   );
+}
+
+@Riverpod(keepAlive: true)
+CashCollectionRepository cashCollectionRepository(Ref ref) {
+  return CashCollectionRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+NotificationPreferencesRepository notificationPreferencesRepository(Ref ref) {
+  return NotificationPreferencesRepositoryImpl(
+    local: ref.read(cacheServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+AppNotificationsRepository appNotificationsRepository(Ref ref) {
+  return MockAppNotificationsRepositoryImpl();
 }
 
 @Riverpod(keepAlive: true)

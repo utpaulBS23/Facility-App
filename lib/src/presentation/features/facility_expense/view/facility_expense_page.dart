@@ -12,7 +12,6 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
@@ -52,14 +51,12 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
   }
 
   void _selectDefaultFacility() {
-    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
-    if (facilities == null || facilities.isEmpty || !mounted) return;
-    final primary = facilities.cast<AccessibleFacilityEntity?>().firstWhere(
-      (f) => f?.isPrimary ?? false,
-      orElse: () => null,
-    );
-    final selected = (primary ?? facilities.first).id;
-    setState(() => _facilityId = selected);
+    final selected = ref
+        .read(userSessionProvider)
+        ?.accessibleFacilities
+        .primaryOrFirst;
+    if (selected == null || !mounted) return;
+    setState(() => _facilityId = selected.id);
     _fetch();
   }
 

@@ -61,7 +61,7 @@ class _ProfitSummaryCard extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '${report.achievementRate.toStringAsFixed(1)}%',
+                    text: context.numbers.percent(report.achievementRate, fractionDigits: 1),
                     style: context.textStyle.bodyLarge.copyWith(
                       color: color.primary,
                       fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class _ProfitSummaryCard extends StatelessWidget {
               Expanded(
                 child: _SummaryFigureTile(
                   label: context.locale.target,
-                  value: '৳${NumberFormatter.format(report.target)}',
+                  value: context.numbers.currency(report.target),
                   background: color.warningAlt,
                   valueColor: color.warning,
                 ),
@@ -103,7 +103,7 @@ class _ProfitSummaryCard extends StatelessWidget {
               Expanded(
                 child: _SummaryFigureTile(
                   label: context.locale.totalIncome,
-                  value: '৳${NumberFormatter.format(report.totalIncome)}',
+                  value: context.numbers.currency(report.totalIncome),
                   background: color.successAlt,
                   valueColor: color.success,
                 ),

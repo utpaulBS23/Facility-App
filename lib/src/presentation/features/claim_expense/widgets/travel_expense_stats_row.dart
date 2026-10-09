@@ -48,14 +48,14 @@ class _TravelExpenseStatsRow extends StatelessWidget {
             Expanded(
               child: _StatCard(
                 label: context.locale.totalLabel,
-                value: '৳${stats.totalCost.toStringAsFixed(0)}',
+                value: context.numbers.currency(stats.totalCost.round()),
               ),
             ),
             Gap(spacing.s12),
             Expanded(
               child: _StatCard(
                 label: context.locale.averageCost,
-                value: '৳${stats.averageCost.toStringAsFixed(0)}',
+                value: context.numbers.currency(stats.averageCost.round()),
               ),
             ),
           ],
@@ -66,14 +66,14 @@ class _TravelExpenseStatsRow extends StatelessWidget {
             Expanded(
               child: _StatCard(
                 label: context.locale.pending,
-                value: '${stats.waitingCount}',
+                value: context.numbers.integer(stats.waitingCount),
               ),
             ),
             Gap(spacing.s12),
             Expanded(
               child: _StatCard(
                 label: context.locale.approved,
-                value: '${stats.approvedCount}',
+                value: context.numbers.integer(stats.approvedCount),
               ),
             ),
           ],

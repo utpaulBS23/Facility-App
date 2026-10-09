@@ -275,7 +275,7 @@ class _ItemOrderBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius.r6),
       ),
       alignment: Alignment.center,
-      child: LabelLargeText('$order', color: context.color.text.primary),
+      child: LabelLargeText(context.numbers.number(order), color: context.color.text.primary),
     );
   }
 }
@@ -314,7 +314,7 @@ class _StarRatingRow extends StatelessWidget {
         }),
         if (currentRating > 0) ...[
           SizedBox(width: spacing.s4),
-          LabelLargeText('$currentRating', color: context.color.text.primary),
+          LabelLargeText(context.numbers.number(currentRating), color: context.color.text.primary),
         ],
       ],
     );
@@ -602,7 +602,7 @@ class _PhotoAttachedChip extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              '$count',
+              context.numbers.number(count),
               style: context.textStyle.bodySmall.copyWith(
                 color: context.color.onPrimary,
               ),

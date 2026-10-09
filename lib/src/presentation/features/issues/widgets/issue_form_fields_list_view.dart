@@ -33,6 +33,7 @@ class IssueFormFieldsListView extends StatelessWidget {
     this.isEditing = false,
     this.existingPhotoUrl,
     this.isFormValid = true,
+    this.assigneeRequired = false,
     this.priorityMasterData,
     required this.onPickCategory,
     required this.onPriorityChanged,
@@ -59,6 +60,9 @@ class IssueFormFieldsListView extends StatelessWidget {
   final bool isEditing;
   final String? existingPhotoUrl;
   final bool isFormValid;
+
+  /// A new issue must have someone assigned.
+  final bool assigneeRequired;
   final List<MasterDataItemEntity>? priorityMasterData;
 
   final VoidCallback onPickCategory;
@@ -88,8 +92,6 @@ class IssueFormFieldsListView extends StatelessWidget {
         IssueLocationInputSection(controller: locationController),
         Gap(spacing.s16),
         // 2. Problem Category
-        IssueSectionLabel('Problem Category'),
-        Gap(spacing.s2),
         IssueCategorySelector(
           selected: selectedCategory,
           hasError: categoryError,
@@ -157,6 +159,7 @@ class IssueFormFieldsListView extends StatelessWidget {
         // 8. Assign to
         IssueAssignResponsibilitySection(
           selected: selectedAttendant,
+          isRequired: assigneeRequired,
           onTap: onPickAttendant,
           onClear: onClearAttendant,
         ),

@@ -123,21 +123,16 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
     }
   }
 
+  // WHY only when creating: an issue needs someone responsible from the start.
+  // An edit keeps the assignee it has, so it only changes when one is picked.
+  bool get _assigneeOk => widget.issue != null || _selectedAttendant != null;
+
   Future<void> _onSubmit() async {
     final isEditing = widget.issue != null;
     final categoryOk = _selectedCategory != null;
-    final dueDateOk = !isEditing || _dueDate != null;
 
     setState(() => _categoryError = !categoryOk);
-    if (!_formKey.currentState!.validate() || !categoryOk || !dueDateOk) {
-      if (!dueDateOk) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.locale.dueDateRequired),
-            backgroundColor: context.color.error,
-          ),
-        );
-      }
+    if (!_formKey.currentState!.validate() || !categoryOk || !_assigneeOk) {
       return;
     }
 
@@ -158,6 +153,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
       facilityName: widget.facilityName,
       photoUrl: _photo == null ? (_existingPhotoUrl ?? widget.issue?.photoUrl) : null,
       dueDate: _dueDate,
+      issueId: isEditing ? widget.issue.id as int : null,
     );
 
     if (!mounted) return;
@@ -165,7 +161,11 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
     if (issueState.createdIssue != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(context.locale.issueReportedSuccessfully),
+          content: Text(
+            isEditing
+                ? context.locale.issueUpdatedSuccessfully
+                : context.locale.issueReportedSuccessfully,
+          ),
           backgroundColor: context.color.success,
         ),
       );
@@ -255,7 +255,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
     final isFormValid = _titleController.text.trim().isNotEmpty &&
         _locationController.text.trim().isNotEmpty &&
         _selectedCategory != null &&
-        (!isEditing || _dueDate != null);
+        _assigneeOk;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -286,6 +286,7 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
                 onPickCamera: () => _onPickImage(ImageSource.camera),
                 onPickGallery: () => _onPickImage(ImageSource.gallery),
                 onRemovePhoto: () => setState(() => _photo = null),
+                assigneeRequired: !isEditing,
                 onPickAttendant: _onPickAttendant,
                 onClearAttendant: () => setState(() => _selectedAttendant = null),
                 onPickDueDate: _onPickDueDate,

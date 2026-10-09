@@ -122,6 +122,25 @@ class _SlotCard extends StatelessWidget {
               Gap(spacing.s6),
               _InfoRow(icon: Icons.location_on_outlined, label: address),
             ],
+            // WHY only for the caller's own slot: the server sends the window
+            // on that row only, while a check-in is still relevant.
+            if (slot.me case SlotAttendantEntity(
+              :final earlyWindowOpens?,
+              :final lateCheckinDeadline?,
+            )) ...[
+              Gap(spacing.s6),
+              _InfoRow(
+                icon: Icons.schedule_rounded,
+                label: context.locale.checkInWindowMessage(
+                  context.numbers.phone(
+                    DateFormatter.shiftTime(earlyWindowOpens),
+                  ),
+                  context.numbers.phone(
+                    DateFormatter.shiftTime(lateCheckinDeadline),
+                  ),
+                ),
+              ),
+            ],
             Gap(spacing.s8),
             _SlotAssignedSection(slot: slot, onAssignStaff: onAssignStaff),
           ],

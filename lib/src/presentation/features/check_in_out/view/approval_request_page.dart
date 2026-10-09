@@ -47,7 +47,10 @@ class _ApprovalRequestPageState extends ConsumerState<ApprovalRequestPage> {
     if (widget.withdrawRoute == Routes.shiftCheckOut) {
       // WHY: check-out now takes the attendance id, not the shift id — `id`
       // here is the attendance record this manual submission created.
-      context.goNamed(Routes.shiftCheckOut, extra: _current.id);
+      context.goNamed(
+        Routes.shiftCheckOut,
+        extra: (attendanceId: _current.id, checkInDate: null),
+      );
     } else if (widget.withdrawRoute == Routes.shiftCheckIn) {
       // WHY: `shiftId` carries the shift_slot_id this manual submission was
       // made for (see ManualAttendance.submit) — check-in needs it again to

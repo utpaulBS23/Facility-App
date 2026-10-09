@@ -23,3 +23,12 @@ class AccessibleFacilityEntity {
   String localizedName(String languageCode) =>
       localizedText(languageCode, name, nameBn);
 }
+
+extension AccessibleFacilityList on List<AccessibleFacilityEntity> {
+  /// The user's primary facility, else the first one; null for an empty list.
+  AccessibleFacilityEntity? get primaryOrFirst {
+    if (isEmpty) return null;
+
+    return firstWhere((facility) => facility.isPrimary, orElse: () => first);
+  }
+}

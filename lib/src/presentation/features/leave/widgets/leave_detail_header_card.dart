@@ -12,7 +12,7 @@ class _LeaveDetailHeaderCard extends StatelessWidget {
     final textStyle = context.textStyle;
 
     final applicantName = leaveRequest.applicant?.name ?? leaveRequest.leavePolicy.name;
-    final (statusLabel, dotColor) = leaveRequest.status.labelAndDotColor(context);
+    final (statusLabel, dotColor) = leaveRequest.statusLabelAndDotColor(context);
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),

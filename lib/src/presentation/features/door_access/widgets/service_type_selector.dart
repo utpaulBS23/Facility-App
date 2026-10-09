@@ -39,7 +39,7 @@ class _ServiceTypeSelector extends StatelessWidget {
                   child: _ServiceSelectionCard(
                     icon: _icons[type]!,
                     title: type.label(context),
-                    priceText: '৳${type.price}',
+                    priceText: context.numbers.currency(type.price),
                     isSelected: selected == type,
                     onTap: onSelect == null ? null : () => onSelect!(type),
                   ),

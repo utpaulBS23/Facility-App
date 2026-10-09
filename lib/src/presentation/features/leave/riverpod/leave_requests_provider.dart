@@ -2,11 +2,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
+import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_filter.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import 'apply_leave_provider/submit_leave_request_provider.dart';
 
 part 'leave_requests_provider.g.dart';
+
+/// Holding any one of these means the user approves leave at some step.
+const leaveApprovalPermissions = [
+  UserPermission.leaveApproveStep1,
+  UserPermission.leaveApproveStep2,
+  UserPermission.leaveApproveStep3,
+];
 
 enum LeaveTab {
   myLeave,
@@ -16,7 +25,15 @@ enum LeaveTab {
 @riverpod
 class SelectedLeaveTab extends _$SelectedLeaveTab {
   @override
-  LeaveTab build() => LeaveTab.myLeave;
+  LeaveTab build() {
+    // WHY by permission: approvers land on the approvals they came to act on.
+    // Anyone else would hit a 403 on that endpoint, so they start on My leave.
+    final canApprove =
+        ref.read(userSessionProvider)?.canAny(leaveApprovalPermissions) ??
+        false;
+
+    return canApprove ? LeaveTab.leaveApprovals : LeaveTab.myLeave;
+  }
 
   void selectTab(LeaveTab tab) {
     state = tab;

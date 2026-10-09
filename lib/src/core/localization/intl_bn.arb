@@ -36,6 +36,7 @@
     "description": "ন্যূনতম দৈর্ঘ্য যাচাইকরণের জন্য ত্রুটি বার্তা",
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "৩"
       }
@@ -46,6 +47,7 @@
     "description": "সর্বোচ্চ দৈর্ঘ্য যাচাইকরণের জন্য ত্রুটি বার্তা",
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "২০"
       }
@@ -156,6 +158,132 @@
   "noFaceDetected": "কোনো মুখ শনাক্ত হয়নি। অনুগ্রহ করে আবার ছবি তুলুন।",
   "photoCaptureFailed": "ছবি ক্যাপচার ব্যর্থ",
   "tryAgain": "আবার চেষ্টা করুন",
+  "photoTooLarge": "ছবি ফাইলের আকার ৫ এমবি বা তার কম হতে হবে",
+  "manualIncome": "ম্যানুয়াল আয়",
+  "noManualIncomeFound": "কোনো ম্যানুয়াল আয় এন্ট্রি পাওয়া যায়নি",
+  "entriesSubmitted": "জমা দেওয়া এন্ট্রি",
+  "manualTotal": "ম্যানুয়াল মোট",
+  "cashCollectedByService": "সেবা অনুযায়ী সংগৃহীত নগদ",
+  "selectFacilityToListServices": "সেবার তালিকা দেখতে একটি সুবিধা নির্বাচন করুন।",
+  "noServicesAtFacility": "এই সুবিধায় কোনো সেবা নেই।",
+  "productSellingBdt": "পণ্য বিক্রয় (টাকা)",
+  "rentingOthersBdt": "ভাড়া ও অন্যান্য (টাকা)",
+  "noteOptional": "নোট (ঐচ্ছিক)",
+  "evidencePhoto": "প্রমাণের ছবি",
+  "totalCounted": "মোট গণনা",
+  "saveIncomeEntry": "এন্ট্রি সংরক্ষণ করুন",
+  "manualIncomeSubmitted": "ম্যানুয়াল আয় এন্ট্রি সংরক্ষিত হয়েছে",
+  "notificationSettingsTitle": "নোটিফিকেশন সেটিংস",
+  "pushAndEmail": "পুশ ও ইমেইল",
+  "notificationInfoBanner": "অ্যাপের ভেতরের নোটিফিকেশন সবসময় চালু থাকে এবং আপনার পড়ার ইতিহাস সংরক্ষণ করে। জরুরি সতর্কতায় সবসময় পুশ যায়, তাই সেই সুইচগুলো লক করা।",
+  "alertCategories": "সতর্কতার ধরন",
+  "digestAndInfo": "ডাইজেস্ট ও তথ্য",
+  "pushLabel": "পুশ",
+  "emailLabel": "ইমেইল",
+  "statusOn": "চালু",
+  "statusOff": "বন্ধ",
+  "statusAlwaysOn": "সবসময় চালু",
+  "statusDigestOnly": "শুধু ডাইজেস্ট",
+  "cameraDownTitle": "ক্যামেরা ও ডিভাইস বন্ধ",
+  "cameraDownDescription": "১৫ মিনিট অফলাইন থাকলে প্রথম সতর্কতা। তখনও বন্ধ থাকলে ১ ঘণ্টা পরে আবার পাঠানো হয়।",
+  "odourBreachTitle": "দুর্গন্ধ সীমা অতিক্রম",
+  "odourBreachDescription": "গ্যাস বা আর্দ্রতা সেন্সর সীমা অতিক্রম করলে তাৎক্ষণিক সতর্কতা।",
+  "understaffedSlotTitle": "কর্মী সংকট ও চেক-ইন",
+  "understaffedSlotDescription": "স্লট খালি থাকলে, অথবা শিফট শুরুর ১৫ মিনিট আগে বা পরে কোনো অ্যাটেনডেন্ট চেক-ইন না করলে।",
+  "issueRaisedTitle": "সমস্যা জানানো হয়েছে",
+  "issueRaisedDescription": "সুবিধায় নতুন সমস্যা বা টিকেট তৈরি হলে।",
+  "collectionVarianceTitle": "সংগ্রহে গরমিল",
+  "collectionVarianceDescription": "শিফট শেষে সংগ্রহ অনুমোদিত সীমার বাইরে থাকলে।",
+  "stockLowTitle": "স্টক কম",
+  "stockLowDescription": "কোনো সুবিধায় সরবরাহ পুনঃঅর্ডার স্তরের নিচে নামলে।",
+  "weeklyDigestTitle": "সাপ্তাহিক ইমেইল ডাইজেস্ট",
+  "weeklyDigestDescription": "প্রতি সোমবার সকাল ১০:০০টায় একটি সারসংক্ষেপ ইমেইল।",
+  "milestonesTitle": "মাইলফলক ও তথ্য",
+  "milestonesDescription": "অ্যাপের ভেতরে এবং সকাল ৮:০০টার দৈনিক ডাইজেস্টে পাঠানো হয়। এগুলো চ্যানেল অনুযায়ী ঠিক করা যায় না।",
+  "notificationRetention": "নোটিফিকেশন ৯০ দিন সংরক্ষণ করা হয়।",
+  "partnerOwnerRole": "পার্টনার মালিক",
+  "opsManagerRole": "অপারেশনস ম্যানেজার",
+  "notificationSettingsSubtitle": "{role} · পুশ ও ইমেইল",
+  "@notificationSettingsSubtitle": {
+    "description": "Subtitle under the notification settings title; role is the user's role name",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationsTitle": "নোটিফিকেশন",
+  "unreadCount": "{count}টি অপঠিত",
+  "@unreadCount": {
+    "description": "Number of unread notifications",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "filterUnread": "অপঠিত",
+  "filterAlerts": "জরুরি",
+  "filterWarnings": "সতর্কবার্তা",
+  "filterInfo": "তথ্য",
+  "notificationsShowing": "গত ৯০ দিনের {total}টির মধ্যে {shown}টি দেখানো হচ্ছে",
+  "@notificationsShowing": {
+    "description": "How many notifications are listed out of all",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "total": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "notificationsShowingFiltered": "গত ৯০ দিনের {shown}টি দেখানো হচ্ছে",
+  "@notificationsShowingFiltered": {
+    "description": "How many notifications match the filter",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "markAllRead": "সব পঠিত করুন",
+  "yesterday": "গতকাল",
+  "itemsCount": "{count}টি",
+  "@itemsCount": {
+    "description": "Number of items in a group",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "minutesAgo": "{minutes} মিনিট আগে",
+  "@minutesAgo": {
+    "description": "Minutes since a notification",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "hoursAgo": "{hours} ঘণ্টা আগে",
+  "@hoursAgo": {
+    "description": "Hours since a notification",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "noNotifications": "কোনো নোটিফিকেশন নেই",
   "retry": "পুনরায় চেষ্টা করুণ",
   "manualAttendance": "ম্যানুয়াল উপস্থিতি",
   "manualAttendanceDescription": "ক্যামেরা অনুপলব্ধ হলে ম্যানুয়ালি উপস্থিতি জমা দিন",
@@ -271,10 +399,12 @@
   "@slotCapacity": {
     "placeholders": {
       "assigned": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       },
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -284,6 +414,7 @@
   "@belowMinimumStaff": {
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -303,6 +434,7 @@
   "@checkedInCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       }
@@ -312,6 +444,7 @@
   "@checkedOutCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -370,6 +503,7 @@
     "description": "নির্বাচিত তারিখের শিফট সংখ্যা",
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -402,6 +536,7 @@
   "@outOf": {
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -501,6 +636,7 @@
   "@daysCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -616,8 +752,8 @@
   "occurrenceChecklistItemsCompleted": "{answered}/{total} উত্তর দেওয়া হয়েছে",
   "@occurrenceChecklistItemsCompleted": {
     "placeholders": {
-      "answered": {"type": "int"},
-      "total": {"type": "int"}
+      "answered": {"type": "int", "format": "decimalPattern"},
+      "total": {"type": "int", "format": "decimalPattern"}
     }
   },
   "occurrenceAnswerSaved": "উত্তর সংরক্ষিত হয়েছে।",
@@ -774,9 +910,11 @@
   "@verifiedCount": {
     "placeholders": {
       "verified": {
+        "format": "decimalPattern",
         "type": "int"
       },
       "total": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -895,7 +1033,7 @@
     }
   },
   "notAvailableYet": "এখনো পাওয়া যায়নি",
-  "monthlyProductRevenue": "মাসিক পণ্য আয়",
+  "monthlyProductRevenue": "পণ্য আয়",
   "revenue": "আয়",
   "totalProfit": "মোট লাভ",
   "noProductSalesFound": "কোনো পণ্য বিক্রয় পাওয়া যায়নি",
@@ -951,7 +1089,146 @@
     "description": "বর্ণনা",
     "assignedTo": "নিয়োজিত করা হয়েছে",
     "proofRequiredMessage": "এই সমস্যা সমাধানের জন্য আপনাকে প্রমাণ জমা দিতে হবে",
+  "durationHours": "{count} ঘণ্টা",
+  "durationMinutes": "{count} মিনিট",
+  "resendIn": "{seconds} সেকেন্ডে আবার পাঠান",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "format": "decimalPattern",
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "distanceKmValue": "{km} কিমি",
+  "@distanceKmValue": {
+    "placeholders": { "km": { "type": "String" } }
+  },
+  "facilityAveragingSummary": "{items}টি আইটেম  •  মাসিক চাহিদা {demand}",
+  "@facilityAveragingSummary": {
+    "placeholders": {
+      "items": { "type": "String" },
+      "demand": { "type": "String" }
+    }
+  },
+  "allFacilities": "সব ফ্যাসিলিটি",
+  "clearFilters": "ফিল্টার মুছুন",
+  "mapLegend": "লেজেন্ড",
+  "attendantWorkingNow": "এখন কর্মরত",
+  "attendantFreeOffShift": "ফ্রি / শিফটের বাইরে",
+  "attendantContractEnded": "চুক্তি শেষ",
+  "attendantsWorking": "কর্মরত অ্যাটেন্ড্যান্ট",
+  "attendantsFree": "ফ্রি অ্যাটেন্ড্যান্ট",
+  "searchAttendantHint": "নাম বা আইডি দিয়ে খুঁজুন",
+  "noLocationsToShow": "দেখানোর মতো কোনো অবস্থান নেই",
+  "noLocationAvailable": "কোনো অবস্থান পাওয়া যায়নি",
+  "statusOnline": "অনলাইন",
+  "usersOnlineSummary": "{total} জনের মধ্যে {online} জন অনলাইন",
+  "@usersOnlineSummary": {
+    "placeholders": { "online": { "type": "String" }, "total": { "type": "String" } }
+  },
+  "geofenceLabel": "জিওফেন্স",
+  "geofenceInside": "ভিতরে",
+  "geofenceOutside": "বাইরে",
+  "geofenceNotApplicable": "প্রযোজ্য নয়",
+  "activityLabel": "কার্যকলাপ",
+  "gpsLabel": "জিপিএস",
+  "batteryLabel": "ব্যাটারি",
+  "lastSeenLabel": "সর্বশেষ দেখা",
+  "activityIdle": "নিষ্বিয়",
+  "activityOnShift": "শিফটে — চেক-ইন করেছেন",
+  "activityOnSite": "সাইটে — চেক-ইন করেছেন",
+  "activityVisitCompleted": "ভিজিট সম্পন্ন",
+  "activityTraveling": "যাত্রাপথে",
+  "noUsersMatchFilters": "বর্তমান ফিল্টারে কোনো ব্যবহারকারী নেই",
+  "metersValue": "{value} মি.",
+  "@metersValue": {
+    "placeholders": { "value": { "type": "String" } }
+  },
+  "openInMaps": "ম্যাপে খুলুন",
+  "callAttendant": "কল করুন",
+  "uidLabel": "ইউআইডি",
+  "partnerLabel": "পার্টনার",
+  "addressLabel": "ঠিকানা",
+  "currentLocationTab": "বর্তমান অবস্থান",
+  "visitedRouteTab": "পরিদর্শিত রুট",
+  "selectUser": "ব্যবহারকারী নির্বাচন করুন",
+  "selectUserToViewRoute": "রুট দেখতে একজন ব্যবহারকারী নির্বাচন করুন",
+  "noTravelData": "এই দিনের কোনো ভ্রমণ তথ্য নেই",
+  "noGpsTrail": "কোনো জিপিএস ট্রেইল রেকর্ড করা হয়নি",
+  "gpsPointsCount": "{count}টি জিপিএস পয়েন্ট",
+  "@gpsPointsCount": {
+    "placeholders": { "count": { "type": "String", "example": "12" } }
+  },
+  "travelClaimFiled": "ভ্রমণ দাবি দাখিল করা হয়েছে",
+  "staffShortage": "কর্মী সংকট",
+  "assign": "নিয়োগ দিন",
+  "seeAll": "সব দেখুন",
+  "showLess": "কম দেখান",
+  "showMoreFacilities": "আরও {count}টি সুবিধা দেখান",
+  "@showMoreFacilities": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "male": "পুরুষ",
+  "female": "মহিলা",
+  "alwaysOn": "সবসময় চালু",
+  "toggleOn": "চালু",
+  "toggleOff": "বন্ধ",
+  "digestOnly": "শুধু ডাইজেস্ট",
+  "pushChannel": "পুশ",
+  "severityCritical": "জরুরি",
+  "targetVsAchievement": "মাসিক লক্ষ্য বনাম অর্জন",
+  "facilityExpense": "সুবিধার খরচ",
+  "airQuality": "বাতাসের মান",
+  "issueSummary": "সমস্যার সারসংক্ষেপ",
+  "visitorsPerDay": "প্রতিদিনের দর্শনার্থী",
+  "executive": "নির্বাহী",
+  "totalFacility": "মোট সুবিধা",
+  "monthlyTarget": "মাসিক লক্ষ্য",
+  "percentOfTarget": "লক্ষ্যের {percent}",
+  "@percentOfTarget": {
+    "placeholders": { "percent": { "type": "String", "example": "৮৩%" } }
+  },
   "settings": "সেটিংস",
+  "earlyCheckOutNotice": "আপনার শিফট {time} এ শেষ হবে। তার আগে চেক-আউট করতে কারণ দিতে হবে।",
+  "@earlyCheckOutNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "checkInWindowMessage": "চেক-ইন শুরু {opens} থেকে। {deadline} পর্যন্ত সময়মতো; এরপর অনুমোদন লাগবে।",
+  "@checkInWindowMessage": {
+    "placeholders": {
+      "opens": {
+        "type": "String"
+      },
+      "deadline": {
+        "type": "String"
+      }
+    }
+  },
+  "lateCheckInNotice": "সময়মতো চেক-ইনের সময় ({time} পর্যন্ত) পেরিয়ে গেছে। এই চেক-ইন সুপারভাইজারকে অনুমোদন করতে হবে এবং কারণ দেওয়া বাধ্যতামূলক।",
+  "@lateCheckInNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lateCheckOutNotice": "সময়মতো চেক-আউটের সময় ({time} পর্যন্ত) পেরিয়ে গেছে। এই চেক-আউট পর্যালোচনা করা হবে এবং কারণ দেওয়া বাধ্যতামূলক।",
+  "@lateCheckOutNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "issueUpdatedSuccessfully": "ইস্যু সফলভাবে আপডেট হয়েছে",
+  "locationAlwaysAllowMessage": "লাইভ লোকেশন শেয়ারিংয়ের জন্য লোকেশন অনুমতি \"সবসময় অনুমতি দিন\" করতে হবে।",
+  "openAppSettings": "অ্যাপ সেটিংস খুলুন",
   "retry": "পুনরায় চেষ্টা করুন"
 }
 

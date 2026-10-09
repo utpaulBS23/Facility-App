@@ -52,7 +52,7 @@ class _OtpVerificationBody extends StatelessWidget {
     );
 
     final phoneStr = phoneNumber != null && phoneNumber!.isNotEmpty
-        ? phoneNumber
+        ? context.numbers.phone(phoneNumber)
         : '';
 
     return SafeArea(
@@ -67,7 +67,7 @@ class _OtpVerificationBody extends StatelessWidget {
               HeadlineLargeText(context.locale.verifyOtp),
               Gap(context.spacing.s8),
               BodyRegularText.secondary(
-                phoneStr != null && phoneStr.isNotEmpty
+                phoneStr.isNotEmpty
                     ? '${context.locale.enterVerificationCode} ($phoneStr)'
                     : context.locale.enterVerificationCode,
                 textAlign: TextAlign.center,

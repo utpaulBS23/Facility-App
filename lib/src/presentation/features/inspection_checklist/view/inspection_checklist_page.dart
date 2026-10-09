@@ -162,10 +162,10 @@ class _InspectionChecklistPageState
                     for (final item in proofRequiredItems) {
                       final hasLocalAnswer = checklistState.starAnswers.containsKey(item.id) || checklistState.yesNoAnswers.containsKey(item.id);
 
-                      // Only enforce proof for NEW answers (local), not existing API responses
+                      // Only enforce proof for NEW answers (local), not existing API responses.
+                      // A picked photo counts once it is submitted (item.hasProof).
                       if (hasLocalAnswer) {
-                        final hasProof = (checklistState.proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
-                        if (!hasProof) {
+                        if (!item.hasProof) {
                           allRequiredAnswered = false;
                           break;
                         }
@@ -248,7 +248,7 @@ class _ChecklistBody extends StatelessWidget {
               if (detail.localizedFacilityName(context.languageCode) != null &&
                   (checklist.issues.isNotEmpty || checklistState.localIssues.isNotEmpty || !isResolved)) ...[
                 _InspectionRepairWorkSection(
-                  issues: [...checklist.issues, ...checklistState.localIssues],
+                  issues: checklistState.mergedIssues(checklist.issues),
                   onNewIssue: onNewIssue,
                   onEditIssue: onEditIssue,
                   canAddIssue: !isResolved,

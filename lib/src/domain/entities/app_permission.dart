@@ -46,8 +46,9 @@ enum UserPermission {
   leaveRequest('leave.request'),
   leaveCancel('leave.cancel'),
   leaveReject('leave.reject'),
-  leaveApproveSupervisor('leave.approve_supervisor'),
-  leaveApproveManager('leave.approve_manager'),
+  leaveApproveStep1('leave.approve_step_1'),
+  leaveApproveStep2('leave.approve_step_2'),
+  leaveApproveStep3('leave.approve_step_3'),
   leaveFileOnBehalf('leave.file_on_behalf'),
   publicHolidayView('public_holiday.view'),
 
@@ -111,9 +112,9 @@ enum UserPermission {
   supplyRequestView('supply_request.view'),
   supplyRequestCreate('supply_request.create'),
   supplyRequestApprove('supply_request.approve'),
-  supplyRequestApproveSupervisor('supply_request.approve_supervisor'),
-  supplyRequestApproveOperationManager(
-    'supply_request.approve_operation_manager',
+  supplyRequestApproveStep1('supply_request.approve_step_1'),
+  supplyRequestApproveStep2(
+    'supply_request.approve_step_2',
   ),
 
   // Delivery

@@ -10,6 +10,17 @@ class ToiletEntity {
     required this.lat,
     required this.lng,
     required this.mapsLink,
+    this.facilityType = '',
+    this.supervisorName = '',
+    this.openingTime,
+    this.closingTime,
+    this.is24Hours = false,
+    this.operatingDays = const [],
+    this.isFree = false,
+    this.usageFee = 0,
+    this.disableFriendly = false,
+    this.visitsToday = 0,
+    this.revenue = 0,
   });
 
   final int id;
@@ -20,6 +31,21 @@ class ToiletEntity {
   final double lat;
   final double lng;
   final String mapsLink;
+  final String facilityType;
+  final String supervisorName;
+
+  /// `HH:mm:ss`, as sent.
+  final String? openingTime;
+  final String? closingTime;
+  final bool is24Hours;
+
+  /// Lower-case weekday keys such as `sat`, `sun`.
+  final List<String> operatingDays;
+  final bool isFree;
+  final num usageFee;
+  final bool disableFriendly;
+  final int visitsToday;
+  final num revenue;
 }
 
 class ToiletSummaryEntity {

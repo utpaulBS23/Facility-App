@@ -48,7 +48,7 @@ class _SupplyRequestListCard extends StatelessWidget {
                     children: [
                       StatusDotTag(
                         dotColor: request.status.statusColor(context),
-                        label: request.status.localizedName(context),
+                        label: request.statusLabel(context),
                       ),
                       const Spacer(),
                       Icon(
@@ -87,7 +87,7 @@ class _SupplyRequestListCard extends StatelessWidget {
                     children: [
                       Text(
                         context.locale.supplyItemsCount(
-                          NumberFormatter.format(request.itemCount),
+                          context.numbers.number(request.itemCount),
                         ),
                         style: context.textStyle.bodySmall.copyWith(
                           color: context.color.text.secondary,

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/accessible_facility_entity.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/stock_item_entity.dart';
@@ -15,12 +16,13 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
+import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/create_supply_request_provider.dart';
 import '../riverpod/item_catalog_provider.dart';
-import '../widgets/item_stepper_input.dart';
+import '../../../core/widgets/item_stepper_input.dart';
 import '../widgets/request_item_entry.dart';
 import '../widgets/request_notes_card.dart';
 
@@ -71,7 +73,7 @@ class _NewRequestPageState extends ConsumerState<NewRequestPage> {
       },
       error: (e, _) {
         if (!mounted) return;
-        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+        AppSnackBar.showError(context, e.localizedMessage(context));
       },
     );
   }

@@ -73,6 +73,10 @@ extension ShiftSlotModelToEntity on ShiftSlotModel {
     supervisorNameBn: supervisorNameBn ?? '',
     attendants: attendants.map((a) => a.toEntity()).toList(),
     weeklyRosterId: weeklyRosterId,
+    checkInWindowAfterMinutes:
+        checkInWindowAfterMinutes ?? ShiftSlotEntity.defaultGraceMinutes,
+    checkOutWindowAfterMinutes:
+        checkOutWindowAfterMinutes ?? ShiftSlotEntity.defaultGraceMinutes,
   );
 }
 

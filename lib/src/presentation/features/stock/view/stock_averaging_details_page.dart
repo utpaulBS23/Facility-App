@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
@@ -52,7 +53,8 @@ class _StockAveragingDetailsPageState
         final error = ref.read(updateStockTargetActionProvider).error;
         AppSnackBar.showError(
           context,
-          error?.toString() ?? 'Failed to save stock targets.',
+          error?.localizedMessage(context) ??
+              'Failed to save stock targets.',
         );
       }
     }

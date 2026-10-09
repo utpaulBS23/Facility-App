@@ -9,7 +9,10 @@ class ShiftDetailsPage extends StatelessWidget {
       entity.checkInTime != null && entity.checkOutTime == null;
 
   void _onCheckOut(BuildContext context) {
-    context.pushNamed(Routes.shiftCheckOut, extra: entity.id);
+    context.pushNamed(
+      Routes.shiftCheckOut,
+      extra: (attendanceId: entity.id, checkInDate: entity.checkInTime),
+    );
   }
 
   void _onUpdateStock(BuildContext context) {
@@ -49,18 +52,21 @@ class ShiftDetailsPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  PermissionGate(
-                    permissions: const [UserPermission.shiftStockCountCreate],
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: spacing.s44,
-                      child: OutlinedButton.icon(
-                        onPressed: () => _onUpdateStock(context),
-                        icon: const Icon(Icons.inventory_2_outlined),
-                        label: Text(context.locale.updateStock),
+                  // WHY: stock can only be counted once the user's own
+                  // check-in is recorded.
+                  if (entity.checkInTime != null)
+                    PermissionGate(
+                      permissions: const [UserPermission.shiftStockCountCreate],
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: spacing.s44,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _onUpdateStock(context),
+                          icon: const Icon(Icons.inventory_2_outlined),
+                          label: Text(context.locale.updateStock),
+                        ),
                       ),
                     ),
-                  ),
                   if (_showCheckOutButton) ...[
                     Gap(spacing.s12),
                     PermissionGate(

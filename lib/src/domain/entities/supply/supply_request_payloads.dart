@@ -106,28 +106,30 @@ class ConfirmDeliveryRequestEntity {
     this.partnerId,
     required this.deliveryId,
     required this.items,
-    required this.receiptPhotoUrl,
+    this.receiptPhotoPath,
     required this.deliveryNotes,
   });
 
   final int? partnerId;
   final int deliveryId;
   final List<ConfirmDeliveryItem> items;
-  final String receiptPhotoUrl;
+
+  /// Local path of the receipt photo to upload; null when none was picked.
+  final String? receiptPhotoPath;
   final String deliveryNotes;
 
   ConfirmDeliveryRequestEntity copyWith({
     int? partnerId,
     int? deliveryId,
     List<ConfirmDeliveryItem>? items,
-    String? receiptPhotoUrl,
+    String? receiptPhotoPath,
     String? deliveryNotes,
   }) {
     return ConfirmDeliveryRequestEntity(
       partnerId: partnerId ?? this.partnerId,
       deliveryId: deliveryId ?? this.deliveryId,
       items: items ?? this.items,
-      receiptPhotoUrl: receiptPhotoUrl ?? this.receiptPhotoUrl,
+      receiptPhotoPath: receiptPhotoPath ?? this.receiptPhotoPath,
       deliveryNotes: deliveryNotes ?? this.deliveryNotes,
     );
   }
@@ -154,7 +156,7 @@ class FileDeliveryComplaintRequestEntity {
     required this.deliveryItemId,
     required this.reportedQtyReceived,
     required this.reason,
-    required this.evidencePhotoUrl,
+    this.evidencePhotoPath,
   });
 
   final int? partnerId;
@@ -162,7 +164,9 @@ class FileDeliveryComplaintRequestEntity {
   final int deliveryItemId;
   final double reportedQtyReceived;
   final String reason;
-  final String evidencePhotoUrl;
+
+  /// Local path of the evidence photo to upload; null when none was picked.
+  final String? evidencePhotoPath;
 
   FileDeliveryComplaintRequestEntity copyWith({
     int? partnerId,
@@ -170,7 +174,7 @@ class FileDeliveryComplaintRequestEntity {
     int? deliveryItemId,
     double? reportedQtyReceived,
     String? reason,
-    String? evidencePhotoUrl,
+    String? evidencePhotoPath,
   }) {
     return FileDeliveryComplaintRequestEntity(
       partnerId: partnerId ?? this.partnerId,
@@ -178,7 +182,7 @@ class FileDeliveryComplaintRequestEntity {
       deliveryItemId: deliveryItemId ?? this.deliveryItemId,
       reportedQtyReceived: reportedQtyReceived ?? this.reportedQtyReceived,
       reason: reason ?? this.reason,
-      evidencePhotoUrl: evidencePhotoUrl ?? this.evidencePhotoUrl,
+      evidencePhotoPath: evidencePhotoPath ?? this.evidencePhotoPath,
     );
   }
 }

@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
+
 import '../../domain/entities/stock/shift_stock_count_entity.dart';
 import '../models/stock/shift_stock_count_model.dart';
 import '../models/stock/shift_stock_count_response_models.dart';
-import '../models/stock/submit_stock_count_request_model.dart';
+import 'multipart_photo.dart';
 
 extension ShiftStockCountModelToEntity on ShiftStockCountModel {
   ShiftStockCountEntity toEntity() => ShiftStockCountEntity(
@@ -29,15 +31,21 @@ extension ShiftStockCountListResponseModelToEntity
       data.map((model) => model.toEntity()).toList();
 }
 
-extension SubmitStockCountItemEntityToModel on SubmitStockCountItemEntity {
-  StockCountItemModel toModel() => StockCountItemModel(
-        stockItemId: stockItemId,
-        qtyOnHand: qtyOnHand,
-        photoUrl: (photoUrl != null && photoUrl!.isNotEmpty) ? photoUrl : null,
-      );
-}
-
-extension SubmitStockCountItemEntityListToModel on List<SubmitStockCountItemEntity> {
-  SubmitStockCountRequestModel toRequestModel() =>
-      SubmitStockCountRequestModel(items: map((item) => item.toModel()).toList());
+extension SubmitStockCountItemEntityListToFormData
+    on List<SubmitStockCountItemEntity> {
+  /// Multipart body: each line may carry its own photo file.
+  Future<FormData> toFormData() async {
+    final formData = FormData();
+    for (var i = 0; i < length; i++) {
+      final item = this[i];
+      formData.fields
+        ..add(MapEntry('items[$i][stock_item_id]', '${item.stockItemId}'))
+        ..add(MapEntry('items[$i][qty_on_hand]', '${item.qtyOnHand}'));
+      final photo = item.photoPath;
+      if (photo != null && photo.isNotEmpty) {
+        formData.files.add(MapEntry('items[$i][photo]', await photoPart(photo)));
+      }
+    }
+    return formData;
+  }
 }

@@ -21,21 +21,21 @@ class _ProductSaleStatsRow extends StatelessWidget {
       child: Row(
         children: [
           _SummaryTile(
-            valueText: '৳${NumberFormatter.format(summary.totalIncome)}',
+            valueText: context.numbers.currency(summary.totalIncome),
             label: context.locale.totalIncome,
             background: color.successAlt,
             textColor: color.success,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: '${summary.totalUnits}',
+            valueText: context.numbers.integer(summary.totalUnits),
             label: context.locale.unitsSold,
             background: color.scaffoldBackground,
             textColor: color.text.primary,
           ),
           Gap(spacing.s6),
           _SummaryTile(
-            valueText: profit == null ? '—' : '৳${NumberFormatter.format(profit)}',
+            valueText: profit == null ? '—' : context.numbers.currency(profit),
             label: context.locale.totalProfit,
             background: color.warningAlt,
             textColor: color.warning,

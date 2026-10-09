@@ -16,6 +16,8 @@ import '../../../../domain/entities/check_in_entity.dart';
 import '../../../../domain/entities/check_in_info_entity.dart';
 import '../../../../domain/entities/check_out_entity.dart';
 import '../../../../domain/entities/manual_attendance_entity.dart';
+import '../../../../core/utils/shift_lateness.dart';
+import '../../../../domain/entities/shift_slot_entity.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/theme/theme.dart';
@@ -25,6 +27,7 @@ import '../../../core/widgets/app_time_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../shift/riverpod/shift_slots_provider.dart';
 import '../riverpod/check_in_failure_provider.dart';
 import '../riverpod/check_in_info_provider.dart';
 import '../riverpod/check_in_provider.dart';
@@ -37,6 +40,7 @@ part '../widgets/approval_request_body.dart';
 part '../widgets/auto_detected_info_card.dart';
 part '../widgets/manual_attendance_bottom_sheet.dart';
 part '../widgets/photo_error_dialog.dart';
+part '../widgets/reason_section.dart';
 part '../widgets/request_supervisor_approval_bottomsheet.dart';
 part '../widgets/selfie_error_toast.dart';
 part '../widgets/selfie_zone.dart';
@@ -66,6 +70,28 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
   void dispose() {
     _reasonController.dispose();
     super.dispose();
+  }
+
+  /// The moment on-time check-in ends for this slot, or null when the slot
+  /// is not in the loaded shifts.
+  DateTime? get _deadline {
+    final data = ref.read(shiftSlotsProvider).valueOrNull;
+    final slotId = widget.shiftSlotId;
+    final slot = slotId == null ? null : data?.findSlot(slotId);
+    if (data == null || slot == null) return null;
+
+    return checkInDeadline(
+      date: data.date,
+      startTime: slot.startTime,
+      graceMinutes: slot.checkInWindowAfterMinutes,
+    );
+  }
+
+  _ReasonMode get _reasonMode {
+    final deadline = _deadline;
+    if (deadline == null) return _ReasonMode.optional;
+
+    return isPast(deadline) ? _ReasonMode.required : _ReasonMode.hidden;
   }
 
   void _onSubmit(String? photoPath) {
@@ -102,7 +128,9 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
           lat: checkInInfo.latitude!,
           lng: checkInInfo.longitude!,
           selfieUrl: photoPath,
-          lateCheckInReason: _reasonController.text.trim().isEmpty
+          lateCheckInReason:
+              _reasonMode == _ReasonMode.hidden ||
+                  _reasonController.text.trim().isEmpty
               ? null
               : _reasonController.text.trim(),
         );
@@ -176,6 +204,11 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         .valueOrNull
         ?.locationFailure;
     final failureType = ref.watch(checkInFailureTypeProvider);
+    // WHY watched: the slot (and its grace period) come from the shifts
+    // payload; the page rebuilds if that loads or refreshes.
+    ref.watch(shiftSlotsProvider);
+    final deadline = _deadline;
+    final reasonMode = _reasonMode;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -194,6 +227,12 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         onSubmit: () => _onSubmit(photoPath),
         supervisorName: widget.supervisorName,
         reasonController: _reasonController,
+        reasonMode: reasonMode,
+        lateNotice: reasonMode == _ReasonMode.required && deadline != null
+            ? context.locale.lateCheckInNotice(
+                context.numbers.phone(wallClockHm(deadline)),
+              )
+            : null,
       ),
     );
   }

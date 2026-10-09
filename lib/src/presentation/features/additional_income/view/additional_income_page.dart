@@ -15,14 +15,16 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/facility_filter_button.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../cash_collection/riverpod/cash_collections_provider.dart';
+import '../../cash_collection/widgets/manual_income_tab.dart';
 import '../riverpod/additional_income_list_provider.dart';
+import 'add_additional_income_page.dart' show IncomeEntryType;
 import '../riverpod/product_sale_entry_list_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
@@ -94,10 +96,20 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
         ref
             .read(productSaleEntryListProvider.notifier)
             .fetch(facilityId: _facilityId, month: _monthParam);
+      case IncomeListTab.manualIncome:
+        // WHY invalidate: the tab watches a facility/month keyed provider, so
+        // changed filters already load; this is the retry/refresh path.
+        ref.invalidate(cashCollectionsProvider);
     }
   }
 
-  void _onAddIncome() => context.pushNamed(Routes.addAdditionalIncome);
+  void _onAddIncome() => context.pushNamed(
+    Routes.addAdditionalIncome,
+    extra: switch (_tab) {
+      IncomeListTab.manualIncome => IncomeEntryType.manualIncome,
+      _ => IncomeEntryType.rentAndOthers,
+    },
+  );
 
   // WHY client-side: the additional-incomes endpoint has no month query
   // param (only facility_id/page/per_page), so month narrows whatever page
@@ -134,7 +146,16 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
         .watch(additionalIncomeListProvider)
         .whenData((result) => _filterByMonth(result));
     final productSaleListAsync = ref.watch(productSaleEntryListProvider);
-    final isProductTab = _tab == IncomeListTab.monthlyProductRevenue;
+    final canSeeManualIncome =
+        ref
+            .watch(userSessionProvider)
+            ?.canAny(const [UserPermission.cashCollectionView]) ??
+        false;
+    final tab = canSeeManualIncome || _tab != IncomeListTab.manualIncome
+        ? _tab
+        : IncomeListTab.rentAndOthers;
+    final isProductTab = tab == IncomeListTab.monthlyProductRevenue;
+    final isManualTab = tab == IncomeListTab.manualIncome;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -161,10 +182,12 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
           Padding(
             padding: EdgeInsets.fromLTRB(spacing.s16, spacing.s16, spacing.s16, 0),
             child: _IncomeListTabSwitch(
-              selectedTab: _tab,
+              selectedTab: tab,
               onTabChanged: _onTabChanged,
+              showManualIncome: canSeeManualIncome,
             ),
           ),
+          if (!isManualTab)
           Padding(
             padding: EdgeInsets.fromLTRB(spacing.s16, spacing.s4, spacing.s16, spacing.s4),
             child: isProductTab
@@ -182,7 +205,9 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
                   },
           ),
           Expanded(
-            child: isProductTab
+            child: isManualTab
+                ? ManualIncomeTab(facilityId: _facilityId, month: _monthParam)
+                : isProductTab
                 ? _ProductSaleEntryBody(
                     listAsync: productSaleListAsync,
                     onRetry: _fetch,
@@ -196,9 +221,12 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
       ),
       floatingActionButton: PermissionGate(
         permissions: [
-          isProductTab
-              ? UserPermission.productSaleEntryCreate
-              : UserPermission.additionalIncomeCreate,
+          if (isManualTab)
+            UserPermission.cashCollectionCreate
+          else if (isProductTab)
+            UserPermission.productSaleEntryCreate
+          else
+            UserPermission.additionalIncomeCreate,
         ],
         child: FloatingActionButton(
           onPressed: _onAddIncome,

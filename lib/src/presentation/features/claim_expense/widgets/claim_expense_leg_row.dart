@@ -67,39 +67,15 @@ class _ClaimExpenseLegRow extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FormSelectorCard(
+                    FormSelectorCard.text(
                       title: context.locale.transportModes,
                       icon: Icons.directions_car_outlined,
                       onTap: () => _onPickMode(context, state),
-                      content: Text(
-                        selectedLabel ?? context.locale.selectTransportMode,
-                        overflow: TextOverflow.ellipsis,
-                        style: selectedLabel == null
-                            ? context.textStyle.bodyMedium.copyWith(
-                                color: context.color.text.secondary,
-                              )
-                            : context.textStyle.bodyMedium,
-                      ),
+                      value: selectedLabel,
+                      placeholder: context.locale.selectTransportMode,
+                      errorText: state.errorText,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: spacing.s4,
-                        left: spacing.s4,
-                      ),
-                      child: SizedBox(
-                        height: spacing.s16,
-                        child: state.hasError
-                            ? Text(
-                                state.errorText!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: context.textStyle.bodySmall.copyWith(
-                                  color: context.color.error,
-                                ),
-                              )
-                            : null,
-                      ),
-                    ),
+                    Gap(spacing.s12),
                   ],
                 );
               },

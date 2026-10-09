@@ -72,14 +72,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       case AsyncData(:final value) when value != null:
         final entity = (value as Success<LoginResponseEntity, Failure>).data;
         final permissions = entity?.permissions ?? const <UserPermission>{};
-        // WHY: landing tab is permission-driven — a user without shift.view
-        // goes straight to their first permitted tab; the shift-status flow
-        // below only applies to shift-capable attendants.
-        if (permissions.contains(UserPermission.shiftView) ||
-            permissions.contains(UserPermission.shiftSlotView)) {
-          _landOnFirstTab(permissions);
-          return;
-        }
+        // WHY: the landing tab is whatever the user's first permitted tab is,
+        // not necessarily Shift — each page guards itself, so login must not
+        // assume or check any one feature's permission.
+        _landOnFirstTab(permissions);
       case AsyncError(:final error):
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.localizedMessage(context))),

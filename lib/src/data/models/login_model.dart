@@ -16,6 +16,7 @@ class UserModel with UserModelMappable {
     required this.permissionVersion,
     required this.twoFactorEnabled,
     this.profileImage,
+    this.roleKey,
   });
 
   final int id;
@@ -36,6 +37,9 @@ class UserModel with UserModelMappable {
   final bool twoFactorEnabled;
   @MappableField(key: 'profile_image')
   final String? profileImage;
+  // One of partner_owner, ops_manager, supervisor, attendant, or null.
+  @MappableField(key: 'role_key')
+  final String? roleKey;
 
   static const fromJson = UserModelMapper.fromJson;
 }

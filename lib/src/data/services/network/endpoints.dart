@@ -195,8 +195,25 @@ class Endpoints {
   static const String trainingSessionDetails =
       '/partners/{partnerId}/training-sessions/{trainingSessionId}';
 
+  /// Home dashboard (shape chosen by the server from the token's role)
+  static const String dashboard = '/dashboard';
+
   /// Facility List
   static const String facilities = '/partners/{partnerId}/facilities';
+  static const String facilityDetails =
+      '/partners/{partnerId}/facilities/{facilityId}';
+  static const String facilityMap = '/partners/{partnerId}/facility-map';
+  static const String livePositions = '/partners/{partnerId}/live-positions';
+  static const String userRoutes = '/partners/{partnerId}/user-routes';
+  static const String cashCollections = '/partners/{partnerId}/cash-collections';
+  static const String facilityServices =
+      '/partners/{partnerId}/facilities/{facilityId}/services';
+  static const String facilityAccesses = '/partners/{partnerId}/facility-accesses';
+  static const String centerCollections =
+      '/partners/{partnerId}/center-collections';
+  static const String transactions = '/partners/{partnerId}/transactions';
+  static const String facilityWiseReport =
+      '/partners/{partnerId}/report/facility-wise';
   static const String facilityWiseTargets =
       '/partners/{partnerId}/facility-wise-targets';
 

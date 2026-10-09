@@ -9,6 +9,7 @@ enum CacheKey {
   fcmToken,
   pushNotificationsEnabled,
   disabledNotificationChannels,
+  notificationPreferences,
   doorLockStatusCache,
   doorLockPendingCommands,
   menuConfigurationEtag,

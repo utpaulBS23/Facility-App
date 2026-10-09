@@ -62,13 +62,12 @@ class InspectionChecklistState {
       final hasExistingAnswer = item.isAnswered;
       final hasAnswered = hasLocalAnswer || hasExistingAnswer;
 
-      // Items with proof_policy: "required" need both answer AND proof
+      // Items with proof_policy: "required" need both answer AND proof.
+      // WHY item.hasProof only: a photo that is only picked is not submitted
+      // yet, so the item does not count until the server has the proof.
       if (item.proofPolicy == ChecklistProofPolicy.always) {
-        if (hasAnswered) {
-          final hasProof = (proofImages[item.id]?.isNotEmpty ?? false) || item.hasProof;
-          if (hasProof) {
-            count++;
-          }
+        if (hasAnswered && item.hasProof) {
+          count++;
         }
       } else {
         // Other items only need answer
@@ -81,6 +80,18 @@ class InspectionChecklistState {
   }
 
   bool get isComplete => answeredCount == totalAnswerableCount;
+
+  /// The visit's issues from the server, with the ones created or edited in
+  /// this session on top: an edited issue shows once, as edited.
+  List<ChecklistIssueEntity> mergedIssues(List<ChecklistIssueEntity> fromServer) {
+    final localIds = {for (final i in localIssues) i.id};
+
+    return [
+      for (final i in fromServer)
+        if (!localIds.contains(i.id)) i,
+      ...localIssues,
+    ];
+  }
 
   int get currentScore => confirmedPoints.values.fold(0, (sum, p) => sum + p);
 
@@ -409,9 +420,13 @@ class InspectionChecklist extends _$InspectionChecklist {
     state = state.copyWith(proofImages: updated, mediaUrls: updatedMediaUrls);
   }
 
+  /// A new issue is added; an edited one replaces its row.
   void addLocalIssue(ChecklistIssueEntity issue) {
+    final exists = state.localIssues.any((i) => i.id == issue.id);
     state = state.copyWith(
-      localIssues: [...state.localIssues, issue],
+      localIssues: exists
+          ? [for (final i in state.localIssues) i.id == issue.id ? issue : i]
+          : [...state.localIssues, issue],
     );
   }
 

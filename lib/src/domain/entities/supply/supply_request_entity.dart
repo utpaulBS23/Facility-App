@@ -67,6 +67,10 @@ class SupplyRequestEntity {
     required this.allocationCode,
     required this.createdAt,
     required this.updatedAt,
+    this.canAction = false,
+    this.currentStep,
+    this.currentPermission,
+    this.currentStepLabel,
   });
 
   final int id;
@@ -86,6 +90,20 @@ class SupplyRequestEntity {
   final String allocationCode;
   final String createdAt;
   final String updatedAt;
+
+  /// Server-derived: true when the caller can approve or reject this request
+  /// right now. The server re-checks on the approve and reject endpoints.
+  final bool canAction;
+
+  /// Which approval step the request waits on; null once terminal.
+  final int? currentStep;
+
+  /// Permission needed to act on the current step; null once terminal.
+  final String? currentPermission;
+
+  /// Server-written text for the current step, e.g. "Waiting for Operation
+  /// Manager approval". Null once terminal.
+  final String? currentStepLabel;
 
   /// True when the request has cleared both approval levels and is now either
   /// being dispatched, in transit, delivered, or fully completed.

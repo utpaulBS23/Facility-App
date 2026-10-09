@@ -39,12 +39,14 @@ class _FacilitySection extends ConsumerWidget {
     final facilityName = facilities
         .cast<AccessibleFacilityEntity?>()
         .firstWhere((f) => f?.id == facilityId, orElse: () => null)
-        ?.name;
+        ?.localizedName(context.languageCode);
 
-    return _DropdownField(
+    return FormSelectorCard.text(
+      title: context.locale.selectFacility,
+      icon: Icons.location_on_outlined,
       value: facilityName,
-      hint: context.locale.selectFacility,
-      hasError: hasError,
+      placeholder: context.locale.selectFacility,
+      errorText: hasError ? context.locale.fieldRequired : null,
       onTap: enabled && facilities.length > 1
           ? () => _onPickFacility(context, ref, facilities)
           : null,

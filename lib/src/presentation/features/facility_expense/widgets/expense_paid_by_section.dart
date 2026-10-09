@@ -20,7 +20,7 @@ class _PaidBySection extends ConsumerWidget {
       valueListenable: amountController,
       builder: (context, amountValue, _) {
         final paidByEnabled =
-            (double.tryParse(amountValue.text.trim()) ?? 0) > 0;
+            (Digits.parseDouble(amountValue.text.trim()) ?? 0) > 0;
 
         return paymentMethodsAsync.when(
           loading: () => const LinearProgressIndicator(),

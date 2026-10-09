@@ -19,15 +19,16 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
+import '../../cash_collection/widgets/manual_income_form.dart';
 import '../riverpod/submit_income_provider/facility_product_options_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_facility_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_type_provider.dart';
 import '../riverpod/submit_income_provider/submit_income_provider.dart';
+import '../../../../core/utils/digits.dart';
 
 part '../widgets/add_income_action_buttons.dart';
 part '../widgets/add_income_body.dart';
-part '../widgets/income_dropdown_field.dart';
 part '../widgets/income_entry_type_switch.dart';
 part '../widgets/income_facility_list_sheet.dart';
 part '../widgets/income_facility_section.dart';
@@ -38,7 +39,12 @@ part '../widgets/product_leg_row.dart';
 part '../widgets/proof_photo_picker_card.dart';
 
 class AddAdditionalIncomePage extends ConsumerStatefulWidget {
-  const AddAdditionalIncomePage({super.key});
+  const AddAdditionalIncomePage({
+    super.key,
+    this.initialType = IncomeEntryType.rentAndOthers,
+  });
+
+  final IncomeEntryType initialType;
 
   @override
   ConsumerState<AddAdditionalIncomePage> createState() =>
@@ -52,7 +58,7 @@ class _AddAdditionalIncomePageState
   final _descriptionController = TextEditingController();
   List<_ProductLegDraft> _productLegs = [_ProductLegDraft()];
 
-  IncomeEntryType _incomeEntryType = IncomeEntryType.rentAndOthers;
+  late IncomeEntryType _incomeEntryType = widget.initialType;
   bool _incomeTypeError = false;
   bool _facilityError = false;
   bool _amountError = false;
@@ -109,7 +115,7 @@ class _AddAdditionalIncomePageState
   void _onSubmitAdditionalIncome() {
     final incomeType = ref.read(selectedIncomeTypeProvider);
     final facilityId = ref.read(selectedIncomeFacilityProvider);
-    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
+    final amount = Digits.parseDouble(_amountController.text.trim()) ?? 0;
 
     final incomeTypeOk = incomeType != null;
     final facilityOk = facilityId != null;
@@ -174,6 +180,8 @@ class _AddAdditionalIncomePageState
         _onSubmitAdditionalIncome();
       case IncomeEntryType.productSell:
         _onSubmitProductSale();
+      case IncomeEntryType.manualIncome:
+        break; // the manual income form saves itself
     }
   }
 
@@ -189,6 +197,11 @@ class _AddAdditionalIncomePageState
     });
 
     final isSubmitting = ref.watch(submitIncomeProvider).isLoading;
+    final canSeeManualIncome =
+        ref
+            .watch(userSessionProvider)
+            ?.canAny(const [UserPermission.cashCollectionView]) ??
+        false;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -197,6 +210,7 @@ class _AddAdditionalIncomePageState
         formKey: _formKey,
         incomeEntryType: _incomeEntryType,
         onIncomeEntryTypeChanged: _onIncomeEntryTypeChanged,
+        showManualIncome: canSeeManualIncome,
         amountController: _amountController,
         descriptionController: _descriptionController,
         productLegs: _productLegs,

@@ -30,7 +30,7 @@ final class StockRepositoryImpl extends StockRepository {
       final response = await remote.submitShiftStockCount(
         partnerId: partnerId,
         shiftAssignmentId: shiftAssignmentId,
-        body: items.toRequestModel().toJson(),
+        formData: await items.toFormData(),
       );
       final responseModel =
           ShiftStockCountListResponseModel.fromJson(response.data);

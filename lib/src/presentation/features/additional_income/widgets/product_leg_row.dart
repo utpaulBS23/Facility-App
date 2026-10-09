@@ -62,28 +62,17 @@ class _ProductLegRow extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            FormSelectorCard(
+            FormSelectorCard.text(
               title: context.locale.selectProduct,
               icon: Icons.inventory_2_outlined,
               enabled: products.isNotEmpty,
               onTap: () => _onPickProduct(context),
-              content: Text(
-                product?.localizedProductName(context.languageCode) ?? context.locale.selectProduct,
-                overflow: TextOverflow.ellipsis,
-                style: product == null
-                    ? context.textStyle.bodyMedium.copyWith(
-                        color: context.color.text.secondary,
-                      )
-                    : context.textStyle.bodyMedium,
-              ),
+              value: product?.localizedProductName(context.languageCode),
+              placeholder: context.locale.selectProduct,
+              errorText: showErrors && product == null
+                  ? context.locale.fieldRequired
+                  : null,
             ),
-            if (showErrors && product == null) ...[
-              Gap(spacing.s4),
-              BodySmallText(
-                context.locale.fieldRequired,
-                color: context.color.error,
-              ),
-            ],
             Gap(spacing.s12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +105,7 @@ class _ProductLegRow extends StatelessWidget {
             if (product != null) ...[
               Gap(spacing.s4),
               BodySmallText(
-                '${context.locale.availableStock}: ${product.stockQuantity}',
+                '${context.locale.availableStock}: ${context.numbers.number(product.stockQuantity)}',
                 color: context.color.text.secondary,
               ),
             ],

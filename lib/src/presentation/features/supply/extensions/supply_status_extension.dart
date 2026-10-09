@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/theme/theme.dart';
 
@@ -31,6 +32,24 @@ extension SupplyRequestStatusLocalization on SupplyRequestStatus {
       SupplyRequestStatus.completed => context.color.success,
       SupplyRequestStatus.unknown => context.color.text.secondary,
     };
+  }
+}
+
+extension SupplyRequestStatusLabel on SupplyRequestEntity {
+  /// Status text for display. While the request is pending, the server's own
+  /// step text wins ("Waiting for Operation Manager approval"), so a custom
+  /// chain reads right without a client-side mapping.
+  String statusLabel(BuildContext context) {
+    final stepLabel = currentStepLabel?.trim();
+    // WHY the status, not currentStep: a terminal request may still carry its
+    // old step and label.
+    final isPending = status == SupplyRequestStatus.pendingSupervisor ||
+        status == SupplyRequestStatus.pendingOperationManager;
+    if (!isPending || stepLabel == null || stepLabel.isEmpty) {
+      return status.localizedName(context);
+    }
+
+    return stepLabel;
   }
 }
 

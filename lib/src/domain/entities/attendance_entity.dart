@@ -20,6 +20,7 @@ class AttendanceShiftInfoEntity {
   const AttendanceShiftInfoEntity({
     required this.id,
     required this.shiftType,
+    this.shiftTypeBn = '',
     required this.startTime,
     required this.endTime,
     required this.facilityName,
@@ -28,6 +29,7 @@ class AttendanceShiftInfoEntity {
 
   final int id;
   final String shiftType;
+  final String shiftTypeBn;
   final String startTime;
   final String endTime;
   final String facilityName;
@@ -35,6 +37,9 @@ class AttendanceShiftInfoEntity {
 
   String localizedFacilityName(String languageCode) =>
       localizedText(languageCode, facilityName, facilityNameBn);
+
+  String localizedShiftType(String languageCode) =>
+      localizedText(languageCode, shiftType, shiftTypeBn);
 }
 
 class AttendanceApproverEntity {
@@ -123,6 +128,8 @@ class AttendanceItemEntity {
   // not a timestamp — a same-day open attendance is still in progress and
   // shouldn't be flagged; only a prior day left open needs attention.
   bool get needsAttention {
+    // WHY: a rejected check-in is settled, nothing is left open to act on.
+    if (displayStatus == AttendanceStatus.rejected) return false;
     if (checkInTime == null || checkOutTime != null) return false;
     final shiftDate = DateTime.tryParse(date);
     if (shiftDate == null) return false;

@@ -16,9 +16,9 @@ class _LegDraft {
   // price is what actually goes out, as the top-level `amount` override.
   final TextEditingController priceController;
 
-  double get distanceKm => double.tryParse(distanceController.text) ?? 0;
+  double get distanceKm => Digits.parseDouble(distanceController.text) ?? 0;
 
-  double get price => double.tryParse(priceController.text) ?? 0;
+  double get price => Digits.parseDouble(priceController.text) ?? 0;
 
   TravelExpenseLegEntity toEntity() => TravelExpenseLegEntity(
     vehicleTypeItemId: vehicleTypeItemId!,

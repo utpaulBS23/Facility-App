@@ -4,6 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_status.dart';
@@ -18,11 +20,14 @@ import '../extensions/leave_presentation_extension.dart';
 import '../riverpod/leave_request_details_provider.dart';
 import '../riverpod/leave_requests_provider.dart';
 import '../widgets/leave_details_action_bar.dart';
+import '../widgets/leave_details_cancel_bar.dart';
 
 part '../widgets/leave_detail_header_card.dart';
 part '../widgets/leave_detail_info_section.dart';
 part '../widgets/leave_detail_shift_section.dart';
 part '../widgets/leave_status_timeline.dart';
+
+enum _LeaveAction { approve, reject, cancel }
 
 class LeaveDetailsPage extends ConsumerStatefulWidget {
   const LeaveDetailsPage({super.key, required this.requestId});
@@ -34,7 +39,7 @@ class LeaveDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
-  bool _lastActionWasApprove = true;
+  _LeaveAction _lastAction = _LeaveAction.approve;
 
   @override
   void initState() {
@@ -46,19 +51,18 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
     next.whenOrNull(
       data: (value) {
         if (value == null || !mounted) return;
-        final msg = switch (_lastActionWasApprove) {
-          true => context.locale.approved,
-          false => context.locale.rejection,
+        final msg = switch (_lastAction) {
+          _LeaveAction.approve => context.locale.approved,
+          _LeaveAction.reject => context.locale.rejection,
+          _LeaveAction.cancel => context.locale.cancelled,
         };
         AppSnackBar.showSuccess(context, msg);
-        if (context.canPop()) {
-          context.pop();
-        } else {
-          context.goNamed(Routes.leaveRequests);
-        }
+        // WHY not pop: the page may have been opened from a notification or a
+        // deep link, where popping leaves the leave pages altogether.
+        context.goNamed(Routes.leaveRequests);
       },
       error: (e, _) {
-        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+        AppSnackBar.showError(context, e.localizedMessage(context));
       },
     );
   }
@@ -106,19 +110,23 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                   ),
                 ),
               ),
-              if (request.canAction) ...[
+              if (request.canAction)
+                LeaveDetailsActionBar(
+                  leaveRequest: request,
+                  onActionStarted: (isApprove) => _lastAction = isApprove
+                      ? _LeaveAction.approve
+                      : _LeaveAction.reject,
+                )
+              else if (request.canCancel(
+                ref.read(getCurrentUserUseCaseProvider).call()?.id,
+              ))
                 PermissionGate(
-                  permissions: const [
-                    UserPermission.leaveApproveSupervisor,
-                    UserPermission.leaveApproveManager,
-                  ],
-                  child: LeaveDetailsActionBar(
-                    leaveRequest: request,
-                    onActionStarted: (isApprove) =>
-                        _lastActionWasApprove = isApprove,
+                  permissions: const [UserPermission.leaveCancel],
+                  child: LeaveDetailsCancelBar(
+                    leaveRequestId: request.id,
+                    onActionStarted: () => _lastAction = _LeaveAction.cancel,
                   ),
                 ),
-              ],
             ],
           );
         },

@@ -39,6 +39,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
 
   Future<void> _onStartTap(TaskEntity task) async {
     await ref.read(taskDetailProvider.notifier).startIssue(issueId: task.id);
+    ref.read(tasksProvider.notifier).refresh();
     if (mounted) {
       await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
     }
@@ -49,13 +50,16 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
   }
 
   Future<void> _onCompleteTap(TaskEntity task) async {
-    if (!task.proofRequiredOnComplete || task.status != TaskStatus.inProgress || task.media.isNotEmpty) {
+    if (!task.proofRequiredOnComplete ||
+        task.status != TaskStatus.inProgress ||
+        task.hasCompletionProof) {
       try {
         final completedTask = await ref
             .read(taskDetailProvider.notifier)
             .completeIssue(issueId: task.id);
         if (completedTask == null) return;
         ref.read(tasksProvider.notifier).replaceTask(completedTask);
+        ref.read(tasksProvider.notifier).refresh();
         await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
       } catch (_) {
         // Error already surfaced via AsyncValue.error on taskDetailProvider
@@ -86,6 +90,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
             return;
           }
           ref.read(tasksProvider.notifier).replaceTask(completedTask);
+          ref.read(tasksProvider.notifier).refresh();
           await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
           if (!context.mounted) return;
           Navigator.of(context).pop();

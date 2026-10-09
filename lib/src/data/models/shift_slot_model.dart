@@ -157,6 +157,8 @@ class ShiftSlotModel with ShiftSlotModelMappable {
     this.supervisorNameBn,
     this.attendants = const [],
     this.weeklyRosterId,
+    this.checkInWindowAfterMinutes,
+    this.checkOutWindowAfterMinutes,
   });
 
   @MappableField(key: 'shift_slot_id')
@@ -184,6 +186,13 @@ class ShiftSlotModel with ShiftSlotModelMappable {
   final List<SlotAttendantModel> attendants;
   @MappableField(key: 'roster_id')
   final int? weeklyRosterId;
+
+  /// Grace periods: a check-in later than start plus this, or a check-out
+  /// later than end plus this, is late and needs a reason.
+  @MappableField(key: 'check_in_window_after_minutes')
+  final int? checkInWindowAfterMinutes;
+  @MappableField(key: 'check_out_window_after_minutes')
+  final int? checkOutWindowAfterMinutes;
 
   static const fromJson = ShiftSlotModelMapper.fromJson;
 }

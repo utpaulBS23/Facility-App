@@ -35,7 +35,7 @@ class _ClaimExpenseTotalBar extends StatelessWidget {
                 ),
               ),
               Text(
-                '${totalDistanceKm.toStringAsFixed(1)} km',
+                context.locale.distanceKmValue(context.numbers.decimal(totalDistanceKm, 1)),
                 style: context.textStyle.titleMedium.copyWith(
                   color: context.color.text.primary,
                 ),
@@ -53,7 +53,7 @@ class _ClaimExpenseTotalBar extends StatelessWidget {
                 ),
               ),
               Text(
-                totalPrice.toStringAsFixed(2),
+                context.numbers.decimal(totalPrice, 2),
                 style: context.textStyle.titleMedium.copyWith(
                   color: context.color.text.primary,
                 ),

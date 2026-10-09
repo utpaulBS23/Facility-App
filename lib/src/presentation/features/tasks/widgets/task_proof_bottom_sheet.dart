@@ -114,13 +114,13 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
       width: 72,
       height: 72,
       decoration: BoxDecoration(
-        color: context.color.errorAlt,
+        color: context.color.brandAccent,
         shape: BoxShape.circle,
       ),
       child: Icon(
         Icons.camera_alt_outlined,
         size: 32,
-        color: context.color.error,
+        color: context.color.primary,
       ),
     ),
     Gap(spacing.s16),
@@ -143,7 +143,7 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
     FilledButton(
       onPressed: () => _pickImage(ImageSource.camera),
       style: FilledButton.styleFrom(
-        backgroundColor: context.color.error,
+        backgroundColor: context.color.primary,
         foregroundColor: context.color.onPrimary,
       ),
       child: Text(context.locale.takePhoto),
@@ -152,8 +152,8 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
     OutlinedButton(
       onPressed: () => _pickImage(ImageSource.gallery),
       style: OutlinedButton.styleFrom(
-        foregroundColor: context.color.error,
-        side: BorderSide(color: context.color.error),
+        foregroundColor: context.color.primary,
+        side: BorderSide(color: context.color.primary),
       ),
       child: Text(context.locale.gallery),
     ),

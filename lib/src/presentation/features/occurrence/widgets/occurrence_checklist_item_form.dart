@@ -452,7 +452,7 @@ class _ItemOrderBadge extends StatelessWidget {
         borderRadius: .circular(radius.r6),
       ),
       alignment: .center,
-      child: LabelLargeText('$order', color: context.color.text.primary),
+      child: LabelLargeText(context.numbers.number(order), color: context.color.text.primary),
     );
   }
 }

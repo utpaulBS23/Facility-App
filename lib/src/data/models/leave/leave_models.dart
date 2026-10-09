@@ -216,6 +216,8 @@ class LeaveRequestModel with LeaveRequestModelMappable {
     this.coverAttendant,
     this.attachments = const [],
     this.currentStep,
+    this.currentPermission,
+    this.currentStepLabel,
     this.canAction,
     this.shifts = const [],
     this.approvalSteps = const [],
@@ -238,6 +240,8 @@ class LeaveRequestModel with LeaveRequestModelMappable {
   final LeaveApplicantModel? coverAttendant;
   final List<String> attachments;
   final int? currentStep;
+  final String? currentPermission;
+  final String? currentStepLabel;
   final bool? canAction;
   final List<LeaveShiftDetailModel> shifts;
   final List<LeaveApprovalStepModel> approvalSteps;

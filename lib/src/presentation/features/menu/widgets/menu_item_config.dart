@@ -191,7 +191,7 @@ final List<MenuItemConfig> menuItemConfigs = [
 /// fixed regardless of the permission-filtered list order.
 final notificationMenuItemConfig = MenuItemConfig(
   iconOverride: Assets.icons.notificationIcon,
-  route: Routes.notification,
+  route: Routes.notificationSettings,
   permissions: [UserPermission.notificationSettings],
 );
 

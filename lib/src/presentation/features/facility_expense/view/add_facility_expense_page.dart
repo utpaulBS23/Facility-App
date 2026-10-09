@@ -14,6 +14,7 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/submit_expense_provider/expense_dropdowns_provider.dart';
@@ -21,12 +22,12 @@ import '../riverpod/submit_expense_provider/selected_expense_category_provider.d
 import '../riverpod/submit_expense_provider/selected_expense_facility_provider.dart';
 import '../riverpod/submit_expense_provider/selected_expense_paid_by_provider.dart';
 import '../riverpod/submit_expense_provider/submit_facility_expense_provider.dart';
+import '../../../../core/utils/digits.dart';
 
 part '../widgets/add_expense_action_buttons.dart';
 part '../widgets/add_expense_body.dart';
 part '../widgets/expense_category_list_sheet.dart';
 part '../widgets/expense_category_section.dart';
-part '../widgets/expense_dropdown_field.dart';
 part '../widgets/expense_facility_list_sheet.dart';
 part '../widgets/expense_facility_section.dart';
 part '../widgets/expense_master_data_selector.dart';
@@ -73,7 +74,7 @@ class _AddFacilityExpensePageState
     final category = ref.read(selectedExpenseCategoryProvider);
     final facilityId = ref.read(selectedExpenseFacilityProvider);
     final paidBy = ref.read(selectedExpensePaidByProvider);
-    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
+    final amount = Digits.parseDouble(_amountController.text.trim()) ?? 0;
 
     final categoryOk = category != null;
     final facilityOk = facilityId != null;

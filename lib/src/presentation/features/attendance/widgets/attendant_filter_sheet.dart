@@ -26,7 +26,7 @@ class _AttendantFilterSheet extends ConsumerWidget {
         title: context.locale.attendant,
         options: [
           (value: null, label: context.locale.all),
-          for (final member in staff) (value: member.id, label: member.name),
+          for (final member in staff) (value: member.id, label: member.localizedName(context.languageCode)),
         ],
         isSelected: (value) => value == selectedUserId,
       ),

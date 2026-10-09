@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ShiftStockCountItemFormEntry {
   ShiftStockCountItemFormEntry({
@@ -15,7 +16,11 @@ class ShiftStockCountItemFormEntry {
   final String unit;
   final TextEditingController qtyController;
 
+  /// Optional photo for this line; uploaded with the count.
+  final ValueNotifier<XFile?> photo = ValueNotifier(null);
+
   void dispose() {
     qtyController.dispose();
+    photo.dispose();
   }
 }

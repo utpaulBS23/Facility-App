@@ -14,6 +14,7 @@ extension UserModelToEntity on UserModel {
     permissionVersion: permissionVersion,
     twoFactorEnabled: twoFactorEnabled,
     profileImage: profileImage,
+    role: UserRole.fromKey(roleKey),
   );
 }
 

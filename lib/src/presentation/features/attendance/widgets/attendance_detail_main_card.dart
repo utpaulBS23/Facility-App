@@ -61,14 +61,14 @@ class _AttendanceDetailMainCard extends StatelessWidget {
           _DetailRow(
             icon: Icons.access_time_outlined,
             label: context.locale.hoursWorked,
-            value: DurationFormatter.hoursToHm(detail.durationHours),
+            value: DurationFormatter.localized(context, detail.durationHours),
           ),
           if (detail.shift != null) ...[
             Gap(spacing.s16),
             _DetailRow(
               icon: Icons.work_outline_rounded,
               label: context.locale.shiftType,
-              value: detail.shift!.shiftType,
+              value: detail.shift!.localizedShiftType(context.languageCode),
             ),
             Gap(spacing.s16),
             _DetailRow(

@@ -43,10 +43,12 @@ class _IncomeTypeSection extends ConsumerWidget {
         context.locale.selectIncomeType,
         color: context.color.error,
       ),
-      data: (options) => _DropdownField(
+      data: (options) => FormSelectorCard.text(
+      title: context.locale.selectIncomeType,
+      icon: Icons.category_outlined,
         value: incomeType?.localizedLabel(context.languageCode),
-        hint: context.locale.selectIncomeType,
-        hasError: hasError,
+        placeholder: context.locale.selectIncomeType,
+        errorText: hasError ? context.locale.fieldRequired : null,
         onTap: enabled && options.isNotEmpty
             ? () => _onTap(context, ref)
             : null,

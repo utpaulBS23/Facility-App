@@ -106,7 +106,7 @@ class _StatTile extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              '$value',
+              context.numbers.number(value),
               style: context.textStyle.titleMedium.copyWith(
                 color: context.color.text.primary,
               ),

@@ -11,7 +11,6 @@ import '../../../../domain/entities/toilet_location/toilet_filter.dart';
 import '../../../../domain/entities/toilet_location/toilet_list_page_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/category_filter_chips.dart';
@@ -67,14 +66,6 @@ class _ToiletLocationPageState extends ConsumerState<ToiletLocationPage> {
     );
   }
 
-  void _onBack(BuildContext context) {
-    if (context.canPop()) {
-      context.pop();
-    } else {
-      context.goNamed(Routes.shift);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final toiletsAsync = ref.watch(toiletsProvider);
@@ -84,7 +75,6 @@ class _ToiletLocationPageState extends ConsumerState<ToiletLocationPage> {
       appBar: MenuItemAppBar(
         itemKey: MenuItemKey.toiletLocation,
         fallbackTitle: context.locale.toiletLocation,
-        onBack: () => _onBack(context),
       ),
       body: _ToiletLocationBody(
         toiletsAsync: toiletsAsync,

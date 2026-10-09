@@ -38,7 +38,7 @@ class _VerifyItemsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${context.locale.itemsNeeded} ($totalCount)',
+                '${context.locale.itemsNeeded} (${context.numbers.number(totalCount)})',
                 style: context.textStyle.titleMedium.copyWith(
                   color: color.text.primary,
                   fontWeight: FontWeight.bold,
@@ -129,7 +129,7 @@ class _VerifyItemsCard extends StatelessWidget {
                           ),
                           Gap(spacing.s8),
                           Text(
-                            '${item.qtyReceived.toInt()}/${item.qtyExpected.toInt()}',
+                            '${context.numbers.integer(item.qtyReceived)}/${context.numbers.integer(item.qtyExpected)}',
                             style: context.textStyle.titleMedium.copyWith(
                               color: color.text.primary,
                               fontWeight: FontWeight.bold,

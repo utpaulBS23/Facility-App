@@ -44,6 +44,14 @@ abstract class Failure with _$Failure {
     required String message,
     String? code,
     StackTrace? stackTrace,
+    // WHY: the backend sends a Bangla copy of its message (`message_bn`)
+    // so the app shows localized text without its own translation table.
+    String? messageBn,
+    // WHY: on a 422 the generic `message` ("The given data was invalid.")
+    // says nothing; the first entry of `errors` / `errors_bn` names the
+    // actual problem and is what the user should read.
+    String? detail,
+    String? detailBn,
     // WHY: distinguishes the client-side permission gate (message is a dev
     // string, never UI copy) from a real server 403 (message is backend
     // copy, safe to show). See FailureLocalization.forbidden.
@@ -90,9 +98,9 @@ abstract class Failure with _$Failure {
 
   factory Failure.mapExceptionToFailure(Object e) {
     if (e is DioException) {
-      ({String message, String? code})? error = _parseError(e.response);
+      final error = _parseError(e.response);
 
-      return switch (e.type) {
+      final failure = switch (e.type) {
         DioExceptionType.connectionTimeout => Failure(
           type: FailureType.timeout,
           message:
@@ -152,6 +160,12 @@ abstract class Failure with _$Failure {
           stackTrace: e.stackTrace,
         ),
       };
+
+      return failure.copyWith(
+        messageBn: error?.messageBn,
+        detail: error?.detail,
+        detailBn: error?.detailBn,
+      );
     }
 
     if (e is CustomException) {
@@ -208,7 +222,14 @@ abstract class Failure with _$Failure {
     return Failure(type: FailureType.unknown, message: e.toString());
   }
 
-  static ({String message, String? code})? _parseError(Response? response) {
+  static ({
+    String message,
+    String? code,
+    String? messageBn,
+    String? detail,
+    String? detailBn,
+  })?
+  _parseError(Response? response) {
     if (response == null) return null;
 
     try {
@@ -237,13 +258,38 @@ abstract class Failure with _$Failure {
           message = errorMap['message']?.toString() ?? 'Something went wrong';
         }
 
-        return (message: message, code: errorCode);
+        return (
+          message: message,
+          code: errorCode,
+          messageBn: _nonEmpty(errorMap['message_bn']),
+          detail: _firstError(errorMap['errors']),
+          detailBn: _firstError(errorMap['errors_bn']),
+        );
       }
     } catch (e, stackTrace) {
       Log.error(e.toString());
       Log.error(stackTrace.toString());
 
       return null;
+    }
+
+    return null;
+  }
+
+  static String? _nonEmpty(Object? value) =>
+      value is String && value.trim().isNotEmpty ? value : null;
+
+  /// First message of a Laravel `errors` / `errors_bn` map
+  /// (`{field: [message, ...]}`); null when absent or shaped otherwise.
+  static String? _firstError(Object? errors) {
+    if (errors is! Map) return null;
+    for (final messages in errors.values) {
+      if (messages is List) {
+        for (final message in messages) {
+          final text = _nonEmpty(message);
+          if (text != null) return text;
+        }
+      }
     }
 
     return null;

@@ -21,9 +21,9 @@ class FacilityAveragingListCard extends StatelessWidget {
     final color = context.color;
     final textStyle = context.textStyle;
 
-    final totalDemand = facility.monthlyTotalDemandQty % 1 == 0
-        ? facility.monthlyTotalDemandQty.toInt().toString()
-        : facility.monthlyTotalDemandQty.toString();
+    final totalDemand = context.numbers.number(
+      facility.monthlyTotalDemandQty,
+    );
 
     return Container(
       padding: EdgeInsets.all(spacing.s16),
@@ -63,7 +63,10 @@ class FacilityAveragingListCard extends StatelessWidget {
                 ),
                 Gap(spacing.s4),
                 Text(
-                  '${facility.itemCount} items  •  $totalDemand monthly demand',
+                  context.locale.facilityAveragingSummary(
+                    context.numbers.integer(facility.itemCount),
+                    totalDemand,
+                  ),
                   style: textStyle.bodySmall.copyWith(
                     color: color.text.secondary,
                   ),

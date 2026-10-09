@@ -1,13 +1,17 @@
 part of '../view/add_additional_income_page.dart';
 
-enum IncomeEntryType { rentAndOthers, productSell }
+enum IncomeEntryType { rentAndOthers, productSell, manualIncome }
 
 class _IncomeEntryTypeSwitch extends StatelessWidget {
   const _IncomeEntryTypeSwitch({
     required this.selectedType,
     required this.onTypeChanged,
+    required this.showManualIncome,
   });
 
+  /// Manual income is a cash-collection feature, shown only to users who can
+  /// view it.
+  final bool showManualIncome;
   final IncomeEntryType selectedType;
   final ValueChanged<IncomeEntryType> onTypeChanged;
 
@@ -26,6 +30,11 @@ class _IncomeEntryTypeSwitch extends StatelessWidget {
           value: IncomeEntryType.productSell,
           label: Text(context.locale.productSell),
         ),
+        if (showManualIncome)
+          ButtonSegment<IncomeEntryType>(
+            value: IncomeEntryType.manualIncome,
+            label: Text(context.locale.manualIncome),
+          ),
       ],
       selected: {selectedType},
       showSelectedIcon: false,

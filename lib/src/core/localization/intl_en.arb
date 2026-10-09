@@ -36,6 +36,7 @@
     "description": "Error message for minimum length validation",
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -46,6 +47,7 @@
     "description": "Error message for maximum length validation",
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "20"
       }
@@ -155,6 +157,132 @@
   "noFaceDetected": "No face detected. Please retake the photo.",
   "photoCaptureFailed": "Photo capture failed",
   "tryAgain": "Try Again",
+  "photoTooLarge": "Photo must be 5 MB or smaller",
+  "manualIncome": "Manual Income",
+  "noManualIncomeFound": "No manual income entries found",
+  "entriesSubmitted": "Entries submitted",
+  "manualTotal": "Manual total",
+  "cashCollectedByService": "Cash collected, by service",
+  "selectFacilityToListServices": "Select a facility to list its services.",
+  "noServicesAtFacility": "No services are offered at this facility.",
+  "productSellingBdt": "Product selling (BDT)",
+  "rentingOthersBdt": "Renting & Others (BDT)",
+  "noteOptional": "Note (optional)",
+  "evidencePhoto": "Evidence photo",
+  "totalCounted": "Total counted",
+  "saveIncomeEntry": "Save entry",
+  "manualIncomeSubmitted": "Manual income entry saved",
+  "notificationSettingsTitle": "Notification settings",
+  "pushAndEmail": "Push and email",
+  "notificationInfoBanner": "In-app notifications are always on and keep your read history. Critical alerts always send a push, so those switches are locked on.",
+  "alertCategories": "Alert categories",
+  "digestAndInfo": "Digest and info",
+  "pushLabel": "Push",
+  "emailLabel": "Email",
+  "statusOn": "On",
+  "statusOff": "Off",
+  "statusAlwaysOn": "Always on",
+  "statusDigestOnly": "Digest only",
+  "cameraDownTitle": "Camera and device down",
+  "cameraDownDescription": "First alert after 15 min offline. Re-sent at 1 hour if still down.",
+  "odourBreachTitle": "Odour breach",
+  "odourBreachDescription": "Immediate alert when a gas or moisture sensor crosses its threshold.",
+  "understaffedSlotTitle": "Understaffed slot and check-ins",
+  "understaffedSlotDescription": "Slot unfilled, or an attendant has not checked in, 15 min before or after shift start.",
+  "issueRaisedTitle": "Issue raised",
+  "issueRaisedDescription": "A new facility issue or ticket is created.",
+  "collectionVarianceTitle": "Collection variance",
+  "collectionVarianceDescription": "After shift close, when collection is outside the allowed tolerance.",
+  "stockLowTitle": "Stock low",
+  "stockLowDescription": "Supplies at a facility drop below the reorder level.",
+  "weeklyDigestTitle": "Weekly email digest",
+  "weeklyDigestDescription": "One summary email every Monday at 10:00 AM.",
+  "milestonesTitle": "Milestones and info",
+  "milestonesDescription": "Delivered in-app and in the 8:00 AM daily digest. These cannot be set per channel.",
+  "notificationRetention": "Notifications are kept for 90 days.",
+  "partnerOwnerRole": "Partner Owner",
+  "opsManagerRole": "Operations Manager",
+  "notificationSettingsSubtitle": "{role} · push and email",
+  "@notificationSettingsSubtitle": {
+    "description": "Subtitle under the notification settings title; role is the user's role name",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationsTitle": "Notifications",
+  "unreadCount": "{count} unread",
+  "@unreadCount": {
+    "description": "Number of unread notifications",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "filterUnread": "Unread",
+  "filterAlerts": "Alerts",
+  "filterWarnings": "Warnings",
+  "filterInfo": "Info",
+  "notificationsShowing": "Showing {shown} of {total} from the last 90 days",
+  "@notificationsShowing": {
+    "description": "How many notifications are listed out of all",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "total": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "notificationsShowingFiltered": "Showing {shown} from the last 90 days",
+  "@notificationsShowingFiltered": {
+    "description": "How many notifications match the filter",
+    "placeholders": {
+      "shown": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "markAllRead": "Mark all read",
+  "yesterday": "Yesterday",
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "description": "Number of items in a group",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "description": "Minutes since a notification",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "description": "Hours since a notification",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "noNotifications": "No notifications",
   "retry": "Retry",
   "manualAttendance": "Manual Attendance",
   "manualAttendanceDescription": "Submit attendance manually when camera is unavailable",
@@ -258,10 +386,12 @@
   "@slotCapacity": {
     "placeholders": {
       "assigned": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       },
       "max": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -271,6 +401,7 @@
   "@belowMinimumStaff": {
     "placeholders": {
       "min": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -290,6 +421,7 @@
   "@checkedInCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "2"
       }
@@ -299,6 +431,7 @@
   "@checkedOutCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -357,6 +490,7 @@
     "description": "Label showing number of shifts for the selected date",
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "3"
       }
@@ -391,6 +525,7 @@
   "@outOf": {
     "placeholders": {
       "max": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -520,6 +655,7 @@
   "@daysCount": {
     "placeholders": {
       "count": {
+        "format": "decimalPattern",
         "type": "int",
         "example": "1"
       }
@@ -652,8 +788,8 @@
   "occurrenceChecklistItemsCompleted": "{answered}/{total} answered",
   "@occurrenceChecklistItemsCompleted": {
     "placeholders": {
-      "answered": {"type": "int"},
-      "total": {"type": "int"}
+      "answered": {"type": "int", "format": "decimalPattern"},
+      "total": {"type": "int", "format": "decimalPattern"}
     }
   },
   "occurrenceAnswerSaved": "Answer saved.",
@@ -805,9 +941,11 @@
   "@verifiedCount": {
     "placeholders": {
       "verified": {
+        "format": "decimalPattern",
         "type": "int"
       },
       "total": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -869,6 +1007,7 @@
   "@resendIn": {
     "placeholders": {
       "seconds": {
+        "format": "decimalPattern",
         "type": "int"
       }
     }
@@ -935,7 +1074,7 @@
     }
   },
   "notAvailableYet": "Not yet available",
-  "monthlyProductRevenue": "Monthly Product Revenue",
+  "monthlyProductRevenue": "Product Revenue",
   "revenue": "Revenue",
   "totalProfit": "Total profit",
   "noProductSalesFound": "No product sales found",
@@ -1014,7 +1153,142 @@
     "description": "Description",
     "assignedTo": "Assigned To",
     "proofRequiredMessage": "For resolving this issue you have to submit proof",
+  "durationHours": "{count}h",
+  "@durationHours": {
+    "placeholders": { "count": { "type": "String", "example": "8" } }
+  },
+  "durationMinutes": "{count}m",
+  "@durationMinutes": {
+    "placeholders": { "count": { "type": "String", "example": "30" } }
+  },
+  "distanceKmValue": "{km} km",
+  "@distanceKmValue": {
+    "placeholders": { "km": { "type": "String", "example": "12.5" } }
+  },
+  "facilityAveragingSummary": "{items} items  •  {demand} monthly demand",
+  "@facilityAveragingSummary": {
+    "placeholders": {
+      "items": { "type": "String", "example": "12" },
+      "demand": { "type": "String", "example": "300" }
+    }
+  },
+  "allFacilities": "All facilities",
+  "clearFilters": "Clear filters",
+  "mapLegend": "Legend",
+  "attendantWorkingNow": "Working now",
+  "attendantFreeOffShift": "Free / off shift",
+  "attendantContractEnded": "Contract ended",
+  "attendantsWorking": "Attendants working",
+  "attendantsFree": "Attendants free",
+  "searchAttendantHint": "Search by name or ID",
+  "noLocationsToShow": "No locations to show",
+  "noLocationAvailable": "No location available",
+  "statusOnline": "Online",
+  "usersOnlineSummary": "{online} of {total} users online",
+  "@usersOnlineSummary": {
+    "placeholders": { "online": { "type": "String", "example": "5" }, "total": { "type": "String", "example": "5" } }
+  },
+  "geofenceLabel": "Geofence",
+  "geofenceInside": "Inside",
+  "geofenceOutside": "Outside",
+  "geofenceNotApplicable": "N/A",
+  "activityLabel": "Activity",
+  "gpsLabel": "GPS",
+  "batteryLabel": "Battery",
+  "lastSeenLabel": "Last seen",
+  "activityIdle": "Idle",
+  "activityOnShift": "On shift — checked in",
+  "activityOnSite": "On-site — checked in",
+  "activityVisitCompleted": "Visit completed",
+  "activityTraveling": "Traveling",
+  "noUsersMatchFilters": "No users match the current filters",
+  "metersValue": "{value} m",
+  "@metersValue": {
+    "placeholders": { "value": { "type": "String", "example": "5" } }
+  },
+  "openInMaps": "Open in Maps",
+  "callAttendant": "Call",
+  "uidLabel": "UID",
+  "partnerLabel": "Partner",
+  "addressLabel": "Address",
+  "currentLocationTab": "Current location",
+  "visitedRouteTab": "Visited route",
+  "selectUser": "Select user",
+  "selectUserToViewRoute": "Select a user to see their route",
+  "noTravelData": "No travel data for this day",
+  "noGpsTrail": "No GPS trail recorded",
+  "gpsPointsCount": "{count} GPS points",
+  "@gpsPointsCount": {
+    "placeholders": { "count": { "type": "String", "example": "12" } }
+  },
+  "travelClaimFiled": "Travel claim filed",
+  "staffShortage": "Staff shortage",
+  "assign": "Assign",
+  "seeAll": "See all",
+  "showLess": "Show less",
+  "showMoreFacilities": "Show {count} more {count, plural, =1{facility} other{facilities}}",
+  "@showMoreFacilities": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "male": "Male",
+  "female": "Female",
+  "alwaysOn": "Always on",
+  "toggleOn": "On",
+  "toggleOff": "Off",
+  "digestOnly": "Digest only",
+  "pushChannel": "Push",
+  "severityCritical": "Critical",
+  "targetVsAchievement": "Monthly target vs achievement",
+  "facilityExpense": "Facility expense",
+  "airQuality": "Air quality",
+  "issueSummary": "Issue summary",
+  "visitorsPerDay": "Visitors per day",
+  "executive": "Executive",
+  "totalFacility": "Total facility",
+  "monthlyTarget": "Monthly target",
+  "percentOfTarget": "{percent} of target",
+  "@percentOfTarget": {
+    "placeholders": { "percent": { "type": "String", "example": "83%" } }
+  },
   "settings": "Settings",
+  "earlyCheckOutNotice": "Your shift ends at {time}. Checking out before then needs a reason.",
+  "@earlyCheckOutNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "checkInWindowMessage": "Check-in opens at {opens}. On time until {deadline}; later needs approval.",
+  "@checkInWindowMessage": {
+    "placeholders": {
+      "opens": {
+        "type": "String"
+      },
+      "deadline": {
+        "type": "String"
+      }
+    }
+  },
+  "lateCheckInNotice": "You are past the on-time check-in window (until {time}). A supervisor must approve this check-in, and a reason is required.",
+  "@lateCheckInNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lateCheckOutNotice": "You are past the on-time check-out window (until {time}). This check-out will be reviewed, and a reason is required.",
+  "@lateCheckOutNotice": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "issueUpdatedSuccessfully": "Issue updated successfully",
+  "locationAlwaysAllowMessage": "Live location sharing needs location permission set to \"Allow all the time\".",
+  "openAppSettings": "Open app settings",
   "retry": "Retry"
 }
 

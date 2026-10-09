@@ -71,7 +71,7 @@ class _OccurrenceStatItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '$count',
+              context.numbers.number(count),
               style: context.textStyle.labelLarge.copyWith(
                 color: context.color.text.primary,
               ),

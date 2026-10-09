@@ -21,26 +21,34 @@ class _ShiftFab extends ConsumerWidget {
       // scoped to the currently filtered facility, so the active slot (which
       // isn't filter-scoped) can live only under `data.facilities` — same gap
       // `SlotDetailsPage._onAssignStaff` already works around.
-      int? attendanceId;
+      SlotAttendanceEntity? attendance;
       for (final slot in data.slots) {
         if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-          attendanceId = slot.me?.attendance?.id;
+          attendance = slot.me?.attendance;
           break;
         }
       }
-      if (attendanceId == null) {
+      if (attendance?.id == null) {
         outer:
         for (final facility in data.facilities) {
           for (final slot in facility.slots) {
             if (slot.shiftSlotId == activeSlot.shiftSlotId) {
-              attendanceId = slot.me?.attendance?.id;
+              attendance = slot.me?.attendance;
               break outer;
             }
           }
         }
       }
+      final attendanceId = attendance?.id;
       if (attendanceId == null) return;
-      context.pushNamed(Routes.shiftCheckOut, extra: attendanceId);
+      context.pushNamed(
+        Routes.shiftCheckOut,
+        extra: (
+          attendanceId: attendanceId,
+          checkInDate: attendance?.checkInTime,
+          shiftSlotId: activeSlot.shiftSlotId,
+        ),
+      );
       return;
     }
     context.pushNamed(
@@ -54,6 +62,10 @@ class _ShiftFab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // WHY heroTag null: the Scaffold keeps the old and the new FAB alive
+    // together while it swaps them (check-in, check-out, rosters), and the
+    // default tag is shared, so a push in that window throws "multiple heroes
+    // share the same tag". This FAB never needs a hero flight.
     final data = ref.watch(shiftSlotsProvider).valueOrNull;
     final activeSlot = data?.activeSlot;
     final requiredPermission = switch (activeSlot?.action) {
@@ -66,6 +78,7 @@ class _ShiftFab extends ConsumerWidget {
       return PermissionGate(
         permissions: [requiredPermission],
         child: FloatingActionButton.extended(
+          heroTag: null,
           onPressed: () => _onActiveSlotAction(context, data!),
           icon: Icon(
             activeSlot.action == SlotAction.checkIn
@@ -84,6 +97,7 @@ class _ShiftFab extends ConsumerWidget {
     return PermissionGate(
       permissions: [UserPermission.rosterView],
       child: FloatingActionButton(
+        heroTag: null,
         onPressed: onOpenRosters,
         child: const Icon(Icons.calendar_view_week_rounded),
       ),

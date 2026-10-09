@@ -73,7 +73,7 @@ class _IncomeListCard extends ConsumerWidget {
           ],
           Gap(spacing.s8),
           Text(
-            '৳${NumberFormatter.format(income.amount)}',
+            context.numbers.currency(income.amount),
             style: context.textStyle.headlineTiny.copyWith(
               color: context.color.primary,
             ),

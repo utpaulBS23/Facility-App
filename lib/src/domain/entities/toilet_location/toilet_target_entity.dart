@@ -29,8 +29,9 @@ class ToiletTargetEntity {
   /// been set for this toilet/month yet. Not an error state.
   final bool hasTarget;
 
-  double get achievedPercent =>
-      targetRevenue <= 0 ? 0 : (actualRevenue / targetRevenue * 100).clamp(0, 100);
+  double get achievedPercent => targetRevenue <= 0
+      ? 0
+      : (actualRevenue / targetRevenue * 100).clamp(0, 100);
 
   double get remainingAmount =>
       (targetRevenue - actualRevenue).clamp(0, double.infinity);

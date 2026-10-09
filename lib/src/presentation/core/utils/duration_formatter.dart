@@ -1,7 +1,12 @@
+import 'package:flutter/widgets.dart';
+
+import '../../../core/extensions/app_localization.dart';
+
 abstract final class DurationFormatter {
-  /// Decimal hours (`num` or numeric `String`, e.g. `0.63`) → zero-padded
-  /// `HH:MM` (e.g. `"00:38"`).
-  static String hoursToHm(Object? decimalHours) {
+  /// Decimal hours (`num` or numeric `String`, e.g. `7.5`) → localized
+  /// hours/minutes, dropping a zero part (`8h`, `7h 30m`, `45m`; Bangla
+  /// `৮ ঘণ্টা`, `৭ ঘণ্টা ৩০ মিনিট`). `—` when not a number.
+  static String localized(BuildContext context, Object? decimalHours) {
     final hours = switch (decimalHours) {
       final num n => n,
       final String s => num.tryParse(s),
@@ -12,6 +17,12 @@ abstract final class DurationFormatter {
     final totalMinutes = (hours * 60).round();
     final h = totalMinutes ~/ 60;
     final m = totalMinutes % 60;
-    return '${h.toString().padLeft(2, '0')}h ${m.toString().padLeft(2, '0')}m';
+    final l = context.locale;
+
+    final parts = [
+      if (h > 0) l.durationHours(context.numbers.integer(h)),
+      if (m > 0 || h == 0) l.durationMinutes(context.numbers.integer(m)),
+    ];
+    return parts.join(' ');
   }
 }

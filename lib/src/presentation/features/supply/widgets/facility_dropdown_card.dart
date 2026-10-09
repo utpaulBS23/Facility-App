@@ -30,63 +30,17 @@ class _FacilityDropdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-    final color = context.color;
     final selectedName = facilities
         .where((f) => f.id == selectedFacilityId)
         .firstOrNull
-        ?.name;
+        ?.localizedName(context.languageCode);
 
-    return GestureDetector(
+    return FormSelectorCard.text(
+      title: context.locale.facility,
+      icon: Icons.location_on_outlined,
+      value: selectedName,
+      placeholder: context.locale.selectFacility,
       onTap: () => _onTap(context),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: spacing.s16,
-          vertical: spacing.s12,
-        ),
-        decoration: BoxDecoration(
-          color: color.onPrimary,
-          border: Border.all(color: color.borderSubtle),
-          borderRadius: BorderRadius.circular(radius.r12),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.location_on_outlined,
-              color: color.text.secondary,
-              size: spacing.s20,
-            ),
-            Gap(spacing.s12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.locale.facility,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: color.text.secondary,
-                    ),
-                  ),
-                  Gap(spacing.s2),
-                  Text(
-                    selectedName ?? context.locale.selectFacility,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textStyle.labelLarge.copyWith(
-                      color: color.text.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: color.text.secondary,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

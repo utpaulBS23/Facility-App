@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import '../../../../domain/entities/stock/facility_stock_target_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/utils/digits.dart';
 
 class QtyItemCard extends StatefulWidget {
   const QtyItemCard({
@@ -31,7 +32,7 @@ class _QtyItemCardState extends State<QtyItemCard> {
   }
 
   void _onChanged(String value) {
-    final qty = double.tryParse(value);
+    final qty = Digits.parseDouble(value);
     if (qty != null) {
       widget.onQtyChanged(qty);
     }

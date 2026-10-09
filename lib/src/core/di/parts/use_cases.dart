@@ -507,6 +507,67 @@ CreateAdditionalIncomeUseCase createAdditionalIncomeUseCase(Ref ref) {
 }
 
 @riverpod
+GetCashCollectionsUseCase getCashCollectionsUseCase(Ref ref) {
+  return GetCashCollectionsUseCase(
+    cashCollectionRepository: ref.read(cashCollectionRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateCashCollectionUseCase createCashCollectionUseCase(Ref ref) {
+  return CreateCashCollectionUseCase(
+    cashCollectionRepository: ref.read(cashCollectionRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityServicesUseCase getFacilityServicesUseCase(Ref ref) {
+  return GetFacilityServicesUseCase(
+    cashCollectionRepository: ref.read(cashCollectionRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetNotificationPreferencesUseCase getNotificationPreferencesUseCase(Ref ref) {
+  return GetNotificationPreferencesUseCase(
+    ref.read(notificationPreferencesRepositoryProvider),
+  );
+}
+
+@riverpod
+SetNotificationPreferenceUseCase setNotificationPreferenceUseCase(Ref ref) {
+  return SetNotificationPreferenceUseCase(
+    ref.read(notificationPreferencesRepositoryProvider),
+  );
+}
+
+@riverpod
+GetAppNotificationsUseCase getAppNotificationsUseCase(Ref ref) {
+  return GetAppNotificationsUseCase(
+    ref.read(appNotificationsRepositoryProvider),
+  );
+}
+
+@riverpod
+MarkAppNotificationReadUseCase markAppNotificationReadUseCase(Ref ref) {
+  return MarkAppNotificationReadUseCase(
+    ref.read(appNotificationsRepositoryProvider),
+  );
+}
+
+@riverpod
+MarkAllAppNotificationsReadUseCase markAllAppNotificationsReadUseCase(
+  Ref ref,
+) {
+  return MarkAllAppNotificationsReadUseCase(
+    ref.read(appNotificationsRepositoryProvider),
+  );
+}
+
+@riverpod
 GetProductCatalogDropdownUseCase getProductCatalogDropdownUseCase(Ref ref) {
   return GetProductCatalogDropdownUseCase(
     productCatalogRepository: ref.read(productCatalogRepositoryProvider),
@@ -608,6 +669,11 @@ ReportIssueUseCase reportIssueUseCase(Ref ref) {
 }
 
 @riverpod
+UpdateIssueUseCase updateIssueUseCase(Ref ref) {
+  return UpdateIssueUseCase(ref.read(visitRepositoryProvider));
+}
+
+@riverpod
 GetProblemCategoriesUseCase getProblemCategoriesUseCase(Ref ref) {
   return GetProblemCategoriesUseCase(ref.read(visitRepositoryProvider));
 }
@@ -654,8 +720,63 @@ InstallApkUseCase installApkUseCase(Ref ref) {
 }
 
 @riverpod
+GetFacilityMapUseCase getFacilityMapUseCase(Ref ref) {
+  return GetFacilityMapUseCase(
+    facilityMapRepository: ref.read(facilityMapRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLivePositionsUseCase getLivePositionsUseCase(Ref ref) {
+  return GetLivePositionsUseCase(
+    userTrackingRepository: ref.read(userTrackingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetUserRouteUseCase getUserRouteUseCase(Ref ref) {
+  return GetUserRouteUseCase(
+    userTrackingRepository: ref.read(userTrackingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetDashboardUseCase getDashboardUseCase(Ref ref) {
+  return GetDashboardUseCase(
+    dashboardRepository: ref.read(dashboardRepositoryProvider),
+  );
+}
+
+@riverpod
 GetToiletsUseCase getToiletsUseCase(Ref ref) {
   return GetToiletsUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetToiletDetailsUseCase getToiletDetailsUseCase(Ref ref) {
+  return GetToiletDetailsUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityMonthlyReportUseCase getFacilityMonthlyReportUseCase(Ref ref) {
+  return GetFacilityMonthlyReportUseCase(
+    toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityWiseReportUseCase getFacilityWiseReportUseCase(Ref ref) {
+  return GetFacilityWiseReportUseCase(
     toiletLocationRepository: ref.read(toiletLocationRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );

@@ -59,7 +59,7 @@ class _SlotDetailContractCard extends StatelessWidget {
             _DateTimeTile(
               icon: Icons.calendar_today_outlined,
               label: context.locale.date,
-              value: DateFormatter.shiftDate(parsedDate),
+              value: DateFormatter.shiftDateWithYear(parsedDate),
             ),
             Gap(spacing.s8),
           ],
@@ -77,7 +77,7 @@ class _SlotDetailContractCard extends StatelessWidget {
                 child: _DateTimeTile(
                   icon: Icons.hourglass_bottom_outlined,
                   label: context.locale.duration,
-                  value: '${slot.durationHours}h',
+                  value: DurationFormatter.localized(context, slot.durationHours),
                 ),
               ),
             ],

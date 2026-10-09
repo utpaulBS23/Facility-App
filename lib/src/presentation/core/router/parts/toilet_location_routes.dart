@@ -15,5 +15,13 @@ List<GoRoute> _toiletLocationRoutes(Ref ref) {
         return ToiletDetailsPage(facilityId: id);
       },
     ),
+    GoRoute(
+      path: Routes.toiletEarningReport,
+      name: Routes.toiletEarningReport,
+      builder: (context, state) {
+        final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return ToiletEarningReportPage(facilityId: id);
+      },
+    ),
   ];
 }

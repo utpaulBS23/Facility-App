@@ -57,8 +57,7 @@ class _ToiletLocationBody extends StatelessWidget {
               ToiletListFilter.active =>
                 '${context.locale.open} (${toiletsAsync.valueOrNull?.summary.active ?? 0})',
               ToiletListFilter.inactive => context.locale.close,
-              ToiletListFilter.maintenance =>
-                context.locale.underConstruction,
+              ToiletListFilter.maintenance => context.locale.underConstruction,
             },
           ),
         ),
@@ -74,8 +73,8 @@ class _ToiletLocationBody extends StatelessWidget {
               final toilets = query.isEmpty
                   ? page.list.items
                   : page.list.items
-                      .where((f) => f.name.toLowerCase().contains(query))
-                      .toList();
+                        .where((f) => f.name.toLowerCase().contains(query))
+                        .toList();
 
               if (toilets.isEmpty) {
                 return Center(

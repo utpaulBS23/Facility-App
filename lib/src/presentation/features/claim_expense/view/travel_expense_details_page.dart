@@ -91,7 +91,7 @@ class _TravelExpenseDetailsBody extends StatelessWidget {
                 ),
                 Gap(spacing.s12),
                 Text(
-                  '৳${expense.claimedAmount.toStringAsFixed(0)}',
+                  context.numbers.currency(expense.claimedAmount.round()),
                   style: context.textStyle.displaySmall.copyWith(
                     color: color.primary,
                     fontWeight: FontWeight.bold,

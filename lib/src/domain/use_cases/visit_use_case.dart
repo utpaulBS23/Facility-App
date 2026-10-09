@@ -192,6 +192,29 @@ final class ReportIssueUseCase {
   }
 }
 
+final class UpdateIssueUseCase {
+  UpdateIssueUseCase(this._repository);
+
+  final VisitRepository _repository;
+
+  Future<Result<ReportIssueResponseEntity, Failure>> call({
+    required int partnerId,
+    required int issueId,
+    required ReportIssueRequestEntity request,
+  }) async {
+    final result = await _repository.updateIssue(
+      partnerId: partnerId,
+      issueId: issueId,
+      request: request,
+    );
+    return switch (result) {
+      Success(:final data) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('update issue')),
+    };
+  }
+}
+
 final class WatchVisitSubmittedUseCase {
   const WatchVisitSubmittedUseCase(this._repository);
 

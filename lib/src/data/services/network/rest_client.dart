@@ -308,6 +308,20 @@ abstract class RestClient {
   });
 
   @PATCH(Endpoints.issueDetail)
+  Future<HttpResponse> updateIssue({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+    @Body() required Map<String, dynamic> body,
+  });
+
+  @POST(Endpoints.issueDetail)
+  Future<HttpResponse> updateIssueWithPhoto({
+    @Path('partnerId') required int partnerId,
+    @Path('issueId') required int issueId,
+    @Body() required FormData formData,
+  });
+
+  @PATCH(Endpoints.issueDetail)
   Future<HttpResponse> updateIssueAssignment({
     @Path('partnerId') required int partnerId,
     @Path('issueId') required int issueId,
@@ -366,6 +380,9 @@ abstract class RestClient {
   Future<HttpResponse> getAdditionalIncomes({
     @Path('partnerId') required int partnerId,
     @Query('facility_id') int? facilityId,
+    @Query('status') String? status,
+    @Query('from') String? from,
+    @Query('to') String? to,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
@@ -486,6 +503,93 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
+  @GET(Endpoints.facilityDetails)
+  Future<HttpResponse> getFacilityDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+  });
+
+  @GET(Endpoints.facilityMap)
+  Future<HttpResponse> getFacilityMap({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') int? facilityId,
+  });
+
+  @GET(Endpoints.livePositions)
+  Future<HttpResponse> getLivePositions({
+    @Path('partnerId') required int partnerId,
+    @Query('per_page') int? perPage,
+    @Query('page') int? page,
+  });
+
+  @GET(Endpoints.dashboard)
+  Future<HttpResponse> getDashboard({@Query('month') String? month});
+
+  @GET(Endpoints.userRoutes)
+  Future<HttpResponse> getUserRoutes({
+    @Path('partnerId') required int partnerId,
+    @Query('user_id') required int userId,
+    @Query('date') required String date,
+    @Query('task_id') int? taskId,
+  });
+
+  @GET(Endpoints.cashCollections)
+  Future<HttpResponse> getCashCollections({
+    @Path('partnerId') required int partnerId,
+    @Query('month') String? month,
+    @Query('facility_id') int? facilityId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.cashCollections)
+  Future<HttpResponse> createCashCollection({
+    @Path('partnerId') required int partnerId,
+    @Body() required FormData formData,
+  });
+
+  @GET(Endpoints.facilityServices)
+  Future<HttpResponse> getFacilityServices({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
+  });
+
+  @GET(Endpoints.facilityAccesses)
+  Future<HttpResponse> getFacilityAccesses({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.centerCollections)
+  Future<HttpResponse> getCenterCollections({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.transactions)
+  Future<HttpResponse> getTransactions({
+    @Path('partnerId') required int partnerId,
+    @Query('type') String? type,
+    @Query('from') String? from,
+    @Query('to') String? to,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.facilityWiseReport)
+  Future<HttpResponse> getFacilityWiseReport({
+    @Path('partnerId') required int partnerId,
+    @Query('month') required String month,
+    @Query('facility_id') int? facilityId,
+    @Query('group_id') int? groupId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.facilityWiseTargets)
   Future<HttpResponse> getFacilityWiseTargets({
     @Path('partnerId') required int partnerId,
@@ -593,7 +697,7 @@ abstract class RestClient {
   Future<HttpResponse> confirmDelivery({
     @Path('partnerId') required int partnerId,
     @Path('deliveryId') required int deliveryId,
-    @Body() Map<String, dynamic> body = const {},
+    @Body() required FormData formData,
   });
 
   @GET(Endpoints.deliveryComplaints)
@@ -616,7 +720,7 @@ abstract class RestClient {
   Future<HttpResponse> fileDeliveryComplaint({
     @Path('partnerId') required int partnerId,
     @Path('deliveryId') required int deliveryId,
-    @Body() required Map<String, dynamic> body,
+    @Body() required FormData formData,
   });
 
   @POST(Endpoints.approveDeliveryComplaint)
@@ -652,7 +756,7 @@ abstract class RestClient {
   Future<HttpResponse> submitShiftStockCount({
     @Path('partnerId') required int partnerId,
     @Path('shiftAssignmentId') required int shiftAssignmentId,
-    @Body() required Map<String, dynamic> body,
+    @Body() required FormData formData,
   });
 
   @GET(Endpoints.shiftStockCounts)

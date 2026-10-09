@@ -14,7 +14,6 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/utils/number_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -23,7 +22,7 @@ import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
-import '../widgets/item_stepper_input.dart';
+import '../../../core/widgets/item_stepper_input.dart';
 
 part '../widgets/dispatch_action_button.dart';
 part '../widgets/pending_action_buttons.dart';
@@ -80,7 +79,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
       context.pop();
     } else if (next.hasError) {
       if (!mounted) return;
-      AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      AppSnackBar.showError(context, next.error!.localizedMessage(context));
     }
   }
 
@@ -157,7 +156,7 @@ class _RequestDetailsPageState extends ConsumerState<RequestDetailsPage> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.goNamed(Routes.shift);
+      context.goNamed(Routes.supplyRequests);
     }
   }
 
