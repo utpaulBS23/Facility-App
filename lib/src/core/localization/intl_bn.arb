@@ -197,7 +197,6 @@
   "stockLowTitle": "স্টক কম",
   "stockLowDescription": "কোনো সুবিধায় সরবরাহ পুনঃঅর্ডার স্তরের নিচে নামলে।",
   "weeklyDigestTitle": "সাপ্তাহিক ইমেইল ডাইজেস্ট",
-  "weeklyDigestDescription": "প্রতি সোমবার সকাল ১০:০০টায় একটি সারসংক্ষেপ ইমেইল।",
   "milestonesTitle": "মাইলফলক ও তথ্য",
   "milestonesDescription": "অ্যাপের ভেতরে এবং সকাল ৮:০০টার দৈনিক ডাইজেস্টে পাঠানো হয়। এগুলো চ্যানেল অনুযায়ী ঠিক করা যায় না।",
   "notificationRetention": "নোটিফিকেশন {days} দিন সংরক্ষণ করা হয়।",
@@ -787,17 +786,6 @@
   "doorLockSubtitle": "স্মার্ট ডোর লক নিয়ন্ত্রণ করুন",
   "expenseEntrySubtitle": "ফ্যাসিলিটির পরিচালনা সংক্রান্ত খরচ রেকর্ড করুন",
   "notificationSubtitle": "ফ্যাসিলিটির নোটিফিকেশন এবং আপডেট দেখুন",
-  "pushNotifications": "পুশ নোটিফিকেশন",
-  "pushNotificationsSubtitle": "ফ্যাসিলিটির কার্যক্রম সম্পর্কে সতর্কতা পান",
-  "notificationChannels": "নোটিফিকেশন চ্যানেল",
-  "taskChannel": "টাস্ক",
-  "taskChannelSubtitle": "টাস্ক এবং কার্যক্রমের আপডেট",
-  "attendanceLeaveChannel": "উপস্থিতি ও ছুটি",
-  "attendanceLeaveChannelSubtitle": "চেক-ইন/আউট এবং ছুটির আবেদনের আপডেট",
-  "issueChannel": "সমস্যা রিপোর্ট",
-  "issueChannelSubtitle": "রিপোর্ট করা ফ্যাসিলিটির সমস্যা এবং তার অবস্থা",
-  "supplyChannel": "সরবরাহ ও ডেলিভারি",
-  "supplyChannelSubtitle": "সরবরাহ অনুরোধ এবং ডেলিভারি ট্র্যাকিং",
   "profitReportSubtitle": "ফ্যাসিলিটির মুনাফা এবং আর্থিক রিপোর্ট দেখুন",
   "consumptionReportSubtitle": "স্টক ব্যবহার এবং খরচ ট্র্যাক করুন",
   "facilityLocationsSubtitle": "ফ্যাসিলিটির অবস্থানের মানচিত্র দেখুন",
@@ -1274,6 +1262,9 @@
   "approvalsTitle": "অনুমোদন",
   "approvalsDescription": "ছুটি বা সরবরাহের অনুরোধ আপনার অনুমোদনের অপেক্ষায় আছে, অথবা ২৪ ঘণ্টার বেশি অপেক্ষমাণ।",
   "ownRecordTitle": "আমার কাজ ও হাজিরা",
-  "ownRecordDescription": "আপনার নিজের হাজিরা রেকর্ড সংক্রান্ত আপডেট।"
+  "ownRecordDescription": "আপনার নিজের হাজিরা রেকর্ড সংক্রান্ত আপডেট।",
+  "notifValueCheckIn": "চেক-ইন",
+  "notifValueCheckOut": "চেক-আউট",
+  "notifValueLeave": "ছুটি",
+  "notifValueSupply": "সরবরাহ"
 }
-

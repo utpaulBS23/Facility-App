@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:facility_management_app/src/core/base/base.dart';
+import 'package:facility_management_app/src/data/models/notification/device_token_model.dart';
 import 'package:facility_management_app/src/data/repositories/device_token_repository_impl.dart';
 import 'package:facility_management_app/src/data/services/cache/cache_service.dart';
 import 'package:facility_management_app/src/data/services/network/rest_client.dart';
 import 'package:facility_management_app/src/domain/repositories/device_token_repository.dart';
 import 'package:facility_management_app/src/domain/repositories/push_notification_repository.dart';
-import 'package:facility_management_app/src/domain/use_cases/device_token_use_case.dart';
+import 'package:facility_management_app/src/domain/use_cases/notification/device_token_use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -34,8 +37,10 @@ DioException _status(int code) => DioException(
 class _FakeClient implements RestClient {
   final calls = <String>[];
   int nextId = 7;
+  String? lastPlatform;
   DioException? syncError;
   DioException? deleteError;
+  Completer<void>? deleteGate;
 
   HttpResponse _ok(Object data) => HttpResponse(
     data,
@@ -44,9 +49,10 @@ class _FakeClient implements RestClient {
 
   @override
   Future<HttpResponse> registerDeviceToken({
-    required Map<String, dynamic> body,
+    required DeviceTokenRequestModel body,
   }) async {
-    calls.add('register ${body['fcm_token']}');
+    calls.add('register ${body.fcmToken}');
+    lastPlatform = body.platform;
 
     return _ok({'id': nextId, 'platform': 'android'});
   }
@@ -66,6 +72,8 @@ class _FakeClient implements RestClient {
   @override
   Future<HttpResponse> deleteDeviceToken({required int id}) async {
     calls.add('delete $id');
+    final gate = deleteGate;
+    if (gate != null) await gate.future;
     final error = deleteError;
     if (error != null) throw error;
 
@@ -131,7 +139,11 @@ void main() {
     setUp(() {
       client = _FakeClient();
       cache = _MemoryCache();
-      repository = DeviceTokenRepositoryImpl(remote: client, local: cache);
+      repository = DeviceTokenRepositoryImpl(
+        remote: client,
+        local: cache,
+        platform: 'android',
+      );
     });
 
     test('registers, stores the id and syncs the topics', () async {
@@ -141,6 +153,12 @@ void main() {
       expect(client.calls, ['register token-a', 'sync 7']);
       expect(cache.get<int>(CacheKey.deviceTokenId), 7);
       expect(repository.isRegistered, isTrue);
+    });
+
+    test('registers with the platform the repository was given', () async {
+      await repository.register('token-a');
+
+      expect(client.lastPlatform, 'android');
     });
 
     test('a failed sync does not fail the registration', () async {
@@ -244,6 +262,25 @@ void main() {
 
       expect(result, isA<Success<void, Failure>>());
       expect(repository.isRegistered, isFalse);
+    });
+
+    test('a slow unregister does not erase a newer registration', () async {
+      await repository.register('token-a');
+      final slow = Completer<void>();
+      client.deleteGate = slow;
+
+      final unregistering = repository.unregister();
+      // Signed in again while the old delete is still on its way.
+      client.nextId = 9;
+      client.deleteGate = null;
+      await repository.register('token-b');
+      await Future<void>.delayed(Duration.zero);
+      expect(cache.get<int>(CacheKey.deviceTokenId), 9);
+
+      slow.complete();
+      await unregistering;
+
+      expect(cache.get<int>(CacheKey.deviceTokenId), 9);
     });
 
     test('unregister before registering makes no request', () async {

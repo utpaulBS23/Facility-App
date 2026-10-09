@@ -1,7 +1,7 @@
-import '../../core/base/failure.dart';
-import '../../core/base/result.dart';
-import '../entities/app_notification_entity.dart';
-import '../repositories/app_notifications_repository.dart';
+import '../../../core/base/failure.dart';
+import '../../../core/base/result.dart';
+import '../../entities/notification/app_notification_entity.dart';
+import '../../repositories/app_notifications_repository.dart';
 
 final class GetAppNotificationsUseCase {
   GetAppNotificationsUseCase(this._repository);
@@ -11,7 +11,18 @@ final class GetAppNotificationsUseCase {
   Future<Result<AppNotificationListEntity, Failure>> call({
     required AppNotificationFilter filter,
     required int page,
-  }) => _repository.getNotifications(filter: filter, page: page);
+  }) async {
+    final result = await _repository.getNotifications(
+      filter: filter,
+      page: page,
+    );
+
+    return switch (result) {
+      Success(:final data?) => Success(data: data),
+      Error(:final error) => Error(error),
+      _ => Error(Failure.emptyResponse('get notifications')),
+    };
+  }
 }
 
 final class MarkAppNotificationReadUseCase {

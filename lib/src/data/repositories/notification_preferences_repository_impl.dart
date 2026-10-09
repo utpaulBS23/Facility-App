@@ -1,6 +1,6 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
-import '../../domain/entities/notification_preference_entity.dart';
+import '../../domain/entities/notification/notification_preference_entity.dart';
 import '../../domain/repositories/notification_preferences_repository.dart';
 import '../extension/notification_preferences_mapper.dart';
 import '../models/notification/notification_preference_change_model.dart';

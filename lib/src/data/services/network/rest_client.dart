@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../models/notification/device_token_model.dart';
 import '../../models/notification/notification_preference_change_model.dart';
 import 'endpoints.dart';
 
@@ -874,7 +875,7 @@ abstract class RestClient {
 
   @POST(Endpoints.deviceTokens)
   Future<HttpResponse> registerDeviceToken({
-    @Body() required Map<String, dynamic> body,
+    @Body() required DeviceTokenRequestModel body,
   });
 
   @POST(Endpoints.deviceTokenTopicsSync)

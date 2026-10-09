@@ -1,5 +1,5 @@
-import '../entities/notification_payload_entity.dart';
-import '../repositories/push_notification_repository.dart';
+import '../../entities/notification/notification_payload_entity.dart';
+import '../../repositories/push_notification_repository.dart';
 
 class InitializePushNotificationUseCase {
   InitializePushNotificationUseCase(this._repository);

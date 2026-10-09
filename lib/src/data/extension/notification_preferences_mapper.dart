@@ -1,4 +1,4 @@
-import '../../domain/entities/notification_preference_entity.dart';
+import '../../domain/entities/notification/notification_preference_entity.dart';
 import '../models/notification/notification_preferences_model.dart';
 
 extension NotificationChannelSettingModelToEntity

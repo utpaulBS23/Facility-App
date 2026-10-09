@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../domain/entities/app_notification_entity.dart';
+import '../../../../domain/entities/notification/app_notification_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/text/typography.dart';

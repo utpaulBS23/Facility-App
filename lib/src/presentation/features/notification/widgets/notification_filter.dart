@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/app_notification_entity.dart';
+import '../../../../domain/entities/notification/app_notification_entity.dart';
 
 /// The chip labels above the inbox.
 extension AppNotificationFilterLabel on AppNotificationFilter {

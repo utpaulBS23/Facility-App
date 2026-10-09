@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/app_notification_entity.dart';
+import '../../../../domain/entities/notification/app_notification_entity.dart';
+import '../../../../domain/entities/notification/notification_category.dart';
 import '../../dashboard/widgets/dashboard_tone.dart';
 import '../../dashboard/widgets/notification_item.dart';
 
@@ -25,18 +26,20 @@ class NotificationListItem extends StatelessWidget {
     AppNotificationType.info => DashboardTone.blue,
   };
 
-  /// The icon key for a settings category; no category is the daily digest.
-  static String iconKind(String? category) => switch (category) {
-    'camera_down' => 'camera',
-    'odour_breach' => 'odour',
-    'staffing' => 'staffing',
-    'issue' => 'issue',
-    'variance' => 'variance',
-    'stock_low' => 'stock',
-    'approvals' => 'approval',
-    'own_record' => 'attendance',
-    _ => 'digest',
-  };
+  /// The dashboard icon key for a settings category. No category, or one the
+  /// app does not know, is the daily digest.
+  static String iconKind(String? category) =>
+      switch (NotificationCategory.fromKey(category)) {
+        NotificationCategory.cameraDown => 'camera',
+        NotificationCategory.odourBreach => 'odour',
+        NotificationCategory.staffing => 'staffing',
+        NotificationCategory.issue => 'issue',
+        NotificationCategory.variance => 'variance',
+        NotificationCategory.stockLow => 'stock',
+        NotificationCategory.approvals => 'approval',
+        NotificationCategory.ownRecord => 'attendance',
+        null => 'digest',
+      };
 
   static NotificationSeverity _severity(AppNotificationSeverity severity) =>
       switch (severity) {

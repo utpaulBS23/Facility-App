@@ -41,12 +41,10 @@ class AppNotificationEntity {
     required this.id,
     required this.type,
     required this.severity,
-    required this.source,
     required this.category,
     required this.title,
     required this.body,
     required this.data,
-    required this.facilityId,
     required this.createdAt,
     required this.isRead,
   });
@@ -55,18 +53,15 @@ class AppNotificationEntity {
   final AppNotificationType type;
   final AppNotificationSeverity severity;
 
-  /// Which trigger produced it, e.g. `understaffed_slot_urgent`. New sources
-  /// can appear on the server, so treat an unknown one generically.
-  final String source;
-
   /// The settings category key; null for the daily digest.
   final String? category;
   final String title;
   final String body;
 
-  /// Context fields for [source]. Display only, never for navigation.
+  /// Context fields for the trigger that produced it. Display only, never for
+  /// navigation. New triggers can appear on the server, so what is shown is
+  /// chosen by the field name, never by the trigger.
   final Map<String, dynamic> data;
-  final int? facilityId;
   final DateTime createdAt;
   final bool isRead;
 
@@ -75,12 +70,10 @@ class AppNotificationEntity {
       id: id,
       type: type,
       severity: severity,
-      source: source,
       category: category,
       title: title,
       body: body,
       data: data,
-      facilityId: facilityId,
       createdAt: createdAt,
       isRead: isRead ?? this.isRead,
     );
@@ -117,6 +110,72 @@ class AppNotificationListEntity {
   final int lastPage;
 
   bool get hasMore => page < lastPage;
+
+  /// Shows [id] as read, one fewer unread.
+  AppNotificationListEntity markedRead(int id) {
+    if (!items.any((item) => item.id == id && !item.isRead)) return this;
+
+    return copyWith(
+      items: [
+        for (final item in items)
+          item.id == id ? item.copyWith(isRead: true) : item,
+      ],
+      unreadCount: unreadCount > 0 ? unreadCount - 1 : 0,
+    );
+  }
+
+  /// Puts [id] back to unread. Does nothing for a row that is not shown as
+  /// read: a reload may already have restored it, with the right count.
+  AppNotificationListEntity markedUnread(int id) {
+    if (!items.any((item) => item.id == id && item.isRead)) return this;
+
+    return copyWith(
+      items: [
+        for (final item in items)
+          item.id == id ? item.copyWith(isRead: false) : item,
+      ],
+      unreadCount: unreadCount + 1,
+    );
+  }
+
+  /// Every shown row read, nothing unread.
+  AppNotificationListEntity allRead() {
+    return copyWith(
+      items: [for (final item in items) item.copyWith(isRead: true)],
+      unreadCount: 0,
+    );
+  }
+
+  /// Drops [id], for a notification the server no longer has.
+  AppNotificationListEntity without(int id) {
+    if (!items.any((item) => item.id == id)) return this;
+
+    return copyWith(
+      items: [
+        for (final item in items)
+          if (item.id != id) item,
+      ],
+      total: total > 0 ? total - 1 : 0,
+    );
+  }
+
+  /// This list followed by [next], the page after it. A row that is already
+  /// here is not added again, since new arrivals shift rows between pages.
+  AppNotificationListEntity appended(AppNotificationListEntity next) {
+    final seen = {for (final item in items) item.id};
+
+    return copyWith(
+      items: [
+        ...items,
+        for (final item in next.items)
+          if (!seen.contains(item.id)) item,
+      ],
+      total: next.total,
+      unreadCount: next.unreadCount,
+      page: next.page,
+      lastPage: next.lastPage,
+    );
+  }
 
   AppNotificationListEntity copyWith({
     List<AppNotificationEntity>? items,

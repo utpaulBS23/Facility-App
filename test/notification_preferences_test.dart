@@ -3,7 +3,7 @@ import 'package:facility_management_app/src/core/base/result.dart';
 import 'package:facility_management_app/src/core/di/dependency_injection.dart';
 import 'package:facility_management_app/src/data/extension/notification_preferences_mapper.dart';
 import 'package:facility_management_app/src/data/models/notification/notification_preferences_model.dart';
-import 'package:facility_management_app/src/domain/entities/notification_preference_entity.dart';
+import 'package:facility_management_app/src/domain/entities/notification/notification_preference_entity.dart';
 import 'package:facility_management_app/src/domain/repositories/notification_preferences_repository.dart';
 import 'package:facility_management_app/src/presentation/features/notification/riverpod/notification_preferences_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
