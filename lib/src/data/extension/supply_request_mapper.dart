@@ -186,6 +186,11 @@ extension DeliveryItemModelMapper on DeliveryItemModel {
       qtyReceived: qtyReceived,
       isVerified: isVerified,
       hasShortage: hasShortage,
+      hasComplaint: hasComplaint,
+      complaintId: complaintId,
+      complaintStatus: complaintStatus == null
+          ? null
+          : DeliveryComplaintStatus.fromWireString(complaintStatus),
     );
   }
 }
