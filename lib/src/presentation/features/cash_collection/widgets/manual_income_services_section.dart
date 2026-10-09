@@ -46,10 +46,10 @@ class ManualIncomeServicesSection extends StatelessWidget {
     }
 
     return async.when(
-      loading: () => const Center(
+      loading: () => Center(
         child: Padding(
-          padding: EdgeInsets.all(16),
-          child: CircularProgressIndicator(),
+          padding: EdgeInsets.all(spacing.s16),
+          child: const CircularProgressIndicator(),
         ),
       ),
       error: (error, _) => AppErrorWidget(
