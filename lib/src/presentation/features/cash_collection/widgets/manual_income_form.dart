@@ -247,7 +247,10 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
                 permissions: const [UserPermission.cashCollectionCreate],
                 child: FilledButton(
                   onPressed:
-                      isSubmitting || facilityId == null || services.isEmpty
+                      isSubmitting ||
+                          facilityId == null ||
+                          services.isEmpty ||
+                          _photo == null
                       ? null
                       : () => _onSubmit(services),
                   child: isSubmitting
