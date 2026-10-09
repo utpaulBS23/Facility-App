@@ -536,9 +536,22 @@ abstract class RestClient {
   @GET(Endpoints.cashCollections)
   Future<HttpResponse> getCashCollections({
     @Path('partnerId') required int partnerId,
-    @Query('month') required String month,
+    @Query('month') String? month,
+    @Query('facility_id') int? facilityId,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.cashCollections)
+  Future<HttpResponse> createCashCollection({
+    @Path('partnerId') required int partnerId,
+    @Body() required FormData formData,
+  });
+
+  @GET(Endpoints.facilityServices)
+  Future<HttpResponse> getFacilityServices({
+    @Path('partnerId') required int partnerId,
+    @Path('facilityId') required int facilityId,
   });
 
   @GET(Endpoints.facilityAccesses)

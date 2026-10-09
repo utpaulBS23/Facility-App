@@ -507,6 +507,30 @@ CreateAdditionalIncomeUseCase createAdditionalIncomeUseCase(Ref ref) {
 }
 
 @riverpod
+GetCashCollectionsUseCase getCashCollectionsUseCase(Ref ref) {
+  return GetCashCollectionsUseCase(
+    cashCollectionRepository: ref.read(cashCollectionRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+CreateCashCollectionUseCase createCashCollectionUseCase(Ref ref) {
+  return CreateCashCollectionUseCase(
+    cashCollectionRepository: ref.read(cashCollectionRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetFacilityServicesUseCase getFacilityServicesUseCase(Ref ref) {
+  return GetFacilityServicesUseCase(
+    cashCollectionRepository: ref.read(cashCollectionRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetProductCatalogDropdownUseCase getProductCatalogDropdownUseCase(Ref ref) {
   return GetProductCatalogDropdownUseCase(
     productCatalogRepository: ref.read(productCatalogRepositoryProvider),
