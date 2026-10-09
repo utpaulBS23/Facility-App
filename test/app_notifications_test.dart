@@ -1,13 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:facility_management_app/src/core/base/failure.dart';
 import 'package:facility_management_app/src/core/base/result.dart';
 import 'package:facility_management_app/src/core/di/dependency_injection.dart';
 import 'package:facility_management_app/src/data/extension/app_notification_mapper.dart';
 import 'package:facility_management_app/src/data/models/notification/app_notification_model.dart';
+import 'package:facility_management_app/src/data/repositories/app_notifications_repository_impl.dart';
+import 'package:facility_management_app/src/data/services/network/rest_client.dart';
 import 'package:facility_management_app/src/domain/entities/app_notification_entity.dart';
 import 'package:facility_management_app/src/domain/repositories/app_notifications_repository.dart';
 import 'package:facility_management_app/src/presentation/features/notification/riverpod/app_notifications_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:retrofit/retrofit.dart';
 
 Map<String, dynamic> _item(int id, {String? readAt, String? category}) => {
   'id': id,
@@ -72,7 +76,29 @@ final class _FakeRepository extends AppNotificationsRepository {
   Future<Result<void, Failure>> markAllRead() async => const Success();
 }
 
+class _NotFoundClient implements RestClient {
+  @override
+  Future<HttpResponse> markNotificationRead({required int id}) async {
+    throw DioException(
+      requestOptions: RequestOptions(),
+      response: Response(requestOptions: RequestOptions(), statusCode: 404),
+      type: DioExceptionType.badResponse,
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
+  test('a 404 on mark read is reported as not found', () async {
+    final result = await AppNotificationsRepositoryImpl(
+      remote: _NotFoundClient(),
+    ).markRead(5);
+
+    expect((result as Error).error.type, FailureType.notFound);
+  });
+
   group('feed parsing', () {
     test('reads the item, the page and the global unread count', () {
       final list = AppNotificationListResponseModel.fromJson(
