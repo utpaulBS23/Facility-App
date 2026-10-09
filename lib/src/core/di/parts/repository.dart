@@ -166,6 +166,13 @@ AdditionalIncomeRepository additionalIncomeRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+CashCollectionRepository cashCollectionRepository(Ref ref) {
+  return CashCollectionRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
 ReportRepository reportRepository(Ref ref) {
   return ReportRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }

@@ -206,6 +206,8 @@ class Endpoints {
   static const String livePositions = '/partners/{partnerId}/live-positions';
   static const String userRoutes = '/partners/{partnerId}/user-routes';
   static const String cashCollections = '/partners/{partnerId}/cash-collections';
+  static const String facilityServices =
+      '/partners/{partnerId}/facilities/{facilityId}/services';
   static const String facilityAccesses = '/partners/{partnerId}/facility-accesses';
   static const String centerCollections =
       '/partners/{partnerId}/center-collections';
