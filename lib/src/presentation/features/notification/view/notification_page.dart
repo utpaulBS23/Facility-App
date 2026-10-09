@@ -3,138 +3,132 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
+import '../../../../domain/entities/dashboard_entity.dart';
+import '../../../../domain/entities/notification_preference_entity.dart';
+import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/utils/app_snackbar.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
-import '../../../core/widgets/permission_gate.dart';
-import '../riverpod/notification_channel_settings_provider.dart';
-import '../riverpod/notification_settings_provider.dart';
-import '../widgets/notification_channel_config.dart';
+import '../riverpod/notification_preferences_provider.dart';
+import '../widgets/notification_category_card.dart';
+import '../widgets/notification_category_config.dart';
+import '../widgets/notification_info_banner.dart';
+import '../widgets/notification_info_card.dart';
+import '../widgets/notification_tone.dart';
 
 class NotificationPage extends ConsumerWidget {
   const NotificationPage({super.key});
 
+  String _subtitle(BuildContext context, UserRole? role) {
+    final locale = context.locale;
+    final roleName = switch (role) {
+      UserRole.partnerOwner => locale.partnerOwnerRole,
+      UserRole.opsManager => locale.opsManagerRole,
+      UserRole.supervisor => locale.supervisor,
+      UserRole.attendant => locale.attendant,
+      null => null,
+    };
+
+    return roleName == null
+        ? locale.pushAndEmail
+        : locale.notificationSettingsSubtitle(roleName);
+  }
+
+  Future<void> _onChanged(
+    BuildContext context,
+    WidgetRef ref,
+    NotificationCategory category,
+    NotificationChannel channel,
+    bool enabled,
+  ) async {
+    final failure = await ref
+        .read(notificationPreferencesProvider.notifier)
+        .setEnabled(category: category, channel: channel, enabled: enabled);
+    if (failure != null && context.mounted) {
+      AppSnackBar.showError(context, failure.localizedMessage(context));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isEnabled = ref.watch(notificationSettingsProvider);
-    final channelStates = ref.watch(notificationChannelSettingsProvider);
     final spacing = context.dimensions.spacing;
+    final preferences = ref.watch(notificationPreferencesProvider);
+    final role = ref.watch(userSessionProvider.select((s) => s?.role));
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.notification),
-      body: PermissionSetScope(
-        builder: (context, permissions) {
-          final visibleChannels = [
-            for (final config in notificationChannelConfigs)
-              if (hasAnyPermission(config.permissions, permissions)) config,
-          ];
+      appBar: DetailAppBar(
+        title: context.locale.notificationSettingsTitle,
+        subtitle: _subtitle(context, role),
+      ),
+      body: preferences.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => AppErrorWidget(
+          message: error.localizedMessage(context),
+          onRetry: () => ref.invalidate(notificationPreferencesProvider),
+        ),
+        data: (items) {
+          final byCategory = {for (final item in items) item.category: item};
+          NotificationPreferenceEntity of(NotificationCategory category) =>
+              byCategory[category] ??
+              NotificationPreferenceEntity.defaults(category);
+
+          Widget card(NotificationCategoryConfig config) {
+            return NotificationCategoryCard(
+              config: config,
+              preference: of(config.category),
+              onChanged: (channel, enabled) =>
+                  _onChanged(context, ref, config.category, channel, enabled),
+            );
+          }
+
+          Widget sectionLabel(String text) => Text(
+            text.toUpperCase(),
+            style: context.textStyle.labelMedium.copyWith(
+              color: context.color.text.secondary,
+              fontWeight: FontWeight.bold,
+            ),
+          );
 
           return ListView(
-            padding: .all(context.dimensions.padding.p16),
+            padding: EdgeInsets.all(spacing.s16),
             children: [
-              _NotificationToggleTile(
-                label: context.locale.pushNotifications,
-                subtitle: context.locale.pushNotificationsSubtitle,
-                isEnabled: isEnabled,
-                onChanged: (enabled) => ref
-                    .read(notificationSettingsProvider.notifier)
-                    .setEnabled(enabled),
+              NotificationInfoBanner(
+                message: context.locale.notificationInfoBanner,
               ),
-              if (visibleChannels.isNotEmpty) ...[
-                Gap(spacing.s24),
-                Text(
-                  context.locale.notificationChannels,
-                  style: context.textStyle.titleSmall.copyWith(
+              Gap(spacing.s20),
+              sectionLabel(context.locale.alertCategories),
+              Gap(spacing.s12),
+              for (final config in alertCategoryConfigs) ...[
+                card(config),
+                Gap(spacing.s12),
+              ],
+              Gap(spacing.s8),
+              sectionLabel(context.locale.digestAndInfo),
+              Gap(spacing.s12),
+              card(weeklyDigestConfig),
+              Gap(spacing.s12),
+              NotificationInfoCard(
+                icon: Icons.trending_up_rounded,
+                tone: NotificationTone.success,
+                title: context.locale.milestonesTitle,
+                description: context.locale.milestonesDescription,
+              ),
+              Gap(spacing.s20),
+              Center(
+                child: Text(
+                  context.locale.notificationRetention,
+                  style: context.textStyle.bodySmall.copyWith(
                     color: context.color.text.secondary,
                   ),
                 ),
-                Gap(spacing.s12),
-                for (var i = 0; i < visibleChannels.length; i++) ...[
-                  if (i > 0) Gap(spacing.s12),
-                  _NotificationToggleTile(
-                    label: visibleChannels[i].label(context),
-                    subtitle: visibleChannels[i].subtitle(context),
-                    isEnabled: channelStates[visibleChannels[i].type] ?? true,
-                    // WHY: per-channel prefs are moot while the master switch
-                    // is off, so lock the rows instead of letting them drift
-                    // out of sync with what's actually being delivered.
-                    onChanged: isEnabled
-                        ? (enabled) => ref
-                              .read(
-                                notificationChannelSettingsProvider.notifier,
-                              )
-                              .setEnabled(visibleChannels[i].type, enabled)
-                        : null,
-                  ),
-                ],
-              ],
+              ),
+              Gap(spacing.s16),
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class _NotificationToggleTile extends StatelessWidget {
-  const _NotificationToggleTile({
-    required this.label,
-    required this.subtitle,
-    required this.isEnabled,
-    required this.onChanged,
-  });
-
-  final String label;
-  final String subtitle;
-  final bool isEnabled;
-  final ValueChanged<bool>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final isInteractive = onChanged != null;
-
-    return Opacity(
-      opacity: isInteractive ? 1 : 0.5,
-      child: Container(
-        padding: .symmetric(
-          horizontal: context.padding.p16,
-          vertical: context.spacing.s12,
-        ),
-        decoration: BoxDecoration(
-          color: context.color.onPrimary,
-          border: Border.all(color: context.color.borderSubtle),
-          borderRadius: .circular(context.dimensions.radius.r12),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: .start,
-                mainAxisSize: .min,
-                children: [
-                  Text(
-                    label,
-                    style: context.textStyle.bodyLarge.copyWith(
-                      color: context.color.text.primary,
-                    ),
-                  ),
-                  Gap(context.spacing.s4),
-                  Text(
-                    subtitle,
-                    style: context.textStyle.bodySmall.copyWith(
-                      color: context.color.text.secondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Switch(
-              value: isEnabled,
-              activeThumbColor: context.color.primary,
-              onChanged: onChanged,
-            ),
-          ],
-        ),
       ),
     );
   }
