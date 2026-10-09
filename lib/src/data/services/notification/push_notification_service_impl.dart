@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../../firebase_options.dart';
 import '../../../core/logger/log.dart';
-import '../../../domain/entities/notification_channel_entity.dart';
 import '../../../domain/entities/notification_payload_entity.dart';
 import 'push_notification_service.dart';
 
@@ -18,15 +17,68 @@ class PushNotificationServiceImpl implements PushNotificationService {
   }) : _messaging = messaging,
        _notifications = notifications;
 
-  static const _channelDescription = 'General push notifications.';
+  /// Where a push goes when it names no category, or one this app does not
+  /// know yet. A push must never be dropped for that.
+  static const defaultChannelId = 'general';
 
-  static const _channelNames = {
-    NotificationChannelType.general: 'General',
-    NotificationChannelType.task: 'Tasks',
-    NotificationChannelType.attendanceLeave: 'Attendance & Leave',
-    NotificationChannelType.issue: 'Issue Reports',
-    NotificationChannelType.supply: 'Supply & Delivery',
-  };
+  /// The server sets `android_channel_id` to the notification's category, so
+  /// these ids must exist before any push can arrive. Importance follows the
+  /// notifications API reference.
+  static const channels = <AndroidNotificationChannel>[
+    AndroidNotificationChannel(
+      'camera_down',
+      'Camera and device down',
+      importance: Importance.high,
+    ),
+    AndroidNotificationChannel(
+      'odour_breach',
+      'Odour breach',
+      importance: Importance.max,
+    ),
+    AndroidNotificationChannel(
+      'staffing',
+      'Understaffed slot and check-ins',
+      importance: Importance.defaultImportance,
+    ),
+    AndroidNotificationChannel(
+      'issue',
+      'Issue raised',
+      importance: Importance.defaultImportance,
+    ),
+    AndroidNotificationChannel(
+      'variance',
+      'Collection variance',
+      importance: Importance.high,
+    ),
+    AndroidNotificationChannel(
+      'stock_low',
+      'Stock low',
+      importance: Importance.low,
+    ),
+    AndroidNotificationChannel(
+      'approvals',
+      'Approvals',
+      importance: Importance.defaultImportance,
+    ),
+    AndroidNotificationChannel(
+      'own_record',
+      'My tasks and attendance',
+      importance: Importance.defaultImportance,
+    ),
+    AndroidNotificationChannel(
+      defaultChannelId,
+      'General',
+      importance: Importance.defaultImportance,
+    ),
+  ];
+
+  /// The channel a push with [category] is shown on.
+  static AndroidNotificationChannel channelFor(String? category) {
+    return channels.firstWhere(
+      (channel) => channel.id == category,
+      orElse: () => channels.last,
+    );
+  }
 
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _notifications;
@@ -34,9 +86,8 @@ class PushNotificationServiceImpl implements PushNotificationService {
   NotificationPayloadEntity? _payload;
   final _payloadController =
       StreamController<NotificationPayloadEntity>.broadcast();
-
-  bool _notificationsEnabled = true;
-  Set<NotificationChannelType> _disabledChannels = {};
+  final _receivedController =
+      StreamController<NotificationPayloadEntity>.broadcast();
 
   @override
   Future<void> initialize() async {
@@ -61,10 +112,21 @@ class PushNotificationServiceImpl implements PushNotificationService {
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+    await _createChannels();
     await _requestPermission();
 
     FirebaseMessaging.onMessage.listen(_onForegroundMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpenedApp);
+  }
+
+  Future<void> _createChannels() async {
+    final android = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    for (final channel in channels) {
+      await android?.createNotificationChannel(channel);
+    }
   }
 
   Future<void> _requestPermission() async {
@@ -80,33 +142,33 @@ class PushNotificationServiceImpl implements PushNotificationService {
   Future<void> _onForegroundMessage(RemoteMessage message) async {
     Log.info('Foreground push received: ${message.data}');
 
-    final notification = message.notification;
-    final channel = NotificationChannelType.fromKey(
-      message.data['type'] as String?,
+    final data = message.data;
+    final title = message.notification?.title ?? data['title'] as String?;
+    final body = message.notification?.body ?? data['body'] as String?;
+    _receivedController.add(
+      NotificationPayloadEntity(data: data, title: title, body: body),
     );
-    if (notification == null ||
-        !_notificationsEnabled ||
-        _disabledChannels.contains(channel)) {
-      return;
-    }
+    if (title == null && body == null) return;
 
+    final channel = channelFor(data['category'] as String?);
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
-        'push_notifications_${channel.key}',
-        _channelNames[channel] ?? _channelNames[NotificationChannelType.general]!,
-        channelDescription: _channelDescription,
-        importance: Importance.high,
-        priority: Priority.high,
+        channel.id,
+        channel.name,
+        importance: channel.importance,
+        priority: channel.importance.value >= Importance.high.value
+            ? Priority.high
+            : Priority.defaultPriority,
       ),
       iOS: const DarwinNotificationDetails(),
     );
 
     await _notifications.show(
       id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
-      title: notification.title,
-      body: notification.body,
+      title: title,
+      body: body,
       notificationDetails: details,
-      payload: jsonEncode(message.data),
+      payload: jsonEncode(data),
     );
   }
 
@@ -137,6 +199,9 @@ class PushNotificationServiceImpl implements PushNotificationService {
   }
 
   @override
+  Stream<String> get tokenRefreshStream => _messaging.onTokenRefresh;
+
+  @override
   Future<void> getInitialMessage() async {
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage == null) return;
@@ -157,21 +222,12 @@ class PushNotificationServiceImpl implements PushNotificationService {
       _payloadController.stream;
 
   @override
+  Stream<NotificationPayloadEntity> get receivedStream =>
+      _receivedController.stream;
+
+  @override
   void clearPayload() {
     _payload = null;
-  }
-
-  @override
-  bool get notificationsEnabled => _notificationsEnabled;
-
-  @override
-  void setNotificationsEnabled(bool enabled) {
-    _notificationsEnabled = enabled;
-  }
-
-  @override
-  void setDisabledChannels(Set<NotificationChannelType> channels) {
-    _disabledChannels = channels;
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart';
+import 'package:facility_management_app/src/domain/entities/app_notification_entity.dart';
 import 'package:facility_management_app/src/domain/entities/dashboard_entity.dart';
 import 'package:facility_management_app/src/domain/entities/login_entity.dart';
 import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';
@@ -6,6 +7,7 @@ import 'package:facility_management_app/src/presentation/core/router/routes.dart
 import 'package:facility_management_app/src/presentation/core/theme/theme.dart';
 import 'package:facility_management_app/src/presentation/core/widgets/category_filter_chips.dart';
 import 'package:facility_management_app/src/presentation/features/dashboard/riverpod/dashboard_provider.dart';
+import 'package:facility_management_app/src/presentation/features/notification/riverpod/app_notifications_provider.dart';
 import 'package:facility_management_app/src/presentation/features/dashboard/view/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +26,13 @@ class _FakeSession extends UserSession {
     accessibleFacilities: const [],
     role: role,
   );
+}
+
+/// An empty inbox, so the bell never reaches for the network.
+class _FakeNotifications extends AppNotifications {
+  @override
+  Future<AppNotificationListEntity> build() async =>
+      const AppNotificationListEntity.empty();
 }
 
 final _user = UserEntity(
@@ -205,6 +214,7 @@ Future<void> _pump(
       overrides: [
         userSessionProvider.overrideWith(() => _FakeSession(role)),
         dashboardUserProvider.overrideWithValue(_user),
+        appNotificationsProvider.overrideWith(_FakeNotifications.new),
         dashboardProvider(month: _thisMonth()).overrideWith((ref) => load()),
       ],
       child: MaterialApp(
@@ -362,6 +372,7 @@ void main() {
             ),
           ),
           dashboardUserProvider.overrideWithValue(_user),
+        appNotificationsProvider.overrideWith(_FakeNotifications.new),
           dashboardProvider(
             month: _thisMonth(),
           ).overrideWith((ref) async => _supervisor),

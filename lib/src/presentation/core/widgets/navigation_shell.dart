@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/di/dependency_injection.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../../../domain/entities/menu_configuration_entity.dart';
 import '../application_state/menu_configuration_provider/menu_configuration_provider.dart';
+import '../../features/notification/riverpod/app_notifications_provider.dart';
 import '../gen/assets.gen.dart';
 import '../router/routes.dart';
 import '../router/shell_tab_config.dart';
@@ -29,23 +33,71 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
   // restored at cold start) and outlives tab switches, so it is the one place
   // that covers "after login" without touching the login flow. The backend
   // sends no push when a layout changes, hence the refresh on every resume.
+  final _subscriptions = <StreamSubscription<Object?>>[];
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     ref.read(menuConfigProvider.notifier).refresh();
+    _startPush();
+  }
+
+  /// Registers this device for pushes and listens for what they do.
+  ///
+  /// WHY here: like the menu refresh, this runs once per signed-in launch. A
+  /// tap on a push only opens the notifications list; the notification itself
+  /// is read there, since the API gives nothing to navigate to.
+  void _startPush() {
+    unawaited(ref.read(registerDeviceTokenUseCaseProvider).call());
+
+    _subscriptions
+      ..add(
+        ref.read(watchPushTokenRefreshUseCaseProvider).call().listen(
+          (token) => ref.read(registerDeviceTokenUseCaseProvider).call(
+            token: token,
+          ),
+        ),
+      )
+      ..add(
+        ref.read(watchReceivedPushUseCaseProvider).call().listen(
+          (_) => ref.read(appNotificationsProvider.notifier).refresh(),
+        ),
+      )
+      ..add(
+        ref.read(getNotificationPayloadStreamUseCaseProvider).call().listen(
+          (_) => _openNotifications(),
+        ),
+      );
+
+    // A push that launched the app from the terminated state.
+    if (ref.read(getNotificationPayloadUseCaseProvider).call() != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _openNotifications());
+    }
+  }
+
+  void _openNotifications() {
+    if (!mounted) return;
+    ref.read(appNotificationsProvider.notifier).refresh();
+    context.pushNamed(Routes.notifications);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       ref.read(menuConfigProvider.notifier).refresh();
+      // Pushes that arrived in the background never reached the app.
+      ref.read(appNotificationsProvider.notifier).refresh();
+      unawaited(ref.read(syncDeviceTopicsUseCaseProvider).call());
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
     super.dispose();
   }
 

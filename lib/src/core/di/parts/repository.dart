@@ -228,7 +228,14 @@ TrainingRepository trainingRepository(Ref ref) {
 PushNotificationRepository pushNotificationRepository(Ref ref) {
   return PushNotificationRepositoryImpl(
     notificationService: ref.read(pushNotificationServiceProvider),
-    cacheService: ref.read(cacheServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+DeviceTokenRepository deviceTokenRepository(Ref ref) {
+  return DeviceTokenRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+    local: ref.read(cacheServiceProvider),
   );
 }
 
