@@ -16,7 +16,6 @@ import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
-import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -26,17 +25,16 @@ import '../../supply/widgets/item_stepper_input.dart';
 import '../riverpod/facility_services_provider.dart';
 import '../riverpod/submit_cash_collection_provider.dart';
 
-/// "New Manual Income Entry": the daily physical cash count of one facility,
+/// "Manual Income" entry form: the daily physical cash count of one facility,
 /// broken down by service x gender, plus lump amounts and an evidence photo.
-class AddManualIncomePage extends ConsumerStatefulWidget {
-  const AddManualIncomePage({super.key});
+class ManualIncomeForm extends ConsumerStatefulWidget {
+  const ManualIncomeForm({super.key});
 
   @override
-  ConsumerState<AddManualIncomePage> createState() =>
-      _AddManualIncomePageState();
+  ConsumerState<ManualIncomeForm> createState() => _ManualIncomeFormState();
 }
 
-class _AddManualIncomePageState extends ConsumerState<AddManualIncomePage> {
+class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
   final _productController = TextEditingController();
   final _rentingController = TextEditingController();
   final _noteController = TextEditingController();
@@ -171,117 +169,109 @@ class _AddManualIncomePageState extends ConsumerState<AddManualIncomePage> {
         .firstWhere((f) => f?.id == facilityId, orElse: () => null)
         ?.localizedName(context.languageCode);
 
-    return Scaffold(
-      backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.manualIncomeEntry),
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-          horizontal: spacing.s16,
-          vertical: spacing.s20,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FormSelectorCard.text(
+          title: context.locale.selectFacility,
+          icon: Icons.location_on_outlined,
+          value: facilityName,
+          placeholder: context.locale.selectFacility,
+          onTap: facilities.length > 1
+              ? () => _onPickFacility(facilities)
+              : null,
         ),
-        children: [
-          FormSelectorCard.text(
-            title: context.locale.selectFacility,
-            icon: Icons.location_on_outlined,
-            value: facilityName,
-            placeholder: context.locale.selectFacility,
-            onTap: facilities.length > 1
-                ? () => _onPickFacility(facilities)
-                : null,
+        Gap(spacing.s16),
+        FormSelectorCard.text(
+          title: context.locale.expenseDate,
+          icon: Icons.calendar_today_outlined,
+          value: DateFormatter.shortDate(_date),
+          placeholder: context.locale.expenseDate,
+          onTap: _onPickDate,
+        ),
+        Gap(spacing.s16),
+        LabelLargeText(context.locale.cashCollectedByService),
+        Gap(spacing.s8),
+        _ServicesSection(
+          servicesAsync: servicesAsync,
+          quantities: _quantities,
+          onChanged: (serviceId, quantity) => setState(
+            () => _quantities = {..._quantities, serviceId: quantity},
           ),
-          Gap(spacing.s16),
-          FormSelectorCard.text(
-            title: context.locale.expenseDate,
-            icon: Icons.calendar_today_outlined,
-            value: DateFormatter.shortDate(_date),
-            placeholder: context.locale.expenseDate,
-            onTap: _onPickDate,
-          ),
-          Gap(spacing.s16),
-          LabelLargeText(context.locale.cashCollectedByService),
-          Gap(spacing.s8),
-          _ServicesSection(
-            servicesAsync: servicesAsync,
-            quantities: _quantities,
-            onChanged: (serviceId, quantity) => setState(
-              () => _quantities = {..._quantities, serviceId: quantity},
+          onRetry: facilityId == null
+              ? null
+              : () => ref.invalidate(facilityServicesProvider(facilityId)),
+        ),
+        Gap(spacing.s16),
+        AppTextField.text(
+          controller: _productController,
+          label: context.locale.productSellingBdt,
+          hint: '0',
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          onChanged: (_) => setState(() {}),
+        ),
+        Gap(spacing.s16),
+        AppTextField.text(
+          controller: _rentingController,
+          label: context.locale.rentingOthersBdt,
+          hint: '0',
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          onChanged: (_) => setState(() {}),
+        ),
+        Gap(spacing.s16),
+        AppTextField.description(
+          controller: _noteController,
+          label: context.locale.noteOptional,
+          hint: context.locale.commentsHint,
+        ),
+        Gap(spacing.s16),
+        PhotoPickerCard(
+          title: '${context.locale.evidencePhoto} *',
+          photo: _photo,
+          onChanged: (photo) => setState(() => _photo = photo),
+        ),
+        Gap(spacing.s16),
+        _TotalBar(total: _total(services)),
+        Gap(spacing.s24),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => context.pop(),
+                child: Text(context.locale.cancel),
+              ),
             ),
-            onRetry: facilityId == null
-                ? null
-                : () => ref.invalidate(facilityServicesProvider(facilityId)),
-          ),
-          Gap(spacing.s16),
-          AppTextField.text(
-            controller: _productController,
-            label: context.locale.productSellingBdt,
-            hint: '0',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (_) => setState(() {}),
-          ),
-          Gap(spacing.s16),
-          AppTextField.text(
-            controller: _rentingController,
-            label: context.locale.rentingOthersBdt,
-            hint: '0',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            onChanged: (_) => setState(() {}),
-          ),
-          Gap(spacing.s16),
-          AppTextField.description(
-            controller: _noteController,
-            label: context.locale.noteOptional,
-            hint: context.locale.commentsHint,
-          ),
-          Gap(spacing.s16),
-          PhotoPickerCard(
-            title: '${context.locale.evidencePhoto} *',
-            photo: _photo,
-            onChanged: (photo) => setState(() => _photo = photo),
-          ),
-          Gap(spacing.s16),
-          _TotalBar(total: _total(services)),
-          Gap(spacing.s24),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => context.pop(),
-                  child: Text(context.locale.cancel),
-                ),
-              ),
-              Gap(spacing.s12),
-              Expanded(
-                flex: 2,
-                child: PermissionGate(
-                  permissions: const [UserPermission.cashCollectionCreate],
-                  child: FilledButton(
-                    onPressed:
-                        isSubmitting || facilityId == null || services.isEmpty
-                        ? null
-                        : () => _onSubmit(services),
-                    child: isSubmitting
-                        ? SizedBox(
-                            width: spacing.s20,
-                            height: spacing.s20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: spacing.s2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                context.color.onPrimary,
-                              ),
+            Gap(spacing.s12),
+            Expanded(
+              flex: 2,
+              child: PermissionGate(
+                permissions: const [UserPermission.cashCollectionCreate],
+                child: FilledButton(
+                  onPressed:
+                      isSubmitting || facilityId == null || services.isEmpty
+                      ? null
+                      : () => _onSubmit(services),
+                  child: isSubmitting
+                      ? SizedBox(
+                          width: spacing.s20,
+                          height: spacing.s20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: spacing.s2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              context.color.onPrimary,
                             ),
-                          )
-                        : Text(
-                            '${context.locale.saveIncomeEntry} — '
-                            '${context.numbers.currency(_total(services))}',
                           ),
-                  ),
+                        )
+                      : Text(
+                          '${context.locale.saveIncomeEntry} — '
+                          '${context.numbers.currency(_total(services))}',
+                        ),
                 ),
               ),
-            ],
-          ),
-          Gap(spacing.s16),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
