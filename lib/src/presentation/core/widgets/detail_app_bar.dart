@@ -16,12 +16,16 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   const DetailAppBar({
     super.key,
     required this.title,
+    this.subtitle,
     this.onBack,
     this.actions,
   });
 
   /// The centered title text.
   final String title;
+
+  /// Smaller line under the title.
+  final String? subtitle;
 
   /// Invoked on back tap; defaults to [AppBackButton]'s own pop behaviour.
   final VoidCallback? onBack;
@@ -37,7 +41,20 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: AppBackButton(onTap: onBack),
       leadingWidth: AppBackButton.width,
-      title: Headline2xlTinyText(title),
+      title: subtitle == null
+          ? Headline2xlTinyText(title)
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Headline2xlTinyText(title),
+                Text(
+                  subtitle!,
+                  style: context.textStyle.bodySmall.copyWith(
+                    color: context.color.text.secondary,
+                  ),
+                ),
+              ],
+            ),
       centerTitle: true,
       backgroundColor: context.color.onPrimary,
       surfaceTintColor: Colors.transparent,
