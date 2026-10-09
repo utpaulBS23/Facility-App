@@ -390,7 +390,7 @@ abstract class RestClient {
   @POST(Endpoints.additionalIncomes)
   Future<HttpResponse> createAdditionalIncome({
     @Path('partnerId') required int partnerId,
-    @Body() required Map<String, dynamic> body,
+    @Body() required FormData formData,
   });
 
   @GET(Endpoints.productCatalogDropdown)
