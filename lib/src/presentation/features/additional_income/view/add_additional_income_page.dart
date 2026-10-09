@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
@@ -18,6 +19,7 @@ import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
+import '../../../core/widgets/photo_picker_card.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../../cash_collection/widgets/manual_income_form.dart';
 import '../riverpod/submit_income_provider/facility_product_options_provider.dart';
@@ -36,7 +38,6 @@ part '../widgets/income_type_section.dart';
 part '../widgets/product_dropdown_field.dart';
 part '../widgets/product_leg_draft.dart';
 part '../widgets/product_leg_row.dart';
-part '../widgets/proof_photo_picker_card.dart';
 
 class AddAdditionalIncomePage extends ConsumerStatefulWidget {
   const AddAdditionalIncomePage({
@@ -64,6 +65,7 @@ class _AddAdditionalIncomePageState
   bool _amountError = false;
   bool _productLegsShowErrors = false;
   DateTime _entryDate = DateTime.now();
+  XFile? _evidencePhoto;
 
   @override
   void dispose() {
@@ -81,6 +83,7 @@ class _AddAdditionalIncomePageState
       _incomeTypeError = false;
       _productLegsShowErrors = false;
       _amountError = false;
+      _evidencePhoto = null;
       _amountController.clear();
       _descriptionController.clear();
       for (final leg in _productLegs) {
@@ -144,6 +147,7 @@ class _AddAdditionalIncomePageState
             incomeType: incomeType.value,
             description: description.isEmpty ? null : description,
             amount: amount,
+            evidencePhotoPath: _evidencePhoto?.path,
           ),
         );
   }
@@ -231,6 +235,8 @@ class _AddAdditionalIncomePageState
         isSubmitting: isSubmitting,
         onCancel: () => context.pop(),
         onSubmit: _onSubmit,
+        evidencePhoto: _evidencePhoto,
+        onEvidencePhotoChanged: (photo) => setState(() => _evidencePhoto = photo),
       ),
     );
   }

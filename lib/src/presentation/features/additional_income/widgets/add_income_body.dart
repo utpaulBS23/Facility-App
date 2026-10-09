@@ -24,6 +24,8 @@ class _AddIncomeBody extends ConsumerWidget {
     required this.isSubmitting,
     required this.onCancel,
     required this.onSubmit,
+    required this.evidencePhoto,
+    required this.onEvidencePhotoChanged,
   });
 
   final GlobalKey<FormState> formKey;
@@ -48,6 +50,8 @@ class _AddIncomeBody extends ConsumerWidget {
   final bool isSubmitting;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
+  final XFile? evidencePhoto;
+  final ValueChanged<XFile?> onEvidencePhotoChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -165,7 +169,11 @@ class _AddIncomeBody extends ConsumerWidget {
               onChanged: (_) => onAmountChanged(),
             ),
             Gap(spacing.s16),
-            const _ProofPhotoPickerCard(),
+            PhotoPickerCard(
+              title: context.locale.proofPhoto,
+              photo: evidencePhoto,
+              onChanged: onEvidencePhotoChanged,
+            ),
           ],
           Gap(spacing.s24),
           _AddIncomeActionButtons(
