@@ -45,9 +45,9 @@ class ManualIncomeTab extends ConsumerWidget {
             message: error.localizedMessage(context),
             onRetry: () => ref.invalidate(provider),
           ),
-          _ => const Padding(
-            padding: EdgeInsets.symmetric(vertical: 48),
-            child: Center(child: CircularProgressIndicator()),
+          _ => Padding(
+            padding: EdgeInsets.symmetric(vertical: spacing.s48),
+            child: const Center(child: CircularProgressIndicator()),
           ),
         },
       ),
