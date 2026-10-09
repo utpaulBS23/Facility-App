@@ -24,6 +24,7 @@ import '../../../core/widgets/text/typography.dart';
 import '../../cash_collection/riverpod/cash_collections_provider.dart';
 import '../../cash_collection/widgets/manual_income_tab.dart';
 import '../riverpod/additional_income_list_provider.dart';
+import 'add_additional_income_page.dart' show IncomeEntryType;
 import '../riverpod/product_sale_entry_list_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
