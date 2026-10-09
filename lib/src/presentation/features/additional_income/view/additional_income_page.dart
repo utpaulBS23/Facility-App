@@ -103,9 +103,11 @@ class _AdditionalIncomePageState extends ConsumerState<AdditionalIncomePage> {
   }
 
   void _onAddIncome() => context.pushNamed(
-    _tab == IncomeListTab.manualIncome
-        ? Routes.addManualIncome
-        : Routes.addAdditionalIncome,
+    Routes.addAdditionalIncome,
+    extra: switch (_tab) {
+      IncomeListTab.manualIncome => IncomeEntryType.manualIncome,
+      _ => IncomeEntryType.rentAndOthers,
+    },
   );
 
   // WHY client-side: the additional-incomes endpoint has no month query

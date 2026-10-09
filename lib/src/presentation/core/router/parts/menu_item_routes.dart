@@ -39,7 +39,13 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       path: Routes.addAdditionalIncome,
       name: Routes.addAdditionalIncome,
       pageBuilder: (context, state) {
-        return const MaterialPage(child: AddAdditionalIncomePage());
+        return MaterialPage(
+          child: AddAdditionalIncomePage(
+            initialType: state.extra is IncomeEntryType
+                ? state.extra! as IncomeEntryType
+                : IncomeEntryType.rentAndOthers,
+          ),
+        );
       },
     ),
     GoRoute(
@@ -54,13 +60,6 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       name: Routes.addFacilityExpense,
       pageBuilder: (context, state) {
         return const MaterialPage(child: AddFacilityExpensePage());
-      },
-    ),
-    GoRoute(
-      path: Routes.addManualIncome,
-      name: Routes.addManualIncome,
-      pageBuilder: (context, state) {
-        return const MaterialPage(child: AddManualIncomePage());
       },
     ),
     GoRoute(

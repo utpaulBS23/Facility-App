@@ -35,7 +35,6 @@ import '../../features/door_access/view/door_control_page.dart';
 import '../../features/door_access/view/door_control_tab_page.dart';
 import '../../features/claim_expense/view/claim_expense_page.dart';
 import '../../features/claim_expense/view/travel_expenses_page.dart';
-import '../../features/cash_collection/view/add_manual_income_page.dart';
 import '../../features/facility_expense/view/add_facility_expense_page.dart';
 import '../../features/claim_expense/view/travel_expense_details_page.dart';
 import '../../features/facility_expense/view/facility_expense_page.dart';
