@@ -180,6 +180,11 @@ NotificationPreferencesRepository notificationPreferencesRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+AppNotificationsRepository appNotificationsRepository(Ref ref) {
+  return MockAppNotificationsRepositoryImpl();
+}
+
+@Riverpod(keepAlive: true)
 ReportRepository reportRepository(Ref ref) {
   return ReportRepositoryImpl(remote: ref.read(restClientServiceProvider));
 }
