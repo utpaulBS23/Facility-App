@@ -9,9 +9,15 @@ class _IncomeListCard extends ConsumerWidget {
   // `income_type` as the raw master-data code (e.g. "rent_device"), not a
   // display label — cross-reference against the extraEarningType options
   // (already fetched for the Add Income form) to show the human label.
-  String _incomeTypeLabel(WidgetRef ref, String languageCode) {
-    final options =
-        ref.watch(incomeTypeOptionsProvider).valueOrNull ?? const [];
+  //
+  // WHY null while loading: the options are fetched when the list opens, so
+  // for a moment the only thing to show is the raw code. A placeholder reads
+  // better than a flash of "rent_device".
+  String? _incomeTypeLabel(WidgetRef ref, String languageCode) {
+    final optionsAsync = ref.watch(incomeTypeOptionsProvider);
+    if (optionsAsync.isLoading && !optionsAsync.hasValue) return null;
+
+    final options = optionsAsync.valueOrNull ?? const [];
     final match = options.cast<MasterDataItemEntity?>().firstWhere(
       (o) => o?.value == income.incomeTypeName,
       orElse: () => null,
@@ -24,6 +30,7 @@ class _IncomeListCard extends ConsumerWidget {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final description = income.description;
+    final typeLabel = _incomeTypeLabel(ref, context.languageCode);
 
     return Material(
       color: context.color.onPrimary,
@@ -36,7 +43,9 @@ class _IncomeListCard extends ConsumerWidget {
           backgroundColor: Colors.transparent,
           builder: (_) => _IncomeDetailsSheet(
             income: income,
-            typeLabel: _incomeTypeLabel(ref, context.languageCode),
+            typeLabel:
+                _incomeTypeLabel(ref, context.languageCode) ??
+                income.incomeTypeName,
           ),
         ),
         child: Container(
@@ -80,10 +89,10 @@ class _IncomeListCard extends ConsumerWidget {
                 ],
               ),
               Gap(spacing.s12),
-              Text(
-                _incomeTypeLabel(ref, context.languageCode),
-                style: context.textStyle.bodyLarge,
-              ),
+              if (typeLabel == null)
+                ShimmerBox(width: spacing.s120, height: spacing.s16)
+              else
+                Text(typeLabel, style: context.textStyle.bodyLarge),
               if (description != null && description.isNotEmpty) ...[
                 Gap(spacing.s2),
                 BodySmallText(description, color: context.color.text.secondary),
