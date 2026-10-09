@@ -107,7 +107,10 @@ extension CreateCashCollectionRequestEntityMapper
       final line = lines[i];
       formData.fields
         ..add(
-          MapEntry('items[$i][facility_service_id]', '${line.facilityServiceId}'),
+          MapEntry(
+            'items[$i][facility_service_id]',
+            '${line.facilityServiceId}',
+          ),
         )
         ..add(MapEntry('items[$i][gender]', line.gender))
         ..add(MapEntry('items[$i][quantity]', '${line.quantity}'));

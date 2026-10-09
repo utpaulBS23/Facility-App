@@ -57,6 +57,13 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
+      path: Routes.addManualIncome,
+      name: Routes.addManualIncome,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: AddManualIncomePage());
+      },
+    ),
+    GoRoute(
       path: Routes.claimExpense,
       name: Routes.claimExpense,
       pageBuilder: (context, state) {
