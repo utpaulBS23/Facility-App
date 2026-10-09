@@ -54,6 +54,8 @@ class Routes {
   static const String addAdditionalIncome = '/additional-income/add';
   static const String facilityExpense = '/facility-expense';
   static const String addFacilityExpense = '/facility-expense/add';
+  static const String manualIncome = '/manual-income';
+  static const String addManualIncome = '/manual-income/add';
   static const String claimExpense = '/claim-expense';
   static const String addTravelExpense = '/claim-expense/add';
   static const String travelExpenseDetails = '/claim-expense/details/:id';

@@ -134,6 +134,11 @@ final List<MenuItemConfig> menuItemConfigs = [
     permissions: [UserPermission.doorLockControl],
   ),
   MenuItemConfig(
+    itemKey: MenuItemKey.manualIncome,
+    route: Routes.manualIncome,
+    permissions: [UserPermission.cashCollectionView],
+  ),
+  MenuItemConfig(
     itemKey: MenuItemKey.expenseEntry,
     route: Routes.facilityExpense,
     permissions: [UserPermission.facilityExpenseView],

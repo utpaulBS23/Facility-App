@@ -21,7 +21,6 @@ import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/photo_picker_card.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../cash_collection/widgets/manual_income_form.dart';
 import '../riverpod/submit_income_provider/facility_product_options_provider.dart';
 import '../riverpod/submit_income_provider/income_type_options_provider.dart';
 import '../riverpod/submit_income_provider/selected_income_facility_provider.dart';
@@ -40,12 +39,7 @@ part '../widgets/product_leg_draft.dart';
 part '../widgets/product_leg_row.dart';
 
 class AddAdditionalIncomePage extends ConsumerStatefulWidget {
-  const AddAdditionalIncomePage({
-    super.key,
-    this.initialType = IncomeEntryType.rentAndOthers,
-  });
-
-  final IncomeEntryType initialType;
+  const AddAdditionalIncomePage({super.key});
 
   @override
   ConsumerState<AddAdditionalIncomePage> createState() =>
@@ -59,7 +53,7 @@ class _AddAdditionalIncomePageState
   final _descriptionController = TextEditingController();
   List<_ProductLegDraft> _productLegs = [_ProductLegDraft()];
 
-  late IncomeEntryType _incomeEntryType = widget.initialType;
+  IncomeEntryType _incomeEntryType = IncomeEntryType.rentAndOthers;
   bool _incomeTypeError = false;
   bool _facilityError = false;
   bool _amountError = false;
@@ -184,8 +178,6 @@ class _AddAdditionalIncomePageState
         _onSubmitAdditionalIncome();
       case IncomeEntryType.productSell:
         _onSubmitProductSale();
-      case IncomeEntryType.manualIncome:
-        break; // the manual income form saves itself
     }
   }
 
@@ -201,11 +193,6 @@ class _AddAdditionalIncomePageState
     });
 
     final isSubmitting = ref.watch(submitIncomeProvider).isLoading;
-    final canSeeManualIncome =
-        ref
-            .watch(userSessionProvider)
-            ?.canAny(const [UserPermission.cashCollectionView]) ??
-        false;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -214,7 +201,6 @@ class _AddAdditionalIncomePageState
         formKey: _formKey,
         incomeEntryType: _incomeEntryType,
         onIncomeEntryTypeChanged: _onIncomeEntryTypeChanged,
-        showManualIncome: canSeeManualIncome,
         amountController: _amountController,
         descriptionController: _descriptionController,
         productLegs: _productLegs,
