@@ -14,16 +14,16 @@ import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/form_selector_card.dart';
-import '../../../core/widgets/item_stepper_input.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/photo_picker_card.dart';
 import '../../../core/widgets/text/typography.dart';
 import '../riverpod/facility_services_provider.dart';
 import '../riverpod/submit_cash_collection_provider.dart';
+import 'manual_income_services_section.dart';
+import 'manual_income_total_bar.dart';
 
 /// "Manual Income" entry form: the daily physical cash count of one facility,
 /// broken down by service x gender, plus lump amounts and an evidence photo.
@@ -196,7 +196,7 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
         Gap(spacing.s16),
         LabelLargeText(context.locale.cashCollectedByService),
         Gap(spacing.s8),
-        _ServicesSection(
+        ManualIncomeServicesSection(
           servicesAsync: servicesAsync,
           quantities: _quantities,
           onChanged: (serviceId, quantity) => setState(
@@ -232,7 +232,7 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
           onChanged: (photo) => setState(() => _photo = photo),
         ),
         Gap(spacing.s16),
-        _TotalBar(total: _total(services)),
+        ManualIncomeTotalBar(total: _total(services)),
         Gap(spacing.s24),
         Row(
           children: [
@@ -276,176 +276,6 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _ServicesSection extends StatelessWidget {
-  const _ServicesSection({
-    required this.servicesAsync,
-    required this.quantities,
-    required this.onChanged,
-    required this.onRetry,
-  });
-
-  final AsyncValue<List<FacilityServiceEntity>>? servicesAsync;
-  final Map<int, int> quantities;
-  final void Function(int serviceId, int quantity) onChanged;
-  final VoidCallback? onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-    final color = context.color;
-
-    Widget message(String text) => Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: color.onPrimary,
-        border: Border.all(color: color.borderSubtle),
-        borderRadius: BorderRadius.circular(radius.r12),
-      ),
-      child: BodySmallText(text, color: color.text.secondary),
-    );
-
-    final async = servicesAsync;
-    if (async == null) {
-      return message(context.locale.selectFacilityToListServices);
-    }
-
-    return async.when(
-      loading: () => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (error, _) => AppErrorWidget(
-        message: error.localizedMessage(context),
-        onRetry: onRetry,
-      ),
-      data: (services) {
-        if (services.isEmpty) {
-          return message(context.locale.noServicesAtFacility);
-        }
-
-        return Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: spacing.s16,
-            vertical: spacing.s8,
-          ),
-          decoration: BoxDecoration(
-            color: color.onPrimary,
-            border: Border.all(color: color.borderSubtle),
-            borderRadius: BorderRadius.circular(radius.r12),
-          ),
-          child: Column(
-            children: [
-              for (var i = 0; i < services.length; i++) ...[
-                if (i > 0) Divider(color: color.borderSubtle, height: 1),
-                _ServiceRow(
-                  service: services[i],
-                  quantity: quantities[services[i].id] ?? 0,
-                  onChanged: (quantity) => onChanged(services[i].id, quantity),
-                ),
-              ],
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ServiceRow extends StatelessWidget {
-  const _ServiceRow({
-    required this.service,
-    required this.quantity,
-    required this.onChanged,
-  });
-
-  final FacilityServiceEntity service;
-  final int quantity;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final color = context.color;
-    final gender = switch (service.gender) {
-      'male' => context.locale.male,
-      'female' => context.locale.female,
-      final other => other,
-    };
-
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: spacing.s12),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  service.localizedServiceName(context.languageCode),
-                  style: context.textStyle.labelLarge.copyWith(
-                    color: color.text.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Gap(spacing.s2),
-                BodySmallText(
-                  '$gender · ${context.numbers.currency(service.price)}',
-                  color: color.text.secondary,
-                ),
-              ],
-            ),
-          ),
-          ItemStepperInput(quantity: quantity, min: 0, onChanged: onChanged),
-        ],
-      ),
-    );
-  }
-}
-
-class _TotalBar extends StatelessWidget {
-  const _TotalBar({required this.total});
-
-  final double total;
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Container(
-      padding: EdgeInsets.all(spacing.s16),
-      decoration: BoxDecoration(
-        color: context.color.onPrimary,
-        border: Border.all(color: context.color.borderSubtle),
-        borderRadius: BorderRadius.circular(radius.r12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            context.locale.totalCounted,
-            style: context.textStyle.labelLarge.copyWith(
-              color: context.color.text.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            context.numbers.currency(total),
-            style: context.textStyle.labelLarge.copyWith(
-              color: context.color.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
