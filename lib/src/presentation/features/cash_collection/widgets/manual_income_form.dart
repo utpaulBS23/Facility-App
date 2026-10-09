@@ -35,8 +35,10 @@ class ManualIncomeForm extends ConsumerStatefulWidget {
 }
 
 class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
-  final _productController = TextEditingController();
-  final _rentingController = TextEditingController();
+  // WHY a real 0 and not a hint: the amounts are optional and default to 0, so
+  // the form shows the value that will actually be sent.
+  final _productController = TextEditingController(text: '0');
+  final _rentingController = TextEditingController(text: '0');
   final _noteController = TextEditingController();
 
   int? _facilityId;
@@ -206,7 +208,6 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
         AppTextField.text(
           controller: _productController,
           label: context.locale.productSellingBdt,
-          hint: '0',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onChanged: (_) => setState(() {}),
         ),
@@ -214,7 +215,6 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
         AppTextField.text(
           controller: _rentingController,
           label: context.locale.rentingOthersBdt,
-          hint: '0',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onChanged: (_) => setState(() {}),
         ),
@@ -222,7 +222,6 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
         AppTextField.description(
           controller: _noteController,
           label: context.locale.noteOptional,
-          hint: context.locale.commentsHint,
         ),
         Gap(spacing.s16),
         PhotoPickerCard(
