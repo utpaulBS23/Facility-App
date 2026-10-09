@@ -87,10 +87,17 @@ List<GoRoute> _menuItemRoutes(Ref ref) {
       },
     ),
     GoRoute(
-      path: Routes.notification,
-      name: Routes.notification,
+      path: Routes.notifications,
+      name: Routes.notifications,
       pageBuilder: (context, state) {
-        return const MaterialPage(child: NotificationPage());
+        return const MaterialPage(child: NotificationsPage());
+      },
+    ),
+    GoRoute(
+      path: Routes.notificationSettings,
+      name: Routes.notificationSettings,
+      pageBuilder: (context, state) {
+        return const MaterialPage(child: NotificationSettingsPage());
       },
     ),
     GoRoute(

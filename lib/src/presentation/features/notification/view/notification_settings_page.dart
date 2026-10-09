@@ -18,8 +18,8 @@ import '../widgets/notification_info_banner.dart';
 import '../widgets/notification_info_card.dart';
 import '../widgets/notification_tone.dart';
 
-class NotificationPage extends ConsumerWidget {
-  const NotificationPage({super.key});
+class NotificationSettingsPage extends ConsumerWidget {
+  const NotificationSettingsPage({super.key});
 
   String _subtitle(BuildContext context, UserRole? role) {
     final locale = context.locale;
