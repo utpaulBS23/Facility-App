@@ -200,7 +200,16 @@
   "weeklyDigestDescription": "প্রতি সোমবার সকাল ১০:০০টায় একটি সারসংক্ষেপ ইমেইল।",
   "milestonesTitle": "মাইলফলক ও তথ্য",
   "milestonesDescription": "অ্যাপের ভেতরে এবং সকাল ৮:০০টার দৈনিক ডাইজেস্টে পাঠানো হয়। এগুলো চ্যানেল অনুযায়ী ঠিক করা যায় না।",
-  "notificationRetention": "নোটিফিকেশন ৯০ দিন সংরক্ষণ করা হয়।",
+  "notificationRetention": "নোটিফিকেশন {days} দিন সংরক্ষণ করা হয়।",
+  "@notificationRetention": {
+    "description": "Footer of the notification settings: how long notifications are kept",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "partnerOwnerRole": "পার্টনার মালিক",
   "opsManagerRole": "অপারেশনস ম্যানেজার",
   "notificationSettingsSubtitle": "{role} · পুশ ও ইমেইল",
@@ -1261,6 +1270,10 @@
   "notifFieldLastSeen": "সর্বশেষ দেখা",
   "notifFieldOfflineSince": "অফলাইন থেকে",
   "notifFieldOfflineMinutes": "অফলাইন (মিনিট)",
-  "notificationDetails": "নোটিফিকেশন"
+  "notificationDetails": "নোটিফিকেশন",
+  "approvalsTitle": "অনুমোদন",
+  "approvalsDescription": "ছুটি বা সরবরাহের অনুরোধ আপনার অনুমোদনের অপেক্ষায় আছে, অথবা ২৪ ঘণ্টার বেশি অপেক্ষমাণ।",
+  "ownRecordTitle": "আমার কাজ ও হাজিরা",
+  "ownRecordDescription": "আপনার নিজের হাজিরা রেকর্ড সংক্রান্ত আপডেট।"
 }
 

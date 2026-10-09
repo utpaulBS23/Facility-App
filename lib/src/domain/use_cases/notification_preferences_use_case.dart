@@ -8,7 +8,7 @@ final class GetNotificationPreferencesUseCase {
 
   final NotificationPreferencesRepository _repository;
 
-  Future<Result<List<NotificationPreferenceEntity>, Failure>> call() =>
+  Future<Result<NotificationPreferencesEntity, Failure>> call() =>
       _repository.getPreferences();
 }
 
@@ -17,8 +17,8 @@ final class SetNotificationPreferenceUseCase {
 
   final NotificationPreferencesRepository _repository;
 
-  Future<Result<void, Failure>> call({
-    required NotificationCategory category,
+  Future<Result<NotificationPreferencesEntity, Failure>> call({
+    required String category,
     required NotificationChannel channel,
     required bool enabled,
   }) => _repository.setPreference(
