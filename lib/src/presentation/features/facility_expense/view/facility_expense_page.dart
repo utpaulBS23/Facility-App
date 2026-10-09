@@ -18,7 +18,6 @@ import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../cash_collection/widgets/manual_income_tab.dart';
 import '../riverpod/facility_expenses_list_provider.dart';
 import '../widgets/shimmer/shimmer_box.dart';
 import '../../../core/widgets/menu_item_app_bar.dart';
@@ -31,8 +30,6 @@ part '../widgets/expense_stats_row.dart';
 part '../widgets/shimmer/expense_list_shimmer.dart';
 part '../widgets/shimmer/expense_stats_row_shimmer.dart';
 
-enum _ExpenseTab { expenses, manualIncome }
-
 class FacilityExpensePage extends ConsumerStatefulWidget {
   const FacilityExpensePage({super.key});
 
@@ -44,7 +41,6 @@ class FacilityExpensePage extends ConsumerStatefulWidget {
 class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
   int? _facilityId;
   late String _selectedMonth;
-  _ExpenseTab _tab = _ExpenseTab.expenses;
 
   @override
   void initState() {
@@ -93,11 +89,7 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         .fetch(facilityId: _facilityId, month: _selectedMonth);
   }
 
-  void _onAddExpense() => context.pushNamed(
-    _tab == _ExpenseTab.manualIncome
-        ? Routes.addManualIncome
-        : Routes.addFacilityExpense,
-  );
+  void _onAddExpense() => context.pushNamed(Routes.addFacilityExpense);
 
   @override
   Widget build(BuildContext context) {
@@ -106,14 +98,6 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
     final listAsync = ref.watch(facilityExpensesListProvider);
-    // WHY gated: manual income is a cash-collection feature with its own
-    // permissions; users without it see the plain expense page.
-    final canSeeManualIncome =
-        ref
-            .watch(userSessionProvider)
-            ?.canAny(const [UserPermission.cashCollectionView]) ??
-        false;
-    final tab = canSeeManualIncome ? _tab : _ExpenseTab.expenses;
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -140,9 +124,7 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
         ],
       ),
       floatingActionButton: PermissionGate(
-        permissions: tab == _ExpenseTab.manualIncome
-            ? const [UserPermission.cashCollectionCreate]
-            : const [UserPermission.facilityExpenseCreate],
+        permissions: const [UserPermission.facilityExpenseCreate],
         child: FloatingActionButton(
           onPressed: _onAddExpense,
           backgroundColor: context.color.primary,
@@ -150,50 +132,7 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
           child: const Icon(Icons.add),
         ),
       ),
-      body: Column(
-        children: [
-          if (canSeeManualIncome)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                spacing.s16,
-                spacing.s12,
-                spacing.s16,
-                0,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: SegmentedButton<_ExpenseTab>(
-                  segments: [
-                    ButtonSegment(
-                      value: _ExpenseTab.expenses,
-                      label: Text(context.locale.expenseTracking),
-                    ),
-                    ButtonSegment(
-                      value: _ExpenseTab.manualIncome,
-                      label: Text(context.locale.manualIncome),
-                    ),
-                  ],
-                  selected: {tab},
-                  showSelectedIcon: false,
-                  onSelectionChanged: (selection) =>
-                      setState(() => _tab = selection.first),
-                ),
-              ),
-            ),
-          Expanded(
-            child: switch (tab) {
-              _ExpenseTab.expenses => _FacilityExpenseBody(
-                listAsync: listAsync,
-                onRetry: _fetch,
-              ),
-              _ExpenseTab.manualIncome => ManualIncomeTab(
-                facilityId: _facilityId,
-                month: _selectedMonth,
-              ),
-            },
-          ),
-        ],
-      ),
+      body: _FacilityExpenseBody(listAsync: listAsync, onRetry: _fetch),
     );
   }
 }
