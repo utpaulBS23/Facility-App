@@ -1,7 +1,7 @@
-import '../../core/base/failure.dart';
-import '../../core/base/result.dart';
-import '../repositories/device_token_repository.dart';
-import '../repositories/push_notification_repository.dart';
+import '../../../core/base/failure.dart';
+import '../../../core/base/result.dart';
+import '../../repositories/device_token_repository.dart';
+import '../../repositories/push_notification_repository.dart';
 
 /// Registers this device for pushes after sign-in, or with [token] when
 /// Firebase rotates it.

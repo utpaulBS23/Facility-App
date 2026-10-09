@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/base/failure.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../../domain/entities/app_notification_entity.dart';
+import '../../../../domain/entities/notification/app_notification_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
@@ -14,6 +14,7 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../extensions/notification_grouping_extension.dart';
 import '../riverpod/app_notifications_provider.dart';
 import '../widgets/notification_details_sheet.dart';
 import '../widgets/notification_filter.dart';
@@ -35,11 +36,9 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   void initState() {
     super.initState();
     _scroll.addListener(_onScroll);
-    // WHY refresh: the provider is kept alive, so opening the page must pick up
-    // what arrived since it last loaded.
-    Future.microtask(
-      () => ref.read(appNotificationsProvider.notifier).refresh(),
-    );
+    // WHY no load here: the inbox is kept alive and already loaded for the
+    // dashboard bell. The navigation shell refreshes it on a push and on
+    // resume, so opening the page needs no request of its own.
   }
 
   @override
@@ -78,35 +77,12 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
     return DateFormatter.shortDate(day);
   }
 
-  /// Items in the order they arrived, split into one list per calendar day.
-  List<(DateTime, List<AppNotificationEntity>)> _byDay(
-    List<AppNotificationEntity> items,
-  ) {
-    final sorted = [...items]
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    final groups = <(DateTime, List<AppNotificationEntity>)>[];
-    for (final item in sorted) {
-      final day = DateTime(
-        item.createdAt.year,
-        item.createdAt.month,
-        item.createdAt.day,
-      );
-      if (groups.isNotEmpty && groups.last.$1 == day) {
-        groups.last.$2.add(item);
-      } else {
-        groups.add((day, [item]));
-      }
-    }
-
-    return groups;
-  }
-
   @override
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
     final inbox = ref.watch(appNotificationsProvider);
-    final filter = ref.read(appNotificationsProvider.notifier).filter;
+    final filter = ref.watch(notificationInboxFilterProvider);
     final unread = inbox.valueOrNull?.unreadCount;
 
     return Scaffold(
@@ -129,7 +105,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
           onRetry: () => ref.invalidate(appNotificationsProvider),
         ),
         data: (list) {
-          final groups = _byDay(list.items);
+          final groups = list.items.groupByDay();
 
           return RefreshIndicator(
             onRefresh: () =>
@@ -139,19 +115,27 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.all(spacing.s16),
               children: [
-                CategoryFilterChips<AppNotificationFilter>(
-                  categories: AppNotificationFilter.values,
-                  selectedCategory: filter,
-                  onSelected: (next) => ref
-                      .read(appNotificationsProvider.notifier)
-                      .selectFilter(next),
-                  // WHY a count on Unread only: the server counts unread
-                  // across everything, not per filter.
-                  labelBuilder: (context, next) =>
-                      next == AppNotificationFilter.unread
-                      ? '${next.label(context)} '
-                            '${context.numbers.number(list.unreadCount)}'
-                      : next.label(context),
+                // WHY a scaled box: the chips hug their content and sit in the
+                // middle, and a long translation shrinks instead of overflowing.
+                Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: CategoryFilterChips<AppNotificationFilter>(
+                      fitContent: true,
+                      categories: AppNotificationFilter.values,
+                      selectedCategory: filter,
+                      onSelected: (next) => ref
+                          .read(appNotificationsProvider.notifier)
+                          .selectFilter(next),
+                      // WHY a count on Unread only: the server counts unread
+                      // across everything, not per filter.
+                      labelBuilder: (context, next) =>
+                          next == AppNotificationFilter.unread
+                          ? '${next.label(context)} '
+                                '${context.numbers.number(list.unreadCount)}'
+                          : next.label(context),
+                    ),
+                  ),
                 ),
                 Gap(spacing.s12),
                 Row(
@@ -200,7 +184,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                       ),
                     ),
                   ),
-                for (final (day, items) in groups) ...[
+                for (final (:day, :items) in groups) ...[
                   Gap(spacing.s16),
                   NotificationGroupHeader(
                     label: _dayLabel(day),

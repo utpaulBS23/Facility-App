@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
-import '../../../../domain/entities/notification_preference_entity.dart';
+import '../../../../domain/entities/notification/notification_preference_entity.dart';
 
 part 'notification_preferences_provider.g.dart';
 

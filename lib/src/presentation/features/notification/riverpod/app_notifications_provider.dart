@@ -2,46 +2,104 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
-import '../../../../domain/entities/app_notification_entity.dart';
+import '../../../../domain/entities/notification/app_notification_entity.dart';
 
 part 'app_notifications_provider.g.dart';
 
-/// The user's notification inbox under one filter. Kept alive so the dashboard
-/// bell and the inbox page agree on the unread count.
+/// Which filter the inbox shows.
+///
+/// WHY its own provider: the page watches it for the selected chip, and a
+/// notifier may not expose public properties. Change it through
+/// [AppNotifications.selectFilter], which also reloads the list.
+@Riverpod(keepAlive: true)
+class NotificationInboxFilter extends _$NotificationInboxFilter {
+  @override
+  AppNotificationFilter build() => AppNotificationFilter.all;
+
+  void select(AppNotificationFilter filter) => state = filter;
+}
+
+/// The user's notification inbox under the chosen filter. Kept alive so the
+/// dashboard bell and the inbox page agree on the unread count.
+///
+/// Actions that the user can fail at ([markRead], [markAllRead]) return the
+/// failure for the screen to show, or null. Background work ([refresh],
+/// [loadMore]) keeps what is on screen and stays quiet.
 @Riverpod(keepAlive: true)
 class AppNotifications extends _$AppNotifications {
-  AppNotificationFilter _filter = AppNotificationFilter.all;
   bool _loadingMore = false;
 
-  AppNotificationFilter get filter => _filter;
+  /// The reload in progress, and the filter it is loading.
+  Future<void>? _refreshing;
+  AppNotificationFilter? _refreshingFilter;
 
   @override
-  Future<AppNotificationListEntity> build() => _load(page: 1);
+  Future<AppNotificationListEntity> build() {
+    return _load(page: 1, filter: ref.read(notificationInboxFilterProvider));
+  }
 
-  Future<AppNotificationListEntity> _load({required int page}) async {
+  Future<AppNotificationListEntity> _load({
+    required int page,
+    required AppNotificationFilter filter,
+  }) async {
     final result = await ref.read(getAppNotificationsUseCaseProvider)(
-      filter: _filter,
+      filter: filter,
       page: page,
     );
 
     return switch (result) {
-      Success(:final data) => data ?? const AppNotificationListEntity.empty(),
+      Success(:final data?) => data,
       Error(:final error) => throw error,
+      // Unreachable: the use case turns an empty success into an error.
       _ => throw Failure.emptyResponse('get notifications'),
     };
   }
 
+  /// Applies [change] to the list on screen, if there is one.
+  void _update(
+    AppNotificationListEntity Function(AppNotificationListEntity) change,
+  ) {
+    final current = state.valueOrNull;
+    if (current != null) state = AsyncData(change(current));
+  }
+
   /// Shows another filter, from its first page.
   Future<void> selectFilter(AppNotificationFilter filter) async {
-    if (filter == _filter) return;
-    _filter = filter;
+    if (filter == ref.read(notificationInboxFilterProvider)) return;
+    ref.read(notificationInboxFilterProvider.notifier).select(filter);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _load(page: 1));
+    final next = await AsyncValue.guard(() => _load(page: 1, filter: filter));
+
+    // WHY drop it: the user picked yet another filter meanwhile.
+    if (filter == ref.read(notificationInboxFilterProvider)) state = next;
   }
 
   /// Reloads the first page, keeping what is on screen while it loads.
-  Future<void> refresh() async {
-    final next = await AsyncValue.guard(() => _load(page: 1));
+  ///
+  /// WHY one at a time: a resume, a received push and a tapped push can all
+  /// ask within the same moment. Callers during a reload share it, so the
+  /// server is asked once and an older answer cannot land after a newer one.
+  Future<void> refresh() {
+    final filter = ref.read(notificationInboxFilterProvider);
+    final running = _refreshing;
+    if (running != null && _refreshingFilter == filter) return running;
+
+    _refreshingFilter = filter;
+    final reload = _reload(filter);
+    _refreshing = reload;
+    reload.whenComplete(() {
+      if (identical(_refreshing, reload)) _refreshing = null;
+    });
+
+    return reload;
+  }
+
+  Future<void> _reload(AppNotificationFilter filter) async {
+    final next = await AsyncValue.guard(() => _load(page: 1, filter: filter));
+
+    // WHY drop it: the user picked another filter meanwhile, and this answer
+    // belongs to the old one.
+    if (filter != ref.read(notificationInboxFilterProvider)) return;
     // WHY keep the old list on a failed refresh: a bad connection should not
     // blank an inbox the user is reading.
     if (next.hasError && state.hasValue) return;
@@ -54,22 +112,19 @@ class AppNotifications extends _$AppNotifications {
     if (current == null || !current.hasMore || _loadingMore) return;
 
     _loadingMore = true;
+    final filter = ref.read(notificationInboxFilterProvider);
     try {
-      final next = await _load(page: current.page + 1);
-      final seen = {for (final item in current.items) item.id};
-      state = AsyncData(
-        current.copyWith(
-          items: [
-            ...current.items,
-            for (final item in next.items)
-              if (!seen.contains(item.id)) item,
-          ],
-          total: next.total,
-          unreadCount: next.unreadCount,
-          page: next.page,
-          lastPage: next.lastPage,
-        ),
-      );
+      final next = await _load(page: current.page + 1, filter: filter);
+
+      // WHY re-check: the filter or the list may have changed while it loaded,
+      // and this page then no longer follows what is on screen.
+      final latest = state.valueOrNull;
+      if (latest == null ||
+          latest.page != current.page ||
+          filter != ref.read(notificationInboxFilterProvider)) {
+        return;
+      }
+      state = AsyncData(latest.appended(next));
     } on Object {
       // WHY quiet: the next scroll to the end tries again.
     } finally {
@@ -77,42 +132,26 @@ class AppNotifications extends _$AppNotifications {
     }
   }
 
-  /// Marks one notification read. The page moves at once and goes back if the
-  /// save fails; the failure is returned so the screen can say why.
+  /// Marks one notification read. The row moves at once and goes back if the
+  /// save fails.
   Future<Failure?> markRead(int id) async {
-    final previous = state.valueOrNull;
-    final target = previous?.items.where((item) => item.id == id).firstOrNull;
-    if (previous == null || target == null || target.isRead) return null;
+    final target = state.valueOrNull?.items
+        .where((item) => item.id == id)
+        .firstOrNull;
+    if (target == null || target.isRead) return null;
 
-    state = AsyncData(
-      previous.copyWith(
-        items: [
-          for (final item in previous.items)
-            item.id == id ? item.copyWith(isRead: true) : item,
-        ],
-        unreadCount: previous.unreadCount > 0 ? previous.unreadCount - 1 : 0,
-      ),
-    );
+    _update((list) => list.markedRead(id));
 
     final result = await ref.read(markAppNotificationReadUseCaseProvider)(id);
     if (result case Error(:final error)) {
       // WHY a 404 is not a failure to undo: the server no longer has it (it
       // was purged), so there is nothing to mark. Drop it from the list.
       if (error.type == FailureType.notFound) {
-        final latest = state.valueOrNull ?? previous;
-        state = AsyncData(
-          latest.copyWith(
-            items: [
-              for (final item in latest.items)
-                if (item.id != id) item,
-            ],
-            total: latest.total > 0 ? latest.total - 1 : 0,
-          ),
-        );
+        _update((list) => list.without(id));
 
         return null;
       }
-      state = AsyncData(previous);
+      _update((list) => list.markedUnread(id));
 
       return error;
     }
@@ -121,26 +160,18 @@ class AppNotifications extends _$AppNotifications {
   }
 
   Future<Failure?> markAllRead() async {
-    final previous = state.valueOrNull;
-    if (previous == null) return null;
-
-    state = AsyncData(
-      previous.copyWith(
-        items: [for (final item in previous.items) item.copyWith(isRead: true)],
-        unreadCount: 0,
-      ),
-    );
+    _update((list) => list.allRead());
 
     final result = await ref.read(markAllAppNotificationsReadUseCaseProvider)();
-    if (result case Error(:final error)) {
-      state = AsyncData(previous);
-
-      return error;
-    }
-    // WHY reload: under the Unread filter the list is now empty, and the server
-    // is the source of the totals.
+    // WHY reload either way: the server is the source of the totals, and under
+    // the Unread filter a successful save leaves the list empty. A reload that
+    // began before the save would show the old totals, so let it finish first.
+    await _refreshing;
     await refresh();
 
-    return null;
+    return switch (result) {
+      Error(:final error) => error,
+      _ => null,
+    };
   }
 }

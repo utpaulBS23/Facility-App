@@ -1,4 +1,4 @@
-import '../entities/notification_payload_entity.dart';
+import '../entities/notification/notification_payload_entity.dart';
 
 abstract class PushNotificationRepository {
   Future<void> initialize();

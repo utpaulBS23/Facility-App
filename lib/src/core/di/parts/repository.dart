@@ -236,6 +236,7 @@ DeviceTokenRepository deviceTokenRepository(Ref ref) {
   return DeviceTokenRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
     local: ref.read(cacheServiceProvider),
+    platform: ref.read(pushNotificationServiceProvider).platform,
   );
 }
 

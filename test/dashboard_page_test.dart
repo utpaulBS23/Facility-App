@@ -1,5 +1,5 @@
 import 'package:facility_management_app/src/core/gen/l10n/app_localizations.dart';
-import 'package:facility_management_app/src/domain/entities/app_notification_entity.dart';
+import 'package:facility_management_app/src/domain/entities/notification/app_notification_entity.dart';
 import 'package:facility_management_app/src/domain/entities/dashboard_entity.dart';
 import 'package:facility_management_app/src/domain/entities/login_entity.dart';
 import 'package:facility_management_app/src/presentation/core/application_state/session_provider/session_provider.dart';

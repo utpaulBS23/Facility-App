@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../core/base/exceptions.dart';
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
-import '../../domain/entities/app_notification_entity.dart';
+import '../../domain/entities/notification/app_notification_entity.dart';
 import '../../domain/repositories/app_notifications_repository.dart';
 import '../extension/app_notification_mapper.dart';
 import '../models/notification/app_notification_model.dart';
@@ -39,7 +39,8 @@ final class AppNotificationsRepositoryImpl extends AppNotificationsRepository {
         await remote.markNotificationRead(id: id);
       } on DioException catch (e) {
         // WHY named: a purged or foreign notification is a plain 404, which
-        // reaches callers as a generic bad response.
+        // reaches callers as a generic bad response. The message is for logs;
+        // callers branch on FailureType.notFound and show their own wording.
         if (e.response?.statusCode == 404) {
           throw const CustomException.notFound(
             message: 'Notification not found.',

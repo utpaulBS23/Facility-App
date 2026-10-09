@@ -1,9 +1,12 @@
-import '../../../domain/entities/notification_payload_entity.dart';
+import '../../../domain/entities/notification/notification_payload_entity.dart';
 
 abstract class PushNotificationService {
   Future<void> initialize();
 
   Future<String> getDeviceToken();
+
+  /// How the server names this device's platform: `android` or `ios`.
+  String get platform;
 
   /// A new token, when Firebase rotates it.
   Stream<String> get tokenRefreshStream;

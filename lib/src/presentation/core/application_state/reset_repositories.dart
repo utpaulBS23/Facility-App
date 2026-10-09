@@ -18,5 +18,6 @@ void resetRepositories(Ref ref) {
   // without watching them, so they would otherwise show the last user's
   // notifications to the next person who signs in.
   ref.invalidate(appNotificationsProvider);
+  ref.invalidate(notificationInboxFilterProvider);
   ref.invalidate(notificationPreferencesProvider);
 }

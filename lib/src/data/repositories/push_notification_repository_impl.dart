@@ -1,4 +1,4 @@
-import '../../domain/entities/notification_payload_entity.dart';
+import '../../domain/entities/notification/notification_payload_entity.dart';
 import '../../domain/repositories/push_notification_repository.dart';
 import '../services/notification/push_notification_service.dart';
 

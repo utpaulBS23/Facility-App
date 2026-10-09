@@ -194,9 +194,12 @@ final List<MenuItemConfig> menuItemConfigs = [
 
 /// Pinned above the logout tile — kept out of [menuItemConfigs] so it stays
 /// fixed regardless of the permission-filtered list order.
+///
+/// Opens the inbox, which every user has; its app bar leads on to the
+/// notification settings.
 final notificationMenuItemConfig = MenuItemConfig(
   iconOverride: Assets.icons.notificationIcon,
-  route: Routes.notificationSettings,
+  route: Routes.notifications,
   permissions: [UserPermission.notificationSettings],
 );
 

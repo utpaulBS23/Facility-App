@@ -1,7 +1,7 @@
 import '../../core/base/failure.dart';
 import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
-import '../entities/notification_preference_entity.dart';
+import '../entities/notification/notification_preference_entity.dart';
 
 abstract base class NotificationPreferencesRepository extends Repository {
   Future<Result<NotificationPreferencesEntity, Failure>> getPreferences();

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -7,7 +8,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../../firebase_options.dart';
 import '../../../core/logger/log.dart';
-import '../../../domain/entities/notification_payload_entity.dart';
+import '../../../domain/entities/notification/notification_category.dart';
+import '../../../domain/entities/notification/notification_payload_entity.dart';
 import 'push_notification_service.dart';
 
 class PushNotificationServiceImpl implements PushNotificationService {
@@ -21,68 +23,66 @@ class PushNotificationServiceImpl implements PushNotificationService {
   /// know yet. A push must never be dropped for that.
   static const defaultChannelId = 'general';
 
-  /// The server sets `android_channel_id` to the notification's category, so
-  /// these ids must exist before any push can arrive. Importance follows the
-  /// notifications API reference.
-  static const channels = <AndroidNotificationChannel>[
-    AndroidNotificationChannel(
-      'camera_down',
-      'Camera and device down',
-      importance: Importance.high,
-    ),
-    AndroidNotificationChannel(
-      'odour_breach',
-      'Odour breach',
-      importance: Importance.max,
-    ),
-    AndroidNotificationChannel(
-      'staffing',
-      'Understaffed slot and check-ins',
-      importance: Importance.defaultImportance,
-    ),
-    AndroidNotificationChannel(
-      'issue',
-      'Issue raised',
-      importance: Importance.defaultImportance,
-    ),
-    AndroidNotificationChannel(
-      'variance',
-      'Collection variance',
-      importance: Importance.high,
-    ),
-    AndroidNotificationChannel(
-      'stock_low',
-      'Stock low',
-      importance: Importance.low,
-    ),
-    AndroidNotificationChannel(
-      'approvals',
-      'Approvals',
-      importance: Importance.defaultImportance,
-    ),
-    AndroidNotificationChannel(
-      'own_record',
-      'My tasks and attendance',
-      importance: Importance.defaultImportance,
-    ),
-    AndroidNotificationChannel(
-      defaultChannelId,
-      'General',
-      importance: Importance.defaultImportance,
-    ),
+  /// The Android channel for [category]. The server sets
+  /// `android_channel_id` to the notification's category, so every channel must
+  /// exist before a push can arrive. Importance follows the notifications API
+  /// reference.
+  static AndroidNotificationChannel _channelOf(NotificationCategory category) {
+    final (name, importance) = switch (category) {
+      NotificationCategory.cameraDown => (
+        'Camera and device down',
+        Importance.high,
+      ),
+      NotificationCategory.odourBreach => ('Odour breach', Importance.max),
+      NotificationCategory.staffing => (
+        'Understaffed slot and check-ins',
+        Importance.defaultImportance,
+      ),
+      NotificationCategory.issue => (
+        'Issue raised',
+        Importance.defaultImportance,
+      ),
+      NotificationCategory.variance => ('Collection variance', Importance.high),
+      NotificationCategory.stockLow => ('Stock low', Importance.low),
+      NotificationCategory.approvals => (
+        'Approvals',
+        Importance.defaultImportance,
+      ),
+      NotificationCategory.ownRecord => (
+        'My tasks and attendance',
+        Importance.defaultImportance,
+      ),
+    };
+
+    return AndroidNotificationChannel(
+      category.key,
+      name,
+      importance: importance,
+    );
+  }
+
+  static const _generalChannel = AndroidNotificationChannel(
+    defaultChannelId,
+    'General',
+    importance: Importance.defaultImportance,
+  );
+
+  static final channels = <AndroidNotificationChannel>[
+    for (final category in NotificationCategory.values) _channelOf(category),
+    _generalChannel,
   ];
 
   /// The channel a push with [category] is shown on.
   static AndroidNotificationChannel channelFor(String? category) {
-    return channels.firstWhere(
-      (channel) => channel.id == category,
-      orElse: () => channels.last,
-    );
+    final known = NotificationCategory.fromKey(category);
+
+    return known == null ? _generalChannel : _channelOf(known);
   }
 
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _notifications;
 
+  int _nextLocalId = DateTime.now().millisecondsSinceEpoch & 0x7fffffff;
   NotificationPayloadEntity? _payload;
   final _payloadController =
       StreamController<NotificationPayloadEntity>.broadcast();
@@ -164,12 +164,23 @@ class PushNotificationServiceImpl implements PushNotificationService {
     );
 
     await _notifications.show(
-      id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+      id: _displayId(data),
       title: title,
       body: body,
       notificationDetails: details,
       payload: jsonEncode(data),
     );
+  }
+
+  /// The id the system tray tells notifications apart by. The server sends
+  /// the feed id as `notification_id`, so one notification never shows twice.
+  /// Without it, a running counter keeps ids from colliding.
+  int _displayId(Map<String, dynamic> data) {
+    final serverId = int.tryParse('${data['notification_id']}');
+    // WHY masked: the plugin takes a 32-bit signed id.
+    if (serverId != null) return serverId & 0x7fffffff;
+
+    return _nextLocalId = (_nextLocalId + 1) & 0x7fffffff;
   }
 
   void _onLocalNotificationTap(NotificationResponse response) {
@@ -192,6 +203,9 @@ class PushNotificationServiceImpl implements PushNotificationService {
       NotificationPayloadEntity(data: data, title: title, body: body),
     );
   }
+
+  @override
+  String get platform => Platform.isIOS ? 'ios' : 'android';
 
   @override
   Future<String> getDeviceToken() async {

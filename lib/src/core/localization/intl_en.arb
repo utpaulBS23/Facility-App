@@ -196,7 +196,6 @@
   "stockLowTitle": "Stock low",
   "stockLowDescription": "Supplies at a facility drop below the reorder level.",
   "weeklyDigestTitle": "Weekly email digest",
-  "weeklyDigestDescription": "One summary email every Monday at 10:00 AM.",
   "milestonesTitle": "Milestones and info",
   "milestonesDescription": "Delivered in-app and in the 8:00 AM daily digest. These cannot be set per channel.",
   "notificationRetention": "Notifications are kept for {days} days.",
@@ -823,17 +822,6 @@
   "doorLockSubtitle": "Control smart door locks",
   "expenseEntrySubtitle": "Record facility operational expenses",
   "notificationSubtitle": "View facility alerts and updates",
-  "pushNotifications": "Push notifications",
-  "pushNotificationsSubtitle": "Get alerted about facility activity",
-  "notificationChannels": "Notification channels",
-  "taskChannel": "Tasks",
-  "taskChannelSubtitle": "Task and occurrence updates",
-  "attendanceLeaveChannel": "Attendance & Leave",
-  "attendanceLeaveChannelSubtitle": "Check-in/out and leave request updates",
-  "issueChannel": "Issue Reports",
-  "issueChannelSubtitle": "Reported facility issues and their status",
-  "supplyChannel": "Supply & Delivery",
-  "supplyChannelSubtitle": "Supply requests and delivery tracking",
   "profitReportSubtitle": "View facility profit and financial reports",
   "consumptionReportSubtitle": "Track stock usage and consumption",
   "facilityLocationsSubtitle": "View map of facility locations",
@@ -1334,6 +1322,9 @@
   "approvalsTitle": "Approvals",
   "approvalsDescription": "A leave or supply request needs your approval, or has waited more than 24 hours.",
   "ownRecordTitle": "My tasks and attendance",
-  "ownRecordDescription": "Updates about your own attendance records."
+  "ownRecordDescription": "Updates about your own attendance records.",
+  "notifValueCheckIn": "Check in",
+  "notifValueCheckOut": "Check out",
+  "notifValueLeave": "Leave",
+  "notifValueSupply": "Supply"
 }
-
