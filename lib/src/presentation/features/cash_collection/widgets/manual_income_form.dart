@@ -75,6 +75,11 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
   double get _rentingAmount =>
       Digits.parseDouble(_rentingController.text.trim()) ?? 0;
 
+  /// At least one service must have been counted; an all-zero count is not an
+  /// entry.
+  bool _hasServiceCount(List<FacilityServiceEntity> services) =>
+      services.any((service) => (_quantities[service.id] ?? 0) > 0);
+
   double _total(List<FacilityServiceEntity> services) {
     var sum = _productAmount + _rentingAmount;
     for (final service in services) {
@@ -249,7 +254,7 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
                   onPressed:
                       isSubmitting ||
                           facilityId == null ||
-                          services.isEmpty ||
+                          !_hasServiceCount(services) ||
                           _photo == null
                       ? null
                       : () => _onSubmit(services),
