@@ -61,13 +61,12 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
   }
 
   void _selectDefaultFacility() {
-    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
-    if (facilities == null || facilities.isEmpty || !mounted) return;
-    final primary = facilities.cast<AccessibleFacilityEntity?>().firstWhere(
-      (f) => f?.isPrimary ?? false,
-      orElse: () => null,
-    );
-    setState(() => _facilityId = (primary ?? facilities.first).id);
+    final selected = ref
+        .read(userSessionProvider)
+        ?.accessibleFacilities
+        .primaryOrFirst;
+    if (selected == null || !mounted) return;
+    setState(() => _facilityId = selected.id);
   }
 
   @override

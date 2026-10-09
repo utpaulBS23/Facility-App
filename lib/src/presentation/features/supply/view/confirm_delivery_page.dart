@@ -20,7 +20,7 @@ import '../../../core/widgets/photo_picker_card.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
-import '../widgets/item_stepper_input.dart';
+import '../../../core/widgets/item_stepper_input.dart';
 import 'request_details_page.dart';
 
 part '../widgets/confirm_delivery_body.dart';
