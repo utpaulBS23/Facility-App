@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/extensions/app_localization.dart';
-import '../../../core/theme/theme.dart';
+import '../../../core/extensions/app_localization.dart';
+import '../theme/theme.dart';
 
-
+/// A minus / value / plus stepper for an integer quantity.
 class ItemStepperInput extends StatelessWidget {
   const ItemStepperInput({
     super.key,

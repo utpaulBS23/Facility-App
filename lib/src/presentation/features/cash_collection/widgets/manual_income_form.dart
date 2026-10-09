@@ -18,10 +18,10 @@ import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/form_selector_card.dart';
+import '../../../core/widgets/item_stepper_input.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/photo_picker_card.dart';
 import '../../../core/widgets/text/typography.dart';
-import '../../supply/widgets/item_stepper_input.dart';
 import '../riverpod/facility_services_provider.dart';
 import '../riverpod/submit_cash_collection_provider.dart';
 
@@ -51,14 +51,11 @@ class _ManualIncomeFormState extends ConsumerState<ManualIncomeForm> {
   @override
   void initState() {
     super.initState();
-    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
-    if (facilities != null && facilities.isNotEmpty) {
-      final primary = facilities.cast<AccessibleFacilityEntity?>().firstWhere(
-        (f) => f?.isPrimary ?? false,
-        orElse: () => null,
-      );
-      _facilityId = (primary ?? facilities.first).id;
-    }
+    _facilityId = ref
+        .read(userSessionProvider)
+        ?.accessibleFacilities
+        .primaryOrFirst
+        ?.id;
   }
 
   @override

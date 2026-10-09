@@ -51,14 +51,12 @@ class _FacilityExpensePageState extends ConsumerState<FacilityExpensePage> {
   }
 
   void _selectDefaultFacility() {
-    final facilities = ref.read(userSessionProvider)?.accessibleFacilities;
-    if (facilities == null || facilities.isEmpty || !mounted) return;
-    final primary = facilities.cast<AccessibleFacilityEntity?>().firstWhere(
-      (f) => f?.isPrimary ?? false,
-      orElse: () => null,
-    );
-    final selected = (primary ?? facilities.first).id;
-    setState(() => _facilityId = selected);
+    final selected = ref
+        .read(userSessionProvider)
+        ?.accessibleFacilities
+        .primaryOrFirst;
+    if (selected == null || !mounted) return;
+    setState(() => _facilityId = selected.id);
     _fetch();
   }
 

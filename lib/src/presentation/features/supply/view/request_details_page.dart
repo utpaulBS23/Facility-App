@@ -22,7 +22,7 @@ import '../extensions/supply_status_extension.dart';
 import '../riverpod/supply_request_action_provider.dart';
 import '../riverpod/supply_request_delivery_provider.dart';
 import '../riverpod/supply_request_details_provider.dart';
-import '../widgets/item_stepper_input.dart';
+import '../../../core/widgets/item_stepper_input.dart';
 
 part '../widgets/dispatch_action_button.dart';
 part '../widgets/pending_action_buttons.dart';
