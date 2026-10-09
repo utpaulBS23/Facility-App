@@ -1,13 +1,17 @@
 part of '../view/additional_income_page.dart';
 
-enum IncomeListTab { rentAndOthers, monthlyProductRevenue }
+enum IncomeListTab { rentAndOthers, monthlyProductRevenue, manualIncome }
 
 class _IncomeListTabSwitch extends StatelessWidget {
   const _IncomeListTabSwitch({
     required this.selectedTab,
     required this.onTabChanged,
+    this.showManualIncome = false,
   });
 
+  /// Manual income is a cash-collection feature, shown only to users who can
+  /// view it.
+  final bool showManualIncome;
   final IncomeListTab selectedTab;
   final ValueChanged<IncomeListTab> onTabChanged;
 
@@ -26,6 +30,11 @@ class _IncomeListTabSwitch extends StatelessWidget {
           value: IncomeListTab.monthlyProductRevenue,
           label: Text(context.locale.monthlyProductRevenue),
         ),
+        if (showManualIncome)
+          ButtonSegment<IncomeListTab>(
+            value: IncomeListTab.manualIncome,
+            label: Text(context.locale.manualIncome),
+          ),
       ],
       selected: {selectedTab},
       showSelectedIcon: false,
