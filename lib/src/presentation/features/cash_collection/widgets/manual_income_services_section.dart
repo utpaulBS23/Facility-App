@@ -8,6 +8,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/item_stepper_input.dart';
 import '../../../core/widgets/text/typography.dart';
+import 'gender_label.dart';
 
 class ManualIncomeServicesSection extends StatelessWidget {
   const ManualIncomeServicesSection({
@@ -104,11 +105,7 @@ class _ServiceRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
     final color = context.color;
-    final gender = switch (service.gender) {
-      'male' => context.locale.male,
-      'female' => context.locale.female,
-      final other => other,
-    };
+    final gender = genderLabel(context, service.gender);
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.s12),

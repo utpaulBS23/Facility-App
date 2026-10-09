@@ -5,6 +5,7 @@ import '../../../../domain/entities/cash_collection/cash_collection_entity.dart'
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/text/typography.dart';
+import 'gender_label.dart';
 
 /// Read-only view of one entry: its service lines and the evidence photo.
 class ManualIncomeEntryDetailsSheet extends StatelessWidget {
@@ -50,7 +51,7 @@ class ManualIncomeEntryDetailsSheet extends StatelessWidget {
                     children: [
                       Expanded(
                         child: BodySmallText(
-                          '${item.serviceName} · ${item.gender} · '
+                          '${item.serviceName} · ${genderLabel(context, item.gender)} · '
                           '${context.numbers.number(item.quantity)} × '
                           '${context.numbers.currency(item.unitPrice)}',
                           color: color.text.secondary,
