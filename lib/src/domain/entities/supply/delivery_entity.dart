@@ -1,3 +1,4 @@
+import 'delivery_complaint_status.dart';
 import 'delivery_status.dart';
 import '../../../core/utils/localized_text.dart';
 
@@ -13,6 +14,9 @@ class DeliveryItemEntity {
     required this.qtyReceived,
     required this.isVerified,
     required this.hasShortage,
+    this.hasComplaint = false,
+    this.complaintId,
+    this.complaintStatus,
   });
 
   final int id;
@@ -25,6 +29,11 @@ class DeliveryItemEntity {
   final double qtyReceived;
   final bool isVerified;
   final bool hasShortage;
+  final bool hasComplaint;
+
+  /// Id and status of the latest complaint filed for this item.
+  final int? complaintId;
+  final DeliveryComplaintStatus? complaintStatus;
 
   DeliveryItemEntity copyWith({
     int? id,
@@ -36,6 +45,9 @@ class DeliveryItemEntity {
     double? qtyReceived,
     bool? isVerified,
     bool? hasShortage,
+    bool? hasComplaint,
+    int? complaintId,
+    DeliveryComplaintStatus? complaintStatus,
   }) {
     return DeliveryItemEntity(
       id: id ?? this.id,
@@ -47,6 +59,9 @@ class DeliveryItemEntity {
       qtyReceived: qtyReceived ?? this.qtyReceived,
       isVerified: isVerified ?? this.isVerified,
       hasShortage: hasShortage ?? this.hasShortage,
+      hasComplaint: hasComplaint ?? this.hasComplaint,
+      complaintId: complaintId ?? this.complaintId,
+      complaintStatus: complaintStatus ?? this.complaintStatus,
     );
   }
 

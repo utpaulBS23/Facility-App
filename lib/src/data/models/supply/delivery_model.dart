@@ -18,6 +18,9 @@ class DeliveryItemModel with DeliveryItemModelMappable {
     required this.qtyReceived,
     required this.isVerified,
     required this.hasShortage,
+    this.hasComplaint = false,
+    this.complaintId,
+    this.complaintStatus,
   });
 
   final int id;
@@ -31,6 +34,11 @@ class DeliveryItemModel with DeliveryItemModelMappable {
   final double qtyReceived;
   final bool isVerified;
   final bool hasShortage;
+  final bool hasComplaint;
+
+  /// Id and status of the latest complaint filed for this item.
+  final int? complaintId;
+  final String? complaintStatus;
 
   static const fromJson = DeliveryItemModelMapper.fromJson;
 }
