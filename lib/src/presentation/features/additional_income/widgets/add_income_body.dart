@@ -5,7 +5,6 @@ class _AddIncomeBody extends ConsumerWidget {
     required this.formKey,
     required this.incomeEntryType,
     required this.onIncomeEntryTypeChanged,
-    required this.showManualIncome,
     required this.amountController,
     required this.descriptionController,
     required this.productLegs,
@@ -31,7 +30,6 @@ class _AddIncomeBody extends ConsumerWidget {
   final GlobalKey<FormState> formKey;
   final IncomeEntryType incomeEntryType;
   final ValueChanged<IncomeEntryType> onIncomeEntryTypeChanged;
-  final bool showManualIncome;
   final TextEditingController amountController;
   final TextEditingController descriptionController;
   final List<_ProductLegDraft> productLegs;
@@ -56,27 +54,6 @@ class _AddIncomeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
-    final padding = EdgeInsets.symmetric(
-      horizontal: spacing.s16,
-      vertical: spacing.s20,
-    );
-    // WHY an early branch: manual income is a self-contained form with its
-    // own fields, validation and save button, unlike the two entry types
-    // below that share this body's controllers and action buttons.
-    if (incomeEntryType == IncomeEntryType.manualIncome) {
-      return ListView(
-        padding: padding,
-        children: [
-          _IncomeEntryTypeSwitch(
-            selectedType: incomeEntryType,
-            onTypeChanged: onIncomeEntryTypeChanged,
-            showManualIncome: showManualIncome,
-          ),
-          Gap(spacing.s16),
-          const ManualIncomeForm(),
-        ],
-      );
-    }
     final isProductSell = incomeEntryType == IncomeEntryType.productSell;
     final facilitySelected = ref.watch(selectedIncomeFacilityProvider) != null;
     final incomeTypeSelected = ref.watch(selectedIncomeTypeProvider) != null;
@@ -96,7 +73,6 @@ class _AddIncomeBody extends ConsumerWidget {
           _IncomeEntryTypeSwitch(
             selectedType: incomeEntryType,
             onTypeChanged: onIncomeEntryTypeChanged,
-            showManualIncome: showManualIncome,
           ),
           Gap(spacing.s16),
           _IncomeFacilitySection(
