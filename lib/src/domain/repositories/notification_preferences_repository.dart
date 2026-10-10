@@ -1,16 +1,15 @@
 import '../../core/base/failure.dart';
 import '../../core/base/repository.dart';
 import '../../core/base/result.dart';
-import '../entities/notification_preference_entity.dart';
+import '../entities/notification/notification_preference_entity.dart';
 
 abstract base class NotificationPreferencesRepository extends Repository {
-  /// One preference per [NotificationCategory], in enum order.
-  Future<Result<List<NotificationPreferenceEntity>, Failure>> getPreferences();
+  Future<Result<NotificationPreferencesEntity, Failure>> getPreferences();
 
-  /// Only a [NotificationChannelMode.toggle] channel can be changed; any other
-  /// request fails.
-  Future<Result<void, Failure>> setPreference({
-    required NotificationCategory category,
+  /// Saves one switch and returns the whole screen as the server now has it.
+  /// [category] is a category key or [NotificationPreferencesEntity.digestKey].
+  Future<Result<NotificationPreferencesEntity, Failure>> setPreference({
+    required String category,
     required NotificationChannel channel,
     required bool enabled,
   });

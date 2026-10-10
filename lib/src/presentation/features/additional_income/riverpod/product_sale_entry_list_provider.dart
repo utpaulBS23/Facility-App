@@ -4,6 +4,7 @@ import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/product_sale_entry/product_sale_entry_entity.dart';
 import '../../../../domain/entities/product_sale_entry/product_sale_entry_filter.dart';
+import 'submit_income_provider/submit_income_provider.dart';
 
 part 'product_sale_entry_list_provider.g.dart';
 
@@ -14,6 +15,12 @@ class ProductSaleEntryList extends _$ProductSaleEntryList {
 
   @override
   Future<ProductSaleEntryListResultEntity> build() {
+    ref.listen(submitIncomeProvider, (previous, next) {
+      if (previous?.isLoading == true && next.hasValue && !next.hasError) {
+        ref.invalidateSelf();
+      }
+    });
+
     return fetch(facilityId: _facilityId, month: _month);
   }
 

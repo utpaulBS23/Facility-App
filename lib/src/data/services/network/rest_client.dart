@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../models/notification/device_token_model.dart';
+import '../../models/notification/notification_preference_change_model.dart';
 import 'endpoints.dart';
 
 part 'rest_client.g.dart';
@@ -368,6 +370,20 @@ abstract class RestClient {
     @Path('travelExpenseId') required int travelExpenseId,
   });
 
+  @PATCH(Endpoints.approveTravelExpense)
+  Future<HttpResponse> approveTravelExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('travelExpenseId') required int travelExpenseId,
+    @Body() Map<String, dynamic> body = const {},
+  });
+
+  @PATCH(Endpoints.rejectTravelExpense)
+  Future<HttpResponse> rejectTravelExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('travelExpenseId') required int travelExpenseId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @GET(Endpoints.masterDataItems)
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,
@@ -390,7 +406,7 @@ abstract class RestClient {
   @POST(Endpoints.additionalIncomes)
   Future<HttpResponse> createAdditionalIncome({
     @Path('partnerId') required int partnerId,
-    @Body() required Map<String, dynamic> body,
+    @Body() required FormData formData,
   });
 
   @GET(Endpoints.productCatalogDropdown)
@@ -831,5 +847,45 @@ abstract class RestClient {
   @PATCH(Endpoints.profile)
   Future<HttpResponse> updateProfile({
     @Body() required Map<String, dynamic> body,
+  });
+
+  /// Notifications
+  @GET(Endpoints.notifications)
+  Future<HttpResponse> getNotifications({
+    @Query('filter') String? filter,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @POST(Endpoints.notificationRead)
+  Future<HttpResponse> markNotificationRead({
+    @Path('id') required int id,
+  });
+
+  @POST(Endpoints.notificationsReadAll)
+  Future<HttpResponse> markAllNotificationsRead();
+
+  @GET(Endpoints.notificationPreferences)
+  Future<HttpResponse> getNotificationPreferences();
+
+  @PUT(Endpoints.notificationPreferences)
+  Future<HttpResponse> updateNotificationPreferences({
+    @Body() required List<NotificationPreferenceChangeModel> changes,
+  });
+
+  @POST(Endpoints.deviceTokens)
+  Future<HttpResponse> registerDeviceToken({
+    @Body() required DeviceTokenRequestModel body,
+  });
+
+  @POST(Endpoints.deviceTokenTopicsSync)
+  Future<HttpResponse> syncDeviceTokenTopics({
+    @Path('id') required int id,
+    @Body() Map<String, dynamic> body = const {},
+  });
+
+  @DELETE(Endpoints.deviceToken)
+  Future<HttpResponse> deleteDeviceToken({
+    @Path('id') required int id,
   });
 }

@@ -175,13 +175,15 @@ CashCollectionRepository cashCollectionRepository(Ref ref) {
 @Riverpod(keepAlive: true)
 NotificationPreferencesRepository notificationPreferencesRepository(Ref ref) {
   return NotificationPreferencesRepositoryImpl(
-    local: ref.read(cacheServiceProvider),
+    remote: ref.read(restClientServiceProvider),
   );
 }
 
 @Riverpod(keepAlive: true)
 AppNotificationsRepository appNotificationsRepository(Ref ref) {
-  return MockAppNotificationsRepositoryImpl();
+  return AppNotificationsRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+  );
 }
 
 @Riverpod(keepAlive: true)
@@ -226,7 +228,15 @@ TrainingRepository trainingRepository(Ref ref) {
 PushNotificationRepository pushNotificationRepository(Ref ref) {
   return PushNotificationRepositoryImpl(
     notificationService: ref.read(pushNotificationServiceProvider),
-    cacheService: ref.read(cacheServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+DeviceTokenRepository deviceTokenRepository(Ref ref) {
+  return DeviceTokenRepositoryImpl(
+    remote: ref.read(restClientServiceProvider),
+    local: ref.read(cacheServiceProvider),
+    platform: ref.read(pushNotificationServiceProvider).platform,
   );
 }
 

@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
+
 import '../../domain/entities/additional_income/additional_income_entity.dart';
 import '../../domain/entities/additional_income/additional_income_payloads.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
 import '../models/additional_income/additional_income_model.dart';
+import 'multipart_photo.dart';
 
 extension AdditionalIncomeModelMapper on AdditionalIncomeModel {
   AdditionalIncomeEntity toEntity() {
@@ -57,12 +60,26 @@ extension AdditionalIncomeListResponseModelToEntity
 
 extension CreateAdditionalIncomeRequestEntityMapper
     on CreateAdditionalIncomeRequestEntity {
-  Map<String, dynamic> toBody() => {
-    'facility_id': facilityId,
-    'income_type': incomeType,
-    'amount': amount,
-    if (description != null && description!.isNotEmpty) 'description': description,
-    if (evidencePhotoUrl != null && evidencePhotoUrl!.isNotEmpty)
-      'evidence_photo_url': evidencePhotoUrl,
-  };
+  /// Multipart body: the server takes the evidence photo as a file, under the
+  /// (misleadingly named) `evidence_photo_url` field.
+  Future<FormData> toFormData() async {
+    final formData = FormData()
+      ..fields.addAll([
+        MapEntry('facility_id', '$facilityId'),
+        MapEntry('income_type', incomeType),
+        MapEntry('amount', '$amount'),
+      ]);
+    final text = description;
+    if (text != null && text.isNotEmpty) {
+      formData.fields.add(MapEntry('description', text));
+    }
+    final photo = evidencePhotoPath;
+    if (photo != null && photo.isNotEmpty) {
+      formData.files.add(
+        MapEntry('evidence_photo_url', await photoPart(photo)),
+      );
+    }
+
+    return formData;
+  }
 }

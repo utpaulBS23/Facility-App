@@ -68,6 +68,7 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.facilityId,
     this.facilityName,
     this.facilityNameBn,
+    this.userId,
     this.startType,
     this.startId,
     this.userName,
@@ -90,6 +91,7 @@ class TravelExpenseModel with TravelExpenseModelMappable {
   final String? facilityName;
   @MappableField(key: 'facility_name_bn')
   final String? facilityNameBn;
+  final int? userId;
   final String? startType;
   final int? startId;
   final String? userName;

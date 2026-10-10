@@ -1,6 +1,5 @@
-import '../entities/notification_channel_entity.dart';
-import '../entities/notification_payload_entity.dart';
-import '../repositories/push_notification_repository.dart';
+import '../../entities/notification/notification_payload_entity.dart';
+import '../../repositories/push_notification_repository.dart';
 
 class InitializePushNotificationUseCase {
   InitializePushNotificationUseCase(this._repository);
@@ -41,34 +40,18 @@ class GetNotificationPayloadStreamUseCase {
   }
 }
 
-class GetNotificationsEnabledUseCase {
-  GetNotificationsEnabledUseCase(this._repository);
+/// Pushes that arrive while the app is open.
+class WatchReceivedPushUseCase {
+  WatchReceivedPushUseCase(this._repository);
   final PushNotificationRepository _repository;
 
-  bool call() => _repository.notificationsEnabled;
+  Stream<NotificationPayloadEntity> call() => _repository.receivedStream;
 }
 
-class SetNotificationsEnabledUseCase {
-  SetNotificationsEnabledUseCase(this._repository);
+/// New FCM tokens, whenever Firebase rotates the token.
+class WatchPushTokenRefreshUseCase {
+  WatchPushTokenRefreshUseCase(this._repository);
   final PushNotificationRepository _repository;
 
-  Future<void> call(bool enabled) {
-    return _repository.setNotificationsEnabled(enabled);
-  }
-}
-
-class GetDisabledNotificationChannelsUseCase {
-  GetDisabledNotificationChannelsUseCase(this._repository);
-  final PushNotificationRepository _repository;
-
-  Set<NotificationChannelType> call() => _repository.disabledChannels;
-}
-
-class SetNotificationChannelEnabledUseCase {
-  SetNotificationChannelEnabledUseCase(this._repository);
-  final PushNotificationRepository _repository;
-
-  Future<void> call(NotificationChannelType channel, bool enabled) {
-    return _repository.setChannelEnabled(channel, enabled);
-  }
+  Stream<String> call() => _repository.tokenRefreshStream;
 }
