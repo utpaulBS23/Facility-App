@@ -865,6 +865,14 @@ GetTrainingSessionDetailsUseCase getTrainingSessionDetailsUseCase(Ref ref) {
 }
 
 @riverpod
+MarkTrainingAttendanceUseCase markTrainingAttendanceUseCase(Ref ref) {
+  return MarkTrainingAttendanceUseCase(
+    trainingRepository: ref.read(trainingRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 ApproveSupplyRequestUseCase approveSupplyRequestUseCase(Ref ref) {
   return ApproveSupplyRequestUseCase(
     supplyRepository: ref.read(supplyRepositoryProvider),

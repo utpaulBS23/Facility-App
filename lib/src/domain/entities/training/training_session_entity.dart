@@ -1,3 +1,4 @@
+import 'training_participant_entity.dart';
 import 'training_status.dart';
 
 class TrainingSessionEntity {
@@ -10,6 +11,7 @@ class TrainingSessionEntity {
     required this.scheduledAt,
     required this.durationMinutes,
     required this.status,
+    this.participants = const [],
   });
 
   final int id;
@@ -20,6 +22,16 @@ class TrainingSessionEntity {
   final DateTime scheduledAt;
   final int durationMinutes;
   final TrainingStatus status;
+  final List<TrainingParticipantEntity> participants;
+
+  /// The participant record of [userId], if they are enrolled.
+  TrainingParticipantEntity? participantFor(int? userId) {
+    if (userId == null) return null;
+    for (final participant in participants) {
+      if (participant.userId == userId) return participant;
+    }
+    return null;
+  }
 
   DateTime get endTime => scheduledAt.add(Duration(minutes: durationMinutes));
 }

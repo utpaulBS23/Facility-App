@@ -1,7 +1,9 @@
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/common/paginated_list_entity.dart';
+import '../../domain/entities/training/training_completion_status.dart';
 import '../../domain/entities/training/training_filters.dart';
+import '../../domain/entities/training/training_participant_entity.dart';
 import '../../domain/entities/training/training_session_entity.dart';
 import '../../domain/repositories/training_repository.dart';
 import '../extension/training_mapper.dart';
@@ -43,6 +45,27 @@ final class TrainingRepositoryImpl extends TrainingRepository {
         trainingSessionId: trainingSessionId,
       );
       final responseModel = TrainingSessionResponseModel.fromJson(
+        response.data,
+      );
+      return responseModel.toEntity();
+    });
+  }
+
+  @override
+  Future<Result<TrainingParticipantEntity, Failure>> markTrainingAttendance({
+    required int partnerId,
+    required int trainingSessionId,
+    required int participantId,
+    required TrainingCompletionStatus status,
+  }) {
+    return asyncGuard(() async {
+      final response = await remote.markTrainingAttendance(
+        partnerId: partnerId,
+        trainingSessionId: trainingSessionId,
+        participantId: participantId,
+        body: {'completion_status': status.toWireString()},
+      );
+      final responseModel = TrainingParticipantResponseModel.fromJson(
         response.data,
       );
       return responseModel.toEntity();

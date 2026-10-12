@@ -198,6 +198,8 @@ class Endpoints {
       '/partners/{partnerId}/training-sessions';
   static const String trainingSessionDetails =
       '/partners/{partnerId}/training-sessions/{trainingSessionId}';
+  static const String trainingParticipant =
+      '/partners/{partnerId}/training-sessions/{trainingSessionId}/participants/{participantId}';
 
   /// Home dashboard (shape chosen by the server from the token's role)
   static const String dashboard = '/dashboard';

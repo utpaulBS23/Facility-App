@@ -16,6 +16,7 @@ class TrainingSessionModel with TrainingSessionModelMappable {
     required this.scheduledAt,
     required this.durationMinutes,
     required this.status,
+    this.participants,
   });
 
   final int id;
@@ -26,6 +27,25 @@ class TrainingSessionModel with TrainingSessionModelMappable {
   final String scheduledAt;
   final int durationMinutes;
   final String status;
+  final List<TrainingParticipantModel>? participants;
 
   static const fromJson = TrainingSessionModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
+class TrainingParticipantModel with TrainingParticipantModelMappable {
+  const TrainingParticipantModel({
+    required this.id,
+    required this.userId,
+    this.completionStatus,
+  });
+
+  final int id;
+  final int userId;
+  final String? completionStatus;
+
+  static const fromJson = TrainingParticipantModelMapper.fromJson;
 }

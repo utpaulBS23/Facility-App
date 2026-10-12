@@ -59,6 +59,7 @@ class _TrainingSessionDetailsBody extends StatelessWidget {
                 value: session.facilityName,
               ),
             ],
+            _TrainingAttendanceSection(session: session),
             if (session.description.isNotEmpty) ...[
               Gap(spacing.s20),
               _TrainingSessionInfoCard(description: session.description),
