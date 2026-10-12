@@ -441,6 +441,15 @@ class _CheckInOut extends StatelessWidget {
   }
 }
 
+/// Opens the facility (toilet) details screen; the route's `id` is the
+/// facility id.
+void _openFacilityDetails(BuildContext context, int facilityId) {
+  context.pushNamed(
+    Routes.toiletDetails,
+    pathParameters: {'id': facilityId.toString()},
+  );
+}
+
 class _SupervisorSections extends StatefulWidget {
   const _SupervisorSections(
     this.d, {
@@ -613,7 +622,10 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
           ),
           for (final f in visible) ...[
             SizedBox(height: spacing.s12),
-            FacilityCard(data: _card(context, f)),
+            FacilityCard(
+              data: _card(context, f),
+              onTap: () => _openFacilityDetails(context, f.facilityId),
+            ),
           ],
         ],
       ],
@@ -711,6 +723,7 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
                     footRight:
                         'M ${n.integer(f.visitorsToday.male)} · '
                         'F ${n.integer(f.visitorsToday.female)} today',
+                    onTap: () => _openFacilityDetails(context, f.facilityId),
                   ),
               ],
             ),
