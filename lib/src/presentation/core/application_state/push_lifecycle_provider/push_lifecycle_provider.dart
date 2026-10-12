@@ -32,6 +32,10 @@ class PushLifecycle extends _$PushLifecycle {
 
     unawaited(ref.read(registerDeviceTokenUseCaseProvider).call());
 
+    // WHY load here: the inbox is kept alive and sits empty after a sign-out,
+    // so the next sign-in has nothing loading it until someone pulls to refresh.
+    unawaited(ref.read(appNotificationsProvider.notifier).refresh());
+
     _subscriptions
       ..add(
         ref

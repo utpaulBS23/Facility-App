@@ -35,6 +35,15 @@ class AppNotifications extends _$AppNotifications {
 
   @override
   Future<AppNotificationListEntity> build() {
+    // WHY no request without a session: logout clears the token and then
+    // invalidates this kept-alive provider, and the dashboard bell still
+    // listens at that moment, so it rebuilds at once. That request has no
+    // token, and its 401 would stay here until the next user opened the inbox.
+    // The navigation shell loads the real list once someone is signed in.
+    if (ref.read(getUserSessionUseCaseProvider).call() == null) {
+      return Future.value(const AppNotificationListEntity.empty());
+    }
+
     return _load(page: 1, filter: ref.read(notificationInboxFilterProvider));
   }
 

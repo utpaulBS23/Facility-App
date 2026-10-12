@@ -8,7 +8,9 @@ import 'package:facility_management_app/src/data/extension/app_notification_mapp
 import 'package:facility_management_app/src/data/models/notification/app_notification_model.dart';
 import 'package:facility_management_app/src/data/repositories/app_notifications_repository_impl.dart';
 import 'package:facility_management_app/src/data/services/network/rest_client.dart';
+import 'package:facility_management_app/src/domain/entities/login_entity.dart';
 import 'package:facility_management_app/src/domain/entities/notification/app_notification_entity.dart';
+import 'package:facility_management_app/src/domain/repositories/authentication_repository.dart';
 import 'package:facility_management_app/src/domain/repositories/app_notifications_repository.dart';
 import 'package:facility_management_app/src/presentation/features/notification/riverpod/app_notifications_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +41,21 @@ Map<String, dynamic> _page(
   'meta': {'current_page': page, 'last_page': lastPage, 'total': 25},
   'unread_count': unread,
 };
+
+/// A signed-in session, or none when [signedIn] is false.
+final class _FakeAuth extends AuthenticationRepository {
+  _FakeAuth({this.signedIn = true});
+
+  final bool signedIn;
+
+  @override
+  UserSessionEntity? get currentSession => signedIn
+      ? UserSessionEntity(permissions: const {}, accessibleFacilities: const [])
+      : null;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 final class _FakeRepository extends AppNotificationsRepository {
   final requested = <(AppNotificationFilter, int)>[];
@@ -240,9 +257,27 @@ void main() {
       container = ProviderContainer(
         overrides: [
           appNotificationsRepositoryProvider.overrideWithValue(repository),
+          authenticationRepositoryProvider.overrideWithValue(_FakeAuth()),
         ],
       );
       addTearDown(container.dispose);
+    });
+
+    test('without a session it asks nothing and stays empty', () async {
+      final signedOut = ProviderContainer(
+        overrides: [
+          appNotificationsRepositoryProvider.overrideWithValue(repository),
+          authenticationRepositoryProvider.overrideWithValue(
+            _FakeAuth(signedIn: false),
+          ),
+        ],
+      );
+      addTearDown(signedOut.dispose);
+
+      final list = await signedOut.read(appNotificationsProvider.future);
+
+      expect(list.items, isEmpty);
+      expect(repository.requested, isEmpty);
     });
 
     Future<AppNotifications> load() async {
