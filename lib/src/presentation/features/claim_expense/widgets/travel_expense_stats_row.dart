@@ -9,10 +9,7 @@ class _TravelExpenseStats {
   });
 
   factory _TravelExpenseStats.from(List<TravelExpenseEntity> expenses) {
-    final total = expenses.fold<double>(
-      0,
-      (sum, e) => sum + e.claimedAmount,
-    );
+    final total = expenses.fold<double>(0, (sum, e) => sum + e.claimedAmount);
 
     return _TravelExpenseStats(
       totalCost: total,

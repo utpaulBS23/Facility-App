@@ -18,6 +18,7 @@ extension MenuItemKeyIcon on MenuItemKey {
     MenuItemKey.profile => Assets.icons.customerIcon,
     MenuItemKey.myAttendance => Assets.icons.attendance,
     MenuItemKey.extraCollection => Assets.icons.service,
+    MenuItemKey.manualIncome => Assets.icons.service,
     MenuItemKey.supplyRequest => Assets.icons.route,
     MenuItemKey.stockBalance => Assets.icons.service,
     MenuItemKey.stockAveraging => Assets.icons.service,

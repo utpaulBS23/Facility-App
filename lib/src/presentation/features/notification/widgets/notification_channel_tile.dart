@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
-import '../../../../domain/entities/notification_preference_entity.dart';
+import '../../../../domain/entities/notification/notification_preference_entity.dart';
 import '../../../core/theme/theme.dart';
 
 /// One delivery channel (Push or Email) of a category: its name, how it is set

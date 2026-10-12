@@ -38,7 +38,7 @@ final class AdditionalIncomeRepositoryImpl extends AdditionalIncomeRepository {
     return asyncGuard(() async {
       final response = await remote.createAdditionalIncome(
         partnerId: request.partnerId!,
-        body: request.toBody(),
+        formData: await request.toFormData(),
       );
       final responseModel = AdditionalIncomeResponseModel.fromJson(
         response.data,

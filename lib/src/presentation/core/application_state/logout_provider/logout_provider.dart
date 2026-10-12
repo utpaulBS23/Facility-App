@@ -21,6 +21,17 @@ class Logout extends _$Logout {
     await Future.delayed(const Duration(seconds: 1));
 
     try {
+      // WHY first and best effort: the server removes the device with the
+      // signed-in token, which is gone after logout. Offline or expired, the
+      // user must still be able to sign out.
+      try {
+        await ref
+            .read(unregisterDeviceTokenUseCaseProvider)
+            .call()
+            .timeout(const Duration(seconds: 5));
+      } on Object {
+        // The next sign-in registers over the stale token.
+      }
       await ref.read(logoutUseCaseProvider).call();
       // Invalidate all repository providers to remove cached data
       resetRepositories(ref);

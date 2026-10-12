@@ -167,6 +167,10 @@ class Endpoints {
   static const String travelExpenses = '/partners/{partnerId}/travel-expenses';
   static const String travelExpenseDetail =
       '/partners/{partnerId}/travel-expenses/{travelExpenseId}';
+  static const String approveTravelExpense =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}/approve';
+  static const String rejectTravelExpense =
+      '/partners/{partnerId}/travel-expenses/{travelExpenseId}/reject';
 
   /// Master Data — generic partner/global configurable dropdown items,
   /// filtered by `category` (e.g. `transportMode`).
@@ -287,4 +291,13 @@ class Endpoints {
 
   /// Profile
   static const String profile = '/profile';
+
+  /// Notifications
+  static const String notifications = '/notifications';
+  static const String notificationRead = '/notifications/{id}/read';
+  static const String notificationsReadAll = '/notifications/read-all';
+  static const String notificationPreferences = '/notification-preferences';
+  static const String deviceTokens = '/device-tokens';
+  static const String deviceToken = '/device-tokens/{id}';
+  static const String deviceTokenTopicsSync = '/device-tokens/{id}/topics/sync';
 }

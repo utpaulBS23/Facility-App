@@ -147,6 +147,7 @@ class TravelExpenseEntity {
     required this.id,
     required this.facilityName,
     this.facilityNameBn = '',
+    this.userId,
     required this.startType,
     required this.startId,
     required this.userName,
@@ -164,6 +165,9 @@ class TravelExpenseEntity {
   final String facilityName;
   final String facilityNameBn;
 
+  /// Who filed the claim; a reviewer cannot review their own.
+  final int? userId;
+
   /// Where the trip started — `null` when the API didn't resolve one (e.g.
   /// an older claim). See [TravelExpenseStartType] for the type/id pairing.
   final TravelExpenseStartType? startType;
@@ -177,8 +181,7 @@ class TravelExpenseEntity {
   final double claimedDistanceKm;
   final double claimedAmount;
 
-  /// Review (approve/reject/adjust) happens outside this app; this only
-  /// reflects the state as last fetched.
+  /// Where the claim stands, as last fetched.
   final TravelExpenseStatus status;
   final String submittedAt;
   final String rejectionNote;

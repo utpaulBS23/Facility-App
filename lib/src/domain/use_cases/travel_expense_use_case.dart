@@ -76,3 +76,36 @@ final class GetTravelExpenseDetailUseCase extends PartnerUseCase {
     };
   }
 }
+
+final class ApproveTravelExpenseUseCase extends PartnerUseCase {
+  ApproveTravelExpenseUseCase({
+    required this.repository,
+    required super.authRepository,
+  });
+
+  final TravelExpenseRepository repository;
+
+  Future<Result<void, Failure>> call(int travelExpenseId) async {
+    return repository.approveTravelExpense(
+      partnerId: getPartnerId(),
+      travelExpenseId: travelExpenseId,
+    );
+  }
+}
+
+final class RejectTravelExpenseUseCase extends PartnerUseCase {
+  RejectTravelExpenseUseCase({
+    required this.repository,
+    required super.authRepository,
+  });
+
+  final TravelExpenseRepository repository;
+
+  Future<Result<void, Failure>> call(int travelExpenseId, String note) async {
+    return repository.rejectTravelExpense(
+      partnerId: getPartnerId(),
+      travelExpenseId: travelExpenseId,
+      note: note,
+    );
+  }
+}

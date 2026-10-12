@@ -1,8 +1,11 @@
-import '../entities/notification_channel_entity.dart';
-import '../entities/notification_payload_entity.dart';
+import '../entities/notification/notification_payload_entity.dart';
 
 abstract class PushNotificationRepository {
   Future<void> initialize();
+
+  Future<String> getDeviceToken();
+
+  Stream<String> get tokenRefreshStream;
 
   Future<void> getInitialMessage();
 
@@ -10,13 +13,7 @@ abstract class PushNotificationRepository {
 
   Stream<NotificationPayloadEntity> get notificationPayloadStream;
 
+  Stream<NotificationPayloadEntity> get receivedStream;
+
   void clearPayload();
-
-  bool get notificationsEnabled;
-
-  Future<void> setNotificationsEnabled(bool enabled);
-
-  Set<NotificationChannelType> get disabledChannels;
-
-  Future<void> setChannelEnabled(NotificationChannelType channel, bool enabled);
 }

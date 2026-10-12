@@ -51,6 +51,7 @@ extension TravelExpenseModelToEntity on TravelExpenseModel {
     id: id,
     facilityName: facilityName ?? '',
     facilityNameBn: facilityNameBn ?? '',
+    userId: userId,
     startType: startType.toStartType,
     startId: startId,
     userName: userName ?? '',

@@ -5,7 +5,7 @@ class CreateAdditionalIncomeRequestEntity {
     required this.incomeType,
     this.description,
     required this.amount,
-    this.evidencePhotoUrl,
+    this.evidencePhotoPath,
   });
 
   // WHY nullable + attached via copyWith: same domain-only-partnerId
@@ -22,7 +22,9 @@ class CreateAdditionalIncomeRequestEntity {
   final String incomeType;
   final String? description;
   final double amount;
-  final String? evidencePhotoUrl;
+
+  /// Local path of the evidence photo to upload; null when none was picked.
+  final String? evidencePhotoPath;
 
   CreateAdditionalIncomeRequestEntity copyWith({
     int? partnerId,
@@ -30,7 +32,7 @@ class CreateAdditionalIncomeRequestEntity {
     String? incomeType,
     String? description,
     double? amount,
-    String? evidencePhotoUrl,
+    String? evidencePhotoPath,
   }) {
     return CreateAdditionalIncomeRequestEntity(
       partnerId: partnerId ?? this.partnerId,
@@ -38,7 +40,7 @@ class CreateAdditionalIncomeRequestEntity {
       incomeType: incomeType ?? this.incomeType,
       description: description ?? this.description,
       amount: amount ?? this.amount,
-      evidencePhotoUrl: evidencePhotoUrl ?? this.evidencePhotoUrl,
+      evidencePhotoPath: evidencePhotoPath ?? this.evidencePhotoPath,
     );
   }
 }

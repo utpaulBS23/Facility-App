@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -7,8 +8,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../../firebase_options.dart';
 import '../../../core/logger/log.dart';
-import '../../../domain/entities/notification_channel_entity.dart';
-import '../../../domain/entities/notification_payload_entity.dart';
+import '../../../domain/entities/notification/notification_category.dart';
+import '../../../domain/entities/notification/notification_payload_entity.dart';
 import 'push_notification_service.dart';
 
 class PushNotificationServiceImpl implements PushNotificationService {
@@ -18,25 +19,75 @@ class PushNotificationServiceImpl implements PushNotificationService {
   }) : _messaging = messaging,
        _notifications = notifications;
 
-  static const _channelDescription = 'General push notifications.';
+  /// Where a push goes when it names no category, or one this app does not
+  /// know yet. A push must never be dropped for that.
+  static const defaultChannelId = 'general';
 
-  static const _channelNames = {
-    NotificationChannelType.general: 'General',
-    NotificationChannelType.task: 'Tasks',
-    NotificationChannelType.attendanceLeave: 'Attendance & Leave',
-    NotificationChannelType.issue: 'Issue Reports',
-    NotificationChannelType.supply: 'Supply & Delivery',
-  };
+  /// The Android channel for [category]. The server sets
+  /// `android_channel_id` to the notification's category, so every channel must
+  /// exist before a push can arrive. Importance follows the notifications API
+  /// reference.
+  static AndroidNotificationChannel _channelOf(NotificationCategory category) {
+    final (name, importance) = switch (category) {
+      NotificationCategory.cameraDown => (
+        'Camera and device down',
+        Importance.high,
+      ),
+      NotificationCategory.odourBreach => ('Odour breach', Importance.max),
+      NotificationCategory.staffing => (
+        'Understaffed slot and check-ins',
+        Importance.defaultImportance,
+      ),
+      NotificationCategory.issue => (
+        'Issue raised',
+        Importance.defaultImportance,
+      ),
+      NotificationCategory.variance => ('Collection variance', Importance.high),
+      NotificationCategory.stockLow => ('Stock low', Importance.low),
+      NotificationCategory.approvals => (
+        'Approvals',
+        Importance.defaultImportance,
+      ),
+      NotificationCategory.ownRecord => (
+        'My tasks and attendance',
+        Importance.defaultImportance,
+      ),
+    };
+
+    return AndroidNotificationChannel(
+      category.key,
+      name,
+      importance: importance,
+    );
+  }
+
+  static const _generalChannel = AndroidNotificationChannel(
+    defaultChannelId,
+    'General',
+    importance: Importance.defaultImportance,
+  );
+
+  static final channels = <AndroidNotificationChannel>[
+    for (final category in NotificationCategory.values) _channelOf(category),
+    _generalChannel,
+  ];
+
+  /// The channel a push with [category] is shown on.
+  static AndroidNotificationChannel channelFor(String? category) {
+    final known = NotificationCategory.fromKey(category);
+
+    return known == null ? _generalChannel : _channelOf(known);
+  }
 
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _notifications;
 
+  int _nextLocalId = DateTime.now().millisecondsSinceEpoch & 0x7fffffff;
   NotificationPayloadEntity? _payload;
   final _payloadController =
       StreamController<NotificationPayloadEntity>.broadcast();
-
-  bool _notificationsEnabled = true;
-  Set<NotificationChannelType> _disabledChannels = {};
+  final _receivedController =
+      StreamController<NotificationPayloadEntity>.broadcast();
 
   @override
   Future<void> initialize() async {
@@ -61,10 +112,21 @@ class PushNotificationServiceImpl implements PushNotificationService {
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+    await _createChannels();
     await _requestPermission();
 
     FirebaseMessaging.onMessage.listen(_onForegroundMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpenedApp);
+  }
+
+  Future<void> _createChannels() async {
+    final android = _notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    for (final channel in channels) {
+      await android?.createNotificationChannel(channel);
+    }
   }
 
   Future<void> _requestPermission() async {
@@ -80,34 +142,45 @@ class PushNotificationServiceImpl implements PushNotificationService {
   Future<void> _onForegroundMessage(RemoteMessage message) async {
     Log.info('Foreground push received: ${message.data}');
 
-    final notification = message.notification;
-    final channel = NotificationChannelType.fromKey(
-      message.data['type'] as String?,
+    final data = message.data;
+    final title = message.notification?.title ?? data['title'] as String?;
+    final body = message.notification?.body ?? data['body'] as String?;
+    _receivedController.add(
+      NotificationPayloadEntity(data: data, title: title, body: body),
     );
-    if (notification == null ||
-        !_notificationsEnabled ||
-        _disabledChannels.contains(channel)) {
-      return;
-    }
+    if (title == null && body == null) return;
 
+    final channel = channelFor(data['category'] as String?);
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
-        'push_notifications_${channel.key}',
-        _channelNames[channel] ?? _channelNames[NotificationChannelType.general]!,
-        channelDescription: _channelDescription,
-        importance: Importance.high,
-        priority: Priority.high,
+        channel.id,
+        channel.name,
+        importance: channel.importance,
+        priority: channel.importance.value >= Importance.high.value
+            ? Priority.high
+            : Priority.defaultPriority,
       ),
       iOS: const DarwinNotificationDetails(),
     );
 
     await _notifications.show(
-      id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
-      title: notification.title,
-      body: notification.body,
+      id: _displayId(data),
+      title: title,
+      body: body,
       notificationDetails: details,
-      payload: jsonEncode(message.data),
+      payload: jsonEncode(data),
     );
+  }
+
+  /// The id the system tray tells notifications apart by. The server sends
+  /// the feed id as `notification_id`, so one notification never shows twice.
+  /// Without it, a running counter keeps ids from colliding.
+  int _displayId(Map<String, dynamic> data) {
+    final serverId = int.tryParse('${data['notification_id']}');
+    // WHY masked: the plugin takes a 32-bit signed id.
+    if (serverId != null) return serverId & 0x7fffffff;
+
+    return _nextLocalId = (_nextLocalId + 1) & 0x7fffffff;
   }
 
   void _onLocalNotificationTap(NotificationResponse response) {
@@ -132,9 +205,15 @@ class PushNotificationServiceImpl implements PushNotificationService {
   }
 
   @override
+  String get platform => Platform.isIOS ? 'ios' : 'android';
+
+  @override
   Future<String> getDeviceToken() async {
     return await _messaging.getToken() ?? '';
   }
+
+  @override
+  Stream<String> get tokenRefreshStream => _messaging.onTokenRefresh;
 
   @override
   Future<void> getInitialMessage() async {
@@ -157,21 +236,12 @@ class PushNotificationServiceImpl implements PushNotificationService {
       _payloadController.stream;
 
   @override
+  Stream<NotificationPayloadEntity> get receivedStream =>
+      _receivedController.stream;
+
+  @override
   void clearPayload() {
     _payload = null;
-  }
-
-  @override
-  bool get notificationsEnabled => _notificationsEnabled;
-
-  @override
-  void setNotificationsEnabled(bool enabled) {
-    _notificationsEnabled = enabled;
-  }
-
-  @override
-  void setDisabledChannels(Set<NotificationChannelType> channels) {
-    _disabledChannels = channels;
   }
 }
 

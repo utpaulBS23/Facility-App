@@ -483,6 +483,22 @@ GetTravelExpenseDetailUseCase getTravelExpenseDetailUseCase(Ref ref) {
 }
 
 @riverpod
+ApproveTravelExpenseUseCase approveTravelExpenseUseCase(Ref ref) {
+  return ApproveTravelExpenseUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+RejectTravelExpenseUseCase rejectTravelExpenseUseCase(Ref ref) {
+  return RejectTravelExpenseUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
   return GetMasterDataItemsUseCase(
     ref.read(masterDataRepositoryProvider),
@@ -978,34 +994,30 @@ GetNotificationPayloadStreamUseCase getNotificationPayloadStreamUseCase(
 }
 
 @riverpod
-GetNotificationsEnabledUseCase getNotificationsEnabledUseCase(Ref ref) {
-  return GetNotificationsEnabledUseCase(
+WatchReceivedPushUseCase watchReceivedPushUseCase(Ref ref) {
+  return WatchReceivedPushUseCase(ref.read(pushNotificationRepositoryProvider));
+}
+
+@riverpod
+WatchPushTokenRefreshUseCase watchPushTokenRefreshUseCase(Ref ref) {
+  return WatchPushTokenRefreshUseCase(
     ref.read(pushNotificationRepositoryProvider),
   );
 }
 
 @riverpod
-SetNotificationsEnabledUseCase setNotificationsEnabledUseCase(Ref ref) {
-  return SetNotificationsEnabledUseCase(
+RegisterDeviceTokenUseCase registerDeviceTokenUseCase(Ref ref) {
+  return RegisterDeviceTokenUseCase(
     ref.read(pushNotificationRepositoryProvider),
+    ref.read(deviceTokenRepositoryProvider),
   );
 }
 
 @riverpod
-GetDisabledNotificationChannelsUseCase getDisabledNotificationChannelsUseCase(
-  Ref ref,
-) {
-  return GetDisabledNotificationChannelsUseCase(
+SyncDeviceTopicsUseCase syncDeviceTopicsUseCase(Ref ref) {
+  return SyncDeviceTopicsUseCase(
     ref.read(pushNotificationRepositoryProvider),
-  );
-}
-
-@riverpod
-SetNotificationChannelEnabledUseCase setNotificationChannelEnabledUseCase(
-  Ref ref,
-) {
-  return SetNotificationChannelEnabledUseCase(
-    ref.read(pushNotificationRepositoryProvider),
+    ref.read(deviceTokenRepositoryProvider),
   );
 }
 
@@ -1072,4 +1084,9 @@ LockDoorUseCase lockDoorUseCase(Ref ref) {
 @riverpod
 GetDoorStatusUseCase getDoorStatusUseCase(Ref ref) {
   return GetDoorStatusUseCase(ref.read(gatewayRepositoryProvider));
+}
+
+@riverpod
+UnregisterDeviceTokenUseCase unregisterDeviceTokenUseCase(Ref ref) {
+  return UnregisterDeviceTokenUseCase(ref.read(deviceTokenRepositoryProvider));
 }

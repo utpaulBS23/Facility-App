@@ -15,6 +15,7 @@ enum MenuItemKey {
   profile('profile'),
   myAttendance('my_attendance'),
   extraCollection('extra_collection'),
+  manualIncome('manual_income'),
   supplyRequest('supply_request'),
   stockBalance('stock_balance'),
   stockAveraging('stock_averaging'),

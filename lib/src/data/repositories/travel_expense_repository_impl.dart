@@ -66,4 +66,32 @@ final class TravelExpenseRepositoryImpl extends TravelExpenseRepository {
       return model.toEntity();
     });
   }
+
+  @override
+  Future<Result<void, Failure>> approveTravelExpense({
+    required int partnerId,
+    required int travelExpenseId,
+  }) {
+    return asyncGuard(() async {
+      await remote.approveTravelExpense(
+        partnerId: partnerId,
+        travelExpenseId: travelExpenseId,
+      );
+    });
+  }
+
+  @override
+  Future<Result<void, Failure>> rejectTravelExpense({
+    required int partnerId,
+    required int travelExpenseId,
+    required String note,
+  }) {
+    return asyncGuard(() async {
+      await remote.rejectTravelExpense(
+        partnerId: partnerId,
+        travelExpenseId: travelExpenseId,
+        body: {'rejection_note': note},
+      );
+    });
+  }
 }
