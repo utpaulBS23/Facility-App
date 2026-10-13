@@ -705,10 +705,21 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
             onAction: widget.onPickMonth,
           ),
           SizedBox(height: spacing.s12),
-          CategoryFilterChips<String>(
-            categories: [_allExecutives, for (final e in d.executives) e.name],
-            selectedCategory: _executive,
-            onSelected: (v) => setState(() => _executive = v),
+          // WHY a scaled box: the chips hug their content and sit in the
+          // middle, and a long list of names shrinks instead of overflowing.
+          Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CategoryFilterChips<String>(
+                fitContent: true,
+                categories: [
+                  _allExecutives,
+                  for (final e in d.executives) e.name,
+                ],
+                selectedCategory: _executive,
+                onSelected: (v) => setState(() => _executive = v),
+              ),
+            ),
           ),
           for (final e in visible) ...[
             SizedBox(height: spacing.s12),
