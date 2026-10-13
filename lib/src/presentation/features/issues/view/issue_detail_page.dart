@@ -1,14 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/extensions/app_localization.dart';
+import '../../../../core/extensions/failure_localization.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../../domain/entities/issue_detail_entity.dart';
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/detail_app_bar.dart';
+import '../riverpod/issue_detail_provider.dart';
 
-class IssueDetailPage extends StatelessWidget {
-  const IssueDetailPage({super.key, required this.issue});
+class IssueDetailPage extends ConsumerWidget {
+  const IssueDetailPage({super.key, required this.issueId});
+
+  final int issueId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final issueAsync = ref.watch(issueDetailByIdProvider(issueId));
+
+    return Scaffold(
+      backgroundColor: context.color.scaffoldBackground,
+      appBar: DetailAppBar(title: context.locale.issueManagement),
+      body: issueAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => AppErrorWidget(
+          message: error.localizedMessage(context),
+          onRetry: () => ref.invalidate(issueDetailByIdProvider(issueId)),
+        ),
+        data: (issue) => _IssueDetailBody(issue: issue),
+      ),
+    );
+  }
+}
+
+class _IssueDetailBody extends StatelessWidget {
+  const _IssueDetailBody({required this.issue});
 
   final IssueDetailEntity issue;
 
@@ -16,21 +44,17 @@ class IssueDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.dimensions.spacing;
 
-    return Scaffold(
-      backgroundColor: context.color.scaffoldBackground,
-      appBar: DetailAppBar(title: context.locale.issueManagement),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(spacing.s12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _Card1Header(issue: issue),
-            Gap(spacing.s8),
-            _Card2Description(issue: issue),
-            Gap(spacing.s8),
-            _Card3Details(issue: issue),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(spacing.s12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _Card1Header(issue: issue),
+          Gap(spacing.s8),
+          _Card2Description(issue: issue),
+          Gap(spacing.s8),
+          _Card3Details(issue: issue),
+        ],
       ),
     );
   }

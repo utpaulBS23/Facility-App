@@ -384,6 +384,10 @@ class _IssueSections extends StatelessWidget {
                   facility: i.facilityName,
                   status: labels[i.status] ?? i.statusLabel,
                   tone: _issueTone(i.status),
+                  onTap: () => context.pushNamed(
+                    Routes.issueDetail,
+                    pathParameters: {'id': i.id.toString()},
+                  ),
                 ),
             ],
           ),
