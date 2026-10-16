@@ -6,7 +6,7 @@ extension UserModelToEntity on UserModel {
     id: id,
     name: name,
     nameBn: nameBn ?? '',
-    email: email,
+    email: email ?? "",
     phoneNumber: phoneNumber,
     userType: userType,
     partnerId: partnerId,

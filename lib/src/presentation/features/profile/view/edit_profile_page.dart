@@ -144,10 +144,15 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     prefixIcon: const Icon(Icons.translate_outlined),
                   ),
                   Gap(spacing.s16),
-                  AppTextField.email(
+                  // WHY text field, not AppTextField.email: the backend allows a
+                  // user without an email, and .email makes the field required.
+                  AppTextField.text(
                     controller: _emailController,
                     label: context.locale.email,
                     hint: context.locale.email,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    keyboardType: TextInputType.emailAddress,
+                    extraValidations: [OptionalEmailValidation()],
                   ),
                   Gap(spacing.s16),
                   AppTextField.text(
