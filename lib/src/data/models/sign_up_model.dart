@@ -5,7 +5,7 @@ extension SignUpRequestModel on SignUpRequestEntity {
     return {
       'first_name': firstName,
       'last_name': lastName,
-      'email': email,
+      if (email != null && email!.isNotEmpty) 'email': email,
       'password': password,
     };
   }

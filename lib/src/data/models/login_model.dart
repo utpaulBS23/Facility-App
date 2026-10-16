@@ -8,7 +8,7 @@ class UserModel with UserModelMappable {
     required this.id,
     required this.name,
     this.nameBn,
-    required this.email,
+    this.email,
     this.phoneNumber,
     required this.userType,
     this.partnerId,
@@ -23,7 +23,7 @@ class UserModel with UserModelMappable {
   final String name;
   @MappableField(key: 'name_bn')
   final String? nameBn;
-  final String email;
+  final String? email;
   @MappableField(key: 'phone_number')
   final String? phoneNumber;
   @MappableField(key: 'user_type')

@@ -43,6 +43,20 @@ android {
         versionCode = flutter.versionCode
     }
 
+    // WHY same applicationId across flavors: deliberate project decision. Only one
+    // flavor is installed at a time, and google-services.json has a single client.
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            resValue("string", "app_name", "Facility Dev")
+        }
+        create("stage") {
+            dimension = "env"
+            resValue("string", "app_name", "Facility Stage")
+        }
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")

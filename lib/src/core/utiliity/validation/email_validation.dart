@@ -17,3 +17,13 @@ class EmailValidation extends Validation<String> {
     return null;
   }
 }
+
+/// Email format check for a field that may be left empty.
+class OptionalEmailValidation extends Validation<String> {
+  @override
+  String? validate(BuildContext context, String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    return EmailValidation().validate(context, value.trim());
+  }
+}

@@ -1,4 +1,6 @@
 import '../../domain/entities/common/paginated_list_entity.dart';
+import '../../domain/entities/training/training_completion_status.dart';
+import '../../domain/entities/training/training_participant_entity.dart';
 import '../../domain/entities/training/training_session_entity.dart';
 import '../../domain/entities/training/training_status.dart';
 import '../models/training/training_models.dart';
@@ -15,7 +17,38 @@ extension TrainingSessionModelMapper on TrainingSessionModel {
       scheduledAt: DateTime.parse(scheduledAt),
       durationMinutes: durationMinutes,
       status: TrainingStatus.fromWireString(status),
+      participants: [
+        for (final participant
+            in participants ?? const <TrainingParticipantModel>[])
+          participant.toEntity(),
+      ],
     );
+  }
+}
+
+extension TrainingParticipantModelToEntity on TrainingParticipantModel {
+  TrainingParticipantEntity toEntity() {
+    return TrainingParticipantEntity(
+      id: id,
+      userId: userId,
+      completionStatus: TrainingCompletionStatus.fromWireString(
+        completionStatus,
+      ),
+    );
+  }
+}
+
+extension TrainingParticipantResponseModelToEntity
+    on TrainingParticipantResponseModel {
+  TrainingParticipantEntity toEntity() {
+    final payload = data;
+    if (payload == null) {
+      throw const FormatException(
+        'Missing data payload in TrainingParticipantResponseModel',
+      );
+    }
+
+    return payload.toEntity();
   }
 }
 

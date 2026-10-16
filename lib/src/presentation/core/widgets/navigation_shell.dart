@@ -27,6 +27,10 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
   StatefulNavigationShell get statefulNavigationShell =>
       widget.statefulNavigationShell;
 
+  // WHY cached: `ref` is unusable in dispose(), and the notifier is keepAlive,
+  // so this reference stays valid for the stop() call below.
+  late final PushLifecycle _pushLifecycle;
+
   // WHY here: the shell mounts once per authenticated session (fresh login or
   // restored at cold start) and outlives tab switches, so it is the one place
   // that covers "after login" without touching the login flow. The backend
@@ -37,9 +41,10 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
     WidgetsBinding.instance.addObserver(this);
     ref.read(menuConfigProvider.notifier).refresh();
 
-    final launchedFromPush = ref
-        .read(pushLifecycleProvider.notifier)
-        .start(onOpenNotifications: _openNotifications);
+    _pushLifecycle = ref.read(pushLifecycleProvider.notifier);
+    final launchedFromPush = _pushLifecycle.start(
+      onOpenNotifications: _openNotifications,
+    );
     if (launchedFromPush) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _openNotifications());
     }
@@ -62,7 +67,7 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    ref.read(pushLifecycleProvider.notifier).stop();
+    _pushLifecycle.stop();
     super.dispose();
   }
 

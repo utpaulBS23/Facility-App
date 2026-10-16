@@ -384,6 +384,10 @@ class _IssueSections extends StatelessWidget {
                   facility: i.facilityName,
                   status: labels[i.status] ?? i.statusLabel,
                   tone: _issueTone(i.status),
+                  onTap: () => context.pushNamed(
+                    Routes.issueDetail,
+                    pathParameters: {'id': i.id.toString()},
+                  ),
                 ),
             ],
           ),
@@ -439,6 +443,15 @@ class _CheckInOut extends StatelessWidget {
       canCheckOut: data.status == DashboardCheckInStatus.checkedIn,
     );
   }
+}
+
+/// Opens the facility (toilet) details screen; the route's `id` is the
+/// facility id.
+void _openFacilityDetails(BuildContext context, int facilityId) {
+  context.pushNamed(
+    Routes.toiletDetails,
+    pathParameters: {'id': facilityId.toString()},
+  );
 }
 
 class _SupervisorSections extends StatefulWidget {
@@ -613,7 +626,10 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
           ),
           for (final f in visible) ...[
             SizedBox(height: spacing.s12),
-            FacilityCard(data: _card(context, f)),
+            FacilityCard(
+              data: _card(context, f),
+              onTap: () => _openFacilityDetails(context, f.facilityId),
+            ),
           ],
         ],
       ],
@@ -689,10 +705,21 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
             onAction: widget.onPickMonth,
           ),
           SizedBox(height: spacing.s12),
-          CategoryFilterChips<String>(
-            categories: [_allExecutives, for (final e in d.executives) e.name],
-            selectedCategory: _executive,
-            onSelected: (v) => setState(() => _executive = v),
+          // WHY a scaled box: the chips hug their content and sit in the
+          // middle, and a long list of names shrinks instead of overflowing.
+          Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CategoryFilterChips<String>(
+                fitContent: true,
+                categories: [
+                  _allExecutives,
+                  for (final e in d.executives) e.name,
+                ],
+                selectedCategory: _executive,
+                onSelected: (v) => setState(() => _executive = v),
+              ),
+            ),
           ),
           for (final e in visible) ...[
             SizedBox(height: spacing.s12),
@@ -711,6 +738,7 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
                     footRight:
                         'M ${n.integer(f.visitorsToday.male)} · '
                         'F ${n.integer(f.visitorsToday.female)} today',
+                    onTap: () => _openFacilityDetails(context, f.facilityId),
                   ),
               ],
             ),

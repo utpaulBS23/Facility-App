@@ -23,6 +23,19 @@ class TrainingSessionResponseModel with TrainingSessionResponseModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
+class TrainingParticipantResponseModel
+    with TrainingParticipantResponseModelMappable {
+  const TrainingParticipantResponseModel({this.data});
+
+  final TrainingParticipantModel? data;
+
+  static const fromJson = TrainingParticipantResponseModelMapper.fromJson;
+}
+
+@MappableClass(
+  caseStyle: CaseStyle.snakeCase,
+  generateMethods: GenerateMethods.decode,
+)
 class TrainingSessionListResponseModel with TrainingSessionListResponseModelMappable {
   const TrainingSessionListResponseModel({
     this.data = const [],

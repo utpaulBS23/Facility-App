@@ -20,6 +20,7 @@ import '../widgets/notification_details_sheet.dart';
 import '../widgets/notification_filter.dart';
 import '../widgets/notification_group_header.dart';
 import '../widgets/notification_list_item.dart';
+import '../widgets/notification_list_shimmer.dart';
 
 /// The notification inbox, newest first, grouped by day.
 class NotificationsPage extends ConsumerStatefulWidget {
@@ -31,6 +32,7 @@ class NotificationsPage extends ConsumerStatefulWidget {
 
 class _NotificationsPageState extends ConsumerState<NotificationsPage> {
   final _scroll = ScrollController();
+  AppNotificationListEntity? _lastLoaded;
 
   @override
   void initState() {
@@ -83,7 +85,12 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
     final color = context.color;
     final inbox = ref.watch(appNotificationsProvider);
     final filter = ref.watch(notificationInboxFilterProvider);
-    final unread = inbox.valueOrNull?.unreadCount;
+    // WHY remembered: a filter change drops the list while the next one loads,
+    // and the sticky counts should not blink out meanwhile.
+    final loaded = inbox.valueOrNull;
+    if (loaded != null) _lastLoaded = loaded;
+    final summary = loaded ?? _lastLoaded;
+    final unread = summary?.unreadCount;
 
     return Scaffold(
       backgroundColor: color.scaffoldBackground,
@@ -98,22 +105,18 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
           ),
         ],
       ),
-      body: inbox.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => AppErrorWidget(
-          message: error.localizedMessage(context),
-          onRetry: () => ref.invalidate(appNotificationsProvider),
-        ),
-        data: (list) {
-          final groups = list.items.groupByDay();
-
-          return RefreshIndicator(
-            onRefresh: () =>
-                ref.read(appNotificationsProvider.notifier).refresh(),
-            child: ListView(
-              controller: _scroll,
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.all(spacing.s16),
+      body: Column(
+        children: [
+          // WHY outside the list: the chips and the count row stay in view
+          // while the cards scroll, and while they load.
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              spacing.s16,
+              spacing.s16,
+              spacing.s16,
+              spacing.s4,
+            ),
+            child: Column(
               children: [
                 // WHY a scaled box: the chips hug their content and sit in the
                 // middle, and a long translation shrinks instead of overflowing.
@@ -130,9 +133,10 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                       // WHY a count on Unread only: the server counts unread
                       // across everything, not per filter.
                       labelBuilder: (context, next) =>
-                          next == AppNotificationFilter.unread
+                          next == AppNotificationFilter.unread &&
+                              summary != null
                           ? '${next.label(context)} '
-                                '${context.numbers.number(list.unreadCount)}'
+                                '${context.numbers.number(summary.unreadCount)}'
                           : next.label(context),
                     ),
                   ),
@@ -142,13 +146,15 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        filter == AppNotificationFilter.all
+                        summary == null
+                            ? ''
+                            : filter == AppNotificationFilter.all
                             ? context.locale.notificationsShowing(
-                                list.items.length,
-                                list.total,
+                                summary.items.length,
+                                summary.total,
                               )
                             : context.locale.notificationsShowingFiltered(
-                                list.items.length,
+                                summary.items.length,
                               ),
                         style: context.textStyle.bodySmall.copyWith(
                           color: color.text.secondary,
@@ -156,7 +162,7 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                       ),
                     ),
                     TextButton(
-                      onPressed: list.unreadCount == 0
+                      onPressed: summary == null || summary.unreadCount == 0
                           ? null
                           : () => _run(
                               ref
@@ -172,42 +178,73 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
                     ),
                   ],
                 ),
-                if (groups.isEmpty)
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: spacing.s48),
-                    child: Center(
-                      child: Text(
-                        context.locale.noNotifications,
-                        style: context.textStyle.bodyMedium.copyWith(
-                          color: color.text.secondary,
-                        ),
-                      ),
-                    ),
-                  ),
-                for (final (:day, :items) in groups) ...[
-                  Gap(spacing.s16),
-                  NotificationGroupHeader(
-                    label: _dayLabel(day),
-                    count: items.length,
-                  ),
-                  Gap(spacing.s12),
-                  for (final item in items) ...[
-                    NotificationListItem(
-                      notification: item,
-                      onTap: () => _open(item),
-                    ),
-                    Gap(spacing.s12),
-                  ],
-                ],
-                if (list.hasMore)
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: spacing.s16),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
               ],
             ),
-          );
-        },
+          ),
+          Expanded(
+            child: inbox.when(
+              loading: () => const NotificationListShimmer(),
+              error: (error, _) => AppErrorWidget(
+                message: error.localizedMessage(context),
+                onRetry: () => ref.invalidate(appNotificationsProvider),
+              ),
+              data: (list) {
+                final groups = list.items.groupByDay();
+
+                return RefreshIndicator(
+                  onRefresh: () =>
+                      ref.read(appNotificationsProvider.notifier).refresh(),
+                  child: ListView(
+                    controller: _scroll,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(
+                      spacing.s16,
+                      spacing.s4,
+                      spacing.s16,
+                      spacing.s16,
+                    ),
+                    children: [
+                      if (groups.isEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: spacing.s48),
+                          child: Center(
+                            child: Text(
+                              context.locale.noNotifications,
+                              style: context.textStyle.bodyMedium.copyWith(
+                                color: color.text.secondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      for (final (:day, :items) in groups) ...[
+                        Gap(spacing.s16),
+                        NotificationGroupHeader(
+                          label: _dayLabel(day),
+                          count: items.length,
+                        ),
+                        Gap(spacing.s12),
+                        for (final item in items) ...[
+                          NotificationListItem(
+                            notification: item,
+                            onTap: () => _open(item),
+                          ),
+                          Gap(spacing.s12),
+                        ],
+                      ],
+                      if (list.hasMore)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: spacing.s16),
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

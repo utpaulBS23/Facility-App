@@ -7,7 +7,7 @@ extension UserProfileModelToEntity on UserProfileModel {
         id: id,
         name: name,
         nameBn: nameBn ?? '',
-        email: email,
+        email: email ?? "",
         phoneNumber: phoneNumber ?? '',
         userType: userType ?? '',
         partnerName: partner?.name ?? '',

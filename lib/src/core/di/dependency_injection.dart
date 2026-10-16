@@ -61,6 +61,7 @@ import '../../data/services/gateway/gateway_service.dart';
 import '../../data/services/location/location_service.dart';
 import '../../data/services/location/background_location_tracking_service.dart';
 import '../../data/services/media/face_detection_service.dart';
+import '../config/app_config.dart';
 import '../../data/services/network/endpoints.dart';
 import '../../data/services/network/interceptor/token_manager.dart';
 import '../../data/services/network/rest_client.dart';
@@ -183,6 +184,7 @@ import '../../domain/use_cases/product_sale_entry/create_product_sale_entry_use_
 import '../../domain/use_cases/product_sale_entry/get_product_sale_entries_use_case.dart';
 import '../../domain/use_cases/training/get_training_sessions_use_case.dart';
 import '../../domain/use_cases/training/get_training_session_details_use_case.dart';
+import '../../domain/use_cases/training/mark_training_attendance_use_case.dart';
 import '../../domain/use_cases/facility_expense/get_facility_expenses_use_case.dart';
 import '../../domain/use_cases/facility_expense/create_facility_expense_use_case.dart';
 import '../../domain/use_cases/facility_expense/delete_facility_expense_use_case.dart';

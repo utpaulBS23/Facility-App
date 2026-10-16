@@ -22,6 +22,7 @@ Dio dio(Ref ref) {
           baseUrl: Endpoints.base,
           connectTimeout: const Duration(seconds: 5),
           receiveTimeout: const Duration(seconds: 3),
+          headers: {AppConfig.clientTypeHeader: AppConfig.clientType},
         ),
       ),
     ),
@@ -30,6 +31,7 @@ Dio dio(Ref ref) {
 
   dio.options.headers['Content-Type'] = 'application/json';
   dio.options.headers['Accept'] = 'application/json';
+  dio.options.headers[AppConfig.clientTypeHeader] = AppConfig.clientType;
 
   return dio;
 }

@@ -511,6 +511,14 @@ abstract class RestClient {
     @Path('trainingSessionId') required int trainingSessionId,
   });
 
+  @PATCH(Endpoints.trainingParticipant)
+  Future<HttpResponse> markTrainingAttendance({
+    @Path('partnerId') required int partnerId,
+    @Path('trainingSessionId') required int trainingSessionId,
+    @Path('participantId') required int participantId,
+    @Body() required Map<String, dynamic> body,
+  });
+
   @GET(Endpoints.facilities)
   Future<HttpResponse> getFacilities({
     @Path('partnerId') required int partnerId,
