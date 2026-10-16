@@ -61,6 +61,7 @@ import '../../data/services/gateway/gateway_service.dart';
 import '../../data/services/location/location_service.dart';
 import '../../data/services/location/background_location_tracking_service.dart';
 import '../../data/services/media/face_detection_service.dart';
+import '../config/app_config.dart';
 import '../../data/services/network/endpoints.dart';
 import '../../data/services/network/interceptor/token_manager.dart';
 import '../../data/services/network/rest_client.dart';

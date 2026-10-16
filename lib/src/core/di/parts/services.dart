@@ -22,7 +22,9 @@ SessionService sessionService(Ref ref) {
 
 @Riverpod(keepAlive: true)
 RestClient restClientService(Ref ref) {
-  return RestClient(ref.read(dioProvider));
+  // WHY explicit baseUrl: the generated client bakes in the const from the
+  // last build_runner run, so pass the live per-flavor value.
+  return RestClient(ref.read(dioProvider), baseUrl: Endpoints.base);
 }
 
 @Riverpod(keepAlive: true)

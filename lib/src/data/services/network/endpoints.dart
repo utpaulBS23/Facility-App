@@ -1,9 +1,8 @@
-class Endpoints {
-  static const base = baseDev;
+import '../../../core/config/app_config.dart';
 
-  static const baseDev = 'http://3.108.132.91/api/backend';
-  static const baseLocal =
-      'https://tuning-realized-representing-cooked.trycloudflare.com/api/backend';
+class Endpoints {
+  /// Per-flavor base URL, see [AppConfig] and `config/*.json`.
+  static const base = AppConfig.apiBaseUrl;
 
   /// Authentication
   static const String register = '/auth/register/';
