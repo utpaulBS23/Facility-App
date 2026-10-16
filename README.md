@@ -45,7 +45,6 @@ in the Run and Debug dropdown.
   flavors use the same application ID (`com.bhumijo.facilityapp`), so only one
   can be installed at a time. Installing the other over it replaces the app but
   keeps the old login and local data, which belong to the other server.
-- Only the `dev` flavor allows plain `http`.
 - Before the first run on a fresh clone, generate the code first. See
   `.claude/skills/run-app/SKILL.md` for the steps.
 - More detail: `docs/FLAVORS.md`.
