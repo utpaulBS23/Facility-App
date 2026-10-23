@@ -86,9 +86,17 @@ class TaskOccurrenceChecklistItemEntity {
   String localizedLabel(String languageCode) =>
       localizedText(languageCode, label, labelBn);
 
+  /// WHY 'required' is included: the backend sends it as a synonym of
+  /// 'photo_required' (see checklist_mapper.dart). Without it the proof tip
+  /// showed but the photo section and Submit Proof button never rendered.
+  bool get isPhotoRequired {
+    final policy = proofPolicy?.toLowerCase();
+    return policy == 'photo_required' || policy == 'required';
+  }
+
   bool get needsProof =>
-      (proofPolicy?.toLowerCase() == 'photo_required' ||
-          proofPolicy?.toLowerCase() == 'photo_optional') ||
+      isPhotoRequired ||
+      proofPolicy?.toLowerCase() == 'photo_optional' ||
       proofRequiredOnComplete;
 
   TaskOccurrenceChecklistItemEntity copyWith({
