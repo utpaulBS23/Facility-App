@@ -323,7 +323,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
             ],
           ),
           Gap(spacing.s12),
-          if (widget.item.proofPolicy?.toLowerCase() == 'photo_required' &&
+          if (widget.item.isPhotoRequired &&
               _photo == null &&
               !(widget.item.isAnswered && (widget.item.response?.hasProof ?? false))) ...[
             Container(
@@ -361,7 +361,7 @@ class _ChecklistItemFormState extends ConsumerState<_ChecklistItemForm> {
             Gap(spacing.s8),
           ],
           _answerInput(context),
-          if (widget.item.proofPolicy?.toLowerCase() == 'required') ...[
+          if (widget.item.isPhotoRequired) ...[
             Gap(spacing.s8),
             Container(
               width: double.infinity,
