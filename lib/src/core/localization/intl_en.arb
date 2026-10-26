@@ -1642,5 +1642,6 @@
   "stockNotAvailable": "N/A",
   "stockMonthlyTotalDemandAll": "Monthly total demand for all facilities",
   "stockMonthlyTotalDemand": "Monthly Total Demand",
-  "toiletTotalIncomeCard": "Total Income"
+  "toiletTotalIncomeCard": "Total Income",
+  "profileImageInvalidType": "Use a JPG or PNG image"
 }

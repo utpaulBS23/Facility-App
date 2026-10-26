@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/base/failure.dart';
 import '../../../../core/extensions/app_localization.dart';
@@ -14,6 +15,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
+import '../../../core/widgets/photo_picker_card.dart' show maxPhotoBytes;
 import '../riverpod/edit_profile_provider.dart';
 import '../riverpod/profile_provider.dart';
 import '../widgets/auth_header_icon.dart';

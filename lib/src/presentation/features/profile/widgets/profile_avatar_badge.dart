@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -14,6 +16,7 @@ class ProfileAvatarBadge extends StatelessWidget {
     super.key,
     required this.initials,
     this.imageUrl,
+    this.localImagePath,
     required this.badgeIcon,
     required this.badgeColor,
     this.radius = 44,
@@ -21,6 +24,9 @@ class ProfileAvatarBadge extends StatelessWidget {
 
   final String initials;
   final String? imageUrl;
+
+  /// A picked image not uploaded yet; shown in place of [imageUrl].
+  final String? localImagePath;
   final IconData badgeIcon;
   final Color badgeColor;
   final double radius;
@@ -29,7 +35,9 @@ class ProfileAvatarBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.color;
     final badgeSize = radius * 0.55;
-    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
+    final hasLocalImage = localImagePath != null;
+    final hasImage =
+        hasLocalImage || (imageUrl != null && imageUrl!.trim().isNotEmpty);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -37,7 +45,11 @@ class ProfileAvatarBadge extends StatelessWidget {
         CircleAvatar(
           radius: radius,
           backgroundColor: color.primary.withValues(alpha: 0.1),
-          backgroundImage: hasImage ? NetworkImage(imageUrl!) : null,
+          backgroundImage: hasLocalImage
+              ? FileImage(File(localImagePath!))
+              : hasImage
+              ? NetworkImage(imageUrl!)
+              : null,
           child: !hasImage
               ? Text(
                   initials.isNotEmpty
@@ -79,6 +91,8 @@ class ProfileAvatarWithLabel extends StatelessWidget {
     super.key,
     required this.initials,
     this.imageUrl,
+    this.localImagePath,
+    this.onTap,
     required this.badgeIcon,
     required this.badgeColor,
     required this.label,
@@ -86,30 +100,37 @@ class ProfileAvatarWithLabel extends StatelessWidget {
 
   final String initials;
   final String? imageUrl;
+  final String? localImagePath;
+  final VoidCallback? onTap;
   final IconData badgeIcon;
   final Color badgeColor;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ProfileAvatarBadge(
-          initials: initials,
-          imageUrl: imageUrl,
-          badgeIcon: badgeIcon,
-          badgeColor: badgeColor,
-        ),
-        Gap(context.dimensions.spacing.s8),
-        Text(
-          label,
-          style: context.textStyle.bodySmall.copyWith(
-            color: context.color.primary,
-            fontWeight: FontWeight.w600,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ProfileAvatarBadge(
+            initials: initials,
+            imageUrl: imageUrl,
+            localImagePath: localImagePath,
+            badgeIcon: badgeIcon,
+            badgeColor: badgeColor,
           ),
-        ),
-      ],
+          Gap(context.dimensions.spacing.s8),
+          Text(
+            label,
+            style: context.textStyle.bodySmall.copyWith(
+              color: context.color.primary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

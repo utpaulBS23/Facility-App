@@ -1446,5 +1446,6 @@
   "stockNotAvailable": "প্রযোজ্য নয়",
   "stockMonthlyTotalDemandAll": "সব ফ্যাসিলিটির মাসিক মোট চাহিদা",
   "stockMonthlyTotalDemand": "মাসিক মোট চাহিদা",
-  "toiletTotalIncomeCard": "মোট আয়"
+  "toiletTotalIncomeCard": "মোট আয়",
+  "profileImageInvalidType": "JPG বা PNG ছবি ব্যবহার করুন"
 }

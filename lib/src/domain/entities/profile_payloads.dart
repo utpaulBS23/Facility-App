@@ -7,6 +7,7 @@ class UpdateProfileEntity {
     this.currentPassword,
     this.newPassword,
     this.newPasswordConfirmation,
+    this.profileImagePath,
   });
 
   final String? name;
@@ -16,4 +17,7 @@ class UpdateProfileEntity {
   final String? currentPassword;
   final String? newPassword;
   final String? newPasswordConfirmation;
+
+  /// Local file to upload as the new profile image (jpeg/png, up to 5 MB).
+  final String? profileImagePath;
 }

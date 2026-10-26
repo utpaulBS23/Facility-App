@@ -857,6 +857,13 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  /// WHY POST: PHP does not parse a multipart body on a real PATCH, so the
+  /// form carries `_method=PATCH` (see UpdateProfile in profile-update-api.md).
+  @POST(Endpoints.profile)
+  Future<HttpResponse> updateProfileWithImage({
+    @Body() required FormData formData,
+  });
+
   /// Notifications
   @GET(Endpoints.notifications)
   Future<HttpResponse> getNotifications({
