@@ -4,6 +4,7 @@ import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../core/application_state/logout_provider/logout_provider.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
+import '../../profile/riverpod/profile_provider.dart';
 import '../models/menu_state.dart';
 
 part 'menu_provider.g.dart';
@@ -20,15 +21,22 @@ class MenuNotifier extends _$MenuNotifier {
       userSessionProvider.select((session) => session?.partner?.brandNameBn ?? ''),
     );
 
+    // WHY watched: the login user above is a snapshot from sign-in, so a
+    // profile edit would not reach the header. The profile reloads itself
+    // after every save (see Profile.build), which rebuilds this too. Until it
+    // has loaded, or if it fails, the login user is shown.
+    final profile = ref.watch(profileProvider).valueOrNull;
+    final profileImage = profile?.profileImageUrl ?? '';
+
     _loadAppVersion();
 
     return MenuState(
-      name: user?.name ?? partnerName ?? '',
-      nameBn: user?.nameBn ?? '',
-      email: user?.email ?? '',
+      name: profile?.name ?? user?.name ?? partnerName ?? '',
+      nameBn: profile?.nameBn ?? user?.nameBn ?? '',
+      email: profile?.email ?? user?.email ?? '',
       partnerName: partnerName,
       partnerNameBn: partnerNameBn,
-      avatarUrl: user?.profileImage,
+      avatarUrl: profileImage.isNotEmpty ? profileImage : user?.profileImage,
     );
   }
 
