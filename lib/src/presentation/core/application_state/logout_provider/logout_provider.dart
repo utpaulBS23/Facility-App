@@ -17,6 +17,11 @@ class Logout extends _$Logout {
 
     state = const AsyncValue.loading();
 
+    // WHY first: the sign-out calls below can 401 when the token has already
+    // expired, which would otherwise raise the session-expired dialog on top
+    // of a logout the user asked for.
+    final session = ref.read(sessionServiceProvider)..beginLogout();
+
     // Intentional simulated delay to show loading indicator
     await Future.delayed(const Duration(seconds: 1));
 
@@ -38,6 +43,7 @@ class Logout extends _$Logout {
 
       state = const AsyncValue.data(true);
     } catch (e) {
+      session.cancelLogout();
       state = AsyncValue.error(e, StackTrace.current);
     }
   }

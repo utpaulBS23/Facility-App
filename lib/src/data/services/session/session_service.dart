@@ -27,7 +27,15 @@ abstract class SessionService {
   void clear();
 
   /// Notifies listeners that an unhandled 401 occurred requiring user re-authentication.
+  /// Ignored between [beginLogout] and the next [setAccessToken].
   void notifyUnauthorized();
+
+  /// Marks an explicit sign-out as under way, so the 401s it provokes (the
+  /// token may already be stale) are not reported as an expired session.
+  void beginLogout();
+
+  /// Undoes [beginLogout] when the sign-out did not go through.
+  void cancelLogout();
 
   /// Emits whenever the token is dropped — by an explicit logout or by a
   /// failed refresh. Anything derived from the token must reset on this.
