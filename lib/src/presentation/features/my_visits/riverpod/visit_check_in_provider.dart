@@ -101,6 +101,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           shareError: const Failure(
             type: FailureType.forbidden,
             message: 'Location permission denied. Enable it in app settings.',
+            isClientGate: true,
           ),
         );
         return;
@@ -113,6 +114,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           shareError: const Failure(
             type: FailureType.forbidden,
             message: 'Location permission required to check in',
+            isClientGate: true,
           ),
         );
         return;
@@ -195,6 +197,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           shareError: const Failure(
             type: FailureType.forbidden,
             message: 'Location permission denied. Enable it in app settings.',
+            isClientGate: true,
           ),
         );
         return;
@@ -207,6 +210,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           shareError: const Failure(
             type: FailureType.forbidden,
             message: 'Location permission required to resume sharing',
+            isClientGate: true,
           ),
         );
         return;
@@ -268,6 +272,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           checkInError: const Failure(
             type: FailureType.forbidden,
             message: 'Location permission denied. Enable it in app settings.',
+            isClientGate: true,
           ),
         );
         return;
@@ -280,6 +285,7 @@ class VisitCheckIn extends _$VisitCheckIn {
           checkInError: const Failure(
             type: FailureType.forbidden,
             message: 'Location permission required to check in',
+            isClientGate: true,
           ),
         );
         return;

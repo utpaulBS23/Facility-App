@@ -35,8 +35,9 @@ import '../widgets/revenue_row.dart';
 import '../widgets/staff_shortage_alert.dart';
 import '../widgets/trend_chart.dart';
 
-// TODO: texts below are English only; move them to the arb files with the
-// next localisation pass.
+// WHY sentinels, not labels: the selected chip is kept as one of these values,
+// so it must not change with the language. The chips render them through
+// `labelBuilder`.
 const _allFacilities = 'All facilities';
 const _allExecutives = 'All executives';
 const _topRevenue = 'Top revenue';
@@ -90,9 +91,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       appNotificationsProvider.select((inbox) => inbox.valueOrNull?.unreadCount ?? 0),
     );
     final header = DashboardHeader(
-      greeting: name.isEmpty ? 'Welcome' : 'Welcome, $name',
+      greeting: name.isEmpty
+          ? context.locale.dashWelcome
+          : context.locale.dashWelcomeName(name),
       initial: name.isEmpty ? '?' : name.characters.first.toUpperCase(),
-      role: _roleLabel(role),
+      role: _roleLabel(context, role),
       dateText: DateFormat('EEE, d MMM', language).format(DateTime.now()),
       unreadText: unreadNotifications > 0
           ? context.numbers.number(unreadNotifications)
@@ -160,11 +163,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  static String _roleLabel(UserRole? role) => switch (role) {
-    UserRole.partnerOwner => 'Partner Owner',
-    UserRole.opsManager => 'Operations Manager',
-    UserRole.supervisor => 'Supervisor',
-    UserRole.attendant => 'Attendant',
+  static String _roleLabel(BuildContext context, UserRole? role) =>
+      switch (role) {
+    UserRole.partnerOwner => context.locale.dashRolePartnerOwner,
+    UserRole.opsManager => context.locale.dashRoleOpsManager,
+    UserRole.supervisor => context.locale.dashRoleSupervisor,
+    UserRole.attendant => context.locale.dashRoleAttendant,
     null => '',
   };
 }
@@ -264,7 +268,9 @@ class _ShortageAlert extends ConsumerWidget {
       final m = parts.length == 2 ? int.tryParse(parts[1]) : null;
       if (h == null || m == null) return hhmm;
 
-      return 'Starts ${DateFormat.jm(language).format(DateTime(2000, 1, 1, h, m))}';
+      return context.locale.dashStartsAt(
+        DateFormat.jm(language).format(DateTime(2000, 1, 1, h, m)),
+      );
     }
 
     final rows = [
@@ -273,8 +279,10 @@ class _ShortageAlert extends ConsumerWidget {
           facility: i.localizedFacility(language),
           slot: i.shiftLabel,
           when: startText(i.shiftStartTime),
-          peopleText: '${n.integer(i.shortageCount)} person',
-          assignLabel: 'Assign staff for ${i.localizedFacility(language)}',
+          peopleText: context.locale.dashPersonCount(n.integer(i.shortageCount)),
+          assignLabel: context.locale.dashAssignStaffFor(
+            i.localizedFacility(language),
+          ),
         ),
     ];
     for (var k = 0; k < rows.length; k++) {
@@ -297,9 +305,10 @@ class _ShortageAlert extends ConsumerWidget {
 
     return StaffShortageAlert(
       totalText: n.integer(shortage.totalShortage),
-      summary:
-          '${n.integer(shortage.totalShortage)} people short across '
-          '${n.integer(shortage.facilityCount)} facilities',
+      summary: context.locale.dashPeopleShort(
+        n.integer(shortage.totalShortage),
+        n.integer(shortage.facilityCount),
+      ),
       rows: rows,
       onAssign: canOpenShift ? openShift : null,
     );
@@ -335,9 +344,9 @@ class _IssueSections extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DonutChart(
-          title: 'Issues by status',
-          subtitle: 'All facilities, this month',
-          centerLabel: 'issues',
+          title: context.locale.dashIssuesByStatus,
+          subtitle: context.locale.dashAllFacilitiesThisMonth,
+          centerLabel: context.locale.dashIssuesUnit,
           slices: [
             for (final e in issues.byStatus)
               DonutSlice(
@@ -349,26 +358,26 @@ class _IssueSections extends StatelessWidget {
         ),
         gap,
         IssueSummaryCard(
-          title: 'Issue summary',
+          title: context.locale.dashIssueSummary,
           counts: [
             IssueCount(
               valueText: n.integer(s.critical),
-              label: 'Critical',
+              label: context.locale.dashCritical,
               tone: DashboardTone.red,
             ),
             IssueCount(
               valueText: n.integer(s.medium),
-              label: 'Medium',
+              label: context.locale.dashMedium,
               tone: DashboardTone.orange,
             ),
             IssueCount(
               valueText: n.integer(s.total),
-              label: 'Total issue',
+              label: context.locale.dashTotalIssue,
               tone: DashboardTone.blue,
             ),
             IssueCount(
               valueText: n.integer(s.solved),
-              label: 'Solved',
+              label: context.locale.dashSolved,
               tone: DashboardTone.green,
             ),
           ],
@@ -376,7 +385,7 @@ class _IssueSections extends StatelessWidget {
         if (issues.recent.isNotEmpty) ...[
           gap,
           RecentIssuesCard(
-            title: 'Recent issues',
+            title: context.locale.dashRecentIssues,
             issues: [
               for (final i in issues.recent)
                 IssueRow(
@@ -487,14 +496,20 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
       name: f.localizedName(language),
       percent: f.achievementPct,
       pctText: n.percent(f.achievementPct),
-      achievedText: '${_money(context, f.achievedRevenue)} achieved',
-      targetText: 'Target ${_money(context, f.targetRevenue)}',
+      achievedText: context.locale.dashAchievedAmount(
+        _money(context, f.achievedRevenue),
+      ),
+      targetText: context.locale.dashTargetAmount(
+        _money(context, f.targetRevenue),
+      ),
       expenseText: _money(context, f.expense),
       maleCount: male,
       femaleCount: female,
       maleText: '${n.integer(male)} (${n.percent(malePct)})',
       femaleText: '${n.integer(female)} (${n.percent(100 - malePct)})',
-      totalVisitorsText: '${n.integer(f.visitors.total)} total',
+      totalVisitorsText: context.locale.dashTotalCount(
+        n.integer(f.visitors.total),
+      ),
       inProgressText: n.integer(f.issues.inProgress),
       completedText: n.integer(f.issues.completed),
       pendingText: n.integer(f.issues.pending),
@@ -534,48 +549,48 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
         row(
           DashboardStatTile(
             value: n.integer(s.todayWorking),
-            label: 'Today working',
+            label: context.locale.dashTodayWorking,
             tone: DashboardTone.green,
-            hint: 'of ${n.integer(s.todayRostered)} rostered',
+            hint: context.locale.dashOfRostered(n.integer(s.todayRostered)),
           ),
           DashboardStatTile(
             value: n.integer(s.pendingApproval),
-            label: 'Pending approval',
+            label: context.locale.dashPendingApproval,
             tone: DashboardTone.orange,
-            hint: 'Needs your review',
+            hint: context.locale.dashNeedsYourReview,
           ),
         ),
         SizedBox(height: spacing.s10),
         row(
           DashboardStatTile(
             value: n.integer(s.notCheckedIn),
-            label: 'Not checked in',
+            label: context.locale.dashNotCheckedIn,
             tone: DashboardTone.blue,
-            hint: 'Shift not started',
+            hint: context.locale.dashShiftNotStarted,
           ),
           DashboardStatTile(
             value: n.integer(s.late),
-            label: 'Late',
+            label: context.locale.dashLate,
             tone: DashboardTone.red,
-            hint: 'Past start time',
+            hint: context.locale.dashPastStartTime,
           ),
         ),
         gap,
         if (d.collection.isNotEmpty) ...[
           TrendChart(
-            title: 'Collection this week',
-            subtitle: 'Achieved vs daily target',
+            title: context.locale.dashCollectionThisWeek,
+            subtitle: context.locale.dashAchievedVsDailyTarget,
             labels: [for (final p in d.collection) _weekday(context, p.date)],
             valuePrefix: '৳ ',
             series: [
               ChartSeries(
-                name: 'Achieved',
+                name: context.locale.dashAchieved,
                 tone: DashboardTone.brand,
                 area: true,
                 values: [for (final p in d.collection) p.revenue],
               ),
               ChartSeries(
-                name: 'Target',
+                name: context.locale.dashTarget,
                 tone: DashboardTone.neutral,
                 dashed: true,
                 values: [for (final p in d.collection) p.target],
@@ -586,19 +601,19 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
         ],
         if (d.visitorsPerDay.isNotEmpty) ...[
           ColumnChart(
-            title: 'Visitors per day',
-            subtitle: 'Male and female, last 7 days',
+            title: context.locale.dashVisitorsPerDay,
+            subtitle: context.locale.dashMaleFemaleLast7,
             labels: [
               for (final v in d.visitorsPerDay) _weekday(context, v.date),
             ],
             series: [
               ChartSeries(
-                name: 'Male',
+                name: context.locale.dashMale,
                 tone: DashboardTone.blue,
                 values: [for (final v in d.visitorsPerDay) v.male],
               ),
               ChartSeries(
-                name: 'Female',
+                name: context.locale.dashFemale,
                 tone: DashboardTone.brand,
                 values: [for (final v in d.visitorsPerDay) v.female],
               ),
@@ -608,10 +623,11 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
         ],
         ...[
           DashboardSectionHeader(
-            title: 'Facility summary',
-            subtitle:
-                '${n.integer(visible.length)} of '
-                '${n.integer(d.facilities.length)} facilities',
+            title: context.locale.dashFacilitySummary,
+            subtitle: context.locale.dashFacilitiesShowing(
+              n.integer(visible.length),
+              n.integer(d.facilities.length),
+            ),
             actionLabel: DateFormat('MMM yyyy', language).format(widget.month),
             onAction: widget.onPickMonth,
           ),
@@ -622,6 +638,8 @@ class _SupervisorSectionsState extends State<_SupervisorSections> {
               for (final f in d.facilities) f.localizedName(language),
             ],
             selectedCategory: _facility,
+            labelBuilder: (context, v) =>
+                v == _allFacilities ? context.locale.dashAllFacilities : v,
             onSelected: (v) => setState(() => _facility = v),
           ),
           for (final f in visible) ...[
@@ -675,19 +693,19 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
       children: [
         if (d.executiveTargets.isNotEmpty) ...[
           ColumnChart(
-            title: 'Target vs achievement',
-            subtitle: 'Monthly, by executive',
+            title: context.locale.dashTargetVsAchievement,
+            subtitle: context.locale.dashMonthlyByExecutive,
             labels: [for (final e in d.executiveTargets) _firstName(e.name)],
             mode: ColumnChartMode.grouped,
             valuePrefix: '৳ ',
             series: [
               ChartSeries(
-                name: 'Target',
+                name: context.locale.dashTarget,
                 tone: DashboardTone.neutral,
                 values: [for (final e in d.executiveTargets) e.target],
               ),
               ChartSeries(
-                name: 'Achieved',
+                name: context.locale.dashAchieved,
                 tone: DashboardTone.brand,
                 values: [for (final e in d.executiveTargets) e.achieved],
               ),
@@ -697,10 +715,11 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
         ],
         ...[
           DashboardSectionHeader(
-            title: 'Executive details',
-            subtitle:
-                'Showing ${n.integer(visible.length)} of '
-                '${n.integer(d.executives.length)} executives',
+            title: context.locale.dashExecutiveDetails,
+            subtitle: context.locale.dashExecutivesShowing(
+              n.integer(visible.length),
+              n.integer(d.executives.length),
+            ),
             actionLabel: DateFormat('MMM yyyy', language).format(widget.month),
             onAction: widget.onPickMonth,
           ),
@@ -717,6 +736,8 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
                   for (final e in d.executives) e.name,
                 ],
                 selectedCategory: _executive,
+                labelBuilder: (context, v) =>
+                    v == _allExecutives ? context.locale.dashAllExecutives : v,
                 onSelected: (v) => setState(() => _executive = v),
               ),
             ),
@@ -731,13 +752,16 @@ class _OpsManagerSectionsState extends State<_OpsManagerSections> {
                 for (final f in e.facilities)
                   FacilityRow(
                     name: f.localizedName(language),
-                    meterLabel: 'Target vs achievement',
+                    meterLabel: context.locale.dashTargetVsAchievement,
                     percent: f.achievementPct,
                     pctText: n.percent(f.achievementPct),
-                    footLeft: 'Expense ${_money(context, f.expense)}',
-                    footRight:
-                        'M ${n.integer(f.visitorsToday.male)} · '
-                        'F ${n.integer(f.visitorsToday.female)} today',
+                    footLeft: context.locale.dashExpenseAmount(
+                      _money(context, f.expense),
+                    ),
+                    footRight: context.locale.dashVisitorsTodayMF(
+                      n.integer(f.visitorsToday.male),
+                      n.integer(f.visitorsToday.female),
+                    ),
                     onTap: () => _openFacilityDetails(context, f.facilityId),
                   ),
               ],
@@ -782,30 +806,34 @@ class _OwnerSectionsState extends State<_OwnerSections> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         KpiHeroCard(
-          label:
-              'Total revenue · '
-              '${DateFormat('MMM yyyy', language).format(DateTime.now())}',
+          label: context.locale.dashTotalRevenueMonth(
+            DateFormat('MMM yyyy', language).format(DateTime.now()),
+          ),
           value: _money(context, t.amount),
-          deltaText: '${_signedPct(context, t.changePct)} vs last month',
+          deltaText: context.locale.dashVsLastMonth(
+            _signedPct(context, t.changePct),
+          ),
           deltaPositive: t.changePct >= 0,
-          footnote: 'across ${n.integer(t.facilityCount)} facilities',
+          footnote: context.locale.dashAcrossFacilities(
+            n.integer(t.facilityCount),
+          ),
         ),
         if (d.revenueTrend.isNotEmpty) ...[
           gap,
           TrendChart(
-            title: 'Revenue trend',
-            subtitle: 'Last 6 months vs monthly target',
+            title: context.locale.dashRevenueTrend,
+            subtitle: context.locale.dashLast6MonthsVsTarget,
             labels: [for (final m in d.revenueTrend) m.label],
             valuePrefix: '৳ ',
             series: [
               ChartSeries(
-                name: 'Revenue',
+                name: context.locale.dashRevenue,
                 tone: DashboardTone.brand,
                 area: true,
                 values: [for (final m in d.revenueTrend) m.revenue],
               ),
               ChartSeries(
-                name: 'Target',
+                name: context.locale.dashTarget,
                 tone: DashboardTone.neutral,
                 dashed: true,
                 values: [for (final m in d.revenueTrend) m.target],
@@ -815,15 +843,18 @@ class _OwnerSectionsState extends State<_OwnerSections> {
         ],
         if (all.isNotEmpty) ...[
           gap,
-          const DashboardSectionHeader(
-            title: 'Revenue by facility',
-            subtitle: 'Share of monthly target reached',
+          DashboardSectionHeader(
+            title: context.locale.dashRevenueByFacility,
+            subtitle: context.locale.dashShareOfTarget,
           ),
           gap,
           DashboardFilterChips(
             style: DashboardFilterStyle.segmented,
             options: const [_topRevenue, _lowRevenue],
             selected: _revenue,
+            labelBuilder: (context, v) => v == _topRevenue
+                ? context.locale.dashTopRevenue
+                : context.locale.dashLowestRevenue,
             onSelected: (v) => setState(() => _revenue = v),
           ),
           for (var i = 0; i < shown.length; i++) ...[
@@ -834,8 +865,9 @@ class _OwnerSectionsState extends State<_OwnerSections> {
               amountText: _money(context, shown[i].revenue),
               percent: shown[i].targetPct,
               percentText: n.percent(shown[i].targetPct),
-              deltaText:
-                  '${_signedPct(context, shown[i].changePct)} vs last month',
+              deltaText: context.locale.dashVsLastMonth(
+                _signedPct(context, shown[i].changePct),
+              ),
               deltaPositive: shown[i].changePct >= 0,
               tone: top ? DashboardTone.green : DashboardTone.red,
             ),

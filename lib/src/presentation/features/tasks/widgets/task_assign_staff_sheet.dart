@@ -74,14 +74,14 @@ class _TaskAssignStaffSheetState
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Assigned to ${staff.name}'),
+          content: Text(context.locale.tasksAssignedTo(staff.name)),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error assigning staff: $e'),
+          content: Text(context.locale.errorGeneric),
           backgroundColor: Colors.red,
         ),
       );
@@ -128,7 +128,7 @@ class _TaskAssignStaffSheetState
                   controller: _searchController,
                   onChanged: _onSearchChanged,
                   decoration: InputDecoration(
-                    hintText: 'Search staff...',
+                    hintText: context.locale.tasksSearchStaff,
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -173,12 +173,12 @@ class _StaffList extends ConsumerWidget {
     return staffAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, st) => Center(
-        child: Text('Error loading staff: $err'),
+        child: Text(context.locale.errorGeneric),
       ),
       data: (staffList) {
         if (staffList.isEmpty) {
-          return const Center(
-            child: Text('No staff available'),
+          return Center(
+            child: Text(context.locale.tasksNoStaffAvailable),
           );
         }
 

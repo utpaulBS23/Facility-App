@@ -63,7 +63,7 @@ class ReportIncomeItemsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ToiletSectionCard(
-      title: 'Income items',
+      title: context.locale.toiletIncomeItems,
       child: _Lines(
         rows: [
           for (final line in report.incomeLines)
@@ -78,7 +78,7 @@ class ReportIncomeItemsCard extends StatelessWidget {
             ),
         ],
         total: ReportTotalRow(
-          label: 'Total Income',
+          label: context.locale.toiletTotalIncomeCard,
           value: _money(context, report.totalIncome),
           tone: DashboardTone.green,
         ),
@@ -120,11 +120,11 @@ class ReportExpenseItemsCard extends StatelessWidget {
     ];
 
     return ToiletSectionCard(
-      title: 'Expense items',
+      title: context.locale.toiletExpenseItems,
       child: _Lines(
         rows: rows,
         total: ReportTotalRow(
-          label: 'Total Expense',
+          label: context.locale.toiletTotalExpense,
           value: _money(context, report.totalExpense),
           tone: DashboardTone.red,
         ),
@@ -145,7 +145,7 @@ class ReportCustomerNumbersCard extends StatelessWidget {
     final locale = context.locale;
 
     return ToiletSectionCard(
-      title: 'Customer numbers',
+      title: context.locale.toiletCustomerNumbers,
       child: _Lines(
         rows: [
           for (final s in report.services) ...[
@@ -154,7 +154,7 @@ class ReportCustomerNumbersCard extends StatelessWidget {
           ],
         ],
         total: ReportTotalRow(
-          label: 'Total user',
+          label: context.locale.toiletTotalUser,
           value: n.integer(report.totalUsers),
         ),
       ),
@@ -173,14 +173,17 @@ class ReportBkashCard extends StatelessWidget {
     final gap = report.totalIncome - report.bkashCollected;
 
     return ToiletSectionCard(
-      title: 'Bkash collections',
+      title: context.locale.toiletBkashCollections,
       child: _Lines(
         rows: [
-          ('Total Income', _money(context, report.totalIncome)),
-          ('Income collected by Bkash', _money(context, report.bkashCollected)),
+          (context.locale.toiletTotalIncomeCard, _money(context, report.totalIncome)),
+          (
+            context.locale.toiletIncomeCollectedByBkash,
+            _money(context, report.bkashCollected),
+          ),
         ],
         total: ReportTotalRow(
-          label: 'Income gap / due',
+          label: context.locale.toiletIncomeGapDue,
           value: _money(context, gap),
           tone: gap > 0 ? DashboardTone.red : DashboardTone.green,
         ),

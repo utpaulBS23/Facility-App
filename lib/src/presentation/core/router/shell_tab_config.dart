@@ -161,7 +161,11 @@ final List<ShellTabConfig> shellTabConfigs = [
     branchIndex: 17,
     route: Routes.tabClaimExpense,
     itemKey: MenuItemKey.claimExpense,
-    permissions: [UserPermission.travelExpenseView, UserPermission.travelExpenseCreate],
+    permissions: [
+      UserPermission.travelExpenseView,
+      UserPermission.travelExpenseCreate,
+      UserPermission.travelExpenseReview,
+    ],
   ),
   ShellTabConfig(
     branchIndex: 18,

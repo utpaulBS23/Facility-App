@@ -387,13 +387,13 @@ class _TaskDetailBody extends StatelessWidget {
         Row(children: [
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Issue Photo', style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
+              Text(context.locale.tasksIssuePhoto, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
               Gap(spacing.s8),
               if (creationPhotos.isEmpty)
                 Container(
                   height: 100,
                   decoration: BoxDecoration(border: Border.all(color: context.color.border), borderRadius: BorderRadius.circular(radius.r6)),
-                  child: Center(child: Text('No photo', style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))),
+                  child: Center(child: Text(context.locale.tasksNoPhoto, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))),
                 )
               else
                 SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: creationPhotos.take(50).length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {
@@ -406,13 +406,13 @@ class _TaskDetailBody extends StatelessWidget {
             Gap(spacing.s16),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Resolved Photo', style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
+                Text(context.locale.tasksResolvedPhoto, style: context.textStyle.bodyMedium.copyWith(color: context.color.text.primary, fontWeight: FontWeight.w600)),
                 Gap(spacing.s8),
                 if (completionPhotos.isEmpty)
                   Container(
                     height: 100,
                     decoration: BoxDecoration(border: Border.all(color: context.color.border), borderRadius: BorderRadius.circular(radius.r6)),
-                    child: Center(child: Text('No photo', style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))),
+                    child: Center(child: Text(context.locale.tasksNoPhoto, style: context.textStyle.bodySmall.copyWith(color: context.color.text.secondary))),
                   )
                 else
                   SizedBox(height: 100, child: ListView.separated(scrollDirection: Axis.horizontal, itemCount: completionPhotos.take(50).length, separatorBuilder: (_, _) => Gap(spacing.s6), itemBuilder: (_, i) {

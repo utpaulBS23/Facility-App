@@ -31,7 +31,7 @@ class ReportSubscribersCard extends StatelessWidget {
     const blank = ReportStat(label: '', value: '');
 
     return ToiletSectionCard(
-      title: 'Number of subscribers',
+      title: context.locale.toiletNumberOfSubscribers,
       child: Column(
         children: [
           for (var i = 0; i < services.length; i += 2) ...[
@@ -65,7 +65,7 @@ class ReportSubscribersCard extends StatelessWidget {
             ),
           ],
           ReportTotalRow(
-            label: 'TOTAL USERS',
+            label: context.locale.toiletTotalUsersCaps,
             value: n.integer(report.totalUsers),
           ),
         ],
@@ -83,24 +83,24 @@ class ReportDigitalSystemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ToiletSectionCard(
-      title: 'Digital system',
+      title: context.locale.toiletDigitalSystem,
       child: Column(
         children: [
           ReportLineRow(
-            label: 'Pay Per/Manager Apps Income',
+            label: context.locale.toiletPayPerManagerApps,
             value: _money(context, report.appIncome),
           ),
           ReportLineRow(
-            label: 'Package income',
+            label: context.locale.toiletPackageIncome,
             value: _money(context, report.packageIncome),
             showDivider: false,
           ),
           ReportTotalRow(
-            label: 'INCOME FROM DIGITAL SYSTEM',
+            label: context.locale.toiletIncomeFromDigital,
             value: _money(context, report.digitalIncome),
           ),
           ReportTotalRow(
-            label: 'DIFFERENCE — DIGITAL SYSTEM VS ACTUAL INCOME',
+            label: context.locale.toiletDigitalDifference,
             value: _money(context, report.totalIncome - report.digitalIncome),
           ),
         ],
@@ -130,7 +130,7 @@ class ReportRevenueCard extends StatelessWidget {
     final lines = report.incomeLines;
 
     return ToiletSectionCard(
-      title: 'Revenue (Tk)',
+      title: context.locale.toiletRevenueTk,
       child: Column(
         children: [
           for (var i = 0; i < lines.length; i++)
@@ -147,7 +147,7 @@ class ReportRevenueCard extends StatelessWidget {
             ),
           ReportTotalRow(
             compact: true,
-            label: 'TOTAL',
+            label: context.locale.toiletTotalCaps,
             value: _money(context, report.totalIncome),
             tone: DashboardTone.green,
           ),
@@ -168,7 +168,7 @@ class ReportServiceCostCard extends StatelessWidget {
     final lines = report.expenseLines;
 
     return ToiletSectionCard(
-      title: 'Service cost (Tk)',
+      title: context.locale.toiletServiceCostTk,
       child: Column(
         children: [
           for (var i = 0; i < lines.length; i++)
@@ -180,7 +180,7 @@ class ReportServiceCostCard extends StatelessWidget {
             ),
           ReportTotalRow(
             compact: true,
-            label: 'TOTAL',
+            label: context.locale.toiletTotalCaps,
             value: _money(context, report.totalExpense),
             tone: DashboardTone.red,
           ),

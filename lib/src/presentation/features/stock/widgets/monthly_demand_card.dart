@@ -29,7 +29,7 @@ class MonthlyDemandCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Monthly total demand for all facilities',
+            context.locale.stockMonthlyTotalDemandAll,
             style: textStyle.titleMedium.copyWith(
               fontWeight: FontWeight.bold,
               color: color.text.secondary,

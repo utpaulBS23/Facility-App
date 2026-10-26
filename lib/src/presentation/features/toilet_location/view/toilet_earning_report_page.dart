@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/extensions/app_numbers.dart';
+import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/master_data_entity.dart';
 import '../../../../domain/entities/toilet_location/facility_monthly_report_entity.dart';
@@ -86,7 +86,7 @@ class _ToiletEarningReportPageState
 
     return Scaffold(
       backgroundColor: c.scaffoldBackground,
-      appBar: DetailAppBar(title: 'Monthly report', onBack: _onBack),
+      appBar: DetailAppBar(title: context.locale.toiletMonthlyReport, onBack: _onBack),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(spacing.s16),
         child: Column(
@@ -103,16 +103,16 @@ class _ToiletEarningReportPageState
               gap,
             ],
             ReportFilterCard(
-              title: 'Select month and year',
+              title: context.locale.toiletSelectMonthAndYear,
               month: ReportDropdown<int>(
-                caption: 'Select month',
+                caption: context.locale.toiletSelectMonth,
                 icon: Icons.calendar_month_outlined,
                 value: _month,
                 items: months,
                 onChanged: (v) => setState(() => _month = v),
               ),
               year: ReportDropdown<int>(
-                caption: 'Select year',
+                caption: context.locale.toiletSelectYear,
                 icon: Icons.event_outlined,
                 value: _year,
                 items: years,
@@ -185,10 +185,9 @@ class _ReportBody extends StatelessWidget {
       children: [
         if (!report.hasRecords) ...[
           ToiletSectionCard(
-            title: 'No records',
+            title: context.locale.toiletNoRecords,
             child: Text(
-              'This toilet has no collections, income or expenses recorded '
-              'for this month. Pick another month or toilet.',
+              context.locale.toiletNoRecordsMessage,
               style: context.textStyle.bodyMedium.copyWith(
                 color: context.color.text.secondary,
               ),
@@ -201,13 +200,13 @@ class _ReportBody extends StatelessWidget {
             ReportSummaryTile(
               icon: Icons.groups_outlined,
               value: n.integer(report.totalUsers),
-              label: 'User',
+              label: context.locale.toiletReportUser,
               tone: DashboardTone.blue,
             ),
             ReportSummaryTile(
               icon: Icons.trending_up_rounded,
               value: money(report.totalIncome),
-              label: 'Total income',
+              label: context.locale.toiletTotalIncome,
               tone: DashboardTone.green,
             ),
             ReportSummaryTile(
@@ -215,7 +214,7 @@ class _ReportBody extends StatelessWidget {
                   ? Icons.trending_down_rounded
                   : Icons.trending_up_rounded,
               value: money(report.profitLoss),
-              label: 'Total profit',
+              label: context.locale.toiletTotalProfit,
               tone: report.profitLoss < 0
                   ? DashboardTone.red
                   : DashboardTone.green,
@@ -259,7 +258,7 @@ class _ReportBody extends StatelessWidget {
         ReportBkashCard(report: report),
         gap,
         ReportProfitBanner(
-          label: 'Profit/Loss',
+          label: context.locale.toiletProfitLoss,
           value: money(report.profitLoss),
           isLoss: report.profitLoss < 0,
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../core/theme/theme.dart';
@@ -74,7 +75,7 @@ class _StockAveragingDetailsPageState
       appBar: AppBar(
         leading: AppBackButton(onTap: () => context.pop()),
         leadingWidth: AppBackButton.width,
-        title: const Headline2xlTinyText('Stock Targets'),
+        title: Headline2xlTinyText(context.locale.stockTargetsTitle),
         centerTitle: true,
         backgroundColor: color.onPrimary,
         surfaceTintColor: Colors.transparent,
@@ -133,7 +134,7 @@ class _StockAveragingDetailsPageState
                             color: Colors.white,
                           ),
                         )
-                      : const Text('Save Target'),
+                      : Text(context.locale.stockSaveTarget),
                 ),
               ),
             )

@@ -1334,5 +1334,313 @@
   "notifValueCheckIn": "Check in",
   "notifValueCheckOut": "Check out",
   "notifValueLeave": "Leave",
-  "notifValueSupply": "Supply"
+  "notifValueSupply": "Supply",
+  "dashWelcome": "Welcome",
+  "dashWelcomeName": "Welcome, {name}",
+  "@dashWelcomeName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashRolePartnerOwner": "Partner Owner",
+  "dashRoleOpsManager": "Operations Manager",
+  "dashRoleSupervisor": "Supervisor",
+  "dashRoleAttendant": "Attendant",
+  "dashAllFacilities": "All facilities",
+  "dashAllExecutives": "All executives",
+  "dashTopRevenue": "Top revenue",
+  "dashLowestRevenue": "Lowest revenue",
+  "dashIssuesByStatus": "Issues by status",
+  "dashAllFacilitiesThisMonth": "All facilities, this month",
+  "dashIssuesUnit": "issues",
+  "dashIssueSummary": "Issue summary",
+  "dashCritical": "Critical",
+  "dashMedium": "Medium",
+  "dashTotalIssue": "Total issue",
+  "dashSolved": "Solved",
+  "dashRecentIssues": "Recent issues",
+  "dashAchievedAmount": "{amount} achieved",
+  "@dashAchievedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dashTargetAmount": "Target {amount}",
+  "@dashTargetAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dashTotalCount": "{count} total",
+  "@dashTotalCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "dashTodayWorking": "Today working",
+  "dashOfRostered": "of {count} rostered",
+  "@dashOfRostered": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "dashPendingApproval": "Pending approval",
+  "dashNeedsYourReview": "Needs your review",
+  "dashNotCheckedIn": "Not checked in",
+  "dashShiftNotStarted": "Shift not started",
+  "dashLate": "Late",
+  "dashPastStartTime": "Past start time",
+  "dashCollectionThisWeek": "Collection this week",
+  "dashAchievedVsDailyTarget": "Achieved vs daily target",
+  "dashAchieved": "Achieved",
+  "dashTarget": "Target",
+  "dashVisitorsPerDay": "Visitors per day",
+  "dashMaleFemaleLast7": "Male and female, last 7 days",
+  "dashMale": "Male",
+  "dashFemale": "Female",
+  "dashFacilitySummary": "Facility summary",
+  "dashFacilitiesShowing": "{shown} of {total} facilities",
+  "@dashFacilitiesShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "dashTargetVsAchievement": "Target vs achievement",
+  "dashMonthlyByExecutive": "Monthly, by executive",
+  "dashExecutiveDetails": "Executive details",
+  "dashExecutivesShowing": "Showing {shown} of {total} executives",
+  "@dashExecutivesShowing": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "dashExpenseAmount": "Expense {amount}",
+  "@dashExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dashVisitorsTodayMF": "M {male} · F {female} today",
+  "@dashVisitorsTodayMF": {
+    "placeholders": {
+      "male": {
+        "type": "String"
+      },
+      "female": {
+        "type": "String"
+      }
+    }
+  },
+  "dashTotalRevenueMonth": "Total revenue · {month}",
+  "@dashTotalRevenueMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "dashVsLastMonth": "{change} vs last month",
+  "@dashVsLastMonth": {
+    "placeholders": {
+      "change": {
+        "type": "String"
+      }
+    }
+  },
+  "dashAcrossFacilities": "across {count} facilities",
+  "@dashAcrossFacilities": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "dashRevenueTrend": "Revenue trend",
+  "dashLast6MonthsVsTarget": "Last 6 months vs monthly target",
+  "dashRevenue": "Revenue",
+  "dashRevenueByFacility": "Revenue by facility",
+  "dashShareOfTarget": "Share of monthly target reached",
+  "dashStartsAt": "Starts {time}",
+  "@dashStartsAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dashPersonCount": "{count} person",
+  "@dashPersonCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "dashAssignStaffFor": "Assign staff for {facility}",
+  "@dashAssignStaffFor": {
+    "placeholders": {
+      "facility": {
+        "type": "String"
+      }
+    }
+  },
+  "dashPeopleShort": "{count} people short across {facilities} facilities",
+  "@dashPeopleShort": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "facilities": {
+        "type": "String"
+      }
+    }
+  },
+  "toiletConsumerAccess": "Consumer access",
+  "toiletThisMonth": "This month",
+  "toiletVisitorsByHourToday": "Visitors by hour, today",
+  "toiletVisitorsByHourTodayColon": "Visitors by hour, today:",
+  "toiletPeak": "Peak",
+  "toiletPeakHoursColon": "Peak hours:",
+  "toiletIncomeTargetAndGoal": "Income target and goal",
+  "toiletDailyIncomeTarget": "Daily income target",
+  "toiletTodayAmount": "Today: {amount}",
+  "@toiletTodayAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "toiletMonthlyGoal": "Monthly goal",
+  "toiletThisMonthAmount": "This month: {amount}",
+  "@toiletThisMonthAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "toiletMonthlyProgress": "Monthly progress",
+  "toiletGoalComplete": "Goal complete",
+  "toiletAchieved": "Achieved",
+  "toiletRemaining": "Remaining",
+  "toiletDaysLeft": "Days left",
+  "toiletManagementInformation": "Management information",
+  "toiletOpeningHours": "Opening hours",
+  "toiletOpenDays": "Open days",
+  "toiletEntryFee": "Entry fee",
+  "toiletFree": "Free",
+  "toiletDisabilityFriendly": "Disability friendly",
+  "toiletAirQualityScore": "Air quality score",
+  "toiletCleaningFrequency": "Frequency of cleaning",
+  "toiletLastCleaning": "Last cleaning",
+  "toiletSupplyStock": "Supply stock",
+  "toiletStockLabel": "Stock",
+  "toiletInStock": "In stock",
+  "toiletLow": "Low",
+  "toiletOut": "Out",
+  "toiletNotInYet": "Not in yet",
+  "toiletNotCheckedInYet": "Not checked in yet",
+  "toiletCheckedInAt": "Checked in {time}",
+  "@toiletCheckedInAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "toiletOpen24Hours": "Open 24 hours",
+  "toiletEveryDay": "Every day",
+  "toiletAm": "AM",
+  "toiletPm": "PM",
+  "toiletKm": "{value} km",
+  "@toiletKm": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "toiletEarningReport": "Earning Report",
+  "toiletMonthlyReport": "Monthly report",
+  "toiletSelectMonthAndYear": "Select month and year",
+  "toiletSelectMonth": "Select month",
+  "toiletSelectYear": "Select year",
+  "toiletNoRecords": "No records",
+  "toiletNoRecordsMessage": "This toilet has no collections, income or expenses recorded for this month. Pick another month or toilet.",
+  "toiletReportUser": "User",
+  "toiletTotalIncome": "Total income",
+  "toiletTotalProfit": "Total profit",
+  "toiletProfitLoss": "Profit/Loss",
+  "toiletNumberOfSubscribers": "Number of subscribers",
+  "toiletTotalUsersCaps": "TOTAL USERS",
+  "toiletDigitalSystem": "Digital system",
+  "toiletPayPerManagerApps": "Pay Per/Manager Apps Income",
+  "toiletPackageIncome": "Package income",
+  "toiletIncomeFromDigital": "INCOME FROM DIGITAL SYSTEM",
+  "toiletDigitalDifference": "DIFFERENCE — DIGITAL SYSTEM VS ACTUAL INCOME",
+  "toiletRevenueTk": "Revenue (Tk)",
+  "toiletServiceCostTk": "Service cost (Tk)",
+  "toiletTotalCaps": "TOTAL",
+  "toiletIncomeItems": "Income items",
+  "toiletExpenseItems": "Expense items",
+  "toiletTotalExpense": "Total Expense",
+  "toiletCustomerNumbers": "Customer numbers",
+  "toiletTotalUser": "Total user",
+  "toiletBkashCollections": "Bkash collections",
+  "toiletIncomeCollectedByBkash": "Income collected by Bkash",
+  "toiletIncomeGapDue": "Income gap / due",
+  "toiletRentingOthers": "Renting & others",
+  "tasksIssuePhoto": "Issue Photo",
+  "tasksResolvedPhoto": "Resolved Photo",
+  "tasksNoPhoto": "No photo",
+  "tasksAssignedTo": "Assigned to {name}",
+  "@tasksAssignedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksNoStaffAvailable": "No staff available",
+  "tasksSearchStaff": "Search staff...",
+  "issueProblemCategory": "Problem Category",
+  "issueSelectDueDate": "Select due date",
+  "issueDueDate": "Due Date",
+  "issueFacility": "Facility",
+  "issueTitleLabel": "Title",
+  "issueDescriptionOptional": "Description (Optional)",
+  "issueEnterDescription": "Enter issue description",
+  "issueProofRequiredForResponse": "Proof required for response",
+  "stockTargetsTitle": "Stock Targets",
+  "stockSaveTarget": "Save Target",
+  "stockNoFacilitiesFound": "No facilities found.",
+  "stockLastUpdated": "Last updated",
+  "stockUpdatedBy": "Updated by",
+  "stockNotAvailable": "N/A",
+  "stockMonthlyTotalDemandAll": "Monthly total demand for all facilities",
+  "stockMonthlyTotalDemand": "Monthly Total Demand",
+  "toiletTotalIncomeCard": "Total Income"
 }
