@@ -13,6 +13,7 @@ enum CacheKey {
   doorLockPendingCommands,
   menuConfigurationEtag,
   menuConfigurationData,
+  savedAccounts,
 }
 
 abstract class CacheService {

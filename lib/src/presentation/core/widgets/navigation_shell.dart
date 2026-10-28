@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/entities/login_entity.dart';
 import '../../../domain/entities/menu_configuration_entity.dart';
 import '../application_state/menu_configuration_provider/menu_configuration_provider.dart';
+import '../application_state/saved_account_sync_provider/saved_account_sync_provider.dart';
 import '../application_state/push_lifecycle_provider/push_lifecycle_provider.dart';
 import '../../features/notification/riverpod/app_notifications_provider.dart';
 import '../gen/assets.gen.dart';
@@ -40,6 +41,7 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     ref.read(menuConfigProvider.notifier).refresh();
+    ref.read(savedAccountSyncProvider.notifier).start();
 
     _pushLifecycle = ref.read(pushLifecycleProvider.notifier);
     final launchedFromPush = _pushLifecycle.start(

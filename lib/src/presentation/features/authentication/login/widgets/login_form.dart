@@ -7,6 +7,10 @@ class _LoginCard extends StatelessWidget {
   const _LoginCard({
     required this.uidController,
     required this.passwordController,
+    required this.title,
+    required this.subtitle,
+    required this.saveAccount,
+    required this.onSaveAccountChanged,
     required this.isLoading,
     required this.onLogin,
     required this.onForgotPassword,
@@ -14,6 +18,10 @@ class _LoginCard extends StatelessWidget {
 
   final TextEditingController uidController;
   final TextEditingController passwordController;
+  final String title;
+  final String subtitle;
+  final bool saveAccount;
+  final ValueChanged<bool> onSaveAccountChanged;
   final bool isLoading;
   final VoidCallback onLogin;
   final VoidCallback onForgotPassword;
@@ -26,27 +34,14 @@ class _LoginCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(dimensions.padding.p20),
-      decoration: BoxDecoration(
-        color: colors.onPrimary,
-        borderRadius: BorderRadius.circular(dimensions.radius.r20),
-        boxShadow: [
-          BoxShadow(
-            color: colors.shadow,
-            offset: const Offset(0, 2),
-            blurRadius: 14,
-          ),
-        ],
-      ),
+      decoration: _loginCardDecoration(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeadlineLargeText(context.locale.login),
+          HeadlineLargeText(title),
           Gap(dimensions.spacing.s6),
-          BodyRegularText(
-            context.locale.loginSubtitle,
-            color: colors.text.secondary,
-          ),
+          BodyRegularText(subtitle, color: colors.text.secondary),
           Gap(dimensions.spacing.s16),
           AppTextField.text(
             controller: uidController,
@@ -68,7 +63,19 @@ class _LoginCard extends StatelessWidget {
             textInputAction: TextInputAction.done,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
-          _ForgotPasswordButton(onForgotPassword: onForgotPassword),
+          Gap(dimensions.spacing.s8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: _SaveAccountCheckbox(
+                  value: saveAccount,
+                  onChanged: onSaveAccountChanged,
+                ),
+              ),
+              _ForgotPasswordButton(onForgotPassword: onForgotPassword),
+            ],
+          ),
           Gap(dimensions.spacing.s16),
           SizedBox(
             width: double.infinity,
@@ -84,4 +91,22 @@ class _LoginCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Rounded white surface with the soft shadow shared by every card on the
+/// login page.
+BoxDecoration _loginCardDecoration(BuildContext context) {
+  final dimensions = context.dimensions;
+
+  return BoxDecoration(
+    color: context.color.onPrimary,
+    borderRadius: BorderRadius.circular(dimensions.radius.r20),
+    boxShadow: [
+      BoxShadow(
+        color: context.color.shadow,
+        offset: const Offset(0, 2),
+        blurRadius: 14,
+      ),
+    ],
+  );
 }

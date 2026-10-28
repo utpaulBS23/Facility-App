@@ -1098,3 +1098,46 @@ GetDoorStatusUseCase getDoorStatusUseCase(Ref ref) {
 UnregisterDeviceTokenUseCase unregisterDeviceTokenUseCase(Ref ref) {
   return UnregisterDeviceTokenUseCase(ref.read(deviceTokenRepositoryProvider));
 }
+
+/// Saved Accounts UseCases
+@riverpod
+GetSavedAccountsUseCase getSavedAccountsUseCase(Ref ref) {
+  return GetSavedAccountsUseCase(
+    savedAccountRepository: ref.read(savedAccountRepositoryProvider),
+  );
+}
+
+@riverpod
+RemoveSavedAccountUseCase removeSavedAccountUseCase(Ref ref) {
+  return RemoveSavedAccountUseCase(
+    savedAccountRepository: ref.read(savedAccountRepositoryProvider),
+  );
+}
+
+@riverpod
+SignInUseCase signInUseCase(Ref ref) {
+  return SignInUseCase(
+    authRepository: ref.read(authenticationRepositoryProvider),
+    savedAccountRepository: ref.read(savedAccountRepositoryProvider),
+  );
+}
+
+@riverpod
+DirectSignInUseCase directSignInUseCase(Ref ref) {
+  return DirectSignInUseCase(
+    authRepository: ref.read(authenticationRepositoryProvider),
+    savedAccountRepository: ref.read(savedAccountRepositoryProvider),
+  );
+}
+
+@riverpod
+RefreshSavedAccountThumbnailUseCase refreshSavedAccountThumbnailUseCase(
+  Ref ref,
+) {
+  return RefreshSavedAccountThumbnailUseCase(
+    authRepository: ref.read(authenticationRepositoryProvider),
+    savedAccountRepository: ref.read(savedAccountRepositoryProvider),
+    profileRepository: ref.read(profileRepositoryProvider),
+    thumbnailRepository: ref.read(thumbnailRepositoryProvider),
+  );
+}
