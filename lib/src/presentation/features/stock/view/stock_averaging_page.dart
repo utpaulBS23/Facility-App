@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/extensions/app_localization.dart';
 import '../../../../domain/entities/stock/stock_averaging_overview_entity.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
@@ -71,7 +72,7 @@ class _StockAveragingBody extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(spacing.s24),
                 child: Text(
-                  'No facilities found.',
+                  context.locale.stockNoFacilitiesFound,
                   style: context.textStyle.bodyMedium.copyWith(
                     color: color.text.secondary,
                   ),

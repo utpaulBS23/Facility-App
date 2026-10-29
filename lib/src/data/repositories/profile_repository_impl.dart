@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../domain/entities/profile_entity.dart';
@@ -27,7 +31,19 @@ final class ProfileRepositoryImpl extends ProfileRepository {
     UpdateProfileEntity request,
   ) async {
     return asyncGuard(() async {
-      final response = await restClient.updateProfile(body: request.toJson());
+      final imagePath = request.profileImagePath;
+      final response = imagePath == null
+          ? await restClient.updateProfile(body: request.toJson())
+          : await restClient.updateProfileWithImage(
+              formData: FormData.fromMap({
+                '_method': 'PATCH',
+                ...request.toJson(),
+                'profile_image': await MultipartFile.fromFile(
+                  imagePath,
+                  filename: File(imagePath).uri.pathSegments.last,
+                ),
+              }),
+            );
       final model = UserProfileModel.fromJson(response.data);
 
       return model.toEntity();

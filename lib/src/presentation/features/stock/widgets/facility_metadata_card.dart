@@ -53,13 +53,13 @@ class FacilityMetadataCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Last updated',
+                context.locale.stockLastUpdated,
                 style: textStyle.bodySmall.copyWith(
                   color: color.text.secondary,
                 ),
               ),
               Text(
-                dateStr.isEmpty ? 'N/A' : dateStr,
+                dateStr.isEmpty ? context.locale.stockNotAvailable : dateStr,
                 style: textStyle.bodySmall.copyWith(
                   fontWeight: FontWeight.bold,
                   color: color.text.primary,
@@ -72,7 +72,7 @@ class FacilityMetadataCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Updated by',
+                context.locale.stockUpdatedBy,
                 style: textStyle.bodySmall.copyWith(
                   color: color.text.secondary,
                 ),

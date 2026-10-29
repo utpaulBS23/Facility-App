@@ -44,7 +44,7 @@ class MonthlyTotalSummaryCard extends StatelessWidget {
               ),
               Gap(spacing.s8),
               Text(
-                'Monthly Total Demand',
+                context.locale.stockMonthlyTotalDemand,
                 style: textStyle.titleMedium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: color.text.primary,
@@ -82,7 +82,7 @@ class MonthlyTotalSummaryCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total',
+                  context.locale.total,
                   style: textStyle.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: color.text.primary,

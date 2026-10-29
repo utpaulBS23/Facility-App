@@ -19,7 +19,7 @@ class IssueCategorySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormSelectorCard.text(
-      title: 'Problem Category',
+      title: context.locale.issueProblemCategory,
       icon: Icons.report_problem_outlined,
       value: selected?.localizedName(context.languageCode),
       placeholder: context.locale.specificProblemHint,

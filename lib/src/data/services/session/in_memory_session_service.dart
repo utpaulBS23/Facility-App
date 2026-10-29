@@ -4,6 +4,7 @@ class InMemorySessionService implements SessionService {
   String? _accessToken;
   int _weekStartDay = 6;
   bool _hasNotifiedUnauthorized = false;
+  bool _isLoggingOut = false;
   // WHY sync: an async broadcast controller delivers to listeners on a
   // microtask, not inside add() itself. AuthenticationRepositoryImpl's
   // teardown (including clearing the persisted session payload) runs from
@@ -31,6 +32,7 @@ class InMemorySessionService implements SessionService {
   void setAccessToken(String token) {
     _accessToken = token;
     _hasNotifiedUnauthorized = false;
+    _isLoggingOut = false;
   }
 
   @override
@@ -51,10 +53,18 @@ class InMemorySessionService implements SessionService {
 
   @override
   void notifyUnauthorized() {
-    if (_accessToken == null || _hasNotifiedUnauthorized) return;
+    if (_accessToken == null || _hasNotifiedUnauthorized || _isLoggingOut) {
+      return;
+    }
     _hasNotifiedUnauthorized = true;
     _unauthorizedController.add(null);
   }
+
+  @override
+  void beginLogout() => _isLoggingOut = true;
+
+  @override
+  void cancelLogout() => _isLoggingOut = false;
 
   @override
   Stream<void> get onCleared => _clearedController.stream;

@@ -12,12 +12,16 @@ class DashboardFilterChips extends StatelessWidget {
     required this.selected,
     required this.onSelected,
     this.style = DashboardFilterStyle.chips,
+    this.labelBuilder,
   });
 
   final List<String> options;
   final String selected;
   final ValueChanged<String> onSelected;
   final DashboardFilterStyle style;
+
+  /// Display text for an option; the option itself is what [selected] holds.
+  final String Function(BuildContext context, String option)? labelBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class DashboardFilterChips extends StatelessWidget {
             for (final option in options)
               Expanded(
                 child: _Segment(
-                  label: option,
+                  label: labelBuilder?.call(context, option) ?? option,
                   selected: option == selected,
                   onTap: () => onSelected(option),
                 ),
@@ -54,7 +58,7 @@ class DashboardFilterChips extends StatelessWidget {
           for (var i = 0; i < options.length; i++) ...[
             if (i > 0) SizedBox(width: spacing.s8),
             _Chip(
-              label: options[i],
+              label: labelBuilder?.call(context, options[i]) ?? options[i],
               selected: options[i] == selected,
               onTap: () => onSelected(options[i]),
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 import 'issue_section_label.dart';
 
@@ -31,7 +32,7 @@ class IssueDueDateSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const IssueSectionLabel('Due Date'),
+        IssueSectionLabel(context.locale.issueDueDate),
         Gap(spacing.s8),
         InkWell(
           onTap: onTap,
@@ -56,7 +57,7 @@ class IssueDueDateSection extends StatelessWidget {
                 Gap(spacing.s12),
                 Expanded(
                   child: Text(
-                    formatted ?? 'Select due date',
+                    formatted ?? context.locale.issueSelectDueDate,
                     style: textStyle.bodyMedium.copyWith(
                       color: formatted != null
                           ? color.text.primary

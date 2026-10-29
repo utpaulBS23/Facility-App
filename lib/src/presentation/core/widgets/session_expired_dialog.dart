@@ -23,6 +23,7 @@ class SessionExpiredDialog extends ConsumerStatefulWidget {
 class _SessionExpiredDialogState
     extends ConsumerState<SessionExpiredDialog> {
   StreamSubscription<void>? _subscription;
+  StreamSubscription<void>? _clearedSubscription;
   bool _isDialogShowing = false;
 
   @override
@@ -32,12 +33,25 @@ class _SessionExpiredDialogState
     _subscription = sessionService.onUnauthorized.listen((_) {
       _showSessionExpiredDialog();
     });
+    // WHY: if the session ends some other way while the dialog is up (a
+    // sign-out that raced the 401), the dialog has nothing left to say and
+    // would otherwise sit on top of the login screen.
+    _clearedSubscription = sessionService.onCleared.listen((_) {
+      _dismissSessionExpiredDialog();
+    });
   }
 
   @override
   void dispose() {
     _subscription?.cancel();
+    _clearedSubscription?.cancel();
     super.dispose();
+  }
+
+  void _dismissSessionExpiredDialog() {
+    if (!_isDialogShowing || !mounted) return;
+    _isDialogShowing = false;
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   void _showSessionExpiredDialog() {

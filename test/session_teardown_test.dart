@@ -68,6 +68,31 @@ void main() {
       await pumpEventQueue();
       expect(emissions, 1);
     });
+
+    test('a 401 during sign-out is not reported as an expired session', () {
+      final service = InMemorySessionService();
+      addTearDown(service.dispose);
+
+      var expired = 0;
+      final subscription = service.onUnauthorized.listen((_) => expired++);
+      addTearDown(subscription.cancel);
+
+      service.setAccessToken('token');
+      service.beginLogout();
+      service.notifyUnauthorized();
+      expect(expired, 0);
+
+      // A sign-out that fails leaves the session live, so expiry counts again.
+      service.cancelLogout();
+      service.notifyUnauthorized();
+      expect(expired, 1);
+
+      // A new sign-in starts clean even if the last logout never cancelled.
+      service.beginLogout();
+      service.setAccessToken('next');
+      service.notifyUnauthorized();
+      expect(expired, 2);
+    });
   });
 
   group('AuthenticationRepositoryImpl', () {

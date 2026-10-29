@@ -146,12 +146,14 @@ final List<MenuItemConfig> menuItemConfigs = [
   MenuItemConfig(
     itemKey: MenuItemKey.claimExpense,
     route: Routes.claimExpense,
-    // WHY both keys: .view opens the list/page; .create is checked again
+    // WHY all three keys: .view opens the list/page; .create is checked again
     // inside the page to gate the submit action itself (a viewer without
-    // .create can look but not save a claim).
+    // .create can look but not save a claim); .review must also open the page
+    // or a reviewer-only role could never reach the claims they approve.
     permissions: [
       UserPermission.travelExpenseView,
       UserPermission.travelExpenseCreate,
+      UserPermission.travelExpenseReview,
     ],
   ),
   MenuItemConfig(

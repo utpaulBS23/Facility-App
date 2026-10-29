@@ -87,7 +87,7 @@ class IssueFormFieldsListView extends StatelessWidget {
       ),
       children: [
         // 1. Facility
-        IssueSectionLabel('Facility'),
+        IssueSectionLabel(context.locale.issueFacility),
         Gap(spacing.s2),
         IssueLocationInputSection(controller: locationController),
         Gap(spacing.s16),
@@ -100,7 +100,7 @@ class IssueFormFieldsListView extends StatelessWidget {
         if (selectedCategory?.proofRequiredOnComplete ?? false) ...[
           Gap(spacing.s12),
           Chip(
-            label: Text('Proof required for response'),
+            label: Text(context.locale.issueProofRequiredForResponse),
             backgroundColor: context.color.error.withValues(alpha: 0.1),
             labelStyle: context.textStyle.labelSmall.copyWith(
               color: context.color.error,
@@ -114,7 +114,7 @@ class IssueFormFieldsListView extends StatelessWidget {
         ],
         Gap(spacing.s16),
         // 3. Title
-        IssueSectionLabel('Title'),
+        IssueSectionLabel(context.locale.issueTitleLabel),
         Gap(spacing.s2),
         AppTextField.text(
           controller: titleController,
@@ -124,11 +124,11 @@ class IssueFormFieldsListView extends StatelessWidget {
         ),
         Gap(spacing.s16),
         // 4. Description
-        IssueSectionLabel('Description (Optional)'),
+        IssueSectionLabel(context.locale.issueDescriptionOptional),
         Gap(spacing.s2),
         AppTextField.description(
           controller: descriptionController,
-          hint: 'Enter issue description',
+          hint: context.locale.issueEnterDescription,
         ),
         Gap(spacing.s16),
         // 5. Photo

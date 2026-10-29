@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/di/dependency_injection.dart';
 import '../../../core/extensions/riverpod_extensions.dart';
 import '../../../core/logger/log.dart';
+import '../../../domain/entities/app_permission.dart';
 import '../../../domain/entities/attendance_entity.dart';
 import '../../../domain/entities/facility_entity.dart';
 import '../../../domain/entities/manual_attendance_entity.dart';
@@ -204,6 +205,26 @@ GoRouter goRouter(Ref ref) {
               menuConfig: menuConfig,
             );
           }
+        }
+
+        // WHY: the loops above only match exact paths, so the sub-routes of a
+        // feature (add form, details) were reachable by deep link without the
+        // permission the in-page controls assume.
+        final path = state.uri.path;
+        final subRoutePermissions = <UserPermission>[
+          if (path == Routes.addTravelExpense)
+            UserPermission.travelExpenseCreate
+          else if (path.startsWith('/claim-expense/details/')) ...[
+            UserPermission.travelExpenseView,
+            UserPermission.travelExpenseReview,
+          ],
+        ];
+        if (subRoutePermissions.isNotEmpty &&
+            !session.canAny(subRoutePermissions)) {
+          return firstPermittedShellRoute(
+            session.permissions,
+            menuConfig: menuConfig,
+          );
         }
       }
       return null;

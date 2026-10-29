@@ -36,7 +36,6 @@ String reportIncomeLabel(
     case ReportIncomeKind.cashProduct:
       return context.locale.productSell;
     case ReportIncomeKind.rentingOthers:
-      // TODO: English only until the next localisation pass.
-      return 'Renting & others';
+      return context.locale.toiletRentingOthers;
   }
 }

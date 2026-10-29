@@ -12,6 +12,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   late final TextEditingController _nameBnController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
+  XFile? _image;
 
   @override
   void initState() {
@@ -32,6 +33,60 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     super.dispose();
   }
 
+  Future<void> _chooseImage() async {
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(sheetContext.locale.camera),
+              onTap: () => Navigator.of(sheetContext).pop(ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(sheetContext.locale.gallery),
+              onTap: () => Navigator.of(sheetContext).pop(ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (source == null || !mounted) return;
+
+    final XFile? file;
+    try {
+      file = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 85,
+        maxWidth: 1920,
+      );
+    } catch (_) {
+      if (mounted) {
+        AppSnackBar.showError(context, context.locale.somethingWentWrong);
+      }
+      return;
+    }
+    if (file == null || !mounted) return;
+
+    // WHY checked here: the server accepts only jpeg/png up to 5 MB and
+    // answers 422 otherwise; say so before the upload.
+    final extension = file.path.split('.').last.toLowerCase();
+    if (!const {'jpg', 'jpeg', 'png'}.contains(extension)) {
+      AppSnackBar.showError(context, context.locale.profileImageInvalidType);
+      return;
+    }
+    if (await file.length() > maxPhotoBytes) {
+      if (mounted) {
+        AppSnackBar.showError(context, context.locale.photoTooLarge);
+      }
+      return;
+    }
+    setState(() => _image = file);
+  }
+
   Future<void> _submit() async {
     final name = _nameController.text.trim();
     final nameBn = _nameBnController.text.trim();
@@ -44,6 +99,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
             nameBn: nameBn.isNotEmpty ? nameBn : null,
             email: email.isNotEmpty ? email : null,
             phoneNumber: phone.isNotEmpty ? phone : null,
+            profileImagePath: _image?.path,
           ),
         );
   }
@@ -123,6 +179,8 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                       child: ProfileAvatarWithLabel(
                         initials: name,
                         imageUrl: profile?.profileImageUrl,
+                        localImagePath: _image?.path,
+                        onTap: isLoading ? null : _chooseImage,
                         badgeIcon: Icons.camera_alt_outlined,
                         badgeColor: color.primary,
                         label: context.locale.changePicture,
