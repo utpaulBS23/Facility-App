@@ -268,3 +268,16 @@ GatewayRepository gatewayRepository(Ref ref) {
     ref.read(connectivityProvider),
   );
 }
+
+@Riverpod(keepAlive: true)
+SavedAccountRepository savedAccountRepository(Ref ref) {
+  return SavedAccountRepositoryImpl(
+    ref.read(cacheServiceProvider),
+    ref.read(secureStorageServiceProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+ThumbnailRepository thumbnailRepository(Ref ref) {
+  return ThumbnailRepositoryImpl(ref.read(thumbnailServiceProvider));
+}

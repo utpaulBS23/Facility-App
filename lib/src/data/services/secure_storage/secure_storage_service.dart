@@ -4,7 +4,7 @@ part 'flutter_secure_storage_service.dart';
 
 /// Keys for values that must never sit in plain [CacheService]/
 /// SharedPreferences storage — access tokens, cached session payloads.
-enum SecureStorageKey { sessionPayload }
+enum SecureStorageKey { sessionPayload, savedAccountPasswords }
 
 abstract class SecureStorageService {
   Future<void> save(SecureStorageKey key, String value);

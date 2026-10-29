@@ -78,3 +78,8 @@ GatewayService gatewayService(Ref ref) {
 OfflineCacheService offlineCacheService(Ref ref) {
   return OfflineCacheService(ref.read(cacheServiceProvider));
 }
+
+@Riverpod(keepAlive: true)
+ThumbnailService thumbnailService(Ref ref) {
+  return ThumbnailService(ref.read(downloadDioProvider));
+}
