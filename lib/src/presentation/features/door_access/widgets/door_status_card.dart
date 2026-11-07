@@ -90,7 +90,7 @@ class _DoorStatusCard extends StatelessWidget {
                 border: Border.all(color: Colors.green.shade600, width: 0.5),
               ),
               child: Text(
-                '(Live from Pi)',
+                '(${context.locale.liveFromPi})',
                 style: context.textStyle.bodySmall.copyWith(
                   color: Colors.green.shade700,
                   fontSize: 11,
@@ -119,7 +119,7 @@ class _DoorStatusCard extends StatelessWidget {
                       ),
                       Gap(dimensions.spacing.s8),
                       Text(
-                        'Last Known State (Offline)',
+                        context.locale.lastKnownStateOffline,
                         style: context.textStyle.bodySmall.copyWith(
                           color: colors.warning,
                           fontWeight: TextWeight.bold,
@@ -129,7 +129,7 @@ class _DoorStatusCard extends StatelessWidget {
                   ),
                   Gap(dimensions.spacing.s8),
                   Text(
-                    'Gateway is offline. Status may not be current. Reconnect to get live status.',
+                    context.locale.gatewayOfflineStatusMessage,
                     style: context.textStyle.bodySmall.copyWith(
                       color: colors.warning,
                       fontSize: 11,

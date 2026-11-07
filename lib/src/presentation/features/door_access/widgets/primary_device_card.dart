@@ -117,7 +117,7 @@ class _PrimaryDeviceCard extends StatelessWidget {
                   Gap(dimensions.spacing.s8),
                   Expanded(
                     child: Text(
-                      'Gateway not reachable. Check Pi connection & WiFi.',
+                      context.locale.gatewayNotReachable,
                       style: context.textStyle.bodySmall.copyWith(
                         color: colors.warning,
                       ),

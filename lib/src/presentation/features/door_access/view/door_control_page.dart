@@ -223,7 +223,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
         ),
         Gap(dimensions.spacing.s4),
         Text(
-          'Select door to open',
+          context.locale.selectDoorToOpen,
           style: context.textStyle.bodyMedium.copyWith(
             color: context.color.text.secondary,
           ),
@@ -360,7 +360,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
         ),
         Gap(dimensions.spacing.s4),
         Text(
-          'Select person who use the gate',
+          context.locale.selectPersonWhoUseGate,
           style: context.textStyle.bodyMedium.copyWith(
             color: context.color.text.secondary,
           ),

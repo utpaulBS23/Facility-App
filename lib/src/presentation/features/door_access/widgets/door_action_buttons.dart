@@ -52,7 +52,7 @@ class _DoorActionButtons extends StatelessWidget {
                 Gap(dimensions.spacing.s8),
                 Expanded(
                   child: Text(
-                    'Gateway offline. Unlock disabled.',
+                    context.locale.gatewayOfflineUnlockDisabled,
                     style: context.textStyle.bodySmall.copyWith(
                       color: context.color.warning,
                     ),
