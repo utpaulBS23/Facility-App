@@ -101,10 +101,10 @@ class _DoorStatusCard extends StatelessWidget {
           if (isCached) ...[
             Gap(dimensions.spacing.s12),
             Container(
-              padding: EdgeInsets.all(dimensions.padding.p12),
+              padding: EdgeInsets.all(dimensions.padding.p16),
               decoration: BoxDecoration(
                 color: colors.warning.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(dimensions.radius.r8),
+                borderRadius: BorderRadius.circular(dimensions.radius.r12),
                 border: Border.all(color: colors.warning, width: 0.5),
               ),
               child: Column(
