@@ -15,10 +15,12 @@ import '../riverpod/door_status_provider.dart';
 import '../riverpod/facility_attendants_provider.dart';
 import '../riverpod/facility_gates_provider.dart';
 import '../riverpod/door_opening_reason_provider.dart';
+import '../riverpod/door_states_provider.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../core/widgets/menu_item_app_bar.dart';
 import '../../../../domain/entities/menu_item_key.dart';
 import '../../../../domain/entities/partner_staff_entity.dart';
+import '../../../../data/models/door_status_model.dart';
 
 part '../widgets/door_action_buttons.dart';
 part '../widgets/door_status_card.dart';
@@ -145,6 +147,49 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) =>
             Center(child: Text(error.localizedMessage(context))),
+      ),
+    );
+  }
+
+  Widget _buildDoorStatusCard(BuildContext context) {
+    final dimensions = context.dimensions;
+    final authCode = _authCodeController.text;
+    final doorStatesAsync = authCode.isNotEmpty
+        ? ref.watch(doorStatesProvider((_facilityId, authCode)))
+        : const AsyncValue.loading();
+
+    return doorStatesAsync.when(
+      data: (doorStates) {
+        DoorStatusModel? matchingStatus;
+        if (_selectedGate != null && doorStates.isNotEmpty) {
+          matchingStatus = doorStates.firstWhere(
+            (state) => state.door == _selectedGate!.deviceId,
+            orElse: () => doorStates.first,
+          );
+        }
+
+        return _DoorStatusCard(
+          isLocked: matchingStatus?.isClosed ?? true,
+          isCached: false,
+          doorName: _selectedGate?.getLocalizedTitle(
+            Localizations.localeOf(context).languageCode,
+          ),
+          doorStatus: matchingStatus,
+        );
+      },
+      loading: () => _DoorStatusCard(
+        isLocked: true,
+        isCached: false,
+        doorName: _selectedGate?.getLocalizedTitle(
+          Localizations.localeOf(context).languageCode,
+        ),
+      ),
+      error: (_, __) => _DoorStatusCard(
+        isLocked: true,
+        isCached: true,
+        doorName: _selectedGate?.getLocalizedTitle(
+          Localizations.localeOf(context).languageCode,
+        ),
       ),
     );
   }
@@ -424,11 +469,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
                   isOffline: status.cachedData,
                 ),
                 Gap(dimensions.spacing.s16),
-                _DoorStatusCard(
-                  isLocked: status.isLocked,
-                  isCached: status.cachedData,
-                  doorName: _selectedGate?.getLocalizedTitle(Localizations.localeOf(context).languageCode),
-                ),
+                _buildDoorStatusCard(context),
                 Gap(dimensions.spacing.s16),
                 if (!status.isLocked && unlockResult != null) ...[
                   _UnlockSuccessBanner(result: unlockResult),

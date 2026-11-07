@@ -40,6 +40,30 @@ class GatewayService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getDoorStatuses({
+    required String authCode,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/facility/doors',
+        options: Options(headers: {'X-Auth-Code': authCode}),
+      );
+
+      if (response.statusCode != 200) {
+        throw GatewayException(
+          'Failed to get door statuses: ${response.statusCode}',
+        );
+      }
+
+      final data = response.data ?? {};
+      final doorsList = data['doors'] as List? ?? [];
+      Log.info('✅ Fetched ${doorsList.length} door statuses');
+      return doorsList.cast<Map<String, dynamic>>();
+    } on DioException catch (e) {
+      throw _mapDioException(e);
+    }
+  }
+
   /// Raw relay map, e.g. `{"relays": {"1": true, "2": false}}`.
   Future<Map<String, dynamic>> getRelayStatus() async {
     try {

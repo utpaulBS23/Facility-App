@@ -5,17 +5,20 @@ class _DoorStatusCard extends StatelessWidget {
     required this.isLocked,
     this.isCached = false,
     this.doorName,
+    this.doorStatus,
   });
 
   final bool isLocked;
   final bool isCached;
   final String? doorName;
+  final DoorStatusModel? doorStatus;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.color;
     final dimensions = context.dimensions;
-    final statusColor = isLocked ? colors.error : colors.success;
+    final actuallyLocked = doorStatus?.isClosed ?? isLocked;
+    final statusColor = actuallyLocked ? colors.error : colors.success;
 
     return Container(
       width: double.infinity,
@@ -51,7 +54,7 @@ class _DoorStatusCard extends StatelessWidget {
               color: statusColor.withValues(alpha: 0.1),
             ),
             child: Icon(
-              isLocked
+              actuallyLocked
                   ? Icons.sensor_door_outlined
                   : Icons.meeting_room_outlined,
               size: dimensions.spacing.s40,
@@ -60,20 +63,41 @@ class _DoorStatusCard extends StatelessWidget {
           ),
           Gap(dimensions.spacing.s16),
           Text(
-            isLocked
+            actuallyLocked
                 ? context.locale.doorStatusClosed
                 : context.locale.doorStatusOpen,
             style: context.textStyle.headlineSmall.copyWith(color: statusColor),
           ),
           Gap(dimensions.spacing.s4),
           Text(
-            isLocked
+            actuallyLocked
                 ? context.locale.doorIsLocked
                 : context.locale.doorIsUnlocked,
             style: context.textStyle.bodyMedium.copyWith(
               color: colors.text.secondary,
             ),
           ),
+          if (doorStatus != null && !isCached) ...[
+            Gap(dimensions.spacing.s12),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.spacing.s8,
+                vertical: dimensions.spacing.s4,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.green.shade100,
+                borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                border: Border.all(color: Colors.green.shade600, width: 0.5),
+              ),
+              child: Text(
+                '(Live from Pi)',
+                style: context.textStyle.bodySmall.copyWith(
+                  color: Colors.green.shade700,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ],
           if (isCached) ...[
             Gap(dimensions.spacing.s12),
             Container(
