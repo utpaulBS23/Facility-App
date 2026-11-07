@@ -64,7 +64,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
   String _summary(BuildContext context) => switch (_usageType) {
     _UsageType.customer =>
       '${context.locale.customerUse} '
-          '(${_selectedGate?.getLocalizedTitle(Localizations.localeOf(context).languageCode) ?? ''} — ${context.numbers.currency(_selectedGate?.price.toInt() ?? 0)})',
+          '(${_selectedGate?.getLocalizedTitle(Localizations.localeOf(context).languageCode) ?? ''} — ${context.numbers.currency(_selectedGate?.price ?? 0)})',
     _UsageType.personal =>
       '${context.locale.personalUse} (${_selectedReason?.name ?? ''})',
   };
@@ -309,7 +309,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
                                 ],
                               ),
                               child: Text(
-                                '${gate.price.toStringAsFixed(0)} ৳',
+                                context.numbers.currency(gate.price.toInt()),
                                 style: context.textStyle.labelSmall.copyWith(
                                   color: context.color.onPrimary,
                                   fontWeight: TextWeight.bold,
