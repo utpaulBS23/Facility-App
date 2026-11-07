@@ -116,9 +116,6 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
         );
   }
 
-  void _onLock() {
-    ref.read(doorLockActionProvider.notifier).lock(facilityId: _facilityId);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -527,12 +524,9 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
             ),
             child: _DoorActionButtons(
               canUnlock: status.isLocked && _isReadyToUnlock && !isLoading && !status.cachedData,
-              canLock: !status.isLocked && !isLoading,
               isUnlockLoading: isLoading && status.isLocked,
-              isLockLoading: isLoading && !status.isLocked,
               isOffline: status.cachedData,
               onUnlock: _onUnlock,
-              onLock: _onLock,
             ),
           ),
         ),
