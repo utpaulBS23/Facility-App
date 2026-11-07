@@ -220,11 +220,18 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
       children: [
         Text(
           'DOOR',
-          style: context.textStyle.bodySmallUppercase.copyWith(
+          style: context.textStyle.labelLarge.copyWith(
+            color: context.color.text.primary,
+          ),
+        ),
+        Gap(dimensions.spacing.s4),
+        Text(
+          'Select door to open',
+          style: context.textStyle.bodyMedium.copyWith(
             color: context.color.text.secondary,
           ),
         ),
-        Gap(dimensions.spacing.s8),
+        Gap(dimensions.spacing.s12),
         gatesAsync.when(
           data: (gates) => Wrap(
             spacing: dimensions.spacing.s16,
@@ -349,10 +356,19 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Attendant',
-          style: context.textStyle.labelMedium,
+          'ATTENDANT',
+          style: context.textStyle.labelLarge.copyWith(
+            color: context.color.text.primary,
+          ),
         ),
-        Gap(dimensions.spacing.s8),
+        Gap(dimensions.spacing.s4),
+        Text(
+          'Select person who use the gate',
+          style: context.textStyle.bodyMedium.copyWith(
+            color: context.color.text.secondary,
+          ),
+        ),
+        Gap(dimensions.spacing.s12),
         attendantsAsync.when(
           data: (attendants) => GestureDetector(
             onTap: isLoading || attendants.isEmpty
