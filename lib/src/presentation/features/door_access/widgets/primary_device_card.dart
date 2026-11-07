@@ -98,6 +98,35 @@ class _PrimaryDeviceCard extends StatelessWidget {
               ),
             ],
           ),
+          if (isOffline) ...[
+            Gap(dimensions.spacing.s12),
+            Container(
+              padding: EdgeInsets.all(dimensions.padding.p12),
+              decoration: BoxDecoration(
+                color: colors.warning.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(dimensions.radius.r8),
+                border: Border.all(color: colors.warning, width: 0.5),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: dimensions.spacing.s16,
+                    color: colors.warning,
+                  ),
+                  Gap(dimensions.spacing.s8),
+                  Expanded(
+                    child: Text(
+                      'Gateway not reachable. Check Pi connection & WiFi.',
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: colors.warning,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

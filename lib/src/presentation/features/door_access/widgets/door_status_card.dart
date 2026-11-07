@@ -101,21 +101,41 @@ class _DoorStatusCard extends StatelessWidget {
           if (isCached) ...[
             Gap(dimensions.spacing.s12),
             Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: dimensions.spacing.s8,
-                vertical: dimensions.spacing.s4,
-              ),
+              padding: EdgeInsets.all(dimensions.padding.p12),
               decoration: BoxDecoration(
-                color: colors.warningAlt,
-                borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                color: colors.warning.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(dimensions.radius.r8),
                 border: Border.all(color: colors.warning, width: 0.5),
               ),
-              child: Text(
-                '(Cached - Last Known State)',
-                style: context.textStyle.bodySmall.copyWith(
-                  color: colors.warning,
-                  fontSize: 11,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.warning_amber_rounded,
+                        size: dimensions.spacing.s16,
+                        color: colors.warning,
+                      ),
+                      Gap(dimensions.spacing.s8),
+                      Text(
+                        'Last Known State (Offline)',
+                        style: context.textStyle.bodySmall.copyWith(
+                          color: colors.warning,
+                          fontWeight: TextWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Gap(dimensions.spacing.s8),
+                  Text(
+                    'Gateway is offline. Status may not be current. Reconnect to get live status.',
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: colors.warning,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
               ),
             ),
           ]
