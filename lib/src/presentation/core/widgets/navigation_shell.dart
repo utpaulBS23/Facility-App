@@ -46,6 +46,7 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
     _pushLifecycle = ref.read(pushLifecycleProvider.notifier);
     final launchedFromPush = _pushLifecycle.start(
       onOpenNotifications: _openNotifications,
+      onDoorRelayFailed: _onDoorRelayFailed,
     );
     if (launchedFromPush) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _openNotifications());
@@ -56,6 +57,24 @@ class _NavigationShellState extends ConsumerState<NavigationShell>
     if (!mounted) return;
     ref.read(appNotificationsProvider.notifier).refresh();
     context.pushNamed(Routes.notifications);
+  }
+
+  void _onDoorRelayFailed() {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Door relay failed. Your access has been refunded.'),
+        backgroundColor: Colors.red.shade700,
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'Go to Door Control',
+          textColor: Colors.white,
+          onPressed: () {
+            context.pushNamed(Routes.tabDoorControl);
+          },
+        ),
+      ),
+    );
   }
 
   @override

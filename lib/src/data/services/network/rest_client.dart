@@ -586,6 +586,13 @@ abstract class RestClient {
     @Query('per_page') int? perPage,
   });
 
+  @GET(Endpoints.facilityNodeGates)
+  Future<HttpResponse> getFacilityNodeGates({
+    @Path('partnerId') required int partnerId,
+    @Query('facility_id') required String facilityId,
+    @Query('per_page') int? perPage,
+  });
+
   @GET(Endpoints.centerCollections)
   Future<HttpResponse> getCenterCollections({
     @Path('partnerId') required int partnerId,

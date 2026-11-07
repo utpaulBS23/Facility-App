@@ -34,36 +34,39 @@ class _PrimaryDeviceCard extends StatelessWidget {
                   color: colors.text.secondary,
                 ),
               ),
-              if (isOffline)
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: dimensions.spacing.s8,
-                    vertical: dimensions.spacing.s4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colors.warningAlt,
-                    borderRadius: BorderRadius.circular(dimensions.radius.r12),
-                    border: Border.all(color: colors.warning),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.wifi_off_rounded,
-                        size: dimensions.spacing.s12,
-                        color: colors.warning,
-                      ),
-                      Gap(dimensions.spacing.s4),
-                      Text(
-                        context.locale.offline.toUpperCase(),
-                        style: context.textStyle.bodySmallUppercase.copyWith(
-                          color: colors.warning,
-                          fontWeight: TextWeight.bold,
-                        ),
-                      ),
-                    ],
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: dimensions.spacing.s8,
+                  vertical: dimensions.spacing.s4,
+                ),
+                decoration: BoxDecoration(
+                  color: isOffline
+                      ? colors.warningAlt
+                      : colors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                  border: Border.all(
+                    color: isOffline ? colors.warning : colors.primary,
                   ),
                 ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isOffline ? Icons.wifi_off_rounded : Icons.wifi_rounded,
+                      size: dimensions.spacing.s12,
+                      color: isOffline ? colors.warning : colors.primary,
+                    ),
+                    Gap(dimensions.spacing.s4),
+                    Text(
+                      (isOffline ? context.locale.offline : 'ONLINE').toUpperCase(),
+                      style: context.textStyle.bodySmallUppercase.copyWith(
+                        color: isOffline ? colors.warning : colors.primary,
+                        fontWeight: TextWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           Gap(dimensions.spacing.s6),

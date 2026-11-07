@@ -46,7 +46,10 @@ class _OptionCard extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: EdgeInsets.all(dimensions.padding.p16),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.padding.p4,
+          vertical: dimensions.padding.p4,
+        ),
         decoration: BoxDecoration(
           color: colors.onPrimary,
           border: Border.all(
@@ -58,6 +61,7 @@ class _OptionCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: dimensions.spacing.s40,

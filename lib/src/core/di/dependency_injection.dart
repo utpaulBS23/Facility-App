@@ -149,6 +149,7 @@ import '../../domain/use_cases/task_use_case.dart';
 import '../../domain/use_cases/task_occurrence_use_case.dart';
 import '../../domain/use_cases/travel_route_use_case.dart';
 import '../../domain/use_cases/unlock_door_use_case.dart';
+import '../../domain/use_cases/open_facility_door_use_case.dart';
 import '../../domain/use_cases/visit_use_case.dart';
 import '../../domain/use_cases/leave_use_cases.dart';
 import '../../domain/use_cases/travel_expense_use_case.dart';

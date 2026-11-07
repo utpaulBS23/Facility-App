@@ -14,4 +14,11 @@ class FlutterSecureStorageService implements SecureStorageService {
 
   @override
   Future<void> delete(SecureStorageKey key) => _storage.delete(key: key.name);
+
+  @override
+  Future<void> clearAll() async {
+    for (final key in SecureStorageKey.values) {
+      await delete(key);
+    }
+  }
 }

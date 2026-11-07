@@ -24,10 +24,14 @@ class PushLifecycle extends _$PushLifecycle {
 
   /// Starts once per signed-in launch; calling it again does nothing until
   /// [stop]. [onOpenNotifications] runs when the user taps a push.
+  /// [onDoorRelayFailed] runs when a relay_failed notification arrives.
   ///
   /// Returns true when a push launched the app from the terminated state, so
   /// the caller can open the list once its first frame is up.
-  bool start({required void Function() onOpenNotifications}) {
+  bool start({
+    required void Function() onOpenNotifications,
+    void Function()? onDoorRelayFailed,
+  }) {
     if (_subscriptions.isNotEmpty) return false;
 
     unawaited(ref.read(registerDeviceTokenUseCaseProvider).call());
@@ -59,6 +63,28 @@ class PushLifecycle extends _$PushLifecycle {
             .call()
             .listen((_) => onOpenNotifications()),
       );
+
+    if (onDoorRelayFailed != null) {
+      _subscriptions.add(
+        ref
+            .read(watchReceivedPushUseCaseProvider)
+            .call()
+            .listen((_) {
+          try {
+            final payload =
+                ref.read(getNotificationPayloadUseCaseProvider).call();
+            if (payload != null) {
+              final source = payload.data['source'] as String?;
+              if (source == 'door_relay_failed') {
+                onDoorRelayFailed();
+              }
+            }
+          } catch (e) {
+            // Silently ignore errors in notification processing
+          }
+        }),
+      );
+    }
 
     return ref.read(getNotificationPayloadUseCaseProvider).call() != null;
   }

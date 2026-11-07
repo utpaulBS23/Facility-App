@@ -55,6 +55,9 @@ final class FakeSecureStorage implements SecureStorageService {
 
   @override
   Future<void> delete(SecureStorageKey key) async => values.remove(key);
+
+  @override
+  Future<void> clearAll() async => values.clear();
 }
 
 final class FakeThumbnailRepository extends ThumbnailRepository {

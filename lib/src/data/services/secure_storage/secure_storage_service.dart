@@ -12,4 +12,6 @@ abstract class SecureStorageService {
   Future<String?> read(SecureStorageKey key);
 
   Future<void> delete(SecureStorageKey key);
+
+  Future<void> clearAll();
 }

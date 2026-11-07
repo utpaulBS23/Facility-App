@@ -6,6 +6,17 @@ import '../entities/door_lock_entity.dart';
 abstract base class GatewayRepository extends Repository {
   Future<Result<bool, Failure>> unlockDoor(String facilityId);
 
+  Future<Result<bool, Failure>> unlockDoorWithAuth({
+    required String facilityId,
+    required String authCode,
+    required String door,
+    required String use,
+    int? amount,
+    String? purpose,
+    String? attendant,
+    int? attendantId,
+  });
+
   Future<Result<bool, Failure>> lockDoor(String facilityId);
 
   Future<Result<DoorLockEntity, Failure>> getDoorStatus(String facilityId);

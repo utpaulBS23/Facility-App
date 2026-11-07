@@ -2,63 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/logger/log.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/door_lock_entity.dart';
 import '../../../../domain/entities/facility_entity.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/loading_indicator.dart';
+import '../../../core/widgets/app_text_field.dart';
 import '../riverpod/door_lock_action_provider.dart';
 import '../riverpod/door_status_provider.dart';
+import '../riverpod/facility_attendants_provider.dart';
+import '../riverpod/facility_gates_provider.dart';
+import '../riverpod/door_opening_reason_provider.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../core/widgets/menu_item_app_bar.dart';
 import '../../../../domain/entities/menu_item_key.dart';
+import '../../../../domain/entities/partner_staff_entity.dart';
 
 part '../widgets/door_action_buttons.dart';
 part '../widgets/door_status_card.dart';
 part '../widgets/primary_device_card.dart';
 part '../widgets/reason_selector.dart';
-part '../widgets/service_type_selector.dart';
 part '../widgets/unlock_success_banner.dart';
 part '../widgets/usage_type_selector.dart';
 
 enum _UsageType { personal, customer }
-
-enum _ServiceType {
-  urine(price: 5),
-  toilet(price: 10),
-  shower(price: 20);
-
-  const _ServiceType({required this.price});
-
-  final int price;
-
-  String label(BuildContext context) => switch (this) {
-    _ServiceType.urine => context.locale.urine,
-    _ServiceType.toilet => context.locale.toilet,
-    _ServiceType.shower => context.locale.shower,
-  };
-}
-
-enum _Reason {
-  clean,
-  toilet,
-  repair,
-  inspect;
-
-  String label(BuildContext context) => switch (this) {
-    _Reason.clean => context.locale.reasonClean,
-    _Reason.toilet => context.locale.reasonToilet,
-    _Reason.repair => context.locale.reasonRepair,
-    _Reason.inspect => context.locale.reasonInspect,
-  };
-
-  String subtitle(BuildContext context) => switch (this) {
-    _Reason.clean => context.locale.washroomCleaning,
-    _Reason.toilet => context.locale.personalUse,
-    _Reason.repair => context.locale.maintenanceWork,
-    _Reason.inspect => context.locale.facilityCheck,
-  };
-}
 
 class DoorControlPage extends ConsumerStatefulWidget {
   const DoorControlPage({super.key, required this.facility});
@@ -71,36 +40,78 @@ class DoorControlPage extends ConsumerStatefulWidget {
 
 class _DoorControlPageState extends ConsumerState<DoorControlPage> {
   _UsageType _usageType = _UsageType.customer;
-  _ServiceType? _serviceType = _ServiceType.urine;
-  _Reason? _reason;
+  GateData? _selectedGate;
+  DoorOpeningReason? _selectedReason;
+  late final TextEditingController _authCodeController;
+  PartnerStaffEntity? _selectedAttendant;
 
   String get _facilityId => widget.facility.id.toString();
 
-  bool get _isReadyToUnlock => switch (_usageType) {
-    _UsageType.customer => _serviceType != null,
-    _UsageType.personal => _reason != null,
-  };
+  bool get _isReadyToUnlock {
+    final hasAuthCode = _authCodeController.text.isNotEmpty;
+    final hasUsageConfig = switch (_usageType) {
+      _UsageType.customer => _selectedGate != null,
+      _UsageType.personal =>
+        _selectedGate != null &&
+        _selectedReason != null &&
+        _selectedAttendant != null,
+    };
+    return hasAuthCode && hasUsageConfig;
+  }
 
   String _summary(BuildContext context) => switch (_usageType) {
     _UsageType.customer =>
       '${context.locale.customerUse} '
-          '(${_serviceType!.label(context)} — ${context.numbers.currency(_serviceType!.price)})',
+          '(${_selectedGate?.getLocalizedTitle(Localizations.localeOf(context).languageCode) ?? ''} — ${context.numbers.currency(_selectedGate?.price.toInt() ?? 0)})',
     _UsageType.personal =>
-      '${context.locale.personalUse} (${_reason!.label(context)})',
+      '${context.locale.personalUse} (${_selectedReason?.name ?? ''})',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _authCodeController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _authCodeController.dispose();
+    super.dispose();
+  }
 
   void _onUsageTypeChanged(_UsageType type) {
     setState(() {
       _usageType = type;
-      _serviceType = type == _UsageType.customer ? _ServiceType.urine : null;
-      _reason = null;
+      _selectedGate = null;
+      _selectedReason = null;
     });
   }
 
   void _onUnlock() {
-    ref
-        .read(doorLockActionProvider.notifier)
-        .unlock(facilityId: _facilityId, summary: _summary(context));
+    final useValue = _usageType == _UsageType.customer ? 'customer' : 'personal';
+    final purposeValue = _selectedReason?.key;
+    final amountValue = _usageType == _UsageType.customer
+        ? _selectedGate?.price.toInt()
+        : null;
+    final attendantName = _usageType == _UsageType.personal ? _selectedAttendant?.name : null;
+    final attendantId = _usageType == _UsageType.personal ? _selectedAttendant?.id : null;
+    final doorValue = _usageType == _UsageType.customer
+        ? _selectedGate?.gender ?? 'male'
+        : _selectedGate?.deviceId ?? 'unknown';
+
+    Log.info('🔓 Unlock - use: $useValue, door: $doorValue, purpose: $purposeValue, attendant: $attendantName');
+
+    ref.read(doorLockActionProvider.notifier).unlock(
+          facilityId: _facilityId,
+          summary: _summary(context),
+          authCode: _authCodeController.text,
+          door: doorValue,
+          use: useValue,
+          amount: amountValue,
+          purpose: purposeValue,
+          attendant: attendantName,
+          attendantId: attendantId,
+        );
   }
 
   void _onLock() {
@@ -138,6 +149,259 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
     );
   }
 
+  Widget _buildAuthCodeField(
+    BuildContext context,
+    Dimensions dimensions,
+    bool isLoading,
+  ) {
+    return AppTextField.password(
+      label: 'Auth Code',
+      controller: _authCodeController,
+      enabled: !isLoading,
+      hint: 'Enter facility auth code',
+    );
+  }
+
+  Widget _buildServiceSelector(
+    BuildContext context,
+    Dimensions dimensions,
+    bool isLoading,
+  ) {
+    final gatesAsync = ref.watch(facilityGatesProvider(_facilityId));
+    final locale = Localizations.localeOf(context).languageCode;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'DOOR',
+          style: context.textStyle.bodySmallUppercase.copyWith(
+            color: context.color.text.secondary,
+          ),
+        ),
+        Gap(dimensions.spacing.s8),
+        gatesAsync.when(
+          data: (gates) => Wrap(
+            spacing: dimensions.spacing.s16,
+            runSpacing: dimensions.spacing.s16,
+            alignment: gates.length == 1 ? WrapAlignment.center : WrapAlignment.start,
+            children: [
+              for (final gate in gates)
+                SizedBox(
+                  width: gates.length == 1
+                      ? 200
+                      : (MediaQuery.of(context).size.width - (2 * dimensions.padding.p16) - (2 * dimensions.spacing.s16)) / 3,
+                  child: GestureDetector(
+                    onTap: isLoading ? null : () => setState(() => _selectedGate = gate),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(dimensions.padding.p16),
+                          decoration: BoxDecoration(
+                            color: _selectedGate?.id == gate.id
+                                ? context.color.primary
+                                : context.color.onPrimary,
+                            border: Border.all(
+                              color: _selectedGate?.id == gate.id
+                                  ? context.color.primary
+                                  : context.color.borderSubtle,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    gate.gender == 'male' ? Icons.wc_outlined : Icons.wc_outlined,
+                                    size: 28,
+                                    color: _selectedGate?.id == gate.id
+                                        ? context.color.onPrimary
+                                        : context.color.text.primary,
+                                  ),
+                                  Gap(dimensions.spacing.s8),
+                                  Expanded(
+                                    child: Text(
+                                      gate.getLocalizedTitle(locale),
+                                      style: context.textStyle.labelMedium.copyWith(
+                                        color: _selectedGate?.id == gate.id
+                                            ? context.color.onPrimary
+                                            : context.color.text.primary,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_usageType == _UsageType.customer)
+                          Positioned(
+                            top: -8,
+                            right: -8,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: dimensions.spacing.s8,
+                                vertical: dimensions.spacing.s4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.color.primary,
+                                borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                '${gate.price.toStringAsFixed(0)} ৳',
+                                style: context.textStyle.labelSmall.copyWith(
+                                  color: context.color.onPrimary,
+                                  fontWeight: TextWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          loading: () => Center(
+            child: SizedBox(
+              height: 48,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            ),
+          ),
+          error: (_, __) => Text(
+            'Error loading gates',
+            style: context.textStyle.bodyMedium.copyWith(
+              color: context.color.error,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAttendantSelector(
+    BuildContext context,
+    Dimensions dimensions,
+    bool isLoading,
+  ) {
+    final attendantsAsync = ref.watch(facilityAttendantsProvider(_facilityId));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Attendant',
+          style: context.textStyle.labelMedium,
+        ),
+        Gap(dimensions.spacing.s8),
+        attendantsAsync.when(
+          data: (attendants) => GestureDetector(
+            onTap: isLoading || attendants.isEmpty
+                ? null
+                : () {
+                    showModalBottomSheet<PartnerStaffEntity>(
+                      context: context,
+                      builder: (ctx) => ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: attendants.length,
+                        itemBuilder: (_, idx) => ListTile(
+                          title: Text(attendants[idx].name),
+                          selected: _selectedAttendant?.id == attendants[idx].id,
+                          onTap: () {
+                            setState(
+                              () => _selectedAttendant = attendants[idx],
+                            );
+                            Navigator.pop(ctx);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: dimensions.padding.p16,
+                vertical: dimensions.padding.p16,
+              ),
+              decoration: BoxDecoration(
+                color: context.color.onPrimary,
+                borderRadius: BorderRadius.circular(dimensions.radius.r12),
+                border: Border.all(
+                  color: _selectedAttendant != null
+                      ? context.color.primary
+                      : context.color.borderSubtle,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _selectedAttendant?.name ?? 'Select Attendant',
+                    style: context.textStyle.bodyMedium.copyWith(
+                      color: _selectedAttendant != null
+                          ? context.color.text.primary
+                          : context.color.text.secondary,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_drop_down,
+                    color: context.color.text.secondary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          loading: () => Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.padding.p16,
+              vertical: dimensions.padding.p16,
+            ),
+            decoration: BoxDecoration(
+              color: context.color.subtle,
+              borderRadius: BorderRadius.circular(dimensions.radius.r12),
+              border: Border.all(color: context.color.borderSubtle),
+            ),
+            child: const SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+          error: (_, __) => Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: dimensions.padding.p16,
+              vertical: dimensions.padding.p16,
+            ),
+            decoration: BoxDecoration(
+              color: context.color.subtle,
+              borderRadius: BorderRadius.circular(dimensions.radius.r12),
+              border: Border.all(color: context.color.borderSubtle),
+            ),
+            child: Text(
+              'Error loading attendants',
+              style: context.textStyle.bodyMedium.copyWith(
+                color: context.color.error,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildBody(
     BuildContext context,
     DoorLockEntity status,
@@ -160,32 +424,36 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
                   isOffline: status.cachedData,
                 ),
                 Gap(dimensions.spacing.s16),
-                _DoorStatusCard(isLocked: status.isLocked),
+                _DoorStatusCard(
+                  isLocked: status.isLocked,
+                  isCached: status.cachedData,
+                  doorName: _selectedGate?.getLocalizedTitle(Localizations.localeOf(context).languageCode),
+                ),
                 Gap(dimensions.spacing.s16),
                 if (!status.isLocked && unlockResult != null) ...[
                   _UnlockSuccessBanner(result: unlockResult),
                   Gap(dimensions.spacing.s16),
                 ],
                 if (status.isLocked) ...[
+                  _buildAuthCodeField(context, dimensions, isLoading),
+                  Gap(dimensions.spacing.s16),
                   _UsageTypeSelector(
                     selected: _usageType,
                     onSelect: isLoading ? null : _onUsageTypeChanged,
                   ),
                   Gap(dimensions.spacing.s16),
-                  if (_usageType == _UsageType.customer)
-                    _ServiceTypeSelector(
-                      selected: _serviceType,
-                      onSelect: isLoading
-                          ? null
-                          : (type) => setState(() => _serviceType = type),
-                    )
-                  else
+                  _buildServiceSelector(context, dimensions, isLoading),
+                  Gap(dimensions.spacing.s16),
+                  if (_usageType == _UsageType.personal) ...[
+                    _buildAttendantSelector(context, dimensions, isLoading),
+                    Gap(dimensions.spacing.s16),
                     _ReasonSelector(
-                      selected: _reason,
+                      selected: _selectedReason,
                       onSelect: isLoading
                           ? null
-                          : (reason) => setState(() => _reason = reason),
+                          : (reason) => setState(() => _selectedReason = reason),
                     ),
+                  ],
                 ],
               ],
             ),

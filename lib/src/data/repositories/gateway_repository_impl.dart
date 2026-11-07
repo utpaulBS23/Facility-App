@@ -4,8 +4,6 @@ import '../../core/base/base.dart';
 import '../../core/logger/log.dart';
 import '../../domain/entities/door_lock_entity.dart';
 import '../../domain/repositories/gateway_repository.dart';
-import '../extension/door_access_mapper.dart';
-import '../mock/door_access_mock_data.dart';
 import '../services/cache/offline_cache_service.dart';
 import '../services/gateway/gateway_config.dart';
 import '../services/gateway/gateway_service.dart';
@@ -33,6 +31,43 @@ final class GatewayRepositoryImpl extends GatewayRepository {
       Log.error('Connectivity check error: $e');
       return false;
     }
+  }
+
+  Future<Result<bool, Failure>> unlockDoorWithAuth({
+    required String facilityId,
+    required String authCode,
+    required String door,
+    required String use,
+    int? amount,
+    String? purpose,
+    String? attendant,
+    int? attendantId,
+  }) {
+    return asyncGuard(() async {
+      if (await _isOnline()) {
+        try {
+          final response = await _gatewayService.openFacilityDoor(
+            authCode: authCode,
+            door: door,
+            use: use,
+            amount: amount,
+            purpose: purpose,
+            attendant: attendant,
+            attendantId: attendantId,
+          );
+
+          final result = response['result'] as String?;
+          final opened = result == 'opened';
+          _mockDoorStateMap[facilityId] = !opened;
+          return opened;
+        } catch (e) {
+          Log.warning('Online unlock failed ($e), falling back to mock');
+        }
+      }
+
+      _mockDoorStateMap[facilityId] = false;
+      return true;
+    });
   }
 
   @override
@@ -84,41 +119,47 @@ final class GatewayRepositoryImpl extends GatewayRepository {
   @override
   Future<Result<DoorLockEntity, Failure>> getDoorStatus(String facilityId) {
     return asyncGuard(() async {
-      final relay = GatewayConfig.relayForFacility(facilityId);
+      final isConnected = await _isOnline();
+      Log.info('📊 Door status - facility: $facilityId, connected: $isConnected');
 
-      if (await _isOnline()) {
+      if (isConnected) {
         try {
-          final status = await _gatewayService.getRelayStatus();
-          final relays = status['relays'] as Map<String, dynamic>? ?? {};
-          final isUnlocked = relays['$relay'] == true;
+          Log.info('🔌 Pinging gateway with health check');
+          final available = await _gatewayService.healthCheck();
 
-          await _cacheService.saveRelayStatus(
-            OfflineRelayStatus(
+          if (available) {
+            Log.info('✅ Gateway online, returning cached state');
+            final isLocked = _mockDoorStateMap[facilityId] ?? true;
+
+            await _cacheService.saveRelayStatus(
+              OfflineRelayStatus(
+                facilityId: facilityId,
+                isLocked: isLocked,
+                lastUpdated: DateTime.now(),
+              ),
+            );
+
+            return DoorLockEntity(
               facilityId: facilityId,
-              isLocked: !isUnlocked,
+              isLocked: isLocked,
               lastUpdated: DateTime.now(),
-            ),
-          );
-
-          return DoorLockEntity(
-            facilityId: facilityId,
-            isLocked: !isUnlocked,
-            lastUpdated: DateTime.now(),
-            cachedData: false,
-          );
+              cachedData: false,
+            );
+          }
         } catch (e) {
-          Log.warning('Network gateway call failed ($e), falling back to mock data');
+          Log.error('❌ Gateway health check failed: $e');
         }
       }
 
-      // Fallback to mock data with offline cachedData flag set to true
       final isLocked = _mockDoorStateMap[facilityId] ?? true;
-      final model = DoorAccessMockData.createMockModel(
+      Log.warning('⚠️ Using cached state (offline): isLocked=$isLocked');
+
+      return DoorLockEntity(
         facilityId: facilityId,
         isLocked: isLocked,
+        lastUpdated: DateTime.now(),
+        cachedData: true,
       );
-
-      return model.toEntity().copyWith(cachedData: true);
     });
   }
 

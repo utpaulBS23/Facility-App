@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
+
 import '../../core/base/failure.dart';
 import '../../core/base/result.dart';
 import '../../core/logger/log.dart';
@@ -76,20 +78,40 @@ final class AuthenticationRepositoryImpl extends AuthenticationRepository {
 
   @override
   Future<bool> restoreSession() async {
-    final raw = await secureStorage.read(SecureStorageKey.sessionPayload);
-    if (raw == null) return false;
-
     try {
+      final raw = await secureStorage.read(SecureStorageKey.sessionPayload);
+      if (raw == null) return false;
+
       final json = jsonDecode(raw) as Map<String, dynamic>;
       final entity = LoginResponseModel.fromJson(json).toEntity();
       _applySession(entity);
       return true;
+    } on PlatformException catch (e) {
+      if (_isCryptoError(e)) {
+        Log.warning(
+          'Secure storage crypto error: ${e.message}. Clearing all secure data.',
+        );
+        await secureStorage.clearAll();
+      } else {
+        Log.error('PlatformException: ${e.message}');
+      }
+      return false;
     } on Exception catch (e, stackTrace) {
       Log.error(e.toString());
       Log.error(stackTrace.toString());
       await secureStorage.delete(SecureStorageKey.sessionPayload);
       return false;
     }
+  }
+
+  bool _isCryptoError(PlatformException e) {
+    final message = e.message ?? '';
+    final code = e.code;
+    return message.contains('BadPaddingException') ||
+        message.contains('BAD_DECRYPT') ||
+        message.contains('crypto') ||
+        code.contains('crypto') ||
+        code.contains('decrypt');
   }
 
   void _applySession(LoginResponseEntity entity) {

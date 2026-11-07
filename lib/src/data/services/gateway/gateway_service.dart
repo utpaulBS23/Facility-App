@@ -57,6 +57,50 @@ class GatewayService {
     }
   }
 
+  Future<Map<String, dynamic>> openFacilityDoor({
+    required String authCode,
+    required String door,
+    required String use,
+    int? amount,
+    String? purpose,
+    String? attendant,
+    int? attendantId,
+  }) async {
+    try {
+      final payload = {
+        'authCode': authCode,
+        'door': door,
+        'use': use,
+        if (amount != null) 'amount': amount,
+        if (purpose != null && purpose.isNotEmpty) 'purpose': purpose,
+        if (attendant != null && attendant.isNotEmpty) 'attendant': attendant,
+        if (attendantId != null) 'attendant_id': attendantId,
+      };
+
+      Log.info('🚪 Sending door unlock: $payload');
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/facility/open',
+        data: payload,
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 403) {
+        throw GatewayException(
+          'Facility open request failed: ${response.statusCode}',
+        );
+      }
+
+      final data = response.data ?? {};
+      Log.info('✅ Facility door opened: $door, result: ${data['result']}');
+      return data;
+    } on DioException catch (e) {
+      Log.error('❌ Dio exception in door unlock: ${e.type} - ${e.message}');
+      throw _mapDioException(e);
+    } on GatewayException catch (e) {
+      Log.error('❌ Gateway exception: ${e.message}');
+      rethrow;
+    }
+  }
+
   Future<bool> controlRelay({
     required int relayNumber,
     required bool unlock,

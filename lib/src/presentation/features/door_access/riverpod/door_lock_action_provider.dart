@@ -23,13 +23,31 @@ class DoorLockAction extends _$DoorLockAction {
   Future<void> unlock({
     required String facilityId,
     required String summary,
+    String? authCode,
+    String? door,
+    String? use,
+    int? amount,
+    String? purpose,
+    String? attendant,
+    int? attendantId,
   }) async {
     if (state.isLoading) return;
     state = const AsyncValue.loading();
 
-    final result = await ref
-        .read(unlockDoorUseCaseProvider)
-        .call(facilityId: facilityId);
+    final result = authCode != null && door != null && use != null
+        ? await ref.read(openFacilityDoorUseCaseProvider).call(
+              facilityId: facilityId,
+              authCode: authCode,
+              door: door,
+              use: use,
+              amount: amount,
+              purpose: purpose,
+              attendant: attendant,
+              attendantId: attendantId,
+            )
+        : await ref
+            .read(unlockDoorUseCaseProvider)
+            .call(facilityId: facilityId);
     state = switch (result) {
       Success() => AsyncValue.data(
         DoorUnlockResult(summary: summary, timestamp: DateTime.now()),

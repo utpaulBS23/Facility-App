@@ -222,6 +222,10 @@ class Endpoints {
   static const String facilityWiseTargets =
       '/partners/{partnerId}/facility-wise-targets';
 
+  /// Facility Node (Raspberry Pi)
+  static const String facilityNodeGates =
+      '/partners/{partnerId}/facility-node/gates';
+
   /// Supply & Stock Management
   static const String itemCatalog = '/partners/{partnerId}/item-catalog';
   static const String supplyRequests = '/partners/{partnerId}/supply-requests';

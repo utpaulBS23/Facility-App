@@ -21,6 +21,9 @@ class _FakeSecureStorageService implements SecureStorageService {
   Future<void> delete(SecureStorageKey key) async {
     _values.remove(key);
   }
+
+  @override
+  Future<void> clearAll() async => _values.clear();
 }
 
 /// Guards the invariant that authentication has exactly one owner.

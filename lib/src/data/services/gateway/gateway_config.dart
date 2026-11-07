@@ -5,7 +5,7 @@
 /// per-facility device directory exists. [relayForFacility] falls back to
 /// relay 1 so an unmapped facility still gets a door instead of a hard error.
 abstract final class GatewayConfig {
-  static const String baseUrl = 'http://192.168.1.100:5454';
+  static const String baseUrl = 'http://192.168.10.104:5454';
 
   static const Map<String, int> _facilityRelayMap = {};
 

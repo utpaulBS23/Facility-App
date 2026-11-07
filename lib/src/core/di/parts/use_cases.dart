@@ -1085,6 +1085,11 @@ UnlockDoorUseCase unlockDoorUseCase(Ref ref) {
 }
 
 @riverpod
+OpenFacilityDoorUseCase openFacilityDoorUseCase(Ref ref) {
+  return OpenFacilityDoorUseCase(ref.read(gatewayRepositoryProvider));
+}
+
+@riverpod
 LockDoorUseCase lockDoorUseCase(Ref ref) {
   return LockDoorUseCase(ref.read(gatewayRepositoryProvider));
 }
