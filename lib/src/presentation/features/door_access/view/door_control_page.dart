@@ -492,21 +492,21 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
                   Gap(dimensions.spacing.s16),
                 ],
                 if (status.isLocked) ...[
-                  _buildAuthCodeField(context, dimensions, isLoading),
+                  _buildAuthCodeField(context, dimensions, isLoading || status.cachedData),
                   Gap(dimensions.spacing.s16),
                   _UsageTypeSelector(
                     selected: _usageType,
-                    onSelect: isLoading ? null : _onUsageTypeChanged,
+                    onSelect: (isLoading || status.cachedData) ? null : _onUsageTypeChanged,
                   ),
                   Gap(dimensions.spacing.s16),
-                  _buildServiceSelector(context, dimensions, isLoading),
+                  _buildServiceSelector(context, dimensions, isLoading || status.cachedData),
                   Gap(dimensions.spacing.s16),
                   if (_usageType == _UsageType.personal) ...[
-                    _buildAttendantSelector(context, dimensions, isLoading),
+                    _buildAttendantSelector(context, dimensions, isLoading || status.cachedData),
                     Gap(dimensions.spacing.s16),
                     _ReasonSelector(
                       selected: _selectedReason,
-                      onSelect: isLoading
+                      onSelect: (isLoading || status.cachedData)
                           ? null
                           : (reason) => setState(() => _selectedReason = reason),
                     ),
@@ -526,10 +526,11 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
               dimensions.padding.p16,
             ),
             child: _DoorActionButtons(
-              canUnlock: status.isLocked && _isReadyToUnlock && !isLoading,
+              canUnlock: status.isLocked && _isReadyToUnlock && !isLoading && !status.cachedData,
               canLock: !status.isLocked && !isLoading,
               isUnlockLoading: isLoading && status.isLocked,
               isLockLoading: isLoading && !status.isLocked,
+              isOffline: status.cachedData,
               onUnlock: _onUnlock,
               onLock: _onLock,
             ),
