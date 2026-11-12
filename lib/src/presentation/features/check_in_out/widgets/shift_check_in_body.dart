@@ -8,6 +8,7 @@ class _ShiftCheckInBody extends StatelessWidget {
     required this.capturedPhotoPath,
     required this.isLoading,
     required this.isValidating,
+    required this.hasCameraError,
     required this.hasError,
     this.errorMessage,
     this.faceValidationError,
@@ -23,8 +24,14 @@ class _ShiftCheckInBody extends StatelessWidget {
   final String? capturedPhotoPath;
   final bool isLoading;
   final bool isValidating;
+  // WHY camera-only, not failureType.any: a location failure shouldn't make
+  // the selfie zone show "photo capture failed" and swap away the retake
+  // button when the camera itself is fine.
+  final bool hasCameraError;
   // WHY: hasError is passed from the parent rather than re-watched here
-  // to avoid duplicating provider observation in a child widget.
+  // to avoid duplicating provider observation in a child widget. Drives the
+  // bottom CTA only: any failure (camera or location) routes to the
+  // supervisor fallback there.
   final bool hasError;
   final String? errorMessage;
   final String? faceValidationError;
@@ -57,13 +64,13 @@ class _ShiftCheckInBody extends StatelessWidget {
                 children: [
                   _SelfieZone(
                     capturedPhotoPath: capturedPhotoPath,
-                    hasError: hasError,
+                    hasError: hasCameraError,
                     errorMessage: errorMessage,
                     faceValidationError: faceValidationError,
                     onRetry: onTakePhoto,
                   ),
                   Gap(dimensions.spacing.s12),
-                  if (hasError) ...[
+                  if (hasCameraError) ...[
                     _SelfieErrorToast(onRequestSupervisor: onRequestSupervisor),
                   ] else ...[
                     _TakePhotoButton(
