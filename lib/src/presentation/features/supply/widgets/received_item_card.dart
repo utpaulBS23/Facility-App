@@ -11,6 +11,7 @@ class _ReceivedItemCard extends StatelessWidget {
     required this.isEditing,
     required this.hasDelivery,
     required this.isConfirmed,
+    this.hasComplaint = false,
     required this.editedQuantity,
     required this.onQuantityChanged,
     required this.onEvidenceReportTap,
@@ -25,6 +26,10 @@ class _ReceivedItemCard extends StatelessWidget {
   final bool isEditing;
   final bool hasDelivery;
   final bool isConfirmed;
+  // WHY a complaint already filed wins over the discrepancy outline: once
+  // filed there's nothing left to report, so the card should read as
+  // "handled", not "needs action".
+  final bool hasComplaint;
   final int? editedQuantity;
   final ValueChanged<int> onQuantityChanged;
   final VoidCallback onEvidenceReportTap;
@@ -38,10 +43,11 @@ class _ReceivedItemCard extends StatelessWidget {
     final receivedQty = editedQuantity ?? receivedQuantity;
     final hasDiscrepancy = isConfirmed && expectedQuantity != receivedQty;
 
-    final borderColor = switch ((hasDiscrepancy, isConfirmed)) {
-      (true, _) => color.warning,
-      (false, true) => color.success,
-      (false, false) => color.borderSubtle,
+    final borderColor = switch ((hasComplaint, hasDiscrepancy, isConfirmed)) {
+      (true, _, _) => color.error,
+      (false, true, _) => color.warning,
+      (false, false, true) => color.success,
+      (false, false, false) => color.borderSubtle,
     };
 
     return Container(
@@ -214,7 +220,24 @@ class _ReceivedItemCard extends StatelessWidget {
                   ),
               ],
             ),
-            if (hasDiscrepancy) ...[
+            if (hasComplaint) ...[
+              Gap(spacing.s12),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: null,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: color.error.withValues(alpha: 0.1),
+                    foregroundColor: color.error,
+                    disabledBackgroundColor: color.error.withValues(alpha: 0.1),
+                    disabledForegroundColor: color.error,
+                    elevation: 0,
+                  ),
+                  icon: Icon(Icons.flag_rounded, size: spacing.s20),
+                  label: Text(context.locale.complaintFiled),
+                ),
+              ),
+            ] else if (hasDiscrepancy) ...[
               Gap(spacing.s12),
               PermissionGate(
                 permissions: const [UserPermission.deliveryComplaintCreate],

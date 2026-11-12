@@ -939,6 +939,7 @@
   "missingLabel": "ঘাটতি",
   "complaintReasonLabel": "অভিযোগের কারণ",
   "complaintReasonHint": "সমস্যা বা অভিযোগের কারণ বর্ণনা করুন...",
+  "complaintFiled": "অভিযোগ দাখিল করা হয়েছে",
   "proofPhoto": "প্রমাণ ছবি (ঐচ্ছিক)",
   "updateStock": "স্টক আপডেট করুন",
   "updateStockInstructions": "প্রতিটি আইটেমের বর্তমান অবশিষ্ট ব্যালেন্স লিখুন। ব্যবহার স্বয়ংক্রিয়ভাবে গণনা করা হবে।",
