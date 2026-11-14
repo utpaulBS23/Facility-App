@@ -45,6 +45,19 @@ class LeaveTypeInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // WHY auto-select here on first load: picks the first leave type so the
+    // form isn't blocked on a manual tap, and re-fires whenever the balance
+    // list reloads for a different attendant (selectedLeavePolicyIdProvider
+    // resets to null on attendant change, see that provider).
+    ref.listen(leaveBalanceProvider(attendantId), (previous, next) {
+      final list = next.valueOrNull;
+      if (list == null || list.isEmpty) return;
+      if (ref.read(selectedLeavePolicyIdProvider) != null) return;
+      ref
+          .read(selectedLeavePolicyIdProvider.notifier)
+          .select(list.first.leavePolicy.id);
+    });
+
     final selectedLeavePolicyId = ref.watch(selectedLeavePolicyIdProvider);
     final balanceState = ref.watch(leaveBalanceProvider(attendantId));
     final dimensions = context.dimensions;

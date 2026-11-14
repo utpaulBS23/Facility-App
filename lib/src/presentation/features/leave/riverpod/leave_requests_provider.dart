@@ -61,25 +61,17 @@ class LeaveRequests extends _$LeaveRequests {
 
     final currentTab = ref.watch(selectedLeaveTabProvider);
 
-    return fetch(
-      tab: currentTab,
-      search: _searchQuery,
-      filter: _selectedFilter,
-    );
+    return _load(tab: currentTab, filter: _selectedFilter);
   }
 
-  Future<List<LeaveRequestEntity>> fetch({
-    LeaveTab? tab,
-    String search = '',
-    LeaveFilter filter = LeaveFilter.all,
+  // WHY no `state` writes here: build() returns this future, and Riverpod
+  // completes it itself. Setting state mid-build completes it twice and
+  // throws "Future already completed".
+  Future<List<LeaveRequestEntity>> _load({
+    required LeaveTab tab,
+    required LeaveFilter filter,
   }) async {
-    final currentTab = tab ?? ref.read(selectedLeaveTabProvider);
-    _searchQuery = search;
-    _selectedFilter = filter;
-
-    state = const AsyncValue.loading();
-
-    final result = currentTab == LeaveTab.leaveApprovals
+    final result = tab == LeaveTab.leaveApprovals
         ? await ref
             .read(getLeaveApprovalsUseCaseProvider)
             .call(status: filter.status)
@@ -88,20 +80,24 @@ class LeaveRequests extends _$LeaveRequests {
             .call(status: filter.status);
 
     return switch (result) {
-      Success(:final data) => _onFetchSuccess(data ?? const []),
-      Error(:final error) => _onFetchError(error),
-      _ => _onFetchError(Failure.emptyResponse('load leave requests')),
+      Success(:final data) => data ?? const [],
+      Error(:final error) => throw error,
+      _ => throw Failure.emptyResponse('load leave requests'),
     };
   }
 
-  List<LeaveRequestEntity> _onFetchSuccess(List<LeaveRequestEntity> list) {
-    state = AsyncValue.data(list);
-    return list;
-  }
+  /// Reloads outside of build (search, filter, retry) and publishes the result.
+  Future<void> fetch({
+    String search = '',
+    LeaveFilter filter = LeaveFilter.all,
+  }) async {
+    _searchQuery = search;
+    _selectedFilter = filter;
 
-  List<LeaveRequestEntity> _onFetchError(Failure error) {
-    state = AsyncValue.error(error, StackTrace.current);
-    return const [];
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(
+      () => _load(tab: ref.read(selectedLeaveTabProvider), filter: filter),
+    );
   }
 
   void search(String query) {

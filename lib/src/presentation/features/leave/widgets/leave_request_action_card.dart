@@ -28,10 +28,9 @@ class _LeaveRequestActionCardState
     await ref
         .read(leaveRequestsProvider.notifier)
         .approve(widget.leaveRequest.id);
+    if (!mounted) return;
     _showResultSnackBar(wasApprove: true);
-    if (mounted) {
-      setState(() => _isApproving = false);
-    }
+    setState(() => _isApproving = false);
   }
 
   void _onReject() async {
@@ -43,10 +42,9 @@ class _LeaveRequestActionCardState
     await ref
         .read(leaveRequestsProvider.notifier)
         .reject(widget.leaveRequest.id);
+    if (!mounted) return;
     _showResultSnackBar(wasApprove: false);
-    if (mounted) {
-      setState(() => _isRejecting = false);
-    }
+    setState(() => _isRejecting = false);
   }
 
   void _showResultSnackBar({required bool wasApprove}) {

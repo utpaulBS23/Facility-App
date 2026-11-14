@@ -970,6 +970,7 @@
   "missingLabel": "Missing",
   "complaintReasonLabel": "Reason for Complaint",
   "complaintReasonHint": "Describe the issue or reason for complaint...",
+  "complaintFiled": "Complaint Filed",
   "proofPhoto": "Proof Photo (Optional)",
   "updateStock": "Update Stock",
   "updateStockInstructions": "Enter the current remaining balance for each item. Consumption will be calculated automatically.",

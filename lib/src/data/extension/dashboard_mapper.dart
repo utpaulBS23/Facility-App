@@ -1,5 +1,6 @@
 import '../../domain/entities/dashboard_entity.dart';
 import '../models/dashboard/dashboard_model.dart';
+import 'date_time_parser.dart';
 
 const _noShortage = DashboardStaffShortageEntity(
   totalShortage: 0,
@@ -50,10 +51,11 @@ extension DashboardStaffShortageModelToEntity on DashboardStaffShortageModel {
 extension DashboardCheckInOutModelToEntity on DashboardCheckInOutModel {
   DashboardCheckInOutEntity toEntity() => DashboardCheckInOutEntity(
     status: DashboardCheckInStatus.fromKey(status),
-    // No toLocal: the server sends a bare `yyyy-MM-dd HH:mm:ss`, which parses
-    // as local time already.
-    checkInAt: DateTime.tryParse(checkInAt ?? ''),
-    checkOutAt: DateTime.tryParse(checkOutAt ?? ''),
+    // Server sends UTC as a bare `yyyy-MM-dd HH:mm:ss` (no `Z`/offset), same
+    // as every other attendance timestamp — parseLocalIso assumes UTC and
+    // converts to local, matching those other mappers.
+    checkInAt: parseLocalIso(checkInAt),
+    checkOutAt: parseLocalIso(checkOutAt),
     facilityName: facilityName,
     visitCount: visitCount ?? 0,
   );

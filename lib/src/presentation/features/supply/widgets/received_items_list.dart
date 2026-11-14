@@ -43,7 +43,15 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
     widget.onEditingCancelled();
   }
 
-  (String name, String code, int expectedQty, int receivedQty, String unit, int stockItemId)
+  (
+    String name,
+    String code,
+    int expectedQty,
+    int receivedQty,
+    String unit,
+    int stockItemId,
+    bool hasComplaint,
+  )
       _getItemData(int index) =>
           switch ((widget.deliveryItems, widget.requestItems)) {
             (final deliveryItems?, _) when index < deliveryItems.length => (
@@ -53,6 +61,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                 deliveryItems[index].qtyReceived.round(),
                 deliveryItems[index].unit,
                 deliveryItems[index].stockItemId,
+                deliveryItems[index].hasComplaint,
               ),
             (_, final requestItems) when index < requestItems.length => (
                 requestItems[index].localizedItemName(context.languageCode),
@@ -61,8 +70,9 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
                 requestItems[index].qtyRequested.round(),
                 requestItems[index].unit,
                 requestItems[index].stockItemId,
+                false,
               ),
-            _ => ('', '', 0, 0, '', 0),
+            _ => ('', '', 0, 0, '', 0, false),
           };
 
   @override
@@ -137,8 +147,15 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
           itemCount: itemCount,
           separatorBuilder: (context, index) => Gap(spacing.s12),
           itemBuilder: (context, index) {
-            final (name, code, expectedQty, receivedQty, unit, stockItemId) =
-                _getItemData(index);
+            final (
+              name,
+              code,
+              expectedQty,
+              receivedQty,
+              unit,
+              stockItemId,
+              hasComplaint,
+            ) = _getItemData(index);
 
             return _ReceivedItemCard(
               name: name,
@@ -150,6 +167,7 @@ class _ReceivedItemsListState extends State<_ReceivedItemsList> {
               isEditing: widget.isEditing,
               hasDelivery: widget.hasDelivery,
               isConfirmed: widget.isConfirmed,
+              hasComplaint: hasComplaint,
               editedQuantity: widget.editedQuantities[stockItemId],
               onQuantityChanged: (qty) =>
                   widget.onQuantityChanged(stockItemId, qty),

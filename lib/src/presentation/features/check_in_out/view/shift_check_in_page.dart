@@ -217,6 +217,7 @@ class _ShiftCheckInPageState extends ConsumerState<ShiftCheckInPage> {
         capturedPhotoPath: photoPath,
         isLoading: selfieState.isLoading,
         isValidating: validationState.isLoading,
+        hasCameraError: failureType.hasCameraFailure,
         hasError: failureType.any,
         errorMessage:
             selfieError?.localizedMessage(context) ??
