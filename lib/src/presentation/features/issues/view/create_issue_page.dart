@@ -201,6 +201,15 @@ class _CreateIssuePageState extends ConsumerState<CreateIssuePage> {
               _priority = issueDetail.priority;
               _dueDate = issueDetail.dueDate;
               _existingPhotoUrl = issueDetail.photoUrl;
+              if (issueDetail.assignedTo != null) {
+                _selectedAttendant = PartnerStaffEntity(
+                  id: issueDetail.assignedTo!,
+                  name: issueDetail.assignedToName ?? '',
+                  nameBn: issueDetail.assignedToNameBn,
+                  email: '',
+                  isActive: true,
+                );
+              }
             });
           }
         });

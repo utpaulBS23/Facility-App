@@ -568,6 +568,8 @@
   "proofRequiredSubtitle": "Please upload or capture a photo to confirm task completion.",
   "changePhoto": "Change Photo",
   "submitProof": "Submit Proof",
+  "addPhotoSubtitle": "Attach a photo to this issue.",
+  "photoRequiredToComplete": "Add a photo to complete this issue.",
   "visitSubmittedSuccessfully": "Visit submitted successfully.",
   "inspectionChecklistLoadFailed": "Failed to load inspection checklist.",
   "submitChecklistFailed": "Failed to submit inspection checklist.",

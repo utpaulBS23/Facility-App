@@ -50,53 +50,40 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
   }
 
   Future<void> _onCompleteTap(TaskEntity task) async {
-    if (!task.proofRequiredOnComplete ||
-        task.status != TaskStatus.inProgress ||
-        task.hasCompletionProof) {
-      try {
-        final completedTask = await ref
-            .read(taskDetailProvider.notifier)
-            .completeIssue(issueId: task.id);
-        if (completedTask == null) return;
-        ref.read(tasksProvider.notifier).replaceTask(completedTask);
-        ref.read(tasksProvider.notifier).refresh();
-        await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
-      } catch (_) {
-        // Error already surfaced via AsyncValue.error on taskDetailProvider
-      }
-      return;
-    }
+    // WHY gated by hasCompletionProof here too: the button is disabled in
+    // this case, but _onCompleteTap can still be reached from task_page.dart
+    // state before this screen re-renders, so re-check before calling.
+    if (task.proofRequiredOnComplete && !task.hasCompletionProof) return;
 
-    showTaskProofBottomSheet(
+    try {
+      final completedTask = await ref
+          .read(taskDetailProvider.notifier)
+          .completeIssue(issueId: task.id);
+      if (completedTask == null) return;
+      ref.read(tasksProvider.notifier).replaceTask(completedTask);
+      ref.read(tasksProvider.notifier).refresh();
+      await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
+    } catch (_) {
+      // Error already surfaced via AsyncValue.error on taskDetailProvider
+    }
+  }
+
+  Future<void> _onAddPhotoTap(TaskEntity task) async {
+    showTaskAddPhotoBottomSheet(
       context,
       onSubmit: (photoPath, alt) async {
-        try {
-          final media = await ref
-              .read(taskDetailProvider.notifier)
-              .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
-          if (media == null) {
-            if (!context.mounted) return;
-            Navigator.of(context).pop();
-            return;
-          }
-          // WHY: replaceTask syncs list using completedTask which carries media from detail state;
-          // appendMedia is skipped to avoid partial-failure desync if complete subsequently fails.
-          final completedTask = await ref
-              .read(taskDetailProvider.notifier)
-              .completeIssue(issueId: task.id);
-          if (completedTask == null) {
-            if (!context.mounted) return;
-            Navigator.of(context).pop();
-            return;
-          }
-          ref.read(tasksProvider.notifier).replaceTask(completedTask);
-          ref.read(tasksProvider.notifier).refresh();
-          await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
-          if (!context.mounted) return;
-          Navigator.of(context).pop();
-        } catch (_) {
-          if (!context.mounted) return;
-          Navigator.of(context).pop();
+        final media = await ref
+            .read(taskDetailProvider.notifier)
+            .uploadMedia(taskId: task.id, photoPath: photoPath, alt: alt);
+        if (media == null) return;
+        // WHY refetch instead of trusting the locally appended media: the
+        // upload response doesn't carry everything the detail GET does (e.g.
+        // server-assigned purpose), so the photo only shows up reliably in
+        // the issue photo section once we re-pull the issue from the server.
+        await ref.read(taskDetailProvider.notifier).fetch(taskId: task.id);
+        final updatedTask = ref.read(taskDetailProvider).valueOrNull;
+        if (updatedTask != null) {
+          ref.read(tasksProvider.notifier).replaceTask(updatedTask);
         }
       },
     );
@@ -135,6 +122,7 @@ class _TaskDetailPageState extends ConsumerState<TaskDetailPage> {
           task: task,
           onStartTap: _onStartTap,
           onCompleteTap: _onCompleteTap,
+          onAddPhotoTap: _onAddPhotoTap,
         ),
       ),
     );
@@ -146,11 +134,13 @@ class _TaskDetailBody extends StatelessWidget {
     required this.task,
     required this.onStartTap,
     required this.onCompleteTap,
+    required this.onAddPhotoTap,
   });
 
   final TaskEntity task;
   final ValueChanged<TaskEntity> onStartTap;
   final Future<void> Function(TaskEntity task) onCompleteTap;
+  final ValueChanged<TaskEntity> onAddPhotoTap;
 
   bool get _canStart => task.status == TaskStatus.open;
   bool get _canComplete => task.status == TaskStatus.inProgress;
@@ -185,6 +175,10 @@ class _TaskDetailBody extends StatelessWidget {
           _buildCard2Description(context),
           Gap(spacing.s12),
           _buildCard3Media(context),
+          if (task.status == TaskStatus.inProgress) ...[
+            Gap(spacing.s12),
+            _buildAddPhotoButton(context),
+          ],
           Gap(spacing.s16),
           _buildActionButton(context),
         ],
@@ -402,7 +396,7 @@ class _TaskDetailBody extends StatelessWidget {
                 })),
             ]),
           ),
-          if (task.resolvedDate != null) ...[
+          if (task.resolvedDate != null || completionPhotos.isNotEmpty) ...[
             Gap(spacing.s16),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -428,9 +422,26 @@ class _TaskDetailBody extends StatelessWidget {
     );
   }
 
+  Widget _buildAddPhotoButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => onAddPhotoTap(task),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: context.color.primary,
+          side: BorderSide(color: context.color.primary),
+        ),
+        icon: const Icon(Icons.camera_alt_outlined, size: 18),
+        label: Text(context.locale.attachPhoto),
+      ),
+    );
+  }
+
   Widget _buildActionButton(BuildContext context) {
     final showPrimaryAction = _canStart || _canComplete;
     final spacing = context.dimensions.spacing;
+    final blockedByMissingProof =
+        _canComplete && task.proofRequiredOnComplete && !task.hasCompletionProof;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -454,12 +465,20 @@ class _TaskDetailBody extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () => onCompleteTap(task),
+                  onPressed: blockedByMissingProof ? null : () => onCompleteTap(task),
                   style: FilledButton.styleFrom(backgroundColor: context.color.text.primary, foregroundColor: context.color.onPrimary),
                   child: Text(context.locale.completeTask),
                 ),
               ),
             ),
+          if (blockedByMissingProof) ...[
+            Gap(spacing.s6),
+            Text(
+              context.locale.photoRequiredToComplete,
+              style: context.textStyle.bodySmall.copyWith(color: context.color.warning),
+              textAlign: TextAlign.center,
+            ),
+          ],
           Gap(spacing.s12),
         ],
       ],

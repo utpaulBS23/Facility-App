@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../core/theme/theme.dart';
 
-void showTaskProofBottomSheet(
+void showTaskAddPhotoBottomSheet(
   BuildContext context, {
   required Future<void> Function(String photoPath, String alt) onSubmit,
 }) {
@@ -15,29 +15,23 @@ void showTaskProofBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _ProofRequiredBottomSheet(onSubmit: onSubmit),
+    builder: (_) => _AddPhotoBottomSheet(onSubmit: onSubmit),
   );
 }
 
-class _ProofRequiredBottomSheet extends StatefulWidget {
-  const _ProofRequiredBottomSheet({required this.onSubmit});
+class _AddPhotoBottomSheet extends StatefulWidget {
+  const _AddPhotoBottomSheet({required this.onSubmit});
 
   final Future<void> Function(String photoPath, String alt) onSubmit;
 
   @override
-  State<_ProofRequiredBottomSheet> createState() =>
-      _ProofRequiredBottomSheetState();
+  State<_AddPhotoBottomSheet> createState() => _AddPhotoBottomSheetState();
 }
 
-class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
+class _AddPhotoBottomSheetState extends State<_AddPhotoBottomSheet> {
   final _picker = ImagePicker();
   XFile? _image;
   bool _isSubmitting = false;
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   Future<void> _pickImage(ImageSource source) async {
     final photo = await _picker.pickImage(
@@ -125,7 +119,7 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
     ),
     Gap(spacing.s16),
     Text(
-      context.locale.proofRequired,
+      context.locale.attachPhoto,
       style: context.textStyle.titleMedium.copyWith(
         color: context.color.text.primary,
       ),
@@ -133,7 +127,7 @@ class _ProofRequiredBottomSheetState extends State<_ProofRequiredBottomSheet> {
     ),
     Gap(spacing.s8),
     Text(
-      context.locale.proofRequiredSubtitle,
+      context.locale.addPhotoSubtitle,
       style: context.textStyle.bodyMedium.copyWith(
         color: context.color.text.secondary,
       ),

@@ -16,8 +16,13 @@ String _formatDueTime(String? raw) {
   }
 }
 
-TaskPriority _mapPriority(String raw) => switch (raw.toLowerCase()) {
-  'high' => TaskPriority.high,
+// WHY 'urgent'/'critical' map to high: confirmed via a live GET
+// /issues response ("priority": "urgent") — the issue priority master
+// data's top tier isn't literally 'high'. TaskPriority has no tier above
+// high, so anything unmatched here used to fall through to low, showing the
+// top priority as the bottom one.
+TaskPriority _mapPriority(String raw) => switch (raw.trim().toLowerCase()) {
+  'urgent' || 'critical' || 'high' => TaskPriority.high,
   'medium' => TaskPriority.medium,
   _ => TaskPriority.low,
 };
