@@ -109,3 +109,19 @@ final class RejectTravelExpenseUseCase extends PartnerUseCase {
     );
   }
 }
+
+final class DeleteTravelExpenseUseCase extends PartnerUseCase {
+  DeleteTravelExpenseUseCase({
+    required this.repository,
+    required super.authRepository,
+  });
+
+  final TravelExpenseRepository repository;
+
+  Future<Result<void, Failure>> call(int travelExpenseId) async {
+    return repository.deleteTravelExpense(
+      partnerId: getPartnerId(),
+      travelExpenseId: travelExpenseId,
+    );
+  }
+}

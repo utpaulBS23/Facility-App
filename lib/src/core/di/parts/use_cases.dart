@@ -499,6 +499,14 @@ RejectTravelExpenseUseCase rejectTravelExpenseUseCase(Ref ref) {
 }
 
 @riverpod
+DeleteTravelExpenseUseCase deleteTravelExpenseUseCase(Ref ref) {
+  return DeleteTravelExpenseUseCase(
+    repository: ref.read(travelExpenseRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 GetMasterDataItemsUseCase getMasterDataItemsUseCase(Ref ref) {
   return GetMasterDataItemsUseCase(
     ref.read(masterDataRepositoryProvider),

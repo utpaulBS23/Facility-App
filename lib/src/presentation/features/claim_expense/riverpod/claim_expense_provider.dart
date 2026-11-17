@@ -71,3 +71,31 @@ class SubmitTravelExpense extends _$SubmitTravelExpense {
     };
   }
 }
+
+/// Deleting a claim still `waiting` review — only the claimant may, see
+/// `Travel_Expense_Delete_API_Guide 1.md`. The list/detail/review providers
+/// listen to this and invalidate themselves on success.
+@riverpod
+class DeleteTravelExpense extends _$DeleteTravelExpense {
+  @override
+  AsyncValue<void> build() => const AsyncValue.data(null);
+
+  Future<void> delete(int travelExpenseId) async {
+    if (state.isLoading) return;
+
+    state = const AsyncValue.loading();
+
+    final result = await ref
+        .read(deleteTravelExpenseUseCaseProvider)
+        .call(travelExpenseId);
+
+    state = switch (result) {
+      Success() => const AsyncValue.data(null),
+      Error(:final error) => AsyncValue.error(error, StackTrace.current),
+      _ => AsyncValue.error(
+        Failure.emptyResponse('delete travel expense'),
+        StackTrace.current,
+      ),
+    };
+  }
+}

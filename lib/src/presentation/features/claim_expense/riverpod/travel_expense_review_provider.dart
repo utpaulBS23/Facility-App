@@ -2,8 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
-import 'travel_expense_detail_provider.dart';
-import 'travel_expenses_list_provider.dart';
+import 'claim_expense_provider.dart';
 
 part 'travel_expense_review_provider.g.dart';
 
@@ -11,7 +10,16 @@ part 'travel_expense_review_provider.g.dart';
 @riverpod
 class TravelExpenseReview extends _$TravelExpenseReview {
   @override
-  AsyncValue<void> build() => const AsyncValue.data(null);
+  AsyncValue<void> build() {
+    // WHY: a claim deleted elsewhere can no longer be reviewed — reset so a
+    // stale loading/error state doesn't linger on this action provider.
+    ref.listen(deleteTravelExpenseProvider, (previous, next) {
+      if (previous?.isLoading == true && next.hasValue && !next.hasError) {
+        ref.invalidateSelf();
+      }
+    });
+    return const AsyncValue.data(null);
+  }
 
   Future<void> approve(int travelExpenseId) {
     return _review(
@@ -45,12 +53,5 @@ class TravelExpenseReview extends _$TravelExpenseReview {
         StackTrace.current,
       ),
     };
-
-    // WHY: the claim's status changed, so the details page and the list that
-    // shows it must read it again.
-    if (!state.hasError) {
-      ref.invalidate(travelExpenseDetailProvider(travelExpenseId));
-      ref.invalidate(travelExpensesListProvider);
-    }
   }
 }

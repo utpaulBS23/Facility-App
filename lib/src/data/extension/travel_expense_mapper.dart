@@ -6,6 +6,7 @@ extension TravelExpenseLegEntityToModel on TravelExpenseLegEntity {
   TravelExpenseLegRequestModel toModel() => TravelExpenseLegRequestModel(
     vehicleTypeItemId: vehicleTypeItemId,
     distanceKm: distanceKm,
+    amount: amount,
   );
 }
 
@@ -43,6 +44,8 @@ extension TravelExpenseLineModelToEntity on TravelExpenseLineModel {
   TravelExpenseLineEntity toEntity() => TravelExpenseLineEntity(
     id: id,
     vehicleTypeLabel: vehicleTypeLabel ?? '',
+    distanceKm: distanceKm,
+    claimedAmount: claimedAmount ?? amount,
   );
 }
 
@@ -51,6 +54,9 @@ extension TravelExpenseModelToEntity on TravelExpenseModel {
     id: id,
     facilityName: facilityName ?? '',
     facilityNameBn: facilityNameBn ?? '',
+    officeId: officeId,
+    officeName: officeName,
+    officeNameBn: officeNameBn ?? '',
     userId: userId,
     startType: startType.toStartType,
     startId: startId,
@@ -62,6 +68,8 @@ extension TravelExpenseModelToEntity on TravelExpenseModel {
     status: TravelExpenseStatus.fromWireString(status),
     submittedAt: submittedAt ?? '',
     rejectionNote: rejectionNote ?? '',
+    approvedAmount: approvedAmount,
+    adjustmentReason: adjustmentReason,
     transportLines:
         transportLines?.map((line) => line.toEntity()).toList() ?? const [],
   );

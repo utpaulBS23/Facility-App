@@ -27,4 +27,11 @@ abstract base class TravelExpenseRepository extends Repository {
     required int travelExpenseId,
     required String note,
   });
+
+  /// Only the claimant may delete their own claim, and only while it's still
+  /// `waiting` — the server rejects anything else (403/422).
+  Future<Result<void, Failure>> deleteTravelExpense({
+    required int partnerId,
+    required int travelExpenseId,
+  });
 }

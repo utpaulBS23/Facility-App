@@ -4,6 +4,7 @@ import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/travel_expense_entity.dart';
 import 'claim_expense_provider.dart';
+import 'travel_expense_review_provider.dart';
 
 part 'travel_expenses_list_provider.g.dart';
 
@@ -17,6 +18,18 @@ class TravelExpensesList extends _$TravelExpensesList {
   Future<List<TravelExpenseEntity>> build() async {
     ref.listen(submitTravelExpenseProvider, (previous, next) {
       if (previous?.isLoading == true && next.hasValue && next.value != null) {
+        ref.invalidateSelf();
+      }
+    });
+
+    ref.listen(deleteTravelExpenseProvider, (previous, next) {
+      if (previous?.isLoading == true && next.hasValue && !next.hasError) {
+        ref.invalidateSelf();
+      }
+    });
+
+    ref.listen(travelExpenseReviewProvider, (previous, next) {
+      if (previous?.isLoading == true && next.hasValue && !next.hasError) {
         ref.invalidateSelf();
       }
     });

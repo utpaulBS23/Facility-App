@@ -78,7 +78,11 @@ class CreateIssue extends _$CreateIssue {
                 category: categoryName,
                 location: facilityName,
                 facilityName: facilityName,
-                priority: response.priority,
+                // WHY request, not response: category/location below are
+                // already sourced from what was submitted because the create
+                // response echoes stale defaults for them; priority has the
+                // same problem (echoes back the wrong tier right after create).
+                priority: request.priority,
                 status: response.status,
                 photoUrl: photoUrl,
                 dueDate: dueDate,

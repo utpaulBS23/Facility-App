@@ -10,10 +10,10 @@ class _LegDraft {
   int? vehicleTypeItemId;
   final TextEditingController distanceController;
 
-  // WHY client-only: the backend's legs[] shape has no per-leg amount field
-  // — only vehicle_type_item_id and distance_km. Per-row price is entered
-  // here purely to let the user build up a total; the sum of every row's
-  // price is what actually goes out, as the top-level `amount` override.
+  // WHY per-row, sent as legs[].amount: the backend now accepts a claimed
+  // amount override per leg (API update 2026-11-16) — sending it per leg
+  // instead of as one top-level `amount` also avoids the 422 the server
+  // returns when both are sent together.
   final TextEditingController priceController;
 
   double get distanceKm => Digits.parseDouble(distanceController.text) ?? 0;
@@ -23,6 +23,7 @@ class _LegDraft {
   TravelExpenseLegEntity toEntity() => TravelExpenseLegEntity(
     vehicleTypeItemId: vehicleTypeItemId!,
     distanceKm: distanceKm,
+    amount: price,
   );
 
   void dispose() {

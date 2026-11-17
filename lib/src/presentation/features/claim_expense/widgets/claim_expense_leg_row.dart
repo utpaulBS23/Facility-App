@@ -108,6 +108,7 @@ class _ClaimExpenseLegRow extends StatelessWidget {
               ],
             ),
             if (showRemove) ...[
+              Gap(spacing.s12),
               OutlinedButton.icon(
                 onPressed: onRemove,
                 icon: const Icon(Icons.delete_outline),

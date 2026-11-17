@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
-import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/utiliity/validation/validation.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/master_data_entity.dart';
@@ -22,7 +21,6 @@ import '../../../core/widgets/form_selector_card.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
-import '../../../core/widgets/text/typography.dart';
 import '../riverpod/claim_expense_provider.dart';
 import '../../../../core/utils/digits.dart';
 
@@ -44,13 +42,6 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
 
   int? _facilityId;
   VisitSummaryEntity? _selectedVisit;
-
-  // WHY these only matter without a reference visit: when taskId is sent,
-  // the backend derives facility/start entirely from the task's recorded
-  // travel origin — see CreateTravelExpenseRequestEntity's WHY.
-  TravelExpenseStartType? _startType;
-  int? _startFacilityId;
-  bool _startTypeError = false;
 
   @override
   void initState() {
@@ -98,22 +89,6 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
     });
   }
 
-  Future<void> _onPickStartFacility(
-    List<AccessibleFacilityEntity> facilities,
-  ) async {
-    final result = await showModalBottomSheet<({int? facilityId})>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => FacilityPickerSheet(
-        facilities: facilities,
-        selectedFacilityId: _startFacilityId,
-      ),
-    );
-    if (result == null) return;
-    setState(() => _startFacilityId = result.facilityId);
-  }
-
   Future<void> _onPickVisit(List<VisitSummaryEntity> visits) async {
     final result = await showModalBottomSheet<({VisitSummaryEntity? value})>(
       context: context,
@@ -125,14 +100,6 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
       ),
     );
     if (result != null) setState(() => _selectedVisit = result.value);
-  }
-
-  void _onStartTypeChanged(TravelExpenseStartType type) {
-    setState(() {
-      _startType = type;
-      _startTypeError = false;
-      if (type != TravelExpenseStartType.facility) _startFacilityId = null;
-    });
   }
 
   void _onLegChanged() => setState(() {});
@@ -151,25 +118,12 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
 
   double get _totalPrice => _legs.fold(0, (sum, leg) => sum + leg.price);
 
-  int? get _currentUserId =>
-      ref.read(getCurrentUserUseCaseProvider).call()?.id;
-
+  // WHY a reference visit is required: the backend derives facility/start
+  // entirely from the task's recorded travel origin when `task_id` is sent —
+  // there's no structured facility/office selector for a standalone claim,
+  // so this app no longer offers one (see
+  // `User_Visit_Tracking_And_Travel_Expenses_API_Guide 2.md` §2b/§4).
   bool get _isFormValid {
-    final facilityId = _facilityId;
-    final selectedVisit = _selectedVisit;
-    final startType = _startType;
-    final needsStandaloneFields = selectedVisit == null;
-
-    final startId = switch (startType) {
-      TravelExpenseStartType.home => _currentUserId,
-      TravelExpenseStartType.facility => _startFacilityId,
-      TravelExpenseStartType.office || null => null,
-    };
-
-    final standaloneValid =
-        !needsStandaloneFields ||
-        (facilityId != null && startType != null && startId != null);
-
     final legsValid =
         _legs.isNotEmpty &&
         _legs.every(
@@ -179,44 +133,20 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
               leg.price > 0,
         );
 
-    return facilityId != null && standaloneValid && legsValid;
+    return _facilityId != null && _selectedVisit != null && legsValid;
   }
 
   void _onSubmit() {
-    final facilityId = _facilityId;
     final selectedVisit = _selectedVisit;
-    final startType = _startType;
-    final needsStandaloneFields = selectedVisit == null;
-
-    final startId = switch (startType) {
-      TravelExpenseStartType.home => _currentUserId,
-      TravelExpenseStartType.facility => _startFacilityId,
-      TravelExpenseStartType.office || null => null,
-    };
-
-    final standaloneValid =
-        !needsStandaloneFields ||
-        (facilityId != null && startType != null && startId != null);
-
-    setState(
-      () => _startTypeError = needsStandaloneFields && startType == null,
-    );
-
-    if (!_formKey.currentState!.validate() ||
-        facilityId == null ||
-        !standaloneValid) {
-      return;
-    }
+    if (!_formKey.currentState!.validate() || selectedVisit == null) return;
 
     final purpose = _purposeController.text.trim();
 
     final request = CreateTravelExpenseRequestEntity(
-      taskId: selectedVisit?.id,
-      facilityId: needsStandaloneFields ? facilityId : null,
-      startType: needsStandaloneFields ? startType : null,
-      startId: needsStandaloneFields ? startId : null,
+      taskId: selectedVisit.id,
       purpose: purpose.isEmpty ? null : purpose,
-      amount: _totalPrice,
+      // WHY no top-level amount: each leg now carries its own override
+      // (legs[].amount, see _LegDraft.toEntity) — sending both is a 422.
       legs: _legs.map((leg) => leg.toEntity()).toList(),
     );
 
@@ -288,85 +218,80 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                   placeholder: context.locale.none,
                 ),
               ),
-              Gap(spacing.s16),
+              // WHY everything past this point is hidden without a
+              // reference visit: start/destination, transport legs and
+              // purpose all depend on the visit's recorded travel origin —
+              // there's nothing valid to fill in until one is picked.
               if (selectedVisit != null) ...[
+                Gap(spacing.s16),
                 _ReadOnlyField(
                   label: context.locale.startLocation,
-                  value: selectedVisit.localizedTravelOriginName(context.languageCode) ?? '—',
+                  value: selectedVisit.travelOriginId == null
+                      ? context.locale.home
+                      : selectedVisit.localizedTravelOriginName(
+                              context.languageCode,
+                            ) ??
+                            '—',
                 ),
                 Gap(spacing.s16),
                 _ReadOnlyField(
                   label: context.locale.destination,
-                  value: selectedVisit.localizedFacilityName(context.languageCode) ?? selectedVisit.localizedOfficeName(context.languageCode) ?? '—',
+                  value:
+                      selectedVisit.localizedOfficeName(
+                        context.languageCode,
+                      ) ??
+                      selectedVisit.localizedFacilityName(
+                        context.languageCode,
+                      ) ??
+                      '—',
                 ),
                 Gap(spacing.s16),
-              ] else ...[
-                Text(
-                  context.locale.startType,
-                  style: context.textStyle.labelLarge,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.locale.transportModes,
+                      style: context.textStyle.labelLarge,
+                    ),
+                  ],
                 ),
                 Gap(spacing.s8),
-                _StartTypeSelector(
-                  selected: _startType,
-                  hasError: _startTypeError,
-                  onChanged: _onStartTypeChanged,
-                ),
-                if (_startType == TravelExpenseStartType.facility) ...[
-                  Gap(spacing.s12),
-                  FormSelectorCard.text(
-                    title: context.locale.startFacility,
-                    icon: Icons.location_on_outlined,
-                    value: _facilityName(facilities, _startFacilityId),
-                    placeholder: context.locale.startFacility,
-                    onTap: () => _onPickStartFacility(facilities),
+                for (final leg in _legs) ...[
+                  _ClaimExpenseLegRow(
+                    leg: leg,
+                    transportModes: transportModes,
+                    onChanged: _onLegChanged,
+                    onRemove: () => _onRemoveLeg(leg),
+                    showRemove: _legs.length > 1,
                   ),
+                  Gap(spacing.s8),
                 ],
-                Gap(spacing.s16),
-              ],
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    context.locale.transportModes,
-                    style: context.textStyle.labelLarge,
-                  ),
-                ],
-              ),
-              Gap(spacing.s8),
-              for (final leg in _legs) ...[
-                _ClaimExpenseLegRow(
-                  leg: leg,
-                  transportModes: transportModes,
-                  onChanged: _onLegChanged,
-                  onRemove: () => _onRemoveLeg(leg),
-                  showRemove: _legs.length > 1,
-                ),
-                Gap(spacing.s8),
-              ],
-              TextButton.icon(
-                onPressed: _onAddLeg,
-                icon: const Icon(Icons.add),
-                label: Text(context.locale.addAnotherModeLeg),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: context.color.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      context.dimensions.radius.r12,
+                TextButton.icon(
+                  onPressed: _onAddLeg,
+                  icon: const Icon(Icons.add),
+                  label: Text(context.locale.addAnotherModeLeg),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: context.color.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        context.dimensions.radius.r12,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Gap(spacing.s16),
-              _ClaimExpenseTotalBar(
-                totalDistanceKm: _totalDistanceKm,
-                totalPrice: _totalPrice,
-              ),
-              Gap(spacing.s16),
-              AppTextField.text(
-                controller: _purposeController,
-                label: context.locale.purpose,
-                hint: '${context.locale.purpose} — ${context.locale.purposeHint}',
-              ),
+                Gap(spacing.s16),
+                _ClaimExpenseTotalBar(
+                  totalDistanceKm: _totalDistanceKm,
+                  totalPrice: _totalPrice,
+                ),
+                Gap(spacing.s16),
+                AppTextField.text(
+                  controller: _purposeController,
+                  label: context.locale.purpose,
+                  hint:
+                      '${context.locale.purpose} — ${context.locale.purposeHint}',
+                ),
+              ],
               Gap(spacing.s24),
               // WHY gated: travel_expense.view opens this page, but only
               // travel_expense.create may actually save a claim — a
@@ -494,87 +419,3 @@ class _ReadOnlyField extends StatelessWidget {
   }
 }
 
-class _StartTypeSelector extends StatelessWidget {
-  const _StartTypeSelector({
-    required this.selected,
-    required this.hasError,
-    required this.onChanged,
-  });
-
-  final TravelExpenseStartType? selected;
-  final bool hasError;
-  final ValueChanged<TravelExpenseStartType> onChanged;
-
-  // WHY facility/home only: `office` is a valid backend start_type, but this
-  // app has no endpoint to list offices to pick a start_id from — add it
-  // here once one exists.
-  static const _options = [
-    TravelExpenseStartType.home,
-    TravelExpenseStartType.facility,
-  ];
-
-  String _label(BuildContext context, TravelExpenseStartType type) =>
-      switch (type) {
-        TravelExpenseStartType.home => context.locale.home,
-        TravelExpenseStartType.facility => context.locale.facility,
-        TravelExpenseStartType.office => '',
-      };
-
-  @override
-  Widget build(BuildContext context) {
-    final spacing = context.dimensions.spacing;
-    final radius = context.dimensions.radius;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            for (final type in _options) ...[
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => onChanged(type),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: selected == type
-                          ? context.color.primary.withValues(alpha: 0.08)
-                          : context.color.onPrimary,
-                      borderRadius: BorderRadius.circular(radius.r12),
-                      border: Border.all(
-                        color: hasError
-                            ? context.color.error
-                            : selected == type
-                            ? context.color.primary
-                            : context.color.borderSubtle,
-                        width: selected == type ? 1.5 : 1,
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      _label(context, type),
-                      style: context.textStyle.bodyMedium.copyWith(
-                        color: selected == type
-                            ? context.color.primary
-                            : context.color.text.secondary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              if (type != _options.last) Gap(spacing.s8),
-            ],
-          ],
-        ),
-        if (hasError) ...[
-          Gap(spacing.s4),
-          BodySmallText(
-            context.locale.fieldRequired,
-            color: context.color.error,
-          ),
-        ],
-      ],
-    );
-  }
-}

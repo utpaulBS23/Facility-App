@@ -153,7 +153,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       return;
     }
 
-    showTaskProofBottomSheet(
+    showTaskAddPhotoBottomSheet(
       context,
       onSubmit: (photoPath, alt) async {
         try {
