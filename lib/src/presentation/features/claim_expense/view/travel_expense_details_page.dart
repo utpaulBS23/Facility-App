@@ -16,6 +16,7 @@ import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/status_pill.dart';
 import '../extensions/travel_expense_status_extension.dart';
 import '../riverpod/travel_expense_detail_provider.dart';
+import '../widgets/travel_expense_delete_bar.dart';
 import '../widgets/travel_expense_review_bar.dart';
 
 part '../widgets/travel_expense_travel_info_card.dart';
@@ -40,6 +41,17 @@ class TravelExpenseDetailsPage extends ConsumerWidget {
         (expense.userId == null || expense.userId != currentUserId);
   }
 
+  /// The claimant may delete their own claim while it's still waiting review
+  /// — see `Travel_Expense_Delete_API_Guide 1.md`.
+  bool _canDelete(WidgetRef ref, TravelExpenseEntity expense) {
+    if (expense.status != TravelExpenseStatus.waiting) return false;
+    final canCreate =
+        ref.watch(userSessionProvider)?.can(UserPermission.travelExpenseCreate) ??
+        false;
+    final currentUserId = ref.read(getCurrentUserUseCaseProvider).call()?.id;
+    return canCreate && expense.userId != null && expense.userId == currentUserId;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(
@@ -52,6 +64,8 @@ class TravelExpenseDetailsPage extends ConsumerWidget {
       bottomNavigationBar: switch (detailAsync.valueOrNull) {
         final expense? when _canReview(ref, expense) =>
           TravelExpenseReviewBar(travelExpenseId: expense.id),
+        final expense? when _canDelete(ref, expense) =>
+          TravelExpenseDeleteBar(travelExpenseId: expense.id),
         _ => null,
       },
       body: detailAsync.when(
@@ -133,6 +147,10 @@ class _TravelExpenseDetailsBody extends StatelessWidget {
           ),
           Gap(spacing.s16),
           _TravelExpenseTravelInfoCard(expense: expense),
+          if (expense.transportLines.isNotEmpty) ...[
+            Gap(spacing.s16),
+            _TransportLinesBreakdown(lines: expense.transportLines),
+          ],
           Gap(spacing.s16),
           Container(
             padding: EdgeInsets.symmetric(
@@ -160,6 +178,21 @@ class _TravelExpenseDetailsBody extends StatelessWidget {
                     label: context.locale.purposeLabel,
                     value: expense.purpose,
                   ),
+                if (expense.approvedAmount != null)
+                  _DetailRow(
+                    icon: Icons.check_circle_outline,
+                    label: context.locale.approvedAmount,
+                    value: context.numbers.currency(
+                      expense.approvedAmount!.round(),
+                    ),
+                  ),
+                if (expense.adjustmentReason != null &&
+                    expense.adjustmentReason!.isNotEmpty)
+                  _DetailRow(
+                    icon: Icons.edit_note_rounded,
+                    label: context.locale.adjustmentReason,
+                    value: expense.adjustmentReason!,
+                  ),
                 if (expense.status == TravelExpenseStatus.rejected &&
                     expense.rejectionNote.isNotEmpty)
                   _DetailRow(
@@ -172,6 +205,74 @@ class _TravelExpenseDetailsBody extends StatelessWidget {
           ),
         ],
       );
+  }
+}
+
+/// Per-leg distance/amount breakdown — e.g. "Rickshaw · 5.2 km · ৳60".
+class _TransportLinesBreakdown extends StatelessWidget {
+  const _TransportLinesBreakdown({required this.lines});
+
+  final List<TravelExpenseLineEntity> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+    final color = context.color;
+
+    return Container(
+      padding: EdgeInsets.all(spacing.s16),
+      decoration: BoxDecoration(
+        color: color.onPrimary,
+        border: Border.all(color: color.borderSubtle),
+        borderRadius: BorderRadius.circular(context.dimensions.radius.r12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.locale.distanceBreakdown,
+            style: context.textStyle.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Gap(spacing.s12),
+          for (final line in lines) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    line.vehicleTypeLabel.isEmpty
+                        ? context.locale.notAvailable
+                        : line.vehicleTypeLabel,
+                    style: context.textStyle.bodyMedium,
+                  ),
+                ),
+                if (line.distanceKm != null)
+                  Text(
+                    context.locale.distanceKmValue(
+                      context.numbers.number(line.distanceKm!),
+                    ),
+                    style: context.textStyle.bodySmall.copyWith(
+                      color: color.text.secondary,
+                    ),
+                  ),
+                if (line.claimedAmount != null) ...[
+                  Gap(spacing.s12),
+                  Text(
+                    context.numbers.currency(line.claimedAmount!.round()),
+                    style: context.textStyle.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            if (line != lines.last) Gap(spacing.s8),
+          ],
+        ],
+      ),
+    );
   }
 }
 

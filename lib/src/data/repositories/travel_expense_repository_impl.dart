@@ -94,4 +94,17 @@ final class TravelExpenseRepositoryImpl extends TravelExpenseRepository {
       );
     });
   }
+
+  @override
+  Future<Result<void, Failure>> deleteTravelExpense({
+    required int partnerId,
+    required int travelExpenseId,
+  }) {
+    return asyncGuard(() async {
+      await remote.deleteTravelExpense(
+        partnerId: partnerId,
+        travelExpenseId: travelExpenseId,
+      );
+    });
+  }
 }

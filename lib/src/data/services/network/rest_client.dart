@@ -384,6 +384,12 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @DELETE(Endpoints.travelExpenseDetail)
+  Future<HttpResponse> deleteTravelExpense({
+    @Path('partnerId') required int partnerId,
+    @Path('travelExpenseId') required int travelExpenseId,
+  });
+
   @GET(Endpoints.masterDataItems)
   Future<HttpResponse> getMasterDataItems({
     @Path('partnerId') required int partnerId,

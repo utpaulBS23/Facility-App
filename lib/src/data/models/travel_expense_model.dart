@@ -7,10 +7,15 @@ class TravelExpenseLegRequestModel with TravelExpenseLegRequestModelMappable {
   const TravelExpenseLegRequestModel({
     required this.vehicleTypeItemId,
     required this.distanceKm,
+    this.amount,
   });
 
   final int vehicleTypeItemId;
   final double distanceKm;
+
+  /// Client override of this leg's server-computed amount. Omit to let the
+  /// server use `distance_km × rate_per_km`.
+  final double? amount;
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase, ignoreNull: true)
@@ -46,13 +51,20 @@ class TravelExpenseLineModel with TravelExpenseLineModelMappable {
     this.vehicleTypeLabel,
     this.distanceKm,
     this.amount,
+    this.claimedAmount,
   });
 
   final int id;
   final int? vehicleTypeItemId;
   final String? vehicleTypeLabel;
   final double? distanceKm;
+
+  /// Server-computed: `distance_km × rate_per_km`.
   final double? amount;
+
+  /// The amount actually claimed for this line — equals [amount] unless the
+  /// user overrode it via `legs[].amount` on create.
+  final double? claimedAmount;
 
   static const fromJson = TravelExpenseLineModelMapper.fromJson;
 }
@@ -68,6 +80,9 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.facilityId,
     this.facilityName,
     this.facilityNameBn,
+    this.officeId,
+    this.officeName,
+    this.officeNameBn,
     this.userId,
     this.startType,
     this.startId,
@@ -83,6 +98,8 @@ class TravelExpenseModel with TravelExpenseModelMappable {
     this.transportLines,
     this.submittedAt,
     this.rejectionNote,
+    this.approvedAmount,
+    this.adjustmentReason,
   });
 
   final int id;
@@ -91,6 +108,10 @@ class TravelExpenseModel with TravelExpenseModelMappable {
   final String? facilityName;
   @MappableField(key: 'facility_name_bn')
   final String? facilityNameBn;
+  final int? officeId;
+  final String? officeName;
+  @MappableField(key: 'office_name_bn')
+  final String? officeNameBn;
   final int? userId;
   final String? startType;
   final int? startId;
@@ -107,6 +128,8 @@ class TravelExpenseModel with TravelExpenseModelMappable {
   final List<TravelExpenseLineModel>? transportLines;
   final String? submittedAt;
   final String? rejectionNote;
+  final double? approvedAmount;
+  final String? adjustmentReason;
 
   static const fromJson = TravelExpenseModelMapper.fromJson;
 }

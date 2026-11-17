@@ -1,9 +1,36 @@
 part of '../view/travel_expenses_page.dart';
 
-class _TravelExpenseListCard extends StatelessWidget {
+class _TravelExpenseListCard extends ConsumerWidget {
   const _TravelExpenseListCard({required this.expense});
 
   final TravelExpenseEntity expense;
+
+  bool _canDelete(WidgetRef ref) {
+    if (expense.status != TravelExpenseStatus.waiting) return false;
+    final canCreate =
+        ref.watch(userSessionProvider)?.can(UserPermission.travelExpenseCreate) ??
+        false;
+    final currentUserId = ref.read(getCurrentUserUseCaseProvider).call()?.id;
+    return canCreate && expense.userId != null && expense.userId == currentUserId;
+  }
+
+  Future<void> _onDelete(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => const DeleteTravelExpenseConfirmDialog(),
+    );
+    if (confirmed != true) return;
+
+    await ref.read(deleteTravelExpenseProvider.notifier).delete(expense.id);
+    if (!context.mounted) return;
+
+    final state = ref.read(deleteTravelExpenseProvider);
+    if (state.hasError) {
+      AppSnackBar.showError(context, state.error!.localizedMessage(context));
+    } else {
+      AppSnackBar.showSuccess(context, context.locale.deleteClaimSuccess);
+    }
+  }
 
   String? _submittedDateLabel() {
     final parsed = DateTime.tryParse(expense.submittedAt)?.toLocal();
@@ -21,12 +48,13 @@ class _TravelExpenseListCard extends StatelessWidget {
       .join(' + ');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spacing = context.dimensions.spacing;
     final radius = context.dimensions.radius;
     final color = context.color;
     final dateLabel = _submittedDateLabel();
     final timeLabel = _submittedTimeLabel();
+    final canDelete = _canDelete(ref);
 
     return GestureDetector(
       onTap: () => context.pushNamed(
@@ -47,7 +75,7 @@ class _TravelExpenseListCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    expense.localizedFacilityName(context.languageCode),
+                    expense.localizedDestinationName(context.languageCode),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textStyle.bodyLarge.copyWith(
@@ -61,6 +89,21 @@ class _TravelExpenseListCard extends StatelessWidget {
                   dotColor: expense.status.statusColor(context),
                   label: expense.status.localizedName(context),
                 ),
+                if (canDelete) ...[
+                  Gap(spacing.s4),
+                  InkWell(
+                    onTap: () => _onDelete(context, ref),
+                    borderRadius: BorderRadius.circular(radius.r6),
+                    child: Padding(
+                      padding: EdgeInsets.all(spacing.s4),
+                      child: Icon(
+                        Icons.delete_outline,
+                        size: spacing.s20,
+                        color: color.error,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
             if (dateLabel != null || timeLabel != null) ...[

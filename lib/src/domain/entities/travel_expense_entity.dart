@@ -46,10 +46,15 @@ class TravelExpenseLegEntity {
   const TravelExpenseLegEntity({
     required this.vehicleTypeItemId,
     required this.distanceKm,
+    this.amount,
   });
 
   final int vehicleTypeItemId;
   final double distanceKm;
+
+  /// Client override of this leg's claimed amount — sent as `legs[].amount`.
+  /// `null` lets the server use `distance_km × rate_per_km`.
+  final double? amount;
 }
 
 /// A travel-expense claim submitted for supervisor approval.
@@ -134,10 +139,19 @@ class TravelExpenseLineEntity {
   const TravelExpenseLineEntity({
     required this.id,
     required this.vehicleTypeLabel,
+    this.distanceKm,
+    this.claimedAmount,
   });
 
   final int id;
   final String vehicleTypeLabel;
+
+  /// This leg's own distance, for the per-leg breakdown on the details page.
+  final double? distanceKm;
+
+  /// What was actually claimed for this leg — overridden amount if sent,
+  /// otherwise the server-computed `distance_km × rate_per_km`.
+  final double? claimedAmount;
 }
 
 /// The claim as recorded by the backend after submission — trimmed to just
@@ -147,6 +161,9 @@ class TravelExpenseEntity {
     required this.id,
     required this.facilityName,
     this.facilityNameBn = '',
+    this.officeId,
+    this.officeName,
+    this.officeNameBn = '',
     this.userId,
     required this.startType,
     required this.startId,
@@ -158,12 +175,20 @@ class TravelExpenseEntity {
     required this.status,
     required this.submittedAt,
     required this.rejectionNote,
+    this.approvedAmount,
+    this.adjustmentReason,
     required this.transportLines,
   });
 
   final int id;
   final String facilityName;
   final String facilityNameBn;
+
+  /// Set only when `location_type` is `office` — takes priority over
+  /// [facilityName] for display wherever this claim's destination is shown.
+  final int? officeId;
+  final String? officeName;
+  final String officeNameBn;
 
   /// Who filed the claim; a reviewer cannot review their own.
   final int? userId;
@@ -185,6 +210,15 @@ class TravelExpenseEntity {
   final TravelExpenseStatus status;
   final String submittedAt;
   final String rejectionNote;
+
+  /// Final approved amount, set only once a reviewer approves — may differ
+  /// from [claimedAmount] when the reviewer adjusted it (see
+  /// [adjustmentReason]).
+  final double? approvedAmount;
+
+  /// Why [approvedAmount] differs from [claimedAmount], when it does.
+  final String? adjustmentReason;
+
   final List<TravelExpenseLineEntity> transportLines;
 
   String localizedFacilityName(String languageCode) =>
@@ -192,4 +226,11 @@ class TravelExpenseEntity {
 
   String localizedUserName(String languageCode) =>
       localizedText(languageCode, userName, userNameBn);
+
+  /// The office name when this claim's destination is an office, otherwise
+  /// the facility name.
+  String localizedDestinationName(String languageCode) =>
+      officeName != null
+          ? localizedText(languageCode, officeName!, officeNameBn)
+          : localizedFacilityName(languageCode);
 }

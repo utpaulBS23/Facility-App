@@ -8,9 +8,7 @@ class _TravelExpenseTravelInfoCard extends ConsumerWidget {
   String _startLabel(BuildContext context, WidgetRef ref) {
     switch (expense.startType) {
       case TravelExpenseStartType.home:
-        return expense.localizedUserName(context.languageCode).isEmpty
-            ? context.locale.home
-            : expense.localizedUserName(context.languageCode);
+        return context.locale.home;
       case TravelExpenseStartType.facility:
         final facilities =
             ref.watch(userSessionProvider)?.accessibleFacilities ??
@@ -74,8 +72,32 @@ class _TravelExpenseTravelInfoCard extends ConsumerWidget {
                 _TravelPoint(
                   dotColor: color.error,
                   label: context.locale.destination,
-                  value: expense.localizedFacilityName(context.languageCode),
+                  value: expense.localizedDestinationName(context.languageCode),
                 ),
+                if (expense.claimedDistanceKm > 0) ...[
+                  Gap(spacing.s12),
+                  Divider(height: 1, color: color.borderSubtle),
+                  Gap(spacing.s12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        context.locale.totalDistance,
+                        style: context.textStyle.bodySmall.copyWith(
+                          color: color.text.secondary,
+                        ),
+                      ),
+                      Text(
+                        context.locale.distanceKmValue(
+                          context.numbers.number(expense.claimedDistanceKm),
+                        ),
+                        style: context.textStyle.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
