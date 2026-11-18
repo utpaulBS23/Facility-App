@@ -14,11 +14,16 @@ class TravelExpenseSystemGeneratedCard extends StatelessWidget {
     super.key,
     this.distanceKm,
     this.amount,
+    this.calculatedCost,
     this.ratePerKm,
   });
 
   final double? distanceKm;
   final double? amount;
+
+  /// `travel_calculated_cost` from the reference visit — distinct from
+  /// [amount] (a submitted claim's own `calculated_amount`).
+  final double? calculatedCost;
   final double? ratePerKm;
 
   @override
@@ -56,6 +61,12 @@ class TravelExpenseSystemGeneratedCard extends StatelessWidget {
               icon: Icons.calculate_outlined,
               label: context.locale.calculatedAmount,
               value: context.numbers.currency(amount!.round()),
+            ),
+          if (calculatedCost != null)
+            _SystemGeneratedRow(
+              icon: Icons.calculate_outlined,
+              label: context.locale.calculatedCost,
+              value: context.numbers.currency(calculatedCost!.round()),
             ),
           if (ratePerKm != null)
             _SystemGeneratedRow(

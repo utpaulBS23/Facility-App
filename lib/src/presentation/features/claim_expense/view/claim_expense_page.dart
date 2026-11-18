@@ -246,10 +246,12 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                       ) ??
                       '—',
                 ),
-                if (selectedVisit.travelDistanceKm != null) ...[
+                if (selectedVisit.travelDistanceKm != null ||
+                    selectedVisit.travelCalculatedCost != null) ...[
                   Gap(spacing.s16),
                   TravelExpenseSystemGeneratedCard(
                     distanceKm: selectedVisit.travelDistanceKm,
+                    calculatedCost: selectedVisit.travelCalculatedCost,
                   ),
                 ],
                 Gap(spacing.s16),

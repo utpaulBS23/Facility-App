@@ -298,6 +298,7 @@
   "systemGenerated": "System generated",
   "calculatedDistance": "Calculated distance",
   "calculatedAmount": "Calculated amount",
+  "calculatedCost": "Calculated cost",
   "ratePerKm": "Rate per km",
   "claimApprovedSuccess": "Claim approved",
   "claimRejectedSuccess": "Claim rejected",
