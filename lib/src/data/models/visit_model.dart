@@ -82,6 +82,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
     this.travelOriginNameBn,
     this.facilityAddress,
     this.travelStartedAt,
+    this.travelDistanceKm,
     this.locationType,
     this.officeId,
     this.officeName,
@@ -167,6 +168,9 @@ class VisitSummaryModel with VisitSummaryModelMappable {
   @MappableField(key: 'travel_started_at')
   final String? travelStartedAt;
 
+  @MappableField(key: 'travel_distance_km')
+  final double? travelDistanceKm;
+
   static const fromJson = VisitSummaryModelMapper.fromJson;
 
   VisitSummaryEntity toEntity() => VisitSummaryEntity(
@@ -187,6 +191,7 @@ class VisitSummaryModel with VisitSummaryModelMappable {
         travelOriginName: travelOriginName,
         travelOriginNameBn: travelOriginNameBn ?? '',
         travelStartedAt: travelStartedAt,
+        travelDistanceKm: travelDistanceKm,
         locationType: locationType ?? 'facility',
         officeId: officeId,
         officeName: officeName,

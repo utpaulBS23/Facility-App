@@ -170,6 +170,9 @@ class TravelExpenseEntity {
     required this.userName,
     this.userNameBn = '',
     required this.purpose,
+    this.calculatedDistanceKm,
+    this.calculatedAmount,
+    this.ratePerKm,
     required this.claimedDistanceKm,
     required this.claimedAmount,
     required this.status,
@@ -200,6 +203,12 @@ class TravelExpenseEntity {
   final String userName;
   final String userNameBn;
   final String purpose;
+
+  /// Road distance/cost computed by the server (Barikoi), before any
+  /// client-side claim override — shown on the "System generated" card.
+  final double? calculatedDistanceKm;
+  final double? calculatedAmount;
+  final double? ratePerKm;
 
   /// Summed from the submitted legs against the partner's rate — or the
   /// client-supplied [CreateTravelExpenseRequestEntity.amount] override.

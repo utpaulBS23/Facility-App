@@ -37,6 +37,7 @@ class VisitSummaryEntity {
     this.travelOriginName,
     this.travelOriginNameBn = '',
     this.travelStartedAt,
+    this.travelDistanceKm,
     this.locationType,
     this.officeId,
     this.officeName,
@@ -71,6 +72,11 @@ class VisitSummaryEntity {
   final String? travelOriginName;
   final String travelOriginNameBn;
   final String? travelStartedAt;
+
+  /// Road distance for the trip to this visit, computed by the server once
+  /// a travel origin has been recorded — shown on the "System generated"
+  /// card while claiming this visit.
+  final double? travelDistanceKm;
   final String? locationType;
   final int? officeId;
   final String? officeName;

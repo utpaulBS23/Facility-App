@@ -22,6 +22,7 @@ import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
 import '../riverpod/claim_expense_provider.dart';
+import '../widgets/travel_expense_system_generated_card.dart';
 import '../../../../core/utils/digits.dart';
 
 part '../widgets/claim_expense_leg_draft.dart';
@@ -245,6 +246,12 @@ class _ClaimExpensePageState extends ConsumerState<ClaimExpensePage> {
                       ) ??
                       '—',
                 ),
+                if (selectedVisit.travelDistanceKm != null) ...[
+                  Gap(spacing.s16),
+                  TravelExpenseSystemGeneratedCard(
+                    distanceKm: selectedVisit.travelDistanceKm,
+                  ),
+                ],
                 Gap(spacing.s16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -39,7 +39,12 @@ Future<List<VisitSummaryEntity>> claimExpenseReferenceVisits(
 
   final result = await ref
       .read(getMyVisitsUseCaseProvider)
-      .call(status: 'completed', facilityId: facilityId, assignedTo: userId);
+      .call(
+        status: 'completed',
+        facilityId: facilityId,
+        assignedTo: userId,
+        unclaimed: 1,
+      );
   return switch (result) {
     Success(:final data) => data?.visits ?? [],
     Error() => [],
