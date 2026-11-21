@@ -850,6 +850,7 @@ class _RestClient implements RestClient {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? unclaimed,
     int? page,
     int? perPage,
   }) async {
@@ -859,6 +860,7 @@ class _RestClient implements RestClient {
       r'status': status,
       r'facility_id': facilityId,
       r'assigned_to': assignedTo,
+      r'unclaimed': unclaimed,
       r'page': page,
       r'per_page': perPage,
     };

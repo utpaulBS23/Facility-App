@@ -18,6 +18,7 @@ import '../extensions/travel_expense_status_extension.dart';
 import '../riverpod/travel_expense_detail_provider.dart';
 import '../widgets/travel_expense_delete_bar.dart';
 import '../widgets/travel_expense_review_bar.dart';
+import '../widgets/travel_expense_system_generated_card.dart';
 
 part '../widgets/travel_expense_travel_info_card.dart';
 
@@ -147,6 +148,16 @@ class _TravelExpenseDetailsBody extends StatelessWidget {
           ),
           Gap(spacing.s16),
           _TravelExpenseTravelInfoCard(expense: expense),
+          if (expense.calculatedDistanceKm != null ||
+              expense.calculatedAmount != null ||
+              expense.ratePerKm != null) ...[
+            Gap(spacing.s16),
+            TravelExpenseSystemGeneratedCard(
+              distanceKm: expense.calculatedDistanceKm,
+              amount: expense.calculatedAmount,
+              ratePerKm: expense.ratePerKm,
+            ),
+          ],
           if (expense.transportLines.isNotEmpty) ...[
             Gap(spacing.s16),
             _TransportLinesBreakdown(lines: expense.transportLines),

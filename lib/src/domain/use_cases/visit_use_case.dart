@@ -20,6 +20,7 @@ final class GetMyVisitsUseCase {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? unclaimed,
     int? page,
     int? perPage,
   }) async {
@@ -32,6 +33,7 @@ final class GetMyVisitsUseCase {
       status: status,
       facilityId: facilityId,
       assignedTo: assignedTo,
+      unclaimed: unclaimed,
       page: page,
       perPage: perPage,
     );

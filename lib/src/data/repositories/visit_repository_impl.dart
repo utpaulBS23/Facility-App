@@ -39,6 +39,7 @@ final class VisitRepositoryImpl extends VisitRepository {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? unclaimed,
     int? page,
     int? perPage,
   }) => asyncGuard(() async {
@@ -48,6 +49,7 @@ final class VisitRepositoryImpl extends VisitRepository {
       status: status,
       facilityId: facilityId,
       assignedTo: assignedTo,
+      unclaimed: unclaimed,
       page: page,
       perPage: perPage,
     );
