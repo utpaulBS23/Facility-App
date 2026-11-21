@@ -211,6 +211,7 @@ abstract class RestClient {
     @Query('status') String? status,
     @Query('facility_id') int? facilityId,
     @Query('assigned_to') int? assignedTo,
+    @Query('unclaimed') int? unclaimed,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });

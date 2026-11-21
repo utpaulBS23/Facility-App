@@ -13,6 +13,7 @@ abstract base class VisitRepository extends Repository {
     String? status,
     int? facilityId,
     int? assignedTo,
+    int? unclaimed,
     int? page,
     int? perPage,
   });
