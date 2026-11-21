@@ -61,7 +61,7 @@ class _ReasonSelector extends ConsumerWidget {
                   _OptionCard(
                     icon: _getIconForReason(reason.key),
                     title: reason.getLocalizedLabel(locale),
-                    subtitle: '',
+                    subtitle: reason.getLocalizedSublabel(locale) ?? '',
                     isSelected: selected?.id == reason.id,
                     onTap: onSelect == null ? null : () => onSelect!(reason),
                   ),

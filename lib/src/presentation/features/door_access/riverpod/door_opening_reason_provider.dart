@@ -11,6 +11,8 @@ class DoorOpeningReason {
     required this.label,
     this.labelBn,
     this.color,
+    this.sublabel,
+    this.sublabelBn,
   });
 
   final int id;
@@ -19,9 +21,15 @@ class DoorOpeningReason {
   final String label;
   final String? labelBn;
   final String? color;
+  final String? sublabel;
+  final String? sublabelBn;
 
   String getLocalizedLabel(String languageCode) {
     return languageCode == 'bn' && labelBn != null ? labelBn! : label;
+  }
+
+  String? getLocalizedSublabel(String languageCode) {
+    return languageCode == 'bn' && sublabelBn != null ? sublabelBn : sublabel;
   }
 }
 
@@ -57,6 +65,8 @@ final doorOpeningReasonProvider =
           label: label,
           labelBn: itemMap['label_bn'] as String?,
           color: itemMap['color'] as String?,
+          sublabel: itemMap['sublabel'] as String?,
+          sublabelBn: itemMap['sublabel_bn'] as String?,
         );
       }).toList();
     } catch (e, st) {

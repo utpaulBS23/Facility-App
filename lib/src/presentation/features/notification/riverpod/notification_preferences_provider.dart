@@ -12,6 +12,13 @@ class NotificationPreferences extends _$NotificationPreferences {
   Future<NotificationPreferencesEntity> build() => _load();
 
   Future<NotificationPreferencesEntity> _load() async {
+    if (!ref.read(sessionServiceProvider).isAuthenticated) {
+      throw Failure(
+        type: FailureType.unauthorized,
+        message: 'Session expired',
+      );
+    }
+
     final result = await ref.read(getNotificationPreferencesUseCaseProvider)();
 
     return switch (result) {

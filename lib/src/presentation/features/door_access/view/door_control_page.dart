@@ -157,11 +157,12 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
 
     return doorStatesAsync.when(
       data: (doorStates) {
+        final states = doorStates as List<DoorStatusModel>;
         DoorStatusModel? matchingStatus;
-        if (_selectedGate != null && doorStates.isNotEmpty) {
-          matchingStatus = doorStates.firstWhere(
+        if (_selectedGate != null && states.isNotEmpty) {
+          matchingStatus = states.firstWhere(
             (state) => state.door == _selectedGate!.deviceId,
-            orElse: () => doorStates.first,
+            orElse: () => states.first,
           );
         }
 
