@@ -44,6 +44,7 @@ class GatewayService {
     required String authCode,
   }) async {
     try {
+      Log.info('🔑 Requesting /facility/doors with authCode header (length: ${authCode.length})');
       final response = await _dio.get<Map<String, dynamic>>(
         '/facility/doors',
         options: Options(headers: {'X-Auth-Code': authCode}),
@@ -60,6 +61,7 @@ class GatewayService {
       Log.info('✅ Fetched ${doorsList.length} door statuses');
       return doorsList.cast<Map<String, dynamic>>();
     } on DioException catch (e) {
+      Log.error('❌ getDoorStatuses failed: ${e.response?.statusCode}');
       throw _mapDioException(e);
     }
   }

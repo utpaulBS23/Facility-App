@@ -87,6 +87,7 @@ class Routes {
   static const String passwordReset = '/password-reset';
   static const String otpVerification = '/otp-verification';
   static const String doorControl = '/door-control';
+  static const String doorUnlockResult = '/door-control/result';
 
   static const String trainingSessions = '/training-sessions';
   static const String trainingSessionDetails = '/training-session-details/:id';
