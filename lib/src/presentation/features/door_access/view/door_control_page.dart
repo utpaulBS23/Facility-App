@@ -48,6 +48,7 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
   DoorOpeningReason? _selectedReason;
   late final TextEditingController _authCodeController;
   PartnerStaffEntity? _selectedAttendant;
+  bool _isFacilityOnline = true;
 
   String get _facilityId => widget.facility.id.toString();
 
@@ -78,6 +79,19 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
     super.initState();
     _authCodeController = TextEditingController();
     _loadAuthCode();
+    _checkFacilityHealth();
+  }
+
+  Future<void> _checkFacilityHealth() async {
+    try {
+      final gatewayService = ref.read(gatewayServiceProvider);
+      final result = await gatewayService.healthCheck();
+      setState(() => _isFacilityOnline = result);
+      Log.info(_isFacilityOnline ? '✅ Facility online' : '❌ Facility offline');
+    } catch (e) {
+      setState(() => _isFacilityOnline = false);
+      Log.warning('⚠️ Health check failed: $e');
+    }
   }
 
   Future<void> _loadAuthCode() async {
@@ -234,7 +248,30 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
         itemKey: MenuItemKey.doorLock,
         fallbackTitle: context.locale.doorControl,
       ),
-      body: doorStatesAsync.when(
+      body: Column(
+        children: [
+          if (!_isFacilityOnline)
+            Container(
+              color: context.color.warning,
+              padding: EdgeInsets.all(context.dimensions.padding.p16),
+              child: Row(
+                children: [
+                  Icon(Icons.wifi_off, color: context.color.onPrimary, size: 20),
+                  Gap(context.dimensions.spacing.s8),
+                  Expanded(
+                    child: Text(
+                      'Facility Offline - Read Only Mode',
+                      style: context.textStyle.bodySmall.copyWith(
+                        color: context.color.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          Expanded(
+            child: doorStatesAsync.when(
         data: (doorStates) {
           final states = doorStates as List<DoorStatusModel>;
           final matchingDoor = states.isNotEmpty
@@ -247,11 +284,14 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
 
           Log.info('🚪 Door State: door=${matchingDoor?.door}, isClosed=${matchingDoor?.isClosed}, locked=${matchingDoor?.locked}');
 
-          return _buildBody(context, isLocked, actionState, states);
+          return _buildBody(context, isLocked, actionState, states, _isFacilityOnline);
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) =>
             Center(child: Text(error.localizedMessage(context))),
+      ),
+            ),
+        ],
       ),
     );
   }
@@ -662,10 +702,12 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
     bool isLocked,
     AsyncValue<DoorUnlockResult?> actionState,
     List<DoorStatusModel> doorStatuses,
+    bool isOnline,
   ) {
     Log.info('📄 _buildBody called, isLocked=$isLocked, doorStatuses=${doorStatuses.length}');
     final dimensions = context.dimensions;
     final isLoading = actionState.isLoading;
+    final isDisabled = isLoading || !isOnline;
     final unlockResult = actionState.valueOrNull;
 
     Log.info('📊 Door Lock State: isLocked=$isLocked, '
@@ -687,19 +729,19 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
               children: [
                 _PrimaryDeviceCard(
                   facility: widget.facility,
-                  isOffline: false,
+                  isOffline: !isOnline,
                 ),
                 Gap(dimensions.spacing.s16),
-                _buildAuthCodeField(context, dimensions, isLoading),
+                _buildAuthCodeField(context, dimensions, isDisabled),
                 Gap(dimensions.spacing.s16),
                 _UsageTypeSelector(
                   selected: _usageType,
                   onSelect: isLoading ? null : _onUsageTypeChanged,
                 ),
                 Gap(dimensions.spacing.s16),
-                _buildServiceSelector(context, dimensions, isLoading, doorStatuses),
+                _buildServiceSelector(context, dimensions, isDisabled, doorStatuses),
                 Gap(dimensions.spacing.s16),
-                ..._buildPersonalDetailsSection(context, dimensions, isLocked, isLoading),
+                ..._buildPersonalDetailsSection(context, dimensions, isLocked, isDisabled),
               ],
             ),
           ),
@@ -714,9 +756,9 @@ class _DoorControlPageState extends ConsumerState<DoorControlPage> {
               dimensions.padding.p16,
             ),
             child: _DoorActionButtons(
-              canUnlock: isLocked && _isReadyToUnlock && !isLoading && (_usageType == _UsageType.customer || _isReadyToUnlockPersonal),
+              canUnlock: isOnline && isLocked && _isReadyToUnlock && !isLoading && (_usageType == _UsageType.customer || _isReadyToUnlockPersonal),
               isUnlockLoading: isLoading && isLocked,
-              isOffline: false,
+              isOffline: !isOnline,
               onUnlock: _onUnlock,
             ),
           ),
