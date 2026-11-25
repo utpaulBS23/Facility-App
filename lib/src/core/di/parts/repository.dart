@@ -39,8 +39,8 @@ LocationRepository locationRepository(Ref ref) {
 LocationPingRepository locationPingRepository(Ref ref) {
   return LocationPingRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
-    trackingService: ref.read(backgroundLocationTrackingServiceProvider),
-    notificationService: ref.read(locationSharingNotificationServiceProvider),
+    backgroundService: ref.read(appBackgroundServiceProvider),
+    cache: ref.read(cacheServiceProvider),
     authenticationRepository: ref.read(authenticationRepositoryProvider),
   );
 }
