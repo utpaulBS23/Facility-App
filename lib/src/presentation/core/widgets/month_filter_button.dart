@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/extensions/app_localization.dart';
 import '../theme/theme.dart';
 
 /// Opens the month picker dialog; [onSelected] gets the first day of the
@@ -53,6 +54,198 @@ class MonthFilterButton extends StatelessWidget {
       onPressed: () => _pickMonth(context),
       icon: const Icon(Icons.calendar_month_outlined, size: 18),
       label: Text(DateFormat('MMM yyyy').format(month)),
+    );
+  }
+}
+
+enum _PickerMode { month, day }
+
+/// One trigger + dialog that picks either a whole month or a single day —
+/// shared by any list page that can scope its data either way (Attendance).
+class MonthOrDateFilterButton extends StatelessWidget {
+  const MonthOrDateFilterButton({
+    super.key,
+    required this.month,
+    required this.date,
+    required this.lastDate,
+    required this.onMonthSelected,
+    required this.onDateSelected,
+  });
+
+  /// The first day of the currently selected month (used when [date] is
+  /// null).
+  final DateTime month;
+
+  /// The specific day selected, if any — takes precedence over [month] when
+  /// set.
+  final DateTime? date;
+  final DateTime lastDate;
+  final ValueChanged<DateTime> onMonthSelected;
+  final ValueChanged<DateTime> onDateSelected;
+
+  Future<void> _pick(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (_) => _MonthOrDatePickerDialog(
+        initialMonth: month,
+        initialDate: date,
+        lastDate: lastDate,
+        onMonthSelected: onMonthSelected,
+        onDateSelected: onDateSelected,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final label = date != null
+        ? DateFormat('d MMM yyyy').format(date!)
+        : DateFormat('MMM yyyy').format(month);
+
+    return TextButton.icon(
+      onPressed: () => _pick(context),
+      icon: Icon(
+        date != null ? Icons.event_outlined : Icons.calendar_month_outlined,
+        size: 18,
+      ),
+      label: Text(label),
+    );
+  }
+}
+
+class _MonthOrDatePickerDialog extends StatefulWidget {
+  const _MonthOrDatePickerDialog({
+    required this.initialMonth,
+    required this.initialDate,
+    required this.lastDate,
+    required this.onMonthSelected,
+    required this.onDateSelected,
+  });
+
+  final DateTime initialMonth;
+  final DateTime? initialDate;
+  final DateTime lastDate;
+  final ValueChanged<DateTime> onMonthSelected;
+  final ValueChanged<DateTime> onDateSelected;
+
+  @override
+  State<_MonthOrDatePickerDialog> createState() =>
+      _MonthOrDatePickerDialogState();
+}
+
+class _MonthOrDatePickerDialogState extends State<_MonthOrDatePickerDialog> {
+  late _PickerMode _mode;
+  late DateTime _current;
+
+  @override
+  void initState() {
+    super.initState();
+    _mode = widget.initialDate != null ? _PickerMode.day : _PickerMode.month;
+    _current = DateTime(widget.initialMonth.year, widget.initialMonth.month);
+  }
+
+  String _monthLabel(BuildContext context, int month) => DateFormat(
+    'MMM',
+    Localizations.localeOf(context).languageCode,
+  ).format(DateTime(2000, month));
+
+  bool _isDisabled(int year, int month) {
+    final date = DateTime(year, month);
+    return date.isAfter(DateTime(widget.lastDate.year, widget.lastDate.month));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: SegmentedButton<_PickerMode>(
+        segments: [
+          ButtonSegment(
+            value: _PickerMode.month,
+            label: Text(context.locale.month),
+          ),
+          ButtonSegment(
+            value: _PickerMode.day,
+            label: Text(context.locale.date),
+          ),
+        ],
+        selected: {_mode},
+        onSelectionChanged: (selection) =>
+            setState(() => _mode = selection.first),
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: _mode == _PickerMode.month ? _monthGrid(context) : _dayGrid(),
+      ),
+    );
+  }
+
+  Widget _monthGrid(BuildContext context) {
+    final spacing = context.dimensions.spacing;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.chevron_left),
+              onPressed: () =>
+                  setState(() => _current = DateTime(_current.year - 1)),
+            ),
+            Text(_current.year.toString(), style: context.textStyle.titleMedium),
+            IconButton(
+              icon: const Icon(Icons.chevron_right),
+              onPressed: _current.year >= widget.lastDate.year
+                  ? null
+                  : () => setState(() => _current = DateTime(_current.year + 1)),
+            ),
+          ],
+        ),
+        GridView.builder(
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: spacing.s8,
+            crossAxisSpacing: spacing.s8,
+            childAspectRatio: 2,
+          ),
+          itemCount: 12,
+          itemBuilder: (context, i) {
+            final month = i + 1;
+            final disabled = _isDisabled(_current.year, month);
+            final isSelected =
+                widget.initialDate == null &&
+                _current.year == widget.initialMonth.year &&
+                month == widget.initialMonth.month;
+            return TextButton(
+              onPressed: disabled
+                  ? null
+                  : () {
+                      widget.onMonthSelected(DateTime(_current.year, month));
+                      Navigator.of(context).pop();
+                    },
+              style: TextButton.styleFrom(
+                backgroundColor: isSelected ? context.color.primary : null,
+                foregroundColor: isSelected ? context.color.onPrimary : null,
+              ),
+              child: Text(_monthLabel(context, month)),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _dayGrid() {
+    return CalendarDatePicker(
+      initialDate: widget.initialDate ?? widget.lastDate,
+      firstDate: DateTime(2020),
+      lastDate: widget.lastDate,
+      onDateChanged: (picked) {
+        widget.onDateSelected(picked);
+        Navigator.of(context).pop();
+      },
     );
   }
 }

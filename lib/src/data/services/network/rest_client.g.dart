@@ -6,7 +6,7 @@ part of 'rest_client.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
 class _RestClient implements RestClient {
   _RestClient(this._dio, {this.baseUrl, this.errorLogger}) {
@@ -729,6 +729,8 @@ class _RestClient implements RestClient {
     required String month,
     int? facilityId,
     int? userId,
+    String? fromDay,
+    String? toDay,
     int? page,
     int? perPage,
   }) async {
@@ -737,6 +739,8 @@ class _RestClient implements RestClient {
       r'month': month,
       r'facility_id': facilityId,
       r'user_id': userId,
+      r'from_day': fromDay,
+      r'to_day': toDay,
       r'page': page,
       r'per_page': perPage,
     };

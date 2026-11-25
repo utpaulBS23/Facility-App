@@ -14,6 +14,8 @@ final class GetMonthlyAttendanceOverviewUseCase {
     required String month,
     int? facilityId,
     int? userId,
+    String? fromDay,
+    String? toDay,
     int? page,
     int? perPage,
   }) async {
@@ -25,6 +27,8 @@ final class GetMonthlyAttendanceOverviewUseCase {
       month: month,
       facilityId: facilityId,
       userId: userId,
+      fromDay: fromDay,
+      toDay: toDay,
       page: page,
       perPage: perPage,
     );

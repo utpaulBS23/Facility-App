@@ -14,37 +14,102 @@ import '../../check_in_out/riverpod/check_out_provider.dart';
 part 'attendance_provider.g.dart';
 
 @riverpod
-Future<MonthlyAttendanceSummaryEntity> monthlyAttendanceOverview(
-  Ref ref,
-  String month, {
-  int? facilityId,
-  int? userId,
-}) async {
-  // WHY self-refresh here rather than each caller invalidating this provider
-  // after the fact: every action below changes what this list should show —
-  // listening once in the data provider itself means a new caller can't
-  // forget to wire it.
-  ref.listen(checkInProvider, (_, next) {
-    if (next is AsyncData && next.value is Success) ref.invalidateSelf();
-  });
-  ref.listen(checkOutProvider, (_, next) {
-    if (next is AsyncData && next.value is Success) ref.invalidateSelf();
-  });
-  ref.listen(approveAttendanceProvider, (_, next) {
-    if (next is AsyncData && next.hasValue) ref.invalidateSelf();
-  });
-  ref.listen(rejectAttendanceProvider, (_, next) {
-    if (next is AsyncData && next.hasValue) ref.invalidateSelf();
-  });
+class MonthlyAttendanceOverview extends _$MonthlyAttendanceOverview {
+  bool _loadingMore = false;
 
-  final result = await ref
-      .read(getMonthlyAttendanceOverviewUseCaseProvider)
-      .call(month: month, facilityId: facilityId, userId: userId);
-  return switch (result) {
-    Success(:final data) => data!,
-    Error(:final error) => throw Exception(error),
-    _ => throw Exception('Unexpected error'),
-  };
+  @override
+  Future<MonthlyAttendanceSummaryEntity> build(
+    String month, {
+    int? facilityId,
+    int? userId,
+    String? fromDay,
+    String? toDay,
+  }) async {
+    // WHY self-refresh here rather than each caller invalidating this
+    // provider after the fact: every action below changes what this list
+    // should show — listening once in the data provider itself means a new
+    // caller can't forget to wire it.
+    ref.listen(checkInProvider, (_, next) {
+      if (next is AsyncData && next.value is Success) ref.invalidateSelf();
+    });
+    ref.listen(checkOutProvider, (_, next) {
+      if (next is AsyncData && next.value is Success) ref.invalidateSelf();
+    });
+    ref.listen(approveAttendanceProvider, (_, next) {
+      if (next is AsyncData && next.hasValue) ref.invalidateSelf();
+    });
+    ref.listen(rejectAttendanceProvider, (_, next) {
+      if (next is AsyncData && next.hasValue) ref.invalidateSelf();
+    });
+
+    return _load(
+      month: month,
+      facilityId: facilityId,
+      userId: userId,
+      fromDay: fromDay,
+      toDay: toDay,
+      page: 1,
+    );
+  }
+
+  Future<MonthlyAttendanceSummaryEntity> _load({
+    required String month,
+    required int? facilityId,
+    required int? userId,
+    required String? fromDay,
+    required String? toDay,
+    required int page,
+  }) async {
+    final result = await ref
+        .read(getMonthlyAttendanceOverviewUseCaseProvider)
+        .call(
+          month: month,
+          facilityId: facilityId,
+          userId: userId,
+          fromDay: fromDay,
+          toDay: toDay,
+          page: page,
+        );
+    return switch (result) {
+      Success(:final data) => data!,
+      Error(:final error) => throw error,
+      _ => throw Failure.emptyResponse('get monthly attendance overview'),
+    };
+  }
+
+  /// Appends the next page. Does nothing while one is loading or at the end.
+  Future<void> loadMore({
+    required String month,
+    int? facilityId,
+    int? userId,
+    String? fromDay,
+    String? toDay,
+  }) async {
+    final current = state.valueOrNull;
+    if (current == null || !current.hasMore || _loadingMore) return;
+
+    _loadingMore = true;
+    try {
+      final next = await _load(
+        month: month,
+        facilityId: facilityId,
+        userId: userId,
+        fromDay: fromDay,
+        toDay: toDay,
+        page: current.page + 1,
+      );
+
+      // WHY re-check: a filter change may have landed while this awaited,
+      // and that page no longer follows what is on screen.
+      final latest = state.valueOrNull;
+      if (latest == null || latest.page != current.page) return;
+      state = AsyncData(latest.appended(next));
+    } on Object {
+      // WHY quiet: the next scroll to the end tries again.
+    } finally {
+      _loadingMore = false;
+    }
+  }
 }
 
 // WHY: family on facilityId — the attendance staff filter must scope to the

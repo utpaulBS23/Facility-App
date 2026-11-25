@@ -178,6 +178,8 @@ abstract class RestClient {
     @Query('month') required String month,
     @Query('facility_id') int? facilityId,
     @Query('user_id') int? userId,
+    @Query('from_day') String? fromDay,
+    @Query('to_day') String? toDay,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });

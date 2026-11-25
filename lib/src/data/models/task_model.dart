@@ -1,8 +1,11 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
 import '../../core/utils/api_date.dart';
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/task_entity.dart';
 import '../../presentation/core/utils/date_formatter.dart';
+import '../extension/paginated_list_mapper.dart';
+import 'common/pagination_meta_model.dart';
 
 part 'task_model.mapper.dart';
 
@@ -40,13 +43,22 @@ TaskStatus _mapIssueStatus(String raw) => switch (raw.toLowerCase()) {
 
 @MappableClass(generateMethods: GenerateMethods.decode)
 class TaskListResponseModel with TaskListResponseModelMappable {
-  TaskListResponseModel({required this.data});
+  TaskListResponseModel({required this.data, this.meta});
 
   final List<TaskModel> data;
+
+  // WHY nullable: the attendant branch of this same endpoint returns a flat
+  // `{data}` with no `meta` at all (role-dependent shape, see the Task list
+  // API docs) — `toPaginatedEntities()` treats a missing `meta` as "this is
+  // the only page".
+  final PaginationMetaModel? meta;
 
   static const fromJson = TaskListResponseModelMapper.fromJson;
 
   List<TaskEntity> toEntities() => data.map((e) => e.toEntity()).toList();
+
+  PaginatedListEntity<TaskEntity> toPaginatedEntities() =>
+      meta.toPaginated(toEntities());
 }
 
 @MappableClass(generateMethods: GenerateMethods.decode)

@@ -44,12 +44,12 @@ class AttendanceShiftInfoEntity {
 
 class AttendanceApproverEntity {
   const AttendanceApproverEntity({
-    required this.id,
+    this.id,
     required this.name,
     this.uid,
   });
 
-  final int id;
+  final int? id;
   final String name;
   final String? uid;
 }
@@ -73,7 +73,6 @@ class AttendanceItemEntity {
     this.lateCheckInByMinutes,
     this.checkOutReason,
     this.lateCheckOutByMinutes,
-    this.isLateCheckOut,
     this.checkInSelfie,
     this.checkOutSelfie,
     this.shift,
@@ -103,7 +102,6 @@ class AttendanceItemEntity {
   final int? lateCheckInByMinutes;
   final String? checkOutReason;
   final int? lateCheckOutByMinutes;
-  final bool? isLateCheckOut;
   final String? checkInSelfie;
   final String? checkOutSelfie;
   final AttendanceShiftInfoEntity? shift;
@@ -152,29 +150,62 @@ class MonthlyAttendanceSummaryEntity {
     int? presentCount,
     int? lateCount,
     int? absentCount,
+    int? notCheckedInCount,
     int? rejectCount,
-    int? leaveCount,
+    this.page = 1,
+    this.lastPage = 1,
   })  : _rawPresentCount = presentCount,
         _rawLateCount = lateCount,
         _rawAbsentCount = absentCount,
-        _rawRejectCount = rejectCount,
-        _rawLeaveCount = leaveCount;
+        _rawNotCheckedInCount = notCheckedInCount,
+        _rawRejectCount = rejectCount;
 
   final List<AttendanceItemEntity> attendances;
   final int? _rawPresentCount;
   final int? _rawLateCount;
   final int? _rawAbsentCount;
+  final int? _rawNotCheckedInCount;
   final int? _rawRejectCount;
-  final int? _rawLeaveCount;
 
+  // WHY page/lastPage, not total/perPage: `hasMore` is the only thing
+  // `loadMore()` needs, and the server's `pagination.total_pages` already
+  // gives that directly — deriving it from total+perPage would just be
+  // re-deriving a number the server already computed.
+  final int page;
+  final int lastPage;
+
+  bool get hasMore => page < lastPage;
+
+  /// Merges the next page's rows onto this one, keeping the counts and
+  /// filters already loaded. The counts stay whatever the first page's
+  /// `summary` reported — they cover the whole period already, not just
+  /// what has been paged in — mirrors [AppNotificationListEntity.appended].
+  MonthlyAttendanceSummaryEntity appended(MonthlyAttendanceSummaryEntity next) {
+    return MonthlyAttendanceSummaryEntity(
+      attendances: [...attendances, ...next.attendances],
+      presentCount: _rawPresentCount,
+      lateCount: _rawLateCount,
+      absentCount: _rawAbsentCount,
+      notCheckedInCount: _rawNotCheckedInCount,
+      rejectCount: _rawRejectCount,
+      page: next.page,
+      lastPage: next.lastPage,
+    );
+  }
+
+  // WHY present/late distinguish on-time vs late check-ins (API semantics,
+  // see Attendance Monthly Overview API reference §"Summary fields"), not
+  // on [AttendanceStatus] which only separates approved/auto-approved/
+  // rejected/absent/pending.
   int get presentCount {
     final count = _rawPresentCount;
     if (count != null && count > 0) return count;
     return attendances
         .where(
           (a) =>
-              a.displayStatus == AttendanceStatus.approved ||
-              a.displayStatus == AttendanceStatus.autoApproved,
+              !a.isLate &&
+              (a.displayStatus == AttendanceStatus.approved ||
+                  a.displayStatus == AttendanceStatus.autoApproved),
         )
         .length;
   }
@@ -182,7 +213,14 @@ class MonthlyAttendanceSummaryEntity {
   int get lateCount {
     final count = _rawLateCount;
     if (count != null && count > 0) return count;
-    return attendances.where((a) => a.isLate).length;
+    return attendances
+        .where(
+          (a) =>
+              a.isLate &&
+              (a.displayStatus == AttendanceStatus.approved ||
+                  a.displayStatus == AttendanceStatus.autoApproved),
+        )
+        .length;
   }
 
   int get absentCount {
@@ -193,19 +231,17 @@ class MonthlyAttendanceSummaryEntity {
         .length;
   }
 
+  int get notCheckedInCount {
+    final count = _rawNotCheckedInCount;
+    if (count != null && count > 0) return count;
+    return attendances.where((a) => a.status == 'not_checked_in').length;
+  }
+
   int get rejectCount {
     final count = _rawRejectCount;
     if (count != null && count > 0) return count;
     return attendances
         .where((a) => a.displayStatus == AttendanceStatus.rejected)
-        .length;
-  }
-
-  int get leaveCount {
-    final count = _rawLeaveCount;
-    if (count != null && count > 0) return count;
-    return attendances
-        .where((a) => a.displayStatus == AttendanceStatus.pending)
         .length;
   }
 }

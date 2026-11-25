@@ -15,6 +15,7 @@ class TaskListResponseModelMapper
     if (_instance == null) {
       MapperContainer.globals.use(_instance = TaskListResponseModelMapper._());
       TaskModelMapper.ensureInitialized();
+      PaginationMetaModelMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -25,14 +26,19 @@ class TaskListResponseModelMapper
   static List<TaskModel> _$data(TaskListResponseModel v) => v.data;
   static const Field<TaskListResponseModel, List<TaskModel>> _f$data =
       Field('data', _$data);
+  static PaginationMetaModel? _$meta(TaskListResponseModel v) => v.meta;
+  static const Field<TaskListResponseModel, PaginationMetaModel> _f$meta =
+      Field('meta', _$meta, opt: true);
 
   @override
   final MappableFields<TaskListResponseModel> fields = const {
     #data: _f$data,
+    #meta: _f$meta,
   };
 
   static TaskListResponseModel _instantiate(DecodingData data) {
-    return TaskListResponseModel(data: data.dec(_f$data));
+    return TaskListResponseModel(
+        data: data.dec(_f$data), meta: data.dec(_f$meta));
   }
 
   @override

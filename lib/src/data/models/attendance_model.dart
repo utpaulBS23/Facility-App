@@ -1,15 +1,21 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import 'common/pagination_model.dart';
+
 part 'attendance_model.mapper.dart';
 
+// WHY nested shift/approver/reviewer objects, not flat: GET
+// /attendances/monthly-overview sends these nested, per the Attendance
+// Monthly Overview API reference — the flat shape belongs to the plain
+// GET /attendances list endpoint, which this screen does not use.
 @MappableClass(generateMethods: GenerateMethods.decode)
 class AttendanceSummaryModel with AttendanceSummaryModelMappable {
   AttendanceSummaryModel({
     this.presentCount,
     this.lateCount,
     this.absentCount,
+    this.notCheckedInCount,
     this.rejectCount,
-    this.leaveCount,
   });
 
   @MappableField(key: 'present_count')
@@ -21,11 +27,11 @@ class AttendanceSummaryModel with AttendanceSummaryModelMappable {
   @MappableField(key: 'absent_count')
   final int? absentCount;
 
+  @MappableField(key: 'not_checked_in_count')
+  final int? notCheckedInCount;
+
   @MappableField(key: 'reject_count')
   final int? rejectCount;
-
-  @MappableField(key: 'leave_count')
-  final int? leaveCount;
 
   static const fromJson = AttendanceSummaryModelMapper.fromJson;
 }
@@ -96,7 +102,6 @@ class AttendanceItemModel with AttendanceItemModelMappable {
     this.lateCheckInByMinutes,
     this.checkOutReason,
     this.lateCheckOutByMinutes,
-    this.isLateCheckOut,
     this.checkInSelfie,
     this.checkOutSelfie,
     this.shift,
@@ -152,9 +157,6 @@ class AttendanceItemModel with AttendanceItemModelMappable {
   @MappableField(key: 'late_check_out_by_minutes')
   final int? lateCheckOutByMinutes;
 
-  @MappableField(key: 'is_late_check_out')
-  final bool? isLateCheckOut;
-
   @MappableField(key: 'check_in_selfie')
   final String? checkInSelfie;
 
@@ -187,12 +189,14 @@ class AttendanceOverviewResponseModel
     this.message,
     this.summary,
     this.attendances = const [],
+    this.pagination,
   });
 
   final bool success;
   final String? message;
   final AttendanceSummaryModel? summary;
   final List<AttendanceItemModel> attendances;
+  final PaginationModel? pagination;
 
   static const fromJson = AttendanceOverviewResponseModelMapper.fromJson;
 }

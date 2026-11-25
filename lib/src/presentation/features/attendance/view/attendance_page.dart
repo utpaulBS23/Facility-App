@@ -52,8 +52,14 @@ class AttendancePage extends ConsumerStatefulWidget {
 class _AttendancePageState extends ConsumerState<AttendancePage>
     with WidgetsBindingObserver {
   late String _selectedMonth;
+  // WHY nullable, separate from _selectedMonth: picking a specific day
+  // overrides the month range for that query; picking a month (via
+  // MonthFilterButton) clears it back to whole-month mode. Both filters
+  // stay visible — only one is active at a time.
+  DateTime? _selectedDate;
   int? _selectedFacilityId;
   int? _selectedUserId;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -62,12 +68,53 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
     final now = DateTime.now();
     _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
     _selectedFacilityId = _defaultFacilityId;
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  // WHY month derives from the picked date, not _selectedMonth: the API
+  // clamps from_day/to_day inside month — a day outside the currently
+  // selected month would otherwise be clamped away to an empty result (see
+  // Attendance Monthly Overview API reference §"Query parameters").
+  String get _month {
+    if (_selectedDate != null) {
+      return '${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}';
+    }
+    return _selectedMonth;
+  }
+
+  String? get _fromDay =>
+      _selectedDate != null ? DateFormat('yyyy-MM-dd').format(_selectedDate!) : null;
+
+  String? get _toDay => _fromDay;
+
+  void _onScroll() {
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 240) {
+      ref
+          .read(
+            monthlyAttendanceOverviewProvider(
+              _month,
+              facilityId: _selectedFacilityId,
+              userId: _selectedUserId,
+              fromDay: _fromDay,
+              toDay: _toDay,
+            ).notifier,
+          )
+          .loadMore(
+            month: _month,
+            facilityId: _selectedFacilityId,
+            userId: _selectedUserId,
+            fromDay: _fromDay,
+            toDay: _toDay,
+          );
+    }
   }
 
   // WHY: the app can sit backgrounded for a while — check-ins/outs done
@@ -83,9 +130,11 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
     try {
       await ref.read(
         monthlyAttendanceOverviewProvider(
-          _selectedMonth,
+          _month,
           facilityId: _selectedFacilityId,
           userId: _selectedUserId,
+          fromDay: _fromDay,
+          toDay: _toDay,
         ).future,
       );
     } catch (_) {
@@ -153,9 +202,11 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
   Widget build(BuildContext context) {
     final state = ref.watch(
       monthlyAttendanceOverviewProvider(
-        _selectedMonth,
+        _month,
         facilityId: _selectedFacilityId,
         userId: _selectedUserId,
+        fromDay: _fromDay,
+        toDay: _toDay,
       ),
     );
     final facilities =
@@ -172,16 +223,19 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
         fallbackTitle: context.locale.attendance,
         isTabByDefault: true,
         actions: [
-          MonthFilterButton(
+          MonthOrDateFilterButton(
             month: DateTime(
               int.parse(_selectedMonth.split('-')[0]),
               int.parse(_selectedMonth.split('-')[1]),
             ),
+            date: _selectedDate,
             lastDate: DateTime.now(),
-            onSelected: (date) => setState(
-              () => _selectedMonth =
-                  '${date.year}-${date.month.toString().padLeft(2, '0')}',
-            ),
+            onMonthSelected: (date) => setState(() {
+              _selectedMonth =
+                  '${date.year}-${date.month.toString().padLeft(2, '0')}';
+              _selectedDate = null;
+            }),
+            onDateSelected: (date) => setState(() => _selectedDate = date),
           ),
           if (facilities.length > 1)
             _FilterIconButton(
@@ -212,6 +266,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
             onApplyLeave: _onApplyLeave,
             showApplyLeave: isGranted,
             onRefresh: _onRefresh,
+            scrollController: _scrollController,
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),

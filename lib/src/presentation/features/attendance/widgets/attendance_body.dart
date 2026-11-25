@@ -7,6 +7,7 @@ class _AttendanceBody extends StatelessWidget {
     required this.onApplyLeave,
     required this.showApplyLeave,
     required this.onRefresh,
+    required this.scrollController,
   });
 
   final MonthlyAttendanceSummaryEntity summary;
@@ -14,6 +15,7 @@ class _AttendanceBody extends StatelessWidget {
   final VoidCallback onApplyLeave;
   final bool showApplyLeave;
   final Future<void> Function() onRefresh;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +46,22 @@ class _AttendanceBody extends StatelessWidget {
           child: RefreshIndicator(
             onRefresh: onRefresh,
             child: ListView.separated(
+              controller: scrollController,
               padding: EdgeInsets.fromLTRB(
                 spacing.s16,
                 spacing.s4,
                 spacing.s16,
                 spacing.s16,
               ),
-              itemCount: summary.attendances.length,
+              itemCount: summary.attendances.length + (summary.hasMore ? 1 : 0),
               separatorBuilder: (context, index) => Gap(spacing.s12),
               itemBuilder: (context, index) {
+                if (index >= summary.attendances.length) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: spacing.s16),
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                }
                 final item = summary.attendances[index];
                 return _AttendanceListItem(
                   item: item,
