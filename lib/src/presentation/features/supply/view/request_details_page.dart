@@ -7,7 +7,6 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/supply/delivery_entity.dart';
-import '../../../../domain/entities/supply/supply_approval_enums.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_status.dart';
 import '../../../core/router/routes.dart';
@@ -15,6 +14,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_error_widget.dart';
+import '../../../core/widgets/approval_steps_timeline.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
@@ -34,11 +34,7 @@ part '../widgets/request_details_body.dart';
 part '../widgets/request_details_error.dart';
 part '../widgets/request_details_loading.dart';
 part '../widgets/request_info_card.dart';
-part '../widgets/request_status_timeline.dart';
 part '../widgets/request_user_card.dart';
-part '../widgets/timeline_circle_node.dart';
-part '../widgets/timeline_labels_row.dart';
-part '../widgets/timeline_nodes_row.dart';
 
 class RequestDetailsPage extends ConsumerStatefulWidget {
   const RequestDetailsPage({super.key, required this.requestId});

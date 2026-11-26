@@ -1,4 +1,5 @@
 import '../../core/base/exceptions.dart';
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/leave/create_leave_request_entity.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
@@ -9,6 +10,8 @@ import '../../domain/entities/leave/leave_summary_entity.dart';
 import '../../domain/entities/leave/leave_type.dart';
 import '../../domain/entities/leave/shift_status.dart';
 import '../models/leave/leave_models.dart';
+import 'approval_step_mapper.dart';
+import 'paginated_list_mapper.dart';
 
 extension LeavePolicyModelToEntity on LeavePolicyModel {
   LeavePolicyEntity toEntity() {
@@ -51,19 +54,6 @@ extension LeaveApplicantModelToEntity on LeaveApplicantModel {
       id: id,
       name: name,
       groupName: groupName,
-    );
-  }
-}
-
-extension LeaveApprovalStepModelToEntity on LeaveApprovalStepModel {
-  LeaveApprovalStepEntity toEntity() {
-    return LeaveApprovalStepEntity(
-      stepNumber: stepNumber,
-      approverRole: approverRole,
-      approver: approver?.toEntity(),
-      status: LeaveStatus.fromWireString(status),
-      decidedAt: decidedAt,
-      rejectionNote: rejectionNote,
     );
   }
 }
@@ -172,6 +162,10 @@ extension LeaveRequestListResponseModelToEntity
     on LeaveRequestListResponseModel {
   List<LeaveRequestEntity> toEntity() {
     return data.map((model) => model.toEntity()).toList();
+  }
+
+  PaginatedListEntity<LeaveRequestEntity> toPaginatedEntity() {
+    return meta.toPaginated(data.map((model) => model.toEntity()).toList());
   }
 }
 

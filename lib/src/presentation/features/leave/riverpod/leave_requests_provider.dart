@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/base/base.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/leave/leave_filter.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
@@ -44,6 +45,11 @@ class SelectedLeaveTab extends _$SelectedLeaveTab {
 class LeaveRequests extends _$LeaveRequests {
   String _searchQuery = '';
   LeaveFilter _selectedFilter = LeaveFilter.all;
+  int _page = 1;
+  bool _hasMore = false;
+  bool _loadingMore = false;
+
+  bool get hasMore => _hasMore;
 
   @override
   Future<List<LeaveRequestEntity>> build() async {
@@ -71,19 +77,62 @@ class LeaveRequests extends _$LeaveRequests {
     required LeaveTab tab,
     required LeaveFilter filter,
   }) async {
-    final result = tab == LeaveTab.leaveApprovals
-        ? await ref
-            .read(getLeaveApprovalsUseCaseProvider)
-            .call(status: filter.status)
-        : await ref
-            .read(getMyLeavesUseCaseProvider)
-            .call(status: filter.status);
+    if (tab == LeaveTab.leaveApprovals) {
+      final result = await ref
+          .read(getLeaveRequestsUseCaseProvider)
+          .call(status: filter.status, page: 1);
+
+      return switch (result) {
+        Success(:final data) when data != null => _applyPage(data),
+        Error(:final error) => throw error,
+        _ => const [],
+      };
+    }
+
+    // WHY not paginated: `my-leaves` returns the caller's own leaves in one
+    // response.
+    _page = 1;
+    _hasMore = false;
+    final result = await ref
+        .read(getMyLeavesUseCaseProvider)
+        .call(status: filter.status);
 
     return switch (result) {
       Success(:final data) => data ?? const [],
       Error(:final error) => throw error,
       _ => throw Failure.emptyResponse('load leave requests'),
     };
+  }
+
+  List<LeaveRequestEntity> _applyPage(PaginatedListEntity<LeaveRequestEntity> page) {
+    _page = page.currentPage;
+    _hasMore = page.hasMore;
+    return page.items;
+  }
+
+  /// Appends the next approvals page. Does nothing while one is loading, at
+  /// the end, or on the My leave tab.
+  Future<void> loadMore() async {
+    final current = state.valueOrNull;
+    if (current == null || !_hasMore || _loadingMore) return;
+
+    _loadingMore = true;
+    try {
+      final result = await ref
+          .read(getLeaveRequestsUseCaseProvider)
+          .call(status: _selectedFilter.status, page: _page + 1);
+
+      switch (result) {
+        case Success(:final data) when data != null:
+          state = AsyncValue.data([...current, ..._applyPage(data)]);
+        case Success():
+        case Error():
+          // WHY quiet: the next scroll to the end tries again.
+          break;
+      }
+    } finally {
+      _loadingMore = false;
+    }
   }
 
   /// Reloads outside of build (search, filter, retry) and publishes the result.

@@ -1892,12 +1892,18 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> getLeaveApprovals({
+  Future<HttpResponse<dynamic>> getLeaveRequests({
     required int partnerId,
     String? status,
+    int? page,
+    int? perPage,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'status': status};
+    final queryParameters = <String, dynamic>{
+      r'status': status,
+      r'page': page,
+      r'per_page': perPage,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
@@ -1905,7 +1911,7 @@ class _RestClient implements RestClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/partners/${partnerId}/leave-approvals',
+            '/partners/${partnerId}/leave-requests',
             queryParameters: queryParameters,
             data: _data,
           )

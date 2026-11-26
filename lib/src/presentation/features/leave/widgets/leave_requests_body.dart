@@ -9,6 +9,8 @@ class _LeaveRequestsBody extends StatelessWidget {
     required this.onFilterSelected,
     required this.onSearchChanged,
     required this.leaveRequestsState,
+    required this.scrollController,
+    required this.hasMore,
     required this.summaryState,
     required this.onRetry,
   });
@@ -20,6 +22,8 @@ class _LeaveRequestsBody extends StatelessWidget {
   final ValueChanged<LeaveFilter> onFilterSelected;
   final VoidCallback onSearchChanged;
   final AsyncValue<List<LeaveRequestEntity>> leaveRequestsState;
+  final ScrollController scrollController;
+  final bool hasMore;
 
   /// Null outside the approvals tab, where the summary is not fetched.
   final AsyncValue<LeaveSummaryEntity>? summaryState;
@@ -76,6 +80,8 @@ class _LeaveRequestsBody extends StatelessWidget {
             ),
             data: (requests) => _LeaveRequestsList(
               requests: requests,
+              scrollController: scrollController,
+              hasMore: hasMore,
               selectedFilter: selectedFilter,
               searchQuery: searchController.text.trim().toLowerCase(),
             ),

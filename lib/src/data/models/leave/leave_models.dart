@@ -1,5 +1,8 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../common/approval_step_model.dart';
+import '../common/pagination_meta_model.dart';
+
 part 'leave_models.mapper.dart';
 
 @MappableClass(
@@ -146,30 +149,6 @@ class LeaveApplicantModel with LeaveApplicantModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
-class LeaveApprovalStepModel with LeaveApprovalStepModelMappable {
-  const LeaveApprovalStepModel({
-    required this.stepNumber,
-    required this.approverRole,
-    this.status,
-    this.approver,
-    this.decidedAt,
-    this.rejectionNote,
-  });
-
-  final int stepNumber;
-  final String approverRole;
-  final String? status;
-  final LeaveApplicantModel? approver;
-  final String? decidedAt;
-  final String? rejectionNote;
-
-  static const fromJson = LeaveApprovalStepModelMapper.fromJson;
-}
-
-@MappableClass(
-  caseStyle: CaseStyle.snakeCase,
-  generateMethods: GenerateMethods.decode,
-)
 class LeaveShiftDetailModel with LeaveShiftDetailModelMappable {
   const LeaveShiftDetailModel({
     required this.id,
@@ -244,7 +223,7 @@ class LeaveRequestModel with LeaveRequestModelMappable {
   final String? currentStepLabel;
   final bool? canAction;
   final List<LeaveShiftDetailModel> shifts;
-  final List<LeaveApprovalStepModel> approvalSteps;
+  final List<ApprovalStepModel> approvalSteps;
   final String? updatedAt;
 
   static const fromJson = LeaveRequestModelMapper.fromJson;
@@ -311,6 +290,7 @@ class LeaveRequestListResponseModel
     this.page,
     this.pageSize,
     this.data = const [],
+    this.meta,
   });
 
   final bool? success;
@@ -318,6 +298,7 @@ class LeaveRequestListResponseModel
   final int? page;
   final int? pageSize;
   final List<LeaveRequestModel> data;
+  final PaginationMetaModel? meta;
 
   static const fromJson = LeaveRequestListResponseModelMapper.fromJson;
 }

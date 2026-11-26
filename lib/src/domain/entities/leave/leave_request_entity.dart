@@ -1,3 +1,4 @@
+import '../common/approval_step_entity.dart';
 import 'leave_policy_entity.dart';
 import 'leave_status.dart';
 import 'leave_type.dart';
@@ -13,24 +14,6 @@ class LeaveApplicantEntity {
   final int id;
   final String name;
   final String? groupName;
-}
-
-class LeaveApprovalStepEntity {
-  const LeaveApprovalStepEntity({
-    required this.stepNumber,
-    required this.approverRole,
-    this.approver,
-    required this.status,
-    this.decidedAt,
-    this.rejectionNote,
-  });
-
-  final int stepNumber;
-  final String approverRole;
-  final LeaveApplicantEntity? approver;
-  final LeaveStatus status;
-  final String? decidedAt;
-  final String? rejectionNote;
 }
 
 class LeaveShiftDetailEntity {
@@ -93,7 +76,7 @@ class LeaveRequestEntity {
   final List<String> attachments;
   final LeaveStatus status;
   final List<LeaveShiftDetailEntity> shifts;
-  final List<LeaveApprovalStepEntity> approvalSteps;
+  final List<ApprovalStepEntity> approvalSteps;
   final String createdAt;
 
   /// Server-derived UX flag: true when the logged-in caller can approve or

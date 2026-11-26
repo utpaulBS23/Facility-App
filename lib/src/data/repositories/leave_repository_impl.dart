@@ -1,4 +1,5 @@
 import '../../core/base/base.dart';
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/leave/create_leave_request_entity.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
@@ -118,20 +119,25 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   }
 
   @override
-  Future<Result<List<LeaveRequestEntity>, Failure>> getLeaveApprovals(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>>
+  getLeaveRequests(
     int partnerId, {
     LeaveStatus? status,
+    int? page,
+    int? perPage,
   }) {
     return asyncGuard(() async {
-      final response = await remote.getLeaveApprovals(
+      final response = await remote.getLeaveRequests(
         partnerId: partnerId,
         status: status?.toWireString(),
+        page: page,
+        perPage: perPage,
       );
       final responseModel = LeaveRequestListResponseModel.fromJson(
         response.data,
       );
 
-      return responseModel.toEntity();
+      return responseModel.toPaginatedEntity();
     });
   }
 

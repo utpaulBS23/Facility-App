@@ -68,8 +68,6 @@ class _RequestDetailsBody extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _RequestStatusTimeline(request: request),
-            Gap(spacing.s24),
             RequestInfoCard(
               label: context.locale.facility,
               title: request.localizedFacilityName(context.languageCode),
@@ -82,6 +80,22 @@ class _RequestDetailsBody extends ConsumerWidget {
               timestampLabel: context.locale.submittedOn(
                 _formatDate(request.createdAt),
               ),
+            ),
+            Gap(spacing.s12),
+            ApprovalStepsTimeline(
+              steps: request.approvalSteps,
+              trailing: [
+                if (request.hasDelivery)
+                  ApprovalTimelineExtraItem(
+                    title: context.locale.deliveryStage,
+                    subtitle: request.isDelivered
+                        ? context.locale.delivered
+                        : context.locale.inDelivery,
+                    color: request.isDelivered
+                        ? context.color.success
+                        : context.color.warning,
+                  ),
+              ],
             ),
             Gap(spacing.s12),
             _ReceivedItemsSection(

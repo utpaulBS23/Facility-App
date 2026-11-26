@@ -44,12 +44,27 @@ class LeaveRequestsPage extends ConsumerStatefulWidget {
 
 class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
   LeaveFilter _selectedFilter = LeaveFilter.all;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 240) {
+      ref.read(leaveRequestsProvider.notifier).loadMore();
+    }
   }
 
   @override
@@ -125,6 +140,8 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
               .search(_searchController.text.trim());
         },
         leaveRequestsState: leaveRequestsState,
+        scrollController: _scrollController,
+        hasMore: ref.read(leaveRequestsProvider.notifier).hasMore,
         summaryState: summaryState,
         onRetry: () => ref.read(leaveRequestsProvider.notifier).fetch(),
       ),

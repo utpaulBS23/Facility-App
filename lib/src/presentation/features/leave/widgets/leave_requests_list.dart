@@ -3,11 +3,15 @@ part of '../view/leave_requests_page.dart';
 class _LeaveRequestsList extends StatelessWidget {
   const _LeaveRequestsList({
     required this.requests,
+    required this.scrollController,
+    required this.hasMore,
     required this.selectedFilter,
     required this.searchQuery,
   });
 
   final List<LeaveRequestEntity> requests;
+  final ScrollController scrollController;
+  final bool hasMore;
   final LeaveFilter selectedFilter;
   final String searchQuery;
 
@@ -35,10 +39,19 @@ class _LeaveRequestsList extends StatelessWidget {
     }
 
     return ListView.separated(
+      controller: scrollController,
       padding: EdgeInsets.all(context.dimensions.spacing.s16),
-      itemCount: filtered.length,
+      itemCount: filtered.length + (hasMore ? 1 : 0),
       separatorBuilder: (context, index) => Gap(context.dimensions.spacing.s12),
       itemBuilder: (context, index) {
+        if (index >= filtered.length) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: context.dimensions.spacing.s16,
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
         final request = filtered[index];
 
         return _LeaveRequestActionCard(

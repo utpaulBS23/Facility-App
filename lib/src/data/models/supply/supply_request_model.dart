@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
+import '../common/approval_step_model.dart';
+
 part 'supply_request_model.mapper.dart';
 
 @MappableClass(
@@ -37,35 +39,6 @@ class SupplyRequestItemModel with SupplyRequestItemModelMappable {
   caseStyle: CaseStyle.snakeCase,
   generateMethods: GenerateMethods.decode,
 )
-class SupplyRequestApprovalModel with SupplyRequestApprovalModelMappable {
-  const SupplyRequestApprovalModel({
-    required this.id,
-    required this.approverId,
-    required this.approverName,
-    this.approverNameBn,
-    required this.approverRole,
-    required this.action,
-    this.notes,
-    required this.actedAt,
-  });
-
-  final int id;
-  final int approverId;
-  final String approverName;
-  @MappableField(key: 'approver_name_bn')
-  final String? approverNameBn;
-  final String approverRole;
-  final String action;
-  final String? notes;
-  final String actedAt;
-
-  static const fromJson = SupplyRequestApprovalModelMapper.fromJson;
-}
-
-@MappableClass(
-  caseStyle: CaseStyle.snakeCase,
-  generateMethods: GenerateMethods.decode,
-)
 class SupplyRequestModel with SupplyRequestModelMappable {
   const SupplyRequestModel({
     required this.id,
@@ -83,7 +56,7 @@ class SupplyRequestModel with SupplyRequestModelMappable {
     required this.itemCount,
     required this.totalValue,
     this.items = const [],
-    this.approvals = const [],
+    this.approvalSteps = const [],
     this.linkedAllocationId,
     this.allocationCode,
     required this.createdAt,
@@ -111,7 +84,7 @@ class SupplyRequestModel with SupplyRequestModelMappable {
   final int itemCount;
   final double totalValue;
   final List<SupplyRequestItemModel> items;
-  final List<SupplyRequestApprovalModel> approvals;
+  final List<ApprovalStepModel> approvalSteps;
   final int? linkedAllocationId;
   final String? allocationCode;
   final String createdAt;
