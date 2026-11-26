@@ -144,6 +144,9 @@ class Endpoints {
       '/partners/{partnerId}/issues/{issueId}/complete';
   static const String taskMedia = '/partners/{partnerId}/tasks/{taskId}/media';
 
+  /// Approval configuration (approver groups of leave / supply chains)
+  static const String approvalConfigs = '/approval-configs';
+
   /// Leave Management
   static const String leavePolicies = '/partners/{partnerId}/leave-policies';
   static const String leaveBalances = '/partners/{partnerId}/leave-balances';

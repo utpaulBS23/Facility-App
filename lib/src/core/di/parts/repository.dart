@@ -116,6 +116,11 @@ LeaveRepository leaveRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+ApprovalConfigRepository approvalConfigRepository(Ref ref) {
+  return ApprovalConfigRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
 TravelExpenseRepository travelExpenseRepository(Ref ref) {
   return TravelExpenseRepositoryImpl(ref.read(restClientServiceProvider));
 }

@@ -61,6 +61,9 @@ class LeaveRequests extends _$LeaveRequests {
 
     ref.listen(selectedLeaveTabProvider, (previous, next) {
       if (previous != next) {
+        // WHY reset: a "Pending · group" filter only exists on the
+        // approvals tab.
+        _selectedFilter = LeaveFilter.all;
         ref.invalidateSelf();
       }
     });
@@ -80,7 +83,7 @@ class LeaveRequests extends _$LeaveRequests {
     if (tab == LeaveTab.leaveApprovals) {
       final result = await ref
           .read(getLeaveRequestsUseCaseProvider)
-          .call(status: filter.status, page: 1);
+          .call(filter: filter, page: 1);
 
       return switch (result) {
         Success(:final data) when data != null => _applyPage(data),
@@ -95,7 +98,7 @@ class LeaveRequests extends _$LeaveRequests {
     _hasMore = false;
     final result = await ref
         .read(getMyLeavesUseCaseProvider)
-        .call(status: filter.status);
+        .call(filter: filter);
 
     return switch (result) {
       Success(:final data) => data ?? const [],
@@ -120,7 +123,7 @@ class LeaveRequests extends _$LeaveRequests {
     try {
       final result = await ref
           .read(getLeaveRequestsUseCaseProvider)
-          .call(status: _selectedFilter.status, page: _page + 1);
+          .call(filter: _selectedFilter, page: _page + 1);
 
       switch (result) {
         case Success(:final data) when data != null:

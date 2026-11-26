@@ -49,7 +49,8 @@ final class SupplyRepositoryImpl extends SupplyRepository {
       final response = await remote.getSupplyRequests(
         partnerId: filter.partnerId!,
         facilityId: filter.facilityId,
-        status: filter.status?.toWireString(),
+        status: filter.status,
+        waitingFor: filter.waitingFor,
         urgency: filter.urgency?.toWireString(),
         search: filter.search,
         page: filter.page,

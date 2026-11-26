@@ -1339,6 +1339,30 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<HttpResponse<dynamic>> getApprovalConfigs({
+    required String module,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'module': module};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/approval-configs',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<dynamic>> getLeavePolicies({
     required int partnerId,
   }) async {
@@ -1895,12 +1919,14 @@ class _RestClient implements RestClient {
   Future<HttpResponse<dynamic>> getLeaveRequests({
     required int partnerId,
     String? status,
+    String? waitingFor,
     int? page,
     int? perPage,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'status': status,
+      r'waiting_for': waitingFor,
       r'page': page,
       r'per_page': perPage,
     };
@@ -2578,6 +2604,7 @@ class _RestClient implements RestClient {
     required int partnerId,
     int? facilityId,
     String? status,
+    String? waitingFor,
     String? urgency,
     String? search,
     int? page,
@@ -2587,6 +2614,7 @@ class _RestClient implements RestClient {
     final queryParameters = <String, dynamic>{
       r'facility_id': facilityId,
       r'status': status,
+      r'waiting_for': waitingFor,
       r'urgency': urgency,
       r'search': search,
       r'page': page,

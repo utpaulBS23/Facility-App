@@ -4,6 +4,8 @@ class _SupplyRequestsBody extends StatelessWidget {
   const _SupplyRequestsBody({
     required this.summaryAsync,
     required this.selectedFilter,
+    required this.filters,
+    required this.filtersLoading,
     required this.filteredRequestsAsync,
     required this.onFilterSelected,
     required this.onRequestTap,
@@ -12,6 +14,10 @@ class _SupplyRequestsBody extends StatelessWidget {
 
   final AsyncValue<SupplyRequestSummaryEntity> summaryAsync;
   final SupplyFilter selectedFilter;
+  final List<SupplyFilter> filters;
+
+  /// True while the approver groups the chips depend on are still loading.
+  final bool filtersLoading;
   final AsyncValue<PaginatedListEntity<SupplyRequestEntity>> filteredRequestsAsync;
   final ValueChanged<SupplyFilter> onFilterSelected;
   final ValueChanged<SupplyRequestEntity> onRequestTap;
@@ -39,13 +45,16 @@ class _SupplyRequestsBody extends StatelessWidget {
                 _ => const _SupplySummaryRowShimmer(),
               },
               Gap(spacing.s16),
-              CategoryFilterChips<SupplyFilter>(
-                categories: SupplyFilter.values,
-                selectedCategory: selectedFilter,
-                onSelected: onFilterSelected,
-                labelBuilder: (context, filter) =>
-                    _getFilterLabel(context, filter),
-              ),
+              if (filtersLoading)
+                const CategoryFilterChipsShimmer()
+              else
+                CategoryFilterChips<SupplyFilter>(
+                  categories: filters,
+                  selectedCategory: selectedFilter,
+                  onSelected: onFilterSelected,
+                  labelBuilder: (context, filter) =>
+                      _getFilterLabel(context, filter),
+                ),
             ],
           ),
         ),
@@ -87,17 +96,17 @@ class _SupplyRequestsBody extends StatelessWidget {
   }
 
   String _getFilterLabel(BuildContext context, SupplyFilter filter) {
-    return switch (filter) {
-      SupplyFilter.all => context.locale.all,
-      SupplyFilter.pendingSupervisor => context.locale.pendingSupervisor,
-      SupplyFilter.pendingOperationManager =>
-        context.locale.pendingOperationManager,
-      SupplyFilter.operationManagerApproved =>
-        context.locale.operationManagerApproved,
-      SupplyFilter.inDelivery => context.locale.inDelivery,
-      SupplyFilter.delivered => context.locale.delivered,
-      SupplyFilter.rejected => context.locale.rejected,
-      SupplyFilter.completed => context.locale.completed,
+    final group = filter.label;
+    if (group != null) return '${context.locale.pending} · $group';
+
+    return switch (filter.status) {
+      'pending' => context.locale.pending,
+      'operation_manager_approved' => context.locale.operationManagerApproved,
+      'in_delivery' => context.locale.inDelivery,
+      'delivered' => context.locale.delivered,
+      'rejected' => context.locale.rejected,
+      'completed' => context.locale.completed,
+      _ => context.locale.all,
     };
   }
 }

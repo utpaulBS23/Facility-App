@@ -7,9 +7,11 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/approval/approval_config_entity.dart';
 import '../../../../domain/entities/leave/leave_filter.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
 import '../../../../domain/entities/leave/leave_summary_entity.dart';
+import '../../../core/application_state/approval_groups_provider/approval_groups_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
@@ -17,6 +19,7 @@ import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/category_filter_chips.dart';
+import '../../../core/widgets/category_filter_chips_shimmer.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../extensions/leave_presentation_extension.dart';
@@ -78,6 +81,32 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
 
     final leaveRequestsState = ref.watch(leaveRequestsProvider);
     final currentTab = ref.watch(selectedLeaveTabProvider);
+    ref.listen(selectedLeaveTabProvider, (previous, next) {
+      if (previous != next) setState(() => _selectedFilter = LeaveFilter.all);
+    });
+    // WHY only on the approvals tab: the configuration endpoint needs a
+    // permission plain users lack, and My leave has no group chips.
+    final groupsAsync = currentTab == LeaveTab.leaveApprovals
+        ? ref.watch(approvalGroupsProvider(ApprovalModule.leave))
+        : null;
+    final groups =
+        groupsAsync?.valueOrNull ?? const <ApprovalGroupEntity>[];
+    // WHY chips wait for the call to finish, with or without a result: the
+    // labels depend on it, and showing the fallback first would swap chips.
+    final filtersLoading = groupsAsync?.isLoading ?? false;
+    final filters = currentTab == LeaveTab.myLeave
+        ? LeaveFilter.myLeaveOptions
+        : [
+            LeaveFilter.all,
+            // WHY a plain "Pending" without groups: the configuration may be
+            // unavailable to this user or not loaded yet.
+            if (groups.isEmpty)
+              LeaveFilter.pending
+            else
+              for (final group in groups)
+                LeaveFilter.pendingFor(role: group.role, label: group.label),
+            ...LeaveFilter.terminal,
+          ];
     // WHY only on the approvals tab: the endpoint needs an approval
     // permission, which a plain attendant does not have.
     final summaryState = currentTab == LeaveTab.leaveApprovals
@@ -128,6 +157,8 @@ class _LeaveRequestsPageState extends ConsumerState<LeaveRequestsPage> {
         padding: padding,
         searchController: _searchController,
         selectedFilter: _selectedFilter,
+        filters: filters,
+        filtersLoading: filtersLoading,
         currentTab: currentTab,
         onFilterSelected: (filter) {
           setState(() => _selectedFilter = filter);

@@ -5,26 +5,21 @@ class _LeaveRequestsList extends StatelessWidget {
     required this.requests,
     required this.scrollController,
     required this.hasMore,
-    required this.selectedFilter,
     required this.searchQuery,
   });
 
   final List<LeaveRequestEntity> requests;
   final ScrollController scrollController;
   final bool hasMore;
-  final LeaveFilter selectedFilter;
   final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
     final filtered = requests.where((r) {
       final name = (r.applicant?.name ?? r.leavePolicy.name).toLowerCase();
-      final matchesSearch = searchQuery.isEmpty || name.contains(searchQuery);
-      if (!matchesSearch) {
-        return false;
-      }
-
-      return selectedFilter.matches(r.status);
+      // WHY no status check here: the server already filtered by status and
+      // waiting_for, and a request waiting on e.g. HR has no status of its own.
+      return searchQuery.isEmpty || name.contains(searchQuery);
     }).toList();
 
     if (filtered.isEmpty) {
