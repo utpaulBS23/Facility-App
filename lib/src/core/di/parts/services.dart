@@ -42,16 +42,9 @@ LocationService locationService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-BackgroundLocationTrackingService backgroundLocationTrackingService(Ref ref) {
-  final service = BackgroundLocationTrackingServiceImpl();
-  ref.onDispose(service.stop);
-
-  return service;
-}
-
-@Riverpod(keepAlive: true)
-LocationSharingNotificationService locationSharingNotificationService(Ref ref) {
-  return LocationSharingNotificationServiceImpl(
+AppBackgroundService appBackgroundService(Ref ref) {
+  return AppBackgroundServiceImpl(
+    ref.read(cacheServiceProvider),
     ref.read(flutterLocalNotificationsPluginProvider),
   );
 }

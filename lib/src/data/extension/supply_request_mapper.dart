@@ -7,7 +7,6 @@ import '../../domain/entities/supply/delivery_entity.dart';
 import '../../domain/entities/supply/delivery_status.dart';
 import '../../domain/entities/supply/stock_allocation_entity.dart';
 import '../../domain/entities/supply/stock_item_entity.dart';
-import '../../domain/entities/supply/supply_approval_enums.dart';
 import '../../domain/entities/supply/supply_request_entity.dart';
 import '../../domain/entities/supply/supply_request_payloads.dart';
 import '../../domain/entities/supply/supply_request_status.dart';
@@ -20,6 +19,7 @@ import '../models/supply/stock_item_model.dart';
 import '../models/supply/stock_item_response_model.dart';
 import '../models/supply/supply_request_model.dart';
 import '../models/supply/supply_response_model.dart';
+import 'approval_step_mapper.dart';
 import 'multipart_photo.dart';
 
 extension SupplyRequestItemModelMapper on SupplyRequestItemModel {
@@ -32,20 +32,6 @@ extension SupplyRequestItemModelMapper on SupplyRequestItemModel {
       itemNameBn: itemNameBn ?? '',
       unit: unit,
       qtyRequested: qtyRequested,
-    );
-  }
-}
-
-extension SupplyRequestApprovalModelMapper on SupplyRequestApprovalModel {
-  SupplyRequestApprovalEntity toEntity() {
-    return SupplyRequestApprovalEntity(
-      id: id,
-      approverName: approverName,
-      approverNameBn: approverNameBn ?? '',
-      approverRole: ApproverRole.fromWireString(approverRole),
-      action: ApprovalAction.fromWireString(action),
-      notes: notes ?? '',
-      actedAt: actedAt,
     );
   }
 }
@@ -66,7 +52,7 @@ extension SupplyRequestModelMapper on SupplyRequestModel {
       status: SupplyRequestStatus.fromWireString(status),
       itemCount: itemCount,
       items: items.map((i) => i.toEntity()).toList(),
-      approvals: approvals.map((a) => a.toEntity()).toList(),
+      approvalSteps: approvalSteps.map((s) => s.toEntity()).toList(),
       allocationCode: allocationCode ?? '',
       createdAt: createdAt,
       updatedAt: updatedAt ?? createdAt,

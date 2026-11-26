@@ -656,8 +656,16 @@ GetLeaveAttendantsUseCase getLeaveAttendantsUseCase(Ref ref) {
 }
 
 @riverpod
-GetLeaveApprovalsUseCase getLeaveApprovalsUseCase(Ref ref) {
-  return GetLeaveApprovalsUseCase(
+GetApprovalGroupsUseCase getApprovalGroupsUseCase(Ref ref) {
+  return GetApprovalGroupsUseCase(
+    approvalConfigRepository: ref.read(approvalConfigRepositoryProvider),
+    authRepository: ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetLeaveRequestsUseCase getLeaveRequestsUseCase(Ref ref) {
+  return GetLeaveRequestsUseCase(
     leaveRepository: ref.read(leaveRepositoryProvider),
     authRepository: ref.read(authenticationRepositoryProvider),
   );

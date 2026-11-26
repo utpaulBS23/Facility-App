@@ -7,59 +7,58 @@ import '../../domain/entities/location_ping_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/location_ping_repository.dart';
 import '../extension/location_ping_mapper.dart';
-import '../services/location/background_location_tracking_service.dart';
+import '../services/background/app_background_service.dart';
+import '../services/cache/cache_service.dart';
+import '../services/location/location_ping_background_task.dart';
 import '../services/network/rest_client.dart';
-import '../services/notification/location_sharing_notification_service.dart';
 
 final class LocationPingRepositoryImpl extends LocationPingRepository {
   LocationPingRepositoryImpl({
     required RestClient remote,
-    required BackgroundLocationTrackingService trackingService,
-    required LocationSharingNotificationService notificationService,
+    required AppBackgroundService backgroundService,
+    required CacheService cache,
     required AuthenticationRepository authenticationRepository,
   }) : _remote = remote,
-       _trackingService = trackingService,
-       _notificationService = notificationService,
+       _backgroundService = backgroundService,
+       _cache = cache,
        _authenticationRepository = authenticationRepository;
 
-  // WHY fallback: used only if a session was restored without
-  // tracking_settings (e.g. payload persisted before this field existed).
-  static const _defaultSyncInterval = Duration(seconds: 10);
-
   final RestClient _remote;
-  final BackgroundLocationTrackingService _trackingService;
-  final LocationSharingNotificationService _notificationService;
+  final AppBackgroundService _backgroundService;
+  final CacheService _cache;
   final AuthenticationRepository _authenticationRepository;
   final Battery _battery = Battery();
-  int? _activeTaskId;
 
-  // WHY delegate to the tracking service, not a separate bool: it is
-  // already the single source of truth for whether the position stream is
+  // WHY delegate to the background service, not a separate bool: it is
+  // already the single source of truth for whether the tracking task is
   // running — a second flag here could drift out of sync with it.
   @override
-  bool get isSharingLocation => _trackingService.isRunning;
+  bool get isSharingLocation =>
+      _backgroundService.isRunning &&
+      _backgroundService.activeTaskId == LocationPingBackgroundTask.taskId;
 
   @override
-  int? get activeTaskId => _trackingService.isRunning ? _activeTaskId : null;
+  int? get activeTaskId =>
+      isSharingLocation ? _cache.get<int>(CacheKey.locationPingActiveVisitId) : null;
 
   @override
   Future<Result<void, Failure>> startTracking({required int taskId}) {
     return asyncGuard(() async {
-      await _ensureTrackingPermission();
-      await _notificationService.showSharingNotification();
-      _activeTaskId = taskId;
       final activeVisitIntervalSeconds = _authenticationRepository
           .currentSession
           ?.trackingSettings
           ?.activeVisitPingIntervalSeconds;
-      _trackingService.start(
-        interval: activeVisitIntervalSeconds == null
-            ? _defaultSyncInterval
-            : Duration(seconds: activeVisitIntervalSeconds),
-        fireImmediately: true,
-        onPosition: (position) async {
-          await syncPosition(taskId: taskId, position: position);
-        },
+      if (activeVisitIntervalSeconds == null) {
+        throw Exception(
+          'Tracking interval not configured for this session.',
+        );
+      }
+
+      await _ensureTrackingPermission();
+      await _cache.save(CacheKey.locationPingActiveVisitId, taskId);
+      await _backgroundService.start(
+        taskId: LocationPingBackgroundTask.taskId,
+        params: {'taskId': taskId, 'intervalSeconds': activeVisitIntervalSeconds},
       );
     });
   }
@@ -67,9 +66,8 @@ final class LocationPingRepositoryImpl extends LocationPingRepository {
   @override
   Future<Result<void, Failure>> stopTracking() {
     return asyncGuard(() async {
-      _trackingService.stop();
-      _activeTaskId = null;
-      await _notificationService.hideSharingNotification();
+      await _backgroundService.stop();
+      await _cache.remove([CacheKey.locationPingActiveVisitId]);
     });
   }
 

@@ -43,6 +43,16 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- flutter_background_service declares this <service> with no
+             foregroundServiceType; Android 12+ (API 31+) throws
+             MissingForegroundServiceTypeException on startForeground()
+             with a type the manifest doesn't declare, so without this
+             override the service never actually promotes to foreground —
+             the sticky notification silently never posts. -->
+        <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="location" />
     </application>
     <!-- Required for url_launcher on Android 11+ (API 30+) -->
     <queries>

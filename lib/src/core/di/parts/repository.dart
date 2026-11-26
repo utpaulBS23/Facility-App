@@ -39,8 +39,8 @@ LocationRepository locationRepository(Ref ref) {
 LocationPingRepository locationPingRepository(Ref ref) {
   return LocationPingRepositoryImpl(
     remote: ref.read(restClientServiceProvider),
-    trackingService: ref.read(backgroundLocationTrackingServiceProvider),
-    notificationService: ref.read(locationSharingNotificationServiceProvider),
+    backgroundService: ref.read(appBackgroundServiceProvider),
+    cache: ref.read(cacheServiceProvider),
     authenticationRepository: ref.read(authenticationRepositoryProvider),
   );
 }
@@ -113,6 +113,11 @@ TaskOccurrenceRepository taskOccurrenceRepository(Ref ref) {
 @Riverpod(keepAlive: true)
 LeaveRepository leaveRepository(Ref ref) {
   return LeaveRepositoryImpl(ref.read(restClientServiceProvider));
+}
+
+@Riverpod(keepAlive: true)
+ApprovalConfigRepository approvalConfigRepository(Ref ref) {
+  return ApprovalConfigRepositoryImpl(ref.read(restClientServiceProvider));
 }
 
 @Riverpod(keepAlive: true)

@@ -8,11 +8,11 @@ import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
 import '../../../../domain/entities/leave/leave_request_entity.dart';
-import '../../../../domain/entities/leave/leave_status.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/approval_steps_timeline.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
@@ -25,7 +25,6 @@ import '../widgets/leave_details_cancel_bar.dart';
 part '../widgets/leave_detail_header_card.dart';
 part '../widgets/leave_detail_info_section.dart';
 part '../widgets/leave_detail_shift_section.dart';
-part '../widgets/leave_status_timeline.dart';
 
 enum _LeaveAction { approve, reject, cancel }
 
@@ -67,6 +66,12 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
     );
   }
 
+  String _formatTimestamp(String? isoString) {
+    final parsed = isoString == null ? null : DateTime.tryParse(isoString);
+    if (parsed == null) return isoString ?? '';
+    return DateFormatter.timestamp(parsed.toLocal());
+  }
+
   void _onBack(BuildContext context) {
     if (context.canPop()) {
       context.pop();
@@ -105,7 +110,24 @@ class _LeaveDetailsPageState extends ConsumerState<LeaveDetailsPage> {
                       Gap(spacing.s12),
                       _LeaveDetailShiftSection(leaveRequest: request),
                       Gap(spacing.s12),
-                      _LeaveStatusTimeline(leaveRequest: request),
+                      ApprovalStepsTimeline(
+                        steps: request.approvalSteps,
+                        leading: [
+                          ApprovalTimelineExtraItem(
+                            title: request.isFiledOnBehalf()
+                                ? context.locale.requestedOnBehalfBy(
+                                    request.submitterName(),
+                                    request.applicant?.name ??
+                                        request.leavePolicy.name,
+                                  )
+                                : context.locale.requestedBy(
+                                    request.applicant?.name ??
+                                        request.leavePolicy.name,
+                                  ),
+                            subtitle: _formatTimestamp(request.createdAt),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

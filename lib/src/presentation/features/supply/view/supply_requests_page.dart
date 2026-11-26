@@ -7,14 +7,17 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/approval/approval_config_entity.dart';
 import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/supply/supply_filters.dart';
 import '../../../../domain/entities/supply/supply_request_entity.dart';
 import '../../../../domain/entities/supply/supply_request_summary_entity.dart';
+import '../../../core/application_state/approval_groups_provider/approval_groups_provider.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/app_error_widget.dart';
 import '../../../core/widgets/category_filter_chips.dart';
+import '../../../core/widgets/category_filter_chips_shimmer.dart';
 import '../../../core/widgets/permission_gate.dart';
 import '../../../core/widgets/status_dot_tag.dart';
 import '../extensions/supply_status_extension.dart';
@@ -66,6 +69,10 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
   Widget build(BuildContext context) {
     final requestsAsync = ref.watch(supplyRequestsListProvider);
     final summaryAsync = ref.watch(supplyRequestSummaryProvider);
+    final groupsAsync = ref.watch(
+      approvalGroupsProvider(ApprovalModule.supplyRequest),
+    );
+    final groups = groupsAsync.valueOrNull ?? const <ApprovalGroupEntity>[];
 
     return Scaffold(
       backgroundColor: context.color.scaffoldBackground,
@@ -76,6 +83,21 @@ class _SupplyRequestsPageState extends ConsumerState<SupplyRequestsPage> {
       body: _SupplyRequestsBody(
         summaryAsync: summaryAsync,
         selectedFilter: _selectedFilter,
+        filters: [
+          SupplyFilter.all,
+          // WHY a plain "Pending" without groups: the approval configuration
+          // is not available to every user, or may not have loaded yet.
+          if (groups.isEmpty)
+            SupplyFilter.pending
+          else
+            for (final group in groups)
+              SupplyFilter.pendingFor(role: group.role, label: group.label),
+          ...SupplyFilter.terminal,
+        ],
+        // WHY chips wait for the call to finish, with or without a result:
+        // the labels depend on it, and showing the fallback first would swap
+        // chips.
+        filtersLoading: groupsAsync.isLoading,
         filteredRequestsAsync: requestsAsync,
         onFilterSelected: _onFilterSelected,
         onRequestTap: _onRequestTap,

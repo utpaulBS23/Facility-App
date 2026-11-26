@@ -38,7 +38,6 @@ extension AttendanceItemModelToEntity on AttendanceItemModel {
     lateCheckInByMinutes: lateCheckInByMinutes,
     checkOutReason: checkOutReason,
     lateCheckOutByMinutes: lateCheckOutByMinutes,
-    isLateCheckOut: isLateCheckOut,
     checkInSelfie: checkInSelfie,
     checkOutSelfie: checkOutSelfie,
     shift: shift?.toEntity(),
@@ -58,9 +57,11 @@ extension AttendanceOverviewResponseModelToEntity
       presentCount: summary?.presentCount,
       lateCount: summary?.lateCount,
       absentCount: summary?.absentCount,
+      notCheckedInCount: summary?.notCheckedInCount,
       rejectCount: summary?.rejectCount,
-      leaveCount: summary?.leaveCount,
       attendances: attendances.map((m) => m.toEntity()).toList(),
+      page: pagination?.currentPage ?? 1,
+      lastPage: pagination?.totalPages ?? 1,
     );
   }
 }

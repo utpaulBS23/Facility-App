@@ -7,6 +7,7 @@ import '../../../../core/base/result.dart';
 import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/permission_guard.dart';
 import '../../../../domain/entities/app_permission.dart';
+import '../../../../domain/entities/common/paginated_list_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
 import '../../../../domain/entities/task_entity.dart';
 
@@ -18,6 +19,11 @@ class Tasks extends _$Tasks {
   bool _hasFetched = false;
   String? _status;
   int? _facilityId;
+  int _page = 1;
+  bool _hasMore = false;
+  bool _loadingMore = false;
+
+  bool get hasMore => _hasMore;
 
   @override
   AsyncValue<List<TaskEntity>> build() => const AsyncValue.loading();
@@ -35,15 +41,20 @@ class Tasks extends _$Tasks {
     _facilityId = facilityId;
     if (!silent) state = const AsyncValue.loading();
 
-    final Result<List<TaskEntity>, Failure> result = await ref
+    final Result<PaginatedListEntity<TaskEntity>, Failure> result = await ref
         .read(getIssuesUseCaseProvider)
-        .call(status: status, facilityId: facilityId);
+        .call(status: status, facilityId: facilityId, page: 1);
 
     Failure? failure;
     final next = result.when(
-      success: (data) => data != null
-          ? AsyncValue.data(data)
-          : AsyncValue<List<TaskEntity>>.error('No data', StackTrace.current),
+      success: (data) {
+        if (data == null) {
+          return AsyncValue<List<TaskEntity>>.error('No data', StackTrace.current);
+        }
+        _page = data.currentPage;
+        _hasMore = data.hasMore;
+        return AsyncValue.data(data.items);
+      },
       error: (error) {
         failure = error;
         return AsyncValue<List<TaskEntity>>.error(error, StackTrace.current);
@@ -63,6 +74,32 @@ class Tasks extends _$Tasks {
     if (!_hasFetched) return null;
 
     return fetch(status: _status, facilityId: _facilityId, silent: true);
+  }
+
+  /// Appends the next page. Does nothing while one is loading or at the end.
+  Future<void> loadMore() async {
+    final current = state.valueOrNull;
+    if (current == null || !hasMore || _loadingMore) return;
+
+    _loadingMore = true;
+    try {
+      final result = await ref
+          .read(getIssuesUseCaseProvider)
+          .call(status: _status, facilityId: _facilityId, page: _page + 1);
+
+      switch (result) {
+        case Success(:final data) when data != null:
+          _page = data.currentPage;
+          _hasMore = data.hasMore;
+          state = AsyncValue.data([...current, ...data.items]);
+        case Success():
+        case Error():
+          // WHY quiet: the next scroll to the end tries again.
+          break;
+      }
+    } finally {
+      _loadingMore = false;
+    }
   }
 
   Future<bool> startIssue({required int issueId}) async {

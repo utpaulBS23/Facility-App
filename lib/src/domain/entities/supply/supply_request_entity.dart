@@ -1,4 +1,4 @@
-import 'supply_approval_enums.dart';
+import '../common/approval_step_entity.dart';
 import 'supply_request_status.dart';
 import '../../../core/utils/localized_text.dart';
 
@@ -25,29 +25,6 @@ class SupplyRequestItemEntity {
       localizedText(languageCode, itemName, itemNameBn);
 }
 
-class SupplyRequestApprovalEntity {
-  const SupplyRequestApprovalEntity({
-    required this.id,
-    required this.approverName,
-    this.approverNameBn = '',
-    required this.approverRole,
-    required this.action,
-    required this.notes,
-    required this.actedAt,
-  });
-
-  final int id;
-  final String approverName;
-  final String approverNameBn;
-  final ApproverRole approverRole;
-  final ApprovalAction action;
-  final String notes;
-  final String actedAt;
-
-  String localizedApproverName(String languageCode) =>
-      localizedText(languageCode, approverName, approverNameBn);
-}
-
 class SupplyRequestEntity {
   const SupplyRequestEntity({
     required this.id,
@@ -63,7 +40,7 @@ class SupplyRequestEntity {
     required this.status,
     required this.itemCount,
     this.items = const [],
-    this.approvals = const [],
+    this.approvalSteps = const [],
     required this.allocationCode,
     required this.createdAt,
     required this.updatedAt,
@@ -86,7 +63,9 @@ class SupplyRequestEntity {
   final SupplyRequestStatus status;
   final int itemCount;
   final List<SupplyRequestItemEntity> items;
-  final List<SupplyRequestApprovalEntity> approvals;
+  /// The whole approval chain in order, pending steps included. Drives the
+  /// status timeline.
+  final List<ApprovalStepEntity> approvalSteps;
   final String allocationCode;
   final String createdAt;
   final String updatedAt;

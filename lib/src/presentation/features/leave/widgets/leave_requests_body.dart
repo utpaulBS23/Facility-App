@@ -5,10 +5,14 @@ class _LeaveRequestsBody extends StatelessWidget {
     required this.padding,
     required this.searchController,
     required this.selectedFilter,
+    required this.filters,
+    required this.filtersLoading,
     required this.currentTab,
     required this.onFilterSelected,
     required this.onSearchChanged,
     required this.leaveRequestsState,
+    required this.scrollController,
+    required this.hasMore,
     required this.summaryState,
     required this.onRetry,
   });
@@ -16,10 +20,16 @@ class _LeaveRequestsBody extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final TextEditingController searchController;
   final LeaveFilter selectedFilter;
+  final List<LeaveFilter> filters;
+
+  /// True while the approver groups the chips depend on are still loading.
+  final bool filtersLoading;
   final LeaveTab currentTab;
   final ValueChanged<LeaveFilter> onFilterSelected;
   final VoidCallback onSearchChanged;
   final AsyncValue<List<LeaveRequestEntity>> leaveRequestsState;
+  final ScrollController scrollController;
+  final bool hasMore;
 
   /// Null outside the approvals tab, where the summary is not fetched.
   final AsyncValue<LeaveSummaryEntity>? summaryState;
@@ -49,26 +59,34 @@ class _LeaveRequestsBody extends StatelessWidget {
           ),
         Padding(
           padding: padding,
-          child: CategoryFilterChips<LeaveFilter>(
-            categories: LeaveFilter.values,
-            selectedCategory: selectedFilter,
-            onSelected: onFilterSelected,
-            labelBuilder: (context, filter) => switch (filter) {
-              LeaveFilter.all => context.locale.all,
-              LeaveFilter.pendingSupervisor => context.locale.pending,
-              LeaveFilter.pendingManager => context.locale.managerApproval,
-              LeaveFilter.approved => context.locale.approved,
-              LeaveFilter.rejected => context.locale.rejected,
-              LeaveFilter.cancelled => context.locale.cancelled,
-            },
-          ),
+          child: filtersLoading
+              ? const CategoryFilterChipsShimmer()
+              : CategoryFilterChips<LeaveFilter>(
+                  categories: filters,
+                  selectedCategory: selectedFilter,
+                  onSelected: onFilterSelected,
+                  labelBuilder: (context, filter) {
+                    final group = filter.label;
+                    if (group != null) {
+                      return '${context.locale.pending} · $group';
+                    }
+
+                    return switch (filter.status) {
+                      'pending' ||
+                      'pending_supervisor' => context.locale.pending,
+                      'pending_manager' => context.locale.managerApproval,
+                      'approved' => context.locale.approved,
+                      'rejected' => context.locale.rejected,
+                      'cancelled' => context.locale.cancelled,
+                      _ => context.locale.all,
+                    };
+                  },
+                ),
         ),
         Expanded(
           child: leaveRequestsState.when(
             loading: () => _LeaveRequestListShimmer(
-              showActionButtons: selectedFilter != LeaveFilter.approved &&
-                  selectedFilter != LeaveFilter.rejected &&
-                  selectedFilter != LeaveFilter.cancelled,
+              showActionButtons: !selectedFilter.isFinal,
             ),
             error: (err, _) => AppErrorWidget(
               message: err.localizedMessage(context),
@@ -76,7 +94,8 @@ class _LeaveRequestsBody extends StatelessWidget {
             ),
             data: (requests) => _LeaveRequestsList(
               requests: requests,
-              selectedFilter: selectedFilter,
+              scrollController: scrollController,
+              hasMore: hasMore,
               searchQuery: searchController.text.trim().toLowerCase(),
             ),
           ),

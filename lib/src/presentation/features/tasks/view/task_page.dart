@@ -46,11 +46,26 @@ class TaskPage extends ConsumerStatefulWidget {
 class _TaskPageState extends ConsumerState<TaskPage> {
   _TaskTab _selectedTab = _TaskTab.open;
   int? _selectedFacilityId;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 240) {
+      ref.read(tasksProvider.notifier).loadMore();
+    }
   }
 
   void _fetch() {
@@ -267,20 +282,27 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     ),
                   );
                 }
+                final hasMore = ref.read(tasksProvider.notifier).hasMore;
                 return RefreshIndicator(
                   onRefresh: _onRefresh,
                   child: ListView.separated(
+                    controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.all(spacing.s16),
-                    itemCount: tasks.length,
+                    itemCount: tasks.length + (hasMore ? 1 : 0),
                     separatorBuilder: (_, _) => Gap(spacing.s12),
-                    itemBuilder: (_, i) => _TaskCard(
-                      task: tasks[i],
-                      onTap: () => _onViewTap(tasks[i]),
-                      onStartTap: () => _onStartTap(tasks[i]),
-                      onCompleteTap: () => _onCompleteTap(tasks[i]),
-                      onAssignStaffTap: () async => _onAssignStaffTap(tasks[i]),
-                    ),
+                    itemBuilder: (_, i) {
+                      if (i >= tasks.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return _TaskCard(
+                        task: tasks[i],
+                        onTap: () => _onViewTap(tasks[i]),
+                        onStartTap: () => _onStartTap(tasks[i]),
+                        onCompleteTap: () => _onCompleteTap(tasks[i]),
+                        onAssignStaffTap: () async => _onAssignStaffTap(tasks[i]),
+                      );
+                    },
                   ),
                 );
               },

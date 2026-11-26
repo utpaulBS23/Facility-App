@@ -1,9 +1,10 @@
 import '../../core/base/base.dart';
+import '../entities/common/paginated_list_entity.dart';
 import '../entities/leave/create_leave_request_entity.dart';
 import '../entities/leave/leave_attendant_entity.dart';
 import '../entities/leave/leave_balance_entity.dart';
 import '../entities/leave/leave_request_entity.dart';
-import '../entities/leave/leave_status.dart';
+import '../entities/leave/leave_filter.dart';
 import '../entities/leave/leave_summary_entity.dart';
 import '../repositories/leave_repository.dart';
 import 'partner_use_case.dart';
@@ -69,12 +70,12 @@ final class GetMyLeavesUseCase extends PartnerUseCase {
   final LeaveRepository leaveRepository;
 
   Future<Result<List<LeaveRequestEntity>, Failure>> call({
-    LeaveStatus? status,
+    LeaveFilter? filter,
   }) async {
     final partnerId = getPartnerId();
     final result = await leaveRepository.getMyLeaves(
       partnerId,
-      status: status,
+      filter: filter,
     );
 
     return switch (result) {
@@ -151,27 +152,31 @@ final class GetLeaveAttendantsUseCase extends PartnerUseCase {
   }
 }
 
-final class GetLeaveApprovalsUseCase extends PartnerUseCase {
-  GetLeaveApprovalsUseCase({
+final class GetLeaveRequestsUseCase extends PartnerUseCase {
+  GetLeaveRequestsUseCase({
     required this.leaveRepository,
     required super.authRepository,
   });
 
   final LeaveRepository leaveRepository;
 
-  Future<Result<List<LeaveRequestEntity>, Failure>> call({
-    LeaveStatus? status,
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>> call({
+    LeaveFilter? filter,
+    int? page,
+    int? perPage,
   }) async {
     final partnerId = getPartnerId();
-    final result = await leaveRepository.getLeaveApprovals(
+    final result = await leaveRepository.getLeaveRequests(
       partnerId,
-      status: status,
+      filter: filter,
+      page: page,
+      perPage: perPage,
     );
 
     return switch (result) {
       Success(:final data) => Success(data: data),
       Error(:final error) => Error(error),
-      _ => Error(Failure.emptyResponse('load leave approvals')),
+      _ => Error(Failure.emptyResponse('load leave requests')),
     };
   }
 }

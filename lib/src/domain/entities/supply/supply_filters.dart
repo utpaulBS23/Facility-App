@@ -1,6 +1,6 @@
 import 'delivery_complaint_status.dart';
 import 'delivery_status.dart';
-import 'supply_request_status.dart';
+import 'supply_request_status.dart' show SupplyUrgency;
 
 /// Filter query parameters for item catalog list.
 class ItemCatalogFilter {
@@ -39,46 +39,59 @@ class ItemCatalogFilter {
   }
 }
 
-/// UI Tab filter option for supply request screens.
-enum SupplyFilter {
-  all,
-  pendingSupervisor,
-  pendingOperationManager,
-  operationManagerApproved,
-  inDelivery,
-  delivered,
-  rejected,
-  completed;
+/// UI Tab filter option for supply request screens: the `status` and
+/// `waiting_for` values to send.
+///
+/// WHY a class, not an enum: the "Pending · group" chips come from the
+/// backend's approval configuration, so their number is not known at compile
+/// time. Two filters are the same when they send the same query.
+class SupplyFilter {
+  const SupplyFilter._({this.status, this.waitingFor, this.label});
 
-  bool matches(SupplyRequestStatus status) {
-    return switch (this) {
-      SupplyFilter.all => true,
-      SupplyFilter.pendingSupervisor => status == SupplyRequestStatus.pendingSupervisor,
-      SupplyFilter.pendingOperationManager => status == SupplyRequestStatus.pendingOperationManager,
-      SupplyFilter.operationManagerApproved => status == SupplyRequestStatus.operationManagerApproved,
-      SupplyFilter.inDelivery => status == SupplyRequestStatus.inDelivery,
-      SupplyFilter.delivered => status == SupplyRequestStatus.delivered,
-      SupplyFilter.rejected => status == SupplyRequestStatus.rejected,
-      SupplyFilter.completed => status == SupplyRequestStatus.completed,
-    };
-  }
+  /// Pending on one approver group; [role] is the `waiting_for` value and
+  /// [label] its display name.
+  const SupplyFilter.pendingFor({required String role, required String label})
+    : this._(status: 'pending', waitingFor: role, label: label);
 
-  SupplyRequestStatus? toRequestStatus() {
-    return switch (this) {
-      SupplyFilter.all => null,
-      SupplyFilter.pendingSupervisor =>
-        SupplyRequestStatus.pendingSupervisor,
-      SupplyFilter.pendingOperationManager =>
-        SupplyRequestStatus.pendingOperationManager,
-      SupplyFilter.operationManagerApproved =>
-        SupplyRequestStatus.operationManagerApproved,
-      SupplyFilter.inDelivery => SupplyRequestStatus.inDelivery,
-      SupplyFilter.delivered => SupplyRequestStatus.delivered,
-      SupplyFilter.rejected => SupplyRequestStatus.rejected,
-      SupplyFilter.completed => SupplyRequestStatus.completed,
-    };
-  }
+  /// Wire `status` to send; null for no status filter.
+  final String? status;
 
+  /// `approver_role` of the pending step; only valid with `status=pending`.
+  final String? waitingFor;
+
+  /// Display name of the group a [SupplyFilter.pendingFor] filter targets.
+  final String? label;
+
+  static const all = SupplyFilter._();
+
+  /// Any pending status — also the fallback when the approver groups are
+  /// unavailable.
+  static const pending = SupplyFilter._(status: 'pending');
+  static const operationManagerApproved = SupplyFilter._(
+    status: 'operation_manager_approved',
+  );
+  static const inDelivery = SupplyFilter._(status: 'in_delivery');
+  static const delivered = SupplyFilter._(status: 'delivered');
+  static const rejected = SupplyFilter._(status: 'rejected');
+  static const completed = SupplyFilter._(status: 'completed');
+
+  /// The chips that never depend on the approver groups.
+  static const terminal = [
+    operationManagerApproved,
+    inDelivery,
+    delivered,
+    rejected,
+    completed,
+  ];
+
+  @override
+  bool operator ==(Object other) =>
+      other is SupplyFilter &&
+      other.status == status &&
+      other.waitingFor == waitingFor;
+
+  @override
+  int get hashCode => Object.hash(status, waitingFor);
 }
 
 /// Filter query parameters for supply request list (`GET /supply-requests`).
@@ -87,6 +100,7 @@ class SupplyRequestQueryFilter {
     this.partnerId,
     this.facilityId,
     this.status,
+    this.waitingFor,
     this.urgency,
     this.search,
     this.page,
@@ -95,7 +109,8 @@ class SupplyRequestQueryFilter {
 
   final int? partnerId;
   final int? facilityId;
-  final SupplyRequestStatus? status;
+  final String? status;
+  final String? waitingFor;
   final SupplyUrgency? urgency;
   final String? search;
   final int? page;
@@ -104,7 +119,8 @@ class SupplyRequestQueryFilter {
   SupplyRequestQueryFilter copyWith({
     int? partnerId,
     int? facilityId,
-    SupplyRequestStatus? status,
+    String? status,
+    String? waitingFor,
     SupplyUrgency? urgency,
     String? search,
     int? page,
@@ -114,6 +130,7 @@ class SupplyRequestQueryFilter {
       partnerId: partnerId ?? this.partnerId,
       facilityId: facilityId ?? this.facilityId,
       status: status ?? this.status,
+      waitingFor: waitingFor ?? this.waitingFor,
       urgency: urgency ?? this.urgency,
       search: search ?? this.search,
       page: page ?? this.page,

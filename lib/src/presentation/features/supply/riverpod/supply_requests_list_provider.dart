@@ -42,7 +42,8 @@ class SupplyRequestsList extends _$SupplyRequestsList {
         .read(getSupplyRequestsUseCaseProvider)
         .call(
           SupplyRequestQueryFilter(
-            status: filter.toRequestStatus(),
+            status: filter.status,
+            waitingFor: filter.waitingFor,
           ),
         );
 

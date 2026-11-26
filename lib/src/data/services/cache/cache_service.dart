@@ -14,6 +14,9 @@ enum CacheKey {
   menuConfigurationEtag,
   menuConfigurationData,
   savedAccounts,
+  backgroundServiceTaskId,
+  backgroundServiceParams,
+  locationPingActiveVisitId,
 }
 
 abstract class CacheService {

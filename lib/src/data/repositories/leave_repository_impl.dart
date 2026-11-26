@@ -1,9 +1,10 @@
 import '../../core/base/base.dart';
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/leave/create_leave_request_entity.dart';
 import '../../domain/entities/leave/leave_attendant_entity.dart';
 import '../../domain/entities/leave/leave_balance_entity.dart';
 import '../../domain/entities/leave/leave_request_entity.dart';
-import '../../domain/entities/leave/leave_status.dart';
+import '../../domain/entities/leave/leave_filter.dart';
 import '../../domain/entities/leave/leave_summary_entity.dart';
 import '../../domain/repositories/leave_repository.dart';
 import '../extension/leave_mapper.dart';
@@ -56,12 +57,12 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   @override
   Future<Result<List<LeaveRequestEntity>, Failure>> getMyLeaves(
     int partnerId, {
-    LeaveStatus? status,
+    LeaveFilter? filter,
   }) {
     return asyncGuard(() async {
       final response = await remote.getMyLeaves(
         partnerId: partnerId,
-        status: status?.toWireString(),
+        status: filter?.status,
       );
       final responseModel = LeaveRequestListResponseModel.fromJson(
         response.data,
@@ -118,20 +119,26 @@ final class LeaveRepositoryImpl extends LeaveRepository {
   }
 
   @override
-  Future<Result<List<LeaveRequestEntity>, Failure>> getLeaveApprovals(
+  Future<Result<PaginatedListEntity<LeaveRequestEntity>, Failure>>
+  getLeaveRequests(
     int partnerId, {
-    LeaveStatus? status,
+    LeaveFilter? filter,
+    int? page,
+    int? perPage,
   }) {
     return asyncGuard(() async {
-      final response = await remote.getLeaveApprovals(
+      final response = await remote.getLeaveRequests(
         partnerId: partnerId,
-        status: status?.toWireString(),
+        status: filter?.status,
+        waitingFor: filter?.waitingFor,
+        page: page,
+        perPage: perPage,
       );
       final responseModel = LeaveRequestListResponseModel.fromJson(
         response.data,
       );
 
-      return responseModel.toEntity();
+      return responseModel.toPaginatedEntity();
     });
   }
 

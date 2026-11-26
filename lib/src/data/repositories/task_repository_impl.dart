@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../core/base/base.dart';
+import '../../domain/entities/common/paginated_list_entity.dart';
 import '../../domain/entities/task_entity.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../models/task_model.dart';
@@ -14,17 +15,21 @@ final class TaskRepositoryImpl extends TaskRepository {
   final RestClient _client;
 
   @override
-  Future<Result<List<TaskEntity>, Failure>> getIssues({
+  Future<Result<PaginatedListEntity<TaskEntity>, Failure>> getIssues({
     required int partnerId,
     String? status,
     int? facilityId,
+    int? page,
+    int? perPage,
   }) => asyncGuard(() async {
     final response = await _client.getIssues(
       partnerId: partnerId,
       status: status,
       facilityId: facilityId,
+      page: page,
+      perPage: perPage,
     );
-    return TaskListResponseModel.fromJson(response.data).toEntities();
+    return TaskListResponseModel.fromJson(response.data).toPaginatedEntities();
   });
 
   @override

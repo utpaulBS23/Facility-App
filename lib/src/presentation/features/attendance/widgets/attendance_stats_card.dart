@@ -40,6 +40,13 @@ class _AttendanceStatsCard extends StatelessWidget {
           ),
           Gap(spacing.s6),
           _StatItem(
+            count: summary.notCheckedInCount,
+            label: context.locale.notCheckedIn,
+            background: context.color.borderSubtle.withValues(alpha: 0.2),
+            textColor: context.color.text.secondary,
+          ),
+          Gap(spacing.s6),
+          _StatItem(
             count: summary.rejectCount,
             label: context.locale.rejected,
             background: context.color.errorAlt,

@@ -1,3 +1,4 @@
+import '../entities/common/paginated_list_entity.dart';
 import '../entities/task_entity.dart';
 import '../repositories/authentication_repository.dart';
 import '../repositories/task_repository.dart';
@@ -10,9 +11,11 @@ final class GetIssuesUseCase {
   final TaskRepository _repository;
   final AuthenticationRepository _authRepository;
 
-  Future<Result<List<TaskEntity>, Failure>> call({
+  Future<Result<PaginatedListEntity<TaskEntity>, Failure>> call({
     String? status,
     int? facilityId,
+    int? page,
+    int? perPage,
   }) async {
     final partnerId = _authRepository.currentSession?.activePartnerId;
     if (partnerId == null) return const Error(Failure.partnerUnavailable);
@@ -21,6 +24,8 @@ final class GetIssuesUseCase {
       partnerId: partnerId,
       status: status,
       facilityId: facilityId,
+      page: page,
+      perPage: perPage,
     );
     return switch (result) {
       Success(:final data) => Success(data: data),

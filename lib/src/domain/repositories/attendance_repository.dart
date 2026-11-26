@@ -8,6 +8,8 @@ abstract base class AttendanceRepository extends Repository {
     required String month,
     int? facilityId,
     int? userId,
+    String? fromDay,
+    String? toDay,
     int? page,
     int? perPage,
   });

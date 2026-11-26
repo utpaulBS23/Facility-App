@@ -1,11 +1,14 @@
 import '../../core/base/base.dart';
+import '../entities/common/paginated_list_entity.dart';
 import '../entities/task_entity.dart';
 
 abstract base class TaskRepository extends Repository {
-  Future<Result<List<TaskEntity>, Failure>> getIssues({
+  Future<Result<PaginatedListEntity<TaskEntity>, Failure>> getIssues({
     required int partnerId,
     String? status,
     int? facilityId,
+    int? page,
+    int? perPage,
   });
 
   Future<Result<TaskEntity, Failure>> getIssueDetail({

@@ -12,7 +12,7 @@ extension SupplyRequestStatusLocalization on SupplyRequestStatus {
       SupplyRequestStatus.pendingOperationManager =>
         context.locale.pendingOperationManager,
       SupplyRequestStatus.operationManagerApproved =>
-        context.locale.operationManagerApproved,
+        context.locale.approved,
       SupplyRequestStatus.inDelivery => context.locale.inDelivery,
       SupplyRequestStatus.delivered => context.locale.delivered,
       SupplyRequestStatus.rejected => context.locale.rejected,

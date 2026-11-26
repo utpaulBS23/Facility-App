@@ -178,6 +178,8 @@ abstract class RestClient {
     @Query('month') required String month,
     @Query('facility_id') int? facilityId,
     @Query('user_id') int? userId,
+    @Query('from_day') String? fromDay,
+    @Query('to_day') String? toDay,
     @Query('page') int? page,
     @Query('per_page') int? perPage,
   });
@@ -331,6 +333,11 @@ abstract class RestClient {
     @Body() required Map<String, dynamic> body,
   });
 
+  @GET(Endpoints.approvalConfigs)
+  Future<HttpResponse> getApprovalConfigs({
+    @Query('module') required String module,
+  });
+
   /// Leave Management
   @GET(Endpoints.leavePolicies)
   Future<HttpResponse> getLeavePolicies({
@@ -466,10 +473,13 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
   });
 
-  @GET(Endpoints.leaveApprovals)
-  Future<HttpResponse> getLeaveApprovals({
+  @GET(Endpoints.leaveRequests)
+  Future<HttpResponse> getLeaveRequests({
     @Path('partnerId') required int partnerId,
     @Query('status') String? status,
+    @Query('waiting_for') String? waitingFor,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
   });
 
   @GET(Endpoints.leaveApprovalsSummary)
@@ -640,6 +650,7 @@ abstract class RestClient {
     @Path('partnerId') required int partnerId,
     @Query('facility_id') int? facilityId,
     @Query('status') String? status,
+    @Query('waiting_for') String? waitingFor,
     @Query('urgency') String? urgency,
     @Query('search') String? search,
     @Query('page') int? page,
