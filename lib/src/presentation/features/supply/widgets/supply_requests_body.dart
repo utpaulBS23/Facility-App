@@ -101,7 +101,7 @@ class _SupplyRequestsBody extends StatelessWidget {
 
     return switch (filter.status) {
       'pending' => context.locale.pending,
-      'operation_manager_approved' => context.locale.operationManagerApproved,
+      'operation_manager_approved' => context.locale.approved,
       'in_delivery' => context.locale.inDelivery,
       'delivered' => context.locale.delivered,
       'rejected' => context.locale.rejected,
