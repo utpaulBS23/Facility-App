@@ -5,6 +5,10 @@ import 'package:geolocator/geolocator.dart';
 import '../riverpod/app_update_provider.dart';
 import 'app_update_dialog.dart';
 
+// WHY: temporarily switched off, so no update check runs and no modal shows.
+// Set to true to bring it back; the permission request is unaffected.
+const _updateCheckEnabled = false;
+
 class AppUpdateChecker extends ConsumerStatefulWidget {
   const AppUpdateChecker({super.key, required this.child});
 
@@ -20,7 +24,7 @@ class _AppUpdateCheckerState extends ConsumerState<AppUpdateChecker> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _ensurePermissions();
-      if (mounted) {
+      if (mounted && _updateCheckEnabled) {
         await _checkForUpdates();
       }
     });
