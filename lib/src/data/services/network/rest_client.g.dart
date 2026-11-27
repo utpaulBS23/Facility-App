@@ -770,6 +770,8 @@ class _RestClient implements RestClient {
     required String toDay,
     int? facilityId,
     int? userId,
+    int? page,
+    int? perPage,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -777,6 +779,8 @@ class _RestClient implements RestClient {
       r'to_day': toDay,
       r'facility_id': facilityId,
       r'user_id': userId,
+      r'page': page,
+      r'per_page': perPage,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
@@ -786,6 +790,32 @@ class _RestClient implements RestClient {
           .compose(
             _dio.options,
             '/partners/${partnerId}/supervisor-attendance',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> getSupervisorAttendanceDetails({
+    required int partnerId,
+    required int userId,
+    required String date,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/partners/${partnerId}/supervisor-attendance/${userId}/${date}',
             queryParameters: queryParameters,
             data: _data,
           )

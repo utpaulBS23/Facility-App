@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/my_attendance_entity.dart';
+import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/month_filter_button.dart';
 import '../riverpod/my_attendance_provider.dart';
+import '../widgets/my_attendance_item.dart';
 import '../../../../core/utils/api_date.dart';
 import '../../../core/widgets/menu_item_app_bar.dart';
 import '../../../../domain/entities/menu_item_key.dart';
 
-part '../widgets/my_attendance_item.dart';
 part '../widgets/my_attendance_stats_card.dart';
 
 class MyAttendancePage extends ConsumerStatefulWidget {
@@ -85,7 +86,14 @@ class _MyAttendancePageState extends ConsumerState<MyAttendancePage> {
                     if (index == 0) {
                       return _MyAttendanceStatsCard(stats: overview.stats);
                     }
-                    return _MyAttendanceItem(item: overview.items[index - 1]);
+                    final item = overview.items[index - 1];
+                    return MyAttendanceItem(
+                      item: item,
+                      onTap: () => context.pushNamed(
+                        Routes.supervisorAttendanceDetails,
+                        extra: (userId: item.userId, date: item.date),
+                      ),
+                    );
                   },
                 ),
         ),

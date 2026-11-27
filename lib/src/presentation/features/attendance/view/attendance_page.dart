@@ -9,6 +9,8 @@ import '../../../../core/extensions/app_localization.dart';
 import '../../../../core/extensions/failure_localization.dart';
 import '../../../../domain/entities/attendance_entity.dart';
 import '../../../../domain/entities/login_entity.dart';
+import '../../../../domain/entities/my_attendance_entity.dart';
+import '../../../../core/utils/api_date.dart';
 import '../../../core/application_state/session_provider/session_provider.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/widgets/permission_gate.dart';
@@ -16,6 +18,7 @@ import '../../../core/router/routes.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/duration_formatter.dart';
+import '../../../core/widgets/app_bar_filter_button.dart';
 import '../../../core/widgets/detail_app_bar.dart';
 import '../../../core/widgets/facility_picker_sheet.dart';
 import '../../../core/widgets/loading_indicator.dart';
@@ -23,7 +26,9 @@ import '../../../core/widgets/month_filter_button.dart';
 import '../../../core/widgets/picker_sheet_states.dart';
 import '../../../core/widgets/selection_picker_sheet.dart';
 import '../../../core/widgets/app_time_field.dart';
+import '../../my_attendance/widgets/my_attendance_item.dart';
 import '../riverpod/attendance_provider.dart';
+import '../riverpod/supervisor_attendance_provider.dart';
 import '../../../core/widgets/menu_item_app_bar.dart';
 import '../../../../domain/entities/menu_item_key.dart';
 
@@ -39,6 +44,7 @@ part '../widgets/attendance_detail_tiles.dart';
 part '../widgets/attendance_details_body.dart';
 part '../widgets/attendance_list_item.dart';
 part '../widgets/attendance_stats_card.dart';
+part '../widgets/attendance_supervisors_body.dart';
 part '../widgets/attendance_status_tag.dart';
 part 'attendance_details_page.dart';
 
@@ -67,6 +73,9 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
     WidgetsBinding.instance.addObserver(this);
     final now = DateTime.now();
     _selectedMonth = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    // WHY today by default: the page opens on who is in right now, not on a
+    // whole month. Picking a month clears it.
+    _selectedDate = DateTime(now.year, now.month, now.day);
     _selectedFacilityId = _defaultFacilityId;
     _scrollController.addListener(_onScroll);
   }
@@ -94,9 +103,56 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
 
   String? get _toDay => _fromDay;
 
+  // WHY a separate range for supervisors: that endpoint has no `month`
+  // param, only a day range. A picked day is a one-day range; a month runs
+  // to its last day, capped at today since nothing exists in the future.
+  ({String from, String to}) get _supervisorRange {
+    final date = _selectedDate;
+    if (date != null) {
+      final day = ApiDate.date(date);
+      return (from: day, to: day);
+    }
+    final parts = _selectedMonth.split('-');
+    final start = DateTime(int.parse(parts[0]), int.parse(parts[1]));
+    final monthEnd = DateTime(start.year, start.month + 1, 0);
+    final now = DateTime.now();
+    return (
+      from: ApiDate.date(start),
+      to: ApiDate.date(monthEnd.isAfter(now) ? now : monthEnd),
+    );
+  }
+
+  // WHY: a picked day counts only when it is today; otherwise the selected
+  // month counts, so the current month still includes today.
+  bool get _includesToday {
+    final now = DateTime.now();
+    final date = _selectedDate;
+    if (date != null) {
+      return date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day;
+    }
+    return _selectedMonth ==
+        '${now.year}-${now.month.toString().padLeft(2, '0')}';
+  }
+
   void _onScroll() {
     final position = _scrollController.position;
     if (position.pixels >= position.maxScrollExtent - 240) {
+      if (ref.read(selectedAttendanceTabProvider) ==
+          AttendanceTab.supervisors) {
+        final range = _supervisorRange;
+        ref
+            .read(
+              supervisorAttendanceProvider(
+                fromDay: range.from,
+                toDay: range.to,
+                facilityId: _selectedFacilityId,
+              ).notifier,
+            )
+            .loadMore();
+        return;
+      }
       ref
           .read(
             monthlyAttendanceOverviewProvider(
@@ -159,6 +215,13 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
     context.pushNamed(Routes.attendanceDetails, extra: item);
   }
 
+  void _onSupervisorTap(MyAttendanceItemEntity item) {
+    context.pushNamed(
+      Routes.supervisorAttendanceDetails,
+      extra: (userId: item.userId, date: item.date),
+    );
+  }
+
   void _onApplyLeave() {
     context.pushNamed(Routes.applyLeave);
   }
@@ -200,15 +263,34 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(
-      monthlyAttendanceOverviewProvider(
-        _month,
-        facilityId: _selectedFacilityId,
-        userId: _selectedUserId,
-        fromDay: _fromDay,
-        toDay: _toDay,
-      ),
+    final tab = ref.watch(selectedAttendanceTabProvider);
+    final isSupervisors = tab == AttendanceTab.supervisors;
+    ref.listen(selectedAttendanceTabProvider, (previous, next) {
+      // WHY: the attendant picked on one tab means nothing on the other.
+      if (previous != next) setState(() => _selectedUserId = null);
+    });
+    // WHY only the active tab's provider is watched: the other one would
+    // fetch in the background for nothing.
+    final state = isSupervisors
+        ? null
+        : ref.watch(
+            monthlyAttendanceOverviewProvider(
+              _month,
+              facilityId: _selectedFacilityId,
+              userId: _selectedUserId,
+              fromDay: _fromDay,
+              toDay: _toDay,
+            ),
+          );
+    final range = _supervisorRange;
+    final supervisorsProvider = supervisorAttendanceProvider(
+      fromDay: range.from,
+      toDay: range.to,
+      facilityId: _selectedFacilityId,
     );
+    final supervisorsState = isSupervisors
+        ? ref.watch(supervisorsProvider)
+        : null;
     final facilities =
         ref.watch(userSessionProvider)?.accessibleFacilities ??
         const <AccessibleFacilityEntity>[];
@@ -223,6 +305,28 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
         fallbackTitle: context.locale.attendance,
         isTabByDefault: true,
         actions: [
+          PermissionGate(
+            permissions: const [UserPermission.supervisorAttendanceView],
+            child: AppBarFilterButton<AttendanceTab>(
+              title: context.locale.filters,
+              icon: Icons.filter_list_rounded,
+              tinted: false,
+              currentValue: tab,
+              options: [
+                (
+                  value: AttendanceTab.attendants,
+                  label: context.locale.attendants,
+                ),
+                (
+                  value: AttendanceTab.supervisors,
+                  label: context.locale.supervisors,
+                ),
+              ],
+              onSelected: (value) => ref
+                  .read(selectedAttendanceTabProvider.notifier)
+                  .selectTab(value),
+            ),
+          ),
           MonthOrDateFilterButton(
             month: DateTime(
               int.parse(_selectedMonth.split('-')[0]),
@@ -243,6 +347,8 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
               hasActiveFilter: hasFacilityFilter,
               onPressed: () => _pickFacility(facilities),
             ),
+          // WHY hidden on Supervisors: that endpoint has no person filter.
+          if (!isSupervisors)
           PermissionGate(
             permissions: const [
               UserPermission.supervisorAttendanceView,
@@ -257,21 +363,36 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
           Gap(spacing.s8),
         ],
       ),
-      body: state.when(
-        data: (summary) => PermissionGate(
-          permissions: [UserPermission.leaveRequest],
-          builder: (context, isGranted) => _AttendanceBody(
-            summary: summary,
-            onItemTap: _onItemTap,
-            onApplyLeave: _onApplyLeave,
-            showApplyLeave: isGranted,
-            onRefresh: _onRefresh,
-            scrollController: _scrollController,
-          ),
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text(err.localizedMessage(context))),
-      ),
+      body: isSupervisors
+          ? supervisorsState!.when(
+              data: (overview) => _AttendanceSupervisorsBody(
+                overview: overview,
+                singleDay: range.from == range.to,
+                scrollController: _scrollController,
+                onItemTap: _onSupervisorTap,
+                onRefresh: () async => ref.invalidate(supervisorsProvider),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) =>
+                  Center(child: Text(err.localizedMessage(context))),
+            )
+          : state!.when(
+              data: (summary) => PermissionGate(
+                permissions: [UserPermission.leaveRequest],
+                builder: (context, isGranted) => _AttendanceBody(
+                  summary: summary,
+                  showNotCheckedIn: _includesToday,
+                  onItemTap: _onItemTap,
+                  onApplyLeave: _onApplyLeave,
+                  showApplyLeave: isGranted,
+                  onRefresh: _onRefresh,
+                  scrollController: _scrollController,
+                ),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) =>
+                  Center(child: Text(err.localizedMessage(context))),
+            ),
     );
   }
 }

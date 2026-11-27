@@ -1,9 +1,18 @@
-part of '../view/my_attendance_page.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class _MyAttendanceItem extends StatelessWidget {
-  const _MyAttendanceItem({required this.item});
+import '../../../../core/extensions/app_localization.dart';
+import '../../../../domain/entities/my_attendance_entity.dart';
+import '../../../core/theme/theme.dart';
+import '../../../core/utils/date_formatter.dart';
+
+class MyAttendanceItem extends StatelessWidget {
+  const MyAttendanceItem({super.key, required this.item, this.onTap});
 
   final MyAttendanceItemEntity item;
+
+  /// Opens the day's details; the card is not tappable without it.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +20,10 @@ class _MyAttendanceItem extends StatelessWidget {
     final radius = context.dimensions.radius;
     final date = DateFormatter.shiftDate(DateTime.parse(item.date));
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
       padding: EdgeInsets.symmetric(
         horizontal: spacing.s12,
         vertical: spacing.s14,
@@ -120,6 +132,7 @@ class _MyAttendanceItem extends StatelessWidget {
           ],
         ],
       ),
+    ),
     );
   }
 }

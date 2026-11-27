@@ -56,6 +56,7 @@ import '../../features/leave/view/select_attendant_page.dart';
 import '../../features/menu/view/menu_page.dart';
 import '../../features/menu/widgets/menu_item_config.dart';
 import '../../features/my_attendance/view/my_attendance_page.dart';
+import '../../features/my_attendance/view/supervisor_attendance_details_page.dart';
 import '../../features/my_visits/view/my_visits_page.dart';
 import '../../features/notification/view/notification_settings_page.dart';
 import '../../features/notification/view/notifications_page.dart';

@@ -3,6 +3,7 @@ part of '../view/attendance_page.dart';
 class _AttendanceBody extends StatelessWidget {
   const _AttendanceBody({
     required this.summary,
+    required this.showNotCheckedIn,
     required this.onItemTap,
     required this.onApplyLeave,
     required this.showApplyLeave,
@@ -11,6 +12,7 @@ class _AttendanceBody extends StatelessWidget {
   });
 
   final MonthlyAttendanceSummaryEntity summary;
+  final bool showNotCheckedIn;
   final ValueChanged<AttendanceItemEntity> onItemTap;
   final VoidCallback onApplyLeave;
   final bool showApplyLeave;
@@ -34,7 +36,10 @@ class _AttendanceBody extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _AttendanceStatsCard(summary: summary),
+              _AttendanceStatsCard(
+                summary: summary,
+                showNotCheckedIn: showNotCheckedIn,
+              ),
               if (showApplyLeave) ...[
                 Gap(spacing.s12),
                 _ApplyLeaveButton(onTap: onApplyLeave),
