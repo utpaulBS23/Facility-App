@@ -9,6 +9,7 @@ class MyAttendanceStatsModel with MyAttendanceStatsModelMappable {
     this.supervisors,
     this.stillOnRound,
     this.daysCovered,
+    this.facilities,
   });
 
   final int? records;
@@ -19,6 +20,7 @@ class MyAttendanceStatsModel with MyAttendanceStatsModelMappable {
 
   @MappableField(key: 'days_covered')
   final int? daysCovered;
+  final int? facilities;
 
   static const fromJson = MyAttendanceStatsModelMapper.fromJson;
 }

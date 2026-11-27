@@ -8,6 +8,7 @@ extension MyAttendanceStatsModelToEntity on MyAttendanceStatsModel {
     supervisors: supervisors ?? 0,
     stillOnRound: stillOnRound ?? 0,
     daysCovered: daysCovered ?? 0,
+    facilities: facilities ?? 0,
   );
 }
 

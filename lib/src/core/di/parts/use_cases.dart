@@ -145,6 +145,24 @@ GetMyAttendanceUseCase getMyAttendanceUseCase(Ref ref) {
 }
 
 @riverpod
+GetSupervisorsAttendanceUseCase getSupervisorsAttendanceUseCase(Ref ref) {
+  return GetSupervisorsAttendanceUseCase(
+    ref.read(myAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
+GetSupervisorAttendanceDetailsUseCase getSupervisorAttendanceDetailsUseCase(
+  Ref ref,
+) {
+  return GetSupervisorAttendanceDetailsUseCase(
+    ref.read(myAttendanceRepositoryProvider),
+    ref.read(authenticationRepositoryProvider),
+  );
+}
+
+@riverpod
 ApproveAttendanceUseCase approveAttendanceUseCase(Ref ref) {
   return ApproveAttendanceUseCase(
     ref.read(attendanceRepositoryProvider),

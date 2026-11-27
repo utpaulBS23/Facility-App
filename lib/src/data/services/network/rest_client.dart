@@ -191,6 +191,15 @@ abstract class RestClient {
     @Query('to_day') required String toDay,
     @Query('facility_id') int? facilityId,
     @Query('user_id') int? userId,
+    @Query('page') int? page,
+    @Query('per_page') int? perPage,
+  });
+
+  @GET(Endpoints.supervisorAttendanceDetails)
+  Future<HttpResponse> getSupervisorAttendanceDetails({
+    @Path('partnerId') required int partnerId,
+    @Path('userId') required int userId,
+    @Path('date') required String date,
   });
 
   @POST(Endpoints.approveAttendance)

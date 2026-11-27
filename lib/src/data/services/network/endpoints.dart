@@ -64,6 +64,8 @@ class Endpoints {
   /// My Attendance — supervisor's own check-in/check-out visit history.
   static const String myAttendance =
       '/partners/{partnerId}/supervisor-attendance';
+  static const String supervisorAttendanceDetails =
+      '/partners/{partnerId}/supervisor-attendance/{userId}/{date}';
 
   /// Shifts
 

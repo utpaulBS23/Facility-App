@@ -6,12 +6,14 @@ class MyAttendanceStatsEntity {
     required this.supervisors,
     required this.stillOnRound,
     required this.daysCovered,
+    this.facilities = 0,
   });
 
   final int records;
   final int supervisors;
   final int stillOnRound;
   final int daysCovered;
+  final int facilities;
 }
 
 class MyAttendanceItemEntity {
@@ -64,8 +66,28 @@ class MyAttendanceItemEntity {
 }
 
 class MyAttendanceOverviewEntity {
-  const MyAttendanceOverviewEntity({required this.stats, required this.items});
+  const MyAttendanceOverviewEntity({
+    required this.stats,
+    required this.items,
+    this.page = 1,
+    this.lastPage = 1,
+  });
 
   final MyAttendanceStatsEntity stats;
   final List<MyAttendanceItemEntity> items;
+  final int page;
+  final int lastPage;
+
+  bool get hasMore => page < lastPage;
+
+  /// Merges the next page's rows onto this one. The stats stay the first
+  /// page's: the server computes them over the whole filter, not per page.
+  MyAttendanceOverviewEntity appended(MyAttendanceOverviewEntity next) {
+    return MyAttendanceOverviewEntity(
+      stats: stats,
+      items: [...items, ...next.items],
+      page: next.page,
+      lastPage: next.lastPage,
+    );
+  }
 }

@@ -594,6 +594,28 @@
   "add": "Add",
   "close": "Close",
   "attendant": "Attendant",
+  "attendants": "Attendants",
+  "supervisors": "Supervisors",
+  "visits": "Visits",
+  "locationNotVerified": "Location not verified",
+  "distanceAway": "{meters} m away",
+  "@distanceAway": {
+    "placeholders": {
+      "meters": {
+        "type": "String",
+        "example": "18"
+      }
+    }
+  },
+  "passMarkValue": "Pass mark {percent}%",
+  "@passMarkValue": {
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "70"
+      }
+    }
+  },
   "leaveDetails": "Leave Details",
   "rejection": "Rejection",
   "all": "All",
