@@ -12,6 +12,7 @@ class AppBarFilterButton<T> extends StatelessWidget {
     required this.options,
     required this.onSelected,
     this.icon = Icons.filter_list_rounded,
+    this.tinted = true,
   });
 
   final String title;
@@ -19,6 +20,10 @@ class AppBarFilterButton<T> extends StatelessWidget {
   final List<({T value, String label})> options;
   final ValueChanged<T> onSelected;
   final IconData icon;
+
+  /// Paints the icon in the primary color. Off, it takes the app bar's
+  /// default icon color, to sit among plain icon buttons.
+  final bool tinted;
 
   Future<void> _openPicker(BuildContext context) async {
     final result = await showModalBottomSheet<({T value})>(
@@ -43,7 +48,7 @@ class AppBarFilterButton<T> extends StatelessWidget {
       onPressed: () => _openPicker(context),
       icon: Icon(
         icon,
-        color: context.color.primary,
+        color: tinted ? context.color.primary : null,
       ),
     );
   }

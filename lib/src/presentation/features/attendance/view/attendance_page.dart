@@ -310,6 +310,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
             child: AppBarFilterButton<AttendanceTab>(
               title: context.locale.filters,
               icon: Icons.filter_list_rounded,
+              tinted: false,
               currentValue: tab,
               options: [
                 (
