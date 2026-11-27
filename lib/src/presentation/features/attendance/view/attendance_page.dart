@@ -94,6 +94,20 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
 
   String? get _toDay => _fromDay;
 
+  // WHY: a picked day counts only when it is today; otherwise the selected
+  // month counts, so the current month still includes today.
+  bool get _includesToday {
+    final now = DateTime.now();
+    final date = _selectedDate;
+    if (date != null) {
+      return date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day;
+    }
+    return _selectedMonth ==
+        '${now.year}-${now.month.toString().padLeft(2, '0')}';
+  }
+
   void _onScroll() {
     final position = _scrollController.position;
     if (position.pixels >= position.maxScrollExtent - 240) {
@@ -262,6 +276,7 @@ class _AttendancePageState extends ConsumerState<AttendancePage>
           permissions: [UserPermission.leaveRequest],
           builder: (context, isGranted) => _AttendanceBody(
             summary: summary,
+            showNotCheckedIn: _includesToday,
             onItemTap: _onItemTap,
             onApplyLeave: _onApplyLeave,
             showApplyLeave: isGranted,

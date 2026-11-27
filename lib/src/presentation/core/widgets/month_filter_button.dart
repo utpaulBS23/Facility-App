@@ -169,12 +169,19 @@ class _MonthOrDatePickerDialogState extends State<_MonthOrDatePickerDialog> {
           ),
         ],
         selected: {_mode},
+        style: SegmentedButton.styleFrom(
+          selectedBackgroundColor: context.color.primary,
+          selectedForegroundColor: context.color.onPrimary,
+        ),
+        showSelectedIcon: false,
         onSelectionChanged: (selection) =>
             setState(() => _mode = selection.first),
       ),
       content: SizedBox(
         width: double.maxFinite,
-        child: _mode == _PickerMode.month ? _monthGrid(context) : _dayGrid(),
+        child: _mode == _PickerMode.month
+            ? _monthGrid(context)
+            : _dayGrid(context),
       ),
     );
   }
@@ -214,10 +221,12 @@ class _MonthOrDatePickerDialogState extends State<_MonthOrDatePickerDialog> {
           itemBuilder: (context, i) {
             final month = i + 1;
             final disabled = _isDisabled(_current.year, month);
+            // WHY the picked day's month wins: the trigger shows that day,
+            // so its month is the one that reads as selected.
+            final selectedMonth = widget.initialDate ?? widget.initialMonth;
             final isSelected =
-                widget.initialDate == null &&
-                _current.year == widget.initialMonth.year &&
-                month == widget.initialMonth.month;
+                _current.year == selectedMonth.year &&
+                month == selectedMonth.month;
             return TextButton(
               onPressed: disabled
                   ? null
@@ -237,15 +246,25 @@ class _MonthOrDatePickerDialogState extends State<_MonthOrDatePickerDialog> {
     );
   }
 
-  Widget _dayGrid() {
-    return CalendarDatePicker(
-      initialDate: widget.initialDate ?? widget.lastDate,
-      firstDate: DateTime(2020),
-      lastDate: widget.lastDate,
-      onDateChanged: (picked) {
-        widget.onDateSelected(picked);
-        Navigator.of(context).pop();
-      },
+  Widget _dayGrid(BuildContext context) {
+    // WHY explicit scheme: the selected-day circle must read primary with
+    // onPrimary text, whatever the base scheme derives.
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+          primary: context.color.primary,
+          onPrimary: context.color.onPrimary,
+        ),
+      ),
+      child: CalendarDatePicker(
+        initialDate: widget.initialDate ?? widget.lastDate,
+        firstDate: DateTime(2020),
+        lastDate: widget.lastDate,
+        onDateChanged: (picked) {
+          widget.onDateSelected(picked);
+          Navigator.of(context).pop();
+        },
+      ),
     );
   }
 }

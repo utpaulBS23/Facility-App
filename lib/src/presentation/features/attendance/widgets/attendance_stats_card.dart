@@ -1,9 +1,16 @@
 part of '../view/attendance_page.dart';
 
 class _AttendanceStatsCard extends StatelessWidget {
-  const _AttendanceStatsCard({required this.summary});
+  const _AttendanceStatsCard({
+    required this.summary,
+    required this.showNotCheckedIn,
+  });
 
   final MonthlyAttendanceSummaryEntity summary;
+
+  /// True when the period includes today: shows Not checked in instead of
+  /// Absent.
+  final bool showNotCheckedIn;
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +39,22 @@ class _AttendanceStatsCard extends StatelessWidget {
             textColor: context.color.warning,
           ),
           Gap(spacing.s6),
-          _StatItem(
-            count: summary.absentCount,
-            label: context.locale.absent,
-            background: context.color.borderSubtle.withValues(alpha: 0.2),
-            textColor: context.color.text.secondary,
-          ),
-          Gap(spacing.s6),
-          _StatItem(
-            count: summary.notCheckedInCount,
-            label: context.locale.notCheckedIn,
-            background: context.color.borderSubtle.withValues(alpha: 0.2),
-            textColor: context.color.text.secondary,
-          ),
+          // WHY one or the other: today nobody is absent yet (they may still
+          // check in), while a past period has no "not checked in" left.
+          if (showNotCheckedIn)
+            _StatItem(
+              count: summary.notCheckedInCount,
+              label: context.locale.notCheckedIn,
+              background: context.color.borderSubtle.withValues(alpha: 0.2),
+              textColor: context.color.text.secondary,
+            )
+          else
+            _StatItem(
+              count: summary.absentCount,
+              label: context.locale.absent,
+              background: context.color.borderSubtle.withValues(alpha: 0.2),
+              textColor: context.color.text.secondary,
+            ),
           Gap(spacing.s6),
           _StatItem(
             count: summary.rejectCount,
